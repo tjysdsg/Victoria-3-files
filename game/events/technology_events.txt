@@ -1,0 +1,414 @@
+﻿namespace = technology_events
+
+technology_events.1 = { #New regulations for cars
+	type = country_event
+	placement = root
+
+	title = technology_events.1.t
+	desc = technology_events.1.d
+	flavor = technology_events.1.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_automobile.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/automobile"
+
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	trigger = {
+		has_technology_researched = combustion_engine
+		NOT = {
+			has_variable = car_regulations
+		}
+		capital.market = {
+			owner = root
+			mg:automobiles = {
+				market_goods_buy_orders > 200
+			}
+
+		}
+	}
+
+	immediate = {
+		set_variable = {
+			name = car_regulations
+			value = yes
+		}
+
+	}
+
+	option = { #Restrict them
+		name = technology_events.1.a
+
+		add_modifier = {
+			name = automobile_regulations
+			months = normal_modifier_time
+		}
+
+		ig:ig_industrialists = {
+			add_modifier = {
+				name = industrialists_cars_restricted
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = { #Don't restrict them
+		name = technology_events.1.b
+		default_option = yes
+		ig:ig_industrialists = {
+			add_modifier = {
+				name = industrialists_cars_unrestricted
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = { #Restrict the people
+		name = technology_events.1.c
+		add_radicals = {
+			strata = poor
+			value = medium_radicals
+		}
+	}
+}
+
+technology_events.10 = { #Telephone line between countries
+	type = country_event
+	placement = root
+
+	title = technology_events.10.t
+	desc = technology_events.10.d
+	flavor = technology_events.10.f
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_signed_contract.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/signed_contract"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	duration = 3
+
+	trigger = {
+		has_technology_researched = telephone
+		any_neighbouring_state = {
+			owner = {
+				relations:root >= relations_threshold:neutral
+				is_player = no
+				has_technology_researched = telephone
+				NOT = {
+					has_variable = telephone_exchange
+				}
+			}
+		}
+	}
+
+	immediate = {
+		random_neighbouring_state = {
+			limit = {
+				owner = {
+					relations:root >= relations_threshold:neutral
+					has_technology_researched = telephone
+					NOT = {
+						has_variable = telephone_exchange
+					}
+				}
+			}
+			save_scope_as = telephone_neighbour_state
+			owner = {
+				save_scope_as = telephone_neighbour
+				set_variable = {
+					name = telephone_exchange
+					value = yes
+				}
+			}
+		}
+	}
+
+	option = { #Sure
+		name = technology_events.10.a
+		change_relations = {
+			country = scope:telephone_neighbour
+			value = 20
+		}
+	}
+
+	option = { #No way
+		name = technology_events.10.b
+		default_option = yes
+	}
+}
+
+technology_events.20 = { #Radio Chats
+	type = country_event
+	placement = root
+
+	title = technology_events.20.t
+	desc = technology_events.20.d
+	flavor = technology_events.20.f
+
+	gui_window = event_window_1char_tabloid
+	left_icon = scope:radio_ruler
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/misc/1Character_Banner"
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	duration = 3
+
+	trigger = {
+		has_technology_researched = radio
+		NOT = {
+			has_variable = radio_chats
+		}
+
+	}
+
+	immediate = {
+		random_scope_character = {
+			limit = {
+				is_ruler = yes
+			}
+			save_scope_as = radio_ruler
+			interest_group = {
+				save_scope_as = radio_ruler_ig
+			}
+		}
+		set_variable = {
+			name = radio_chats
+			value = yes
+		}
+
+	}
+
+
+
+	option = { #Authority
+		name = technology_events.20.a
+		add_modifier = {
+			name = modifier_radio_authority
+			months = normal_modifier_time
+		}
+	}
+
+	option = { #ig opinion
+		name = technology_events.20.b
+		default_option = yes
+		scope:radio_ruler_ig = {
+			add_modifier = {
+				name = modifier_radio_ig
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = { #God I love opium
+		name = technology_events.20.c
+		default_option = yes
+		highlighted_option = yes
+		trigger = {
+			scope:radio_ruler = {
+				has_trait = opium_addiction
+			}
+		}
+
+		add_modifier = {
+			name = modifier_radio_opium
+			months = normal_modifier_time
+		}
+	}
+}
+
+technology_events.30 = { #Article on weapons of war
+	type = country_event
+	placement = root
+
+	title = technology_events.30.t
+	desc = technology_events.30.d
+	flavor = technology_events.30.f
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_battlefield_trenches.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/battlefield_trenches"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	duration = 3
+
+	trigger = {
+		OR = {
+			has_technology_researched = automatic_machine_guns
+			has_technology_researched = chemical_warfare
+		}
+		is_at_war = yes
+		NOT = {
+			has_variable = weapons_of_war
+		}
+
+		any_diplomatic_play = {
+			is_war = yes
+		}
+
+	}
+
+	immediate = {
+		set_variable = {
+			name = weapons_of_war
+			value = yes
+		}
+
+		random_scope_war = {
+			save_scope_as = ongoing_war
+		}
+
+	}
+
+	option = { #Don't restrict it
+		name = technology_events.30.a
+		scope:ongoing_war = {
+			add_war_war_support = {
+				target = ROOT
+				value = -10
+			}
+		}
+		ig:ig_intelligentsia = {
+			add_modifier = {
+				name = disapproves_of_no_weapon_restriction
+				months = normal_modifier_time
+			}
+		}
+			
+
+
+	}
+
+	option = { #Cover it up
+		name = technology_events.30.b
+		default_option = yes
+
+		add_modifier = {
+			name = covering_up_weapons
+			months = normal_modifier_time
+		}
+
+	}
+}
+
+
+technology_events.40 = { #Distributing photos of our country
+	type = country_event
+	placement = root
+
+	title = technology_events.40.t
+	desc = technology_events.40.d
+	flavor = technology_events.40.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_london_center.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/london_center"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	trigger = {
+		has_technology_researched = camera
+		NOT = {
+			has_variable = country_photographs
+		}
+	}
+
+	immediate = {
+		set_variable = {
+			name = country_photographs
+			value = yes
+		}
+	}
+
+	option = { #International
+		name = technology_events.40.a
+		add_modifier = {
+			name = modifier_international_photographs
+			months = normal_modifier_time
+		}
+
+	}
+
+	option = { #Domestic
+		name = technology_events.40.b
+		default_option = yes
+		add_modifier = {
+			name = modifier_domestic_photographs
+			months = normal_modifier_time
+		}
+	}
+}
+
+technology_events.50 = {
+	type = country_event
+	placement = root
+
+	title = technology_events.50.t
+	desc = technology_events.50.d
+	flavor = technology_events.50.f
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_battlefield_trenches.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/battlefield_trenches"
+
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	duration = 3
+
+	trigger = {
+		has_technology_researched = canneries
+		NOT = {
+			has_variable = war_time_cans
+		}
+	}
+
+	immediate = {
+		set_variable = {
+			name = war_time_cans
+			value = yes
+		}
+	}
+
+	option = { #yes
+		name = technology_events.50.a
+		add_modifier = {
+			name = modifier_developing_can_opener
+			multiplier = money_amount_multiplier_small
+			months = normal_modifier_time
+		}
+
+	}
+
+	option = { #no
+		name = technology_events.50.b
+		default_option = yes
+		ig:ig_armed_forces = {
+			add_modifier = {
+				name = modifier_can_anger
+				months = normal_modifier_time
+			}
+		}
+	}
+}

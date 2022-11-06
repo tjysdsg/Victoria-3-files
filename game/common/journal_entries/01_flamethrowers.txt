@@ -1,0 +1,41 @@
+﻿je_flamethrowers = {
+	icon = "gfx/interface/icons/event_icons/event_fire.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		has_technology_researched = trench_works
+		has_technology_researched = automatic_machine_guns
+		army_size >= 25
+	}
+
+	possible = {
+		has_technology_researched = flamethrowers
+		army_size >= 40
+	}
+
+	complete = {
+		is_at_war = yes
+		country_pm_usage = {
+			target = ROOT
+			production_method = pm_flamethrower_company
+			value > 0.25
+		}
+		# for these JE's we would want this to be true for X months, but excluding that for the sake of readability
+		# If this trigger is changed, also change the trigger in the event
+		any_scope_war = {
+			any_scope_front = {
+				front_side_pm_usage = {
+					target = ROOT
+					production_method = pm_flamethrower_company
+					value > 0.5
+				}
+			}
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = flamethrowers_event.1 }
+	}
+
+	timeout = 3650
+}

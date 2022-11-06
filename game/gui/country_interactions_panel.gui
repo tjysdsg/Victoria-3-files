@@ -1,0 +1,115 @@
+# COPY-PASTED FOR NOW
+@panel_width_minus_10 = 530			# used to be 450
+@panel_width = 540  				# used to be 460
+@panel_width_half = 270				# used to be 230
+@panel_width_plus_10 = 550  		# used to be 470
+@panel_width_plus_14 = 554			# used to be 474
+@panel_width_plus_14_half = 277		# used to be 237
+@panel_width_plus_20 = 560			# used to be 480
+@panel_width_plus_30 = 570			# used to be 490
+@panel_width_plus_70 = 610			# used to be 530
+
+types country_panel_types
+{
+	type country_panel_interactions_content = flowcontainer {
+		using = default_list_position
+		direction = vertical
+		minimumsize = { @panel_width -1 }
+		maximumsize = { @panel_width -1 }
+		margin_top = 10
+		#spacing = 5
+
+		#ATTITUDE / INFAMY
+		attitude_info = {
+			blockoverride "context" {
+				datacontext = "[Country]"
+			}
+		}
+
+		widget = { 
+			size = { 5 5 }
+		}
+
+		flowcontainer = {
+			parentanchor = hcenter
+			direction = vertical
+			visible = "[Not(Country.IsLocalPlayer)]"
+		
+			default_header = {
+				blockoverride "text" {
+					text = DIPLO_ACTIONS
+				}
+			}
+
+			empty_state = {
+				blockoverride "visible" {
+					visible = "[IsDataModelEmpty(Country.GetPotentialDiploActions)]"
+				}
+				blockoverride "text" {
+					text = "NO_DIPLO_ACTIONS"
+				}
+				blockoverride "margin" {
+					margin_top = 10
+					margin_bottom = 10
+				}				
+			}
+
+			flowcontainer = {
+				name = "tutorial_highlight_country_diplomatic_actions_list"
+				direction = vertical
+				datamodel = "[Country.GetPotentialDiploActions]"
+				using = default_list_position
+				spacing = 4
+
+				item = {
+					diplomatic_action_button = {}
+				}
+			}
+
+			default_header = {
+				blockoverride "text" {
+					text = "DIPLOMATIC_PLAYS_TARGETING_COUNTRY"
+				}
+			}
+
+			empty_state = {
+				blockoverride "visible" {
+					visible = "[IsDataModelEmpty(Country.GetPotentialDiploPlays)]"
+				}
+				blockoverride "text" {
+					text = "NO_DIPLO_PLAYS"
+				}
+				blockoverride "margin" {
+					margin_top = 10
+					margin_bottom = 10
+				}				
+			}				
+
+			flowcontainer = {
+				direction = vertical
+				datamodel = "[Country.GetPotentialDiploPlays]"
+				using = default_list_position					
+
+				item = {
+					diplomatic_play_button_country = {}
+				}
+			}
+
+			flowcontainer = {
+				direction = vertical
+				datamodel = "[Country.AccessStates]"
+				using = default_list_position					
+
+				item = {
+					dynamicgridbox = {
+						datamodel = "[State.GetPotentialDiploPlays]"
+
+						item = {
+							diplomatic_play_button_state = {}
+						}
+					}
+				}
+			}
+		}
+	}
+}

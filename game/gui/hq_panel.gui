@@ -1,0 +1,120 @@
+# COPY-PASTED FOR NOW
+@panel_width_minus_10 = 530			# used to be 450
+@panel_width = 540  				# used to be 460
+@panel_width_half = 270				# used to be 230
+@panel_width_plus_10 = 550  		# used to be 470
+@panel_width_plus_14 = 554			# used to be 474
+@panel_width_plus_14_half = 277		# used to be 237
+@panel_width_plus_20 = 560			# used to be 480
+@panel_width_plus_30 = 570			# used to be 490
+@panel_width_plus_70 = 610			# used to be 530
+
+types hq_panel_types
+{
+	type hq_panel = default_block_window {
+		name = "hq_panel"
+		datacontext = "[HQPanel.AccessHQ]"
+		datacontext = "[GetVariableSystem]"
+
+		blockoverride "window_header_name"
+		{
+			text = "#BOLD [Hq.GetNameNoFlag]#!"
+		}
+		
+		### TOP PART
+		blockoverride "fixed_top"
+		{
+			widget = {
+				size = { @panel_width_minus_10 80 }
+				
+				textbox = {
+					parentanchor = vcenter
+					autoresize = yes
+					align = left|nobaseline
+					text = "HQ_PANEL_TOTAL_TOTAL"
+					tooltip = "HQ_PANEL_TOTAL_TOTAL_TOOLTIP"
+					using = fontsize_mega
+				}
+				textbox = {
+					parentanchor = right|vcenter
+					background = {
+						using = entry_bg_simple
+					}
+					text = "#todo HQ PM's (PRCAL-11159)#!"
+					size = { 260 60 }
+					align = hcenter|nobaseline
+				}
+			}
+		}
+		
+		### BOTTOM PART
+		blockoverride "fixed_bottom"
+		{	
+			fixed_bottom_spacer = {}
+			
+			container = {
+				minimumsize = { @panel_width_minus_10 -1 }
+				
+				textbox = {
+					text = "HQ_PANEL_HOME_AVAILABLE"
+					autoresize = yes
+					align = nobaseline
+					margin_top = 10
+					margin_bottom = 10
+					using = fontsize_xl
+				}
+				textbox = {
+					text = "[Hq.GetCombatUnitsIcon] #variable [Hq.GetReserveUnitsRaw]#! / #todo MAX_UNITS#!"
+					tooltip = "HQ_PANEL_TOTAL_IN_RESERVE"
+					autoresize = yes
+					align = nobaseline
+					margin_top = 10
+					margin_bottom = 10
+					using = fontsize_xl
+					parentanchor = right
+				}
+			}
+
+			button = {
+				visible = "[And( Hq.IsLandHQ, Not( Hq.IsTemporaryHQ ))]"
+				using = default_button
+				using = commander_recruit_button_sound
+				align = center|nobaseline
+				size = { @panel_width 60 }
+				onclick = "[PopupManager.ToggleRecruitGeneral( Hq.Self )]"
+				text = "RECRUIT_CHARACTER_GENERAL"
+			}
+
+			button = {
+				visible = "[Hq.IsNavalHQ]"
+				using = default_button
+				using = commander_recruit_button_sound
+				align = center|nobaseline
+				size = { @panel_width_minus_10 60 }
+				onclick = "[PopupManager.ToggleRecruitAdmiral( Hq.Self )]"
+				text = "RECRUIT_CHARACTER_ADMIRAL"
+			}
+		}
+
+		blockoverride "scrollarea_content"
+		{
+			flowcontainer = {
+				direction = vertical
+				using = default_list_position
+					
+				### COMMANDER LIST
+				flowcontainer = {
+					direction = vertical
+					parentanchor = hcenter
+					spacing = 5
+
+					datamodel = "[Hq.AccessHomeCommanders]"
+
+					item = {
+						military_panel_commander_entry = {}
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,195 @@
+﻿je_objective_encourage_liberal_ideas = {
+	should_be_pinned_by_default = yes
+	icon = "gfx/interface/icons/objectives/egalitarian_society.dds"
+
+	complete = {
+		ig:ig_intelligentsia = {
+			is_powerful = yes
+			is_being_bolstered = yes
+			is_in_government = yes
+		}
+	}
+	
+	on_complete = {
+		hidden_effect = {
+			owner = {
+				start_tutorial_lesson = { 
+					tutorial_lesson = liberalizing_the_government_complete
+					journal_entry = je:je_objective_encourage_liberal_ideas
+				}
+			}
+		}
+	}
+		
+	weight = 1000
+	inheritable = yes
+}
+
+je_liberate_the_slaves = {
+	should_be_pinned_by_default = yes
+	icon = "gfx/interface/icons/objectives/egalitarian_society.dds"
+	
+	complete = {
+		has_law = law_type:law_slavery_banned
+	}
+
+	weight = 1003
+	inheritable = yes
+}
+
+je_pass_laws = {
+	should_be_pinned_by_default = yes
+	icon = "gfx/interface/icons/objectives/egalitarian_society.dds"
+	
+	complete = {
+		NOT = { has_law = law_type:law_state_religion }
+		has_law = law_type:law_multicultural
+		has_law = law_type:law_public_schools
+		has_law = law_type:law_protected_speech
+	}
+
+	is_progressing = {
+		OR = {
+			is_enacting_law = law_type:law_freedom_of_conscience
+			is_enacting_law = law_type:law_total_separation
+			is_enacting_law = law_type:law_multicultural
+			is_enacting_law = law_type:law_public_schools
+			is_enacting_law = law_type:law_protected_speech
+		}
+	}
+
+	weight = 1001
+	inheritable = yes
+}
+
+je_public_services = {
+	should_be_pinned_by_default = yes
+	icon = "gfx/interface/icons/objectives/egalitarian_society.dds"
+	
+	complete = {
+		institution_investment_level = {
+			institution = institution_schools
+			value >= 3
+		}
+		institution_investment_level = {
+			institution = institution_health_system
+			value >= 3
+		}
+		institution_investment_level = {
+			institution = institution_social_security
+			value >= 3
+		}
+		institution_investment_level = {
+			institution = institution_workplace_safety
+			value >= 3
+		}
+	}
+
+	is_progressing = {
+		OR = {
+			expanding_institution = institution_schools
+			expanding_institution = institution_health_system
+			expanding_institution = institution_social_security
+			expanding_institution = institution_workplace_safety
+		}
+	}
+
+	invalid = {
+		NOT = {
+			has_law = law_type:law_multicultural
+			has_law = law_type:law_public_schools
+			has_law = law_type:law_protected_speech
+		}
+		has_law = law_type:law_state_religion
+	}
+	on_invalid = {
+		remove_active_objective_subgoal = sg_public_services
+	}
+	
+	weight = 1002
+	inheritable = yes
+}
+
+je_women_and_children = {
+	should_be_pinned_by_default = yes
+	icon = "gfx/interface/icons/objectives/egalitarian_society.dds"
+	
+	complete = {
+		has_law = law_type:law_compulsory_primary_school
+		has_law = law_type:law_womens_suffrage
+	}
+
+	is_progressing = {
+		or = {
+			is_enacting_law = law_type:law_compulsory_primary_school
+			is_enacting_law = law_type:law_womens_suffrage
+		}
+	}
+
+	invalid = {
+		NOT = {
+			has_law = law_type:law_multicultural
+			has_law = law_type:law_public_schools
+			has_law = law_type:law_protected_speech
+		}
+		has_law = law_type:law_state_religion
+	}
+	on_invalid = {
+		remove_active_objective_subgoal = sg_women_and_children
+	}
+	
+	weight = 1004
+	inheritable = yes
+}
+
+je_egalitarian_society = {
+	should_be_pinned_by_default = yes
+	icon = "gfx/interface/icons/objectives/egalitarian_society.dds"
+	active_update_frequency = 1
+	
+	complete = {
+		game_date > 1935.12.30
+		pop_type_percent_country = {
+			pop_type = peasants
+			percent < 0.1
+		}
+		root.average_sol >= 20
+		literacy_rate >= 0.9
+	}
+
+	is_progressing = {
+		OR = {
+			expanding_institution = institution_schools
+			expanding_institution = institution_health_system
+			expanding_institution = institution_social_security
+			expanding_institution = institution_workplace_safety
+		}
+	}
+
+	invalid = {
+		NOT = {
+			has_law = law_type:law_multicultural
+			has_law = law_type:law_public_schools
+			has_law = law_type:law_protected_speech
+		}
+		has_law = law_type:law_state_religion
+	}
+	
+	on_invalid = {
+		remove_active_objective_subgoal = sg_egalitarian_society
+	}
+
+	on_complete = {
+		hidden_effect = {
+			owner = {
+				start_tutorial_lesson = { 
+					tutorial_lesson = egalitarian_society_complete
+					journal_entry = je:je_egalitarian_society
+				}
+			}
+		}
+	}
+
+	weight = 1005
+	inheritable = yes
+}

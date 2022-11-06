@@ -1,0 +1,264 @@
+# COPY-PASTED FOR NOW
+@panel_width_minus_10 = 530			# used to be 450
+@panel_width = 540  				# used to be 460
+@panel_width_half = 270				# used to be 230
+@panel_width_half_minus_20 = 250
+@panel_width_plus_10 = 550  		# used to be 470
+@panel_width_plus_14 = 554			# used to be 474
+@panel_width_plus_14_half = 277		# used to be 237
+@panel_width_plus_20 = 560			# used to be 480
+@panel_width_plus_30 = 570			# used to be 490
+@panel_width_plus_70 = 610			# used to be 530
+
+types state_pops_panel
+{
+	type state_population_panel = default_block_window_two_lines {
+		name = "state_population_panel"
+		
+		blockoverride "window_header_name"
+		{
+			text = "STATE_POP_PANEL_HEADER"
+		}
+
+		blockoverride "window_header_name_line_two"
+		{
+			text = "STATE_POPULATION_PANEL_LINE_TWO"
+		}
+		blockoverride "goto_button" {
+			button_icon_goto = {
+				size = { 30 30 }
+				onclick = "[InformationPanelBar.OpenStatePanel(StatePopulationPanel.AccessState)]"
+				tooltip = "GO_TO_BUTTON_STATE"
+			}
+		}
+	}
+
+	type state_culture_piechart = chart {
+		blockoverride "datamodel" {
+			datamodel = "[State.AccessPopCultures]"
+		}
+		
+		blockoverride = "chart_visible" {
+			visible = "[Not(IsDataModelEmpty(State.AccessPopCultures))]"
+		}
+
+		empty_state = {
+			blockoverride "visible" {
+				visible = "[IsDataModelEmpty(State.AccessPopCultures)]"
+			}
+			blockoverride "text" {
+				text = "NO_CULTURES"
+			}
+			blockoverride "size" {
+				minimumsize = { @panel_width_half_minus_20 -1 }
+				maximumsize = { @panel_width_half_minus_20 -1 }
+			}
+		}
+
+		blockoverride "heading" {
+			text = "STATE_CULTURES"
+		}
+
+		blockoverride "tooltip" {
+			tooltip = "STATE_CULTURE_PIECHART"
+		}
+
+		blockoverride "pieslice" {
+			value = "[Culture.GetStatePopulationAsFloat(State.Self)]"
+		}
+
+		blockoverride "color" {
+			color = "[Culture.GetColor]"
+		}
+
+		blockoverride "leftside_info" {
+			text = "[Culture.GetName]"
+		}
+
+		blockoverride "rightside1_info" {
+			text = "#bold [Culture.GetStatePopulationAsPercentage(State.Self)|/%d]#!"
+		}
+
+		blockoverride "rightside2_info" {
+			text = "#bold ([Culture.GetStatePopulation(State.Self)|1*])#!"
+		}
+		
+		blockoverride "pie_item_goto_button" {
+			button = {
+				using = clean_button
+				size = { 100% 100% }
+				onclick = "[InformationPanelBar.OpenCultureInfoPanel(Culture.AccessSelf)]"
+			}
+		}
+	}
+	
+	type state_religion_piechart = chart {
+		blockoverride "datamodel" {
+			datamodel = "[State.AccessPopReligions]"
+		}
+		
+		blockoverride = "chart_visible" {
+			visible = "[Not(IsDataModelEmpty(State.AccessPopReligions))]"
+		}
+
+		empty_state = {
+			blockoverride "visible" {
+				visible = "[IsDataModelEmpty(State.AccessPopReligions)]"
+			}
+			blockoverride "text" {
+				text = "NO_RELIGIONS"
+			}
+			blockoverride "size" {
+				minimumsize = { @panel_width_half_minus_20 -1 }
+				maximumsize = { @panel_width_half_minus_20 -1 }
+			}
+		}
+
+		blockoverride "heading" {
+			text = "STATE_RELIGIONS"
+		}
+
+		blockoverride "tooltip" {
+			tooltip = "STATE_RELIGION_PIECHART"
+		}
+
+		blockoverride "pieslice" {
+			value = "[Religion.GetStatePopulationAsFloat(State.Self)]"
+		}
+
+		blockoverride "color" {
+			color = "[Religion.GetColor]"
+		}
+
+		blockoverride "leftside_info" {
+			text = "[Religion.GetName]"
+		}
+
+		blockoverride "rightside1_info" {
+			text = "#bold [Religion.GetStatePopulationAsPercentage(State.Self)|/%d]#!"
+		}
+
+		blockoverride "rightside2_info" {
+			text = "#bold ([Religion.GetStatePopulation(State.Self)|1*])#!"
+		}
+		
+		blockoverride "pie_item_goto_button" {
+			button = {
+				using = clean_button
+				size = { 100% 100% }
+				onclick = "[InformationPanelBar.OpenReligionInfoPanel(Religion.AccessSelf)]"
+			}
+		}
+	}
+	
+	type state_pop_type_piechart = chart {
+		blockoverride "datamodel" {
+			datamodel = "[State.AccessPopTypes]"
+		}
+		
+		blockoverride = "chart_visible" {
+			visible = "[Not(IsDataModelEmpty(State.AccessPopTypes))]"
+		}
+
+		empty_state = {
+			blockoverride "visible" {
+				visible = "[IsDataModelEmpty(State.AccessPopTypes)]"
+			}
+			blockoverride "text" {
+				text = "NO_POP_TYPES"
+			}
+			blockoverride "size" {
+				minimumsize = { @panel_width_half_minus_20 -1 }
+				maximumsize = { @panel_width_half_minus_20 -1 }
+			}
+		}
+
+		blockoverride "heading" {
+			text = "STATE_POP_TYPES"
+		}
+
+		blockoverride "tooltip" {
+			tooltip = "STATE_POP_TYPE_PIECHART"
+		}
+
+		blockoverride "pieslice" {
+			value = "[PopType.GetStatePopulationAsFloat(State.Self)]"
+		}
+
+		blockoverride "color" {
+			color = "[PopType.GetColor]"
+		}
+
+		blockoverride "leftside_info" {
+			text = "[PopType.GetName]"
+		}
+
+		blockoverride "rightside1_info" {
+			text = "#bold [PopType.GetStatePopulationAsPercentage(State.Self)|/%d]#!"
+		}
+
+		blockoverride "rightside2_info" {
+			text = "#bold ([PopType.GetStatePopulation(State.Self)|1*])#!"
+		}
+	}
+
+	type state_ig_piechart = chart {
+		blockoverride "datamodel" {
+			datamodel = "[State.AccessPopInterestGroups]"
+		}
+		
+		blockoverride = "chart_visible" {
+			visible = "[Not(IsDataModelEmpty(State.AccessPopInterestGroups))]"
+		}
+
+		empty_state = {
+			blockoverride "visible" {
+				visible = "[IsDataModelEmpty(State.AccessPopInterestGroups)]"
+			}
+			blockoverride "text" {
+				text = "NO_INTEREST_GROUPS"
+			}
+			blockoverride "size" {
+				minimumsize = { @panel_width_half_minus_20 -1 }
+				maximumsize = { @panel_width_half_minus_20 -1 }
+			}
+		}
+
+		blockoverride "heading" {
+			text = "CLOUT_HEADER"
+		}
+
+		blockoverride "tooltip" {
+			datacontext = "[State.GetOwner]"
+			tooltip = "CLOUT_PIECHART_STATE"
+		}
+
+		blockoverride "pieslice" {
+			value = "[FixedPointToFloat(InterestGroup.GetPoliticalStrengthInStateAsPercentage(State.Self))]"
+		}
+
+		blockoverride "color" {
+			color = "[InterestGroup.GetColor]"
+		}
+
+		blockoverride "leftside_info" {
+			text = "[InterestGroup.GetName]"
+		}
+
+		blockoverride "rightside1_info" {
+			text = ""
+		}
+
+		blockoverride "rightside2_info" {
+			text = "#bold [InterestGroup.GetPoliticalStrengthInStateAsPercentage(State.Self)|%1]#!"
+		}
+
+		blockoverride "pie_item_goto_button" {
+			button = {
+				using = clean_button
+				size = { 100% 100% }
+				onclick = "[InformationPanelBar.OpenInterestGroupPanel(InterestGroup.AccessSelf)]"
+			}
+		}
+	}
+}

@@ -1,0 +1,293 @@
+types sway_country_types
+{
+	type sway_country_panel = default_block_window {
+		name = "sway_country_panel"
+
+		blockoverride "window_header_name" {
+			text = "SWAY_COUNTRY_HEADER"
+		}
+
+		blockoverride "scrollarea_content" {	
+			flowcontainer = {
+				direction = vertical
+				using = default_list_position
+						
+				container = {
+					visible = "[Not(SwayCountryPanel.HasOfferedWarGoalType)]"
+					
+					offer_obligation_item = {
+						visible = "[Not(SwayCountryPanel.GetCountry.OwesObligationTo(GetPlayer.Self))]"				
+					}
+
+					call_in_obligation_item = {
+						visible = "[SwayCountryPanel.GetCountry.OwesObligationTo(GetPlayer.Self)]"				
+					}	
+				}
+				
+				dynamicgridbox = {
+					name = "offer_wargoal_selection_list"
+					visible = "[SwayCountryPanel.HasOfferedWarGoalType]"
+					datamodel = "[SwayCountryPanel.AccessOfferedWarGoals]"
+				
+					item = {
+						offer_wargoal_item = {}
+					}
+				}
+				
+				dynamicgridbox = {
+					name = "wargoal_type_selection_list"
+					visible = "[Not(SwayCountryPanel.HasOfferedWarGoalType)]"
+					datamodel = "[SwayCountryPanel.AccessOfferedWarGoalTypes]"
+				
+					item = {
+						offer_wargoal_type_item = {}
+					}
+				}					
+			}			
+		}
+	}
+
+	type call_in_obligation_item = button {
+		onclick = "[Execute( SwayCountryPanel.AccessDiplomaticPlay.SwayWithCallInObligation( GetPlayer.Self, SwayCountryPanel.GetCountry.Self ))]"
+		onclick = "[InformationPanelBar.OpenPreviousPanel]"				
+		enabled = "[IsValid( SwayCountryPanel.AccessDiplomaticPlay.SwayWithCallInObligation( GetPlayer.Self, SwayCountryPanel.GetCountry.Self ))]"			
+		tooltip = "[SwayCountryPanel.GetDiplomaticPlay.GetCanSwayWithObligationString( GetPlayer.Self, SwayCountryPanel.GetCountry.Self )]"
+		using = default_button_action
+
+		container = {
+			resizeparent = yes
+			minimumsize = { 550 60 }
+				
+			small_flag = {
+				position = { -15 0 }
+				datacontext = "[GetPlayer]"
+				parentanchor = right|vcenter
+			}				
+			
+			icon = {
+				position = { 10 0 }
+				size = { 50 50 }
+				texture = "gfx/interface/icons/generic_icons/obligation.dds"
+				parentanchor = vcenter
+			}				
+			
+			textbox = {
+				position = { 70 5 }
+				using = fontsize_large
+				parentanchor = left|vcenter
+				text = "CALL_IN_OBLIGATION"
+				autoresize = yes
+				maximumsize = { 440 -1 }
+				multiline = yes
+				margin_bottom = 20
+			}
+
+			textbox = {
+				parentanchor = right|vcenter				
+				position = { -75 0 }
+				margin_bottom = 10					
+				using = fontsize_large
+				text = "OBLIGATION_MANEUVERS_COST"
+				autoresize = yes
+				maximumsize = { 100 -1 }
+				multiline = yes
+				margin_left = 10
+			}				
+		}
+	}
+
+	type offer_obligation_item = button {
+		onclick = "[Execute( SwayCountryPanel.AccessDiplomaticPlay.SwayWithOfferObligation( GetPlayer.Self, SwayCountryPanel.GetCountry.Self ))]"
+		onclick = "[InformationPanelBar.ClosePanel]"		
+		enabled = "[IsValid( SwayCountryPanel.AccessDiplomaticPlay.SwayWithOfferObligation( GetPlayer.Self, SwayCountryPanel.GetCountry.Self ))]"			
+		tooltip = "[SwayCountryPanel.GetDiplomaticPlay.GetCanSwayWithObligationString( GetPlayer.Self, SwayCountryPanel.GetCountry.Self )]"
+		using = default_button_action
+
+		container = {
+			resizeparent = yes
+			minimumsize = { 550 60 }
+			maximumsize = { 550 60 }
+			
+			icon = {
+				position = { 10 0 }
+				size = { 50 50 }
+				texture = "gfx/interface/icons/generic_icons/obligation.dds"
+				parentanchor = vcenter
+			}	
+			
+			small_flag = {
+				position = { -15 0 }
+				datacontext = "[GetPlayer]"
+				parentanchor = right|vcenter
+			}	
+
+			flowcontainer = {
+				position = { -75 0 }
+				parentanchor = right|vcenter
+				direction = horizontal
+				spacing = 10
+			
+				textbox = {
+					parentanchor = vcenter				
+					text = "OBLIGATION_MANEUVERS_COST"
+					using = fontsize_large				
+					autoresize = yes
+					maximumsize = { 100 -1 }
+					multiline = yes
+					align = nobaseline
+					tooltip = "OBLIGATION_MANEUVERS_COST_TOOLTIP"
+				}				
+
+				icon = {
+					tooltip = "[SwayCountryPanel.GetDiplomaticPlay.GetWouldAcceptSwayWithObligationString(GetPlayer.Self, SwayCountryPanel.GetCountry.Self)]"
+					visible = "[SwayCountryPanel.GetDiplomaticPlay.WouldAcceptSwayWithObligation(GetPlayer.Self, SwayCountryPanel.GetCountry.Self)]"	
+					size = { 40 40 }
+					texture = "gfx/interface/icons/generic_icons/approval_icon.dds"	
+				}					
+
+				icon = {
+					tooltip = "[SwayCountryPanel.GetDiplomaticPlay.GetWouldAcceptSwayWithObligationString(GetPlayer.Self, SwayCountryPanel.GetCountry.Self)]"
+					visible = "[Not(SwayCountryPanel.GetDiplomaticPlay.WouldAcceptSwayWithObligation(GetPlayer.Self, SwayCountryPanel.GetCountry.Self))]"	
+					size = { 40 40 }
+					texture = "gfx/interface/icons/generic_icons/disapproval_icon.dds"	
+				}						
+			}		
+
+			textbox = {
+				position = { 70 0 }
+				using = fontsize_large
+				parentanchor = left|vcenter
+				text = "OFFER_OBLIGATION"
+				autoresize = yes
+				maximumsize = { 440 -1 }
+				multiline = yes
+				align = nobaseline
+			}				
+		}
+	}
+
+	type offer_wargoal_item = button {
+		onclick = "[Execute( SwayCountryPanel.AccessDiplomaticPlay.SwayWithWarGoal( GetPlayer.Self, WarGoal.Self ))]"
+		onclick = "[InformationPanelBar.ClosePanel]"		
+		enabled = "[IsValid( SwayCountryPanel.AccessDiplomaticPlay.SwayWithWarGoal( GetPlayer.Self, WarGoal.Self ))]"			
+		tooltip = "[SwayCountryPanel.GetDiplomaticPlay.GetCanSwayWithWarGoalString( GetPlayer.Self, WarGoal.Self )]"
+		using = default_button_action
+
+		container = {
+			resizeparent = yes
+			minimumsize = { 550 60 }
+
+			icon = {
+				position = { 10 0 }
+				size = { 50 50 }
+				texture = "[WarGoal.GetTexture]"
+				parentanchor = left|vcenter
+				widgetanchor = left|vcenter
+			}
+			
+			small_flag = {
+				position = { -15 0 }
+				datacontext = "[WarGoal.GetTarget]"
+				parentanchor = right|vcenter
+			}
+
+			flowcontainer = {
+				direction = horizontal
+				position = { -75 0 }
+				parentanchor = right|vcenter
+				spacing = 10
+			
+				textbox = {				
+					tooltip = "WARGOAL_MANEUVERS_COST_TOOLTIP"
+					using = fontsize_large
+					text = "WARGOAL_MANEUVERS_COST"
+					using = fontsize_large				
+					autoresize = yes
+					maximumsize = { 100 -1 }
+					multiline = yes
+					parentanchor = vcenter
+					align = nobaseline
+				}
+						
+				icon = {
+					tooltip = "[SwayCountryPanel.GetDiplomaticPlay.GetWouldAcceptSwayWithWarGoalString(GetPlayer.Self, WarGoal.Self)]"
+					visible = "[SwayCountryPanel.GetDiplomaticPlay.WouldAcceptSwayWithWarGoal(GetPlayer.Self, WarGoal.Self)]"	
+					size = { 40 40 }
+					texture = "gfx/interface/icons/generic_icons/approval_icon.dds"		
+				}					
+
+				icon = {
+					tooltip = "[SwayCountryPanel.GetDiplomaticPlay.GetWouldAcceptSwayWithWarGoalString(GetPlayer.Self, WarGoal.Self)]"
+					visible = "[Not(SwayCountryPanel.GetDiplomaticPlay.WouldAcceptSwayWithWarGoal(GetPlayer.Self, WarGoal.Self))]"	
+					size = { 40 40 }
+					texture = "gfx/interface/icons/generic_icons/disapproval_icon.dds"	
+				}							
+			}						
+
+			textbox = {
+				position = { 70 0 }
+				using = fontsize_large
+				parentanchor = vcenter
+				text = "OFFER_WARGOAL"
+				autoresize = yes
+				maximumsize = { 440 -1 }
+				multiline = yes
+				align = nobaseline
+			}
+		}
+	}
+	
+	type offer_wargoal_type_item = button {
+		onclick = "[SwayCountryPanel.SetOfferedWarGoalType(WarGoalType.Self)]"		
+		enabled = "[SwayCountryPanel.GetDiplomaticPlay.CanSwayWithWarGoal(GetPlayer.Self, SwayCountryPanel.GetCountry.Self)]"
+		tooltip = "[WarGoalType.GetDesc]"
+		using = default_button
+
+		container = {
+			datacontext = "[SwayCountryPanel.GetCountry]"
+			datacontext = "[SwayCountryPanel.GetDiplomaticPlay]"
+
+			resizeparent = yes
+			minimumsize = { 550 60 }
+			
+			icon = {
+				position = { 10 0 }
+				size = { 50 50 }
+				texture = "[WarGoalType.GetTexture]"
+				parentanchor = left|vcenter
+				widgetanchor = left|vcenter
+			}	
+
+			textbox = {
+				position = { 70 0 }
+				using = fontsize_large
+				parentanchor = left|vcenter
+				text = "OFFER_WARGOAL_TYPE"
+				autoresize = yes
+				maximumsize = { 440 -1 }
+				multiline = yes
+				align = nobaseline
+			}
+			
+			diplo_play_sway_approval = {
+				blockoverride "visible_approval_icon" {
+					visible = "[And(DiplomaticPlay.HasAtLeastOneDesiredSwayWargoalOfType( GetPlayer.Self, Country.Self, WarGoalType.Self ), DiplomaticPlay.IsTargetOrInitiator( GetPlayer ) )]"
+				}
+
+				parentanchor = right|vcenter
+				position = { -10 0 }
+				tooltip = "CAN_SWAY_COUNTRY_TOOLTIP"
+			}
+
+			diplo_play_sway_disapproval = {
+				blockoverride "visible_disapproval_icon" {
+					visible = "[Not(And(DiplomaticPlay.HasAtLeastOneDesiredSwayWargoalOfType( GetPlayer.Self, Country.Self, WarGoalType.Self ), DiplomaticPlay.IsTargetOrInitiator( GetPlayer ) ))]"
+				}
+
+				parentanchor = right|vcenter
+				position = { -10 0 }
+				tooltip = "CANNOT_SWAY_COUNTRY_TOOLTIP"
+			}
+		}
+	}
+}

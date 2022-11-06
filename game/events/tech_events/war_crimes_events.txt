@@ -1,0 +1,159 @@
+﻿namespace = war_crimes
+
+war_crimes.1 = {
+	type = country_event
+	placement = ROOT
+	
+	title = war_crimes.1.t
+	desc = war_crimes.1.d
+	flavor = war_crimes.1.f
+	
+	event_image = {
+		video = "gfx/event_pictures/middleeast_battlefield_trenches.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/battlefield_trenches"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+	
+	duration = 3
+
+	trigger = {
+		# triggered by war crimes JE
+	}
+	immediate = {
+		random_scope_war = {
+			limit = {
+				any_scope_front = {
+					any_scope_general = {
+						owner = ROOT
+						commander_pm_usage = {
+							target = ROOT
+							production_method = pm_chemical_weapons_specialists
+							value > 0.5
+						}
+					}
+				}
+			}
+			random_scope_front = {
+				limit = {
+					any_scope_general = {
+						owner = ROOT
+						commander_pm_usage = {
+							target = ROOT
+							production_method = pm_chemical_weapons_specialists
+							value > 0.5
+						}
+					}
+				}
+				random_scope_general = {
+					limit = {
+						owner = ROOT
+						commander_pm_usage = {
+							target = ROOT
+							production_method = pm_chemical_weapons_specialists
+							value > 0.5
+						}
+					}
+					save_scope_as = war_crimes_perpetrator
+				}
+				random_scope_state = {
+					limit = {
+						NOT = { owner = ROOT }
+					}
+					save_scope_as = war_crimes_state
+				}
+			}
+		}
+	}
+
+	option = { # we will win by any means necessary
+		name = war_crimes.1.a
+		default_option = yes
+		scope:war_crimes_perpetrator = {
+			add_trait = war_criminal
+		}
+		scope:war_crimes_state = {
+			add_modifier = { # mortality, welfare
+				name = mustard_gas
+				multiplier = 2
+			}
+		}
+	}
+	option = { # try the general for war crimes
+		name = war_crimes.1.b
+		scope:war_crimes_perpetrator = {
+			kill_character = yes
+		}
+		scope:war_crimes_state = { 
+			add_modifier = { # mortality, welfare
+				name = mustard_gas
+			}
+		}
+		add_modifier = { # reduced kill rate
+			name = laws_against_war_crimes
+			months = long_modifier_time
+		}
+	}
+}
+
+# Munitions Plants
+war_crimes.2 = {
+	type = country_event
+	placement = scope:munitions_state
+	
+	title = war_crimes.2.t
+	desc = war_crimes.2.d
+	flavor = war_crimes.2.f
+	
+	event_image = {
+		video = "gfx/event_pictures/unspecific_gears_pistons.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/gears_pistons"
+
+	icon = "gfx/interface/icons/event_icons/event_fire.dds"
+	
+	duration = 3
+	
+	trigger = {
+		# triggered by je_munitions_factories
+	}
+
+	immediate = {
+		random_scope_building = {
+			limit = {
+				is_building_type = building_munition_plants
+				cash_reserves_ratio > 0.25
+				weekly_profit > 0
+				occupancy >= 0.5
+				level >= 5
+			}
+			save_scope_as = munitions_building
+			state = {
+				save_scope_as = munitions_state
+			}
+		}
+		g:ammunition = {
+			save_scope_as = ammo_scope
+		}
+	}
+
+	option = {
+		name = war_crimes.2.a
+		default_option = yes
+		scope:munitions_state = {
+			add_modifier = { # munitions plants throughput
+				name = munitions_modifier
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = war_crimes.2.b
+		add_technology_progress = { progress = 2500 technology = rifling }
+	}
+}

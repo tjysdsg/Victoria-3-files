@@ -1,0 +1,411 @@
+template tooltip_properties
+{
+	alwaystransparent = no
+	using = clickthrough_blocker
+
+	# hidden button to close the tooltip
+	button = {
+		size = { 0 0 }
+		visible = "[PdxGuiWidget.IsTooltipLocked]"
+		onclick = "[CloseAllTooltips]"
+		shortcut = "close_window"
+	}
+		
+	background = {
+		spriteType = CorneredTiled
+		spriteborder = { 48 48 }
+		texture = "gfx/interface/tooltip/tooltip_bg.dds"
+		texture_density = 2
+		tintcolor = "[TooltipInfo.GetTintColor]"	
+		
+		modify_texture = {
+			texture = "gfx/interface/backgrounds/default_bg_shading.dds"
+			spriteType = Corneredstretched
+			spriteborder = { 0 0 }
+			blend_mode = overlay
+		}
+		modify_texture = {
+			texture = "gfx/interface/textures/velvet_texture.dds"
+			spriteType = Corneredtiled
+			texture_density = 2
+			spriteborder = { 0 0 }
+			blend_mode = overlay
+		}
+		modify_texture = {
+			texture = "gfx/interface/textures/cloth_texture.dds"
+			spriteType = Corneredtiled
+			texture_density = 2
+			spriteborder = { 0 0 }
+			blend_mode = overlay
+			alpha = 0.15
+		}
+	}
+	icon = {
+		texture = "gfx/interface/tooltip/tooltip_frame.dds"
+		spriteType = Corneredstretched
+		spriteborder = { 8 8 }
+		size = { 100% 100% }
+		texture_density = 2
+		tintcolor = "[TooltipInfo.GetTintColor]"
+	}
+}
+
+types TooltipTypes
+{
+	type DefaultTooltipTextBox = textbox {
+		align = left|nobaseline
+		autoresize = yes
+		using = tooltip_font
+	}
+	
+	type TooltipWidgetType = container {
+		using = tooltip_properties
+		
+		flowcontainer = {
+			direction = vertical
+			margin = { 15 12 }
+			
+			block "tooltip_content" {	
+				DefaultTooltipTextBox = {
+					name = "TooltipText"
+					margin_bottom = 0
+					autoresize = yes
+					multiline = yes
+					maximumsize = { 550 -1 }
+					fonttintcolor = "[TooltipInfo.GetTintColor]"
+				}
+				
+				DefaultTooltipTextBox = {
+					name = "TooltipTextDelayed"
+					autoresize = yes
+					margin_top = 0
+					margin_bottom = 0
+					multiline = yes
+					maximumsize = { 550 -1 }
+					fonttintcolor = "[TooltipInfo.GetTintColor]"
+				}
+
+				DefaultTooltipTextBox = {
+					margin_top = 10
+					text = "RIGHT_CLICK_TO_OPEN_CONTEXT_MENU"
+					visible = "[CanOpenRightClickContextMenu]"
+				}
+				
+				DefaultTooltipTextBox = {
+					name = "TooltipTextShortcut"
+					autoresize = yes
+					fonttintcolor = "[TooltipInfo.GetTintColor]"
+				}
+			}
+			
+			block "tooltip_content_after" {}
+		}
+		
+		margin_widget = {
+			size = { 100% 100% }
+			margin = { 5 5 }
+
+			icon = {
+				name = "tooltip_frame_locked"
+				texture = "gfx/interface/tooltip/tooltip_locked.dds"
+				spriteType = Corneredstretched
+				spriteborder = { 6 6 }
+				tintcolor = "[TooltipInfo.GetTintColor]"
+				size = { 100% 100% }
+				texture_density = 2
+
+				# Commented out due to looping sound effect (PRCAL-21403)
+				#state = {
+				#	name = _show
+				#	start_sound = {
+				#		soundeffect = "event:/SFX/UI/Global/tooltip_lock"
+				#	}
+				#}
+			}
+			
+			### timer lock icon
+			block "progress"
+			{
+				progresspie = {
+					name = "tooltip_progress"
+					visible = "[And(UsesTimerLocking, Not(PdxGuiWidget.IsTooltipLocked))]"
+					parentanchor = top|right
+					position = { 12 -12 }
+					size = { 24 24 }
+					min = 0
+					max = 1
+					tintcolor = "[TooltipInfo.GetTintColor]"
+					value = "[PdxGuiWidget.GetTooltipLockProgress]"
+					texture = "gfx/interface/tooltip/tooltip_lock_timer.dds"
+					framesize = { 48 48 }
+					frame = 2
+
+					state = {
+						name = _show
+						alpha = 1
+					}
+		
+					state = {
+						name = _hide
+						bezier = { 0.25 0.1 0.25 1 }
+						duration = 0.05
+						alpha = 0
+					}
+				}
+			}
+		}
+	}
+
+	type FancyTooltipWidgetType = container {
+		using = tooltip_properties
+
+		container = {
+			flowcontainer = {
+				direction = vertical
+				margin = { 18 15 }
+				margin_top = 65
+				
+				block "tooltip_content" {
+					DefaultTooltipTextBox = {
+						name = "TooltipText"
+						block "text"
+						{
+						}
+						margin_bottom = 0
+						autoresize = yes
+						multiline = yes
+						maximumsize = { 550 -1 }
+						fonttintcolor = "[TooltipInfo.GetTintColor]"
+					}
+					
+					DefaultTooltipTextBox = {
+						name = "TooltipTextDelayed"
+						autoresize = yes
+						margin_top = 0
+						margin_bottom = 0
+						multiline = yes
+						maximumsize = { 550 -1 }
+						fonttintcolor = "[TooltipInfo.GetTintColor]"
+					}
+
+					DefaultTooltipTextBox = {
+						block "instruction_text"
+						{
+						}
+						autoresize = yes
+						margin_top = 0
+						margin_bottom = 0
+						multiline = yes
+						maximumsize = { 550 -1 }
+						fonttintcolor = "[TooltipInfo.GetTintColor]"
+					}
+
+					DefaultTooltipTextBox = {
+						name = "TooltipTextShortcut"
+						autoresize = yes
+						fonttintcolor = "[TooltipInfo.GetTintColor]"
+					}
+
+					DefaultTooltipTextBox = {
+						margin_top = 10
+						text = "RIGHT_CLICK_TO_OPEN_CONTEXT_MENU"
+						visible = "[CanOpenRightClickContextMenu]"
+					}
+
+					block "tooltip_content_after" {}
+					
+					container = {
+						parentanchor = top|hcenter
+						widgetanchor = top|hcenter
+						visible = "[IsInGame]"
+						block "buttons" {}
+					}
+				}
+			}
+			
+			margin_widget = {
+				size = { 100% 100% }
+				margin = { 5 5 }
+
+				icon = {
+					name = "tooltip_frame_locked"
+					texture = "gfx/interface/tooltip/tooltip_locked.dds"
+					spriteType = Corneredstretched
+					spriteborder = { 6 6 }
+					tintcolor = "[TooltipInfo.GetTintColor]"
+					size = { 100% 100% }
+					texture_density = 2
+
+					# Commented out due to looping sound effect (PRCAL-21403)
+					#state = {
+					#	name = _show
+					#	start_sound = {
+					# 		soundeffect = "event:/SFX/UI/Global/tooltip_lock"
+					#	}
+					#}
+				}
+			}
+			
+			### HEADER BG
+			icon = {
+				texture = "gfx/interface/tooltip/tooltip_title_bg.dds"
+				position = { 4 4 }
+				block "color" {
+					color = { 0.6 0.4 0.6 1 }
+				}
+				alpha = 0.5
+				size = { 325 55 }
+				
+				modify_texture = {
+					texture = "gfx/interface/textures/velvet_texture.dds"
+					spriteType = Corneredtiled
+					texture_density = 2
+					spriteborder = { 0 0 }
+					blend_mode = overlay
+				}
+				modify_texture = {
+					texture = "gfx/interface/textures/cloth_texture.dds"
+					spriteType = Corneredtiled
+					texture_density = 2
+					spriteborder = { 0 0 }
+					blend_mode = overlay
+					alpha = 0.15
+				}
+			}
+				
+			### ICON	
+			icon = {
+				block "icon_background_texture" {
+					texture = "gfx/interface/tooltip/tooltip_icon_bg.dds"
+				}
+				position = { 3 3 }
+				size = { 57 57 }
+				block "color" {
+					color = { 0.5 0.5 0.5 1 }
+				}
+				
+				block "icon_frame" {
+					icon = {
+						texture = "gfx/interface/tooltip/tooltip_icon_frame.dds"
+						size = { 100% 100% }
+					}
+				}
+				
+				block "replace_icon" {
+					icon = {
+						block "icon_texture" {
+							texture = "gfx/interface/icons/generic_icons/generic_concept_icon.dds"
+						}
+						block "icon_size" {
+							size = { 45 45 }
+						}
+						parentanchor = center
+					}
+				}
+			}
+			
+			### HEADER TEXT
+			widget = {
+				size = { 100% 60 }
+				position = { 0 0 }
+				
+				hbox = {
+					margin_left = 64
+					margin_right = 10
+					spacing = 5
+					
+					layoutpolicy_horizontal = expanding
+					layoutpolicy_vertical = expanding
+					
+					textbox = {
+						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = expanding
+						multiline = yes
+
+						block "name" {
+							text = "Name"
+						}
+						align = left|nobaseline
+						elide = right
+						fontsize_min = 12
+						using = fontsize_large
+						default_format = "#tooltip_header"
+					}
+					
+					textbox = {
+						layoutpolicy_horizontal = growing
+						layoutpolicy_vertical = growing
+						autoresize = yes
+						
+						block "type" {
+							text = "Name"
+						}
+						align = right|nobaseline
+						alpha = 0.75
+						elide = right
+						using = fontsize_small
+						default_format = "#title"
+					}
+				}
+				icon = {
+					texture = "gfx/interface/dividers/divider_clean.dds"
+					texture_density = 2
+					spriteType = CorneredTiled
+					spriteborder = { 4 0 }
+					size =  { 100% 2 }
+					alpha = 0.3
+					parentanchor = hcenter|bottom
+					
+					modify_texture = {
+						texture = "gfx/interface/masks/fade_horizontal_center.dds"
+						spriteType = Corneredstretched
+						spriteborder = { 0 0 }
+						blend_mode = alphamultiply
+						alpha = 0.7
+					}
+				}
+			}
+		}
+		
+		### timer lock icon
+		block "progress"
+		{
+			progresspie = {
+				name = "tooltip_progress"
+				visible = "[And(UsesTimerLocking, Not(PdxGuiWidget.IsTooltipLocked))]"
+				parentanchor = top|right
+				position = { 8 -8 }
+				size = { 24 24 }
+				min = 0
+				max = 1
+				tintcolor = "[TooltipInfo.GetTintColor]"
+				value = "[PdxGuiWidget.GetTooltipLockProgress]"
+				texture = "gfx/interface/tooltip/tooltip_lock_timer.dds"
+				framesize = { 48 48 }
+				frame = 2
+
+				state = {
+					name = _show
+					alpha = 1
+				}
+	
+				state = {
+					name = _hide
+					bezier = { 0.25 0.1 0.25 1 }
+					duration = 0.05
+					alpha = 0
+				}
+			}
+		}
+	}
+}
+
+TooltipWidgetType = {
+	name = "DefaultTooltipWidget"
+}
+
+TooltipWidgetType = {
+	name = "MapTooltipWidget"
+	alwaystransparent = yes
+	blockoverride "progress" {}
+}

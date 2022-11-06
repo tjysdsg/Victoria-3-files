@@ -1,0 +1,130 @@
+﻿je_elevator = {
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		NOT = { has_variable = elevators_je_done }
+		has_technology_researched = steel_frame_buildings
+	}
+
+	possible = {
+		has_technology_researched = elevator
+		any_scope_building = {
+			is_building_type = building_steel_mills
+		}
+		any_scope_building = {
+			is_building_type = building_glassworks
+		}
+		any_scope_building = {
+			is_building_type = building_urban_center
+		}
+	}
+
+	complete = {
+		any_scope_building = {
+			filter = {
+				is_building_type = building_steel_mills
+			}
+			percent > 0.75
+			cash_reserves_ratio >= 0.25
+			not = {
+				has_active_production_method = pm_blister_steel_process
+				has_active_production_method = pm_automation_disabled
+			}
+			weekly_profit > 0
+			occupancy >= 0.75
+		}
+		any_scope_building = {
+			filter = {
+				is_building_type = building_glassworks
+			}
+			percent > 0.75
+			cash_reserves_ratio >= 0.25
+			not = {
+				has_active_production_method = pm_forest_glass
+				has_active_production_method = pm_leaded_glass
+				has_active_production_method = pm_manual_glassblowing
+			}
+			weekly_profit > 0
+			occupancy >= 0.75
+		}
+		any_scope_building = {
+			filter = {
+				is_building_type = building_urban_center
+			}
+			percent > 0.75
+			has_active_production_method = pm_arcades
+			cash_reserves_ratio >= 0.25
+			weekly_profit > 0
+			occupancy >= 0.75
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = society_tech_events.104 }
+		set_variable = {
+			name = elevators_je_done
+		}
+	}
+
+	timeout = 3650
+}
+
+je_mutual_funds = {
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		NOT = { has_variable = mutual_funds_je_done }
+		has_technology_researched = central_banking
+	}
+
+	possible = {
+		has_technology_researched = mutual_funds
+	}
+
+	complete = {
+		any_scope_building = {
+			filter = {
+				custom_tooltip = {
+				text = is_production_building_tt
+				is_production_building = yes
+				}
+			}
+			percent >= 0.75
+			hidden_trigger = {
+				OR = {
+				    has_active_production_method = pm_publicly_traded_building_textile_mills
+				    has_active_production_method = pm_publicly_traded_building_furniture_manufacturies
+				    has_active_production_method = pm_publicly_traded_building_glassworks
+				    has_active_production_method = pm_publicly_traded_building_tooling_workshops
+				    has_active_production_method = pm_publicly_traded_building_paper_mills
+				    has_active_production_method = pm_publicly_traded_building_shipyards
+				    has_active_production_method = pm_publicly_traded_building_arms_industry
+				    has_active_production_method = pm_publicly_traded
+				    has_active_production_method = pm_publicly_traded_building_logging_camp
+				    has_active_production_method = pm_publicly_traded_building_fishing_wharf
+				    has_active_production_method = pm_publicly_traded_building_whaling_station
+				    has_active_production_method = pm_publicly_traded_building_oil_rig
+				    has_active_production_method = pm_publicly_traded_building_coal_mine
+				    has_active_production_method = pm_publicly_traded_building_iron_mine
+				    has_active_production_method = pm_publicly_traded_building_lead_mine
+				    has_active_production_method = pm_publicly_traded_building_sulfur_mine
+	            }
+	        }
+	        custom_tooltip = has_activated_public_trading
+			cash_reserves_ratio >= 0.5
+			weekly_profit > 0
+			occupancy >= 0.75
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = society_tech_events.105 }
+		set_variable = {
+			name = mutual_funds_je_done
+		}
+	}
+
+	timeout = 3650
+}

@@ -1,0 +1,111 @@
+﻿namespace = wedding
+
+wedding.1 = {
+	type = country_event
+	placement = ROOT
+	
+	title = wedding.1.t
+	desc = wedding.1.d
+	flavor = wedding.1.f
+	
+	gui_window = event_window_1char_tabloid
+
+	left_icon = scope:royal_marriage_character
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/misc/1Character_Banner"
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+	
+	duration = 3
+	
+	trigger = {
+		has_law = law_type:law_monarchy
+		religion = {
+			has_discrimination_trait = christian
+		}
+		OR = {
+			ruler = {
+				NOT = { has_variable = is_married }
+				age >= 18
+			}
+			any_scope_character = {
+				is_heir = yes
+				NOT = { has_variable = is_married }
+				age >= 18
+			}
+		}
+		any_country = {
+			NOT = { THIS = ROOT }
+			relations:root >= relations_threshold:cordial
+			has_law = law_type:law_monarchy
+			religion = {
+				has_discrimination_trait = christian
+			}
+			ruler = {
+				age > 36
+			}
+		}
+	}
+
+	immediate = {
+		capital = {
+			save_scope_as = capital_scope
+		}
+		random_scope_character = {
+			limit = {
+				OR = {
+					is_heir = yes
+					is_ruler = yes
+				}
+				NOT = { has_variable = is_married }
+			}
+			save_scope_as = royal_marriage_character
+			set_variable = is_married
+		}
+		random_country = {
+			limit = {
+				NOT = { THIS = ROOT }
+				relations:root >= relations_threshold:cordial
+				has_law = law_type:law_monarchy
+				religion = {
+					has_discrimination_trait = christian
+				}
+				ruler = {
+					age > 36
+				}
+			}
+			save_scope_as = marriage_country
+			ruler = {
+				save_scope_as = foreign_ruler
+			}
+		}
+	}
+
+	option = { # private wedding for international nobility
+		name = wedding.1.a
+		default_option = yes
+		add_modifier = { # influence mult
+			name = royal_marriage
+			months = normal_modifier_time
+		}
+		change_relations = {
+			country = scope:marriage_country
+			value = 20
+		}
+	}
+
+	option = { # public wedding for the masses
+		name = wedding.1.b
+		scope:royal_marriage_character = {
+			add_modifier = { # popularity
+				name = marriage_popularity
+				months = long_modifier_time
+			}
+		}
+		change_relations = {
+			country = scope:marriage_country
+			value = 20
+		}
+	}
+}

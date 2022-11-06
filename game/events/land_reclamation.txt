@@ -1,0 +1,131 @@
+﻿namespace = land_reclamation
+
+land_reclamation.1 = {
+	type = country_event
+	placement = scope:land_reclamation_state
+	
+	title = land_reclamation.1.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = land_reclamation.1.d
+				trigger = {
+					OR = {
+						AND = {
+							NOT = { has_technology_researched = concrete_dockyards }
+							global_var:land_reclamation_global >= 9
+						}
+						AND = {
+							has_technology_researched = concrete_dockyards
+							global_var:land_reclamation_global >= 8
+						}
+					}
+				}
+			}
+			triggered_desc = {
+				desc = land_reclamation.1.d2
+				trigger = {
+					always = yes
+				}
+			}
+		}
+	}
+	flavor = land_reclamation.1.f
+	
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_russian_serfs.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/russian_serfs"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+	
+	duration = 3
+	
+	trigger = {
+		# triggered by JE
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				OR = {
+					state_region = s:STATE_HOLLAND
+					state_region = s:STATE_FRIESLAND
+				}
+			}
+			save_scope_as = land_reclamation_state
+		}
+	}
+
+	option = { 
+		name = land_reclamation.1.a
+		default_option = yes
+		trigger = {
+			NOT = { has_technology_researched = concrete_dockyards }
+		}
+		if = {
+			limit = {
+				global_var:land_reclamation_global >= 9
+			}
+			add_modifier = { # prestige
+				name = land_reclamation_complete
+				months = long_modifier_time
+			}
+		}
+		change_global_variable = {
+			name = land_reclamation_global
+			add = 1
+		}
+		scope:land_reclamation_state = {
+			state_region = {
+				add_arable_land = 2
+			}
+		}
+	}
+
+	option = {
+		name = land_reclamation.1.b
+		default_option = yes
+		highlighted_option = yes
+		trigger = {
+			has_technology_researched = concrete_dockyards
+		}
+		if = {
+			limit = {
+				global_var:land_reclamation_global >= 8
+			}
+			add_modifier = { # prestige
+				name = land_reclamation_complete
+				months = long_modifier_time
+			}
+		}
+		if = {
+			limit = {
+				global_var:land_reclamation_global <= 8
+			}
+			change_global_variable = {
+				name = land_reclamation_global
+				add = 2
+			}
+			scope:land_reclamation_state = {
+				state_region = {
+					add_arable_land = 4
+				}
+			}
+		}
+		else = {
+			change_global_variable = {
+				name = land_reclamation_global
+				add = 2
+			}
+			scope:land_reclamation_state = {
+				state_region = {
+					add_arable_land = 2
+				}
+			}
+		}
+		
+	}
+}

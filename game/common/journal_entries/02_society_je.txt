@@ -1,0 +1,44 @@
+﻿je_central_archives = {
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		NOT = { has_variable = central_archives_je_done }
+		has_technology_researched = law_enforcement
+		any_scope_building = {
+			is_building_type = building_government_administration
+			NOT = { has_active_production_method = pm_vertical_filing_cabinets }
+		}
+	}
+
+	possible = {
+		has_technology_researched = central_archives
+		any_scope_building = {
+			is_building_type = building_government_administration
+		}
+	}
+
+	complete = {
+		any_scope_building = {
+			is_building_type = building_government_administration
+			level >= 10
+			occupancy > 0.9
+			has_active_production_method = pm_vertical_filing_cabinets
+		}
+		any_scope_building = {
+			filter = {
+				is_building_type = building_government_administration
+			}
+			percent > 0.75
+			occupancy > 0.9
+			has_active_production_method = pm_vertical_filing_cabinets
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = dan_society_tech_events.1 }
+		set_variable = {
+			name = central_archives_je_done
+		}
+	}
+}

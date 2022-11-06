@@ -1,0 +1,289 @@
+﻿suez_survey_decision = {
+	is_shown = {
+		has_interest_marker_in_region = region_nile_basin
+		OR = {
+			country_rank = rank_value:great_power
+			s:STATE_SINAI = {
+				any_scope_state = {
+					owner = ROOT
+				}
+			}
+		}
+		NOT = { has_variable = survey_suez_taken }
+		NOT = { has_global_variable = suez_canal_complete }
+	}
+
+	possible = {
+		has_technology_researched = colonization
+		produced_bureaucracy > 1000
+	}
+	
+	when_taken = {
+		set_variable = {
+			name = survey_suez_taken
+			value = 0
+		}
+		add_modifier = {
+			name = modifier_surveying_suez
+			months = 30
+		}
+		add_journal_entry = {
+			type = je_suez_survey
+		}
+	}
+
+	ai_chance = {
+		base = 0
+		modifier = {
+			trigger = { produced_bureaucracy > 5000 }
+			add = 5
+		}
+		modifier = {
+			trigger = {
+				has_strategy = ai_strategy_armed_isolationism
+			}
+			add = -1000
+		}		
+		modifier = {
+			OR = {
+				is_diplomatic_play_committed_participant = yes
+				is_at_war = yes
+			}
+			add = -1000
+		}		
+	}
+}
+
+suez_canal_purchase = {
+	is_shown = {
+		has_variable = suez_canal_purchase
+		NOT = { has_global_variable = suez_canal_purchase_var }
+		NOT = { has_global_variable = suez_canal_complete }
+		NOT = {
+			any_scope_state = {
+				state_region = s:STATE_SINAI
+			}
+		}
+	}
+
+	possible = {
+		gdp > 50000000
+		s:STATE_SINAI = {
+			any_scope_state = {
+				owner = {
+					relations:root >= relations_threshold:cordial
+					NOT = { has_war_with = ROOT }
+				}
+			}
+		}
+	}
+
+	when_taken = {
+		set_global_variable = suez_canal_purchase_var
+		if = {
+			limit = {
+				s:STATE_SINAI = {
+					any_scope_state = {
+						owner = { is_player = no }
+					}
+				}
+			}
+			s:STATE_SINAI = {
+				set_owner_of_provinces = {
+					country = ROOT
+					provinces = { xC01060 }
+				}
+			}
+			add_modifier = {
+				name = suez_purchase
+				months = 120
+			}
+			hidden_effect = {
+				s:STATE_SINAI = {
+					random_scope_state = {
+						owner = {
+							add_modifier = {
+								name = suez_sale
+								months = 120
+							}
+						}
+					}
+				}
+			}
+		}
+		else = {
+			trigger_event = {
+				id = canal_events.1
+				days = 0
+				popup = yes
+			}
+		}
+	}
+
+	ai_chance = {
+		base = 0
+		modifier = {
+			trigger = { gold_reserves > 15000000 }
+			add = 10
+		}
+		modifier = {
+			trigger = { 
+				weekly_net_fixed_income > 100000
+				gold_reserves > 0
+			}
+			add = 10
+		}		
+		modifier = {
+			OR = {
+				is_diplomatic_play_committed_participant = yes
+				is_at_war = yes
+			}
+			add = -1000
+		}		
+	}
+}
+
+panama_survey_decision = {
+	is_shown = {
+		has_interest_marker_in_region = region_central_america
+		NOT = { has_variable = survey_panama_taken }
+		OR = {
+			country_rank = rank_value:great_power
+			s:STATE_PANAMA = {
+				any_scope_state = {
+					owner = ROOT
+				}
+			}
+		}
+	}
+
+	possible = {
+		has_technology_researched = civilizing_mission
+		produced_bureaucracy > 1000
+	}
+	
+	when_taken = {
+		set_variable = {
+			name = survey_panama_taken
+			value = 0
+		}
+		add_modifier = {
+			name = modifier_surveying_panama
+			days = 365
+		}
+		add_journal_entry = {
+			type = je_panama_survey
+		}
+	}
+
+	ai_chance = {
+		base = 0
+		modifier = {
+			trigger = { produced_bureaucracy > 5000 }
+			add = 5
+		}
+		modifier = {
+			trigger = {
+				has_strategy = ai_strategy_armed_isolationism
+			}
+			add = -1000
+		}		
+		modifier = {
+			OR = {
+				is_diplomatic_play_committed_participant = yes
+				is_at_war = yes
+			}
+			add = -1000
+		}		
+	}
+}
+
+panama_canal_purchase = {
+	is_shown = {
+		has_variable = panama_canal_purchase
+		NOT = { has_global_variable = panama_canal_purchase_var }
+		NOT = { has_global_variable = panama_canal_complete }
+		is_subject = no
+		NOT = {
+			any_scope_state = {
+				state_region = s:STATE_PANAMA
+			}
+		}
+	}
+
+	possible = {
+		gdp > 50000000
+		s:STATE_PANAMA = {
+			any_scope_state = {
+				owner = {
+					relations:root >= relations_threshold:cordial
+					NOT = { has_war_with = ROOT }
+				}
+			}
+		}
+	}
+
+	when_taken = {
+		set_global_variable = panama_canal_purchase_var
+		if = {
+			limit = {
+				s:STATE_PANAMA = {
+					any_scope_state = {
+						owner = { is_player = no }
+					}
+				}
+			}
+			s:STATE_PANAMA = {
+				set_owner_of_provinces = {
+					country = ROOT
+					provinces = {xD0EF40}
+				}
+			}
+			add_modifier = {
+				name = panama_purchase
+				months = 120
+			}
+			hidden_effect = {
+				s:STATE_PANAMA = {
+					random_scope_state = {
+						owner = {
+							add_modifier = {
+								name = panama_sale
+								months = 120
+							}
+						}
+					}
+				}
+			}
+		}
+		else = {
+			trigger_event = {
+				id = canal_events.5
+				days = 0
+				popup = yes
+			}
+		}
+	}
+
+	ai_chance = {
+		base = 0
+		modifier = {
+			trigger = { gold_reserves > 15000000 }
+			add = 10
+		}
+		modifier = {
+			trigger = { 
+				weekly_net_fixed_income > 100000
+				gold_reserves > 0
+			}
+			add = 10
+		}
+		modifier = {
+			OR = {
+				is_diplomatic_play_committed_participant = yes
+				is_at_war = yes
+			}
+			add = -1000
+		}		
+	}
+}

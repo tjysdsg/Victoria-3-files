@@ -1,0 +1,101 @@
+types loadingscreen_types {
+	type loading_tip = container {
+		datacontext = "[GetLoadingScreenManager]"
+
+		widget = {
+			size = { 500 65 }
+		}
+
+		text_multi = {
+			name = "load_tip_text"
+			visible = "[LoadingScreenManager.HasStaticTip]"
+			margin = { 20 15 }
+			autoresize = yes
+			default_format = "#medium"
+			min_width = 500
+			max_width = 500
+
+			text = "[LoadingScreenManager.GetStaticTip]"
+
+			text_occluder = {
+				parentanchor = bottom|right
+				size = { 75 65 }
+			}
+		}
+
+		flowcontainer = {
+			name = "load_tip_concept"
+			visible = "[LoadingScreenManager.HasConceptTip]"
+			direction = vertical
+			margin = { 20 15 }
+		
+			flowcontainer = {
+				direction = horizontal
+				spacing = 10
+		
+				icon = {
+					texture = "[LoadingScreenManager.GetConceptTip.GetTexture]"
+					size = { 60 60 }
+				}
+		
+				textbox = {
+					parentanchor = vcenter
+					align = left|nobaseline
+					elide = right
+					using = fontsize_large
+					default_format = "#tooltip_header"
+					autoresize = yes
+		
+					text = "[LoadingScreenManager.GetConceptTip.GetTitle]"
+				}
+			}
+		
+			divider_decorative = {
+				size = { 460 10 }
+			}
+		
+			widget = {
+				size = { 0 10 }
+			}
+		
+			text_multi = {
+				autoresize = yes
+				default_format = "#medium"
+				min_width = 460
+				max_width = 460
+		
+				text = "[LoadingScreenManager.GetConceptTip.GetDescNoFormatting]"
+
+				text_occluder = {
+					parentanchor = bottom|right
+					size = { 55 50 }
+				}
+			}
+		}
+
+		button_icon_next = {
+			parentanchor = bottom|right
+			size = { 45 45 }
+			position = { -15 -10 }
+			onclick = "[LoadingScreenManager.RollLoadingTip]"
+			tooltip = "ROLL_LOADING_TIP"
+			using = select_button_sound
+		}
+		
+		background = {
+			using = paper_bg
+		}
+	}
+}
+
+widget = {
+	name = "load_screen"
+	size = { 100% 100% }
+
+	widget_loading_screen = {
+		loading_tip = {
+			parentanchor = bottom|left
+			position = { 15 -15 }
+		}
+	}
+}

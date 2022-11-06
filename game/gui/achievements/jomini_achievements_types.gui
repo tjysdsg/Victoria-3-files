@@ -1,0 +1,167 @@
+### this is an imported file. please make as little changes to this file as possible.
+### when you make a change please mark it very clearly using a pair of comment lines with the text '### v3' and '### to here'
+### texture paths and audio event ids are an exception to this and can be changed without marking
+
+types Achievements
+{
+	type vbox_achievement_group = vbox {
+		margin = { 10 0 }
+		margin_top = 10
+
+		button_normal = {
+			layoutpolicy_horizontal = expanding
+			size = { 0 25 }
+			onclick = "[Group.ToggleCollapsed]"
+
+			hbox = {
+				layoutpolicy_horizontal = expanding
+				margin = { 10 0 }
+				spacing = 10
+
+				background = {
+					using = Background_Area
+					margin = { 0 5 }
+				}
+
+				button_expand = {
+					onclick = "[Group.ToggleCollapsed]"
+					using = increase_button_sound
+					down = "[Not(Group.IsCollapsed)]"
+				}
+
+				text_single = {
+					layoutpolicy_horizontal = expanding
+					text = "ACHIEVEMENT_GROUP_TITLE"
+					default_format = "#low"
+					align = nobaseline
+					tooltip = "ACHIEVEMENT_GROUP_TOOLTIP"
+					alwaystransparent = yes
+				}
+
+				expand = {}
+			}
+		}
+
+		spacer = {
+			size = { 5 5 }
+		}
+
+		vbox = {
+			datamodel = "[Group.AccessVisibleAchievements]"
+			visible = "[Not(Group.IsCollapsed)]"
+			layoutpolicy_horizontal = expanding
+
+			item = {
+				widget_achievement_list_entry = {
+					layoutpolicy_horizontal = expanding
+				}
+			}
+		}
+	}
+
+	type widget_achievement_list_entry = widget {
+		minimumsize = { 0 80 }
+
+		hbox = {
+			set_parent_size_to_minimum = yes
+			layoutpolicy_horizontal = expanding
+			spacing = 10
+			margin = { 0 5 }
+
+			vbox = {
+				layoutpolicy_vertical = expanding
+
+				### IMAGE ####
+				widget = {
+					layoutpolicy_vertical = expanding
+					size = { 70 70 }
+
+					icon = {
+						visible = "[GUIAchievement.GetAchievement.IsUnlocked]"
+						texture = "[GUIAchievement.AccessTexture]"
+						size = { 64 64 }
+						alpha = "[Select_float(GUIAchievement.GetAchievement.IsUnlocked,'(float)1.0','(float)0.5')]"
+						tooltip = "ACHIEVEMENT_UNLOCKED"
+
+						block "achievement_icon" {}
+					}
+
+					#### LOCKED
+					highlight_icon = {
+						visible = "[Not(GUIAchievement.GetAchievement.IsUnlocked)]"
+						texture = "[GUIAchievement.AccessTexture]"
+						size = { 64 64 }
+						alpha = "[Select_float(GUIAchievement.GetAchievement.IsUnlocked,'(float)1.0','(float)0.5')]"
+						tooltip = "ACHIEVEMENT_LOCKED"
+
+						effectname = "GreyedOut"
+
+						highlight_icon = {
+							size = { 96% 97% }
+							parentanchor = center
+							texture = "gfx/frontend/interface/component_masks/mask_frame_horizontal.dds"
+							tintcolor = { 0 0 0 0.6 }
+						}
+					}
+
+					##### IS NOT POSSIBLE
+					highlight_icon = {
+						visible = "[Not(GUIAchievement.IsPossible)]"
+						texture = "[GUIAchievement.AccessTexture]"
+						size = { 64 64 }
+						alpha = "[Select_float(GUIAchievement.GetAchievement.IsUnlocked,'(float)1.0','(float)0.5')]"
+						tooltip = "ACHIEVEMENT_NOT_POSSIBLE"
+
+						effectname = "GreyedOut"
+					}
+
+					expand = {}
+				}
+
+				expand = {}
+			}
+
+			##TEXT###
+			vbox = {
+				layoutpolicy_horizontal = expanding
+
+				text_single = {
+					layoutpolicy_horizontal = expanding
+					text = "[GUIAchievement.GetName]"
+					alpha = "[Select_float(GUIAchievement.GetAchievement.IsUnlocked,'(float)1.0','(float)0.5')]"
+					tooltip = "[GUIAchievement.GetHappenedDescription]"
+					default_format = "#high"
+					max_width = 470
+					using = Font_Size_Medium
+					align = nobaseline
+
+					block "achievement_name" {}
+				}
+
+				hbox = {
+					layoutpolicy_horizontal = expanding
+
+					text_multi = {
+						text = "[GUIAchievement.GetDescription]"
+						align = nobaseline
+						autoresize = yes
+						max_width = 470
+						alpha = "[Select_float(GUIAchievement.GetAchievement.IsUnlocked,'(float)1.0','(float)0.5')]"
+						tooltip = "[GUIAchievement.GetHappenedDescription]"
+
+						block "achievement_description" {}
+					}
+
+					expand = {}
+				}
+			}
+		}
+
+		divider_light = {
+			parentanchor = bottom|hcenter
+			size = { 100% 3 }
+			position = { 0 -2 }
+			alpha = 0.5
+		}
+	}
+}

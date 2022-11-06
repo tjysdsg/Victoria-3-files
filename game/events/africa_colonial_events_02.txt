@@ -1,0 +1,340 @@
+﻿namespace = africa_colonial_events
+
+africa_colonial_events.40 = {
+	type = country_event
+	placement = ROOT
+
+	title = africa_colonial_events.40.t
+	desc = africa_colonial_events.40.d
+	flavor = africa_colonial_events.40.f
+
+	event_image = {
+		video = "gfx/event_pictures/africa_construction_colony.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/africa/construction_colony"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	duration = 3
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		NOT = { has_modifier = government_admits_failure }
+		any_scope_state = {
+			is_incorporated = no
+			state_in_africa = yes
+			any_neighbouring_state = {
+				owner = {
+					is_country_type = decentralized
+					NOT = { has_war_with = ROOT }
+				}
+			}
+		}
+	}
+
+	immediate = {
+		random_country = {
+			limit = {
+				is_country_type = decentralized
+				NOT = { has_war_with = ROOT }
+				any_scope_state = { state_in_africa = yes }
+				any_neighbouring_state = { 
+					owner = ROOT
+				}
+			}
+			save_scope_as = jingoist_officer_victim
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.40.a
+		default_option = yes
+
+		create_diplomatic_play = {
+			target_country = scope:jingoist_officer_victim
+			war = yes
+			type = dp_native_uprising
+
+			add_war_goal = {
+				holder = ROOT
+				type = annex_native
+				target_country = scope:jingoist_officer_victim
+			}
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.40.b
+
+		add_modifier = {
+			name = government_admits_failure
+			months = normal_modifier_time
+		}
+		ig:ig_armed_forces = {
+			add_modifier = {
+				name = government_insults_military_honor
+				months = normal_modifier_time
+			}
+		}
+		every_interest_group = {
+			limit = {
+				NOT = { is_interest_group_type = ig_armed_forces }
+				OR = {
+					has_ideology = ideology_jingoist
+					leader = {
+						has_ideology = ideology_jingoist_leader
+					}
+				}
+			}
+			add_modifier = {
+				name = government_insults_military_honor
+				months = short_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.40.c
+
+		trigger = {
+			ruler = { has_ideology = ideology_jingoist_leader }
+		}
+		create_character = {
+			is_general = yes
+			interest_group = ig_armed_forces
+			ig_leader = no
+			noble = no
+			traits = {
+				reckless
+			}
+		}
+		create_diplomatic_play = {
+			target_country = scope:jingoist_officer_victim
+			war = yes
+			type = dp_native_uprising
+
+			add_war_goal = {
+				holder = ROOT
+				type = annex_native
+				target_country = scope:jingoist_officer_victim
+			}
+		}
+		if = {
+			limit = {
+				ig:ig_armed_forces = {
+					is_in_government = yes
+				}
+			}
+			add_loyalists = { # Junior officers feel like they are being rewarded
+				pop_type = officers
+				value = 0.5
+			}
+		}
+		every_interest_group = {
+			limit = {
+				OR = {
+					has_ideology = ideology_jingoist
+					leader = {
+						has_ideology = ideology_jingoist_leader
+					}
+				}
+			}
+			add_modifier = {
+				name = government_respects_the_military
+				months = short_modifier_time
+			}
+		}
+	}
+}
+
+# The Rogue Imperialist
+africa_colonial_events.41 = {
+	type = country_event
+	placement = scope:rogue_imperialist_state
+
+	title = africa_colonial_events.41.t
+	desc = africa_colonial_events.41.d
+	flavor = africa_colonial_events.41.f
+
+	event_image = {
+		video = "gfx/event_pictures/africa_construction_colony.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/africa/construction_colony"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	duration = 3
+
+	trigger = {
+		any_scope_state = {
+			is_incorporated = no
+			state_in_africa = yes
+			any_neighbouring_state = {
+				owner = {
+					any_scope_state = {
+						is_capital = yes
+						state_in_africa = no
+					}
+				}
+			}
+			any_neighbouring_state = {
+				owner = {
+					is_country_type = decentralized
+				}
+			}
+		}
+		any_interest_group = {
+			leader = {
+				NOT = { has_ideology = ideology_pacifist } # unlikely this will never not be the case but best to be sure
+			}
+		}
+		NOT = {
+			any_interest_group = {
+				has_modifier = government_snubs_patriotic_adventurer # can't trigger event if people are already angry about this
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				is_incorporated = no
+				state_in_africa = yes
+				any_neighbouring_state = {
+					owner = {
+						any_scope_state = {
+							is_capital = yes
+							state_in_africa = no
+						}
+					}
+				}
+				any_neighbouring_state = {
+					owner = {
+						is_country_type = decentralized
+					}
+				}
+			}
+			random_neighbouring_state = {
+				limit = {
+					owner = {
+						any_scope_state = {
+							is_capital = yes
+							state_in_africa = no
+						}
+					}
+				}
+				save_scope_as = rogue_imperialist_state
+				owner = { save_scope_as = rogue_imperialist_target }
+			}
+		}
+		random_interest_group = {
+			limit = {
+				leader = {
+					NOT = { has_ideology = ideology_pacifist }
+				}
+			}
+			save_scope_as = rogue_imperialist_ig
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.41.a
+		default_option = yes
+
+		scope:rogue_imperialist_state = {
+			state_region = {
+				add_claim = ROOT
+			}
+		}
+
+		every_interest_group = {
+			limit = {
+				OR = {
+					scope:rogue_imperialist_ig = THIS
+					has_ideology = ideology_jingoist
+					leader = {
+						has_ideology = ideology_jingoist_leader
+					}
+				}
+			}
+			add_modifier = {
+				name = government_embraces_imperialism
+				months = short_modifier_time
+			}
+		}
+
+		scope:rogue_imperialist_target = {
+			create_incident = {
+				country = root
+				value = 10
+			}
+		}
+	}
+
+
+	option = {
+		name = africa_colonial_events.41.b
+
+		every_interest_group = {
+			limit = {
+				OR = {
+					scope:rogue_imperialist_ig = THIS
+					has_ideology = ideology_jingoist
+					leader = {
+						has_ideology = ideology_jingoist_leader
+					}
+				}
+			}
+			add_modifier = {
+				name = government_snubs_patriotic_adventurer
+				months = short_modifier_time
+			}
+		}
+
+		scope:rogue_imperialist_target = { # other power still noticed this schmuck just running around and causing trouble
+			create_incident = {
+				country = root
+				value = 1
+			}
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.41.c
+
+		trigger = {
+			ruler = { has_ideology = ideology_jingoist_leader }
+		}
+
+		scope:rogue_imperialist_state = {
+			state_region = {
+				add_claim = ROOT
+			}
+		}
+
+		create_character = {
+			ig_leader = yes
+			interest_group = scope:rogue_imperialist_ig
+			ideology = ideology_jingoist_leader
+		}
+
+		scope:rogue_imperialist_ig = {
+			add_modifier = {
+				name = government_promotes_adventurer
+				months = short_modifier_time				
+			}
+		}
+
+		scope:rogue_imperialist_target = {
+			create_incident = {
+				country = root
+				value = 10
+			}
+		}
+	}
+}

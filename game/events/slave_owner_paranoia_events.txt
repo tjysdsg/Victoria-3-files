@@ -1,0 +1,281 @@
+﻿namespace = slave_owner_paranoia_events
+
+# A Small Conspiracy
+slave_owner_paranoia_events.1 = {
+	type = country_event
+	placement = scope:small_conspiracy_state
+	title = slave_owner_paranoia_events.1.t
+	desc = slave_owner_paranoia_events.1.d
+	flavor = slave_owner_paranoia_events.1.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/southamerica_slaves_night.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/southamerica/slaves_night"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+	
+	trigger = {
+		any_scope_state = {
+			radical_fraction = {
+				value >= 0.1
+				pop_type = slaves
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				radical_fraction = {
+					value >= 0.1
+					pop_type = slaves
+				}
+			}
+			save_scope_as = small_conspiracy_state
+		}
+	}
+
+	option = {
+		name = slave_owner_paranoia_events.1.a
+		scope:small_conspiracy_state = {
+			add_modifier = {
+				name = rebellion_conspiracy_reprisals
+				months = normal_modifier_time
+			}
+			add_radicals = {
+				value = very_large_radicals
+				pop_type = slaves
+			}
+		}
+	}
+
+	option = {
+		name = slave_owner_paranoia_events.1.b
+		default_option = yes
+
+		every_interest_group = {
+			limit = {
+				law_stance = {
+					law = law_type:law_slavery_banned
+					value >= approve
+				}
+			}
+			add_modifier = {
+				name = refused_slave_reprisals
+				months = normal_modifier_time
+			}
+		}
+
+		every_interest_group = {
+			limit = {
+				law_stance = {
+					law = law_type:law_slavery_banned
+					value <= disapprove
+				}
+			}
+			add_modifier = {
+				name = refused_slave_reprisals
+				months = normal_modifier_time
+				multiplier = -1
+			}
+		}
+	}
+}
+
+# Hidden Communities
+slave_owner_paranoia_events.2 = {
+	type = country_event
+	placement = scope:hidden_communities_state
+	title = slave_owner_paranoia_events.2.t
+	desc = slave_owner_paranoia_events.2.d
+	flavor = slave_owner_paranoia_events.2.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/southamerica_slave_chains.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/slaves_breaking_their_chains"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+	
+	trigger = {
+		any_scope_state = {
+			radical_fraction = {
+				value >= 0.1
+				pop_type = slaves
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				radical_fraction = {
+					value >= 0.1
+					pop_type = slaves
+				}
+			}
+			save_scope_as = hidden_communities_state
+		}
+	}
+
+	option = {
+		name = slave_owner_paranoia_events.2.a
+		scope:hidden_communities_state = {
+			add_modifier = {
+				name = attacking_hidden_communities
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = slave_owner_paranoia_events.2.b
+		default_option = yes
+
+		every_interest_group = {
+			limit = {
+				law_stance = {
+					law = law_type:law_slavery_banned
+					value >= approve
+				}
+			}
+			add_modifier = {
+				name = refused_attacking_hidden_communities
+				months = normal_modifier_time
+			}
+		}
+
+		every_interest_group = {
+			limit = {
+				law_stance = {
+					law = law_type:law_slavery_banned
+					value <= disapprove
+				}
+			}
+			add_modifier = {
+				name = refused_attacking_hidden_communities
+				months = normal_modifier_time
+				multiplier = -1
+			}
+		}
+	}
+}
+
+# Visiting Abolitionist
+slave_owner_paranoia_events.3 = {
+	type = country_event
+	placement = scope:visiting_abolitionist_state
+	title = slave_owner_paranoia_events.3.t
+	desc = slave_owner_paranoia_events.3.d
+	flavor = slave_owner_paranoia_events.3.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/southamerica_slaves_night.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/southamerica/slaves_night"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+	
+	trigger = {
+		any_scope_state = {
+			radical_fraction = {
+				value >= 0.1
+				pop_type = slaves
+			}
+		}
+		any_interest_group = {
+			leader = { has_ideology = ideology_abolitionist }
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				radical_fraction = {
+					value >= 0.1
+					pop_type = slaves
+				}
+			}
+			save_scope_as = visiting_abolitionist_state
+			random_scope_pop = {
+				limit = {
+					is_pop_type = slaves
+				}
+				save_scope_as = visiting_abolitionist_slaves
+			}
+		}
+		random_interest_group = {
+			limit = {
+				leader = { has_ideology = ideology_abolitionist }
+			}
+			save_scope_as = visiting_abolitionist_ig
+		}
+	}
+
+	option = {
+		name = slave_owner_paranoia_events.3.a
+		every_interest_group = {
+			limit = {
+				law_stance = {
+					law = law_type:law_slavery_banned
+					value <= disapprove
+				}
+			}
+			add_modifier = {
+				name = abolitionist_expelled
+				months = normal_modifier_time
+			}
+		}
+		scope:visiting_abolitionist_ig = {
+			add_modifier = {
+				name = abolitionist_expelled
+				months = normal_modifier_time
+				multiplier = -1
+			}
+		}
+	}
+
+	option = {
+		name = slave_owner_paranoia_events.3.b
+		default_option = yes
+
+		scope:visiting_abolitionist_state = {
+			add_radicals = {
+				value = very_large_radicals
+				pop_type = slaves
+			}
+		}
+		scope:visiting_abolitionist_ig = {
+			add_modifier = {
+				name = abolitionist_influence
+				months = normal_modifier_time
+			}
+		}
+		every_interest_group = {
+			limit = {
+				law_stance = {
+					law = law_type:law_slavery_banned
+					value <= disapprove
+				}
+			}
+			add_modifier = {
+				name = abolitionist_influence
+				months = normal_modifier_time
+				multiplier = -1
+			}
+		}
+	}
+}

@@ -1,0 +1,218 @@
+### this is an imported file. please make as little changes to this file as possible.
+### when you make a change please mark it very clearly using a pair of comment lines with the text '### v3' and '### to here'
+### texture paths and audio event ids are an exception to this and can be changed without marking
+
+margin_widget = {
+    name = "JominiCreditsWindow"
+    parentanchor = vcenter|hcenter
+    size = { 100% 100% }
+    allow_outside = yes
+    alwaystransparent = yes
+    margin = { 180 0 }
+
+    state = {
+        name = _show
+        on_start = "[CreditsWindow.OnSlower]"
+        next = "auto_scrollbar"
+    }
+
+    state = {
+        name = "auto_scrollbar"
+        delay = 1
+        on_finish = "[CreditsWindow.OnTogglePause]"
+    }
+
+    scrollarea = {
+        name = "credits_scroll_area"
+        parentanchor = center
+        size = { 100% 100% }
+
+        scrollbarpolicy_horizontal = always_off
+
+        scrollbar_vertical = {
+            scrollbar = {
+                name = "vertical_scrollbar"
+                wheelstep = 60
+                direction = vertical
+
+                track = {
+                    button = {}
+                }
+
+                slider = {
+                    button = {}
+                }
+
+                dec_button = {
+                    button = {}
+                }
+
+                inc_button = {
+                    button = {}
+                }
+            }
+        }
+
+        scrollwidget = {
+            container = {
+                parentanchor = top|hcenter
+
+                state = {
+                    name = a
+                    next = b
+                    trigger_on_create = yes
+
+                    alpha = 0
+                }
+
+                state = {
+                    name = b
+
+                    delay = 1.5
+                    duration = 2
+                    alpha = 1
+                }
+
+                textbox = {
+                    parentanchor = top|hcenter
+                    position = { -0 100 }
+                    #font = StandardGameFont
+                    default_format = "#credits_entries"
+                    align = center
+                    autoresize = yes
+                    multiline = yes
+                    text = "[CreditsWindow.GetCredits]"
+                }
+
+				### v3 outcomment
+                # gridbox_credits_portraits = {
+                #     position = { 100 400 }
+                #     datamodel = "[GetCreditPortraitsForGroup( 'left' )]"
+				# 
+                #     state = {
+                #         name = a
+                #         next = b
+                #         trigger_on_create = yes
+				# 
+                #         alpha = 0
+                #     }
+				# 
+                #     state = {
+                #         name = b
+				# 
+                #         delay = 4
+                #         duration = 2
+                #         alpha = 1
+                #     }
+                # }
+				# 
+                # gridbox_credits_portraits = {
+                #     position = { 850 700 }
+                #     datamodel = "[GetCreditPortraitsForGroup( 'right' )]"
+				# 
+                #     state = {
+                #         name = a
+                #         next = b
+                #         trigger_on_create = yes
+				# 
+                #         alpha = 0
+                #     }
+				# 
+                #     state = {
+                #         name = b
+				# 
+                #         delay = 4
+                #         duration = 2
+                #         alpha = 1
+                #     }
+                # }
+				### to here
+            }
+        }
+    }
+
+	### v3 action button
+	button = {
+		using = default_button_action
+        visible = "[Not( CreditsWindow.HasReachedEnd )]"
+        name = "toggle_pause_button"
+        parentanchor = bottom|left
+		### v3 size / position change
+		position = { 0 -20 }
+		size = { 180 35 }
+        text = "[SelectLocalization(CreditsWindow.IsPaused,'CREDITS_CONTINUE','CREDITS_PAUSE')]"
+
+        onclick = "[CreditsWindow.OnTogglePause]"
+    }
+}
+
+types FrontEndCreditsView
+{
+    # This widget is the background, it's added by code magic
+    type JominiFrontEndCreditsView = widget {
+        name = "JominiFrontEndCreditsView"
+        parentanchor = center
+        size = { 1920 1200 }
+
+        state = {
+            name = _show
+            using = Animation_FadeIn_Quick
+        }
+
+        state = {
+            name = _hide
+            using = Animation_FadeOut_Quick
+        }
+
+		background = {
+			### v3 skin
+			texture = "gfx/frontend/interface/illustrations/frontend/frontend_bg.dds"
+			fittype = centercrop
+		}
+
+        button_primary = {
+            name = "back_button"
+            parentanchor = bottom|left
+            position = { 20 -20 }
+			### v3 size change
+			size = { 150 35 }
+            #size = { 120 25 }
+            text = "CREDITS_BACK"
+            shortcut = "close_window"
+            onclick = "[FrontEndCreditsView.OnBack]"
+            blockoverride "sound" {
+                using = back_button_sound 
+            }
+        }
+    }
+
+	### v3 outcomment
+    # type gridbox_credits_portraits = fixedgridbox {
+    #     addcolumn = 500
+    #     addrow = 500
+	# 
+    #     item = {
+    #         widget = {
+    #             size = { 450 450 }
+	# 
+    #             icon = {
+    #                 size = { 100% 95% }
+    #                 texture = "[CreditPortraitData.GetBookmarkPortrait.GetPortrait( 'environment_body', 'camera_body', PdxGetWidgetScreenSize(PdxGuiWidget.Self ) )]"
+	# 
+    #                 modify_texture = {
+    #                     texture = "gfx/interface/portraits/portrait_mask_event_letter.dds"
+    #                     blend_mode = alphamultiply
+    #                 }
+    #             }
+	# 
+    #             text_label_center = {
+    #                 parentanchor = bottom|hcenter
+    #                 position = { 0 -50 }
+    #                 text = "[CreditPortraitData.GetText]"
+    #                 default_format = "#credits_subheader"
+    #             }
+    #         }
+    #     }
+    # }
+	### to  here
+}

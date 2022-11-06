@@ -1,0 +1,303 @@
+types politics_panel_types
+{
+	type law_enactment_progress = widget {
+		size = { 100 100 }
+		tooltip = "[GetPlayer.GetLawEnactmentProgressDesc]"
+		
+		icon = {
+			size = { 100% 100% }
+			texture = "gfx/interface/backgrounds/round_frame_dec.dds"
+		}
+		round_progress_default = {
+			size = { 80% 80% }
+			parentanchor = center
+			datacontext = "[GetPlayer.GetLawBeingEnacted]"
+			value = "[FixedPointToFloat(GetPlayer.GetLawEnactmentProgress)]"
+		}
+		law_icon = {
+			size = { 60% 60% }
+			parentanchor = center
+		}
+	}
+	type law_icon = widget {
+		size = { 90 90 }
+		
+		icon = {
+			size = { 90% 90% }
+			parentanchor = center
+			texture = "[Law.GetTexture]"
+		}
+
+		icon = {
+			visible = "[Law.HasInstitution]"
+			parentanchor = bottom
+			size = { 45% 45% }
+			texture = "[Law.GetInstitutionType.GetIcon]"
+			tooltip = "[Law.GetInstitutionTooltip]"
+		}
+	}
+	
+	type politics_panel_laws_content = vbox {
+		margin = { 10 10 }
+		spacing = 15
+
+		### CURRENT REFORM
+		widget = {
+			layoutpolicy_horizontal = expanding
+			datacontext = "[GetPlayer.GetLawBeingEnacted]"
+			visible = "[Law.IsBeingEnacted]"
+			size = { 0 230 }
+			
+			state = {
+				name = _show
+				next = show2
+				duration = 0
+				alpha = 0
+				size = { 0 0 }
+			}
+			state = {
+				name = show2
+				duration = 0.5
+				using = Animation_Curve_Default
+				alpha = 1
+				size = { 0 230 }
+			}
+			
+			vbox = {
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = preferred
+
+				using = entry_bg_fancy
+				
+				widget = {
+					layoutpolicy_horizontal = expanding
+					tooltip = "ACTIVE_LAWS_DESC"
+					size = { 0 65 }
+					
+					background = {
+						using = default_header_bg
+						using = frame_small_mask_top
+					}
+					
+					vbox = {
+						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = preferred
+						margin = { 30 0 }
+						
+						widget = {
+							layoutpolicy_horizontal = expanding
+							layoutpolicy_vertical = expanding
+						}
+						textbox = {
+							layoutpolicy_horizontal = expanding
+							size = { 0 18 }
+							text = "SWITCHING_TO"
+							align = center|nobaseline
+							elide = right
+							default_format = "#title"
+						}
+						textbox = {
+							layoutpolicy_horizontal = expanding
+							size = { 0 25 }
+							text = "LAW_FROM_TO"
+							align = center|nobaseline
+							elide = right
+							using = fontsize_xl
+						}
+						widget = {
+							layoutpolicy_horizontal = expanding
+							layoutpolicy_vertical = expanding
+						}
+					}
+				}
+				
+				hbox = {
+					layoutpolicy_horizontal = expanding
+					layoutpolicy_vertical = preferred
+					margin = { 30 0 }
+					margin_top = 10
+					margin_bottom = 15
+					spacing = 30
+
+					law_enactment_progress = {
+						size = { 140 140 }
+					}
+
+					hbox = {
+						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = preferred
+						margin = { 30 10 }
+						
+						background = {
+							using = entry_bg_simple
+						}
+						
+						### INFO
+						vbox = {
+							layoutpolicy_horizontal = expanding
+							layoutpolicy_vertical = preferred
+							spacing = 5
+							
+							textbox = {
+								layoutpolicy_horizontal = expanding
+								size = { 0 20 }
+								text = "NEXT_CHECKPOINT"
+								align = left|nobaseline
+								elide = right
+							}
+							
+							hbox = {
+								textbox = {
+									layoutpolicy_horizontal = expanding
+									size = { 0 25 }
+									text = "OUTCOME_SUCCESS"
+									using = fontsize_large
+									align = left|nobaseline
+									elide = right
+									alpha = "[TransparentIfFalse(GreaterThan_CFixedPoint(Law.GetCheckpointSuccessChance, '(CFixedPoint)0'))]"
+								}
+								textbox = {
+									layoutpolicy_horizontal = expanding
+									size = { 0 25 }
+									text = "OUTCOME_ADVANCE"
+									using = fontsize_large
+									align = left|nobaseline
+									elide = right
+									alpha = "[TransparentIfFalse(GreaterThan_CFixedPoint(Law.GetCheckpointAdvanceChance, '(CFixedPoint)0'))]"
+								}
+							}
+							hbox = {
+								textbox = {
+									layoutpolicy_horizontal = expanding
+									size = { 0 25 }
+									text = "OUTCOME_DEBATE"
+									using = fontsize_large
+									align = left|nobaseline
+									elide = right
+									alpha = "[TransparentIfFalse(GreaterThan_CFixedPoint(Law.GetCheckpointDebateChance, '(CFixedPoint)0'))]"
+								}
+								textbox = {
+									layoutpolicy_horizontal = expanding
+									size = { 0 25 }
+									text = "OUTCOME_STALL"
+									using = fontsize_large
+									align = left|nobaseline
+									elide = right
+									alpha = "[TransparentIfFalse(GreaterThan_CFixedPoint(Law.GetCheckpointStallChance, '(CFixedPoint)0'))]"
+								}
+							}
+						}
+						
+						### APPROVAL
+						vbox = {
+							layoutpolicy_horizontal = preferred
+							layoutpolicy_vertical = preferred
+							spacing = 10
+							
+							hbox = {
+								visible = "[GreaterThan_CFixedPoint(Law.GetPercentPolStrApprove, '(CFixedPoint)0')]"
+								tooltip = "TOOLTIP_LAW_APPROVAL"
+								
+								icon = {
+									size = { 40 40 }
+									texture = "gfx/interface/icons/generic_icons/approval_icon.dds"
+								}
+
+								textbox = {
+									align = right|nobaseline
+									text = "LAW_APPROVAL"
+									size = { 70 40 }
+									using = fontsize_xl
+								}
+							}
+
+							hbox = {
+								visible = "[GreaterThan_CFixedPoint(Law.GetPercentPolStrDisapprove, '(CFixedPoint)0')]"
+								tooltip = "TOOLTIP_LAW_DISAPPROVAL"
+
+								icon = {
+									size = { 40 40 }
+									texture = "gfx/interface/icons/generic_icons/disapproval_icon.dds"
+								}
+
+								textbox = {
+									align = right|nobaseline
+									text = "LAW_DISAPPROVAL"
+									size = { 70 40 }
+									using = fontsize_xl
+								}
+							}
+						}
+					}
+
+					button = {
+						visible = "[Law.IsBeingEnacted]"
+						size = { 200 50 }
+						using = default_button_action
+						text = "CANCEL"
+						using = fontsize_large
+						tooltip = "[Law.GetCancelTooltip]"
+						enabled = "[IsValid( Law.StopEnacting )]"
+						onclick = "[Execute( Law.StopEnacting )]"
+					}
+				}
+			}
+		}
+
+		### LISTS OF LAWS
+		hbox = {
+			datacontext = "[GetPlayer]"
+			spacing = 15
+			layoutpolicy_horizontal = preferred
+			layoutpolicy_vertical = preferred
+
+			### POWER STRUCTURE
+			laws_list = {
+				blockoverride "header" {
+					text = "POWER_STRUCTURE"
+				}
+				blockoverride "law_datamodel" {
+					datamodel = "[AccessPlayer.AccessActivePowerStructureLaws]"
+				}
+			}
+				
+			### ECONOMY
+			laws_list = {
+				blockoverride "header" {
+					text = "ECONOMY"
+				}
+				blockoverride "law_datamodel" {
+					datamodel = "[AccessPlayer.AccessActiveEconomyLaws]"
+				}
+			}
+			
+			### HUMAN RIGHTS
+			laws_list = {
+				blockoverride "header" {
+					text = "HUMAN_RIGHTS"
+				}
+				blockoverride "law_datamodel" {
+					datamodel = "[AccessPlayer.AccessActiveHumanRightsLaws]"
+				}
+			}
+			
+			vertical_divider_full = {
+				visible = "[Not(IsDataModelEmpty(AccessPlayer.AccessActiveOtherLaws))]"
+				blockoverride "size" {
+					layoutpolicy_vertical = expanding
+				}
+			}
+			
+			### OTHER LAWS
+			laws_list = {
+				visible = "[Not(IsDataModelEmpty(AccessPlayer.AccessActiveOtherLaws))]"
+				blockoverride "header" {
+					text = "OTHER"
+				}
+				blockoverride "law_datamodel" {
+					datamodel = "[AccessPlayer.AccessActiveOtherLaws]"
+				}
+			}
+		}
+	}
+}

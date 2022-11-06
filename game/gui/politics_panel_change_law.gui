@@ -1,0 +1,340 @@
+@law_sides_width = 420
+
+types politics_panel_change_law {
+	type politics_panel_change_law = fullscreen_block_window {
+		name = "politics_panel_change_law"
+		
+		blockoverride "window_header_name"
+		{
+			text = "[ChangeLawPanel.GetLaw.GetGroupName]"
+		}
+		
+		blockoverride "scrollarea_content"
+		{
+			vbox = {
+				margin = { 20 5 }
+				datacontext = "[GetPlayer]"
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+
+				hbox = {
+					layoutpolicy_horizontal = expanding
+					layoutpolicy_vertical = expanding
+					
+					### current active law
+					vbox = {
+						layoutpolicy_horizontal = preferred
+						layoutpolicy_vertical = preferred
+						margin_top = 10
+
+						using = entry_bg_fancy
+						
+						vbox = {
+							layoutpolicy_horizontal = expanding
+							layoutpolicy_vertical = preferred
+							datamodel = "[ChangeLawPanel.GetSelectedLawAlternatives]"
+							
+							item = {
+								vbox = {
+									layoutpolicy_horizontal = expanding
+									layoutpolicy_vertical = preferred
+									visible = "[Law.IsActive]"
+									margin = { 15 0 }
+
+									### icon + name
+									hbox = {
+										layoutpolicy_horizontal = expanding
+										layoutpolicy_vertical = preferred
+										
+										law_icon = {
+											size = { 140 140 }
+										}
+										
+										vbox = {
+											layoutpolicy_horizontal = expanding
+											layoutpolicy_vertical = preferred
+											margin = { 10 0 }
+											
+											widget = {
+												layoutpolicy_horizontal = expanding
+												layoutpolicy_vertical = preferred
+											}
+
+											textbox = {
+												layoutpolicy_horizontal = expanding
+												size = { 0 30 }
+												text = "CURRENTLY_ACTIVE_LAW"
+												align = left|nobaseline
+												using = fontsize_large
+												elide = right
+												fontsize_min = 14
+											}
+											
+											textbox = {
+												layoutpolicy_horizontal = expanding
+												size = { 0 40 }
+												text = "LAW"
+												align = left|nobaseline
+												using = fontsize_mega
+												elide = right
+												fontsize_min = 14
+											}
+											
+											widget = {
+												layoutpolicy_horizontal = expanding
+												layoutpolicy_vertical = preferred
+											}	
+										}
+									}
+
+									### approval info
+									approval_info2 = {}
+									
+									### info text
+									textbox = {
+										text = "DATA_LAW_NAME_TOOLTIP"
+										autoresize = yes
+										multiline = yes
+										minimumsize = { @law_sides_width -1 }
+										maximumsize = { @law_sides_width -1 }
+										margin = { 10 10 }
+									}
+								}
+							}
+						}
+						
+						widget = {
+							layoutpolicy_horizontal = expanding
+							layoutpolicy_vertical = expanding
+						}
+					}
+					
+					### list of laws
+					vbox = {
+						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = expanding
+						margin = { 5 0 }
+						
+						vbox = {
+							layoutpolicy_horizontal = expanding
+							layoutpolicy_vertical = preferred
+							name = "law_box"
+							datamodel = "[ChangeLawPanel.GetSelectedLawAlternatives]"
+							ignoreinvisible = yes
+							spacing = 15
+
+							item = {
+								enactable_generic_law2 = {
+									blockoverride "lawgroup" {}
+									blockoverride "currently_active_law" {}
+								}
+							}
+						}
+						
+						widget = {
+							layoutpolicy_horizontal = expanding
+							layoutpolicy_vertical = expanding
+						}
+					}
+
+					### enacting law
+					vbox = {
+						layoutpolicy_horizontal = preferred
+						layoutpolicy_vertical = preferred
+						datacontext = "[ChangeLawPanel.GetLaw.GetGroup]"
+						margin_top = 10
+
+						background = {
+							using = dark_area
+							alpha = 0.35
+						}
+						background = {
+							visible = "[ObjectsEqual(GetPlayer.GetLawBeingEnacted.GetGroup, ChangeLawPanel.GetLaw.GetGroup.Self)]"
+							using = highlighted_square_selection
+						}
+						
+						### not enacting
+						textbox = {
+							visible = "[Not(ObjectsEqual(GetPlayer.GetLawBeingEnacted.GetGroup, ChangeLawPanel.GetLaw.GetGroup.Self))]"
+							minimumsize = { @law_sides_width -1 }
+							maximumsize = { @law_sides_width -1 }
+							margin = { 15 0 }
+							autoresize = yes
+							multiline = yes
+							align = center|nobaseline
+							using = fontsize_xxl
+							alpha = 0.6
+							margin_top = 300
+							text = "NO_LAW_IN_THIS_LAWGROUP_IS_BEING_ENACTED"
+							default_format = "#title"
+						}
+						
+						### enacting
+						vbox = {
+							layoutpolicy_horizontal = expanding
+							layoutpolicy_vertical = preferred
+							visible = "[ObjectsEqual(GetPlayer.GetLawBeingEnacted.GetGroup, ChangeLawPanel.GetLaw.GetGroup.Self)]"
+
+							vbox = {
+								datacontext = "[AccessPlayer.AccessLawBeingEnacted]"
+								layoutpolicy_horizontal = expanding
+								layoutpolicy_vertical = preferred
+								margin = { 15 0 }
+								
+								### icon + name
+								hbox = {
+									layoutpolicy_horizontal = expanding
+									layoutpolicy_vertical = preferred
+									
+									law_enactment_progress = {
+										size = { 140 140 }
+									}
+									
+									vbox = {
+										layoutpolicy_horizontal = expanding
+										layoutpolicy_vertical = preferred
+										margin = { 10 0 }
+										
+										widget = {
+											layoutpolicy_horizontal = expanding
+											layoutpolicy_vertical = preferred
+										}
+
+										textbox = {
+											layoutpolicy_horizontal = expanding
+											size = { 0 30 }
+											text = "CURRENT_LAW_BEING_ENACTED"
+											align = left|nobaseline
+											using = fontsize_large
+											elide = right
+											fontsize_min = 14
+										}
+										
+										textbox = {
+											layoutpolicy_horizontal = expanding
+											size = { 0 40 }
+											text = "LAW"
+											align = left|nobaseline
+											using = fontsize_mega
+											elide = right
+											fontsize_min = 14
+										}
+
+										textbox = {
+											name = "tutorial_highlight_enacting_law_checkpoint_date"
+											layoutpolicy_horizontal = expanding
+											size = { 0 30 }
+											text = "[FixedPointToFloat(Law.GetCheckpointProgress)|%v1] ([Law.GetCheckpointEndDateString])"
+											align = left|nobaseline
+											elide = right
+											fontsize_min = 14
+											tooltip = LAW_NEXT_CHECKPOINT_TIME_DESC
+										}
+										
+										widget = {
+											layoutpolicy_horizontal = expanding
+											layoutpolicy_vertical = preferred
+										}	
+									}
+								}
+
+								### approval info
+								approval_info2 = {}
+								
+								widget = { size = { 10 10 }}
+
+								vbox = {
+									layoutpolicy_horizontal = preferred
+									layoutpolicy_vertical = preferred
+									margin = { 15 10 }
+									
+									background = {
+										using = entry_bg_simple
+									}
+									
+									vbox = {
+										layoutpolicy_horizontal = expanding
+										layoutpolicy_vertical = preferred
+										margin = { 10 10 }
+										spacing = 10
+										
+										hbox = {
+											layoutpolicy_horizontal = expanding
+											layoutpolicy_vertical = preferred
+											spacing = 5
+											
+											textbox = {
+												name = "tutorial_highlight_enacting_law_success_chance"
+
+												layoutpolicy_horizontal = expanding
+												size = { 0 25 }
+												text = "OUTCOME_SUCCESS"
+												using = fontsize_large
+												align = left|nobaseline
+												elide = right
+												alpha = "[TransparentIfFalse(GreaterThan_CFixedPoint(Law.GetCheckpointSuccessChance, '(CFixedPoint)0'))]"
+												fontsize_min = 14
+											}
+											textbox = {
+												layoutpolicy_horizontal = expanding
+												size = { 0 25 }
+												text = "OUTCOME_ADVANCE"
+												using = fontsize_large
+												align = left|nobaseline
+												elide = right
+												alpha = "[TransparentIfFalse(GreaterThan_CFixedPoint(Law.GetCheckpointAdvanceChance, '(CFixedPoint)0'))]"
+												fontsize_min = 14
+											}
+										}
+										hbox = {
+											layoutpolicy_horizontal = expanding
+											layoutpolicy_vertical = preferred
+											spacing = 5
+											
+											textbox = {
+												layoutpolicy_horizontal = expanding
+												size = { 0 25 }
+												text = "OUTCOME_DEBATE"
+												using = fontsize_large
+												align = left|nobaseline
+												elide = right
+												alpha = "[TransparentIfFalse(GreaterThan_CFixedPoint(Law.GetCheckpointDebateChance, '(CFixedPoint)0'))]"
+												fontsize_min = 14
+											}
+											textbox = {
+												layoutpolicy_horizontal = expanding
+												size = { 0 25 }
+												text = "OUTCOME_STALL"
+												using = fontsize_large
+												align = left|nobaseline
+												elide = right
+												alpha = "[TransparentIfFalse(GreaterThan_CFixedPoint(Law.GetCheckpointStallChance, '(CFixedPoint)0'))]"
+												fontsize_min = 14
+											}
+										}
+									}
+								}
+							}
+							
+							### info text
+							textbox = {
+								datacontext = "[GetPlayer.GetLawBeingEnacted]"
+								text = "DATA_LAW_NAME_TOOLTIP"
+								autoresize = yes
+								multiline = yes
+								minimumsize = { @law_sides_width -1 }
+								maximumsize = { @law_sides_width -1 }
+								margin = { 25 10 }
+							}
+						}
+						
+						widget = {
+							layoutpolicy_horizontal = expanding
+							layoutpolicy_vertical = expanding
+						}
+					}
+				}
+			}
+		}
+	}
+}

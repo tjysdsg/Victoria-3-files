@@ -1,0 +1,344 @@
+﻿namespace = oil_rush
+
+# Oil!
+oil_rush.1 = {
+	type = state_event
+	placement = ROOT
+	title = oil_rush.1.t
+	desc = oil_rush.1.d
+	flavor = oil_rush.1.f
+
+	duration = 3
+
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_oil_derricks.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/oil_derricks"
+
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	trigger = {
+		has_building = building_oil_rig
+		NOT = { has_modifier = state_oil_rush }
+	}
+
+	option = {
+		name = oil_rush.1.a
+		default_option = yes
+		add_modifier = {
+			name = state_oil_rush
+			months = short_modifier_time
+		}
+		trigger_event = { id = oil_rush.2 years = 5 }
+	}
+
+	option = {
+		name = oil_rush.1.b
+		add_modifier = {
+			name = state_limited_oil_rush
+			months = short_modifier_time
+		}
+		trigger_event = { id = oil_rush.2 years = 5 }
+	}
+}
+
+# End of Oil Rush
+oil_rush.2 = {
+	type = state_event
+	placement = ROOT
+	title = oil_rush.2.t
+	desc = oil_rush.2.d
+	flavor = oil_rush.2.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_oil_derricks.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/oil_derricks"
+
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	option = {
+		name = oil_rush.2.a
+		default_option = yes
+		add_modifier = {
+			name = state_oil_rush_over
+			months = short_modifier_time
+		}
+	}
+}
+
+# Dangerous Work
+oil_rush.3 = {
+	type = state_event
+	placement = ROOT
+	title = oil_rush.3.t
+	desc = oil_rush.3.d
+	flavor = oil_rush.3.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_oil_derricks.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/oil_derricks"
+
+	icon = "gfx/interface/icons/event_icons/event_fire.dds"
+
+	trigger = {
+		has_building = building_oil_rig
+		OR = {
+			has_modifier = state_oil_rush
+			has_modifier = state_limited_oil_rush
+		}
+		NOR = {
+			has_modifier = state_oil_dangerous_work
+			has_modifier = state_oil_prevented_dangerous_work
+		}
+		owner = {
+			NOR = {
+				has_law = law_type:law_regulatory_bodies
+				has_law = law_type:law_worker_protections
+			}
+		}
+	}
+
+	option = {
+		name = oil_rush.3.a
+		default_option = yes
+		add_modifier = {
+			name = state_oil_dangerous_work
+			years = 4
+		}
+		owner = {
+			ig:ig_industrialists = {
+				add_modifier = {
+					name = permitted_oil_dangerous_work
+					months = short_modifier_time
+				}
+			}
+			ig:ig_trade_unions = {
+				add_modifier = {
+					name = permitted_oil_dangerous_work
+					multiplier = -1
+					months = short_modifier_time
+				}
+			}
+		}
+	}
+
+	option = {
+		name = oil_rush.3.b
+		add_modifier = {
+			name = state_oil_prevented_dangerous_work
+			years = 4
+		}
+		owner = {
+			ig:ig_trade_unions = {
+				add_modifier = {
+					name = prevented_oil_dangerous_work
+					months = short_modifier_time
+				}
+			}
+			ig:ig_industrialists = {
+				add_modifier = {
+					name = prevented_oil_dangerous_work
+					multiplier = -1
+					months = short_modifier_time
+				}
+			}
+		}
+	}
+}
+
+# Pipeline Construction
+oil_rush.4 = {
+	type = state_event
+	placement = ROOT
+	title = oil_rush.4.t
+	desc = oil_rush.4.d
+	flavor = oil_rush.4.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_oil_derricks.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/oil_derricks"
+
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	trigger = {
+		has_building = building_oil_rig
+		OR = {
+			has_modifier = state_oil_rush
+			has_modifier = state_limited_oil_rush
+		}
+		NOT = { has_modifier = state_oil_pipeline }
+	}
+
+	option = {
+		name = oil_rush.4.a
+		add_modifier = {
+			name = state_oil_pipeline
+		}
+		owner = {
+			add_modifier = {
+				name = funding_oil_pipeline
+				multiplier = money_amount_multiplier_small
+			}
+			ig:ig_industrialists = {
+				add_modifier = {
+					name = pipeline_funded
+					months = short_modifier_time
+				}
+			}
+		}
+	}
+
+	option = {
+		name = oil_rush.4.b
+		default_option = yes
+		owner = {
+			ig:ig_industrialists = {
+				add_modifier = {
+					name = no_pipeline_funding
+					months = short_modifier_time
+				}
+			}
+		}
+	}
+}
+
+
+# Bribery Scandal
+oil_rush.5 = {
+	type = country_event
+	placement = ROOT
+	title = oil_rush.5.t
+	desc = oil_rush.5.d
+	flavor = oil_rush.5.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_capitalists_meeting.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/capitalists_meeting"
+
+	icon = "gfx/interface/icons/event_icons/event_trade.dds"
+
+	trigger = {
+		NOT = {
+			has_variable = bribery_scandal
+		}
+		any_interest_group = {
+			is_in_government = yes
+			leader = {
+				is_ruler = no
+			}
+		}
+		any_scope_state = {
+			has_building = building_oil_rig
+			OR = {
+				has_modifier = state_oil_rush
+				has_modifier = state_limited_oil_rush
+			}
+		}
+	}
+
+	immediate = {
+		set_variable = {
+			name = bribery_scandal
+			years = 10
+		}
+		random_interest_group = {
+			limit = {
+				is_in_government = yes
+				leader = {
+					is_ruler = no
+				}
+			}
+			leader = {
+				save_scope_as = bribed_politician
+			}
+		}
+	}
+
+	# Jail the politician and the oilmen
+	option = {
+		name = oil_rush.5.a
+		hidden_effect = {
+			scope:bribed_politician = {
+				kill_character = yes
+			}
+		}
+		custom_tooltip = oil_rush.5.tt
+		ig:ig_industrialists = {
+			add_modifier = {
+				name = jailed_oil_barons
+				months = short_modifier_time
+			}
+		}
+	}
+
+	# Jail the politician
+	option = {
+		name = oil_rush.5.b
+		hidden_effect = {
+			scope:bribed_politician = {
+				kill_character = yes
+			}
+		}
+		custom_tooltip = oil_rush.5.tt
+		ig:ig_trade_unions = {
+			add_modifier = {
+				name = let_off_oil_barons
+				months = short_modifier_time
+			}
+		}
+	}
+
+	# Jail the oilmen
+	option = {
+		name = oil_rush.5.c
+		ig:ig_industrialists = {
+			add_modifier = {
+				name = jailed_oil_barons
+				months = short_modifier_time
+			}
+		}
+		add_modifier = {
+			name = corrupt_administration
+			months = short_modifier_time
+		}
+	}
+
+	# Let them off with fines
+	option = {
+		name = oil_rush.5.e
+		default_option = yes
+		ig:ig_trade_unions = {
+			add_modifier = {
+				name = let_off_oil_barons
+				months = short_modifier_time
+			}
+		}
+		add_modifier = {
+			name = corrupt_administration
+			months = short_modifier_time
+		}
+	}
+}

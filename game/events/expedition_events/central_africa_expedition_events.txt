@@ -1,0 +1,680 @@
+﻿namespace = expedition_events
+
+#NILE RIVER EXPEDITION / CENTRAL AFRICA
+
+expedition_events.501 = { #Start event
+	type = country_event
+    placement = ROOT
+
+    title = expedition_events.501.t
+    desc = expedition_events.501.d
+    flavor = expedition_events.501.f
+
+    event_image = {
+		video = "gfx/event_pictures/unspecific_politicians_arguing.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/asia/politician_parliament_motion"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+    duration = 3
+
+	option = {
+		name = expedition_events.501.a
+		trigger_event = { id = expedition_events.502 days = 0 popup = yes }
+	}
+}
+
+expedition_events.502 = { #Choose commander
+	type = country_event
+    placement = ROOT
+
+    title = expedition_events.2.t
+    desc = expedition_events.2.d
+    flavor = expedition_events.2.f
+
+    event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+    duration = 3
+
+	trigger = {
+		any_scope_character = {
+			OR = {
+				has_role = general
+				has_role = admiral
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_character = {
+			limit = {
+				is_ruler = no
+				OR = {
+					has_role = general
+					has_role = admiral
+				}
+			}
+			save_scope_as = expedition_leader_1
+		}
+		random_scope_character = {
+			limit = {
+				is_ruler = no
+				OR = {
+					has_role = general
+					has_role = admiral
+				}
+				NOT = {
+					this = scope:expedition_leader_1
+				}
+			}
+			save_scope_as = expedition_leader_2
+		}
+		random_scope_character = {
+			limit = {
+				is_ruler = no
+				OR = {
+					has_role = general
+					has_role = admiral
+				}
+				NOR = {
+					this = scope:expedition_leader_1
+					this = scope:expedition_leader_2
+				}
+			}
+			save_scope_as = expedition_leader_3
+		}
+		set_variable = central_africa_expedition_var
+		set_variable = {
+			name = expedition_progress
+			value = 1
+		}
+		set_variable = {
+			name = expedition_peril
+			value = 1
+		}
+		central_africa_location_effect = yes
+	}
+
+	option = {
+		name = expedition_events.502.a
+		default_option = yes
+		custom_tooltip = expedition_costs_tt
+		add_modifier = {
+			name = modifier_large_expedition_cost
+			multiplier = money_amount_multiplier_medium
+		}
+		scope:expedition_leader_1 = {
+			set_variable = expedition_leader_var
+			set_character_busy = yes
+			save_scope_as = expedition_leader
+		}
+		trigger_event = { id = expedition_events.504 days = 30 }
+	}
+
+	option = {
+		name = expedition_events.502.b
+		custom_tooltip = expedition_costs_tt
+		trigger = {
+			exists = scope:expedition_leader_2
+		}
+		add_modifier = {
+			name = modifier_large_expedition_cost
+			multiplier = money_amount_multiplier_medium
+		}
+		scope:expedition_leader_2 = {
+			set_variable = expedition_leader_var
+			set_character_busy = yes
+			save_scope_as = expedition_leader
+		}
+		trigger_event = { id = expedition_events.504 days = 30 }
+	}
+
+	option = {
+		name = expedition_events.502.c
+		custom_tooltip = expedition_costs_tt
+		trigger = {
+			exists = scope:expedition_leader_3
+		}
+		add_modifier = {
+			name = modifier_large_expedition_cost
+			multiplier = money_amount_multiplier_medium
+		}
+		scope:expedition_leader_3 = {
+			set_variable = expedition_leader_var
+			set_character_busy = yes
+			save_scope_as = expedition_leader
+		}
+		trigger_event = { id = expedition_events.504 days = 30 }
+	}
+}
+
+expedition_events.504 = { #Expedition Arrives
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.504.t
+    desc = expedition_events.504.d
+    flavor = expedition_events.504.f
+
+    event_image = {
+		video = "gfx/event_pictures/africa_construction_colony.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/africa/construction_colony"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+    duration = 3
+	
+	immediate = {
+		central_africa_location_effect = yes
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+	}
+
+	option = {
+		name = expedition_events.504.a
+		default_option = yes
+		add_journal_entry = {
+			type = je_central_africa_expedition
+		}
+	}
+}
+
+expedition_events.511 = { #Successful expedition
+	type = country_event
+    placement = ROOT
+
+    title = expedition_events.511.t
+    desc = expedition_events.511.d
+    flavor = expedition_events.511.f
+
+    event_image = {
+		video = "gfx/event_pictures/unspecific_steam_ship.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/steam_ship"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+    duration = 3
+
+	immediate = {
+		set_variable = {
+			name = on_expedition
+			value = no
+		}
+		set_global_variable = central_africa_explored
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+		if = {
+			limit = {
+				has_variable = killed_lost_expedition_var
+			}
+			trigger_event = { id = expedition_events.696 days = 30 }
+		}
+		remove_expedition_events_effect = yes
+	}
+
+	option = {
+		name = expedition_events.511.a
+		default_option = yes
+		scope:expedition_leader = {
+			add_trait = explorer
+			set_character_busy = no
+		}
+		add_modifier = {
+			name = modifier_central_africa_expedition_complete
+			months = normal_modifier_time
+		}
+	}
+}
+
+expedition_events.512 = { #Failed expedition
+	type = country_event
+    placement = ROOT
+
+    title = expedition_events.512.t
+    desc = expedition_events.512.d
+    flavor = expedition_events.512.f
+
+    event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+    duration = 3
+
+	immediate = {
+		remove_variable = on_expedition
+		remove_expedition_events_effect = yes
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+			set_variable = failed_expedition_leader_var
+		}
+	}
+
+	option = {
+		name = expedition_events.512.a
+		default_option = yes
+		scope:expedition_leader = {
+			place_character_in_void = 24
+		}
+		add_modifier = {
+			name = modifier_failed_expedition
+			months = normal_modifier_time
+			is_decaying	= yes
+		}
+	}
+}
+
+expedition_events.520 = { #Pay Tax
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.520.t
+    desc = expedition_events.520.d
+    flavor = expedition_events.520.f
+
+    event_image = {
+		video = "gfx/event_pictures/africa_diplomats_negotiating.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/africa/diplomats_negotiating"
+
+	icon = "gfx/interface/icons/event_icons/event_trade.dds"
+
+    duration = 3
+	
+	trigger = {
+		NOT = { has_variable = expedition_more_taxes }
+	}
+
+	immediate = {
+		set_variable = expedition_more_taxes
+		central_africa_location_effect = yes
+	}
+
+	option = {
+		name = expedition_events.520.a
+		default_option = yes
+		expedition_moderate_progress_effect = yes
+		add_modifier = {
+			name = expedition_taxes_modifier
+			multiplier = money_amount_multiplier_small
+			months = normal_modifier_time
+		}
+	}
+
+	option = {
+		name = expedition_events.520.b
+		add_medium_peril_effect = yes
+		custom_tooltip = expedition_event_ongoing_tt
+	}
+}
+
+expedition_events.530 = { #Lost Mules
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.530.t
+    desc = expedition_events.530.d
+    flavor = expedition_events.530.f
+
+    event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+    duration = 3
+	
+	trigger = {
+		NOT = { has_variable = expedition_lost_mules }
+	}
+
+	immediate = {
+		set_variable = expedition_lost_mules
+		central_africa_location_effect = yes
+	}
+
+	option = {
+		name = expedition_events.530.a
+		default_option = yes
+		custom_tooltip = expedition_event_delayed_tt
+	}
+
+	option = {
+		name = expedition_events.530.b
+		expedition_minor_progress_effect = yes
+		add_small_peril_effect = yes
+	}
+}
+
+expedition_events.540 = { #Rhino hunt
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.540.t
+    desc = expedition_events.540.d
+    flavor = expedition_events.540.f
+
+    event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+    duration = 3
+	
+	trigger = {
+		NOT = { has_variable = expedition_rhino_hunt }
+	}
+
+    immediate = {
+    	set_variable = expedition_rhino_hunt
+		central_africa_location_effect = yes
+    }
+
+	option = { #Hunt the Rhino
+		name = expedition_events.540.a
+		default_option = yes
+		random_list = {
+			10 = {
+				trigger_event = { id = expedition_events.541 days = 0 popup = yes } #Success
+			}
+			10 = {
+				trigger_event = { id = expedition_events.542 days = 0 popup = yes} #Failure
+			}
+		}
+	}
+
+	option = { #Leave the Rhino alone
+		name = expedition_events.540.b
+		custom_tooltip = expedition_event_ongoing_tt
+	}
+}
+
+expedition_events.541 = { #Rhino Hunt Success
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.541.t
+    desc = expedition_events.541.d
+    flavor = expedition_events.541.f
+
+    event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+    duration = 3
+
+    immediate = {
+		set_variable = rhino_success_var #grand exhibition bonus
+    }
+
+	option = {
+		name = expedition_events.541.a
+		custom_tooltip = expedition_event_ongoing_tt
+		add_modifier = {
+			name = modifier_expedition_rhino_hunt
+			months = normal_modifier_time
+		}
+	}
+}
+
+expedition_events.542 = { #Rhino Hunt Accident
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.542.t
+    desc = expedition_events.542.d
+    flavor = expedition_events.542.f
+
+    event_image = {
+		video = "gfx/event_pictures/unspecific_sick_in_hospital.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/sick_people_in_a_field_hospital"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+    duration = 3
+
+	option = {
+		name = expedition_events.542.a
+		custom_tooltip = expedition_event_ongoing_tt
+		add_medium_peril_effect = yes
+	}
+}
+
+expedition_events.550 = { #Beetle in ear
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.550.t
+    desc = expedition_events.550.d
+    flavor = expedition_events.550.f
+
+    event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+    duration = 3
+	
+	trigger = {
+		NOT = { has_variable = expedition_ear_beetle }
+	}
+
+	immediate = {
+		set_variable = expedition_ear_beetle
+		central_africa_location_effect = yes
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+	}
+
+	option = {
+		name = expedition_events.550.a
+		default_option = yes
+		custom_tooltip = expedition_event_delayed_tt
+	}
+
+	option = {
+		name = expedition_events.550.b
+		expedition_moderate_progress_effect = yes
+		random_list = {
+			10 = {
+				scope:expedition_leader = {
+					add_trait = wounded
+				}
+			}
+			10 = {
+				scope:expedition_leader = {
+					add_trait = beetle_ear
+				}
+			}
+		}
+	}
+}
+
+expedition_events.560 = { #Leader runs out of vice
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.560.t
+    desc = expedition_events.560.d
+    flavor = expedition_events.560.f
+
+    event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+    duration = 3
+
+    trigger = {
+    	trigger_if = {
+    		limit = { exists = var:expedition_commander_vice }
+    		NOT = { var:expedition_commander_vice > 3 }
+    	}
+		any_scope_character = {
+			has_variable = expedition_leader_var
+			OR = {
+				has_trait = alcoholic
+				has_trait = opium_addiction
+				has_trait = cocaine_addiction
+			}	
+		}
+    }
+
+	immediate = {
+		if = {
+			limit = { exists = var:expedition_commander_vice }
+			change_variable = {
+				name = expedition_commander_vice
+				add = 1
+			}
+		}
+		else = {
+			set_variable = {
+				name = expedition_commander_vice
+				value = 1
+			}
+		}
+		if = {
+			limit = { has_variable = congo_river_expedition_var }
+			congo_river_expedition_location = yes
+		}
+		else_if = {
+			limit = { has_variable = niger_river_expedition_var }
+			niger_river_expedition_location = yes
+		}
+		else_if = {
+			limit = { has_variable = central_africa_expedition_var }
+			central_africa_location_effect = yes
+		}
+		else_if = {
+			limit = { has_variable = west_america_expedition_var }
+			west_america_expedition_location = yes
+		}
+		
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+	}
+
+	option = { #Stop and get some more
+		name = expedition_events.560.a
+		default_option = yes
+		custom_tooltip = expedition_event_delayed_tt
+	}
+
+	option = { #Don't stop
+		name = expedition_events.560.b
+		add_small_peril_effect = yes
+		expedition_minor_progress_effect = yes
+		random_list = {
+			90 = {
+			}
+			10 = {
+				scope:expedition_leader = {
+					remove_trait = alcoholic
+    				remove_trait = opium_addiction
+    				remove_trait = cocaine_addiction
+				}
+			}
+		}
+	}
+}
+
+expedition_events.570 = { #Mapping geography
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.570.t
+    desc = expedition_events.570.d
+    flavor = expedition_events.570.f
+
+    event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+    duration = 3
+	
+	trigger = {
+		NOT = { has_variable = expedition_geographic_study }
+	}
+
+	immediate = {
+		set_variable = expedition_geographic_study
+		central_africa_location_effect = yes
+	}
+
+	option = {
+		name = expedition_events.570.a
+		default_option = yes
+		custom_tooltip = expedition_event_delayed_tt
+		add_modifier = {
+			name = modifier_expedition_geographic_study
+			months = normal_modifier_time
+		}
+		set_variable = expedition_geographic_var #grand exhibition bonus
+	}
+
+	option = {
+		name = expedition_events.570.b
+		default_option = yes
+		expedition_minor_progress_effect = yes
+	}
+}

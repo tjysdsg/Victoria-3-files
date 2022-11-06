@@ -1,0 +1,317 @@
+﻿namespace = diplomatic_friction
+
+diplomatic_friction.1 = { # Boost the trade unions
+	type = country_event
+	placement = ROOT
+
+	title = diplomatic_friction.1.t
+	desc = diplomatic_friction.1.d
+	flavor = diplomatic_friction.1.f
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_signed_contract.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/signed_contract"
+
+	duration = 3
+
+	trigger = {
+		country_rank >= rank_value:major_power
+		any_country = {
+			country_rank >= rank_value:major_power
+			has_diplomatic_pact = {
+				who = root
+     			type = rivalry 
+     		}
+     		relations:root <= relations_threshold:cold
+		}
+	}
+
+	immediate = {
+		random_country = {
+			limit = {
+				country_rank >= rank_value:major_power
+				has_diplomatic_pact = {
+					who = root
+	     			type = rivalry 
+	     		}
+	     		relations:root <= relations_threshold:cold
+			}
+			save_scope_as = rival_scope
+		}
+	}
+
+	option = { #Boost the trade union
+		name = diplomatic_friction.1.a
+		scope:rival_scope = {
+			ig:ig_trade_unions = {
+				add_modifier = {
+					name = foreign_trade_union_influence
+					months = normal_modifier_time
+				}
+			}	
+			hidden_effect = { post_notification = rival_supports_trade_unions }
+		}
+	}
+
+	option = { #Opt out
+		name = diplomatic_friction.1.b
+		default_option = yes
+		scope:rival_scope = {
+			ig:ig_trade_unions = {
+				add_modifier = {
+					name = foreign_trade_union_influence_denied
+					months = normal_modifier_time
+				}
+			}
+		}
+	}
+}
+
+diplomatic_friction.2 = { # Soldiers Cross the Border
+	type = country_event
+	placement = scope:rival_state
+
+	title = diplomatic_friction.2.t
+	desc = diplomatic_friction.2.d
+	flavor = diplomatic_friction.2.f
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_before_the_battle.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/before_the_battle"
+	
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	duration = 3
+
+	trigger = {
+		is_at_war = no
+		country_rank >= rank_value:major_power
+		any_country = {
+			country_rank >= rank_value:major_power
+			has_diplomatic_pact = {
+				who = root
+     			type = rivalry 
+     		}
+     		relations:root <= relations_threshold:cold
+     		any_neighbouring_state = {
+     			owner = ROOT
+     		}
+			NOT = { this = ROOT }
+		}		
+	}
+
+	immediate = {
+		random_country = {
+			limit = {
+				country_rank >= rank_value:major_power
+				has_diplomatic_pact = {
+					who = ROOT
+	     			type = rivalry 
+	     		}
+	     		relations:ROOT <= relations_threshold:cold
+	     		any_neighbouring_state = {
+	     			owner = ROOT
+	     		}
+				NOT = { this = ROOT }
+			}
+			save_scope_as = rival_scope
+		}
+		save_scope_as = first_rival_country
+		random_neighbouring_state = { 
+			limit = { 
+				owner = scope:rival_scope 
+			}
+			save_scope_as = rival_state
+		}
+	}
+
+	option = { #
+		name = diplomatic_friction.2.a
+		scope:rival_scope = {
+			set_variable = first_rival_country_var
+			hidden_effect = {
+				trigger_event = { id = diplomatic_friction.3 days = 10 }
+			}
+			custom_tooltip = diplomatic_friction.2.a.tt
+			show_as_tooltip = {
+				scope:rival_scope = {
+					add_modifier = {
+						name = border_sovereignity_questioned 
+						months = normal_modifier_time
+					}
+					create_incident = {
+						country = ROOT
+						value = 20
+					}
+				}
+			}
+		}
+	}
+
+	option = { #Opt out
+		name = diplomatic_friction.2.b
+		default_option = yes
+		ig:ig_armed_forces = {
+			add_modifier = {
+				name = border_cowardice
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+diplomatic_friction.3 = { # Soldiers from another country cross the Border
+	type = country_event
+	placement = ROOT
+
+	title = diplomatic_friction.3.t
+	desc = diplomatic_friction.3.d
+	flavor = diplomatic_friction.3.f
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_before_the_battle.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/before_the_battle"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	duration = 3
+
+	trigger = {
+		any_country = {
+			has_variable = first_rival_country_var
+			has_diplomatic_pact = {
+				who = ROOT
+	     		type = rivalry 
+	     	}
+	     	NOT = { this = ROOT }
+		}
+	}
+
+	immediate = {
+		random_country = {
+			limit = { 
+				has_variable = first_rival_country_var
+				has_diplomatic_pact = {
+					who = ROOT
+	     			type = rivalry 
+	     		}
+	     		NOT = { this = ROOT }
+			}
+			save_scope_as = rival_scope
+		}
+	}
+
+	option = { #
+		name = diplomatic_friction.3.a
+		create_incident = {
+			country = scope:first_rival_country
+			value = 20
+		}
+	}
+
+	option = { #
+		name = diplomatic_friction.3.b
+		default_option = yes
+		add_modifier = {
+			name = border_sovereignity_questioned 
+			months = normal_modifier_time
+		}
+	}
+}
+
+
+diplomatic_friction.20 = { #Condemn Slavery
+	type = country_event
+	placement = ROOT
+
+	title = diplomatic_friction.20.t
+	desc = diplomatic_friction.20.d
+	flavor = diplomatic_friction.20.f
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_ruler_speaking_to_people.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/leader_speaking_to_a_group_of_people"
+
+	duration = 3
+
+	trigger = {
+		has_law = law_type:law_slavery_banned
+		country_rank >= rank_value:major_power
+		any_country = {
+			country_rank >= rank_value:major_power
+			has_diplomatic_pact = {
+				who = root
+     			type = rivalry 
+     		}
+     		relations:root <= relations_threshold:cold
+     		OR = {
+				has_law = law_type:law_debt_slavery
+				has_law = law_type:law_slave_trade
+				has_law = law_type:law_legacy_slavery
+			}
+		}
+	}
+
+	immediate = {
+		random_country = {
+			limit = {
+				country_rank >= rank_value:major_power
+				has_diplomatic_pact = {
+					who = root
+	     			type = rivalry 
+	     		}
+	     		relations:root <= relations_threshold:cold
+	     		OR = {
+					has_law = law_type:law_debt_slavery
+					has_law = law_type:law_slave_trade
+					has_law = law_type:law_legacy_slavery
+				}
+			}
+			save_scope_as = rival_scope
+		}
+	}
+
+	option = { #
+		name = diplomatic_friction.20.a
+		default_option = yes
+		add_modifier = {
+			name = condemning_slavery
+			months = normal_modifier_time
+		}
+		scope:rival_scope = {
+			add_modifier = {
+				name = slavery_practice_condemned
+				months = normal_modifier_time
+			}
+
+			hidden_effect = { post_notification = rival_comdemns_slavery }
+		}
+	}
+
+	option = { #Opt out
+		name = diplomatic_friction.20.b
+		ig:ig_intelligentsia = {
+			add_modifier = {
+				name = refused_condemning_slavery
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+
+
+
+

@@ -1,0 +1,199 @@
+﻿namespace = egyptian_crisis_events
+
+egyptian_crisis_events.1 = {
+	type = country_event
+	placement = scope:egyptian_crisis_state
+
+	title = egyptian_crisis_events.1.t
+	desc = egyptian_crisis_events.1.d
+	flavor = egyptian_crisis_events.1.f
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_courtroom_upheaval.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/courtroom_upheaval"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	duration = 3
+
+	trigger = {
+		exists = c:EGY
+		any_diplomatic_play = {
+			initiator = root
+			target = c:EGY
+			OR = {
+				has_play_goal = conquer_state
+				has_play_goal = return_state
+				has_play_goal = make_dominion
+				has_play_goal = make_vassal
+				has_play_goal = make_puppet
+			}
+		}
+		NOT = {
+			has_variable = egyptian_crisis
+		}
+	}
+
+	immediate = {
+		set_variable = {
+			name = egyptian_crisis
+		}
+		if = {
+			limit = { exists = s:STATE_SYRIA.region_state:EGY }
+			s:STATE_SYRIA.region_state:EGY = { save_scope_as = egyptian_crisis_state }
+		}
+		else = {
+			c:EGY.capital = { save_scope_as = egyptian_crisis_state }
+		}
+	}
+
+	option = {
+		name = egyptian_crisis_events.1.a
+		# country_influence_mult
+		add_modifier = {
+			name = working_with_the_great_powers
+			months = long_modifier_time
+		}
+		every_country = {
+			limit = {
+				country_rank = rank_value:great_power
+				country_is_in_europe = yes
+				NOR = {
+					c:EGY = this
+					c:TUR = this
+					has_war_with = c:TUR
+					has_war_with = c:EGY
+					has_diplomatic_pact = {
+						who = root
+						type = rivalry
+					}
+				}
+			}
+			change_relations = {
+				country = root
+				value = 20
+			}
+		}
+		every_country = {
+			limit = {
+				country_rank = rank_value:great_power
+				country_is_in_europe = yes
+				NOR = {
+					has_interest_marker_in_region = region_arabic
+					c:EGY = this
+					c:TUR = this
+					has_war_with = c:TUR
+					has_war_with = c:EGY
+				}
+			}
+			hidden_effect = { trigger_event = { id = egyptian_crisis_events.4 } }
+			custom_tooltip = egyptian_crisis_events.1.a.tt
+		}
+		c:EGY = {
+			trigger_event = { id = egyptian_crisis_events.2 }
+		}
+	}
+
+    option = {
+		name = egyptian_crisis_events.1.b
+        default_option = yes
+        every_country = {
+        	limit = {
+        		country_rank = rank_value:great_power
+        		country_is_in_europe = yes
+        		NOR = {
+        			has_interest_marker_in_region = region_arabic
+        			c:EGY = this
+        			c:TUR = this
+        			has_war_with = c:TUR
+        			has_war_with = c:EGY
+        		}
+        	}
+        	hidden_effect = { trigger_event = { id = egyptian_crisis_events.4 } }
+        	custom_tooltip = egyptian_crisis_events.1.a.tt
+        }
+        c:EGY = {
+        	trigger_event = { id = egyptian_crisis_events.2 }
+        }
+	}
+}
+
+egyptian_crisis_events.2 = {
+	type = country_event
+	placement = scope:egyptian_crisis_state
+
+	title = egyptian_crisis_events.2.t
+	desc = egyptian_crisis_events.2.d
+	flavor = egyptian_crisis_events.2.f
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_courtroom_upheaval.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/courtroom_upheaval"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	duration = 3
+
+	immediate = {
+		if = {
+			limit = { exists = s:STATE_SYRIA.region_state:EGY }
+			s:STATE_SYRIA.region_state:EGY = { save_scope_as = egyptian_crisis_state }
+		}
+		else = {
+			c:EGY.capital = { save_scope_as = egyptian_crisis_state }
+		}
+	}
+
+	option = {
+		name = egyptian_crisis_events.2.a
+        default_option = yes
+		custom_tooltip = egyptian_crisis_events.2.a.tt
+	}
+}
+
+egyptian_crisis_events.4 = {
+	type = country_event
+	placement = scope:egyptian_crisis_state
+
+	title = egyptian_crisis_events.4.t
+	desc = egyptian_crisis_events.4.d
+	flavor = egyptian_crisis_events.4.f
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_courtroom_upheaval.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/courtroom_upheaval"
+
+	icon = "gfx/interface/icons/event_icons/event_fire.dds"
+
+	duration = 3
+
+	immediate = {
+		if = {
+			limit = { exists = s:STATE_SYRIA.region_state:EGY }
+			s:STATE_SYRIA.region_state:EGY = { save_scope_as = egyptian_crisis_state }
+		}
+		else = {
+			c:EGY.capital = { save_scope_as = egyptian_crisis_state }
+		}
+	}
+
+	option = {
+		name = egyptian_crisis_events.4.a
+        default_option = yes
+
+        add_declared_interest = region_arabic
+	}
+
+	option = {
+		name = egyptian_crisis_events.4.b
+	}
+}

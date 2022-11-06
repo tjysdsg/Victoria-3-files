@@ -1,0 +1,138 @@
+default_popup =  {
+	name = "location_finder"
+	movable = yes
+	resizable = yes
+	layer = top
+
+	parentanchor = center
+
+	blockoverride "behind_window" {
+		state = {
+			name = _show
+			start_sound = {
+				soundeffect = "event:/SFX/UI/MapLenses/location_finder"
+			}
+		}
+	}
+	blockoverride "window_header_name" {
+		text = "LOCATION_FINDER"
+	}
+	
+	blockoverride "header_back_button_visibility" {
+		visible = no
+	}
+
+	blockoverride "header_close_button_visibility" {
+		visible = yes
+	}
+
+	blockoverride "header_close_button" {
+		onclick = "[LocationFinder.Close]"
+	}
+
+	blockoverride "entire_scrollarea" {
+		flowcontainer = {
+			margin = { 10 10 }
+			margin_bottom = 0
+			using = default_list_position
+			spacing = 10
+			direction = vertical
+			editbox = {
+				background = {
+					using = text_edit_bg
+				}
+				name = "finder_edit"
+				size = { 630 40 }
+				margin_left = 10
+				alwaystransparent = no
+				focuspolicy = all
+				focus_on_visible = yes
+				align = left|nobaseline
+			}
+		
+			scrollarea = {
+				name = "finder_output_scrollarea"
+				size = { 640 420 }
+				scrollbarpolicy_horizontal = always_off
+				
+				scrollwidget = {
+					fixedgridbox = {
+						datamodel = "[LocationFinder.GetLocations]"
+						addcolumn = 630
+						addrow = 70
+								
+						item = {
+							button = {
+								using = default_button
+								using = zoom_button_sound
+								size = { 630 70 }
+								onclick = "[Location.GoToLocation]"
+		
+								flowcontainer = {
+									parentanchor = vcenter
+									direction = vertical
+									margin_left = 15
+									textbox = {
+										autoresize = yes
+										text = "#BOLD [Location.GetName]#!"
+										align = nobaseline
+										using = fontsize_large
+									}
+			
+									textbox = {
+										visible = "[EqualTo_string(Location.GetType, 'state')]"
+										autoresize = yes
+										text = "[concept_state]"
+										align = nobaseline
+									}
+
+									textbox = {
+										visible = "[EqualTo_string(Location.GetType, 'country')]"
+										autoresize = yes
+										text = "[concept_country]"
+										align = nobaseline
+									}
+
+									textbox = {
+										visible = "[EqualTo_string(Location.GetType, 'state_region')]"
+										autoresize = yes
+										text = "[concept_state_region]"
+										align = nobaseline
+									}
+
+									textbox = {
+										visible = "[EqualTo_string(Location.GetType, 'province')]"
+										autoresize = yes
+										text = "[concept_province]"
+										align = nobaseline
+									}
+
+									textbox = {
+										visible = "[EqualTo_string(Location.GetType, 'city_hub')]"
+										autoresize = yes
+										text = "LEDGER_HUB_NAME"
+										align = nobaseline
+									}
+								}
+		
+								textbox = {
+									visible = "[InDebugMode]"
+									autoresize = yes
+									text = "DEBUG ID: [Location.GetID]"
+									parentanchor = right|vcenter
+									widgetanchor = right|vcenter
+									align = right|nobaseline
+									position = { -10 0 }
+								}
+							}
+						}
+					}
+				}
+				
+				scrollbar_vertical = {
+					using = vertical_scrollbar
+				}
+			}
+		}
+	}
+}

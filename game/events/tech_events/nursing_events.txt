@@ -1,0 +1,289 @@
+﻿namespace = nursing_events
+
+nursing_events.1 = { #Bad conditions
+	type = country_event
+	placement = scope:ongoing_war_state
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_sick_in_hospital.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/sick_people_in_a_field_hospital"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	title = nursing_events.1.t
+	desc = nursing_events.1.d
+	flavor = nursing_events.1.f
+
+	trigger = {
+		NOT = { 
+			has_variable = nursing_cooldown 
+		}
+		any_scope_war = {
+			any_scope_front = { exists = yes }
+		}
+	}
+
+	immediate = {
+		set_variable = {
+			name = nursing_cooldown
+			months = 6
+		}
+		random_scope_war = {
+			random_scope_front = {
+				random_scope_state = { save_scope_as = ongoing_war_state }
+			}
+		}
+	}
+
+	option = {
+		name = nursing_events.1.a
+		default_option = yes
+
+		add_modifier = {
+			name = war_wounded_disease
+			months = 24
+		}
+	}
+
+	option = {
+		name = nursing_events.1.b
+		capital = {
+			add_modifier = {
+				name = war_wounded_civilian_assistance
+				months = 24
+			}
+		}
+	}	
+}
+
+nursing_events.2 = { #Handwashing
+	type = country_event
+	placement = scope:ongoing_war_state
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_sick_in_hospital.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/sick_people_in_a_field_hospital"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	title = nursing_events.2.t
+	desc = nursing_events.2.d
+	flavor = nursing_events.2.f
+
+	trigger = {
+		is_at_war = yes
+		any_scope_war = {
+			num_country_dead = {
+				target = root
+				value >= 0
+			}
+			any_scope_front = {
+				any_scope_state = {	owner = root }
+			}
+		}
+		NOT = { 
+			has_variable = nursing_cooldown 
+		}
+	}
+
+	immediate = {
+		random_scope_war = {
+			limit = {
+				num_country_dead = {
+					target = root
+					value >= 0
+				}
+			}
+			save_scope_as = ongoing_war
+			random_scope_front = {
+				limit = {
+					any_scope_state = {	owner = root }
+				}
+				random_scope_state = {
+					limit = { owner = root }
+					save_scope_as = ongoing_war_state
+				}
+			}
+		}
+		set_variable = {
+			name = nursing_cooldown
+			months = 6
+		}
+	}
+
+	option = { #Do it
+		default_option = yes
+		name = nursing_events.2.a
+		scope:ongoing_war_state = {
+			add_modifier = {
+				name = medical_hygiene 
+				months = 24
+				multiplier = 2
+			}
+		}
+	}
+
+	option = { #This should be taught everywhere
+		name = nursing_events.2.b
+		add_modifier = {
+			name = medical_hygiene 
+			months = 24
+		}
+	}
+}
+
+nursing_events.3 = { #Prefab hospital
+	type = country_event
+	placement = scope:ongoing_war_state
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_sick_in_hospital.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/sick_people_in_a_field_hospital"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	title = nursing_events.3.t
+	desc = nursing_events.3.d
+	flavor = nursing_events.3.f
+
+	trigger = {
+		is_at_war = yes
+		any_scope_war = {
+			num_country_dead = {
+				target = root
+				value >= 0
+			}
+			any_scope_front = { exists = yes }
+		}
+		NOT = {
+			has_variable = nursing_cooldown
+		}
+	}
+
+	immediate = {
+		random_scope_war = {
+			limit = {
+				num_country_dead = {
+					target = root
+					value >= 0
+				}
+			}
+			save_scope_as = ongoing_war
+			random_scope_front = {
+				random_scope_state = { save_scope_as = ongoing_war_state }
+			}
+		}
+		set_variable = {
+			name = nursing_cooldown
+			months = 6
+		}
+	}
+	option = { #Do it
+		name = nursing_events.3.a
+		default_option = yes
+		add_modifier = {
+			name = prefab_hospital
+			months = 24
+		}
+	}
+
+	option = { #the time and knowledge is better spent on research
+		name = nursing_events.3.b
+		trigger = {
+			OR = {
+				can_research = medical_degrees
+				can_research = quinine
+				can_research = malaria_prevention
+				can_research = antibiotics
+			}
+		}
+		if = {
+			limit = {
+				can_research = medical_degrees
+			}
+			add_technology_progress = { progress = 1650 technology = medical_degrees }
+		}
+		else_if = {
+			limit = {
+				can_research = quinine
+			}
+			add_technology_progress = { progress = 2500 technology = quinine }
+		}
+		else_if = {
+			limit = {
+				can_research = malaria_prevention
+			}
+			add_technology_progress = { progress = 4000 technology = malaria_prevention }
+		}
+		else_if = {
+			limit = {
+				can_research = antibiotics
+			}
+			add_technology_progress = { progress = 5000 technology = antibiotics }
+		}
+	}
+}
+nursing_events.4 = { 
+	type = country_event
+	placement = scope:ongoing_war_state
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_sick_in_hospital.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/sick_people_in_a_field_hospital"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	title = nursing_events.4.t
+	desc = nursing_events.4.d
+	flavor = nursing_events.4.f
+
+	trigger = {
+		# Triggered by completing je_war_nursing
+	}
+
+	immediate = {
+		random_scope_war = {
+			limit = {
+				any_scope_front = {
+					front_side_pm_usage = {
+						target = ROOT
+						production_method = pm_field_hospitals
+						value > 0.5
+					}
+				}
+			}
+			save_scope_as = complete_nursing_war
+			random_scope_front = {
+				random_scope_state = { save_scope_as = ongoing_war_state }
+			}
+		}
+	}
+
+	option = { #Do it
+		name = nursing_events.4.a
+		add_modifier = {
+			name = modern_nursing 
+			months = 24
+		}
+	}
+}

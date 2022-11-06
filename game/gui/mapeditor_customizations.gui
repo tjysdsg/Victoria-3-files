@@ -1,0 +1,463 @@
+types "MapEditorCustomizationTypes"
+{
+	type CustomSliderWithValue = hbox {
+
+		layoutpolicy_horizontal = preferred
+		layoutpolicy_vertical = preferred
+
+		editbox = {
+			using = terraineditor_label
+			using = tools_spacing
+			layoutpolicy_horizontal = fixed
+			layoutpolicy_vertical = preferred
+			size = { 80 0 }
+			block "editbox" { }
+			align = right|nobaseline
+		}
+
+		scrollbar = {
+			using = editor_scrollbar
+			size = { 0 14 }
+			layoutpolicy_vertical = fixed
+			layoutpolicy_horizontal = preferred
+			direction = horizontal
+			min = 0.0
+			max = 1.0
+			step = 0.01
+			wheelstep = -0.1
+			block "scrollbar" {}
+			tooltipwidget = { using = dockable_tooltip }
+		}		
+
+		editor_textinput = {
+			name = "value_textbox"
+			layoutpolicy_horizontal = fixed
+			layoutpolicy_vertical = fixed
+			size = { 52 24 }
+			align = center
+			block "input" {}
+		}
+	}
+
+	type DynamicsMasterSwitch = editor_checkbutton {
+		layoutpolicy_horizontal = preferred
+		layoutpolicy_vertical = preferred
+        blockoverride "checkbutton"
+        {
+            checked = "[IsDynamicsEnabled]"
+            onclick = "[SetDynamicsEnabled(Not(IsDynamicsEnabled))]"
+        }
+        blockoverride "label" { text = "Dynamics master" }
+        tooltip = "Master switch for terrain dynamics simulation. This includes modifications done to the terrain materials aswell as toggling 3d objects visibilities. Notice that disabling dynamics makes the map editor run a little bit more smooth."
+		tooltipwidget = { using = dockable_tooltip }
+    }
+}
+
+# Map editor will look for description with this name.
+# If not found, it will fallback to the toolbar defined in cw: "mask_painter_map_content_list_extension".
+mask_painter_map_content_list_extension = {
+	name = "mask_painter_map_content_list_extension_impl"
+	blockoverride "content" {
+		vbox = {
+			layoutpolicy_horizontal = preferred
+			layoutpolicy_vertical = preferred
+
+			using = tools_spacing
+			spacing = 4
+
+			editor_frame = {
+    			layoutpolicy_horizontal = expanding
+
+				blockoverride "label" { text = "Dynamic Terrain:" }
+				blockoverride "content" {
+
+					name = "dynamic_terrain_frame"
+
+					hbox = {
+						layoutpolicy_horizontal = preferred
+						layoutpolicy_vertical = preferred
+
+					    DynamicsMasterSwitch = {}
+
+					    container = {
+							layoutpolicy_horizontal = preferred
+							layoutpolicy_vertical = preferred
+					    	visible = "[IsDynamicsEnabled]"
+
+						    editor_checkbutton = {
+								layoutpolicy_horizontal = preferred
+								layoutpolicy_vertical = preferred
+						        blockoverride "checkbutton"
+						        {
+						            using = detail_data_dynamic_terrain_switch
+						        }
+						        blockoverride "label" { text = "Dynamic materials" }
+					            tooltip = "Disabling this feature will disable dynamic terrain materials only. Toggling 3d objects will still work as long as the dynamics master is enabled."
+								tooltipwidget = { using = dockable_tooltip }
+						    }
+					    }
+					}
+
+
+					vbox = {
+						layoutpolicy_horizontal = preferred
+						layoutpolicy_vertical = preferred
+
+						visible = "[IsDynamicsEnabled]"
+
+						editor_button = {
+							size = { 0 32 }
+							layoutpolicy_horizontal = preferred
+							fontsize = 12
+							align = center|nobaseline
+							text = "Edit Dynamic Terrain Definitions"
+							onclick = "[MaskPainterDynamicTerrain.OpenDatabase]"
+							tooltip = "Open database file with dynamic terrain definitions."
+							tooltipwidget = { using = dockable_tooltip }
+						}
+						hbox = {
+							layoutpolicy_horizontal = preferred
+							layoutpolicy_vertical = preferred
+
+							editbox = {
+								using = terraineditor_label
+								using = tools_spacing
+								layoutpolicy_horizontal = fixed
+								layoutpolicy_vertical = preferred
+								size = { 80 0 }
+								text = "Terrain:"
+								align = right|nobaseline
+							}
+
+							editor_toolbar_button = {
+								size = { 0 24 }
+								layoutpolicy_horizontal = preferred
+								layoutpolicy_vertical = fixed
+								elide = middle
+								enabled = "[GreaterThan_int32( MapContentSelector.GetSelectedCount,'(int32)0')]"
+								text = "[MaskPainterDynamicTerrain.GetTerrainType]"
+								onclick = "[ToolPropertySearchList.OpenSearchList]"
+								tooltip = "Click to select terrain type for preview. Assigning terrain type has no impact on the game. It only shows how selected terrain may look like."
+								tooltipwidget = { using = dockable_tooltip }
+							}
+
+							tooloptions_button = {
+								text = "X"
+								fontsize = 18
+								size = { 24 24 }
+								tooltip = "Clear dynamic terrain."
+								tooltipwidget = { using = dockable_tooltip }
+								onclick = "[MaskPainterDynamicTerrain.ClearSelected]"
+								enabled = "[MaskPainterDynamicTerrain.HasAnySelectedSetTerrainType]"
+							}
+						}
+						CustomSliderWithValue = {
+							blockoverride "editbox" { text = "Value:" }
+							blockoverride "scrollbar" {
+								value = "[MaskPainterDynamicTerrain.GetTerrainValue]"
+								onchangefinish = "[MaskPainterDynamicTerrain.SetTerrainValue]"
+								tooltip = "Use slider to assign the preview value. It corresponds to the building construction progress in the game."
+							}
+							blockoverride "input" {
+								text = "[MaskPainterDynamicTerrain.GetTerrainValue]"
+								oneditingfinished = "[MaskPainterDynamicTerrain.SetTerrainValueStr]"
+								enabled = "[MaskPainterDynamicTerrain.HasAnySelectedSetTerrainType]"
+							}
+						}
+					    editor_checkbutton = {
+							layoutpolicy_horizontal = preferred
+					        blockoverride "checkbutton"
+					        {
+					            checked = "[IsDynamicTerrainAutoUpdate]"
+					            onclick = "[SetDynamicTerrainAutoUpdate(Not(IsDynamicTerrainAutoUpdate))]"
+					        }
+					        blockoverride "label"
+					        {
+					            text = "Auto update dynamic terrain when painting"
+					            tooltip = "Disable real time auto update of the dynamic materials to save some performance when painting."
+								tooltipwidget = { using = dockable_tooltip }
+					        }
+					    }
+					    hbox = {
+							editor_button = {
+								size = { 0 32 }
+								layoutpolicy_horizontal = preferred
+								fontsize = 12
+								align = center|nobaseline
+								text = "Refresh all"
+								onclick = "[UpdateDynamicTerrainInAllProvinces]"
+								tooltip = "Force refresh dynamic terrain being updated over the entire world. It may take a moment to complete..."
+								tooltipwidget = { using = dockable_tooltip }
+							}
+
+							editor_button = {
+								size = { 0 32 }
+								layoutpolicy_horizontal = preferred
+								fontsize = 12
+								align = center|nobaseline
+								text = "Clear all"
+								onclick = "[ClearDynamicTerrainOverrideForAllProvinces]"
+								tooltip = "Clear dynamic terrain from all territories."
+								tooltipwidget = { using = dockable_tooltip }
+							}
+						}
+					    editor_checkbutton = {
+							layoutpolicy_horizontal = preferred
+					        blockoverride "checkbutton"
+					        {
+					            checked = "[IsTerrainManipulatorProvincesPreview]"
+					            onclick = "[SetTerrainManipulatorProvincesPreview(Not(IsTerrainManipulatorProvincesPreview))]"
+					        }
+					        blockoverride "label"
+					        {
+					            text = "Preview Terrain Manipulator Provinces"
+					            tooltip = "Toggle visual debug that shows which provinces are affected by currently selected mask. These province lists are affecting the game play and are exported to the databases when you hit SAVE."
+								tooltipwidget = { using = dockable_tooltip }
+					        }
+					    }
+				    }
+				}
+			}
+
+			editor_frame = {
+			    layoutpolicy_horizontal = expanding
+
+				blockoverride "label" { text = "Cities:" }
+				blockoverride "content" {
+
+					name = "cities_frame"
+
+					hbox = {
+						layoutpolicy_horizontal = preferred
+						layoutpolicy_vertical = preferred
+
+						editor_button = {
+							size = { 0 32 }
+							layoutpolicy_horizontal = preferred
+							fontsize = 12
+							align = center|nobaseline
+							text = "Clear all"
+							onclick = "[Cities.ClearAll]"
+							tooltip = "Clear all cities."
+							tooltipwidget = { using = dockable_tooltip }
+						}
+
+						editor_button = {
+							size = { 0 32 }
+							layoutpolicy_horizontal = preferred
+							fontsize = 12
+							align = center|nobaseline
+							text = "Random"
+							onclick = "[Cities.Random]"
+							tooltip = "Make random cities."
+							tooltipwidget = { using = dockable_tooltip }
+						}
+					}
+
+					editor_toolbar_button = {
+						size = { 0 24 }
+						layoutpolicy_horizontal = preferred
+						layoutpolicy_vertical = fixed
+						elide = middle
+						text = "[Cities.GetCurrentBuildingTypeName]"
+						onclick = "[ToolPropertySearchList.OpenSearchList]"
+						tooltip = "Click to select building type."
+						tooltipwidget = { using = dockable_tooltip }
+					}
+
+					hbox = {
+						layoutpolicy_horizontal = preferred
+						layoutpolicy_vertical = preferred
+
+						visible = "[Cities.IsCurrentBuildingTypeValid]"
+
+						editbox = {
+							using = terraineditor_label
+							using = tools_spacing
+							layoutpolicy_horizontal = preferred
+							layoutpolicy_vertical = preferred
+							size = { 0 0 }
+							text = "[Cities.GetCurrentBuildingTypeName] Level: "
+							align = right|nobaseline
+						}
+
+						editor_textinput = {
+							layoutpolicy_horizontal = fixed
+							layoutpolicy_vertical = fixed
+							size = { 52 24 }
+							align = center
+							text = "[Cities.GetCurrentBuildingLevel]"
+							oneditingfinished = "[Cities.SetCurrentBuildingLevelStr]"
+						}
+					}
+
+				    editor_checkbutton = {
+
+						visible = "[Cities.IsCurrentBuildingTypeValid]"
+
+				        blockoverride "checkbutton"
+				        {
+				            checked = "[Cities.IsCurrentBuildingUnderConstruction]"
+				            onclick = "[Cities.SetCurrentBuildingUnderConstruction(Not(Cities.IsCurrentBuildingUnderConstruction))]"
+				        }
+				        blockoverride "label"
+				        {
+				            text = "Under construction"
+				            tooltip = "Sets the currently selected building type as under construction."
+							tooltipwidget = { using = dockable_tooltip }
+				        }
+				    }
+
+					CustomSliderWithValue = {
+						blockoverride "editbox" { text = "Poor Ratio:" }
+						blockoverride "scrollbar" {
+							value = "[Cities.GetPoorRatio]"
+							onchangefinish = "[Cities.SetPoorRatio]"
+							tooltip = "Use slider to assign the ratio of poor citizens."
+						}
+						blockoverride "input" {
+							text = "[Cities.GetPoorRatio]"
+							oneditingfinished = "[Cities.SetPoorRatioStr]"
+						}
+					}
+					CustomSliderWithValue = {
+						blockoverride "editbox" { text = "Mid Ratio:" }
+						blockoverride "scrollbar" {
+							value = "[Cities.GetMidRatio]"
+							onchangefinish = "[Cities.SetMidRatio]"
+							tooltip = "Use slider to assign the ratio of mid class citizens."
+						}
+						blockoverride "input" {
+							text = "[Cities.GetMidRatio]"
+							oneditingfinished = "[Cities.SetMidRatioStr]"
+						}
+					}
+					CustomSliderWithValue = {
+						blockoverride "editbox" { text = "Rich Ratio:" }
+						blockoverride "scrollbar" {
+							value = "[Cities.GetRichRatio]"
+							onchangefinish = "[Cities.SetRichRatio]"
+							tooltip = "Use slider to assign the ratio of rich citizens."
+						}
+						blockoverride "input" {
+							text = "[Cities.GetRichRatio]"
+							oneditingfinished = "[Cities.SetRichRatioStr]"
+						}
+					}
+
+					vbox = {
+						layoutpolicy_horizontal = preferred
+						layoutpolicy_vertical = preferred
+
+					    editor_checkbutton = {
+							layoutpolicy_horizontal = preferred
+					        blockoverride "checkbutton"
+					        {
+					            checked = "[Cities.IsAutoRefresh]"
+					            onclick = "[Cities.SetAutoRefresh(Not(Cities.IsAutoRefresh))]"
+					        }
+					        blockoverride "label"
+					        {
+					            text = "Auto refresh"
+					            tooltip = "Automatically refresh all cities when any data in the above form changes."
+								tooltipwidget = { using = dockable_tooltip }
+					        }
+					    }
+
+					    editor_checkbutton = {
+							layoutpolicy_horizontal = preferred
+					        blockoverride "checkbutton"
+					        {
+					            checked = "[IsDrawCityDebugSpheres]"
+					            onclick = "[SetDrawCityDebugSpheres(Not(IsDrawCityDebugSpheres))]"
+					        }
+					        blockoverride "label"
+					        {
+					            text = "Draw city spheres"
+				            	tooltip = "Toggle visibility of city spheres."
+								tooltipwidget = { using = dockable_tooltip }
+					        }
+					    }
+
+					    editor_checkbutton = {
+							layoutpolicy_horizontal = preferred
+					        blockoverride "checkbutton"
+					        {
+					            checked = "[IsDrawCityDebugGrid]"
+					            onclick = "[SetDrawCityDebugGrid(Not(IsDrawCityDebugGrid))]"
+					        }
+					        blockoverride "label"
+					        {
+					            text = "Draw city debug grid"
+				            	tooltip = "Toggle visibility of city debug grid, that shows up after moving city locator in the map object editor."
+								tooltipwidget = { using = dockable_tooltip }
+					        }
+					    }
+				    }
+
+					editor_frame = {
+        			    layoutpolicy_horizontal = expanding
+
+						blockoverride "label" { text = "Monuments:" }
+						blockoverride "content" {
+
+							name = "monuments_frame"
+
+							editor_toolbar_button = {
+								size = { 0 24 }
+								layoutpolicy_horizontal = preferred
+								layoutpolicy_vertical = fixed
+								elide = middle
+								text = "[Cities.GetMonumentsMode]"
+								onclick = "[ToolPropertySearchList.OpenSearchList]"
+								tooltip = "Click to select in which mode special buildings are shown."
+								tooltipwidget = { using = dockable_tooltip }
+							}
+						}
+					}
+
+					editor_button = {
+						size = { 0 32 }
+						layoutpolicy_horizontal = preferred
+						fontsize = 12
+						align = center|nobaseline
+						text = "Refresh"
+						onclick = "[Cities.Refresh]"
+						enabled = "[Not(Cities.IsAutoRefresh)]"
+						tooltip = "Apply changes using the above form."
+						tooltipwidget = { using = dockable_tooltip }
+					}
+				}
+			}
+		}
+	}
+}
+
+terrain_options_toolbar = {
+	# Map editor will look for description with this name.
+	# If not found, it will fallback to the toolbar defined in cw: "terrain_options_widget".
+	name = "terrain_options_widget_impl"
+
+	blockoverride "tools" {
+
+		editor_toolbar_divider = {
+			margin = { 4 0 }
+		}
+
+		# Here can add Victoria 3 custom buttons in the Terrain Options topbar, if wish to...
+	}
+}
+
+mapobjects_options = {
+	name = "mapobjects_options_impl"
+
+	blockoverride "list_extension" {
+		editor_toolbar_button = {
+			visible = "[HasCitiesOutOfState]"
+			tooltip = "Find a city outside its state"
+			text = "City Outside State"
+			onclick = "[FocusCameraOnCityOutOfState]"
+			size = { 88 32 }
+		}
+	}
+}

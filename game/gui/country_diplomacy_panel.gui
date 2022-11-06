@@ -1,0 +1,131 @@
+# COPY-PASTED FOR NOW
+@panel_width_minus_10 = 530			# used to be 450
+@panel_width = 540  				# used to be 460
+@panel_width_half = 270				# used to be 230
+@panel_width_plus_10 = 550  		# used to be 470
+@panel_width_plus_14 = 554			# used to be 474
+@panel_width_plus_14_half = 277		# used to be 237
+@panel_width_plus_20 = 560			# used to be 480
+@panel_width_plus_30 = 570			# used to be 490
+@panel_width_plus_70 = 610			# used to be 530
+
+types country_panel_types
+{
+	type country_panel_diplomacy_content = flowcontainer {
+		using = default_list_position
+		direction = vertical
+		minimumsize = { @panel_width -1 }
+		maximumsize = { @panel_width -1 }
+		margin_top = 10
+		#spacing = 5
+
+		
+		#ATTITUDE / INFAMY
+		attitude_info = {
+			blockoverride "context" {
+				datacontext = "[Country]"
+			}
+		}
+
+		#MAP MODE
+
+		map_modes = {
+			margin = { 0 10 }
+			parentanchor = hcenter
+			blockoverride "first_button_click" {
+				onclick = "[CountryPanel.ShowAttitude]"
+			}
+			blockoverride "first_button_selected" {
+				visible = "[CountryPanel.IsShowingAttitude]"
+			}
+			blockoverride "first_button_not_selected" {
+				visible = "[Not(CountryPanel.IsShowingAttitude)]"
+			}
+			blockoverride "first_button_icon" {
+				texture = "gfx/interface/icons/map_mode_icons/attitude.dds"
+			}
+			blockoverride "first_button_text" {
+				text = "MAP_MODE_ATTITUDE_COUNTRY"
+			}
+			blockoverride "second_button_click" {
+				onclick = "[CountryPanel.ShowRelations]"
+			}
+			blockoverride "second_button_selected" {
+				visible = "[CountryPanel.IsShowingRelations]"
+			}
+			blockoverride "second_button_not_selected" {
+				visible = "[Not(CountryPanel.IsShowingRelations)]"
+			}
+			blockoverride "second_button_icon" {
+				texture = "gfx/interface/icons/map_mode_icons/relations.dds"
+			}
+			blockoverride "second_button_text" {
+				text = "MAP_MODE_RELATIONS_COUNTRY"
+			}
+			blockoverride "third_button" {}
+		}
+
+		diplomatic_info = {
+		}
+
+		widget = { 
+			size = { 5 5 }
+		}	
+
+
+		flowcontainer = {
+			parentanchor = hcenter
+			direction = vertical
+			visible = "[Not(Country.IsLocalPlayer)]"
+		
+			default_header = {
+				blockoverride "text" {
+					text = INTERESTS
+				}
+			}
+
+			empty_state = {
+				blockoverride "visible" {
+					visible = "[IsDataModelEmpty(Country.AccessInterests)]"
+				}
+				blockoverride "text" {
+					text = "NO_INTERESTS"
+				}
+				blockoverride "margin" {
+					margin_top = 10
+					margin_bottom = 10
+				}				
+			}
+			
+			dynamicgridbox = {
+				visible = "[Not(IsDataModelEmpty(Country.AccessInterests))]"
+				datamodel = "[Country.AccessInterests]"
+				flipdirection = yes
+				datamodel_wrap = 3	
+				parentanchor = hcenter
+			
+				item = {
+					flowcontainer = {
+						direction = horizontal
+
+						background = {
+							using = entry_bg_simple
+						}	
+						
+						minimumsize = { 175 40 }
+
+						textbox = {
+							parentanchor = vcenter
+							datacontext = "[Interest.GetStrategicRegion]"
+							tooltip = "INTEREST_MARKER_TOOLTIP"						
+							text = "[StrategicRegion.GetName]"
+							size = { 175 35 }
+							fontsize_min = 10
+							align = center
+						}
+					}
+				}
+			}		
+		}
+	}
+}

@@ -1,0 +1,325 @@
+﻿namespace = greece
+
+greece.1 = {
+	type = country_event
+
+	title = greece.1.t
+	desc = greece.1.d
+	flavor = greece.1.f
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_signed_contract.bk2"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/signed_contract"
+
+	duration = 3
+
+	trigger = {
+		# Triggered by JE
+	}
+
+	immediate = {
+		random_primary_culture = {
+			save_scope_as = greek_culture_scope
+		}
+	}
+
+	option = {
+		name = greece.1.a
+		default_option = yes
+		if = {
+			limit = {
+				NOR = {
+					has_claim = s:STATE_MACEDONIA
+					owns_entire_state_region = STATE_MACEDONIA 
+				}
+			}
+			s:STATE_MACEDONIA = {
+				add_claim = ROOT
+			}
+		}
+		if = {
+			limit = {
+				NOR = { 
+					owns_entire_state_region = STATE_WESTERN_THRACE
+					has_claim = s:STATE_WESTERN_THRACE
+				}
+			}
+			s:STATE_WESTERN_THRACE = {
+				add_claim = ROOT
+			}
+		}
+		if = {
+			limit = {
+				NOR = { 
+					owns_entire_state_region = STATE_EAST_AEGEAN_ISLANDS
+					has_claim = s:STATE_EAST_AEGEAN_ISLANDS
+				}
+			}
+			s:STATE_EAST_AEGEAN_ISLANDS = {
+				add_claim = ROOT
+			}
+		}
+		if = {
+			limit = {
+				NOR = { 
+					owns_entire_state_region = STATE_CRETE
+					has_claim = s:STATE_CRETE
+				}
+			}
+			s:STATE_CRETE = {
+				add_claim = ROOT
+			}
+		}
+	}
+	option = {
+		name = greece.1.b
+		trigger = {
+			exists = c:TUR
+			c:TUR = {
+				OR = {
+					owns_entire_state_region = STATE_MACEDONIA
+					owns_entire_state_region = STATE_WESTERN_THRACE
+					owns_entire_state_region = STATE_EAST_AEGEAN_ISLANDS
+					owns_entire_state_region = STATE_CRETE
+				}
+			}
+		}
+		change_relations = {
+			country = c:TUR
+			value = 20
+		}
+	}
+}
+
+greece.2 = {
+	type = country_event
+
+	title = greece.2.t
+	desc = greece.2.d
+	flavor = greece.2.f
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_signed_contract.bk2"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/signed_contract"
+
+	duration = 3
+
+	trigger = {
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				s:STATE_EASTERN_THRACE = {
+					any_scope_state = {
+						NOT = {
+							owner = ROOT
+						}
+					}
+				}
+			}
+			s:STATE_EASTERN_THRACE = {
+				random_scope_state = {
+					limit = {
+						NOT = {
+							owner = ROOT
+						}
+					}
+					owner = {
+						save_scope_as = thrace_owner
+					}
+				}
+			}
+		}
+		s:STATE_EASTERN_THRACE = {
+			random_scope_state = {
+				save_scope_as = thrace_scope
+			}
+		}
+		s:STATE_AYDIN = {
+			random_scope_state = {
+				save_scope_as = aydin_scope
+			}
+		}
+	}
+
+	option = {
+		name = greece.2.a
+		trigger = {
+			OR = {
+				NOT = { owns_entire_state_region = STATE_EASTERN_THRACE }
+				NOT = { owns_entire_state_region = STATE_AYDIN }
+			}
+		}
+		if = {
+			limit = {
+				NOT = { owns_entire_state_region = STATE_EASTERN_THRACE }
+			}
+			s:STATE_EASTERN_THRACE = {
+				add_claim = ROOT
+			}
+		}
+		if = {
+			limit = {
+				NOT = { owns_entire_state_region = STATE_AYDIN }
+			}
+			s:STATE_AYDIN = {
+				add_claim = ROOT
+			}
+		}
+		if = {
+			limit = {
+				exists = scope:thrace_owner
+			}
+			create_incident = {
+				country = scope:thrace_owner
+				value = 20
+			}
+		}
+	}
+	option = {
+		name = greece.2.b
+		default_option = yes
+		add_modifier = {
+			name = greek_nationalism
+			months = long_modifier_time
+		}
+	}
+	option = {
+		name = greece.2.c
+		trigger = {
+			OR = {
+				NOT = { owns_entire_state_region = STATE_AYDIN }
+				NOT = { owns_entire_state_region = STATE_EASTERN_THRACE }
+				NOT = { owns_entire_state_region = STATE_HUDAVENDIGAR }
+				NOT = { owns_entire_state_region = STATE_TRABZON }
+			}
+		}
+		if = {
+			limit = {
+				NOT = { owns_entire_state_region = STATE_AYDIN }
+			}
+			s:STATE_AYDIN = {
+				remove_homeland = greek
+				custom_tooltip = {
+					text = move_greeks_tt
+					every_scope_state = {
+						every_scope_pop = {
+							limit = {
+								culture = cu:greek
+							}
+							move_pop = root.capital
+						}
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				NOT = { owns_entire_state_region = STATE_EASTERN_THRACE }
+			}
+			s:STATE_EASTERN_THRACE = {
+				remove_homeland = greek
+				custom_tooltip = {
+					text = move_greeks_tt
+					every_scope_state = {
+						every_scope_pop = {
+							limit = {
+								culture = cu:greek
+							}
+							move_pop = root.capital
+						}
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				NOT = { owns_entire_state_region = STATE_HUDAVENDIGAR }
+			}
+			s:STATE_HUDAVENDIGAR = {
+				remove_homeland = greek
+				custom_tooltip = {
+					text = move_greeks_tt
+					every_scope_state = {
+						every_scope_pop = {
+							limit = {
+								culture = cu:greek
+							}
+							move_pop = root.capital
+						}
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				NOT = { owns_entire_state_region = STATE_TRABZON }
+			}
+			s:STATE_TRABZON = {
+				remove_homeland = greek
+				custom_tooltip = {
+					text = move_greeks_tt
+					every_scope_state = {
+						every_scope_pop = {
+							limit = {
+								culture = cu:greek
+							}
+							move_pop = root.capital
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+greece.3 = {
+	type = country_event
+
+	title = greece.3.t
+	desc = greece.3.d
+	flavor = greece.3.f
+
+	placement = scope:ionian_overlord_capital
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_signed_contract.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/signed_contract"
+
+	duration = 3
+
+	trigger = {
+	}
+
+	immediate = {
+		c:ION = {
+			save_scope_as = ionian_country
+			top_overlord = {
+				save_scope_as = ionian_overlord
+				capital = {
+					save_scope_as = ionian_overlord_capital
+				}
+			}
+		}
+	}
+
+	option = {
+		name = greece.3.a
+		default_option = yes
+		annex = c:ION
+	}
+}

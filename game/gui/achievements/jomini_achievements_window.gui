@@ -1,0 +1,148 @@
+### this is an imported file. please make as little changes to this file as possible.
+### when you make a change please mark it very clearly using a pair of comment lines with the text '### v3' and '### to here'
+### texture paths and audio event ids are an exception to this and can be changed without marking
+
+window = {
+    name = "achievements_window"
+    size = { 100% 100% }
+    movable = no
+    layer = confirmation
+
+    using = Animation_ShowHide_Quick
+    using = Background_Full_Dim
+    
+    button_normal = {
+        size = { 100% 100% }
+        onclick = "[AchievementWindow.Hide]"
+        ### v3
+		using = close_button_sound
+		### to here
+    }
+
+    widget = {
+        parentanchor = center
+        ### v3
+        size = { 900 880 }
+        ### to here
+        alwaystransparent = no
+
+        using = Window_Background
+        using = Window_Decoration_Spike
+
+        vbox = {
+            alwaystransparent = yes
+            using = Window_Margins
+			### v3 outcomment (appears to be unused)
+            # datacontext = "[GetGameRules]"
+			### to here
+            spacing = 10
+
+            header_pattern = {
+                layoutpolicy_horizontal = expanding
+
+                blockoverride "header_text" {
+                    text = "ACHIEVEMENTS"
+                }
+
+                blockoverride "button_close"
+                {
+                    onclick = "[AchievementWindow.Hide]"
+                    shortcut = "close_window"
+                }
+            }
+
+			hbox_achievements_info = {
+                name = "ironman_and_achievements_info"
+                visible = "[AchievementWindow.HasGameStarted]"
+			}
+
+            hbox = {
+                block "filter_locked_hbox" {}
+                margin = { 0 10 }
+                spacing = 5
+
+                text_single = {
+                    text = "ACHIEVEMENT_FILTER_SHOW"
+                    align = nobaseline
+                    margin_right = 5
+                }
+
+                button_standard_list = {
+                    size = { 80 25 }
+                    text = "ACHIEVEMENT_FILTER_BUTTON_ALL"
+                    tooltip = "ACHIEVEMENT_FILTER_ALL_TOOLTIP"
+
+                    down = "[AchievementWindow.ShouldShowAll]"
+                    onclick = "[AchievementWindow.ShowAll]"
+                    using = tab_button_sound
+                    alwaystransparent = "[AchievementWindow.ShouldShowAll]"
+                }
+				
+				button_standard_list = {
+                    visible = "[AchievementWindow.HasGameStarted]"
+                    size = { 80 25 }
+                    text = "ACHIEVEMENT_FILTER_BUTTON_POSSIBLE"
+                    tooltip = "ACHIEVEMENT_FILTER_POSSIBLE_TOOLTIP"
+
+                    down = "[AchievementWindow.ShouldShowPossible]"
+                    onclick = "[AchievementWindow.ShowPossible]"
+                    using = tab_button_sound
+                }
+
+                button_standard_list = {
+                    size = { 80 25 }
+                    text = "ACHIEVEMENT_FILTER_BUTTON_UNLOCKED"
+                    tooltip = "ACHIEVEMENT_FILTER_UNLOCKED_TOOLTIP"
+
+                    down = "[AchievementWindow.ShouldShowUnlocked]"
+                    onclick = "[AchievementWindow.ShowUnlocked]"
+                    using = tab_button_sound
+                }
+
+                button_standard_list = {
+                    visible = "[Not( AchievementWindow.HasGameStarted )]"
+                    size = { 80 25 }
+                    text = "ACHIEVEMENT_FILTER_BUTTON_LOCKED"
+                    tooltip = "ACHIEVEMENT_FILTER_LOCKED_TOOLTIP"
+
+                    down = "[AchievementWindow.ShouldShowLocked]"
+                    onclick = "[AchievementWindow.ShowLocked]"
+                    using = tab_button_sound
+                }
+            }
+
+            ### CONTENT ###
+            scrollbox = {
+                layoutpolicy_horizontal = expanding
+                layoutpolicy_vertical = expanding
+
+                blockoverride "scrollbox_content" {
+                    vbox = {
+                        datamodel = "[AchievementWindow.AccessGroups]"
+                        layoutpolicy_horizontal = expanding
+
+                        item = {
+                            vbox_achievement_group = {
+                                layoutpolicy_horizontal = expanding
+                            }
+                        }
+                    }
+                }
+            }
+
+            hbox = {
+                margin = { 0 10 }
+                margin_top = 5
+
+                button_primary = {
+                    text = "CLOSE_LABEL"
+                    onclick = "[AchievementWindow.Hide]"
+                    ### v3 replacement
+                    using = close_button_sound
+                    #shortcut = "close_window"
+                    ### to here
+                }
+            }
+        }
+    }
+}

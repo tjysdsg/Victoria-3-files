@@ -1,0 +1,346 @@
+﻿namespace = africa_colonial_events
+
+africa_colonial_events.51 = {
+	type = country_event
+	placement = scope:african_colony_state_sender
+
+	title = africa_colonial_events.51.t
+	desc = africa_colonial_events.51.d
+	flavor = africa_colonial_events.51.f
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_before_the_battle.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/before_the_battle"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	duration = 3
+
+	trigger = {
+		any_scope_state = {
+			is_incorporated = no
+			state_in_africa = yes
+			state_region = {
+				any_scope_state = {
+					is_incorporated = no
+					owner = {
+						NOT = { this = root }
+						#country_rank = root.country_rank
+						capital = { state_in_africa = no }
+					}
+				}
+			}
+		}
+	}
+
+	immediate = {
+		save_scope_as = african_colony_conflict_sender
+		random_scope_state = {
+			limit = {
+				is_incorporated = no
+				state_in_africa = yes
+				state_region = {
+					any_scope_state = {
+						is_incorporated = no
+						owner = {
+							NOT = { this = root }
+							#country_rank = root.country_rank
+							capital = { state_in_africa = no }
+						}
+					}
+				}
+			}
+			save_scope_as = african_colony_state_sender
+			state_region = {
+				random_scope_state = {
+					limit = {
+						is_incorporated = no
+						owner = {
+							NOT = { this = root }
+							#country_rank = root.country_rank
+							capital = { state_in_africa = no }
+						}
+					}
+					save_scope_as = african_colony_state_recipient
+					owner = {
+						save_scope_as = african_colony_conflict_recipient
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.51.a
+		create_incident = {
+			country = scope:african_colony_conflict_recipient
+			value = 10
+		}
+		scope:african_colony_conflict_recipient = {
+			trigger_event = { id = africa_colonial_events.52 days = 0 popup = yes }
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.51.b
+		default_option = yes
+
+		add_modifier = {
+			name = withdrew_from_colonial_incident # country_prestige_add = -10
+			months = normal_modifier_time
+		}
+	}
+}
+
+africa_colonial_events.52 = {
+	type = country_event
+	placement = scope:african_colony_state_recipient
+
+	title = africa_colonial_events.52.t
+	desc = africa_colonial_events.52.d
+	flavor = africa_colonial_events.52.f
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_before_the_battle.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/before_the_battle"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	duration = 3
+
+	option = {
+		name = africa_colonial_events.52.a
+		create_incident = {
+			country = scope:african_colony_conflict_sender
+			value = 10
+		}
+		scope:african_colony_conflict_sender = {
+			post_notification = colonial_conflict_region_demands_refused
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.52.b
+		default_option = yes
+
+		scope:african_colony_state_recipient.state_region = {
+			add_claim = scope:african_colony_conflict_sender
+		}
+
+		add_modifier = {
+			name = withdrew_from_colonial_incident # country_prestige_add = -10
+			months = normal_modifier_time
+		}
+		scope:african_colony_conflict_sender = {
+			post_notification = colonial_conflict_region_demands_met
+		}
+	}
+}
+
+africa_colonial_events.53 = {
+	type = country_event
+	placement = scope:african_colony_state
+
+	title = africa_colonial_events.53.t
+	desc = africa_colonial_events.53.d
+	flavor = africa_colonial_events.53.f
+
+	event_image = {
+		video = "gfx/event_pictures/africa_construction_colony.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/africa/construction_colony"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	duration = 3
+
+	trigger = {
+		has_law = law_type:law_colonial_resettlement
+		any_scope_state = {
+			is_incorporated = no
+			state_in_africa = yes
+			any_scope_pop = {
+				pop_has_primary_culture = yes
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				is_incorporated = no
+				state_in_africa = yes
+				any_scope_pop = {
+					pop_has_primary_culture = yes
+				}
+			}
+			save_scope_as = african_colony_state
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.53.a
+		add_modifier = {
+			name = supplying_colonists
+			months = normal_modifier_time
+			multiplier = money_amount_multiplier_medium
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.53.b
+		trigger = {
+			bureaucracy >= 10
+			institution_investment_level = {
+				institution = institution_colonial_affairs
+				value >= 2
+			}
+		}
+		add_modifier = {
+			name = assisting_colonists
+			months = normal_modifier_time
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.53.c
+		default_option = yes
+
+		scope:african_colony_state = {
+			add_modifier = {
+				name = struggling_colonists
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+africa_colonial_events.54 = {
+	type = country_event
+	placement = scope:african_colony_claim_conflict_sender
+
+	title = africa_colonial_events.54.t
+	desc = africa_colonial_events.54.d
+	flavor = africa_colonial_events.54.f
+
+	event_image = {
+		video = "gfx/event_pictures/africa_construction_colony.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/africa/construction_colony"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	duration = 3
+
+	trigger = {
+		any_state = {
+			has_claim_by = root
+			state_in_africa = yes
+			is_incorporated = no
+			owner = {
+				not = { this = root }
+				capital = { state_in_africa = no }
+			}
+		}
+	}
+
+	immediate = {
+		save_scope_as = african_colony_claim_conflict_sender
+		random_state = {
+			limit = {
+				has_claim_by = root
+				state_in_africa = yes
+				is_incorporated = no
+				owner = {
+					not = { this = root }
+					capital = { state_in_africa = no }
+				}
+			}
+			save_scope_as = african_colony_claim_state
+			owner = {
+				save_scope_as = african_colony_claim_conflict_recipient
+			}
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.54.a
+		create_incident = {
+			country = scope:african_colony_claim_conflict_recipient
+			value = 15
+		}
+		scope:african_colony_claim_conflict_recipient = {
+			trigger_event = { id = africa_colonial_events.55 days = 0 popup = yes }
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.54.b
+		default_option = yes
+
+		scope:african_colony_claim_state.state_region = {
+			remove_claim = root
+		}
+	}
+}
+
+africa_colonial_events.55 = {
+	type = country_event
+	placement = scope:african_colony_claim_state
+
+	title = africa_colonial_events.55.t
+	desc = africa_colonial_events.55.d
+	flavor = africa_colonial_events.55.f
+
+	event_image = {
+		video = "gfx/event_pictures/africa_construction_colony.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/africa/construction_colony"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	duration = 3
+
+	option = {
+		name = africa_colonial_events.55.a
+		create_incident = {
+			country = scope:african_colony_claim_conflict_sender
+			value = 10
+		}
+		scope:african_colony_claim_conflict_sender = {
+			post_notification = colonial_conflict_claim_demands_refused
+		}
+
+		ai_chance = {
+			base = 9
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.55.b
+		default_option = yes
+
+		scope:african_colony_claim_state = {
+			set_state_owner = scope:african_colony_claim_conflict_sender
+		}
+		scope:african_colony_claim_conflict_sender = {
+			post_notification = colonial_conflict_claim_demands_met
+		}
+
+		ai_chance = {
+			base = 1
+		}
+	}
+}

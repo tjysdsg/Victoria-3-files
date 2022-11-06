@@ -1,0 +1,192 @@
+﻿lesson_expand_military_how = { 
+	start_automatically = no
+	chain = lesson_chain_journal_guides
+
+	lesson_expand_military_how_1 = {
+		window_name = down_middle_tutorial_popup
+		text = "lesson_expand_military_how_1_desc"
+		header_info = "lesson_step_1_of_3"
+
+		highlight_widget = tutorial_highlight_military_lens
+		highlight_widget_dynamic_loc = "buildings"
+
+		gui_transition = {
+			button_id = "skip"
+			button_text = "tutorial_lesson_button_skip"
+			target = lesson_finish
+		}
+		trigger_transition = {
+			button_id = "next"
+			button_text = "tutorial_lesson_button_next"
+			target = lesson_expand_military_how_2
+			trigger = {
+				custom_tooltip = {
+					text = "lesson_expand_military_how_1_continue"
+					
+					is_lens_open = {
+						lens = military_lens
+						tab_name = buildings
+					}
+				}
+			}
+		}
+	}
+
+	lesson_expand_military_how_2 = {
+		window_name = down_middle_tutorial_popup
+		text = "lesson_expand_military_how_2_desc"
+		header_info = "lesson_step_2_of_3"
+
+		highlight_widget_dynamic_loc = "building_barracks_lens_option"
+		highlight_widget_dynamic_loc = "building_naval_base_lens_option"
+
+		gui_transition = {
+			button_id = "back"
+			button_text = "tutorial_lesson_button_back"
+			target = lesson_expand_military_how_1
+			enabled = {
+				custom_tooltip = {
+					text = "lesson_expand_military_how_1_continue"
+
+					NOT = {
+						is_lens_open = {
+							lens = military_lens
+							tab_name = buildings
+						}
+					}
+				}
+			}
+		}
+		gui_transition = {
+			button_id = "next"
+			button_text = "tutorial_lesson_button_next"
+			target = lesson_expand_military_how_3
+			enabled = {
+				custom_tooltip = {
+					text = "lesson_expand_military_how_2_continue"
+
+					#todo PRCAL-19633 - also make this into a trigger_transition
+					#OR = {
+						#has_map_interaction_build_naval_base
+						#has_map_interaction_build_barracks
+					#}
+				}
+			}
+		}
+	}
+
+	lesson_expand_military_how_3 = {
+		window_name = top_middle_right_tutorial_popup
+		text = "lesson_expand_military_how_3_desc"
+		header_info = "lesson_step_3_of_3"
+
+		gui_transition = {
+			button_id = "back"
+			button_text = "tutorial_lesson_button_back"
+			target = lesson_expand_military_how_2
+			enabled = {
+				custom_tooltip = {
+					text = "lesson_expand_military_how_3_back"
+
+					#todo PRCAL-19633 - also make this into a trigger_transition
+					#NOT = {
+						#OR = {
+							#has_map_interaction_build_naval_base
+							#has_map_interaction_build_barracks
+						#}
+					#}
+				}
+			}
+		}
+		gui_transition = {
+			button_id = "next"
+			button_text = "tutorial_lesson_button_complete"
+			target = lesson_finish
+			enabled = {
+				custom_tooltip = {
+					text = "lesson_expand_military_how_3_continue"
+
+					any_scope_building = {
+						OR = {
+							is_building_type = building_naval_base
+							is_building_type = building_barracks
+						}
+						is_under_construction = yes
+					}
+				}
+			}
+		}
+	}
+}
+
+lesson_expand_military_why = { 
+	start_automatically = no
+	chain = lesson_chain_journal_guides
+
+	lesson_expand_military_why_1 = {
+		window_name = down_middle_tutorial_popup
+		text = "lesson_expand_military_why_1_desc"
+		header_info = "lesson_step_1_of_3"
+
+		gui_transition = {
+			button_id = "skip"
+			button_text = "tutorial_lesson_button_skip"
+			target = lesson_finish
+		}
+		gui_transition = {
+			button_id = "next"
+			button_text = "tutorial_lesson_button_next"
+			target = lesson_expand_military_why_2
+		}
+	}
+
+	lesson_expand_military_why_2 = {
+		window_name = down_middle_tutorial_popup
+		text = "lesson_expand_military_why_2_desc"
+		header_info = "lesson_step_2_of_3"
+
+		gui_transition = {
+			button_id = "back"
+			button_text = "tutorial_lesson_button_back"
+			target = lesson_expand_military_why_1
+		}
+		gui_transition = {
+			button_id = "next"
+			button_text = "tutorial_lesson_button_next"
+			target = lesson_expand_military_why_3
+		}
+	}
+
+	lesson_expand_military_why_3 = {
+		window_name = down_middle_tutorial_popup
+		text = "lesson_expand_military_why_3_desc"
+		header_info = "lesson_step_3_of_3"
+
+		gui_transition = {
+			button_id = "back"
+			button_text = "tutorial_lesson_button_back"
+			target = lesson_expand_military_why_2
+		}
+		gui_transition = {
+			button_id = "next"
+			button_text = "tutorial_lesson_button_complete"
+			target = lesson_finish
+		}
+	}
+}
+
+lesson_expand_military_complete = { 
+	start_automatically = no
+	chain = lesson_chain_journal_guides
+
+	lesson_expand_military_complete = {
+		window_name = down_middle_tutorial_popup
+		text = "lesson_expand_military_complete_desc"
+
+		gui_transition = {
+			button_id = "next"
+			button_text = "tutorial_lesson_button_complete"
+			target = lesson_finish
+		}
+	}
+}

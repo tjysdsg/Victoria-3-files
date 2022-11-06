@@ -1,0 +1,94 @@
+﻿namespace = aviation
+
+aviation.1 = {
+	type = country_event
+	placement = ROOT
+	
+	title = aviation.1.t
+	desc = aviation.1.d
+	flavor = aviation.1.f
+	
+	event_image = {
+		video = "gfx/event_pictures/unspecific_airPlane.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/airplane"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+	
+	duration = 3
+
+	trigger = {
+	}
+
+	immediate = {
+		ROOT = { save_scope_as = flying_circus_home }
+		random_scope_war = {
+			limit = {
+				any_scope_front = {
+					any_scope_general = {
+						owner = ROOT
+						commander_pm_usage = {
+							target = ROOT
+							production_method = pm_aerial_recon
+							value > 0.5
+						}
+					}
+				}
+			}
+			save_scope_as = flying_circus_war
+			random_scope_front = {
+				limit = {
+					any_scope_general = {
+						owner = ROOT
+						commander_pm_usage = {
+							target = ROOT
+							production_method = pm_aerial_recon
+							value > 0.5
+						}
+					}
+				}
+				random_scope_general = {
+					limit = {
+						owner = ROOT
+						commander_pm_usage = {
+							target = ROOT
+							production_method = pm_aerial_recon
+							value > 0.5
+						}
+					}
+					save_scope_as = flying_circus_general
+				}
+				random_scope_state = {
+					save_scope_as = flying_circus_state
+				}
+			}
+		}
+	}
+
+	option = { # A cult of hero-worship will help domestically
+		name = aviation.1.a
+		default_option = yes
+		scope:flying_circus_war = {
+			add_war_war_support = {
+				target = scope:flying_circus_home
+				value = 10
+			}
+		}
+		scope:flying_circus_general = {
+			add_modifier = { # popularity
+				name = war_hero_cult
+			}
+		}
+	}
+	option = { # Give him all he needs at the front!
+		name = aviation.1.b
+
+		scope:flying_circus_general = {
+			add_modifier = { # combat
+				name = war_hero_fighter
+			}
+		}
+	}
+}

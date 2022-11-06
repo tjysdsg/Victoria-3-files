@@ -1,0 +1,589 @@
+types notifications {
+	@message_feed_width = 425 #425 is max otherwise will overlap with lens in lowest res.
+	@message_feed_height = 140
+	@message_feed_animation_duration = 0.2
+	
+	type message_feed_widget = widget {
+		name = "message_feed_widget"
+		using = hud_visibility
+		using = default_fade_in_out
+		
+		container = {
+			resizeparent = yes
+			
+			state = {
+				name = notifications_minimize
+				using = Animation_Curve_Default
+				duration = 0.2
+				position_x = 388
+				alpha = 0.65
+			}
+			
+			state = {
+				name = notifications_maximize
+				using = Animation_Curve_Default
+				duration = 0.2
+				position_x = 0
+				alpha = 1
+			}
+		
+			### notifications in fullscreen (can maximize and minimize)
+			notifications_message_feed = {
+				using = fullscreen_show
+				onmousehierarchyenter = "[PdxGuiInterruptThenTriggerAllAnimations('notifications_minimize','notifications_maximize')]"
+				onmousehierarchyleave = "[PdxGuiInterruptThenTriggerAllAnimations('notifications_maximize','notifications_minimize')]"
+			}
+			
+			### notifications in non fullscreen
+			notifications_message_feed = {
+				using = fullscreen_hide
+				# this maximize is for when you click things from the notifications in fullscreen the mouse will "leave" the outliner thus it minimizes.
+				# so this makes sure it stays maximized.
+				onmousehierarchyenter = "[PdxGuiInterruptThenTriggerAllAnimations('notifications_minimize','notifications_maximize')]"
+			}
+		}
+	}
+	
+	type notifications_message_feed = flowcontainer {
+		direction = vertical
+		margin = { 0 5 }
+
+		scrollarea = {
+			autoresizescrollarea = yes
+			#dont go over 450px in height here, it is adapted
+			#for having 2 rows of lens open in lowest resolution
+			#and so that you can still see a little bit of outliner.
+			maximumsize = { 425 450 }
+			scrollbarpolicy_horizontal = always_off
+
+			scrollbar_vertical = {
+				using = vertical_scrollbar		
+			}
+			
+			scrollwidget = {
+				flowcontainer = {
+					direction = vertical
+					minimumsize = { 425 -1 }
+					datamodel = "[MessageFeedHandler.GetItems]"
+					
+					item = {
+						widget = {
+							flowcontainer = {
+								datacontext = "[FeedMessageItem.GetNotification]"
+								alwaystransparent = no
+								resizeparent = yes
+								direction = vertical
+
+								position = { 0 0 }
+
+								state = {
+									name = "mark_to_delete"
+									trigger_when = "[FeedMessageItem.IsSetToDelete]"
+									on_start = "[FeedMessageItem.StartAnimation]"
+									on_finish = "[FeedMessageItem.EndAnimation]"
+									on_finish = "[FeedMessageItem.Delete]"
+									duration = 0
+									alpha = 0
+								}
+								
+								# new message sliding in animation
+								state = {
+									name = "message_feed_slide_in"
+									next = "message_feed_slide_in_2"
+									trigger_when = "[FeedMessageItem.ShouldExpandAuto]"
+									duration = 0
+									position_x = 400
+									alpha = 0
+								}
+
+								state = {
+									name = "message_feed_slide_in_2"
+									next = "message_feed_slide_in_3"
+									duration = 0.2
+									using = Animation_Curve_EaseOut
+									position_x = -10
+									alpha = 1
+								}
+
+								state = {
+									name = "message_feed_slide_in_3"
+									duration = 0.1
+									using = Animation_Curve_Default
+									position_x = 0
+								}
+
+								background = {
+									using = paper_bg_dark
+									alpha = 0.92
+									margin = { 2 0 }
+								}
+
+								button = {
+									name = "header"
+									size = { @message_feed_width 32 }
+									onclick = "[FeedMessageItem.ToggleExpand]"
+									
+									rightclick_modifiers = {
+										ondefault = "[FeedMessageItem.MarkToDelete]"
+										onshift = "[MessageFeedHandler.MarkAllForDelete]"
+									}
+
+									tooltip = "MESSAGE_CLICK_TOOLTIP"
+									using = Feed_Message_Header
+									using = situation_entry_parent_hover_states
+									using = ui_pointer_over
+
+									state = {
+										name = _mouse_hierarchy_enter
+										on_start = "[PdxGuiWidget.FindChild('button_dismiss_all').TriggerAnimation('hover_enter')]"
+										on_start = "[SetCanOpenRightClickContextMenu( '(bool)no' )]"
+									}
+
+									state = {
+										name = _mouse_hierarchy_leave
+										on_start = "[PdxGuiWidget.FindChild('button_dismiss_all').TriggerAnimation('hover_leave')]"
+										on_start = "[SetCanOpenRightClickContextMenu( '(bool)yes' )]"
+									}
+
+									### PRCAL-11417
+									#visible = "[PlayerMessageItem.GetType.IsNeutral]"
+									#visible = "[PlayerMessageItem.GetType.IsGood]"
+									#visible = "[PlayerMessageItem.GetType.IsBad]"
+
+									hbox = {
+										margin_right = 3
+										margin_left = 3
+										spacing = 3
+
+										icon = {
+											size = { 28 28 }
+											texture = "[Notification.GetTexture]"
+											tooltip = "[Notification.GetToolTip]"
+										}
+
+										text_single = {
+											name = "title"
+											layoutpolicy_horizontal = expanding
+											text = "[Notification.GetName]"
+											align = nobaseline
+											max_width = 300
+											fontsize_min = 14
+											alwaystransparent = yes
+										}
+
+										hbox = {
+											vbox = {
+												name = "button_dismiss"
+												alpha = 1
+
+												state = {
+													name = hover_enter
+													alpha = 0
+													duration = 0.05
+													using = Animation_Curve_Default
+												}
+
+												state = {
+													name = hover_leave
+													alpha = 1
+													duration = 0.2
+													using = Animation_Curve_Default
+												}
+
+												text_single = {
+													name = "date"
+													text = "[Notification.GetDate]"
+													align = nobaseline
+												}
+											}
+
+											widget = {
+												allow_outside = yes
+
+												button_clear = {
+													name = "button_dismiss_all"
+													widgetanchor = right
+													position = { 0 -3 }
+													alpha = 0
+
+													state = {
+														name = hover_enter
+														alpha = 1
+														duration = 0.05
+														using = Animation_Curve_Default														
+													}
+
+													state = {
+														name = hover_leave
+														alpha = 0
+														duration = 0.2
+														using = Animation_Curve_Default
+													}
+
+													size = { 26 26 }
+													onrightclick = "[MessageFeedHandler.MarkAllForDelete]"
+													onclick = "[FeedMessageItem.MarkToDelete]"
+													using = notification_dismiss_button_sound
+													using = tooltip_se
+													tooltip = "MESSAGE_CLEAR_ALL_TOOLTIP"
+												}
+											}
+										}
+										
+										### TIMER PROGRESS
+										piechart = {
+											size = { 20 20 }
+											framesize = { 164 164 }
+											frame = 2
+											texture = "gfx/interface/progressbar/progress_round_default.dds"
+
+											block "datamodel" {
+												datamodel = "[FeedMessageItem.GetTimeoutTimer.GetSlicesInverted]"
+											}
+
+											item = {
+												pieslice = {
+													value = "[PieTimerSlice.GetValue]"
+													color = "[PieTimerSlice.GetColor]"
+												}
+											}
+										}
+									}
+								}
+
+								### EXPANDED AREA WITH MORE TEXT
+								widget = {
+									name = "message_feed_text_area"
+									size = { @message_feed_width 0 }
+									scissor = yes
+
+									### COLLAPSE
+									state = {
+										name = "collapse_auto"
+										trigger_when = "[FeedMessageItem.ShouldCollapseAuto]"
+										on_start = "[FeedMessageItem.StartAnimation]"
+										on_finish = "[FeedMessageItem.EndAnimation]"
+										on_finish = "[FeedMessageItem.OnCollapseFinished]"
+										size = { @message_feed_width 0 }
+
+										duration = @message_feed_animation_duration
+										alpha = 0
+									}
+
+									state = {
+										name = "collapse_click"
+										trigger_when = "[FeedMessageItem.ShouldCollapseFromClick]"
+										on_start = "[FeedMessageItem.StartAnimation]"
+										start_sound = {
+											soundeffect = "event:/SFX/UI/Alerts/notification_collapse"
+										}
+										on_finish = "[FeedMessageItem.EndAnimation]"
+										on_finish = "[FeedMessageItem.OnCollapseFinished]"
+										size = { @message_feed_width 0 }
+
+										duration = @message_feed_animation_duration
+										alpha = 0
+									}
+
+									### EXPAND
+									state = {
+										name = "expand_auto"
+										trigger_when = "[FeedMessageItem.ShouldExpandAuto]"
+										on_start = "[FeedMessageItem.StartAnimation]"
+										on_finish = "[FeedMessageItem.EndAnimation]"
+										on_finish = "[FeedMessageItem.OnExpandFinished]"
+										size = { @message_feed_width @message_feed_height }
+
+										duration = 0
+										alpha = 1
+									}
+
+									state = {
+										name = "expand_click"
+										trigger_when = "[FeedMessageItem.ShouldExpandFromClick]"
+										on_start = "[FeedMessageItem.StartAnimation]"
+										on_finish = "[FeedMessageItem.EndAnimation]"
+										on_finish = "[FeedMessageItem.OnExpandFinished]"
+										start_sound = {
+											soundeffect = "event:/SFX/UI/Alerts/notification_expand"
+										}
+										size = { @message_feed_width @message_feed_height }
+											
+										duration = @message_feed_animation_duration
+										alpha = 1
+									}
+
+									### text
+									hbox = {
+										using = clickthrough_blocker
+										name = "text_and_icons"
+										layoutpolicy_horizontal = expanding
+										layoutpolicy_vertical = expanding
+										margin_right = 10
+
+										state = {
+											name = appear
+											using = Animation_FadeIn_Quick
+											trigger_when = "[Or(FeedMessageItem.ShouldExpandFromClick, FeedMessageItem.ShouldExpandAuto)]"
+										}
+
+										state = {
+											name = disappear
+											using = Animation_FadeOut_Quick
+											trigger_when = "[FeedMessageItem.ShouldCollapseAuto]"
+										}
+										
+										widget = {
+											layoutpolicy_vertical = growing
+											layoutpolicy_horizontal = expanding
+
+											text_multi = {
+												# Optimization - no need to generate a description if it's hidden
+												visible = "[FeedMessageItem.IsExpanded]"
+
+												name = "effect"
+												autoresize = yes
+												resizeparent = yes
+												maximumsize = { @message_feed_width @message_feed_height }
+												elide = right
+												fontsize_min = 12
+
+												margin = { 15 5 }
+
+												text = "[Notification.GetDescription]"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	### TOASTS 
+	type notifications_toasts = widget {
+		name = "toast_container_widget"
+		visible = "[ToastMessageHandler.HasMessage]"
+		datacontext = "[ToastMessageHandler.GetNotification]"
+		allow_outside = yes
+		force_data_properties_update = yes
+		
+		alpha = 0
+
+		state = {
+			name = _show
+			duration = 0.15
+			alpha = 1
+			using = Animation_Curve_Default
+			
+			on_start = "[PdxGuiWidget.AccessChild('toast_icon').TriggerAnimation('show')]"
+			on_start = "[PdxGuiWidget.AccessChild('toast_icon2').TriggerAnimation('show')]"
+		
+			# start_sound doesn't seem to work with [Notification.GetOnCreatedSoundEvent] here, triggered from code instead
+		}
+		
+		state = {
+			name = _hide
+			duration = 0.15
+			alpha = 0
+			using = Animation_Curve_Default
+			
+			on_start = "[PdxGuiWidget.AccessChild('toast_icon').TriggerAnimation('hide')]"
+			on_start = "[PdxGuiWidget.AccessChild('toast_icon2').TriggerAnimation('hide')]"
+		}
+
+		### BEHIND DECORATION ###
+		icon = {
+			name = "toast_icon"
+			texture = "gfx/interface/notifications/dec_frame.dds"
+			framesize = { 470 64 }
+			size = { 235 32 }
+			position = { 0 -35 }
+			parentanchor = hcenter
+			
+			frame = 13
+			using = 13_frames_animation
+			blockoverride "trigger" {
+				name = show
+			}
+			blockoverride "first_duration" {
+				duration = 0
+				delay = 0.3
+			}
+			state = {
+				name = show
+				alpha = 1
+				duration = 0
+				using = Animation_Curve_Default
+			}
+			state = {
+				name = hide
+				using = Animation_FadeOut_Quick
+			}	
+		} 
+		icon = {
+			name = "toast_icon2"
+			texture = "gfx/interface/notifications/dec_frame.dds"
+			framesize = { 470 64 }
+			size = { 235 32 }
+			scale = 0.85
+			position = { 0 28 }
+			parentanchor = bottom|hcenter
+			mirror = vertical
+			
+			frame = 13
+			using = 13_frames_animation
+			blockoverride "trigger" {
+				name = show
+			}
+			blockoverride "first_duration" {
+				duration = 0
+				delay = 0.3
+			}
+			state = {
+				name = show
+				alpha = 1
+				duration = 0
+				using = Animation_Curve_Default
+			}
+			state = {
+				name = hide
+				using = Animation_FadeOut_Quick
+			}
+		} 
+
+		### PAPER ###
+		widget = {
+			name = "toast_paper"
+			size = { 100% 100% }
+			parentanchor = center
+			alwaystransparent = yes
+			tooltip = "[Notification.GetToolTip]"
+
+			button = {
+				size = { 100% 100% }
+				onmousehierarchyenter = "[ToastMessageHandler.StartDelayingMessage]"
+				onmousehierarchyleave = "[ToastMessageHandler.StopDelayingMessage]"
+				onrightclick = "[ToastMessageHandler.DismissMessage]"
+			}
+
+			background = {
+				name = "toast_background"
+				using = paper_bg
+				margin = { 12 10 }
+				
+				modify_texture = {
+					using = bg_tiling_pattern
+					alpha = 0.05
+				}
+			}
+		}
+
+		### CONTENT ###
+		flowcontainer = {
+			direction = vertical
+			name = "toast_content"
+			resizeparent = yes
+			spacing = 10
+
+			text_multi = {
+				name = "title"
+				minimumsize = { 585 -1 }
+				maximumsize = { 585 -1 }
+				autoresize = yes
+				multiline = yes
+				margin = { 5 5 }
+				align = center|nobaseline
+
+				text = "[Notification.GetName]"
+				using = fontsize_large
+
+				background = {
+					name = "neutral"
+					using = default_header_bg
+					margin = { 0 2 }
+
+					modify_texture = {
+						texture = "gfx/frontend/interface/component_masks/mask_fade_horizontal_middle_thick.dds"
+						blend_mode = alphamultiply
+					}
+					
+					### PRCAL-11417
+					#visible = "[PlayerMessageItem.GetType.IsNeutral]"
+					#visible = "[PlayerMessageItem.GetType.IsGood]"
+					#visible = "[PlayerMessageItem.GetType.IsBad]"
+				}
+			}
+
+			text_multi = {
+				name = "desc"
+				minimumsize = { 585 -1 }
+				maximumsize = { 585 -1 }
+				autoresize = yes
+				multiline = yes
+				margin = { 5 5 }
+				align = center|nobaseline
+
+				text = "[Notification.GetDescription]"
+
+				alwaystransparent = yes
+			}
+		}
+
+		cameracontrolwidget = 
+		{
+			size = { 2000% 2000% }
+			# Limit to 8K to prevent widget getting to large and causing a crash
+			maximumsize = { 7680 4320 }
+			widgetanchor = center
+			parentanchor = center
+			position = { 0 15 }
+			alwaystransparent = yes
+			entity_instance = vfx_entity_ui_toasts
+			ignore_in_debug_draw = yes
+			gfxtype = jomini_entitygfx
+		}
+		
+		### CLOSE BUTTON
+		close_button = {
+			parentanchor = top|right
+			onclick = "[ToastMessageHandler.DismissMessage]"
+			tooltip = "DISMISS"
+		}
+	}
+}
+
+notifications_toasts = {
+	parentanchor = top|hcenter
+	position = { 0 165 }
+	layer = toasts
+}
+
+template situation_entry_parent_hover_states
+{
+	state = {
+		name = _mouse_hierarchy_enter
+		on_start = "[PdxGuiWidget.FindChild('button_dismiss').TriggerAnimation('hover_enter')]"
+	}
+
+	state = {
+		name = _mouse_hierarchy_leave
+		on_start = "[PdxGuiWidget.FindChild('button_dismiss').TriggerAnimation('hover_leave')]"
+	}
+}
+
+template Feed_Message_Header
+{
+	using = expand_button_bg
+}
+
+types Toasts
+{
+	type button_cancel = button_icon
+	{
+		texture = "gfx/frontend/interface/icons/flat_icons/cancel.dds"
+	}
+}

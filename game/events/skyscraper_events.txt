@@ -1,0 +1,169 @@
+﻿namespace = skyscraper
+
+# Site identified
+skyscraper.1 = {
+	type = country_event
+
+	title = skyscraper.1.t
+	desc = skyscraper.1.d
+	flavor = skyscraper.1.f
+
+	placement = scope:skyscraper_site
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_capitalists_meeting.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/capitalists_meeting"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	duration = 3
+
+	trigger = {
+		# triggered by je_skyscraper_site
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				capital = {
+					is_split_state = no
+					any_scope_building = {
+						is_building_type = building_urban_center
+						level >= 20
+					}
+				}
+			}
+			capital = {
+				save_scope_as = skyscraper_site
+			}
+		}
+		else = {
+			random_scope_state = {
+				limit = {
+					is_incorporated = yes
+					is_split_state = no
+					any_scope_building = {
+						is_building_type = building_urban_center
+						level >= 20
+					}
+				}
+				save_scope_as = skyscraper_site
+			}
+		}
+	}
+
+	option = {
+		name = skyscraper.1.a
+        default_option = yes
+        scope:skyscraper_site = {
+        	add_modifier = {
+        		name = skyscraper_site
+        	}
+        }
+        show_as_tooltip = {
+        	remove_modifier = skyscraper_survey
+        }
+        add_journal_entry = {
+        	type = je_skyscraper_construction
+        	target = scope:skyscraper_site
+        }
+	}
+}
+
+# Skyscraper complete
+skyscraper.2 = {
+	type = country_event
+
+	title = skyscraper.2.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = skyscraper.2.d
+				trigger = {
+					NOT = { has_variable = first_skyscraper_builder }
+				}
+			}
+			triggered_desc = {
+				desc = skyscraper.2.d2
+				trigger = {
+					has_variable = first_skyscraper_builder
+				}
+			}
+		}
+	}
+	flavor = skyscraper.2.f
+
+	placement = scope:skyscraper_state
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_world_fair.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/world_fair"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	duration = 3
+
+	trigger = {
+		# triggered by je_skyscraper_construction
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				has_building = building_skyscraper
+			}
+			save_scope_as = skyscraper_state
+			random_scope_building = {
+				limit = {
+					is_building_type = building_skyscraper
+				}
+				save_scope_as = skyscraper_building_scope
+			}
+		}
+		if = {
+			limit = {
+				NOT = { has_global_variable = first_skyscraper }
+			}
+			set_global_variable = first_skyscraper
+			set_variable = first_skyscraper_builder
+		}
+	}
+
+	option = {
+		name = skyscraper.2.a
+        default_option = yes
+        trigger = {
+        	NOT = { has_variable = first_skyscraper_builder }
+        }
+        add_modifier = {
+        	name = skyscraper_modifier
+        	months = normal_modifier_time
+        }
+	}
+
+	option = {
+		name = skyscraper.2.b
+        default_option = yes
+        highlighted_option = yes
+        trigger = {
+        	custom_tooltip = {
+        		text = first_skyscraper_tt
+        		has_variable = first_skyscraper_builder
+        	}
+        }
+        add_modifier = {
+        	name = skyscraper_modifier
+        	months = normal_modifier_time
+        }
+        add_modifier = { # prestige
+        	name = first_skyscraper_modifier
+        	months = normal_modifier_time
+        }
+	}
+}

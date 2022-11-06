@@ -1,0 +1,1629 @@
+# OPEN WITH: gui.CreateDockable gui/debug_menues.gui toolbars_window§
+# CLOSE WITH: GUI.ClearWidgets
+
+@debug_menu_button_X = 180
+@debug_menu_button_Y = 32
+@debug_menu_sub_button_X = 160
+@debug_menu_sub_button_Y = 27
+types debug_menu_types
+{
+	type debug_menu_button = button {
+		using = editor_button
+		parentanchor = hcenter
+		using = tooltip_font
+		default_format = "#b"
+		size = { @debug_menu_button_X @debug_menu_button_Y }
+	}
+
+	type debug_menu_sub_button = button {
+		using = editor_button
+		parentanchor = hcenter
+		using = tooltip_font
+		default_format = "#b"
+		fontsize = 13
+		size = { @debug_menu_sub_button_X @debug_menu_sub_button_Y }
+	}
+
+	type header_textbox = textbox {
+		size = { 200 25 }
+		align = hcenter|nobaseline
+		using = editor_text
+		fontsize = 17
+	}
+}
+
+widget = {
+	name = "map_mode_display"
+	position = { 250 250 }
+	using = editor_window
+	size = { 150 60 }
+
+	widget = {
+		textbox = {
+			position = { 10 2 }
+			size = { 200 20 }
+			text = "#bold Map Mode#!"
+		}
+
+		textbox = {
+			position = { 10 29 }
+			size = { 200 20 }
+			text = "[DebugGetMapMode]"
+		}
+	}
+}
+
+widget = {
+	name = "flags_window"
+	size = { 1100 600 }
+
+	background = {
+		using = default_background
+		alpha = 1
+	}
+
+	textbox = {
+		position = { 70 70 }
+		size = { 200 20 }
+		using = editor_text
+		text = "Original Size:"
+	}
+
+	textbox = {
+		position = { 450 70 }
+		size = { 180 40 }
+		multiline = yes
+		using = editor_text
+		text = "Sizes used currently in game: (We might add bigger ones)"
+	}
+
+	textbox = {
+		position = { 650 70 }
+		size = { 180 40 }
+		multiline = yes
+		using = editor_text
+		text = "Random CoAs based on the following seed:"
+	}
+
+	editbox = {
+		background = {
+			using = entry_bg
+		}
+		name = "seed_edit"
+		text = "0"
+		position = { 830 70 }
+		size = { 110 40 }
+		margin_left = 10
+		alwaystransparent = no
+		focuspolicy = all
+		align = left|nobaseline
+	}
+
+	button = {
+		using = editor_button
+		position = { 950 70 }
+		size = { 110 35 }
+		text = "Randomize"
+		onclick = "[CoatOfArmsPreviewWindow.RandomSeed]"
+	}
+
+	flowcontainer = {
+		parentanchor = center
+		spacing = 50
+
+		large_flag = {
+			#blockoverride "size" {
+			#size = { 384 256 }
+			#}
+			datacontext = "[AccessPlayer]"
+			blockoverride "visibility" {
+				visible = no
+			}
+		}
+
+		flowcontainer = {
+			direction = vertical
+			spacing = 20
+
+			tiny_flag = {
+				datacontext = "[AccessPlayer]"
+				blockoverride "visibility" {
+					visible = no
+				}
+			}
+			small_flag = {
+				datacontext = "[AccessPlayer]"
+				blockoverride "visibility" {
+					visible = no
+				}
+			}
+			flag = {
+				datacontext = "[AccessPlayer]"
+				blockoverride "visibility" {
+					visible = no
+				}
+			}
+			large_flag = {
+				datacontext = "[AccessPlayer]"
+				blockoverride "visibility" {
+					visible = no
+				}
+			}
+			large_flag = {
+				blockoverride "size" {
+					size = { 120 80 }
+				}
+				datacontext = "[AccessPlayer]"
+				blockoverride "visibility" {
+					visible = no
+				}
+			}
+		}
+
+		flowcontainer = {
+			direction = vertical
+			spacing = 20
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)0')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)0')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)1')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)1')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)2')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)2')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)3')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)3')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)4')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)4')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)5')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)5')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+		}
+
+		flowcontainer = {
+			direction = vertical
+			spacing = 20
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)6')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)6')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)7')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)7')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)8')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)8')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)9')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)9')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)10')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)10')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)11')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)11')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+		}
+
+		flowcontainer = {
+			direction = vertical
+			spacing = 20
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)12')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)12')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)13')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)13')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)14')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)14')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)15')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)15')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)16')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)16')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)17')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)17')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+		}
+
+		flowcontainer = {
+			direction = vertical
+			spacing = 20
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)18')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)18')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)19')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)19')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)20')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)20')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)21')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)21')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)22')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)22')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+
+			button = {
+				size = { 66 44 }
+				texture = "[CoatOfArmsPreviewWindow.GetRandomFlagTexture('(uint32)23')]"
+				frame = "[CoatOfArmsPreviewWindow.GetRandomFlagFrame('(uint32)23')]"
+				framesize = "[GetMediumFlagFrameSize]"
+
+				using = flag_overlay
+			}
+		}
+	}
+
+	button = {
+		using = editor_button
+		position = { 0 -10 }
+		size = { 126 35 }
+		text = "Close"
+		parentanchor = hcenter|bottom
+		onclick = "[CoatOfArmsPreviewWindow.Close]"
+	}
+}
+
+widget = {
+	name = "toolbars_window"
+	movable = no
+	size = { 398 106 }
+	using = editor_window
+	position = { 1 562 }
+
+	widget = {
+		#position = { 100 0 }
+		name = "background"
+		size = { 100% 100% }
+
+
+		textbox = {
+			position = { 15 2 }
+			size = { 200 20 }
+			using = editor_text
+			text = "Toolbars"
+		}
+
+		button = {
+			using = editor_button
+			position = { 8 32 }
+			size = { 126 35 }
+			text = "Language"
+			onclick = "[ExecuteConsoleCommand('gui.CreateDockable gui/debug_menues.gui language_window')]"
+		}
+
+		button = {
+			using = editor_button
+			position = { 136 32 }
+			size = { 126 35 }
+			text = "2D Menu"
+			onclick = "[ExecuteConsoleCommand('gui.CreateDockable gui/debug_menues.gui 2d_artist_window')]"
+		}
+
+		button = {
+			using = editor_button
+			position = { 264 32 }
+			size = { 126 35 }
+			text = "Clear Menues"
+			onclick = "[ExecuteConsoleCommand('GUI.ClearWidgets')]"
+		}
+	}
+}
+widget = {
+	name = "language_window"
+	size = { 640 80 }
+
+	widget = {
+		#position = { 100 0 }
+		name = "background"
+		size = { 100% 100% }
+
+
+		textbox = {
+			position = { 15 2 }
+			size = { 200 20 }
+			using = editor_text
+			text = "Switch Languages"
+		}
+
+
+		button = {
+			using = editor_button
+			position = { 10 34 }
+			size = { 150 35 }
+			text = "English"
+			onclick = "[ExecuteConsoleCommand('switchlanguage english')]"
+		}
+		button = {
+			using = editor_button
+			position = { 165 34 }
+			size = { 150 35 }
+			text = "Latin"
+			onclick = "[ExecuteConsoleCommand('switchlanguage latin')]"
+		}
+		button = {
+			using = editor_button
+			position = { 320 34 }
+			size = { 150 35 }
+			text = "German"
+			onclick = "[ExecuteConsoleCommand('switchlanguage german')]"
+		}
+		button = {
+			using = editor_button
+			position = { 480 34 }
+			size = { 150 35 }
+			text = "French"
+			onclick = "[ExecuteConsoleCommand('switchlanguage french')]"
+		}
+	}
+}
+
+container = {
+	name = "ui_master_menu"
+
+	flowcontainer = {
+		parentanchor = hcenter
+
+		flowcontainer = {
+			direction = vertical
+
+			flowcontainer = {
+				direction = vertical
+				spacing = 10
+				margin = { 2 10 }
+
+				background = {
+					using = entry_bg_simple
+				}
+
+				header_textbox = {
+					text = "Extra"
+				}
+
+				flowcontainer = {
+					direction = vertical
+					spacing = 4
+					parentanchor = hcenter
+
+					debug_menu_button = {
+						text = "#n Reload textures"
+						onclick = "[ExecuteConsoleCommand('reload texture')]"
+					}
+
+					textbox = {
+						size = { 180 40 }
+						fontsize = 15
+						multiline = yes
+						align = nobaseline
+						text = "Type in console for single texture reload:"
+					}
+
+					textbox = {
+						size = { 180 20 }
+						fontsize = 11
+						multiline = yes
+						align = nobaseline
+						text = "#v Gfx.ReloadTexture texturename.dds"
+					}
+				}
+			}
+
+			flowcontainer = {
+				direction = vertical
+				spacing = 10
+				margin = { 2 10 }
+
+				background = {
+					using = entry_bg_simple
+				}
+
+				header_textbox = {
+					text = "GUI Debug"
+				}
+
+				flowcontainer = {
+					direction = vertical
+					spacing = 4
+					parentanchor = hcenter
+
+					debug_menu_button = {
+						text = "#bold #p Enable"
+						onclick = "[ExecuteConsoleCommand('gui.debug')]"
+					}
+
+					debug_menu_sub_button = {
+						text = "Draw All"
+						onclick = "[ExecuteConsoleCommand('GUI.Debug.DrawAll')]"
+					}
+
+					debug_menu_sub_button = {
+						text = "Draw Under Mouse"
+						fontsize = 11
+						onclick = "[ExecuteConsoleCommand('GUI.Debug.DrawUnderMouse')]"
+					}
+
+					debug_menu_sub_button = {
+						text = "Render Outside Parent"
+						fontsize = 11
+						onclick = "[ExecuteConsoleCommand('GUI.DebugRenderOutsideParent ')]"
+					}
+				}
+			}
+
+			flowcontainer = {
+				direction = vertical
+				spacing = 10
+				margin = { 2 10 }
+
+				background = {
+					using = entry_bg_simple
+				}
+
+				header_textbox = {
+					text = "Tools"
+				}
+
+				flowcontainer = {
+					direction = vertical
+					spacing = 4
+					parentanchor = hcenter
+
+					debug_menu_button = {
+						text = "GUI Editor"
+						onclick = "[ExecuteConsoleCommand('gui_editor')]"
+					}
+
+					debug_menu_button = {
+						text = "UI Library"
+						tooltip = "Open UI Library"
+						onclick = "[ExecuteConsoleCommand('GUI.CreateWidget gui/window_component_library.gui component_library_window')]"
+					}
+
+					debug_menu_button = {
+						text = "Data Types"
+						tooltip = "Data Types"
+						onclick = "[ExecuteConsoleCommand('data_types_explorer')]"
+					}
+
+					debug_menu_button = {
+						text = "GUI Animation Editor"
+						fontsize = 14
+						tooltip = "Data Types"
+						onclick = "[ExecuteConsoleCommand('gui_animation_editor')]"
+					}
+				}
+			}
+		}
+	}
+}
+
+container = {
+	name = "environment_debug_window"
+
+	flowcontainer = {
+		parentanchor = hcenter
+
+		flowcontainer = {
+			direction = vertical
+
+			flowcontainer = {
+				direction = vertical
+				spacing = 10
+				margin = { 2 10 }
+
+				background = {
+					using = entry_bg_simple
+				}
+
+				header_textbox = {
+					text = "#gold Tools"
+				}
+
+				flowcontainer = {
+					direction = vertical
+					spacing = 20
+					parentanchor = hcenter
+
+					flowcontainer = {
+						direction = vertical
+						spacing = 1
+						debug_menu_button = {
+							text = "Mesh|Entity Debugging"
+							fontsize = 14
+							size = { 180 50 }
+							onclick = "[ExecuteConsoleCommand('gui.CreateDockable gui/debug_menues.gui mesh_debug_window')]"
+						}
+
+						debug_menu_button = {
+							text = "Entity Editor"
+							fontsize = 14
+							onclick = "[ExecuteConsoleCommand('entity_editor')]"
+						}
+						flowcontainer = {
+							parentanchor = hcenter
+
+							debug_menu_button = {
+								parentanchor = left
+								text = "Texture List"
+								fontsize = 10
+								size = {  @[debug_menu_button_X / 2] @debug_menu_button_Y }
+								onclick = "[ExecuteConsoleCommand('texturelist')]"
+							}
+
+							debug_menu_button = {
+								parentanchor = right
+								text = "Texture Viewer"
+								fontsize = 10
+								size = {  @[debug_menu_button_X / 2] @debug_menu_button_Y }
+								onclick = "[ExecuteConsoleCommand('textureviewer')]"
+							}
+						}
+					}
+
+					debug_menu_button = {
+						text = "Rendering Toggles"
+						onclick = "[ExecuteConsoleCommand('gui.CreateDockable gui/debug_menues.gui render_toggle_debug_window')]"
+					}
+
+					debug_menu_button = {
+						text = "Material Debugging"
+						onclick = "[ExecuteConsoleCommand('gui.CreateDockable gui/debug_menues.gui shader_debug_window')]"
+					}
+
+
+					flowcontainer = {
+						direction = vertical
+						spacing = 1
+						debug_menu_button = {
+							text = "Cities"
+							onclick = "[ExecuteConsoleCommand('tweak Cities.')]"
+						}
+
+						debug_menu_sub_button = {
+							text = "City Grid (On Hover)"
+							onclick = "[ExecuteConsoleCommand('Cities.DrawDebugLayout')]"
+						}
+
+						flowcontainer = {
+							parentanchor = hcenter
+
+							debug_menu_sub_button = {
+								size = {  @[debug_menu_sub_button_X / 2] @debug_menu_sub_button_Y }
+								parentanchor = left
+								fontsize = 10
+								text = "Debug City Size"
+								onclick = "[ExecuteConsoleCommand('tweak Cities.DebugResidentialPoints')]"
+							}
+
+							debug_menu_sub_button = {
+								size = {  @[debug_menu_sub_button_X / 2] @debug_menu_sub_button_Y }
+								parentanchor = right
+								fontsize = 10
+								text = "#n Rebuild Citites"
+								onclick = "[ExecuteConsoleCommand('Cities.rebuildall')]"
+							}
+						}
+					}
+
+					debug_menu_button = {
+						text = "Tonemap Curve"
+						onclick = "[ExecuteConsoleCommand('shader_debug PDX_DEBUG_TONEMAP_CURVE')]"
+					}
+				}
+			}
+
+			flowcontainer = {
+				direction = vertical
+				spacing = 10
+				margin = { 2 10 }
+
+				background = {
+					using = entry_bg_simple
+				}
+
+				header_textbox = {
+					text = "#green Stats"
+				}
+
+				flowcontainer = {
+					direction = vertical
+					spacing = 1
+					parentanchor = hcenter
+
+					debug_menu_button = {
+						text = "FPS (3D Stats)"
+						onclick = "[ExecuteConsoleCommand('3dstats')]"
+					}
+
+					debug_menu_button = {
+						text = "Particle Stats"
+						onclick = "[ExecuteConsoleCommand('particles.stats')]"
+					}
+				}
+			}
+
+			flowcontainer = {
+				direction = vertical
+				spacing = 10
+				margin = { 2 10 }
+
+				background = {
+					using = entry_bg_simple
+				}
+
+				header_textbox = {
+					text = "#blue Tweak Settings"
+				}
+
+				flowcontainer = {
+					direction = vertical
+					spacing = 4
+					parentanchor = hcenter
+
+					debug_menu_button = {
+						text = "#red Reset environment"
+						onclick = "[ExecuteConsoleCommand('Environment.Debug.LoadEnvironment gfx/map/environment/environment.txt')]"
+					}
+
+					debug_menu_button = {
+						text = "Environment"
+						onclick = "[ExecuteConsoleCommand('Tweak environment.')]"
+					}
+
+					margin_widget = { size = { 1 5 } }
+
+					debug_menu_button = {
+						text = "Devastation"
+						onclick = "[ExecuteConsoleCommand('Tweak Devastation.')]"
+					}
+
+					debug_menu_button = {
+						text = "Pollution"
+						onclick = "[ExecuteConsoleCommand('Tweak Pollution.')]"
+					}
+
+					debug_menu_button = {
+						text = "SSAO"
+						onclick = "[ExecuteConsoleCommand('Tweak Environment.SSAO.')]"
+					}
+				}
+			}
+		}
+	}
+}
+
+container = {
+	name = "mesh_debug_window"
+
+	flowcontainer = {
+		direction = vertical
+		parentanchor = hcenter
+
+		flowcontainer = {
+			direction = vertical
+			spacing = 10
+			margin = { 2 10 }
+
+			background = {
+				using = entry_bg_simple
+			}
+
+			header_textbox = {
+				text = "#gold Mesh Debug"
+			}
+
+			flowcontainer = {
+				direction = vertical
+				spacing = 4
+				parentanchor = hcenter
+
+				debug_menu_button = {
+					text = "Mesh Names (#n Heavy#!)"
+					fontsize = 14
+					onclick = "[ExecuteConsoleCommand('mesh.info')]"
+				}
+
+				debug_menu_button = {
+					text = "Mip Levels"
+					onclick = "[ExecuteConsoleCommand('mesh.miplevels')]"
+				}
+
+				debug_menu_button = {
+					text = "LOD Levels"
+					onclick = "[ExecuteConsoleCommand('mesh.lodlevels')]"
+				}
+
+				debug_menu_button = {
+					text = "Screen Percentage"
+					onclick = "[ExecuteConsoleCommand('mesh.screenpercentage')]"
+				}
+
+				debug_menu_sub_button = {
+					text = "Screen Percentage Text"
+					fontsize = 11
+					onclick = "[ExecuteConsoleCommand('mesh.screenpercentage.text')]"
+				}
+			}
+		}
+
+		flowcontainer = {
+			direction = vertical
+			spacing = 10
+			margin = { 2 10 }
+
+			background = {
+				using = entry_bg_simple
+			}
+
+			header_textbox = {
+				text = "#blue Entity Debug"
+			}
+
+			flowcontainer = {
+				direction = vertical
+				spacing = 4
+				parentanchor = hcenter
+
+				debug_menu_button = {
+					text = "Entity Names"
+					onclick = "[ExecuteConsoleCommand('entity.info')]"
+				}
+
+				debug_menu_button = {
+					text = "Entity Boundingvolumes"
+					fontsize = 12
+					onclick = "[ExecuteConsoleCommand('entity.boundingvolumes')]"
+				}
+			}
+		}
+
+		flowcontainer = {
+			direction = vertical
+			spacing = 10
+			margin = { 2 10 }
+
+			background = {
+				using = entry_bg_simple
+			}
+
+			header_textbox = {
+				text = "#green Extra Debug"
+			}
+
+			flowcontainer = {
+				direction = vertical
+				spacing = 4
+				parentanchor = hcenter
+
+				debug_menu_button = {
+					text = "Collision"
+					onclick = "[ExecuteConsoleCommand('mesh.collisionmeshes')]"
+				}
+
+				debug_menu_button = {
+					text = "Normals"
+					onclick = "[ExecuteConsoleCommand('mesh.normals')]"
+				}
+
+				debug_menu_button = {
+					text = "Skeleton"
+					onclick = "[ExecuteConsoleCommand('mesh.skeleton')]"
+				}
+
+				debug_menu_button = {
+					text = "Joint"
+					onclick = "[ExecuteConsoleCommand('mesh.jointnames')]"
+				}
+			}
+		}
+	}
+
+}
+
+container = {
+	name = "render_toggle_debug_window"
+
+	flowcontainer = {
+		direction = vertical
+		parentanchor = hcenter
+
+		flowcontainer = {
+			direction = vertical
+			spacing = 10
+			margin = { 2 10 }
+
+			flowcontainer = {
+				direction = vertical
+
+				flowcontainer = {
+					direction = vertical
+					spacing = 10
+					margin = { 2 10 }
+
+					background = {
+						using = entry_bg_simple
+					}
+
+					header_textbox = {
+						text = "#gold Misc Toggles"
+					}
+
+					debug_menu_button = {
+						text = "Colormap"
+						onclick = "[ExecuteConsoleCommand('tweak Terrain.ApplyColorMap')]"
+					}
+
+					flowcontainer = {
+						direction = vertical
+						spacing = 2
+						parentanchor = hcenter
+
+						debug_menu_button = {
+							text = "Post Effects"
+							onclick = "[ExecuteConsoleCommand('PostEffectVolumes.Enabled')]"
+						}
+
+						debug_menu_sub_button = {
+							text = "Volumes"
+							fontsize = 11
+							onclick = "[ExecuteConsoleCommand('Draw.DebugPostEffectVolumes')]"
+						}
+
+						debug_menu_sub_button = {
+							text = "Force Update"
+							fontsize = 11
+							onclick = "[ExecuteConsoleCommand('tweak PostEffectVolumes.ForceUpdate')]"
+						}
+					}
+				}
+
+				flowcontainer = {
+					direction = vertical
+					spacing = 4
+					margin = { 2 10 }
+
+					background = {
+						using = entry_bg_simple
+					}
+
+					header_textbox = {
+						text = "#green Render Toggle"
+					}
+
+					debug_menu_button = {
+						text = "Fog of War"
+						onclick = "[ExecuteConsoleCommand('FogOfWar.Enable')]"
+					}
+
+					debug_menu_button = {
+						text = "Borders"
+						onclick = "[ExecuteConsoleCommand('Border.Draw')]"
+					}
+
+					debug_menu_button = {
+						text = "Rivers"
+						onclick = "[ExecuteConsoleCommand('Draw.Rivers')]"
+					}
+
+					debug_menu_button = {
+						text = "Water"
+						onclick = "[ExecuteConsoleCommand('Draw.Water')]"
+					}
+
+					debug_menu_button = {
+						text = "Map Objects"
+						onclick = "[ExecuteConsoleCommand('Draw.MapObjects')]"
+					}
+
+					debug_menu_button = {
+						text = "Roads"
+						onclick = "[ExecuteConsoleCommand('Draw.SplineNetwork')]"
+					}
+
+					debug_menu_button = {
+						text = "Terrain"
+						onclick = "[ExecuteConsoleCommand('Draw.Terrain')]"
+					}
+				}
+			}
+		}
+	}
+}
+
+container = {
+	name = "shader_debug_window"
+
+	flowcontainer = {
+		direction = vertical
+		parentanchor = hcenter
+
+		flowcontainer = {
+			direction = vertical
+			spacing = 10
+			margin = { 2 10 }
+
+			background = {
+				using = entry_bg_simple
+			}
+
+			flowcontainer = {
+				flowcontainer = {
+					direction = vertical
+					spacing = 20
+
+					flowcontainer = {
+						parentanchor = hcenter
+						direction = vertical
+						spacing = 3
+
+						header_textbox = {
+							text = "Shader Toggles"
+						}
+
+						textbox = {
+							size = { 180 55 }
+							parentanchor = hcenter
+							align = nobaseline
+							multiline = yes
+							fontsize = 14
+							text = "Note; All of these will recompile shaders for some duration, freezing the game"
+						}
+
+						textbox = {
+							size = { 180 60 }
+							parentanchor = hcenter
+							align = nobaseline
+							multiline = yes
+							fontsize = 14
+							text = "Swapping from one to the next requires the first to toggle off first, reset all if issues"
+						}
+					}
+
+					flowcontainer = {
+						parentanchor = hcenter
+						direction = vertical
+						spacing = 2
+
+						debug_menu_button = {
+							text = "#n Reset Shaders"
+							onclick = "[ExecuteConsoleCommand('shader_debug')]"
+						}
+
+						debug_menu_button = {
+							text = "Disable HDR (Recommended)"
+							fontsize = 11
+							onclick = "[ExecuteConsoleCommand('shader_debug PDX_DEBUG_NO_HDR')]"
+						}
+					}
+
+					flowcontainer = {
+						parentanchor = hcenter
+						direction = vertical
+						spacing = 2
+
+						debug_menu_button = {
+							text = "Diffuse"
+							onclick = "[ExecuteConsoleCommand('shader_debug PDX_DEBUG_DIFFUSE')]"
+						}
+
+						debug_menu_button = {
+							text = "Roughness"
+							onclick = "[ExecuteConsoleCommand('shader_debug PDX_DEBUG_ROUGHNESS')]"
+						}
+
+						debug_menu_button = {
+							text = "Metalness"
+							onclick = "[ExecuteConsoleCommand('shader_debug PDX_DEBUG_METALNESS')]"
+						}
+
+						debug_menu_button = {
+							text = "Normal"
+							onclick = "[ExecuteConsoleCommand('shader_debug PDX_DEBUG_NORMAL')]"
+						}
+
+						debug_menu_button = {
+							text = "Specular"
+							onclick = "[ExecuteConsoleCommand('shader_debug PDX_DEBUG_SPEC')]"
+						}
+
+
+						debug_menu_button = {
+							text = "#p Specular Ranges"
+							onclick = "[ExecuteConsoleCommand('shader_debug PDX_DEBUG_SPEC_RANGES')]"
+						}
+						textbox = {
+							size = { 180 100 }
+							parentanchor = hcenter
+							align = nobaseline
+							multiline = yes
+							fontsize = 14
+							text = "#red Extremely low values in red#!. #green Common material values in green (2-6%)#!. #yellow Gemstone values in yellow (8-17%)#!. #blue Metalness in blue#!. Other values in gray scale."
+						}
+					}
+
+					flowcontainer = {
+						parentanchor = hcenter
+						direction = vertical
+						spacing = 2
+
+						debug_menu_button = {
+							text = "Sun Light"
+							onclick = "[ExecuteConsoleCommand('shader_debug PDX_DEBUG_SUN_LIGHT')]"
+						}
+
+						debug_menu_sub_button = {
+							text = "Sun Light (White Diffuse)"
+							fontsize = 11
+							onclick = "[ExecuteConsoleCommand('shader_debug PDX_DEBUG_SUN_LIGHT_SIMPLE_DIFFUSE')]"
+						}
+
+						debug_menu_sub_button = {
+							text = "Sun Light (Shadow)"
+							onclick = "[ExecuteConsoleCommand('shader_debug PDX_DEBUG_SUN_LIGHT_WITH_SHADOW')]"
+						}
+
+						debug_menu_sub_button = {
+							text = "Sun Light (Specular)"
+							onclick = "[ExecuteConsoleCommand('shader_debug PDX_DEBUG_SUN_LIGHT_ONLY_SPECULAR')]"
+						}
+					}
+
+					flowcontainer = {
+						parentanchor = hcenter
+						direction = vertical
+						spacing = 2
+
+						debug_menu_button = {
+							text = "Cubemap"
+							onclick = "[ExecuteConsoleCommand('shader_debug PDX_DEBUG_IBL')]"
+						}
+
+						debug_menu_sub_button = {
+							text = "Cubemap (Diffuse)"
+							onclick = "[ExecuteConsoleCommand('shader_debug PDX_DEBUG_IBL_DIFFUSE')]"
+						}
+
+						debug_menu_sub_button = {
+							text = "Cubemap (White Diffuse)"
+							fontsize = 11
+							onclick = "[ExecuteConsoleCommand('shader_debug PDX_DEBUG_IBL_SIMPLE_DIFFUSE')]"
+						}
+
+						debug_menu_sub_button = {
+							text = "Cubemap (Specular)"
+							onclick = "[ExecuteConsoleCommand('shader_debug PDX_DEBUG_IBL_SPECULAR')]"
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@button_height = 24
+
+@row_1 = 65
+#@row_2 = 96
+@row_2 = @[row_1+(button_height+1)*1]
+@row_3 = @[row_1+(button_height+1)*2]
+@row_4 = @[row_1+(button_height+1)*3]
+@row_5 = @[row_1+(button_height+1)*4]
+@row_6 = @[row_1+(button_height+1)*5]
+@row_7 = @[row_1+(button_height+1)*6]
+@row_8 = @[row_1+(button_height+1)*7]
+@row_9 = @[row_1+(button_height+1)*8]
+@row_10= @[row_1+(button_height+1)*9]
+
+
+#@row_4 = 158
+#@row_5 = 189
+#@row_6 = 220
+#@row_7 = 251
+#@row_8 = 282
+#@row_9 = 313
+#@row_10 = 344
+
+@col_1 = 10
+@col_2 = 161
+@col_3 = 312
+@col_4 = 463
+
+widget = {
+	name = "map_debug_menu"
+	size = { 623 325 }
+
+	widget = {
+		#position = { 100 0 }
+		name = "background"
+		size = { 100% 100% }
+
+		textbox = {
+			position = { 15 2 }
+			size = { 200 20 }
+			using = editor_text
+			text = "Map Debug menu"
+		}
+
+		textbox = {
+			position = { 50 35 }
+			size = { 200 20 }
+			using = editor_text
+			text = "General"
+			fontsize = 18
+		}
+
+		button = {
+			using = editor_button
+			using = editor_text
+			position = { @col_1 @row_1 }
+			size = { 150 @button_height }
+			text = "3D Stats"
+			onclick = "[ExecuteConsoleCommand('3dstats')]"
+		}
+
+		button = {
+			using = editor_button
+			using = editor_text
+			position = { @col_1 @row_2 }
+			size = { 150 @button_height }
+			text = "Free Camera"
+			onclick = "[ExecuteConsoleCommand('Camera.Restrictions')]"
+		}
+
+		textbox = {
+			position = { 185 35 }
+			size = { 200 20 }
+			using = editor_text
+			text = "Show on/off"
+			fontsize = 18
+		}
+
+		button = {
+			using = editor_button
+			using = editor_text
+			position = { @col_2 @row_1 }
+			size = { 150 @button_height }
+			text = "Fog of War"
+			onclick = "[ExecuteConsoleCommand('FogOfWar.Enable')]"
+		}
+
+		button = {
+			using = editor_button
+			using = editor_text
+			position = { @col_2 @row_2 }
+			size = { 150 @button_height }
+			text = "Borders"
+			onclick = "[ExecuteConsoleCommand('Border.Draw')]"
+		}
+
+		button = {
+			using = editor_button
+			using = editor_text
+			position = { @col_2 @row_4 }
+			size = { 150 @button_height }
+			text = "Rivers"
+			onclick = "[ExecuteConsoleCommand('Draw.Rivers')]"
+		}
+
+		button = {
+			using = editor_button
+			using = editor_text
+			position = { @col_2 @row_5 }
+			size = { 150 @button_height }
+			text = "Water"
+			onclick = "[ExecuteConsoleCommand('Draw.Water')]"
+		}
+
+		button = {
+			using = editor_button
+			using = editor_text
+			position = { @col_2 @row_8 }
+			size = { 150 @button_height }
+			text = "Map Objects"
+			onclick = "[ExecuteConsoleCommand('Draw.MapObjects')]"
+		}
+
+		button = {
+			using = editor_button
+			using = editor_text
+			position = { @col_2 @row_9 }
+			size = { 150 @button_height }
+			text = "Roads"
+			onclick = "[ExecuteConsoleCommand('Draw.SplineNetwork')]"
+		}
+
+		textbox = {
+			position = { 340 35 }
+			size = { 200 20 }
+			using = editor_text
+			text = "Show names"
+			fontsize = 18
+		}
+
+		button = {
+			using = editor_button
+			using = editor_text
+			position = { @col_3 @row_1 }
+			size = { 150 @button_height }
+			text = "Entity"
+			onclick = "[ExecuteConsoleCommand('entity.info')]"
+		}
+
+		button = {
+			using = editor_button
+			using = editor_text
+			position = { @col_3 @row_2 }
+			size = { 150 @button_height }
+			text = "Mesh"
+			onclick = "[ExecuteConsoleCommand('mesh.info')]"
+		}
+
+		button = {
+			using = editor_button
+			using = editor_text
+			position = { @col_3 @row_4 }
+			size = { 150 @button_height }
+			text = "Joint"
+			onclick = "[ExecuteConsoleCommand('mesh.jointnames')]"
+		}
+
+		textbox = {
+			position = { 505 35 }
+			size = { 200 20 }
+			using = editor_text
+			text = "Debug"
+			fontsize = 18
+		}
+
+		button = {
+			using = editor_button
+			using = editor_text
+			position = { @col_4 @row_1 }
+			size = { 150 @button_height }
+			text = "Collision"
+			onclick = "[ExecuteConsoleCommand('mesh.collisionmeshes')]"
+		}
+
+		button = {
+			using = editor_button
+			using = editor_text
+			position = { @col_4 @row_2 }
+			size = { 150 @button_height }
+			text = "Miplevels"
+			onclick = "[ExecuteConsoleCommand('mesh.miplevels')]"
+		}
+		button = {
+			using = editor_button
+			using = editor_text
+			position = { @col_4 @row_3 }
+			size = { 150 @button_height }
+			text = "Normals"
+			onclick = "[ExecuteConsoleCommand('mesh.normals')]"
+		}
+		button = {
+			using = editor_button
+			using = editor_text
+			position = { @col_4 @row_4 }
+			size = { 150 @button_height }
+			text = "Skeleton"
+			onclick = "[ExecuteConsoleCommand('mesh.skeleton')]"
+		}
+
+		textbox = {
+			position = { 505 175 }
+			size = { 200 20 }
+			using = editor_text
+			text = "Tweak"
+			fontsize = 18
+		}
+
+		button = {
+			using = editor_button
+			using = editor_text
+			position = { @col_4 @row_7 }
+			size = { 150 @button_height }
+			text = "Water"
+			onclick = "[ExecuteConsoleCommand('tweak water')]"
+		}
+
+		button = {
+			using = editor_button
+			using = editor_text
+			position = { @col_4 @row_8 }
+			size = { 150 @button_height }
+			text = "Environment"
+			onclick = "[ExecuteConsoleCommand('tweak environment')]"
+		}
+	}
+}
+
+widget = {
+	name = "tweak_stuff_window"
+	movable = no
+	size = { 320 14.999999% }
+	using = editor_window
+	position = { 1 1 }
+	parentanchor = top|right
+
+	widget = {
+		#position = { 100 0 }
+		name = "background"
+		size = { 100% 100% }
+
+
+		textbox = {
+			position = { 12 9 }
+			size = { 200 10 }
+			using = editor_text
+			text = "Tweak Stuff"
+		}
+
+
+		button = {
+			using = editor_button
+			position = { 8 32 }
+			size = { 149 29 }
+			text = "Rivers"
+			onclick = "[ExecuteConsoleCommand('tweak river')]"
+		}
+		button = {
+			using = editor_button
+			position = { 160 32 }
+			size = { 149 29 }
+			text = "Environment"
+			onclick = "[ExecuteConsoleCommand('tweak environment')]"
+		}
+
+		button = {
+			using = editor_button
+			position = { 8 62 }
+			size = { 149 29 }
+			text = "Borders"
+			onclick = "[ExecuteConsoleCommand('tweak border')]"
+		}
+		button = {
+			using = editor_button
+			position = { 160 62 }
+			size = { 149 29 }
+			text = "Draw"
+			onclick = "[ExecuteConsoleCommand('tweak draw')]"
+		}
+
+		button = {
+			using = editor_button
+			position = { 8 92 }
+			size = { 149 29 }
+			text = "Mesh"
+			onclick = "[ExecuteConsoleCommand('tweak mesh')]"
+		}
+		button = {
+			using = editor_button
+			position = { 160 92 }
+			size = { 149 29 }
+			text = "Terrain"
+			onclick = "[ExecuteConsoleCommand('tweak terrain')]"
+		}
+
+		button = {
+			using = editor_button
+			position = { 8 122 }
+			size = { 149 29 }
+			text = "Map objects"
+			onclick = "[ExecuteConsoleCommand('tweak MapObjects')]"
+		}
+	#	button = {
+	#		using = editor_button
+	#		position = { 160 122 }
+	#		size = { 149 29 }
+	#		text = "Test"
+	#		onclick = "[ExecuteConsoleCommand('GUI.ClearWidgets')]"
+	#	}
+
+		button = {
+			using = editor_button
+			position = { -5 4 }
+			size = { 20 20 }
+			text = "X"
+			onclick = "[ExecuteConsoleCommand('GUI.ClearWidgets tweak_stuff_window')]"
+			parentanchor = top|right
+		}
+	}
+}
+
+widget = {
+	name = "map_object_menu"
+	size = { 100% 100% }
+	position = { 1 1 }
+
+	textbox = {
+		position = { 0 25% }
+		size = { 100% 20 }
+		using = editor_text
+		align = center
+		text = "Click anywhere to place map objects"
+	}
+
+	button = {
+		size = { 100% 100% }
+		onclick = "[ExecuteConsoleCommand('MapObjects.Painter.AddPosition')]"
+	}
+
+	widget = {
+		name = "background"
+		size = { 170 110 }
+
+		background = {
+			shaderfile = "gfx/FX/pdxgui_default.shader"
+			texture = "gfx/editor_gui/editor_window.dds"
+			spriteType = CorneredStretched
+			spriteborder = { 6 6 }
+			spriteborder_top = 30
+		}
+
+		textbox = {
+			position = { 15 2 }
+			size = { 200 20 }
+			using = editor_text
+			text = "Placing Map Objects"
+		}
+
+		button = {
+			using = editor_button
+			position = { 10 34 }
+			size = { 150 30 }
+			text = "Config"
+			onclick = "[ExecuteConsoleCommand('tweak MapObjects.Painter')]"
+		}
+		button = {
+			using = editor_button
+			position = { 10 65 }
+			size = { 150 30 }
+			text = "Cancel"
+			onclick = "[ExecuteConsoleCommand('GUI.ClearWidgets')]"
+		}
+	}
+}
+

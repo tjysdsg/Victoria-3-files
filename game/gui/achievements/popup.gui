@@ -1,0 +1,221 @@
+### this is an imported file. please make as little changes to this file as possible.
+### when you make a change please mark it very clearly using a pair of comment lines with the text '### v3' and '### to here'
+### texture paths and audio event ids are an exception to this and can be changed without marking
+
+types Achievements
+{
+	type achievement_spacer_horizontal = widget {
+		size = { 5 0 }
+	}
+	type achievement_spacer_vertical = widget {
+		size = { 0 3 }
+	}
+}
+
+### v3 replacement
+window = {
+	name = "achievement_popup_window"
+	alwaystransparent = yes
+	movable = no
+	#size = { 450 600 }
+	position = { 0 -300 }
+	parentanchor = bottom|hcenter
+	focuspolicy = all
+
+	flowcontainer = {
+		resizeparent = yes
+		direction = vertical
+		alwaystransparent = yes
+		datamodel = "[AchievementPopup.AccessJustUnlockedAchievements]"
+
+		item = {
+			button = {
+				using = default_button
+				focuspolicy = click
+				onclick = "[GUIAchievement.OnClick]"
+				onrightclick = "[GUIAchievement.Remove]"
+				alpha = 0
+				
+				using = shimmer_fade_in
+				
+				state = {
+					name = show
+					next = remove
+					trigger_on_create = yes
+					on_start = "[PdxGuiWidget.FindChild('achievements_popup_icon').TriggerAnimation('1')]"
+					duration = 5
+				}
+				state = {
+					name = remove
+					duration = 0.5
+					alpha = 0
+					on_finish = "[GUIAchievement.Remove]"
+				}
+
+				flowcontainer = {
+					parentanchor = center
+					resizeparent = yes
+					margin = { 8 8 }
+					
+					### ICON
+					widget = {
+						name = achievements_popup_icon
+						size = { 200 200 }
+						parentanchor = vcenter
+						alpha = 0
+						
+						state = {
+							name = 1
+							next = 2
+							duration = 0.25
+							using = Animation_Curve_Default
+							size = { 55 55 }
+							alpha = 1
+						}
+						state = {
+							name = 2
+							duration = 0.1
+							using = Animation_Curve_EaseOut
+							size = { 60 60 }
+							alpha = 1
+						}
+						
+						icon = {
+							using = rotate_glow_animation
+							size = { 100 100 }
+							alpha = 0.8
+							parentanchor = center
+						}
+						
+						icon = {
+							texture = "[GUIAchievement.AccessTexture]"
+							parentanchor = vcenter
+							size = { 100% 100% }
+						}
+					}
+
+					### TEXT
+					flowcontainer = {
+						direction = vertical
+						parentanchor = vcenter
+						
+						textbox = {
+							text = "ACHIEVEMENT_UNLOCKED"
+							align = center|nobaseline
+							size = { 365 18 }
+							elide = right
+						}
+						
+						textbox = {
+							using = fontsize_large
+							text = "[GUIAchievement.GetName]"
+							align = center|nobaseline
+							minimumsize = { 365 -1 }
+							maximumsize = { 365 -1 }
+							autoresize = yes
+							multiline = yes
+							elide = right
+							default_format = "#v"
+							margin = { 10 0 }
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+#window = {
+#	name = "achievement_popup_window"
+#	alwaystransparent = yes
+#	scissor = no
+#	movable = no
+#	size = { 300 500 }
+#	widgetanchor = top|left
+#	focuspolicy = all
+#	block "popup_window"
+#	{}
+#
+#
+#	vbox = {
+#		restrictparent_min = yes
+#		block "popup_window_layout"
+#		{}
+#
+#		dynamicgridbox = {
+#			alwaystransparent = yes
+#			datamodel = "[AchievementPopup.AccessJustUnlockedAchievements]"
+#			layoutpolicy_vertical = expanding
+#			block "popups_gridbox"
+#			{}
+#
+#			item = {
+#				button = {
+#					size = { 300 64 }
+#					maximumsize = { 300 64 }
+#					visible = yes
+#					focuspolicy = click
+#					onclick = "[GUIAchievement.OnClick]"
+#					block "achievement_unlock_popup"
+#					{}
+#					hbox = {
+#						margin = { 5 5 }
+#						
+#						using = Window_Background_Subwindow
+#					
+#						icon = {
+#							texture = "[GUIAchievement.AccessTexture]"
+#							size = { 64 64 }
+#						}
+#						
+#						spacer = {
+#							size = { 5 5 }
+#						}
+#						
+#						state = {
+#							name = on_create
+#							duration = 0.5
+#							trigger_on_create = yes
+#							alpha = 0
+#							delay = 5
+#							on_finish = "[GUIAchievement.Remove]"
+#							block "popup_on_create_state"
+#							{}
+#						}
+#
+#						vbox = {
+#							margin = { 0 3 }
+#							layoutpolicy_horizontal = expanding
+#							layoutpolicy_vertical = expanding
+#
+#							text_single = {
+#								text = "ACHIEVEMENT_UNLOCKED"
+#								margin_right = 3
+#								autoresize = no
+#								layoutpolicy_horizontal = expanding
+#								default_format = "#low"
+#								minimumsize = { -1 10 }
+#								block "achievement_unlocked_text"
+#								{}
+#							}
+#
+#							text_single = {
+#								text = "[GUIAchievement.GetName]"
+#								layoutpolicy_horizontal = expanding
+#								minimumsize = { -1 16 }
+#								default_format = "#high"
+#								autoresize = no
+#								using = Font_Size_Medium
+#								align = nobaseline
+#								margin_right = 3
+#								block "achievement_name"
+#								{}
+#							}
+#						}
+#					}
+#				}
+#			}
+#		}
+#	}
+#}
+### to here

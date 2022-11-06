@@ -1,0 +1,94 @@
+﻿je_antarctica = {
+
+	on_monthly_pulse = {
+		random_events = {
+			100 = 0
+			10 = expedition_events.20 #posts a notification
+			65 = cold.5 #the pole
+			50 = cold.2 #discovery hut
+			20 = cold.1 #mountains
+			10 = cold.3 #lost
+			10 = cold.6 #eating the dogs
+			30 = cold.8 #pack ice
+			50 = cold.11 #great ice barrier
+			20 = cold.12 #glacier
+			5 = cold.13 #strange rock
+		}
+	}
+	
+	immediate = {
+		random_scope_character = {
+			limit = {
+				has_variable = expedition_leader_var
+			}
+			save_scope_as = expedition_leader
+		}
+	}
+	
+	status_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = expedition_low_peril_loc
+				trigger = {
+					var:expedition_peril < 4
+				}
+			}
+			triggered_desc = {
+				desc = expedition_medium_peril_loc
+				trigger = {
+					var:expedition_peril <= 4
+				}
+			}
+			triggered_desc = {
+				desc = expedition_high_peril_loc
+				trigger = {
+					var:expedition_peril >= 6
+				}
+			}
+		}
+	}
+	
+    fail = {
+		custom_tooltip = {
+			text = je_expedition_fail
+			var:expedition_peril >= 8
+		}
+    }
+	
+	on_fail = {
+		trigger_event = { id = cold.4 }
+		remove_variable = on_expedition
+		remove_modifier = modifier_large_expedition_cost
+	}
+	
+	current_value = {
+		value = var:expedition_progress
+	}
+
+	goal_add_value = {
+		add = 8
+	}
+	
+	complete = {
+		custom_tooltip = {
+			text = je_expedition_success
+			scope:journal_entry = {
+				is_goal_complete = yes
+			}
+			has_variable = south_pole_event_var
+		}
+	}
+	
+	on_complete = {
+		trigger_event = { id = cold.7 }
+		remove_variable = on_expedition
+		remove_modifier = modifier_large_expedition_cost
+		set_variable = antarctica_expedition_success_var #great exhibition check
+	}
+	
+	progressbar = yes
+	
+    weight = 200
+    inheritable = no
+    should_be_pinned_by_default = yes
+}

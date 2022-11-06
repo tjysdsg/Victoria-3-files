@@ -1,0 +1,99 @@
+﻿namespace = trains
+
+# Colliding for Sport
+trains.1 = {
+	type = country_event
+	event_image = {
+		video = "gfx/event_pictures/unspecific_trains.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/trains"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	title = trains.1.t
+	desc = trains.1.d
+	flavor = trains.1.f
+
+	duration = 3
+	
+	trigger = {
+		has_technology_researched  = steel_railway_cars
+		any_scope_state = {
+			has_building = building_railway
+		}
+	}
+	
+	immediate = {
+		random_scope_state = {
+			limit = { has_building = building_railway }
+			save_scope_as = train_crashing_state
+		}
+		random_interest_group = {
+			limit = {
+				is_revolutionary = no
+				is_insurrectionary = no # people who are angrily plotting doom in a smoky backroom will not make a happy public showing at a fair
+			}
+			save_scope_as = train_crash_attendee_ig
+			leader = {
+				save_scope_as = train_crash_attendee
+			}
+		}
+	}
+
+	option = {
+		name = trains.1.a
+        default_option = yes
+        scope:train_crash_attendee = {
+			add_modifier = {
+				name = a_smashing_appearance
+				months = short_modifier_time
+			}        
+        }
+        random_list = {
+        	90 = {
+        		scope:train_crashing_state = {
+		        	add_modifier = {
+		        		name = the_desire_to_smash_things_up
+						months = short_modifier_time
+		        	}
+	        	}
+        	}
+        	10 = { 
+        		scope:train_crash_attendee = { kill_character = yes }
+		        scope:train_crashing_state = {
+					add_radicals = {
+						value = small_radicals # People get mad about the mishandled event
+					}
+		        }
+        	}
+        }
+	}
+	option = {
+		name = trains.1.b
+		scope:train_crash_attendee_ig = { 
+			add_modifier = {
+				name = the_desire_to_smash_things_up_has_been_denied
+				months = short_modifier_time
+			}
+		}
+        random_list = {
+        	90 = {
+        		scope:train_crashing_state = {
+		        	add_modifier = {
+		        		name = the_desire_to_smash_things_up
+						months = short_modifier_time
+		        	}
+	        	}
+        	}
+        	10 = { 
+		        scope:train_crashing_state = {
+					add_radicals = {
+						value = small_radicals # People get mad about the mishandled event
+					}
+		        }
+        	}
+        }
+	}
+}

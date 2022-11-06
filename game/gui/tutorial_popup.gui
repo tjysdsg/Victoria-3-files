@@ -1,0 +1,1423 @@
+types tutorials {
+	type tutorial_popup = window {
+		visible = "[Tutorial.ShouldBeVisible]" # hide the widget itself so as to avoid short single-frame glitches when hiding/showing the window
+		layer = layer_tutorial
+
+		alwaystransparent = no
+		movable = yes
+		resizable = no
+
+		block "anchor" {
+			parentanchor = top|hcenter
+		}
+		position = { 40 100 }
+		
+		state = {
+			name = _show
+			using = Animation_FadeIn_Quick
+		}
+
+		state = {
+			name = _hide
+			using = Animation_FadeOut_Quick
+		}
+		
+		background = {
+			texture = "gfx/interface/backgrounds/tutorial_bg.dds"
+			margin_top = -90
+			spriteType = Corneredtiled
+			spriteborder = { 20 20 }
+			alpha = 0.94
+			
+			modify_texture = {
+				texture = "gfx/interface/backgrounds/gradient_overlay.dds"
+				spriteType = Corneredstretched
+				spriteborder = { 0 0 }
+				blend_mode = overlay
+				alpha = 0.7
+			}
+		}
+		
+		flowcontainer = {
+			resizeparent = yes
+			direction = vertical
+		
+			widget = {
+				parentanchor = hcenter
+				size = { 622 144 }
+
+				icon = {
+					texture = "gfx/interface/tutorial/tutorial_header_frame.dds"
+					size = { 622 144 }
+				}
+
+						icon = {
+				parentanchor = center
+				position = { -1 43 }
+				texture = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+				block "iconsize" {
+					size = { 57 57 }
+				} }
+
+				textbox = {
+					autoresize = yes
+					multiline = yes
+					maximumsize = { 440 45 }
+					fontsize_min = 17
+					position = { 0 -11 } 
+					
+					text = "[Tutorial.GetStepName]"
+					align = center|nobaseline
+					using = header_font
+					using = header_font_size
+					default_format = "#header"
+					parentanchor = center
+				}
+			}
+			
+			flowcontainer = {
+				direction = vertical
+				parentanchor = hcenter
+				margin_bottom = 20
+				margin_top = 15
+					
+				scrollarea = {
+					layoutpolicy_vertical = preferred
+					scrollbarpolicy_horizontal = always_off
+					using = default_list_position
+					
+					scrollbar_vertical = {
+						using = vertical_scrollbar
+					}
+
+					scrollwidget = {
+						container = {
+							resizeparent = yes
+							using = default_list_position
+							
+							flowcontainer = {
+								margin = { 10 0 }
+								direction = vertical
+
+								block "lesson_content" {
+									textbox = {
+										margin_bottom = 10
+										max_width = 490
+										min_width = 490
+										autoresize = yes
+										multiline = yes
+										block "lesson_text" {
+											text = "[Tutorial.GetStepText]"
+										}
+										align = left|nobaseline
+									}
+								}
+
+								block "show_more_content" { }
+
+								block "step_instruction_icon" { }
+
+								block "step_instruction_icon_text" { }
+
+								textbox = {
+									text = "[Tutorial.GetStepHeaderInfo]"
+									align = right|nobaseline
+									autoresize = yes
+									min_width = 490
+									margin_right = 10
+									margin_bottom = 10
+								}
+
+								divider_gold = {
+									alpha = 0.4
+								}
+								
+								flowcontainer = {
+									block "instructions_visibility" {
+										visible = "[Tutorial.HasStepInstructions]"
+									}
+									margin_top = 10
+									direction = vertical
+									
+									textbox = {
+										text = "TUTORIAL_STEP_INSTRUCTIONS"
+										autoresize = yes
+									}
+
+									flowcontainer = {
+										direction = horizontal
+									
+										textbox = {
+											max_width = 490
+											min_width = 490
+											margin_bottom = 10
+											autoresize = yes
+											multiline = yes
+											text = "[Tutorial.GetStepInstructions]"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				
+				flowcontainer = {
+					using = default_list_position
+					direction = horizontal
+					margin = { 20 10 }
+					margin_bottom = 0
+					spacing = 5
+					ignoreinvisible = no
+
+					button = {
+						using = default_button
+						size = { 120 40 }
+						visible = "[Tutorial.HasTransition('back')]"
+						enabled = "[Tutorial.IsTransitionEnabled('back')]"
+						text = "[Tutorial.GetTransitionText('back')]"
+						tooltip = "[Tutorial.GetTransitionTooltip('back')]"
+						onclick = "[Tutorial.OnClickTransition('back')]"
+					}
+					button = {
+						using = default_button
+						size = { 175 40 }
+						visible = "[Tutorial.HasTransition('repeat')]"
+						enabled = "[Tutorial.IsTransitionEnabled('repeat')]"
+						text = "[Tutorial.GetTransitionText('repeat')]"
+						tooltip = "[Tutorial.GetTransitionTooltip('repeat')]"
+						onclick = "[Tutorial.OnClickTransition('repeat')]"
+					}
+					button = {
+						using = default_button
+						size = { 160 40 }
+						visible = "[Tutorial.HasTransition('skip')]"
+						enabled = "[Tutorial.IsTransitionEnabled('skip')]"
+						text = "[Tutorial.GetTransitionText('skip')]"
+						tooltip = "skip_to_next_topic"
+						onclick = "[Tutorial.OnClickTransition('skip')]"
+					}
+					button = {
+						using = default_button
+						name = "tutorial_highlight_next_button"
+						size = { 120 40 }
+						visible = "[Tutorial.HasTransition('next')]"
+						enabled = "[Tutorial.IsTransitionEnabled('next')]"
+						text = "[Tutorial.GetTransitionText('next')]"
+						tooltip = "[Tutorial.GetTransitionTooltip('next')]"
+						onclick = "[Tutorial.OnClickTransition('next')]"
+					}
+				}
+			}
+		}
+	}
+
+	type tutorial_diagram = widget { 
+
+		size = { 490 300 }
+		parentanchor = hcenter
+
+		icon = {
+			size = { 100% 100% }
+			block "texture" {
+				texture = "gfx/interface/tutorial/core_gameplay.dds"
+			}
+			using = frame_small_mask
+		}
+
+		icon = { 
+			size = { 100% 100% }
+			using = frame_small
+		}
+	}
+
+	type show_more_content = flowcontainer {
+
+		margin_top = 10
+
+		direction = vertical
+		spacing = 20
+
+		flowcontainer = {
+			direction = vertical
+			spacing = 20
+			parentanchor = hcenter
+			#margin_bottom = 20
+
+			block "content_visibility_toggle" {
+				visible = "[GetVariableSystem.Exists('show_more_core_tutorial')]"
+			}
+			block "show_more_layout" {
+				textbox = {
+					max_width = 490
+					min_width = 490
+					autoresize = yes
+					multiline = yes
+					block "show_more_text" {
+						text = "Replace me!"
+					}
+					align = left|nobaseline
+				}
+			}
+			state = {
+				name = _show
+				alpha = 1
+				duration = 0.50
+				using = Animation_Curve_Default
+			}
+
+			state = {
+				name = _hide
+				alpha = 0
+				duration = 0
+				using = Animation_Curve_Default
+			}
+		}
+
+		show_more_button = {}
+	}
+
+	type show_more_button = button {
+		using = clean_button
+		size = { 490 40 }
+		parentanchor = hcenter
+		block "show_more_onclick" {
+			onclick = "[GetVariableSystem.Toggle('show_more_core_tutorial')]"
+		}
+			
+		textbox = {
+			block "show_more_visible" {
+				visible = "[Not(GetVariableSystem.Exists('show_more_core_tutorial'))]"
+			}
+
+			autoresize = yes
+			text = "tutorial_lesson_button_show_more"
+			align = nobaseline
+			parentanchor = center
+		}
+		textbox = {
+			block "show_less_visible" {
+				visible = "[GetVariableSystem.Exists('show_more_core_tutorial')]"
+			}
+
+			autoresize = yes
+			text = "tutorial_lesson_button_show_less"
+			align = nobaseline
+			parentanchor = center
+		}
+	}
+
+	type tutorial_image_and_text = container {
+
+		block "visibility" {
+			visible = "[GetVariableSystem.Exists('show_more_core_tutorial')]"
+		}
+
+		minimumsize = { 450 -1 }
+		maximumsize = { 450 -1 }
+
+		icon = {
+			parentanchor = vcenter
+			block "icon_size" {
+				size = { 75 75 }
+			}
+
+			block "icon" { }
+		}
+
+		textbox = {
+			block "text_width" {
+				max_width = 350
+				min_width = 350
+			}
+			autoresize = yes
+			multiline = yes
+			block "image_text" {
+				text = "lesson_basics_lenses_lens"
+			}
+			align = left|nobaseline
+			parentanchor = right|vcenter
+		}		
+	}
+}
+
+
+tutorial_popup = {
+	name = "tutorial_popup"
+
+}
+
+tutorial_popup = {
+	name = "no_instructions_tutorial_popup"
+
+	blockoverride "instructions_visibility" {
+		visible = "no"
+	}
+}
+
+tutorial_popup = {
+	name = "anchor_bottom_middle_tutorial_popup"
+	
+	position = { 0 -250 }
+
+	blockoverride "anchor" {
+		parentanchor = bottom|hcenter
+	}
+}
+
+tutorial_popup = {
+	name = "zero_tutorial_popup"
+
+	position = { 0 0 }
+}
+
+tutorial_popup = {
+	name = "down_middle_tutorial_popup"
+
+	position = { 0 400 }
+}
+
+tutorial_popup = {
+	name = "right_middle_tutorial_popup"
+
+	position = { 600 400 }
+}
+
+tutorial_popup = {
+	name = "middle_left_tutorial_popup"
+
+	position = { -500 200 }
+}
+
+tutorial_popup = {
+	name = "bottom_left_tutorial_popup"
+
+	position = { -500 600 }
+}
+
+tutorial_popup = {
+	name = "really_bottom_left_tutorial_popup"
+
+	position = { -600 600 }
+}
+
+tutorial_popup = {
+	name = "bottom_right_tutorial_popup"
+
+	position = { 700 600 }
+}
+
+tutorial_popup = {
+	name = "top_left_politics_panel_tutorial_popup"
+
+	position = { -610 140 }
+}
+
+tutorial_popup = {
+	name = "politics_panel_overview_tutorial_popup"
+
+	position = { -280 720 }
+}
+
+tutorial_popup = {
+	name = "top_right_tutorial_popup"
+
+	position = { 555 0 }
+}
+
+tutorial_popup = {
+	name = "top_left_tutorial_popup"
+
+	position = { -530 140 }
+}
+
+tutorial_popup = {
+	name = "top_middle_right_tutorial_popup"
+
+	position = { 300 50 }
+}
+
+tutorial_popup = {
+	name = "top_middle_tutorial_popup"
+
+	position = { 200 50 }
+}
+
+tutorial_popup = {
+	name = "panel_bottom_tutorial_popup"
+
+	position = { -50 350 }
+}
+
+tutorial_popup = {
+	name = "core_tutorial_popup"
+	
+	blockoverride "lesson_content" { 
+		
+		textbox = {
+			margin_bottom = 10
+			max_width = 490
+			min_width = 490
+			autoresize = yes
+			multiline = yes
+			text = "lesson_basics_core_gameplay_part_1_desc"
+			align = left|nobaseline
+		}
+		
+		widget ={ 
+			parentanchor = hcenter
+			size = { 490 300 }
+
+			tutorial_diagram = {
+				blockoverride "texture" {
+					texture = "gfx/interface/tutorial/core_gameplay.dds"
+				}
+			}
+
+			textbox = {
+				position = { 59 177 }
+				
+				default_format = "#black"
+				autoresize = yes
+				text = "lesson_basics_core_gameplay_you"
+			}
+			
+			textbox = {
+				size = { 150 40 }
+				position = { 158 56 }
+				multiline = yes
+				align = center|nobaseline
+				
+				default_format = "#black"
+				text = "lesson_basics_core_gameplay_politics"
+			}
+			
+			textbox = {
+				size = { 150 40 }
+				position = { 157 119 }
+				multiline = yes
+				align = center|nobaseline
+				
+				default_format = "#black"
+				text = "lesson_basics_core_gameplay_economics"
+			}
+			
+			textbox = {
+				size = { 150 40 }
+				position = { 155 202 }
+				multiline = yes
+				align = center|nobaseline
+				
+				default_format = "#black"
+				text = "lesson_basics_core_gameplay_diplomacy"
+			}
+			
+			textbox = {
+				size = { 150 40 }
+				position = { 158 257 }
+				multiline = yes
+				align = center|nobaseline
+				
+				default_format = "#black"
+				text = "lesson_basics_core_gameplay_war"
+			}
+			
+			textbox = {
+				maximumsize = { 100 -1 }
+				autoresize = yes
+				position = { 367 177 }
+				multiline = yes
+				align = center|nobaseline
+				
+				default_format = "#black"
+				
+				text = "lesson_basics_core_gameplay_country_and"
+			}
+		
+		}
+
+		widget = {
+			parentanchor = hcenter
+			size = { 490 10 }
+		}
+		
+		textbox = {
+			margin_bottom = 10
+			max_width = 490
+			min_width = 490
+			autoresize = yes
+			multiline = yes
+			text = "lesson_basics_core_gameplay_part_2_desc"
+			align = left|nobaseline
+		}
+	}
+}
+
+tutorial_popup = {
+	name = "click_on_building_tutorial_popup"
+
+	position = { -50 350 }
+
+	blockoverride "step_instruction_icon" {
+
+		widget = { size = { 20 20 }}
+
+		container = {
+
+			parentanchor = hcenter
+			minimumsize = { 450 -1 }
+			maximumsize = { 450 -1 }
+
+			icon = {
+				datacontext = "[GetTutorialJournalEntry.GetTarget.GetBuilding]"
+				tooltipwidget = {
+					FancyTooltip_Building = {}
+				}
+				size = { 75 75 }
+				texture = "[GetTutorialJournalEntry.GetTarget.GetBuilding.GetTexture]"
+				parentanchor = vcenter
+			}
+
+			textbox = {
+				max_width = 350
+				min_width = 350
+				margin_bottom = 10
+				autoresize = yes
+				multiline = yes
+				text = "lesson_expand_building_3_icon_text"
+				align = left|nobaseline
+				parentanchor = right|vcenter
+			}
+		}
+	}
+}
+
+tutorial_popup = {
+	name = "click_on_building_in_buildings_panel_tutorial_popup"
+
+	position = { -50 350 }
+
+	blockoverride "step_instruction_icon" {
+
+		widget = { size = { 20 20 }}
+
+		container = {
+
+			parentanchor = hcenter
+			minimumsize = { 450 -1 }
+			maximumsize = { 450 -1 }
+
+			icon = {
+				datacontext = "[GetTutorialJournalEntry.GetTarget.GetBuilding]"
+				tooltipwidget = {
+					FancyTooltip_Building = {}
+				}
+				size = { 75 75 }
+				texture = "[GetTutorialJournalEntry.GetTarget.GetBuilding.GetTexture]"
+				parentanchor = vcenter
+			}
+
+			textbox = {
+				max_width = 350
+				min_width = 350
+				margin_bottom = 10
+				autoresize = yes
+				multiline = yes
+				text = "lesson_expand_productive_building_how_2_icon_text"
+				align = left|nobaseline
+				parentanchor = right|vcenter
+			}
+		}
+	}
+}
+
+tutorial_popup = {
+	name = "camera_tutorial_popup"
+
+	blockoverride "lesson_content" {
+	
+		widget = { 
+		
+			size = { 490 404 }
+
+			tutorial_diagram = {
+				size = { 160 404}
+				position = { 0 0 }
+				parentanchor = left|vcenter
+				blockoverride "texture" {
+					texture = "gfx/interface/tutorial/camera.dds"
+				}
+			}
+		
+			textbox = {
+				maximumsize = { 300 -1 }
+				autoresize = yes
+				position = { 178 30 }
+				multiline = yes
+				align = left|nobaseline
+				
+				text = "lesson_basics_camera_keys"
+			}
+			
+			textbox = {
+				maximumsize = { 300 -1 }
+				autoresize = yes
+				position = { 178 121 }
+				multiline = yes
+				align = left|nobaseline
+	
+				text = "lesson_basics_camera_scroll_wheel"
+			}
+			
+			textbox = {
+				maximumsize = { 300 -1 }
+				autoresize = yes
+				position = { 178 221 }
+				multiline = yes
+				align = left|nobaseline
+					
+				text = "lesson_basics_camera_map"
+			}
+			
+			textbox = {
+				maximumsize = { 300 100 }
+				fontsize_min = 12
+				elide = right
+				autoresize = yes
+				position = { 178 311 }
+				multiline = yes
+				align = left|nobaseline
+			
+				text = "lesson_basics_camera_tab"
+			}
+		}
+	}
+}
+
+tutorial_popup = {
+	name = "pausing_tutorial_popup"
+
+	blockoverride "lesson_content" {
+
+		textbox = {
+			margin_bottom = 10
+			max_width = 490
+			min_width = 490
+			autoresize = yes
+			multiline = yes
+			text = "lesson_basics_pausing_short"
+			align = left|nobaseline
+		}
+		
+			widget = {
+				parentanchor = hcenter
+				size = { 490 112 }
+
+				tutorial_diagram = {
+					size = { 490 102 }
+					parentanchor = hcenter
+						blockoverride "texture" {
+						texture = "gfx/interface/tutorial/pausing.dds"
+					}
+				}
+			}
+
+		textbox = {
+			margin_bottom = 10
+			max_width = 490
+			min_width = 490
+			autoresize = yes
+			multiline = yes
+			text = "lesson_basics_pausing_show_more"
+			align = left|nobaseline
+		}
+	}
+
+	position = { 300 100 }
+
+}
+
+tutorial_popup = {
+	name = "capacities_tutorial_popup"
+	
+	blockoverride "lesson_content" {
+	
+		textbox = {
+			margin_bottom = 10
+			max_width = 490
+			min_width = 490
+			autoresize = yes
+			multiline = yes
+			text = "lesson_basics_capacities_desc_1"
+			align = center|nobaseline
+		}
+		
+		flowcontainer = {
+			direction = horizontal
+			margin = { 40 40 }
+			spacing = 80 
+			margin_bottom = 20
+			margin_top = 25
+				
+			icon = {
+				size = { 80 80 }
+				parentanchor = hcenter
+				texture = "gfx/interface/icons/topbar/bureaucracy_icon.dds"
+			}
+					
+			icon = {
+				size = { 80 80 }
+				parentanchor = hcenter
+				texture = "gfx/interface/icons/topbar/authority_icon.dds"
+			}
+					
+			icon = {
+				size = { 80 80 }
+				parentanchor = hcenter
+				texture = "gfx/interface/icons/topbar/influence_icon.dds"
+			}
+		}
+				
+		widget = {
+			parentanchor = hcenter
+			size = { 490 40 }
+
+			textbox = {
+				margin_bottom = 10
+				position = { 40 0 }
+				autoresize = yes
+				multiline = yes
+				text = "lesson_basics_capacities_desc_B"
+				align = left|nobaseline
+			}			 
+				 
+			textbox = {
+				margin_bottom = 10
+				position = { 210 0 }
+				autoresize = yes
+				multiline = yes
+				text = "lesson_basics_capacities_desc_A"
+				align = left|nobaseline
+			}	
+					
+			textbox = {
+				margin_bottom = 10
+				position = { 365 0 }
+				autoresize = yes
+				multiline = yes
+				text = "lesson_basics_capacities_desc_I"
+				align = left|nobaseline
+			}					 	 
+		}
+					
+		textbox = {
+			margin_bottom = 10
+			max_width = 490
+			min_width = 490
+			autoresize = yes
+			multiline = yes
+			text = "lesson_basics_capacities_desc_R"
+			align = left|nobaseline
+		}	
+				
+	}
+	
+	position = { -500 100 }
+
+}
+
+tutorial_popup = {
+	name = "treasury_tutorial_popup"
+	
+	blockoverride "lesson_content" {
+	
+		textbox = {
+			margin_bottom = 10
+			max_width = 490
+			min_width = 490
+			autoresize = yes
+			multiline = yes
+			text = "lesson_basics_treasury_part_1_desc"
+			align = left|nobaseline
+		}
+	
+		widget = {
+			parentanchor = hcenter
+			size = { 490 223}
+
+			tutorial_diagram = {
+				size = { 490 213}
+				parentanchor = hcenter
+				blockoverride "texture" {
+					texture = "gfx/interface/tutorial/treasury_p1.dds"
+				}
+			}
+			
+			textbox = {
+				fontsize = 15
+				size = { 150 100 }
+				position = { 22 42 }
+				multiline = yes
+				align = center|nobaseline
+				
+				
+				default_format = "#black"
+				text = "lesson_basics_treasury_Expand_industry"
+			}
+			
+			textbox = {
+				fontsize = 15
+				size = { 100 100 }
+				position = { 120 128 }
+				multiline = yes
+				align = center|nobaseline
+				
+				default_format = "#black"
+				text = "lesson_basics_treasury_Fund"
+			}
+			
+			textbox = {
+				fontsize = 15
+				size = { 150 100 }
+				position = { 226 119 }
+				multiline = yes
+				align = center|nobaseline
+				
+				default_format = "#black"
+				text = "lesson_basics_treasury_Pay"
+			}
+			
+			textbox = {
+				fontsize = 15
+				size = { 150 100 }
+				position = { 320 32 }
+				multiline = yes
+				align = center|nobaseline
+				
+				default_format = "#black"
+				text = "lesson_basics_treasury_influence_nations"
+			}
+		}	
+			
+		textbox = {
+			margin_bottom = 10
+			max_width = 490
+			min_width = 490
+			autoresize = yes
+			multiline = yes
+			text = "lesson_basics_treasury_part_2_desc"
+			align = left|nobaseline
+		}
+		
+		widget = {
+			parentanchor = hcenter
+			size = { 490 138 }
+
+			tutorial_diagram = {
+				size = { 490 128 }
+				parentanchor = hcenter
+				blockoverride "texture" {
+					texture = "gfx/interface/tutorial/treasury_p2.dds"
+				}
+			}
+
+			textbox = {
+				size = { 150 100 }
+				position = { 203 15 }
+				multiline = yes
+				align = center|nobaseline
+				
+				default_format = "#black"
+				text = "lesson_basics_treasury_Taxes"
+			}				
+		}
+			
+			textbox = {
+			margin_bottom = 10
+			max_width = 490
+			min_width = 490
+			autoresize = yes
+			multiline = yes
+			text = "lesson_basics_treasury_part_5_desc"
+			align = left|nobaseline
+			
+			}
+		
+	}
+
+	position = { -500 100 }
+
+}
+
+tutorial_popup = {
+	
+	name = "expand_building_why_1_tutorial_popup"
+
+	position = { -550 130 }
+
+	blockoverride "lesson_content" {
+
+		textbox = {
+			margin_bottom = 20
+			max_width = 490
+			min_width = 490
+			autoresize = yes
+			multiline = yes
+			text = "lesson_expand_building_why_1K_desc"
+			align = left|nobaseline
+		}
+
+		widget = { 
+			parentanchor = hcenter
+			size = { 490 281 }
+			
+			tutorial_diagram = {
+				size = { 490 271 }
+				parentanchor = center
+				blockoverride "texture" {
+					texture = "gfx/interface/tutorial/expand_building_1.dds"
+				}
+			}
+
+			icon = {
+				position = { 1 -69 }
+				size = { 70 70}
+				parentanchor = center
+				datacontext = "[GetTutorialJournalEntry.GetTarget.GetBuilding]"
+				tooltipwidget = {
+					FancyTooltip_Building = {}
+				}
+				
+				texture = "[GetTutorialJournalEntry.GetTarget.GetBuilding.GetTexture]"
+          	}
+
+        	textbox = {
+				position = { 190 8 }
+		
+				default_format = "#black"
+				autoresize = yes
+				text = "lesson_expand_building_why_1K_expand"
+			}
+
+			textbox = {
+				position = { 285 238 }
+		
+				default_format = "#black"
+				autoresize = yes
+				text = "lesson_expand_building_why_1K_enrich"
+			}
+
+			textbox = {
+				position = { 108 238 }
+		
+				default_format = "#black"
+				autoresize = yes
+				text = "lesson_expand_building_why_1K_taxes"
+			}
+		}
+
+		textbox = {
+			margin_top = 20
+			max_width = 490
+			min_width = 490
+			autoresize = yes
+			multiline = yes
+			text = "lesson_expand_building_why_1K_p2_desc"
+			align = left|nobaseline
+		}
+	}
+}
+
+tutorial_popup = {
+	
+	name = "expand_building_why_6_tutorial_popup"
+
+	position = { -50 350 }
+
+	blockoverride "lesson_content" {
+
+		textbox = {
+			margin_bottom = 5
+			max_width = 490
+			min_width = 490
+			autoresize = yes
+			multiline = yes
+			text = "lesson_expand_building_why_6k1_desc"
+			align = left|nobaseline
+		}
+
+		widget = { 
+			parentanchor = hcenter
+			size = { 490 167 }
+
+			tutorial_diagram = {
+				size = { 490 147 }
+				parentanchor = center
+				blockoverride "texture" {
+					texture = "gfx/interface/tutorial/expand_building_6.dds"
+				}
+			}
+
+			icon = {
+				position = { -127 2 }
+				size = { 70 70}
+				parentanchor = center
+				datacontext = "[GetTutorialJournalEntry.GetTarget.GetBuilding]"
+				tooltipwidget = {
+					FancyTooltip_Building = {}
+				}
+				texture = "[GetTutorialJournalEntry.GetTarget.GetBuilding.GetTexture]"
+      	    }
+
+      	    icon = {
+				position = { 65 39 }
+				size = { 50 44}
+				parentanchor = center
+				texture = "gfx/interface/icons/generic_icons/generic_goods.dds"
+			}
+
+			textbox = {
+				fontsize = 15
+				size = { 150 100 }
+				position = { 42 -13 }
+				multiline = yes
+				align = center|nobaseline
+		
+				default_format = "#black"
+				text = "concept_buildings"
+			}
+
+			textbox = {
+				fontsize = 15
+				size = { 150 100 }
+				position = { 290 3 }
+				multiline = yes
+				align = center|nobaseline
+		
+				default_format = "#black"
+				text = "[GetTutorialJournalEntry.GetBuildingTarget.GetDefaultOutputGoods.GetNameNoFormatting]"
+			}
+
+			textbox = {
+				fontsize = 15
+				size = { 150 100 }
+				position = { 290 70 }
+				multiline = yes
+				align = center|nobaseline
+		
+				default_format = "#black"
+				text = "concept_goods"		
+			}
+			textbox = {
+					position = { 281 16 }
+				fontsize = 40
+		
+				autoresize = yes
+				text = "lesson_expand_building_why_6k3_desc"
+      	    }
+		}
+
+		textbox = {
+			margin_bottom = 20
+			max_width = 490
+			min_width = 490
+			autoresize = yes
+			multiline = yes
+			text = "lesson_expand_building_why_6k2_desc"
+			align = left|nobaseline
+		}
+	}
+}
+
+tutorial_popup = {
+	
+	name = "expand_building_why_9_tutorial_popup"
+
+	position = { -50 350 }
+
+	blockoverride "lesson_content" {
+   
+		textbox = {
+			margin_bottom = 10
+			max_width = 490
+			min_width = 490
+			autoresize = yes
+			multiline = yes
+			text = "lesson_expand_building_why_9k_desc"
+			align = left|nobaseline
+		}
+
+   		widget = { 
+			parentanchor = hcenter
+			size = { 490 167 }
+
+			tutorial_diagram = {
+				size = { 490 147 }
+				parentanchor = center
+				blockoverride "texture" {
+					texture = "gfx/interface/tutorial/expand_building_9.dds"
+				}
+			}
+
+			icon = {
+				position = { -177 -4 }
+				size = { 56 56 }
+				parentanchor = center
+				datacontext = "[GetTutorialJournalEntry.GetTarget.GetBuilding]"
+				tooltipwidget = {
+					FancyTooltip_Building = {}
+				}
+				texture = "[GetTutorialJournalEntry.GetTarget.GetBuilding.GetTexture]"
+      	    }
+
+      	    textbox = {
+				fontsize = 15
+				size = { 150 100 }
+				position = { -8 72 }
+				multiline = yes
+				align = center|nobaseline
+		
+				default_format = "#black"
+				text = "lesson_expand_building_why_9k_desc_Building"		
+			}
+
+			 textbox = {
+				fontsize = 15
+				size = { 147 100 }
+				position = { 106 72 }
+				multiline = yes
+				align = center|nobaseline
+		
+				default_format = "#black"
+				text = "lesson_expand_building_why_9k_desc_Workforce"		
+			}
+
+			textbox = {
+				fontsize = 15
+				size = { 150 100 }
+				position = { 221 72 }
+				multiline = yes
+				align = center|nobaseline
+		
+				default_format = "#black"
+				text = "lesson_expand_building_why_9k_desc_Grain"		
+			}
+
+			textbox = {
+				fontsize = 15
+				size = { 150 100 }
+				position = { 330 72 }
+				multiline = yes
+				align = center|nobaseline
+		
+				default_format = "#black"
+				text = "lesson_expand_building_why_9k_desc_Country_Pops"		
+			}
+
+      	    textbox = {
+				position = { 259 59 }
+				fontsize = 29				
+				autoresize = yes
+				text = "lesson_expand_building_why_6k3_desc"
+      	    }
+		}
+	}     
+}
+
+tutorial_popup = {
+	name = "tutorial_popup_budget_balance"
+	
+	blockoverride "lesson_content" {
+
+		textbox = {
+			margin_bottom = 10
+			max_width = 490
+			min_width = 490
+			autoresize = yes
+			multiline = yes
+			text = "lesson_budget_balance_why_5_k_desc"
+			align = left|nobaseline
+		}
+
+		widget = { 
+			parentanchor = hcenter
+			size = { 490 311 }
+
+			tutorial_diagram = {
+			size = { 490 301 }
+			parentanchor = center
+				blockoverride "texture" {
+					texture = "gfx/interface/tutorial/balance_budget_5.dds"
+				}
+			}
+
+			textbox = {
+				position = { 334 246 }
+
+				default_format = "#black"
+				autoresize = yes
+				text = "lesson_budget_balance_why_5_k_Pop_Wealth"
+			}
+
+			textbox = {
+				position = { 390 140 }
+
+				default_format = "#black"
+				autoresize = yes
+				text = "lesson_budget_balance_why_5_k_Taxes"
+			}
+
+			textbox = {
+				position = { 285 140 }
+
+				default_format = "#black"
+				autoresize = yes
+				text = "lesson_budget_balance_why_5_k_Interest"
+			}
+
+			textbox = {
+				position = { 324 106 }
+
+				default_format = "#black"
+				autoresize = yes
+				text = "lesson_budget_balance_why_5_k_Treasury"
+			}
+
+			textbox = {
+				position = { 86 109 }
+
+				default_format = "#black"
+				autoresize = yes
+				text = "lesson_budget_balance_why_5_k_Expand_industry"
+			}
+
+			textbox = {
+				position = { 208 60 }
+
+				default_format = "#black"
+				autoresize = yes
+				text = "lesson_budget_balance_why_5_k_Take_Loans"
+			}
+
+			textbox = {
+				position = { 54 246 }
+
+				default_format = "#black"
+				autoresize = yes
+				text = "lesson_budget_balance_why_5_k_Demand_Increase"
+			}
+		}
+
+		textbox = {
+			margin_top = 10
+			max_width = 490
+			min_width = 490
+			autoresize = yes
+			multiline = yes
+			text = "lesson_budget_balance_why_5_k2_desc"
+			align = left|nobaseline
+		}
+
+	}
+}
+
+tutorial_popup = {
+	name = "lenses_tutorial_popup"
+	
+	position = { 0 -100 }
+
+	blockoverride "anchor" {
+		parentanchor = bottom|hcenter
+	}
+
+	blockoverride "lesson_text" {
+		text = "lesson_basics_lenses_short"
+	}
+
+	blockoverride "show_more_content" {
+
+		flowcontainer = {
+			direction = vertical
+			spacing = 20
+			parentanchor = hcenter
+
+			tutorial_image_and_text = {
+				blockoverride "visibility" {
+					visible = yes
+				}
+
+				blockoverride "icon" {
+					texture = "gfx/interface/icons/lens_toolbar_icons/production_lens_button.dds"
+					tooltip = "PRODUCTION_LENS"
+					shortcut = production_lens
+				}
+
+				blockoverride "image_text" {
+					text = "lesson_basics_lenses_production"
+				}
+			}
+
+			tutorial_image_and_text = {
+				blockoverride "visibility" {
+					visible = yes
+				}
+
+				blockoverride "icon" {
+					tooltip = "POLITICAL_LENS"
+					texture = "gfx/interface/icons/lens_toolbar_icons/political_lens_button.dds"
+					shortcut = political_lens
+				}
+
+				blockoverride "image_text" {
+					text = "lesson_basics_lenses_politics"
+				}
+			}
+
+			tutorial_image_and_text = {
+				blockoverride "visibility" {
+					visible = yes
+				}
+
+				blockoverride "icon" {
+					tooltip = "DIPLOMATIC_LENS"
+					texture = "gfx/interface/icons/lens_toolbar_icons/diplomatic_lens_button.dds"
+					shortcut = diplomatic_lens
+				}
+				blockoverride "image_text" {
+					text = "lesson_basics_lenses_diplomacy"
+				}
+			}
+
+			tutorial_image_and_text = {
+				blockoverride "visibility" {
+					visible = yes
+				}
+
+				blockoverride "icon" {
+					tooltip = "MILITARY_LENS"
+					texture = "gfx/interface/icons/lens_toolbar_icons/military_lens_button.dds"
+					shortcut = military_lens
+				}
+				blockoverride "image_text" {
+					text = "lesson_basics_lenses_military"
+				}
+			}
+
+			tutorial_image_and_text = {
+				blockoverride "visibility" {
+					visible = yes
+				}
+				
+				blockoverride "icon" {
+					tooltip = "TRADE_LENS"
+					texture = "gfx/interface/icons/lens_toolbar_icons/trade_lens_button.dds"
+					shortcut = trade_lens
+				}
+				blockoverride "image_text" {
+					text = "lesson_basics_lenses_trade"
+				}
+			}
+		}
+	}
+}
+

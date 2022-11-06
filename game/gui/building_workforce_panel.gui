@@ -1,0 +1,159 @@
+# COPY-PASTED FOR NOW
+@panel_width_minus_10 = 530			# used to be 450
+@panel_width = 540  				# used to be 460
+@panel_width_half = 270				# used to be 230
+@panel_width_plus_10 = 550  		# used to be 470
+@panel_width_plus_14 = 554			# used to be 474
+@panel_width_plus_14_half = 277		# used to be 237
+@panel_width_plus_20 = 560			# used to be 480
+@panel_width_plus_30 = 570			# used to be 490
+@panel_width_plus_70 = 610			# used to be 530
+
+types building_panels
+{
+	type building_details_panel_workforce_content = flowcontainer {
+		direction = vertical
+		using = default_list_position
+		margin_top = 10
+		margin_bottom = 10
+		spacing = 10
+
+		widget = {
+			parentanchor = hcenter
+			size = { @panel_width 160 }
+			scissor = yes
+
+			background = {
+				using = entry_bg_simple
+			}
+
+			flowcontainer = {
+				visible = "[InDebugMode]"
+				datamodel = "[Building.GetSamplePops]"
+				margin_top = 20
+				spacing = -35
+				scale = 0.85
+				parentanchor = right|vcenter
+				
+				item = {
+					container = {
+						pop_portrait_medium_male = {
+							tooltipwidget = {
+								FancyTooltip_Pop = {}
+							}
+						}
+					}
+				}
+			}
+
+			flowcontainer = {
+				direction = vertical
+				parentanchor = vcenter
+				margin_left = 20
+				spacing = 5
+				
+				flowcontainer = {
+					tooltip = "TOOLTIP_BUILDING_EMPLOYMENT"
+					spacing = 10
+					
+					icon = {
+						texture = "gfx/interface/icons/generic_icons/population.dds"
+						size = { 60 60 }
+						parentanchor = vcenter
+					}
+
+					textbox = {
+						text = "BUILDING_POPULATION_STATUS"
+						autoresize = yes
+						minimumsize = { 160 -1 }
+						maximumsize = { 160 -1 }
+						multiline = yes
+						align = nobaseline
+						parentanchor = vcenter
+					}
+				}
+
+				flowcontainer = {
+					#tooltip = "NUM_SOL"
+					onmousehierarchyenter = "[SelectMapModeByKey('mm_standard_of_living')]"
+					onmousehierarchyleave = "[UnforceMapMode]"
+					alwaystransparent = no
+					spacing = 10
+					
+					textbox = {
+						size = { 60 60 }
+						text = "[LabelingHelper.GetIconForStandardOfLivingCFixedPoint(Building.GetAverageStandardOfLiving)|v]"
+						align = left|nobaseline
+						fontsize = 36 #hack to get the same size on the text icon as the rest in the top bar
+						parentanchor = vcenter
+					}
+
+					flowcontainer = {
+						direction = vertical
+						parentanchor = vcenter
+
+						textbox = {
+							text = "[concept_sol]"
+							autoresize = yes
+							minimumsize = { 160 -1 }
+							maximumsize = { 160 -1 }
+							multiline = yes
+							align = nobaseline
+						}
+						textbox = {
+							text = "[LabelingHelper.GetLabelForStandardOfLivingNoIconCFixedPoint(Building.GetAverageStandardOfLiving)|v] ([Building.GetAverageStandardOfLiving|v1])"
+							maximumsize = { 160 23 }
+							minimumsize = { 160 23 }
+							autoresize = yes
+							align = nobaseline
+						}
+					}
+				}
+			}
+		}
+
+		# Pop List
+		default_header_2texts = {
+			blockoverride "text1" {
+				text = "WORKFORCE"
+			}
+			blockoverride "text2" {
+				text = "SORTED_BY"
+			}
+		}
+
+		pop_list = {
+			blockoverride "pop_list_context" {
+				datacontext = "[Building.AccessPopsList]"
+				datacontext = "[Building]"
+			}
+
+			blockoverride "building_and_state" {}
+
+			blockoverride "right_text_text" {}
+
+			blockoverride "pop_size_info" {
+				text = "[Pop.GetNumWorkforce|Dv]"
+			}
+			
+			blockoverride "tooltipwidget" {
+							
+				tooltipwidget = {
+					FancyTooltip_PopTypeBuilding = {}
+				}
+			}
+
+			blockoverride "total_info" {
+				textbox = {
+					text = "POP_TOTAL_INFO"
+					using = pop_population_tooltip_with_graph
+					size = { 200 35 }
+					elide = right
+					align = left|nobaseline
+					margin = { 5 0 }
+				}
+			}
+		}
+	}
+}
+

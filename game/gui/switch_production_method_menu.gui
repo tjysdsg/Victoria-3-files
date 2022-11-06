@@ -1,0 +1,73 @@
+right_click_menu = {
+	name = "switch_production_method_menu"
+
+	parentanchor = top|right
+	widgetanchor = top|left
+
+	blockoverride "title_text" {
+		text = "[ProductionMethodGroup.GetName]"
+	}
+
+	blockoverride "items" {
+		datamodel = "[ChangeProductionMethodsMenuItems.AccessItems]"
+
+		item = {
+			right_click_menu_item = {
+				blockoverride "size" {
+					size = { 460 66 }
+				}
+				blockoverride "properties" {
+					datacontext = "[ChangeProductionMethodMenuItem.AccessMethod]"
+					tooltip = "CHANGE_PRODUCTION_METHOD_TOOLTIP"
+					onclick = "[ChangeProductionMethodMenuItem.Execute]"
+					enabled = "[Or(ChangeProductionMethodMenuItem.IsValid, ChangeProductionMethodMenuItem.IsActive)]"
+
+					icon = {
+						size = { 50 50 }
+						parentanchor = vcenter
+						position = { 10 0 }
+					}
+
+					has_new_pm_icon	= {
+						size = { 25 25 }
+						blockoverride "visible" {
+							visible = "[GetPlayer.IsNewProductionMethod( ProductionMethod.Self )]"
+						}
+						position = { -444 -23 }
+						tooltip = "TOOLTIP_NEW_PRODUCTION_METHOD"
+						parentanchor = right|vcenter
+					}												
+					
+					icon = {
+						visible = "[ChangeProductionMethodMenuItem.IsActive]"
+						using = highlighted_square_selection
+						size = { 100% 100% }
+					}
+
+					textbox = {
+						visible = "[Not(StringIsEmpty(ProductionMethod.GetTextIconDesc))]"
+						text = "[ProductionMethod.GetTextIconDesc]"
+						parentanchor = right|vcenter
+						widgetanchor = right|vcenter
+						autoresize = yes
+						align = right|nobaseline
+						margin = { 12 6 }
+						using = fontsize_large
+					}
+				}
+
+				blockoverride "margin" {
+					margin_left = 64
+				}
+
+				blockoverride "texture" {
+					texture = "[ProductionMethod.GetTexture]"
+				}
+			
+				blockoverride = "text" {
+					text = "[ProductionMethod.GetNameNoFormatting]"
+				}
+			}
+		}
+	}
+}

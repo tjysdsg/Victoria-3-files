@@ -1,0 +1,580 @@
+﻿namespace = exhibition_events
+
+exhibition_events.1 = { #Not so grand exhibition
+	type = country_event
+	placement = root
+
+	title = exhibition_events.1.t
+	desc = exhibition_events.1.d
+	flavor = exhibition_events.1.f
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_world_fair.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/world_fair"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	trigger = {
+		#triggered by JE
+	}
+
+	immediate = {
+		set_variable = held_grand_exhibition_var
+	}
+
+	option = {
+		name = exhibition_events.1.a
+		default_option = yes
+		add_modifier = {
+			name = modifier_good_exhibition
+			months = normal_modifier_time
+		}
+	}
+}
+
+exhibition_events.2 = { #Grand Exhibition
+	type = country_event
+	placement = root
+
+	title = exhibition_events.2.t
+	desc = exhibition_events.2.d
+	flavor = exhibition_events.2.f
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_world_fair.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/world_fair"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	trigger = {
+		#triggered by JE
+	}
+
+	immediate = {
+		set_variable = held_grand_exhibition_var
+	}
+
+	option = {
+		name = exhibition_events.2.a
+		default_option = yes
+		add_modifier = {
+			name = modifier_great_exhibition
+			months = normal_modifier_time
+		}
+	}
+}
+
+
+exhibition_events.3 = { #The Grandest Exhibition
+	type = country_event
+	placement = root
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_world_fair.bk2" 
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/world_fair"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	title = exhibition_events.3.t
+	desc = exhibition_events.3.d
+	flavor = exhibition_events.3.f
+	duration = 3
+
+	trigger = {
+		#triggered by JE
+	}
+	
+	immediate = {
+		set_variable = held_grand_exhibition_var
+	}
+
+	option = {
+		name = exhibition_events.3.a
+		default_option = yes
+		add_modifier = {
+			name = modifier_greatest_exhibition
+			months = normal_modifier_time
+		}
+	}
+}
+
+exhibition_events.4 = { #The Exhibition caused controversy as its opening approached. Some conservatives feared that the mass of visitors might become a revolutionary mob
+
+	type = country_event
+	placement = root
+
+	title = exhibition_events.4.t
+	desc = exhibition_events.4.d
+	flavor = exhibition_events.4.f
+	
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_political_extremism.bk2" 
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/political_extremism"
+	
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	trigger = {
+		OR = {
+			ig:ig_devout = {
+				is_marginal = no
+			}
+			ig:ig_landowners = {
+				is_marginal = no
+			}
+		}
+		NOT = { has_variable = exhibition_controversy_var }
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				ig:ig_landowners = {
+					is_marginal = no
+				}
+			}
+			ig:ig_landowners = {
+				save_scope_as = conservative_ig
+			}
+		}
+		else = {
+			ig:ig_devout = {
+				save_scope_as = conservative_ig
+			}
+		}
+		capital = {
+			save_scope_as = grand_exhibition_state
+		}
+		set_variable = {
+			name = exhibition_controversy_var
+			months = short_modifier_time
+		}
+	}
+	
+	option = { #ignore them
+		name = exhibition_events.4.a 
+		default_option = yes
+		scope:conservative_ig = {
+			add_modifier = {
+				name = ignored_conservatives_modifier
+				months = normal_modifier_time
+			}
+		}
+	}
+	
+	option = { #we should look into this
+		name = exhibition_events.4.b 
+		custom_tooltip = exhibition_controversy_tt
+		change_variable = {
+			name = grand_exhibition_points_var
+			add = -1
+		}
+	}
+}
+
+exhibition_events.5 = { #toilets event!
+	type = country_event
+	placement = root
+
+	title = exhibition_events.5.t
+	desc = exhibition_events.5.d
+	flavor = exhibition_events.5.f
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_world_fair.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/world_fair"
+	
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	trigger = {
+		has_technology_researched = modern_sewerage
+		ig:ig_landowners = {
+			is_marginal = no
+		}
+		any_country = {
+			is_country_alive = yes
+			owner = {
+				relations:root >= relations_threshold:amicable
+				is_player = no
+				NOT = { THIS = ROOT }
+			}
+		}
+		NOT = { has_variable = exhibition_toilets_var }
+	}
+
+	immediate = {
+		ig:ig_landowners = {
+			save_scope_as = anti_toilet_ig
+		}
+		random_country = {
+			limit = {
+				is_country_alive = yes
+				owner = {
+					relations:root >= relations_threshold:amicable
+					is_player = no
+					NOT = { THIS = ROOT }
+				}
+			}
+			save_scope_as = visiting_country
+		}
+		set_variable = {
+			name = exhibition_toilets_var
+			value = normal_modifier_time
+		}
+	}
+	
+	option = { #install them!
+		name = exhibition_events.5.a 
+		default_option = yes
+		add_modifier = {
+			name = grand_exhibition_toilets_modifier #cost money
+			multiplier = money_amount_multiplier_very_small
+			months = short_modifier_time
+		}
+		scope:anti_toilet_ig = {
+			add_modifier = {
+				name = grand_exhibition_toilets_ig_modifier #disapprove
+				months = normal_modifier_time
+			}
+		}
+		capital = {
+			add_loyalists = {
+				value = 0.2
+			}
+		}
+	}
+	
+	option = { #it's going to stink!
+		name = exhibition_events.5.b
+		capital = {
+			add_radicals = {
+				value = small_radicals
+			}
+		}
+		scope:visiting_country = {
+			change_relations = {
+				country = ROOT
+				value = -10
+			}
+		}
+		scope:anti_toilet_ig = {
+			add_modifier = {
+				name = grand_exhibition_toilets_no_ig_modifier #approve
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+exhibition_events.6 = { #souvenirs!
+	type = country_event
+	placement = root
+
+	title = exhibition_events.6.t
+	desc = exhibition_events.6.d
+	flavor = exhibition_events.6.f
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_world_fair.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/world_fair"
+	
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	trigger = {
+		NOT = { has_variable = exhibition_souvenirs_var }
+	}
+	
+	immediate = {
+		set_variable = {
+			name = exhibition_souvenirs_var
+			value = normal_modifier_time
+		}
+	}
+	
+	option = { #produce stereoscope cards
+		name = exhibition_events.6.a 
+		default_option = yes
+		add_modifier = {
+			name = stereoscope_cards_modifier
+			months = normal_modifier_time
+		}
+	}
+	
+	option = { #produce printed lithographic cards
+		name = exhibition_events.6.b
+		add_modifier = {
+			name = lithographic_cards_modifier
+			months = normal_modifier_time
+		}
+	}
+}
+
+exhibition_events.7 = { #charlatans take advantage of the situation
+	type = country_event
+	placement = root
+
+	title = exhibition_events.7.t
+	desc = exhibition_events.7.d
+	flavor = exhibition_events.7.f
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_world_fair.bk2" 
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/world_fair"
+	
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	trigger = {
+		OR = {
+			radical_fraction = {
+				value >= 0.1
+				pop_type = capitalists
+			}
+			any_scope_pop = {
+				is_pop_type = capitalists
+				pop_employment_building = building_urban_center #the exhibition is held at an urban center
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_pop = {
+			limit = {
+				is_pop_type = capitalists
+			}
+			save_scope_as = capitalist_scope
+		}			
+	}
+	
+	option = { #kick them out
+		name = exhibition_events.7.a 
+		default_option = yes
+		capital = {
+			add_radicals = {
+				value = small_radicals
+				pop_type = capitalists
+			}
+			add_loyalists = {
+				value = small_radicals
+				strata = poor
+			}
+		}
+	}
+	
+	option = { #turn a blind eye
+		name = exhibition_events.7.b
+		capital = {
+			add_loyalists = {
+				value = small_radicals
+				pop_type = capitalists
+			}
+		}
+	}
+}
+
+exhibition_events.8 = { #you want to exhibit the things you got in your expeditions
+	type = country_event
+	placement = scope:grand_exhibition_state
+
+	title = exhibition_events.8.t
+	desc = exhibition_events.8.d
+	flavor = exhibition_events.8.f
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_world_fair.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/world_fair"
+	
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	trigger = { #i'm sorry
+		OR = {
+			AND = {
+				has_variable = central_africa_expedition_succes_var
+				has_variable = rhino_success_var
+			}
+			AND = {
+				has_variable = west_america_expedition_succes_var #covers the 3 NA expeditions
+				OR = {
+					has_variable = expedition_photography_var
+					has_variable = expedition_plants_var
+					has_variable = expedition_geographic_var
+				}
+			}
+			AND = {
+				has_variable = congo_river_expedition_success_var
+				has_variable = expedition_trading_gifts_accepted_var
+			}
+			AND = {
+				has_variable = niger_river_expedition_success_var
+				has_variable = recorded_expedition_film_var
+			}
+			AND = {
+				has_variable = antarctica_expedition_success_var
+				has_variable = took_strange_rock_var
+			}
+		}
+		NOT = { has_variable = exhibition_expedition_var } 
+	}
+
+	immediate = {
+		capital = {
+			save_scope_as = grand_exhibition_state
+		}
+		set_variable = exhibition_expedition_var
+	}
+	
+	option = { #exhibit the rhino's horn
+		name = exhibition_events.8.a
+		default_option = yes
+		trigger = {
+			has_variable = central_africa_expedition_succes_var
+			has_variable = rhino_success_var
+		}
+		capital = {
+			add_loyalists = {
+				pop_type = officers
+				value = medium_radicals
+			}
+		}
+	}
+	
+	option = { #exhibit the North American pics
+		name = exhibition_events.8.b
+		trigger = {
+			has_variable = west_america_expedition_succes_var
+			has_variable = expedition_photography_var
+		}
+		capital = {
+			add_loyalists = {
+				pop_type = farmers
+				value = medium_radicals
+			}
+		}
+	}
+	
+	option = { #exhibit the North American flowers
+		name = exhibition_events.8.c
+		trigger = {
+			has_variable = west_america_expedition_succes_var
+			has_variable = expedition_plants_var
+		}
+		capital = {
+			add_loyalists = {
+				pop_type = clergymen
+				value = medium_radicals
+			}
+		}
+	}
+	
+	option = { #exhibit African chief gift
+		name = exhibition_events.8.e
+		trigger = {
+			has_variable = congo_river_expedition_success_var
+			has_variable = expedition_trading_gifts_accepted_var
+		}
+		capital = {
+			add_loyalists = {
+				pop_type = aristocrats
+				value = medium_radicals
+			}
+		}
+	}
+	
+	option = { #exhibit African expedition film
+		name = exhibition_events.8.g
+		trigger = {
+			has_variable = niger_river_expedition_success_var
+			has_variable = recorded_expedition_film_var
+		}
+		capital = {
+			add_loyalists = {
+				pop_type = laborers
+				value = medium_radicals
+			}
+		}
+	}
+	
+	option = { #exhibit some cool maps
+		name = exhibition_events.8.h
+		trigger = {
+			has_variable = west_america_expedition_succes_var
+			has_variable = expedition_geographic_var
+		}
+		capital = {
+			add_loyalists = {
+				pop_type = bureaucrats
+				value = medium_radicals
+			}
+		}
+	}
+	
+	option = { #exhibit the COOL ROCK
+		name = exhibition_events.8.i
+		trigger = {
+			has_variable = antarctica_expedition_success_var
+			has_variable = took_strange_rock_var
+		}
+		capital = {
+			add_loyalists = {
+				pop_type = academics
+				value = large_radicals
+			}
+			add_modifier = {
+				name = cool_rock_sinister_influence
+				months = short_modifier_time
+			}
+		}
+		if = {
+			limit = {
+				ruler = {
+					has_trait = reckless
+				}
+			}
+			ruler = {
+				add_modifier = {
+					name = infatuated_with_cool_rock_modifier #- popularity
+					months = normal_modifier_time
+				}
+				if = {
+					limit = {
+						NOT = { has_trait = scarred }
+					}
+					random_list = {
+						70 = { }
+						30 = { add_trait = scarred }
+					}
+				}
+			}
+		}
+	}
+}

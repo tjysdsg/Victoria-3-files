@@ -1,0 +1,98 @@
+# COPY-PASTED FOR NOW
+@panel_width_minus_10 = 530			# used to be 450
+@panel_width = 540  				# used to be 460
+@panel_width_half = 270				# used to be 230
+@panel_width_plus_10 = 550  		# used to be 470
+@panel_width_plus_14 = 554			# used to be 474
+@panel_width_plus_14_half = 277		# used to be 237
+@panel_width_plus_20 = 560			# used to be 480
+@panel_width_plus_30 = 570			# used to be 490
+@panel_width_plus_70 = 610			# used to be 530
+
+types modifiers_panel
+{
+	type modifier_list = flowcontainer {
+		using = default_list_position
+		direction = vertical
+		block "margin1" {
+			margin_top = 10
+		}
+		minimumsize = { @panel_width -1 }
+		maximumsize = { @panel_width -1 }
+		spacing = 5
+		parentanchor = hcenter
+
+		### TIMED MODIFIERS
+		flowcontainer = {
+			using = default_list_position
+			direction = vertical
+			
+			default_header = {
+				blockoverride "text" {
+					text = "MODIFIERS_PANEL_TIMED_MODIFIERS"
+				}
+			}
+
+			### EMPTY TIMED MODIFIERS
+			empty_state = {
+				blockoverride "visible" {
+					visible = "[IsDataModelEmpty(ModifiersPanel.GetTimedModifiers)]"
+				}
+				blockoverride "text" {
+					text = "MODIFIERS_PANEL_NO_TIMED_MODIFIERS"
+				}
+			}
+		
+			flowcontainer = {
+				direction = vertical
+				parentanchor = hcenter
+				datamodel = "[ModifiersPanel.GetTimedModifiers]"
+				
+				item = {
+					textbox = {
+						size = { @panel_width_minus_10 40 }
+						using = unclickable_listentry_small
+						text = "[TimedModifier.GetName]"
+						align = left|nobaseline
+						tooltip = "[TimedModifier.GetTooltip]"
+						using = fontsize_large
+					}
+				}
+			}
+		}
+		
+		### NORMAL MODIFIERS
+		flowcontainer = {
+			block "margin2" {
+				margin_top = 15
+			}
+			using = default_list_position
+			direction = vertical
+			datacontext = "[ModifiersPanel.GetModifier]"						
+			visible = "[Not(Modifier.IsEmpty)]"
+			
+			default_header = {
+				visible = "[Not(IsDataModelEmpty(Modifier.GetEntries))]"
+				blockoverride "text" {
+					text = "MODIFIERS_PANEL_MODIFIER_ENTRIES"
+				}
+			}
+			
+			flowcontainer = {
+				direction = vertical
+				parentanchor = hcenter
+				datamodel = "[Modifier.GetEntries]"
+				
+				item = {
+					textbox = {
+						size = { @panel_width_minus_10 38 }
+						using = unclickable_listentry_small
+						text = "MODIFIER_ENTRY_TEXT"
+						align = left|nobaseline
+						tooltip = "MODIFIER_ENTRY_TOOLTIP"
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,1118 @@
+﻿#Congo River Expedition
+
+namespace = expedition_events
+
+expedition_events.601 = { #Start event
+	type = country_event
+    placement = ROOT
+
+    title = expedition_events.601.t
+    desc = expedition_events.601.d
+    flavor = expedition_events.601.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_politicians_arguing.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/asia/politician_parliament_motion"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	immediate = {
+	}
+
+	option = {
+		name = expedition_events.601.a
+		trigger_event = { id = expedition_events.602 days = 0 popup = yes }
+	}
+}
+
+expedition_events.602 = { #Choose commander
+	type = country_event
+    placement = ROOT
+
+    title = expedition_events.2.t
+    desc = expedition_events.2.d
+    flavor = expedition_events.2.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	trigger = {
+		any_scope_character = {
+			OR = {
+				has_role = general
+				has_role = admiral
+			}
+			is_ruler = no
+		}
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				any_scope_character = {
+					is_ruler = no
+					OR = {
+						has_role = general
+						has_role = admiral
+					}
+					is_ruler = no
+					has_trait = explorer
+				}
+			}
+			random_scope_character = {
+				limit = {
+					is_ruler = no
+					OR = {
+						has_role = general
+						has_role = admiral
+					}
+					has_trait = explorer
+				}
+				save_scope_as = expedition_leader_1
+			}
+		}
+		random_scope_character = {
+			limit = {
+				is_ruler = no
+				OR = {
+					has_role = general
+					has_role = admiral
+				}
+				trigger_if = {
+					limit = { exists = scope:expedition_leader_1 }
+					NOT = {
+						this = scope:expedition_leader_1
+					}
+				}
+			}
+			save_scope_as = expedition_leader_2
+		}
+		random_scope_character = {
+			limit = {
+				is_ruler = no
+				OR = {
+					has_role = general
+					has_role = admiral
+				}
+				NOR = {
+					AND = {
+						exists = scope:expedition_leader_1
+						this = scope:expedition_leader_1
+					}
+					this = scope:expedition_leader_2
+				}
+
+			}
+			save_scope_as = expedition_leader_3
+		}
+		set_variable = congo_river_expedition_var
+		set_variable = {
+			name = expedition_progress
+			value = 1
+		}
+		set_variable = {
+			name = expedition_peril
+			value = 1
+		}
+		congo_river_expedition_location = yes
+	}
+
+	option = {
+		name = expedition_events.602.a
+		trigger = {
+			exists = scope:expedition_leader_1
+		}
+		custom_tooltip = expedition_costs_tt
+		add_modifier = {
+			name = modifier_large_expedition_cost
+			multiplier = money_amount_multiplier_medium
+		}
+		scope:expedition_leader_1 = {
+			set_character_busy = yes
+			set_variable = expedition_leader_var
+		}
+		trigger_event = { id = expedition_events.604 days = 30 }
+	}
+
+	option = {
+		name = expedition_events.602.b
+		default_option = yes
+		trigger = {
+			exists = scope:expedition_leader_2
+		}
+		custom_tooltip = expedition_costs_tt
+		add_modifier = {
+			name = modifier_large_expedition_cost
+			multiplier = money_amount_multiplier_medium
+		}
+		scope:expedition_leader_2 = {
+			set_character_busy = yes
+			set_variable = expedition_leader_var
+		}
+		trigger_event = { id = expedition_events.604 days = 30 }
+	}
+
+	option = {
+		name = expedition_events.602.c	
+		trigger = {
+			exists = scope:expedition_leader_3
+		}
+		custom_tooltip = expedition_costs_tt
+		add_modifier = {
+			name = modifier_large_expedition_cost
+			multiplier = money_amount_multiplier_medium
+		}
+		scope:expedition_leader_3 = {
+			set_character_busy = yes
+			set_variable = expedition_leader_var
+		}
+		trigger_event = { id = expedition_events.604 days = 30 }
+	}
+}
+
+expedition_events.604 = { #Expedition Arrives
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.604.t
+    desc = expedition_events.604.d
+    flavor = expedition_events.604.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+	
+	immediate = {
+		congo_river_expedition_location = yes
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+	}
+
+	option = {
+		name = expedition_events.604.a
+		default_option = yes
+		add_journal_entry = {
+			type = je_congo_expedition
+		}
+	}
+}
+
+expedition_events.611 = { #Successful expedition
+	type = country_event
+    placement = ROOT
+
+    title = expedition_events.611.t
+    desc = expedition_events.611.d
+    flavor = expedition_events.611.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_steam_ship.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/steam_ship"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	immediate = {
+		remove_variable = on_expedition
+		set_global_variable = congo_river_explored
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+		if = {
+			limit = {
+				has_variable = killed_lost_expedition_var
+			}
+			trigger_event = { id = expedition_events.696 days = 30 }
+		}
+		remove_expedition_events_effect = yes
+	}
+
+	option = {
+		name = expedition_events.611.a
+		default_option = yes
+		add_modifier = {
+			name = modifier_congo_river_expedition_complete
+			months = normal_modifier_time
+		}
+		scope:expedition_leader = {
+			add_trait = explorer
+			set_character_busy = no
+			add_modifier = {
+				name = congo_expedition_modifier
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+expedition_events.612 = { #Failed expedition
+	type = country_event
+    placement = ROOT
+
+    title = expedition_events.612.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = expedition_events.612.d
+				trigger = {
+					NOT = { var:expedition_progress >= 6 }
+				}
+			}
+			triggered_desc = {
+				desc = expedition_events.612.d2
+				trigger = {
+					var:expedition_progress >= 6
+				}
+			}
+		}
+	}
+    flavor = expedition_events.612.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	immediate = {
+		remove_variable = on_expedition
+		remove_expedition_events_effect = yes
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+			set_variable = failed_expedition_leader_var
+		}
+	}
+
+	option = {
+		name = expedition_events.612.a
+		trigger = {
+			var:expedition_progress < 6
+		}
+		scope:expedition_leader = {
+			place_character_in_void = 24
+		}
+		add_modifier = {
+			name = modifier_failed_expedition
+			months = normal_modifier_time
+			is_decaying	= yes
+		}
+		default_option = yes
+	}
+
+	option = {
+		name = expedition_events.612.b
+		trigger = {
+			var:expedition_progress >= 6
+		}
+		add_modifier = {
+			name = modifier_failed_expedition
+			months = normal_modifier_time
+			is_decaying	= yes
+		}
+		default_option = yes
+		scope:expedition_leader = {
+			add_modifier = {
+				name = failed_congo_river_expedition_modifier
+				months = normal_modifier_time
+			}
+			add_trait = explorer
+		}
+	}
+}
+
+expedition_events.620 = { #Boat Repair
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.620.t
+    desc = expedition_events.620.d
+    flavor = expedition_events.620.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	trigger = {
+		var:expedition_progress >= 1
+		NOT = { has_variable = expedition_boat_repair }
+	}
+	
+	immediate = {
+		set_variable = expedition_boat_repair
+		congo_river_expedition_location = yes
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+	}
+
+	option = { #stop and repair
+		name = expedition_events.620.a
+		default_option = yes
+		custom_tooltip = expedition_event_ongoing_tt
+	}
+
+	option = { #dont stop
+		name = expedition_events.620.b
+		expedition_moderate_progress_effect = yes
+		add_medium_peril_effect = yes
+	}
+
+	option = { #stop with the right tools
+		name = expedition_events.620.c
+		highlighted_option = yes
+		trigger = {
+			scope:expedition_leader = {
+				OR = {
+					has_trait = experienced_naval_commander
+					has_trait = expert_naval_commander
+					has_trait = dockyard_master
+				}
+			}
+		}
+		expedition_minor_progress_effect = yes
+	}
+}
+
+expedition_events.630 = { #White Fog
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.630.t
+    desc = expedition_events.630.d
+    flavor = expedition_events.630.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	trigger = {
+		var:expedition_progress >= 1
+		var:expedition_progress < 6
+	}
+
+	immediate = {
+		set_variable = expedition_white_fog
+		congo_river_expedition_location = yes
+	}
+
+	option = { #keep sailing
+		name = expedition_events.630.a
+		expedition_moderate_progress_effect = yes
+		add_medium_peril_effect = yes
+	}
+
+	option = { #wait for it to disappear
+		name = expedition_events.630.b
+		default_option = yes
+		custom_tooltip = expedition_event_delayed_tt
+	}
+}
+
+expedition_events.640 = { #Crocodile Attack
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.640.t
+    desc = expedition_events.640.d
+    flavor = expedition_events.640.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_fire.dds"
+
+	trigger = {
+		var:expedition_progress < 6
+		NOT = { var:expedition_crocodile_attack >= 3 }
+	}
+
+	immediate = {
+		if = {
+			limit = { exists = var:expedition_crocodile_attack }
+			change_variable = {
+				name = expedition_crocodile_attack
+				add = 1
+			}
+		}
+		else = {
+			set_variable = {
+				name = expedition_crocodile_attack
+				value = 1
+			}
+		}
+		congo_river_expedition_location = yes
+	}
+
+	option = { #fight for your life
+		name = expedition_events.640.a
+		default_option = yes
+		random_list = {
+			50 = {
+				trigger_event = { id = expedition_events.641 days = 0 popup = yes }
+			}
+			50 = {
+				trigger_event = { id = expedition_events.642 days = 0 popup = yes}
+			}
+		}
+	}
+}
+
+expedition_events.641 = { #Crocodile Defeated
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.641.t
+    desc = expedition_events.641.d
+    flavor = expedition_events.641.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	option = {
+		name = expedition_events.641.a
+		default_option = yes
+		expedition_minor_progress_effect = yes
+	}
+}
+
+expedition_events.642 = { #F
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.642.t
+    desc = expedition_events.642.d
+    flavor = expedition_events.642.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	option = {
+		name = expedition_events.642.a
+		default_option = yes
+		expedition_minor_progress_effect = yes
+		add_medium_peril_effect = yes
+	}
+}
+
+expedition_events.650 = { #Rear Column
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.650.t
+    desc = expedition_events.650.d
+    flavor = expedition_events.650.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	trigger = {
+		var:expedition_progress >= 2
+		NOT = { has_variable = expedition_rear_column }
+	}
+	
+	immediate = {
+		set_variable = expedition_rear_column
+		congo_river_expedition_location = yes
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+	}
+
+	option = { #set everything and leave him behind
+		name = expedition_events.650.a
+		default_option = yes
+		custom_tooltip = expedition_events.650.tt
+		custom_tooltip = expedition_event_delayed_tt
+		hidden_effect = {
+			random_list = {
+				50 = {
+					trigger_event = { id = expedition_events.651 days = day_until_next_expedition_event }
+				}
+				50 = {
+				}
+			}
+		}
+	}
+
+	option = { #no
+		name = expedition_events.650.b
+		expedition_moderate_progress_effect = yes
+		add_medium_peril_effect = yes
+		hidden_effect = {
+			random_list = {
+				50 = {
+					trigger_event = { id = expedition_events.652 days = 7 }
+				}
+				50 = {
+				}
+			}
+		}
+	}
+}
+
+expedition_events.651 = { #bad news from the rear column
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.651.t
+    desc = expedition_events.651.d
+    flavor = expedition_events.651.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+	
+	immediate = {
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+	}
+
+	option = { #oh no...
+		name = expedition_events.651.a
+		default_option = yes
+		add_modifier = {
+			name = modifier_expedition_rear_column_disaster
+			months = normal_modifier_time
+		}
+		expedition_minor_progress_effect = yes
+	}
+}
+
+expedition_events.652 = { #mutiny
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.652.t
+    desc = expedition_events.652.d
+    flavor = expedition_events.652.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/asia_sepoy_mutiny.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/asia/sepoy_mutiny"
+
+	icon = "gfx/interface/icons/event_icons/event_fire.dds"
+	
+	immediate = {
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+	}
+
+	option = { #seize the traitors
+		name = expedition_events.652.a
+		default_option = yes
+		expedition_minor_progress_effect = yes
+		add_small_peril_effect = yes
+	}
+}
+
+expedition_events.660 = { #trading enclave
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.660.t
+    desc = expedition_events.660.d
+    flavor = expedition_events.660.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/africa_desert_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/africa/desert_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	trigger = {
+		var:expedition_progress >= 3
+		NOT = { has_variable = expedition_trading_enclave }
+	}
+
+	immediate = {
+		set_variable = expedition_trading_enclave
+		congo_river_expedition_location = yes
+	}
+
+	option = { #trade with them
+		name = expedition_events.660.a
+		default_option = yes
+		expedition_peril_decrease_small_effect = yes
+	}
+
+	option = { #we need the guns
+		name = expedition_events.660.b
+		add_medium_peril_effect = yes
+		expedition_moderate_progress_effect = yes
+	}
+}
+
+expedition_events.670 = { #Lost in the Forest
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.670.t
+    desc = expedition_events.670.d
+    flavor = expedition_events.670.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_fire.dds"
+
+	trigger = {
+		var:expedition_progress > 3
+		NOT = { var:expedition_deep_jungle > 3 }
+	}
+	
+	immediate = {
+		if = {
+			limit = { exists = var:expedition_deep_jungle }
+			change_variable = {
+				name = expedition_deep_jungle
+				add = 1
+			}
+		}
+		else = {
+			set_variable = {
+				name = expedition_deep_jungle
+				value = 1
+			}
+		}
+		congo_river_expedition_location = yes
+	}
+
+	option = { #ration the food
+		name = expedition_events.670.a
+		default_option = yes
+		expedition_peril_decrease_small_effect = yes
+	}
+
+	option = { #it wont take that long
+		name = expedition_events.670.b
+		expedition_moderate_progress_effect = yes
+		add_medium_peril_effect = yes
+	}
+}
+
+expedition_events.680 = { #naming the falls
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.680.t
+    desc = expedition_events.680.d
+    flavor = expedition_events.680.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/jungle_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+	
+	trigger = {
+		var:expedition_progress >= 5
+		var:expedition_progress <= 7
+		NOT = { has_variable = expedition_found_falls }
+	}
+	
+	immediate = {
+		set_variable = expedition_found_falls
+		congo_river_expedition_location = yes
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+	}
+
+	option = { #found them!
+		name = expedition_events.680.a
+		default_option = yes
+		add_modifier = {
+			name = modifier_expedition_waterfalls
+			months = normal_modifier_time
+		}
+		expedition_minor_progress_effect = yes
+		scope:expedition_leader = {
+			add_modifier = {
+				name = waterfalls_modifier
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+expedition_events.690 = { #trading gifts
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.690.t
+    desc = expedition_events.690.d
+    flavor = expedition_events.690.f
+
+    duration = 3
+
+	gui_window = event_window_2char
+
+	left_icon = scope:expedition_leader
+	right_icon = scope:local_ruler
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/misc/2Characters"
+
+	icon = "gfx/interface/icons/event_icons/event_trade.dds"
+	
+	trigger = {
+		var:expedition_progress >= 3
+		NOT = { has_variable = expedition_trading_gifts }
+	}
+
+	immediate = {
+		set_variable = expedition_trading_gifts
+		congo_river_expedition_location = yes
+		scope:current_expedition_location = {
+			owner = {
+				ruler = {
+					save_scope_as = local_ruler
+				}
+			}
+		}
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+	}
+
+	option = { #give and accept present
+		name = expedition_events.690.a
+		default_option = yes
+		custom_tooltip = expedition_event_delayed_tt
+		scope:expedition_leader = {
+			set_variable = {
+				name = expedition_trading_gifts
+			}
+		}
+		set_variable = expedition_trading_gifts_accepted_var #grand exhibition bonus
+	}
+
+	option = { #refuse
+		name = expedition_events.690.b
+		expedition_moderate_progress_effect = yes
+	}
+}
+
+expedition_events.695 = { #you find another country's expedition
+	type = country_event
+    placement = scope:current_expedition_location
+
+    title = expedition_events.695.t
+    desc = expedition_events.695.d
+    flavor = expedition_events.695.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_sick_in_hospital.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/sick_people_in_a_field_hospital"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+	
+	trigger = {
+		var:expedition_progress >= 3
+		NOT = { has_variable = expedition_lost_expedition_var }
+		any_country = {
+			NOT = { THIS = ROOT }
+			OR = {
+				AND = {
+					has_variable = failed_congo_river_var
+					ROOT = { has_variable = congo_river_expedition_var }
+				}
+				AND = {
+					has_variable = failed_central_africa_expedition_var
+					ROOT = { has_variable = central_africa_expedition_var }
+				}
+				AND = {
+					has_variable = failed_niger_river_var
+					ROOT = { has_variable = niger_river_expedition_var }
+				}
+			}
+		}
+	}
+
+	immediate = {
+		set_variable = expedition_lost_expedition_var
+		if = {
+			limit = {
+				has_variable = congo_river_expedition_var
+			}
+			congo_river_expedition_location = yes
+		}
+		else_if = {
+			limit = {
+				has_variable = niger_river_expedition_var
+			}
+			niger_river_expedition_location = yes
+		}
+		else = {
+			central_africa_location_effect = yes #Nile
+		}
+		random_country = {
+			limit = {
+				NOT = { THIS = ROOT }
+				OR = {
+					AND = {
+						has_variable = failed_congo_river_var
+						ROOT = { has_variable = congo_river_expedition_var }
+					}
+					AND = {
+						has_variable = failed_central_africa_expedition_var
+						ROOT = { has_variable = central_africa_expedition_var }
+					}
+					AND = {
+						has_variable = failed_niger_river_var
+						ROOT = { has_variable = niger_river_expedition_var }
+					}
+				}
+			}
+			save_scope_as = lost_expedition_country
+		}
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}		
+	}
+
+	option = { #guide them to a safe place
+		name = expedition_events.695.a
+		default_option = yes
+		expedition_lose_progress_effect = yes
+		expedition_peril_decrease_small_effect = yes
+		change_relations = {
+			country = scope:lost_expedition_country
+			value = 30
+		}
+	}
+	
+	option = { #invite them to join you
+		name = expedition_events.695.b
+		add_small_peril_effect = yes
+		change_relations = {
+			country = scope:lost_expedition_country
+			value = 10
+		}
+	}
+	
+	option = { #leave them to their fate
+		name = expedition_events.695.c
+		expedition_minor_progress_effect = yes
+		add_small_peril_effect = yes
+	}
+	
+	option = { #kill them
+		name = expedition_events.695.e
+		custom_tooltip = killed_lost_expedition_tt
+		trigger = {	
+			scope:lost_expedition_country = {
+				relations:root <= relations_threshold:cold
+			}
+		}
+		set_variable = killed_lost_expedition_var #this will have consequences
+		scope:lost_expedition_country = {
+			set_variable = lost_expedition_country_var #we save them for the next event
+		}
+		expedition_peril_decrease_small_effect = yes
+		scope:expedition_leader = {
+			set_variable = expedition_leader_cruel_var
+		}
+		if = {
+			limit = {
+				scope:expedition_leader = {
+					NOR = {
+						has_trait = wrathful
+						has_trait = cruel
+					}
+				}
+			}
+			scope:expedition_leader = {
+				add_trait = cruel
+			}
+		}		
+	}
+}
+
+expedition_events.696 = { #follow up if you killed the other expedition and managed to go back to your country
+	type = country_event
+    placement = ROOT
+
+    title = expedition_events.696.t
+    desc = expedition_events.696.d
+    flavor = expedition_events.696.f
+
+    duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_politicians_arguing.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/asia/politician_parliament_motion"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+	
+	trigger = {
+		#fires from the success event 
+	}
+	
+	immediate = {
+		random_country = {
+			limit = {
+				has_variable = lost_expedition_country_var
+			}
+			save_scope_as = lost_expedition_country
+		}
+		remove_variable = killed_lost_expedition_var
+		random_scope_character = {
+			limit = {
+				has_variable = expedition_leader_cruel_var
+			}
+			save_scope_as = expedition_leader_cruel
+		}
+		
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+	}
+
+	option = { #fire them
+		name = expedition_events.696.a
+		default_option = yes
+		custom_tooltip = expedition_leader_cruel_fired_tt
+		change_relations = {
+			country = scope:lost_expedition_country
+			value = 10
+		}
+		hidden_effect = {
+			scope:expedition_leader_cruel = {
+				kill_character = yes
+			}
+		}
+	}
+	
+	option = { #oops
+		name = expedition_events.696.b
+		change_relations = {
+			country = scope:lost_expedition_country
+			value = -40
+		}
+		change_infamy = 5
+	}
+}

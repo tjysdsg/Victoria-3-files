@@ -1,0 +1,481 @@
+widget = {
+	name = "modifier_graph_view"
+	size = { 800 600 }
+	layoutpolicy_horizontal = expanding
+	layoutpolicy_vertical = expanding
+
+	modifier_graph = {
+		using = default_content_fade
+
+		blockoverride "datamodel_lines" {
+			datamodel = "[ModifierNodeDebuggerView.GetGraphLines]"
+		}
+
+		blockoverride "datamodel_items" {
+			datamodel = "[ModifierNodeDebuggerView.GetGraphItems]"
+		}
+
+		blockoverride "starting_pan_position" {
+			#pan_position = "[GetDefine('NGUI', 'TECH_TREE_PRODUCTION_INITIAL_POSITION')]"
+		}
+	}
+}
+
+
+widget = {
+	name = "modifier_list_view"
+	size = { 640 480 }
+
+	layoutpolicy_horizontal = expanding
+	layoutpolicy_vertical = expanding
+	
+	vbox = {
+			
+		hbox = {
+			layoutpolicy_horizontal = preferred
+			
+			spacing = 5
+			
+			widget = { size = { 4 0 } }
+			
+			editor_editbox = {
+				layoutpolicy_horizontal = preferred
+				using = property_editbox
+				alwaystransparent = no
+				size = { 0 18 }
+				#text = [ModifierNodeListView.GetFilterString]
+				#ontextedited = [ModifierNodeListView.SetFilterString]
+			}
+			
+			modifier_button = {
+				size = { 45 18 }
+				text = "Update"
+				#onclick = "[ModifierNodeListView.UpdateTextureList]"
+			}
+			
+			editor_checkbutton = {
+				blockoverride "checkbutton" {
+					#checked = "[ModifierNodeListView.GetAutoUpdate]"
+					#onclick = "[ModifierNodeListView.SetAutoUpdate(Not(ModifierNodeListView.GetAutoUpdate))]"
+				}
+				
+				blockoverride "label" {
+					text = "Auto Update"
+				}
+			}
+		}
+	
+		hbox = {
+			layoutpolicy_horizontal = preferred
+			spacing = 3
+			
+			modifier_button = {
+				layoutpolicy_horizontal = growing
+				size = { 0 18 }
+				text = "MODIFIERNODE_NAME_HEADER"
+				onclick = "[ModifierNodeListView.Sort('name')]"
+			}
+			
+			modifier_button = {
+				size = { 80 18 }
+				text = "MODIFIERNODE_TOTAL_COUNT_HEADER"
+				tooltip = "MODIFIERNODE_TOTAL_COUNT_TOOLTIP"
+				onclick = "[ModifierNodeListView.Sort('total_count')]"
+			}
+			
+			modifier_button = {
+				size = { 80 18 }
+				text = "MODIFIERNODE_UPDATED_COUNT_HEADER"
+				tooltip = "MODIFIERNODE_UPDATED_COUNT_TOOLTIP"
+				onclick = "[ModifierNodeListView.Sort('updated_count')]"
+			}
+			
+			modifier_button = {
+				size = { 80 18 }
+				text = "MODIFIERNODE_UPDATED_COUNT_HEADER"
+				tooltip = "MODIFIERNODE_UPDATED_COUNT_TOOLTIP"
+				onclick = "[ModifierNodeListView.Sort('updated_count')]"
+			}
+			
+			modifier_list_scrollbar_spacing = {}
+		}
+
+		scrollarea = {
+			layoutpolicy_horizontal = preferred
+			layoutpolicy_vertical = preferred
+			scrollbarpolicy_vertical = as_needed
+			scrollbarpolicy_horizontal = as_needed
+			scrollbaralign_vertical = right
+			scrollbaralign_horizontal = bottom
+			
+			scrollwidget = {
+				vbox = {
+					fixedgridbox = {
+						name = "list"
+						layoutpolicy_horizontal = preferred
+						layoutpolicy_vertical = growing
+						alwaystransparent = no
+						addcolumn = 100%
+						addrow = 18
+						setitemsizefromcell = yes
+						datamodel = "[ModifierNodeListView.GetModifierNodes]"
+						
+						item = {
+							hbox = {
+								spacing = 3
+								tooltip_widgetanchor = top|right
+								tooltip_parentanchor = top|left
+								
+								modifier_button = {
+									maximumsize = { 18 -1 }
+									tooltip = "MODIFIERNODE_SHOW_DETAILS"
+									onclick = "[ModifierNodeData.OpenDetails]"
+								}
+			
+								modifier_list_textbox = {
+									text = "[ModifierNodeData.GetName]"
+								}
+								
+								modifier_list_numberbox = {
+									maximumsize = { 80 -1 }
+									text = "[ModifierNodeData.GetTotalCount]"
+								}
+								
+								modifier_list_numberbox = {
+									maximumsize = { 80 -1 }
+									text = "[ModifierNodeData.GetUpdatedCount]"
+								}
+								
+								modifier_list_plotline = {
+									maximumsize = { 80 -1 }
+									plotpoints = "[GetTrendPlotPointsNormalized(ModifierNodeData.GetUpdatedTrend, '(CFixedPoint)0', GetMax(ModifierNodeData.GetUpdatedTrend) )]"
+								}
+								
+								modifier_list_scrollbar_spacing = {}
+							}
+						}
+					}
+				}
+			}
+		
+			scrollbar_vertical = {
+				using = editor_vertical_scrollbar
+			}
+		
+			scrollbar_horizontal = {
+				using = editor_horizontal_scrollbar
+			}
+		}
+	}
+}
+
+
+widget = {
+	name = "modifier_details_view"
+	size = { 640 480 }
+
+	layoutpolicy_horizontal = expanding
+	layoutpolicy_vertical = expanding
+	
+	datacontext = "[ModifierNodeDetailsView.GetModifierNodeData]"
+								
+	vbox = {
+		scrollarea = {
+			layoutpolicy_horizontal = preferred
+			layoutpolicy_vertical = preferred
+			scrollbarpolicy_vertical = as_needed
+			scrollbarpolicy_horizontal = as_needed
+			scrollbaralign_vertical = right
+			scrollbaralign_horizontal = bottom
+			
+			scrollwidget = {
+				vbox = {
+					widget = {
+						layoutpolicy_horizontal = preferred
+						layoutpolicy_vertical = growing
+						
+						widget = {
+							position = { 0 0 }
+							size = { 100% 18 }
+							hbox = {
+								layoutpolicy_horizontal = preferred
+								spacing = 3
+								
+								modifier_list_textbox = {
+									maximumsize = { 100 -1 }
+									text = "MODIFIERNODE_NAME_HEADER"
+								}
+								
+								modifier_list_textbox = {
+									layoutpolicy_horizontal = growing
+									text = "[ModifierNodeData.GetName]"
+								}
+							}
+						}
+
+						widget = {
+							position = { 0 21 }
+							size = { 100% 18 }
+							hbox = {
+								layoutpolicy_horizontal = preferred
+								spacing = 3
+								
+								modifier_list_textbox = {
+									maximumsize = { 100 -1 }
+									text = "MODIFIERNODE_TOTAL_COUNT_HEADER"
+									tooltip = "MODIFIERNODE_TOTAL_COUNT_TOOLTIP"
+								}
+								
+								modifier_list_numberbox = {
+									layoutpolicy_horizontal = growing
+									text = "[ModifierNodeData.GetTotalCount]"
+								}
+							}
+						}
+
+						widget = {
+							position = { 0 42 }
+							size = { 100% 18 }
+							hbox = {
+								layoutpolicy_horizontal = preferred
+								spacing = 3
+								
+								modifier_list_textbox = {
+									maximumsize = { 100 -1 }
+									text = "MODIFIERNODE_UPDATED_COUNT_HEADER"
+									tooltip = "MODIFIERNODE_UPDATED_COUNT_TOOLTIP"
+								}
+								
+								modifier_list_numberbox = {
+									layoutpolicy_horizontal = growing
+									text = "[ModifierNodeData.GetUpdatedCount]"
+								}
+							}
+						}
+
+						widget = {
+							position = { 0 63 }
+							size = { 100% 105 }
+							hbox = {
+								layoutpolicy_horizontal = preferred
+								spacing = 3
+								
+								modifier_list_textbox = {
+									maximumsize = { 100 -1 }
+									text = "MODIFIERNODE_UPDATED_COUNT_HEADER"
+									tooltip = "MODIFIERNODE_UPDATED_COUNT_TOOLTIP"
+								}
+								
+								modifier_list_plotline = {
+									plotpoints = "[GetTrendPlotPointsNormalized(ModifierNodeData.GetUpdatedTrend, '(CFixedPoint)0', GetMax(ModifierNodeData.GetUpdatedTrend) )]"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+types modifier_debugger {
+	type modifier_graph = zoomarea {
+		name = "graph_zoomarea"
+		size = { 100% 100% }
+
+		background = {
+			using = entry_header
+			
+			modify_texture = {
+				texture = "gfx/interface/masks/fade_vertical_top.dds"
+				spriteType = Corneredstretched
+				spriteborder = { 0 0 }
+				blend_mode = alphamultiply
+			}
+		}
+
+		state = {
+			name = "_zoom_changed"
+			duration = 0.15
+		}
+
+		zoom = 1
+		zoom_step = 0.2
+		zoom_min = 0.2
+		zoom_max = 10
+
+		draggable_by = left|middle
+
+		block "starting_pan_position" {}
+		
+		#scissor = yes
+
+		zoomwidget = {
+
+			container = {
+				widget = {
+					size = { 100% 100% }
+					alpha = 0.15
+					block "extra_lines" {}
+				}
+
+				container = { #Line Mech	
+					# These two widgets determine the margin between graph nodes
+					widget = {
+						name = "margin_top_left" # Do not change this name
+						size = { 30 80 }
+					}
+					widget = {
+						name = "margin_bottom_right" # Do not change this name
+						size = { 30 80 }
+					}
+
+					# This widget tells the layout how to offset and space the lines
+					widget = {
+						name = "line_offset" # Do not change this name
+						position = { 0 0 } # Fixed offset (i.e. to compensate for line width)
+						size = { 0 0 } # Spacing between edges
+					}
+					
+					# Container for all the edges in the graph
+					container = {
+						name = "line_area" # Do not change this name
+
+						block "datamodel_lines" {
+							#datamodel = "[ModifierNodeDebuggerView.GetGraphLines]"
+						}
+
+						item = {
+							container = {
+								line = {
+									position = "[ModifierNodeGraphLine.GetPosition]"
+									gfxtype = linegfx
+									line_type = BSpline
+									texture = "gfx/interface/tech_tree/tech_line_border.dds"
+									mask = "gfx/interface/tech_tree/tech_line_mask.dds"
+									width = 8
+									alpha = 0.6
+
+									points = "[ModifierNodeGraphLine.GetPointsInContainer]"
+									# points = "[ModifierNodeGraphLine.GetPoints]" # If no container is used for the line
+								}
+								line = {
+									position = "[ModifierNodeGraphLine.GetPosition]"
+									gfxtype = linegfx
+									line_type = BSpline
+									texture = "gfx/interface/tech_tree/tech_line.dds"
+									mask = "gfx/interface/tech_tree/tech_line_mask.dds"
+									width = 4
+									alpha = 0.8
+
+									points = "[ModifierNodeGraphLine.GetPointsInContainer]"
+									# points = "[ModifierNodeGraphLine.GetPoints]" # If no container is used for the line
+								}
+							}
+						}
+					}
+					
+					# Container for all the nodes in the graph
+					container = {
+						name = "node_area" # Do not change this name
+
+						block "datamodel_items" {
+							#datamodel = "[ModifierNodeDebuggerView.GetGraphItems]"
+						}
+						
+						item = {
+							widget = {
+								size = { 270 60 }
+								
+								position = "[ModifierNodeGraphItem.GetPosition]"
+								widgetid = "[ModifierNodeGraphItem.GetKey]"
+								
+								datacontext = "[ModifierNodeGraphItem.GetModifierNodeData]"
+								
+								editor_button = {
+									size = { 100% 100% }
+									
+									text = "[ModifierNodeData.GetName]"
+									tooltip = "[ModifierNodeGraphItem.GetTooltip]"
+									
+									onclick = "[ModifierNodeData.OpenDetails]"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	type modifier_list_textbox = textbox {
+		layoutpolicy_horizontal = growing
+		layoutpolicy_vertical = fixed
+		font = "tools_font"
+		fontcolor = { 1 1 1 1 }
+		fontsize = 11
+		align = left|vcenter|nobaseline
+		scissor = yes
+		margin = { 2 0 }
+		
+		background = {
+			texture = "gfx/editor_gui/editor_field.dds"
+			spriteType = CorneredStretched
+			spriteborder = { 4 4 }
+			shaderfile = "gfx/FX/pdxgui_default.shader"
+		}
+	}
+	
+	type modifier_list_numberbox = modifier_list_textbox {
+		align = right|vcenter|nobaseline
+	}
+	
+	type modifier_list_widget = widget {
+		layoutpolicy_horizontal = growing
+		layoutpolicy_vertical = fixed
+		scissor = yes
+		
+		background = {
+			texture = "gfx/editor_gui/editor_field.dds"
+			spriteType = CorneredStretched
+			spriteborder = { 4 4 }
+			shaderfile = "gfx/FX/pdxgui_default.shader"
+		}
+	}
+	
+	type modifier_button = editor_button {
+		font = "tools_font"
+		fontcolor = { 1 1 1 1 }
+		fontsize = 11
+		align = center|nobaseline
+		margin = { 2 0 }
+	}
+	
+	type modifier_list_scrollbar_spacing = widget {
+		layoutpolicy_horizontal = growing
+		layoutpolicy_vertical = fixed
+		scissor = yes
+		
+		maximumsize = { 14 -1 }
+	}
+	
+	type modifier_list_plotline = plotline {
+		layoutpolicy_horizontal = growing
+		layoutpolicy_vertical = fixed
+		
+		using = plot_line
+		width = 2
+
+		color = { .9 .9 .9 1.0 }
+		
+		margin = { 2 0 }
+		
+		background = {
+			texture = "gfx/editor_gui/editor_field.dds"
+			spriteType = CorneredStretched
+			spriteborder = { 4 4 }
+			shaderfile = "gfx/FX/pdxgui_default.shader"
+		}
+	}
+}

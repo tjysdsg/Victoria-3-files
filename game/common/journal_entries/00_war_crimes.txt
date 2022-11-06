@@ -1,0 +1,80 @@
+﻿je_war_crimes = {
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		has_technology_researched = automatic_machine_guns
+		army_size >= 25
+	}
+
+	possible = {
+		has_technology_researched = chemical_warfare
+		army_size >= 40
+	}
+
+	complete = {
+		country_pm_usage = {
+			target = ROOT
+			production_method = pm_chemical_weapons_specialists
+			value > 0.25
+		}
+		any_scope_war = {
+			any_scope_front = {
+				any_scope_character = {
+					owner = ROOT
+					commander_pm_usage = {
+						target = ROOT
+						production_method = pm_chemical_weapons_specialists
+						value > 0.5
+					}
+				}
+				any_scope_state = {
+					NOT = { owner = ROOT }
+				}
+			}
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = war_crimes.1 }
+	}
+
+	timeout = 3650
+}
+
+je_munitions_factories = {
+	icon = "gfx/interface/icons/event_icons/event_fire.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		has_technology_researched = gunsmithing
+	}
+
+	possible = {
+		has_technology_researched = percussion_cap
+		any_scope_building = {
+			is_building_type = building_munition_plants
+		}
+	}
+
+	complete = {
+		any_scope_building = {
+			is_building_type = building_munition_plants
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			occupancy >= 0.5
+			level >= 5
+		}
+		can_research = rifling
+	}
+
+	on_complete = {
+		trigger_event = { id = war_crimes.2 }
+	}
+
+	fail = {
+		has_technology_researched = rifling
+	}
+
+	timeout = 3650
+}

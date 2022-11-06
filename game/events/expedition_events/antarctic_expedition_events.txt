@@ -1,0 +1,1003 @@
+﻿namespace = cold
+
+# Start Event
+cold.101 = {
+	type = country_event
+	placement = ROOT
+	
+	title = cold.101.t
+	desc = cold.101.d
+	flavor = cold.101.f
+	
+	duration = 3
+	
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_antarctica.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/arctic"
+	
+	option = {
+		name = cold.101.a
+		trigger_event = { id = cold.102 days = 0 popup = yes }
+	}
+}
+
+cold.102 = { #Choose commander
+	type = country_event
+    placement = ROOT
+
+    title = cold.102.t
+    desc = cold.102.d
+    flavor = cold.102.f
+
+    duration = 3
+	
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_antarctica.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/arctic"
+	
+	trigger = {
+		any_scope_character = {
+			has_role = admiral
+		}
+	}
+
+	immediate = {
+		random_scope_character = {
+			limit = {
+				has_role = admiral
+				has_variable = polar_explorer
+				is_ruler = no
+			}
+			save_scope_as = expedition_leader_1
+		}
+		if = {
+			random_scope_character = {
+				limit = {
+					is_ruler = no
+					has_role = admiral
+					has_trait = explorer
+					NOT = {
+						this = scope:expedition_leader_1
+					}
+				}
+				save_scope_as = expedition_leader_2
+			}
+		}
+		else = {
+			random_scope_character = {
+				limit = {
+					is_ruler = no
+					has_role = admiral
+					NOT = {
+						this = scope:expedition_leader_1
+					}
+				}
+				save_scope_as = expedition_leader_2
+			}
+		}
+		random_scope_character = {
+			limit = {
+				is_ruler = no
+				has_role = admiral
+				NOR = {
+					this = scope:expedition_leader_1
+					this = scope:expedition_leader_2
+				}
+			}
+			save_scope_as = expedition_leader_3
+		}
+		random_scope_character = {
+			limit = {
+				is_ruler = no
+				has_role = admiral
+				NOR = {
+					this = scope:expedition_leader_1
+					this = scope:expedition_leader_2
+					this = scope:expedition_leader_3
+				}
+			}
+			save_scope_as = expedition_leader_4
+		}
+		set_variable = {
+			name = expedition_progress
+			value = 1
+		}
+		set_variable = {
+			name = expedition_peril
+			value = 1
+		}
+	}
+
+	option = {
+		name = cold.102.a
+		custom_tooltip = expedition_costs_tt
+		trigger = {
+			exists = scope:expedition_leader_1
+		}
+		default_option = yes
+		highlighted_option = yes
+		add_modifier = {
+			name = modifier_large_expedition_cost
+			multiplier = money_amount_multiplier_medium
+		}
+		add_journal_entry = {
+			type = je_antarctica
+		}
+		scope:expedition_leader_1 = {
+			set_variable = expedition_leader_var
+			set_character_busy = yes
+		}
+	}
+
+	option = {
+		name = cold.102.b
+		custom_tooltip = expedition_costs_tt
+		trigger = {
+			exists = scope:expedition_leader_2
+		}
+		add_modifier = {
+			name = modifier_large_expedition_cost
+			multiplier = money_amount_multiplier_medium
+		}
+		add_journal_entry = {
+			type = je_antarctica
+		}
+		scope:expedition_leader_2 = {
+			set_variable = expedition_leader_var
+			set_character_busy = yes
+		}
+	}
+
+	option = {
+		name = cold.102.c
+		custom_tooltip = expedition_costs_tt
+		trigger = {
+			exists = scope:expedition_leader_3
+		}
+		add_modifier = {
+			name = modifier_large_expedition_cost
+			multiplier = money_amount_multiplier_medium
+		}
+		add_journal_entry = {
+			type = je_antarctica
+		}
+		scope:expedition_leader_3 = {
+			set_variable = expedition_leader_var
+			set_character_busy = yes
+		}
+	}
+	
+	option = {
+		name = cold.102.e
+		custom_tooltip = expedition_costs_tt
+		trigger = {
+			NOT = { exists = scope:expedition_leader_1 }
+			exists = scope:expedition_leader_4
+		}
+		add_modifier = {
+			name = modifier_large_expedition_cost
+			multiplier = money_amount_multiplier_medium
+		}
+		add_journal_entry = {
+			type = je_antarctica
+		}
+		scope:expedition_leader_4 = {
+			set_variable = expedition_leader_var
+			set_character_busy = yes
+		}
+	}
+}
+
+# Mountains
+cold.1 = {
+	type = country_event
+	placement = ROOT
+	
+	title = cold.1.t
+	desc = cold.1.d
+	flavor = cold.1.f
+	
+	duration = 3
+	
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_antarctica.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/arctic"
+	
+	trigger = {
+		var:expedition_progress >= 2
+		NOT = { has_variable = mountains_of_madness }
+	}
+	
+	immediate = {
+		set_variable = mountains_of_madness
+	}
+	
+	option = { # Move on
+		name = cold.1.a
+		default_option = yes
+		expedition_minor_progress_effect = yes
+	}
+	
+	option = { # Do some science
+		name = cold.1.b
+		random_list = { 
+			50 = {
+				scope:expedition_leader = {
+					add_modifier = {
+						name = antarctic_mountains_modifier
+						months = normal_modifier_time
+					}
+				}
+				add_modifier = {
+					name = antarctic_research
+					months = normal_modifier_time
+				}
+				expedition_minor_progress_effect = yes
+			}
+			50 = {
+				add_small_peril_effect = yes
+			}
+		}
+	}
+	option = { # climb Erebus
+		name = cold.1.c
+		random_list = {
+			25 = {
+				scope:expedition_leader = {
+					add_modifier = {
+						name = antarctic_mountains_modifier
+						months = normal_modifier_time
+						multiplier = 2
+					}
+				}
+				add_modifier = {
+					name = climbed_erebus
+					months = normal_modifier_time
+				}
+				expedition_minor_progress_effect = yes
+			}
+			75 = {
+				add_large_peril_effect = yes
+			}
+		}
+	}
+}
+
+# Discovery Hut
+cold.2 = {
+	type = country_event
+	placement = ROOT
+	
+	title = cold.2.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = cold.2.d
+				trigger = {
+					NOT = { has_global_variable = discovery_hut }
+				}
+			}
+			triggered_desc = {
+				desc = cold.2.d2
+				trigger = {
+					has_global_variable = discovery_hut
+				}
+			}
+		}
+	}
+	flavor = cold.2.f
+	
+	duration = 3
+	
+	event_image = {
+		video = "gfx/event_pictures/unspecific_iceberg.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/iceberg_in_the_antartica"
+	
+	trigger = {
+		var:expedition_progress = 1
+		NOT = { has_variable = discovery_hut_var }
+	}
+	
+	immediate = {
+		if = {
+			limit = {
+				NOT = { has_global_variable = discovery_hut }
+			}
+			set_global_variable = discovery_hut
+		}
+		set_variable = discovery_hut_var
+	}
+	
+	option = { # make a durable hut and leave supplies
+		name = cold.2.a
+		trigger = {
+			NOT = { has_global_variable = discovery_hut_established }
+		}
+		default_option = yes
+		set_global_variable = discovery_hut_established
+		custom_tooltip = discovery_hut_tt
+		add_small_peril_effect = yes
+	}
+	option = { # make a flimsy base camp, won't last
+		name = cold.2.b
+		trigger = {
+			NOT = { has_global_variable = discovery_hut_established }
+		}
+		expedition_minor_progress_effect = yes
+	}
+	option = { # rest and resupply at the hut
+		name = cold.2.c
+		trigger = {
+			has_global_variable = discovery_hut_established
+		}
+		expedition_minor_progress_effect = yes
+		add_small_peril_effect = yes
+	}
+}
+
+# Overshot and lost
+cold.3 = {
+	type = country_event
+	placement = ROOT
+	
+	title = cold.3.t
+	desc = cold.3.d
+	flavor = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					var:expedition_peril >= 7
+				}
+				desc = cold.3.f
+			}
+			triggered_desc = {
+				trigger = {
+					var:expedition_peril < 7
+				}
+				desc = cold.3.f2
+			}
+		}
+	}	
+	
+	duration = 3
+	
+	event_image = {
+		video = "gfx/event_pictures/unspecific_iceberg.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/iceberg_in_the_antartica"
+	
+	trigger = {
+		var:expedition_progress > 3
+		NOT = { has_variable = antarctic_got_lost }
+	}
+	
+	immediate = {
+		set_variable = antarctic_got_lost
+	}
+	
+	option = { # go back
+		name = cold.3.a
+		default_option = yes
+		random_list = {
+			75 = {
+				expedition_lose_progress_effect = yes
+			}
+			25 = {
+				add_medium_peril_effect = yes
+			}
+		}
+	}
+	option = {
+		name = cold.3.b
+		random_list = {
+			25 = {
+				expedition_minor_progress_effect = yes
+			}
+			75 = {
+				add_large_peril_effect = yes
+			}
+		}
+	}
+}
+
+# Doomed
+cold.4 = {
+	type = country_event
+	placement = ROOT
+	
+	title = cold.4.t
+	desc = cold.4.d
+	flavor = cold.4.f
+	
+	duration = 3
+	
+	event_image = {
+		video = "gfx/event_pictures/unspecific_iceberg.bk2"
+	}
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/iceberg_in_the_antartica"
+
+	immediate = {
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+	}
+
+	option = {
+		name = cold.4.a
+		default_option = yes
+		scope:expedition_leader = {
+			kill_character = yes
+		}
+		remove_variable = on_expedition
+		remove_expedition_events_effect = yes
+	}
+}
+
+# The Pole!
+cold.5 = {
+	type = country_event
+	placement = ROOT
+	
+	title = cold.5.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = cold.5.d
+				trigger = {
+					NOT = { has_global_variable = south_pole_reached }
+				}
+			}
+			triggered_desc = {
+				desc = cold.5.d2
+				trigger = {
+					has_global_variable = south_pole_reached
+				}
+			}
+		}
+	}
+	flavor = cold.5.f
+	
+	duration = 3
+	
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_antarctica.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/arctic"
+	
+	trigger = {
+		var:expedition_progress >= 6
+		NOT = { has_variable = first_to_reach_south_pole }
+	}
+	
+	immediate = {
+		save_scope_as = expedition_country
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+		if = {
+			limit = {
+				any_country = {
+					has_variable = first_to_reach_south_pole
+				}
+			}
+			random_country = {
+				limit = {
+					has_variable = first_to_reach_south_pole
+				}
+				save_scope_as = pole_winner_country
+			}
+		}
+		set_variable = south_pole_event_var
+	}
+	
+	option = {
+		name = cold.5.a
+		trigger = {
+			NOT = { has_global_variable = south_pole_reached }
+		}
+		default_option = yes
+		set_global_variable = { name = south_pole_reached }
+		set_variable = {
+			name = first_to_reach_south_pole
+		}
+		expedition_minor_progress_effect = yes
+		# Disables future expeditions, we did the thing.
+	}
+	option = {
+		name = cold.5.b
+		trigger = {
+			has_global_variable = south_pole_reached
+		}
+		default_option = yes
+		expedition_minor_progress_effect = yes
+	}
+}
+
+# Eating the dogs
+cold.6 = {
+	type = country_event
+	placement = ROOT
+	
+	title = cold.6.t
+	desc = cold.6.d
+	flavor = cold.6.f
+	
+	duration = 3
+	
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_antarctica.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/arctic"
+	
+	trigger = {	
+		var:expedition_progress >= 3
+		NOT = { has_variable = dog_meat }
+	}
+	
+	immediate = {
+		set_variable = dog_meat
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+	}
+	
+	option = {
+		name = cold.6.a
+		default_option = yes
+		scope:expedition_leader = {
+			add_modifier = {
+				name = ate_dogs_modifier
+				months = normal_modifier_time
+			}
+		}
+		expedition_minor_progress_effect = yes
+	}
+	option = {
+		name = cold.6.b
+		custom_tooltip = pet_dog.tt
+		add_medium_peril_effect = yes
+		expedition_minor_progress_effect = yes
+	}
+}
+
+# Returning home - Success event
+cold.7 = {
+	type = country_event
+	placement = ROOT
+	
+	title = cold.7.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = cold.7.d
+				trigger = {
+					NOT = { has_variable = first_to_reach_south_pole }
+				}
+			}
+			triggered_desc = {
+				desc = cold.7.d2
+				trigger = {
+					has_variable = first_to_reach_south_pole
+				}
+			}
+		}
+	}
+	flavor = cold.7.f
+	
+	duration = 3
+	
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_antarctica.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/arctic"
+	
+	immediate = {
+		save_scope_as = expedition_country
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+	}
+	
+	option = {
+		name = cold.7.a
+		trigger = {
+			NOT = { has_variable = first_to_reach_south_pole }
+		}
+		default_option = yes
+		scope:expedition_leader = {
+			add_trait = explorer
+			set_variable = polar_explorer
+			set_character_busy = no
+			add_modifier = {
+				name = succesfull_south_pole_modifier
+				multiplier = 2
+			}
+		}
+		add_modifier = {
+			name = pole_expedition_returned
+			months = normal_modifier_time
+		}
+	}
+	option = {
+		name = cold.7.b
+		trigger = {
+			has_variable = first_to_reach_south_pole
+		}
+		scope:expedition_leader = {
+			add_trait = explorer
+			set_variable = polar_explorer
+			set_character_busy = no
+			add_modifier = {
+				name = succesfull_south_pole_modifier
+			}
+		}
+		add_modifier = {
+			name = first_to_the_pole
+			months = normal_modifier_time
+		}
+	}
+}
+
+# Pack Ice
+cold.8 = {
+	type = country_event
+	placement = ROOT
+	
+	title = cold.8.t
+	desc = cold.8.d
+	flavor = cold.8.f
+	
+	duration = 3
+	
+	event_image = {
+		video = "gfx/event_pictures/unspecific_iceberg.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/iceberg_in_the_antartica"
+	
+	trigger = {
+		var:expedition_progress <= 1
+		NOT = { has_variable = pack_ice }
+	}
+	
+	immediate = {
+		set_variable = pack_ice
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+	}
+	
+	option = { # Push on!
+		name = cold.8.a
+		default_option = yes
+		random_list = {
+			50 = {
+				trigger_event = { id = cold.9 days = day_until_next_expedition_event }
+				add_small_peril_effect = yes
+			}
+			50 = {
+				expedition_minor_progress_effect = yes
+			}
+		}
+	}
+	option = { # Leader is good at this somehow?
+		name = cold.8.b
+		trigger = {
+			scope:expedition_leader = {
+				OR = {
+					has_variable = polar_explorer
+					AND = {
+						has_trait = explorer
+						OR = {
+							has_trait = mountain_commander
+							has_trait = expert_naval_commander
+							has_trait = tactful
+						}
+					}
+				}
+			}
+		}
+		highlighted_option = yes
+		expedition_minor_progress_effect = yes
+	}	
+}
+
+# Icebound
+cold.9 = {
+	type = country_event
+	placement = ROOT
+	
+	title = cold.9.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = cold.9.d
+				trigger = {
+					NOT = { has_variable = icebound_var }
+				}
+			}
+			triggered_desc = { # if you already had this
+				desc = cold.9.d2
+				trigger = {
+					has_variable = icebound_var
+				}
+			}
+		}
+	}
+	flavor = cold.9.f
+	
+	duration = 3
+	
+	event_image = {
+		video = "gfx/event_pictures/unspecific_iceberg.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/iceberg_in_the_antartica"
+	
+	option = { # Try to free yourself
+		name = cold.9.a
+		default_option = yes
+		random_list = {
+			20 = {
+				expedition_minor_progress_effect = yes
+			}
+			80 = {
+				trigger_event = { id = cold.9 days = day_until_next_expedition_event }
+			}
+		}
+		set_variable = icebound_var
+	}
+	option = { # Abandon ship, try to reach a whaling station
+		name = cold.9.b
+		trigger = {
+			has_variable = icebound_var
+		}
+		random_list = {
+			50 = { # everyone lives!
+				trigger_event = { id = cold.10 days = day_until_next_expedition_event }
+			}
+			50 = { # everyone dies!
+				trigger_event = { id = cold.4 days = day_until_next_expedition_event }
+			}
+			# Either way, this expedition is a failure
+		}
+	}
+}
+
+# Whaling Station
+cold.10 = {
+	type = country_event
+	placement = ROOT
+	
+	title = cold.10.t
+	desc = cold.10.d
+	flavor = cold.10.f
+	
+	duration = 3
+	
+	event_image = {
+		video = "gfx/event_pictures/unspecific_whaling.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/whaling"
+	
+	immediate = {
+		save_scope_as = expedition_country
+		random_scope_character = {
+			limit = { has_variable = expedition_leader_var }
+			save_scope_as = expedition_leader
+		}
+	}
+	
+	option = { # go home, end expedition
+		name = cold.10.a
+		default_option = yes
+		scope:expedition_leader = {
+			add_trait = explorer
+			set_variable = polar_explorer
+			set_character_busy = no
+			add_modifier = {
+				name = safe_polar_exp_modifier
+				months = normal_modifier_time
+			}
+		}
+		remove_variable = on_expedition
+		remove_expedition_events_effect = yes
+	}
+}
+
+
+# The Great Ice Barrier
+cold.11 = {
+	type = country_event
+	placement = ROOT
+	
+	title = cold.11.t
+	desc = cold.11.d
+	flavor = cold.11.f
+	
+	duration = 3
+	
+	event_image = {
+		video = "gfx/event_pictures/unspecific_iceberg.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/iceberg_in_the_antartica"
+	
+	trigger = {
+		var:expedition_progress < 2
+		NOT = { has_variable = great_ice_barrier_variable }
+	}
+	
+	immediate = {
+		save_scope_as = expedition_country
+		set_variable = great_ice_barrier_variable
+	}
+	
+	option = { # beware of fissures
+		name = cold.11.a
+		default_option = yes
+		random_list = {
+			75 = {
+				expedition_minor_progress_effect = yes
+			}
+			25 = {
+				add_small_peril_effect = yes
+			}
+		}
+	}
+	option = { # take a cautious approach
+		name = cold.11.b
+		custom_tooltip = expedition_event_ongoing_tt
+	}
+}
+
+# The Transantarctic Mountains - find a route, or use an established route if there is one
+	# Ascend a glacier!
+cold.12 = {
+	type = country_event
+	placement = ROOT
+	
+	title = cold.12.t
+	desc = cold.12.d
+	flavor = cold.12.f
+	
+	duration = 3
+	
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_antarctica.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/arctic"
+	
+	trigger = {
+		var:expedition_progress >= 3
+		NOT = { has_variable = transantarctic_mountains_var }
+	}
+	
+	immediate = {
+		save_scope_as = expedition_country
+		set_variable = {
+			name = transantarctic_mountains_var
+			months = short_modifier_time
+		}
+	}
+	
+	option = { # Find a new route
+		name = cold.12.a
+		default_option = yes
+		random_list = {
+			33 = {
+				expedition_moderate_progress_effect = yes
+			}
+			33 = {
+				expedition_minor_progress_effect = yes
+			}
+			33 = {
+				add_small_peril_effect = yes
+			}
+		}
+	}
+	option = { # Take a known approach
+		name = cold.12.b
+		trigger = {
+			has_variable = transantarctic_mountains_var
+		}
+		custom_tooltip = expedition_event_ongoing_tt
+	}
+}
+
+# Strange rock
+cold.13 = {
+	type = country_event
+	placement = ROOT
+	
+	title = cold.13.t
+	desc = cold.13.d
+	flavor = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					var:expedition_peril >= 7
+				}
+				desc = cold.13.f2
+			}
+			triggered_desc = {
+				trigger = {
+					var:expedition_peril < 7
+				}
+				desc = cold.13.f
+			}
+		}
+	}
+	
+	duration = 3
+	
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_antarctica.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/arctic"
+	
+	trigger = {
+		var:expedition_progress >= 3
+		NOT = { has_variable = strange_rock_var }
+	}
+	
+	immediate = {
+		set_variable = strange_rock_var
+	}
+	
+	option = { #study it
+		name = cold.13.a
+		default_option = yes
+		set_variable = took_strange_rock_var #grand exhibition bonus
+		random_list = {
+			33 = {
+				expedition_moderate_progress_effect = yes
+			}
+			33 = {
+				custom_tooltip = expedition_event_delayed_tt
+			}
+			33 = {
+				add_small_peril_effect = yes
+			}
+		}
+	}
+	option = { #ignore it
+		name = cold.13.b
+		expedition_minor_progress_effect = yes
+	}
+}

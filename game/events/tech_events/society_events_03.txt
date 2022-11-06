@@ -1,0 +1,127 @@
+﻿namespace = society_tech_events
+
+society_tech_events.301 = { #airships
+	type = country_event
+	placement = ROOT
+
+	event_image = {
+		video = "gfx/event_pictures/unspecififc_airship.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/airship"
+
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	title = society_tech_events.301.t
+	desc = society_tech_events.301.d
+	flavor = society_tech_events.301.f
+
+	duration = 3
+
+	trigger = {
+	}
+
+
+	immediate = {
+	}
+
+	option = { #military focus
+		name = society_tech_events.301.a
+		default_option = yes
+		add_modifier = {
+			name = zeppelins_military_modifier
+			months = short_modifier_time
+		}
+	}
+
+	option = { #society focus
+		name = society_tech_events.301.b
+		every_interest_group = {
+			limit = {
+				law_stance = {
+					law = law_type:law_per_capita_based_taxation
+					value > neutral
+				}
+				NOT = { is_interest_group_type = ig_armed_forces }
+			}
+			add_modifier = {
+				name = zeppelins_society_modifier
+				months = short_modifier_time
+			}
+		}
+	}
+
+	option = { #trading focus
+		name = society_tech_events.301.c
+		add_modifier = {
+			name = zeppelins_trading_modifier
+			months = short_modifier_time
+		}
+	}
+}
+
+society_tech_events.302 = { #romanticism
+	type = country_event
+	placement = scope:academy_state
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_art_gallery.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/art_gallery"
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	title = society_tech_events.302.t
+	desc = society_tech_events.302.d
+	flavor = society_tech_events.302.f
+
+	duration = 3
+
+	trigger = {
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				any_scope_building = {
+					is_building_type = building_arts_academy
+					occupancy >= 0.9
+					level >= 2
+				}
+			}
+			save_scope_as = academy_state
+			random_scope_building = {
+				limit = {
+					is_building_type = building_arts_academy
+					has_active_production_method = pm_traditional_art
+					occupancy >= 0.9
+					level >=2
+				}
+				save_scope_as = academy_building
+			}
+		}
+	}
+
+	option = { #build a great building
+		name = society_tech_events.302.a
+		default_option = yes
+		scope:academy_state = {
+			add_modifier = {
+				name = romantic_building_modifier
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = { #this is garbage I want some Realism
+		name = society_tech_events.302.c
+		trigger = {
+			NOT = { has_technology_researched = realism }
+			can_research = realism
+		}
+		add_technology_progress = { progress = 2500 technology = realism }
+	}
+}

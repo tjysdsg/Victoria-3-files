@@ -1,0 +1,59 @@
+﻿je_opium = {	
+	icon = "gfx/interface/icons/event_icons/event_trade.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		any_market = {
+			owner = root
+		}
+		NOT = { has_variable = opium_je_done }
+		any_scope_state = {
+			has_potential_resource = bg_opium_plantations
+		}
+	}
+
+	possible = {
+		any_scope_building = {
+			is_building_type = building_opium_plantation
+		}
+		NOT = {
+			any_primary_culture = {
+				has_cultural_obsession = opium
+			}
+		}
+	}
+
+	complete = {
+		any_scope_building = {
+			is_building_type = building_opium_plantation
+			cash_reserves_ratio > 0.5
+			weekly_profit > 0
+			occupancy >= 0.75
+			level >= 10
+		}
+		any_market = {
+			NOT = { owner = root }
+			any_trade_route = {
+				exporter.owner = root
+				goods = g:opium
+			}
+			owner = {
+				any_primary_culture = {
+					NOT = {
+						has_cultural_obsession = opium
+					}
+				}
+			}
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = opium_events.1 }
+		set_variable = {
+			name = opium_je_done
+		}
+	}
+
+	inheritable = no
+	weight = 100
+}

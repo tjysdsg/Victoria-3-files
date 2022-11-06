@@ -1,0 +1,131 @@
+﻿je_opium_obsession = {
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+
+	on_monthly_pulse = {
+		random_events = {
+			100 = 0
+			10 = opium_wars.6
+			5 = opium_wars.7
+			5 = opium_wars.8
+		}
+		effect = {
+			if = {
+				limit = {
+					is_banning_goods = opium
+					is_at_war = no
+				}
+				change_variable = {
+					name = opium_wars_completion_tracker
+					add = 1
+				}
+			}
+		}
+	}
+
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+		custom_tooltip = {
+			text = opium_ban_tt
+			is_banning_goods = opium
+		}
+		is_at_war = no
+	}
+
+	on_complete = {
+		remove_variable = opium_wars_target
+		trigger_event = {
+			id = opium_wars.3
+		}
+	}
+
+	fail = {
+		OR = {
+			has_law = law_type:law_free_trade
+			any_country = {
+				custom_tooltip = {
+					text = opiumwars_fail_tt
+					has_variable = opium_wars_aggressor
+				}
+				any_scope_state = {
+					is_treaty_port = yes
+					state_region = {
+						any_scope_state = {
+							owner = ROOT
+						}
+					}
+				}
+			}
+		}
+	}
+
+	on_fail = {
+		remove_variable = opium_wars_target
+		trigger_event = {
+			id = opium_wars.4
+		}
+	}
+
+	current_value = {
+		value = root.var:opium_wars_completion_tracker
+	}
+
+	goal_add_value = {
+		add = 60
+	}
+
+	progressbar = yes
+
+	weight = 10000
+	should_be_pinned_by_default = yes
+}
+
+je_opium_wars = {
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	complete = {
+		any_scope_state = {
+			is_treaty_port = yes
+			state_region = {
+				any_scope_state = {
+					owner = scope:target
+				}
+			}
+		}
+	}
+
+	on_complete = {
+		remove_variable = opium_wars_aggressor
+		trigger_event = {
+			id = opium_wars.5
+		}
+	}
+
+	fail = {
+		scope:target = {
+			NOT = {
+				any_primary_culture = {
+					has_cultural_obsession = opium
+				}
+			}
+		}
+	}
+
+	on_fail = {
+		custom_tooltip = {
+			text = opium_wars_fail_invalid_tt
+			remove_variable = opium_wars_aggressor
+		}
+	}
+
+	on_timeout = {
+		custom_tooltip = {
+			text = opium_wars_fail_invalid_tt
+			remove_variable = opium_wars_aggressor
+		}
+	}
+
+	weight = 10000
+	should_be_pinned_by_default = yes
+
+	timeout = 3650
+}

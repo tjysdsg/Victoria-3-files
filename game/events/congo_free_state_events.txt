@@ -1,0 +1,560 @@
+﻿namespace = congo_free_state_events
+
+congo_free_state_events.1 = {
+	type = country_event
+	placement = scope:afs_capital_scope
+	title = congo_free_state_events.1.t
+	desc = congo_free_state_events.1.d
+	flavor =  congo_free_state_events.1.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_ruler_speaking_to_people.bk2"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/leader_speaking_to_a_group_of_people"
+
+	trigger = {
+		#triggered from the JE
+	}
+
+	immediate = {
+		set_variable = free_state_created
+		set_global_variable = free_state_created
+		ruler = {
+			save_scope_as = free_state_monarch
+		}
+		random_scope_state = {
+			limit = {
+				is_incorporated = no
+				state_in_africa = yes
+				any_neighbouring_state = {
+					is_incorporated = no
+					state_in_africa = yes
+				}
+			}
+			save_scope_as = colonial_state
+		}
+		create_country = {
+			origin = ROOT
+			tag = AFS
+			state = scope:colonial_state
+		}
+		c:AFS = {
+			every_neighbouring_state = {
+		 		limit = {
+		 			owner = ROOT
+		 		}
+		 		set_state_owner = c:AFS
+			}
+			save_scope_as = free_state
+			activate_law = law_type:law_autocracy
+			activate_law = law_type:law_serfdom
+			activate_law = law_type:law_debt_slavery
+			capital = {
+				save_scope_as = afs_capital_scope
+			}
+		}
+		create_diplomatic_pact = {
+			country = c:AFS
+			type = personal_union
+		}
+	}
+
+	option = { #Let it happen
+		name = congo_free_state_events.1.a
+		default_option = yes
+		set_variable = free_state_made
+ 		scope:free_state = {
+			add_modifier = {
+				name = free_state_mort
+				months = long_modifier_time
+			}
+		}
+	}
+}
+
+congo_free_state_events.2 = { #Rumors about poor treatment
+	type = country_event
+	placement = scope:free_state.capital
+	title = congo_free_state_events.2.t
+	desc = congo_free_state_events.2.d
+	flavor =  congo_free_state_events.2.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/africa_construction_colony.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/africa/construction_colony"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	trigger = {
+		var:free_state_international_opinion < 45
+		NOT = { has_variable = congo_free_state_cooldown }
+	}
+
+	immediate = {
+		set_variable = {
+			name = congo_free_state_cooldown #we add a cooldown to the events so you get one every couple of years
+			months = short_modifier_time
+		}
+		c:AFS = {
+			save_scope_as = free_state
+		}
+		random_scope_character = {
+			limit = {
+				is_ruler = yes
+			}
+			save_scope_as = free_state_monarch
+		}
+	}
+
+	option = { #Do Nothing
+		name = congo_free_state_events.2.a
+		default_option = yes
+		custom_tooltip = {
+			text = congo_opinion_small_tt
+			change_variable = {
+				name = free_state_international_opinion
+				add = 5
+			}
+		}
+	}
+
+	option = { #Do talk to king
+		name = congo_free_state_events.2.b
+		custom_tooltip = {
+			text = congo_opinion_medium_tt
+			change_variable = {
+				name = free_state_international_opinion
+				add = 10
+			}
+		}
+		scope:free_state_monarch = {
+			interest_group = {
+				add_modifier = {
+ 					name = modifier_condemned_colony
+					months = normal_modifier_time
+				}
+			}
+		}
+	}
+}
+
+congo_free_state_events.3 = { #people are dying
+	type = country_event
+	placement = scope:free_state.capital
+	title = congo_free_state_events.3.t
+	desc = congo_free_state_events.3.d
+	flavor =  congo_free_state_events.3.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/africa_soldiers_breaking_protest.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/africa/soldiers_breaking_protest"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	trigger = {
+		NOT = { has_variable = congo_free_state_cooldown }
+		#repeatable at any state of the JE
+	}
+
+	immediate = {
+		set_variable = {
+			name = congo_free_state_cooldown
+			months = short_modifier_time
+		}
+		c:AFS = {
+			save_scope_as = free_state
+		}
+		random_scope_character = {
+			limit = {
+				is_ruler = yes
+			}
+			save_scope_as = free_state_monarch
+		}
+		random_state = {
+			limit = {
+				owner = { this = c:AFS }
+			}
+			save_scope_as = colonial_state
+		}
+	}
+
+	option = { #ignore it
+		name = congo_free_state_events.3.a
+		default_option = yes
+		#big mortality modifier
+		scope:colonial_state = {
+			add_modifier = {
+				name = congo_massacre_mortality_modifier
+				months = short_modifier_time
+			}
+		}
+	}
+
+	option = { #escalate it
+		name = congo_free_state_events.3.b
+		#bureaucracy cost but you advance A LOT the variable
+		scope:colonial_state = {
+			add_modifier = {
+				name = congo_massacre_mortality_modifier
+				months = short_modifier_time
+			}
+		}
+		add_modifier = {
+			name = congo_massacre_modifier
+			months = short_modifier_time
+		}
+		custom_tooltip = {
+			text = congo_opinion_high_tt
+			change_variable = {
+				name = free_state_international_opinion
+				add = 15
+			}
+		}
+	}
+}
+
+congo_free_state_events.4 = { #Free State Newspaper Article
+	type = country_event
+	placement = scope:free_state.capital
+	title = congo_free_state_events.4.t
+	desc = congo_free_state_events.4.d
+	flavor =  congo_free_state_events.4.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/africa_soldiers_breaking_protest.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/africa/soldiers_breaking_protest"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	trigger = {
+		var:free_state_international_opinion >= 45
+		NOT = { has_variable = congo_free_state_cooldown }
+	}
+
+	immediate = {
+		set_variable = {
+			name = congo_free_state_cooldown
+			months = short_modifier_time
+		}
+		c:AFS = {
+			save_scope_as = free_state
+		}
+		random_scope_character = {
+			limit = {
+				is_ruler = yes
+			}
+			save_scope_as = free_state_monarch
+		}
+		random_country = {
+			limit = {
+				country_rank >= rank_value:major_power #so it's relevant
+			}
+			save_scope_as = newspaper_country
+		}
+	}
+
+	option = { #Ignore
+		name = congo_free_state_events.4.a
+		default_option = yes
+		if = {
+			limit = {
+				NOT = { has_variable = ignored_article_var }
+			}
+			custom_tooltip = {
+				text = congo_opinion_small_tt
+				change_variable = {
+					name = free_state_international_opinion
+					add = 5
+				}
+			}
+			ROOT = {
+				create_incident = {
+					country = scope:newspaper_country
+					value = 10
+				}
+			}
+			set_variable = ignored_article_var
+		}
+		else = { #this is not the first time you ignore it
+			custom_tooltip = {
+				text = congo_opinion_small_tt
+				change_variable = {
+					name = free_state_international_opinion
+					add = 2
+				}
+			}
+			ROOT = {
+				create_incident = {
+					country = scope:newspaper_country
+					value = 30
+				}
+			}
+		}
+	}
+
+	option = { #Talk to king
+		name = congo_free_state_events.4.b
+		custom_tooltip = {
+			text = congo_opinion_medium_tt
+			change_variable = {
+				name = free_state_international_opinion
+				add = 10
+			}
+		}
+		scope:free_state_monarch = {
+			interest_group = {
+				add_modifier = {
+ 					name = modifier_condemned_colony
+					months = normal_modifier_time
+				}
+			}
+		}
+	}
+}
+
+congo_free_state_events.5 = { #Free State can be reintegrated
+	type = country_event
+	placement = scope:free_state.capital
+	title = congo_free_state_events.5.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					NOT = { has_law = law_type:law_monarchy }
+				}
+				desc = congo_free_state_events.5.d
+			}
+			triggered_desc = {
+				trigger = {
+					has_law = law_type:law_monarchy
+				}
+				desc = congo_free_state_events.5.d2
+			}
+		}
+	}
+	flavor = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					NOT = { has_law = law_type:law_monarchy }
+				}
+				desc = congo_free_state_events.5.f
+			}
+			triggered_desc = {
+				trigger = {
+					has_law = law_type:law_monarchy
+				}
+				desc = congo_free_state_events.5.f2
+			}
+		}
+	}
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_ruler_speaking_to_people.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/leader_speaking_to_a_group_of_people"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	trigger = {
+		#triggered by the JE
+	}
+
+	immediate = {
+		c:AFS = {
+			save_scope_as = free_state
+		}
+		random_scope_character = {
+			limit = {
+				is_ruler = yes
+			}
+			save_scope_as = free_state_monarch
+		}
+	}
+
+	option = { #Reintegrate
+		name = congo_free_state_events.5.a
+		default_option = yes
+		annex = c:AFS
+		if = {
+			limit = {
+				has_law = law_type:law_monarchy
+				ruler = {
+					has_variable = free_state_monarch
+				}
+			}
+			ruler = {
+				remove_variable = free_state_created
+				add_modifier = {
+					name = free_state_monarch_modifier #popularity loss
+					months = long_modifier_time
+				}
+			}
+			add_modifier = {
+				name = free_state_monarchy_modifier #legitimacy head of state
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = { #Free Free State
+		name = congo_free_state_events.5.b
+		c:AFS = {
+			make_independent = yes
+		}
+		if = {
+			limit = {
+				has_law = law_type:law_monarchy
+				ruler = {
+					has_variable = free_state_monarch
+				}
+			}
+			ruler = {
+				remove_variable = free_state_created
+				add_modifier = {
+					name = free_state_monarch_modifier #popularity loss
+					months = long_modifier_time
+				}
+			}
+			add_modifier = {
+				name = free_state_monarchy_modifier #legitimacy head of state
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+congo_free_state_events.6 = { #The Report
+	type = country_event
+	placement = scope:free_state.capital
+	title = congo_free_state_events.6.t
+	desc = congo_free_state_events.6.d
+	flavor =  congo_free_state_events.6.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/africa_soldiers_breaking_protest.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/africa/soldiers_breaking_protest"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	trigger = {
+		var:free_state_international_opinion >= 90
+		NOT = { has_variable = congo_free_state_cooldown }
+	}
+
+	immediate = {
+		c:AFS = {
+			save_scope_as = free_state
+		}
+		random_scope_character = {
+			limit = {
+				is_ruler = yes
+			}
+			save_scope_as = free_state_monarch
+		}
+		set_variable = {
+			name = congo_free_state_cooldown
+			months = short_modifier_time
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = ignored_report_var }
+			}
+			random_country = {
+				limit = {
+					country_rank >= rank_value:major_power #so it's relevant
+				}
+				save_scope_as = report_country
+			}
+		}
+		else = {
+			random_country = {
+				limit = {
+					country_rank >= rank_value:great_power #we grab a scary boy
+				}
+				save_scope_as = report_country
+			}
+		}
+	}
+
+	option = { #Condemn it
+		name = congo_free_state_events.6.a
+		default_option = yes
+		custom_tooltip = {
+			text = congo_opinion_medium_tt
+			change_variable = {
+				name = free_state_international_opinion
+				add = 10
+			}
+		}
+		scope:free_state_monarch = {
+			interest_group = {
+				add_modifier = {
+ 					name = modifier_condemned_colony
+					months = normal_modifier_time
+				}
+			}
+		}
+	}
+
+	option = { #Ignore
+		name = congo_free_state_events.6.b
+		if = {
+			limit = {
+				NOT = { has_variable = ignored_report_var }
+			}
+			custom_tooltip = {
+				text = congo_opinion_small_tt
+				change_variable = {
+					name = free_state_international_opinion
+					add = 5
+				}
+			}
+			ROOT = {
+				create_incident = {
+					country = scope:report_country
+					value = 20
+				}
+			}
+			set_variable = ignored_report_var
+		}
+		else = {
+			ROOT = { #you've ignored it more than once
+				create_incident = {
+					country = scope:report_country
+					value = 40
+				}
+			}
+		}
+	}
+}

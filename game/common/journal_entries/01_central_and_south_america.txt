@@ -1,0 +1,94 @@
+﻿central_america_falls_apart = {
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	should_be_pinned_by_default = yes
+
+	on_monthly_pulse = {
+		random_events = {
+			10 = 0
+			1 = central_america.3
+		}
+	}
+
+	complete = {
+		any_scope_state = {	
+			state_region = s:STATE_GUATEMALA
+			turmoil < 0.2
+		}
+		any_scope_state = {	
+			state_region = s:STATE_GUATEMALA
+			turmoil < 0.2
+		}
+		any_scope_state = {	
+			state_region = s:STATE_COSTA_RICA
+			turmoil < 0.2
+		}
+		any_scope_state = {	
+			state_region = s:STATE_SAN_SALVADOR
+			turmoil < 0.2
+		}
+		any_scope_state = {	
+			state_region = s:STATE_NICARAGUA
+			turmoil < 0.2
+		}
+	}
+
+	fail = {
+		custom_tooltip = {
+			text = central_america_fail_tt
+			any_scope_state = {
+				OR = {
+					state_region = s:STATE_GUATEMALA
+					state_region = s:STATE_HONDURAS
+					state_region = s:STATE_COSTA_RICA
+					state_region = s:STATE_SAN_SALVADOR
+					state_region = s:STATE_NICARAGUA
+				}
+				count < 3
+			}
+		}
+	}
+
+	on_fail = {
+		trigger_event = { id = central_america.2 popup = yes }
+		custom_tooltip = central_america_capital_tt
+	}
+	
+	status_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = central_america_breakup_status
+			}
+		}
+	}
+}
+
+
+
+ragamuffin_war = {
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	complete = {
+		OR = {
+			NOT = { exists = c:PNI }
+			NOT = {
+				any_scope_war = {
+					is_war_participant = c:PNI
+				}
+			}
+		}
+	}
+
+	on_complete = {
+		if = {
+			limit = { exists = c:PNI }
+			trigger_event = { id = south_america.5 }
+		}
+		else = {
+			trigger_event = { id = south_america.6 }
+		}
+	}
+
+	should_be_pinned_by_default = yes
+
+}

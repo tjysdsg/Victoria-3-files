@@ -1,0 +1,144 @@
+right_click_menu = {
+	name = "important_actions_list"
+
+	onmousehierarchyenter = "[SetCanOpenRightClickContextMenu( '(bool)no' )]"
+	onmousehierarchyleave = "[SetCanOpenRightClickContextMenu( '(bool)yes' )]"
+
+	parentanchor = bottom|hcenter
+	widgetanchor = top|hcenter
+
+	blockoverride "title_text" {
+		text = "IMPORTANT_ACTIONS"
+	}
+
+	blockoverride "items" {
+		datamodel = "[TopFrontend.AccessImportantActions]"
+
+		item = {
+			container = {
+				# important action
+				important_actions_list_item = {
+					visible = "[Not(ImportantAlert.HasGroup)]"
+				}
+				# angry important action (sorted top and red button)
+				important_actions_list_item = {
+					visible = "[And(Not(ImportantAlert.HasGroup),ImportantAlert.GetAlert.IsAngryImportantAction)]"
+					blockoverride "button" {
+						using = red_button
+					}
+				} 
+				# expandable list item
+				important_actions_list_expandable_item = {
+					visible = "[ImportantAlert.HasGroup]"
+				}
+				# angry expandable list item
+				important_actions_list_expandable_item = {
+					visible = "[And(ImportantAlert.HasGroup,ImportantAlert.GetAlert.IsAngryImportantAction)]"
+					blockoverride "button" {
+						using = red_button
+					}
+				}
+			}
+		}
+	}
+}
+
+types important_actions_list
+{
+	type important_actions_list_item = right_click_menu_item {
+		blockoverride "properties" {
+
+			tooltip = "[ImportantAlert.GetToolTip]"
+			onclick = "[PopupManager.OpenAlert( ImportantAlert.GetAlert.AccessSelf )]"
+			onrightclick = "[ImportantAlert.MarkAsHidden]"
+			onmousehierarchyenter = "[ImportantAlert.MarkAsRead]"
+			size = { 400 44 }
+
+			icon = {
+				visible = "[Not( ImportantAlert.IsRead )]"
+				parentanchor = right|vcenter
+				position = { -5 0 }
+				texture = "gfx/interface/current_situations/icon_situation_unread.dds"
+				size = { 25 25 }
+			}
+		}
+
+		blockoverride = "icon" {}
+
+		blockoverride = "text" {
+			text = "[ImportantAlert.GetName]"
+		}	
+	}
+	
+	type important_actions_list_expandable_item = right_click_menu_expandable_item
+	{
+		blockoverride "properties" {
+			text = "[ImportantAlert.GetName]"
+			tooltip = "[ImportantAlert.GetToolTip]"
+			size = { 400 44 }
+
+			onrightclick = "[ImportantAlert.MarkAsHidden]"
+		}
+
+		blockoverride "onclick" {
+			onclick = "[ImportantAlert.ToggleAlertGroupExpanded]"
+			using = expand_button_sound
+		}
+
+		blockoverride "expanded_list_properties" {
+			visible = "[ImportantAlert.IsAlertGroupExpanded]"
+			datamodel = "[ImportantAlert.GetAlerts]"
+		}
+
+		blockoverride "expanded_list_expand_visible" {
+			visible = "[Not(ImportantAlert.IsAlertGroupExpanded)]"
+		}
+
+		blockoverride "expanded_list_collapse_visible" {
+			visible = "[ImportantAlert.IsAlertGroupExpanded]"
+		}
+
+		blockoverride "list_item_properties" {
+			onmousehierarchyenter = "[Alert.MarkAsRead]"
+			onrightclick = "[Alert.MarkAsHidden]"
+		}
+
+
+		blockoverride "list_item_text_properties" {
+			text = "[Alert.GetName]"
+			tooltip = "EXPANDABLE_IMPORTANT_ACTION_ITEM"
+		}
+
+		blockoverride "unread_icon" {
+			icon = {
+				visible = "[Not( Alert.IsRead )]"
+				parentanchor = right|vcenter
+				texture = "gfx/interface/current_situations/icon_situation_unread.dds"
+				size = { 25 25 }
+				position = { -5 0 }
+			}
+		}
+		blockoverride "expandable_onclick" {
+			onclick = "[PopupManager.OpenAlert( Alert.AccessSelf )]"
+			using = select_button_sound
+		}
+
+		blockoverride "number_of_items_text" {
+			text = "[ImportantAlert.GetNumAlerts]"
+		}
+		
+		blockoverride "position_number_of_items" {
+			position = { -25 0 }
+		}
+
+		blockoverride "unread_icon_expandable_item" {
+			icon = {
+				visible = "[Not( ImportantAlert.IsRead )]"
+				parentanchor = right|vcenter
+				texture = "gfx/interface/current_situations/icon_situation_unread.dds"
+				size = { 25 25 }
+				position = { -5 0 }
+			}
+		}
+	}
+}

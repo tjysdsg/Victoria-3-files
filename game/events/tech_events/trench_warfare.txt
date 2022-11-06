@@ -1,0 +1,146 @@
+﻿namespace = trench_warfare
+
+trench_warfare.1 = {
+	type = country_event
+	placement = ROOT
+	
+	title = trench_warfare.1.t
+	desc = trench_warfare.1.d
+	flavor = trench_warfare.1.f
+	
+	event_image = {
+		video = "gfx/event_pictures/middleeast_battlefield_trenches.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/battlefield_trenches"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+	
+	duration = 3
+
+	trigger = {
+	}
+
+	immediate = {
+		ROOT = { save_scope_as = trench_warfare_home }
+		random_scope_war = {
+			limit = {
+				any_scope_front = {
+					any_scope_general = {
+						owner = ROOT
+						commander_pm_usage = {
+							target = ROOT
+							production_method = pm_trench_infantry
+							value > 0.5
+						}
+					}
+				}
+			}
+			save_scope_as = trench_warfare_war
+			random_scope_front = {
+				limit = {
+					any_scope_general = {
+						owner = ROOT
+						commander_pm_usage = {
+							target = ROOT
+							production_method = pm_trench_infantry
+							value > 0.5
+						}
+					}
+				}
+				random_scope_general = {
+					limit = {
+						owner = ROOT
+						NOT = { has_trait = trench_rat }
+						commander_pm_usage = {
+							target = ROOT
+							production_method = pm_trench_infantry
+							value > 0.5
+						}
+					}
+					save_scope_as = trench_warfare_general
+				}
+				random_scope_state = {
+					save_scope_as = trench_warfare_state
+				}
+			}
+		}
+	}
+
+	option = { # We must entrench, entrench, and entrench some more!
+		name = trench_warfare.1.a
+		default_option = yes
+
+		scope:trench_warfare_general  = {
+			add_trait = trench_rat
+		}
+		scope:trench_warfare_state = {
+			add_modifier = { # mortality and reduction in outputs
+				name = zone_rouge
+				months = long_modifier_time
+			}
+			state_region = {
+				add_devastation = 10
+			}
+		}
+	}
+	option = { # We can't let our defenses stagnate.
+		name = trench_warfare.1.b
+
+		trigger = {
+			NOT = { has_technology_researched = defense_in_depth }
+		}
+		
+		if = {
+			limit = {
+				can_research = defense_in_depth 
+			}
+			add_technology_progress = {
+				progress = 4000
+				technology = defense_in_depth
+			}
+		}
+
+		scope:trench_warfare_state = {
+			add_modifier = { # smaller negative modifier because the front isn't static
+				name = zone_rouge
+				months = long_modifier_time
+				multiplier = 0.75
+			}
+			state_region = {
+				add_devastation = 5
+			}
+		}	
+	}
+
+	option = { # We need a breakthrough.
+		name = trench_warfare.1.c
+
+		trigger = {
+			has_technology_researched = wargaming
+			NOT = { has_technology_researched = stormtroopers }
+		}
+		
+		if = {
+			limit = {
+				can_research = stormtroopers 
+			}
+			add_technology_progress = {
+				progress = 5000
+				technology = stormtroopers
+			}
+		}
+
+		scope:trench_warfare_state = {
+			add_modifier = { # smaller negative modifier because the front is moving more
+				name = zone_rouge
+				months = long_modifier_time
+				multiplier = 0.75
+			}
+			state_region = {
+				add_devastation = 5
+			}
+		}
+	}
+}

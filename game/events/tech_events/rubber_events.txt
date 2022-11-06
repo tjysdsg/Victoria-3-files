@@ -1,0 +1,77 @@
+﻿namespace = rubber_events
+
+# You export rubber
+ rubber_events.1 = {
+	type = state_event
+	placement = ROOT
+
+	event_image = {
+		video = "gfx/event_pictures/asia_poor_people_moving.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/asia/poor_people_moving"
+
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	title = rubber_events.1.t
+	desc = rubber_events.1.d
+	flavor = rubber_events.1.f
+
+	duration = 3
+
+	trigger = {
+		has_potential_resource = bg_rubber
+		NOT = { has_modifier = state_rubber_modifier }
+		NOT = { region = sr:region_brazil }
+		state_region = {
+			remaining_undepleted = {
+				type = bg_rubber
+				amount > 1
+			}
+		}
+	}
+
+	immediate = {
+		save_scope_as = rubber_state
+	}
+
+	option = { #plant more rubber here
+		name = rubber_events.1.a
+		default_option = yes
+		scope:rubber_state = {
+			force_resource_discovery = bg_rubber
+		}
+		add_modifier = {
+			name = state_rubber_modifier
+			months = short_modifier_time
+		}
+	}
+
+	option = { #expand the rubber to adjacent states
+		name = rubber_events.1.b
+		trigger = {
+			any_neighbouring_state = {
+				is_incorporated = yes
+				has_potential_resource = bg_rubber
+				state_region = {
+					remaining_undepleted = {
+						type = bg_rubber
+						amount > 1
+					}
+				}
+			}
+		}
+		random_neighbouring_state = {
+			limit = {
+				is_incorporated = yes
+				has_potential_resource = bg_rubber
+			}
+			force_resource_discovery = bg_rubber
+			add_modifier = {
+				name = state_rubber_modifier
+				months = short_modifier_time
+			}
+		}
+	}
+}

@@ -1,0 +1,740 @@
+# COPY-PASTED FOR NOW
+@panel_width_minus_10 = 530			# used to be 450
+@panel_width = 540  				# used to be 460
+@panel_width_half = 270				# used to be 230
+@panel_width_plus_10 = 550  		# used to be 470
+@panel_width_plus_14 = 554			# used to be 474
+@panel_width_plus_14_half = 277		# used to be 237
+@panel_width_plus_20 = 560			# used to be 480
+@panel_width_plus_30 = 570			# used to be 490
+@panel_width_plus_70 = 610			# used to be 530
+
+window = {
+	name = "gameover_screen"
+	size = { 100% 100% }
+	layer = game_over_screen
+	movable = no
+	
+	# animation trigger 
+	state = {
+		name = start
+		trigger_on_create = yes
+		on_start = "[PdxGuiTriggerAllAnimations('game_over_screen1_a')]"
+		on_start = "[PdxGuiTriggerAllAnimations('game_over_screen2_a')]"
+		on_start = "[PdxGuiTriggerAllAnimations('game_over_screen3_a')]"
+	}
+	
+	# bg illustration
+	icon = {
+		name = "bg_illustration" 
+		size = { 100% 100% }
+		texture = "gfx/interface/game_over_screen/game_over_illustration.dds"
+		parentanchor = center  
+
+		state = {
+			name = game_over_screen1_a
+			duration = 0
+			
+			alpha = 0
+			scale = 1
+
+			start_sound = {
+				soundeffect = "snapshot:/Gameplay/mute_music_mood"
+			}
+
+			# I put the 2 sound effects below instead together with the Player.Exist visible states
+			#start_sound = {
+			#	soundeffect = "[GameOverScreen.GetGameOverSoundEvent]" 
+			#}
+		}
+		
+		state = {
+			name = game_over_screen2_a
+			scale = 1.3
+			
+			duration = 8
+			using = Animation_Curve_EaseOut
+		}
+		
+		state = {
+			name = game_over_screen3_a
+			alpha = 1
+			
+			duration = 1
+			using = Animation_Curve_EaseOut
+		}		
+	}  
+
+	## VFX test (idle)
+	cameracontrolwidget = {
+		size = { 100% 100% }
+		gfxtype = jomini_entitygfx
+		entity_instance = env_god_rays
+	}
+	
+	# TOP TITLE
+	widget = {
+		size = { 100% 55 }
+		alpha = 0
+		position = { 0 320 }
+		
+		background = {
+			using = dark_area
+			margin = { 30 0 }
+			margin_top = -3
+			alpha = 0.35 
+		} 
+		
+		state = {
+			name = game_over_screen1_a
+			next = game_over_screen1_b
+			
+			alpha = 1
+			
+			position_y = 280 
+			duration = 2.5
+			using = Animation_Curve_Default
+		}
+		state = {
+			name = game_over_screen1_b
+			next = game_over_screen1_c
+			
+			position_y = 0
+			
+			duration = 0.2
+			using = Animation_Curve_Default
+		}
+
+		state = {
+			name = game_over_screen1_c
+			
+			position_y = 5
+			
+			duration = 0.2
+			using = Animation_Curve_Default
+			
+			on_finish = "[PdxGuiTriggerAllAnimations('game_over_screen_info1_a')]"
+		}		
+		
+		# GAME OVER TEXT (animated, first big then smaller fontsize)
+		widget = {
+			size = { 40% 100% }
+			
+			textbox = {
+				position = { 0 -5 }
+				size = { 100% 100% }
+				text = "GAME_OVER_TITLE"
+				align = nobaseline
+				using = header_font_fancy
+				fontsize = 120
+				default_format = "#header"
+				margin_left = 30
+				
+				alpha = 1
+				
+				state = {
+					name = game_over_screen_info1_a
+					
+					alpha = 0
+					
+					duration = 0.5
+					using = Animation_Curve_Default
+				}
+			}  
+			textbox = {
+				size = { 100% 100% }
+				elide = right
+				text = "GAME_OVER_TITLE"
+				align = nobaseline 
+				using = header_font_fancy
+				fontsize = 50
+				default_format = "#header"
+				margin_left = 30 
+				
+				alpha = 0
+				
+				state = {
+					name = game_over_screen_info1_a
+					
+					alpha = 1
+					
+					duration = 0.5
+					using = Animation_Curve_Default
+				} 
+			}
+		}
+
+		# extra annex info
+		widget = {
+			visible = "[Not(GetPlayer.Exists)]"
+			size = { 60% 100% }
+			parentanchor = right
+			scissor = yes
+
+			textbox = {
+				size = { 100% 100% }
+				parentanchor = vcenter
+				text = "GAME_OVER_ANNEXED"
+				using = header_font
+				using = fontsize_large
+				default_format = "#header"
+			}    
+		}
+
+		# COUNTRY AND DATE INFO
+		widget = {
+			size = { 60% 100% }
+			parentanchor = right
+			scissor = yes
+			
+			textbox = {
+				visible = "[Not(GetPlayer.Exists)]"
+				size = { 100% 100% }
+				parentanchor = vcenter
+				text = "GAME_OVER_TITLE_COUNTRY"
+				align = right|nobaseline
+				using = header_font
+				using = fontsize_large
+				default_format = "#header"
+				elide = right
+				margin_right = 30
+				
+				alpha = 0
+				position = { 300 0 }
+
+				state = {
+					name = _show
+					
+					start_sound = {
+						soundeffect = "event:/MUSIC/Stingers/game_over/negative"
+					}
+				}
+				
+				state = {
+					name = game_over_screen_info1_a
+					next = game_over_screen_info1_b
+					
+					alpha = 1
+					position_x = -10
+					
+					duration = 0.4
+					using = Animation_Curve_Default
+				} 
+				state = {
+					name = game_over_screen_info1_b
+					
+					alpha = 1
+					position_x = 0
+					
+					duration = 0.15
+					using = Animation_Curve_Default
+				} 
+			} 
+			
+			textbox = {
+				visible = "[GetPlayer.Exists]"
+				size = { 100% 100% }
+				parentanchor = vcenter
+				text = "GAME_OVER_TITLE_COUNTRY_END_OF_CAMPAIGN"
+				align = right|nobaseline
+				using = header_font
+				using = fontsize_large
+				default_format = "#header"
+				elide = right
+				margin_right = 30
+				
+				alpha = 0
+				position = { 300 0 }
+				
+				
+				state = {
+					name = _show
+					
+					start_sound = {
+						soundeffect = "event:/MUSIC/Stingers/game_over/positive"
+					}
+				}
+				
+				state = {
+					name = game_over_screen_info1_a
+					next = game_over_screen_info1_b
+					
+					alpha = 1
+					position_x = -10
+					
+					duration = 0.4
+					using = Animation_Curve_Default
+				} 
+				state = {
+					name = game_over_screen_info1_b
+					
+					alpha = 1
+					position_x = 0
+					
+					duration = 0.15
+					using = Animation_Curve_Default
+				} 
+			}    
+		}
+	}
+	
+	# INFO / STATS ( make sure to fit in lowest resolution, 1600x900 )
+	flowcontainer = {
+		datacontext = "[GetPlayer]"
+		spacing = 20
+
+		parentanchor = center
+	
+		alpha = 0
+		position = { 0 -2000 } #has to be moved far up outside of screen because otherwise the piecharts are showing (they can't use alpha)  
+		
+		state = {
+			name = game_over_screen_info1_a
+			next = game_over_screen_info1_b
+			
+			alpha = 1
+			position_y = 10
+			
+			duration = 0.5
+			using = Animation_Curve_Default
+		}
+		state = {
+			name = game_over_screen_info1_b
+			
+			alpha = 1
+			position_y = 0
+			
+			duration = 0.15
+			using = Animation_Curve_Default
+		}
+		
+		#FLAG / RULER ETC
+		container = {
+			parentanchor = vcenter
+			minimumsize = { -1 760 }
+			maximumsize = { -1 760 }
+			using = entry_bg_fancy
+			
+			flowcontainer = {
+				direction = vertical
+				margin = { 10 10 }
+				
+				### TOP INFO
+				container = {
+					minimumsize = { 350 400 }
+					maximumsize = { 350 400 } # we need a fixed size here due to lots of scaling and weird sizing below
+					
+					# FLAG 
+					container = {
+						icon = {
+							size = { 340 542 }
+							position = { 3 0 }
+							texture = "gfx/interface/flag/fancy_flag_country_view.dds"
+						}
+					
+						# 3D flag, we want to render at a high resolution and downscale
+						# This increases the quality of the rendered gui flag
+						# Size can be modified but needs to be 16:9 due to how its rendered (converted 3d object)
+						flag_3d = {
+							position = { 5 13 }
+							size = { 550 309 }	# Rendersize
+							scale = 0.45		# Downscale
+						}
+					}
+					### RANK
+					rank_badge = {
+						size = { 90 90 }
+						position = { 190 0 }
+						
+						blockoverride "datacontext " {}
+						blockoverride "font_size" {
+							using = fontsize_xxl
+						}
+						blockoverride "rank_text" {
+							text = "#BOLD [Country.GetCountryScorePositionDesc]"
+						}
+						blockoverride "rank_text_2" {
+							text = "#BOLD [Country.GetCountryScorePositionDesc]"
+							visible = no
+						}
+					}
+					#RULER PORTRAIT
+					character_portrait_large_torso = {
+						position = { 0 130 }
+						datacontext = "[Country.GetRuler]"
+						blockoverride "show_hat" {}
+					}
+				}
+				
+				container = {
+						minimumsize = { 300 40 }
+						textbox = {
+							size = { 100% 100% }
+							text = "[Country.GetNameNoFlag]"
+							using = header_font
+							using = fontsize_large
+							default_format = "#header"
+							position = { 10 0 }
+						}
+					}
+
+				#GOVERNMENT
+				flowcontainer = {
+					direction = vertical
+					minimumsize = { 300 -1 }
+					margin_bottom = 15
+					
+					background = {
+						using = entry_bg
+					}
+
+					flowcontainer = {
+						parentanchor = vcenter
+						margin_left = 10
+						spacing = 5
+						
+						icon = {
+							parentanchor = vcenter
+							texture = "gfx/interface/icons/generic_icons/in_government_icon.dds"
+							size = { 30 30 }
+						}
+						textbox = {
+							autoresize = yes
+							multiline = yes
+							maximumsize = { 200 -1 }
+							minimumsize = { 200 -1 }
+							text = "COUNTRY_GOVERNMENT"
+							align = nobaseline
+							elide = right
+						}
+					}
+
+					fixedgridbox = {
+						parentanchor = left
+						datamodel_wrap = 4
+						addcolumn = 60
+						addrow = 65
+						flipdirection = yes
+						
+						item = {
+							widget = {
+								size = { 60 65 }
+								
+								flowcontainer = {
+									parentanchor = bottom
+									margin_left = 25
+									direction = vertical
+									tooltip = "CLOUT_PIECHART"
+									
+									container = {
+										parentanchor = hcenter
+										ig_button = {
+											visible = "[Country.IsPlayer]"
+											size = { 36 36 }
+											
+											blockoverride "in_government_icon"{}
+										}
+										icon = {
+											visible = "[Not(Country.IsPlayer)]"
+											texture = "[InterestGroup.GetTexture]"
+											size = { 36 36 }
+											influential_icon = {}
+										}
+									}
+									textbox = {
+										text = "[InterestGroup.GetClout|%1]"
+										autoresize = yes
+										parentanchor = hcenter
+									}
+								}
+							}
+						}
+					}
+				}
+				
+				# STATS
+				flowcontainer = {
+					direction = vertical
+					spacing = 1
+					margin_top = 10
+					
+					# RELIGION
+					country_stats_entry_game_over = {
+						blockoverride "information_icon" {
+							texture = "[Country.GetStateReligion.GetTexture]"
+						}
+						blockoverride "stats_label" {
+							text = "COUNTRY_RELIGIONS_ONE_LINE"
+						}
+						blockoverride "stats_value" {
+							text = "#v [Country.GetStateReligion.GetName]#!"
+						}
+					}
+					
+					# CULTURE
+					country_stats_entry_game_over = {
+						blockoverride "information_icon" {
+							texture = "gfx/interface/population/pop_culture.dds"
+						}
+						blockoverride "stats_label" {
+							text = "COUNTRY_CULTURES_ONE_LINE"
+						}
+						blockoverride "stats_value" {
+							text = "#v [Country.GetPrimaryCulturesDesc]#!"
+						}
+					}
+
+					# ARABLE LAND
+					country_stats_entry_game_over = {
+						visible = "[Country.Exists]"
+
+						blockoverride "information_icon" {
+							texture = "gfx/interface/icons/generic_icons/arable_land_icon.dds"
+						}
+						blockoverride "stats_label" {
+							text = "COUNTRY_ARABLE_LAND_ONE_LINE"
+						}
+						blockoverride "stats_value" {
+							text = "#v [Country.GetArableLand]#!"
+						}
+					}
+				}
+			}
+		}
+
+		#GRAPHS
+		flowcontainer = {
+			direction = vertical
+			v3_plotline_gdp = {}
+			v3_plotline_sol = {}
+			v3_plotline_prestige = {}
+			v3_plotline_population = {
+				visible = "[Country.Exists]"
+			}
+		}
+
+		#PIECHARTS 1
+		flowcontainer = {
+			margin_top = 10
+			spacing = 10
+			direction = vertical
+			ignoreinvisible = yes
+
+			pop_type_population_piechart = {
+				visible = "[Country.Exists]"
+
+				blockoverride "minimumsize" {
+					minimumsize = { 350 249 }
+				}
+
+				empty_state = {
+					parentanchor = vcenter
+					blockoverride "visible" {
+						visible = "[IsDataModelEmpty(AccessPlayer.AccessPopTypesSortedOnPopulation)]"
+					}
+					blockoverride "text" {
+						text = "NA"
+					}
+
+					blockoverride "size" {
+						minimumsize = { 350 -1 }
+						maximumsize = { 350 -1 }
+					}
+				}
+			}
+			culture_population_piechart = {
+				visible = "[Country.Exists]"
+
+				blockoverride "minimumsize" {
+					minimumsize = { 350 249 }
+				}
+				empty_state = {
+					parentanchor = vcenter
+					blockoverride "visible" {
+						visible = "[IsDataModelEmpty(AccessPlayer.AccessPopTypesSortedOnPopulation)]"
+					}
+					blockoverride "text" {
+						text = "NA"
+					}
+
+					blockoverride "size" {
+						minimumsize = { 350 -1 }
+						maximumsize = { 350 -1 }
+					}
+				}
+
+				block "tree_chart_size" {
+					minimumsize = { 350 -1 }
+				}
+			}
+			religion_population_piechart = {
+				visible = "[Country.Exists]"
+
+				blockoverride "minimumsize" {
+					minimumsize = { 350 249 }
+				}
+				empty_state = {
+					parentanchor = vcenter
+					blockoverride "visible" {
+						visible = "[IsDataModelEmpty(AccessPlayer.AccessPopTypesSortedOnPopulation)]"
+					}
+					blockoverride "text" {
+						text = "NA"
+					}
+
+					blockoverride "size" {
+						minimumsize = { 350 -1 }
+						maximumsize = { 350 -1 }
+					}
+				}
+			}
+		}
+		
+		#PIECHARTS 2
+		flowcontainer = {
+			margin_top = 10
+			spacing = 10
+			direction = vertical
+			ignoreinvisible = yes
+
+			pop_type_pol_str_piechart = {
+				visible = "[Country.Exists]"
+
+				blockoverride "minimumsize" {
+					minimumsize = { 350 249 }
+				}
+				empty_state = {
+					parentanchor = vcenter
+					blockoverride "visible" {
+						visible = "[IsDataModelEmpty(AccessPlayer.AccessPopTypesSortedOnPopulation)]"
+					}
+					blockoverride "text" {
+						text = "NA"
+					}
+
+					blockoverride "size" {
+						minimumsize = { 350 -1 }
+						maximumsize = { 350 -1 }
+					}
+				}
+			}
+			culture_pol_str_piechart = {
+				visible = "[Country.Exists]"
+
+				blockoverride "minimumsize" {
+					minimumsize = { 350 249 }
+				}
+				empty_state = {
+					parentanchor = vcenter
+					blockoverride "visible" {
+						visible = "[IsDataModelEmpty(AccessPlayer.AccessPopTypesSortedOnPopulation)]"
+					}
+					blockoverride "text" {
+						text = "NA"
+					}
+
+					blockoverride "size" {
+						minimumsize = { 350 -1 }
+						maximumsize = { 350 -1 }
+					}
+				}
+			}
+			religion_pol_str_piechart = {
+				visible = "[Country.Exists]"
+
+				blockoverride "minimumsize" {
+					minimumsize = { 350 249 }
+				}
+				empty_state = {
+					parentanchor = vcenter
+					blockoverride "visible" {
+						visible = "[IsDataModelEmpty(AccessPlayer.AccessPopTypesSortedOnPopulation)]"
+					}
+					blockoverride "text" {
+						text = "NA"
+					}
+
+					blockoverride "size" {
+						minimumsize = { 350 -1 }
+						maximumsize = { 350 -1 }
+					}
+				}
+			}
+		}
+	}
+
+	# BOTTOM BUTTONS
+	widget = { 
+		size = { 100% 45 }
+		parentanchor = bottom
+		
+		alpha = 0
+		position = { 0 100 }
+		
+		state = {
+			name = game_over_screen_info1_a
+			next = game_over_screen_info1_b
+			
+			alpha = 1
+			position_y = -10
+			
+			duration = 0.5 
+			using = Animation_Curve_Default
+		}
+		state = {
+			name = game_over_screen_info1_b
+			
+			alpha = 1
+			position_y = -5
+			
+			duration = 0.15 
+			using = Animation_Curve_Default
+		}
+
+		hbox = {
+			spacing = 10
+			margin = { 20 0 }
+
+			button = {
+				layoutpolicy_horizontal = expanding
+				size = { 0 45 }
+				using = default_button
+				text = "GAME_OVER_CONTINUE_AS_OBSERVER"
+				visible = "[GameOverScreen.CanContinueAsObserver]"
+				onclick = "[GameOverScreen.ContinueAsObserver]"
+				using = fontsize_large
+			}
+
+			button = {
+				layoutpolicy_horizontal = expanding
+				size = { 0 45 }
+				using = default_button
+				text = "GAME_OVER_GO_TO_LOBBY"
+				visible = "[GameOverScreen.CanGoToLobby]"
+				onclick = "[GameOverScreen.GoToLobby]"
+				using = fontsize_large
+			}
+
+			button = {
+				layoutpolicy_horizontal = expanding
+				size = { 0 45 }
+				using = default_button
+				text = "LOAD_GAME"
+				enabled = "[GameOverScreen.CanLoadGame]"
+				tooltip = "[GameOverScreen.GetLoadGameDesc]"
+				onclick = "[GameOverScreen.OpenLoadView]"
+				using = fontsize_large
+			}
+
+			button = {
+				layoutpolicy_horizontal = expanding
+				size = { 0 45 }
+				using = default_button_tertiary
+				text = "[GameOverScreen.GetQuitName]"
+				onclick = "[GameOverScreen.Quit]"
+				using = fontsize_large
+				shortcut = "close_window"
+			}
+		}
+	}
+}

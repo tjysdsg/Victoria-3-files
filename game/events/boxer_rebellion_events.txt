@@ -1,0 +1,461 @@
+﻿namespace = boxer_rebellion_events
+
+# The Yihetuan Movement
+boxer_rebellion_events.1 = {
+	type = country_event
+	placement = ROOT
+
+	title = boxer_rebellion_events.1.t
+	desc = boxer_rebellion_events.1.d
+	flavor = boxer_rebellion_events.1.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/asia_union_leader.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/asia/union_leader"
+
+	icon = "gfx/interface/icons/event_icons/event_fire.dds"
+
+	trigger = { # Triggered by JE
+	}
+
+	immediate = {
+		cu:han = {
+			save_scope_as = han_culture
+		}
+		cu:manchu = {
+			save_scope_as = manchu_culture
+		}
+	}
+	option = {
+		name = boxer_rebellion_events.1.a
+		every_country = {
+			limit = {
+        		any_scope_state = { 
+        			state_region = { 
+        				is_homeland = cu:han 
+        			} 
+        		}
+        		NOT = { 
+        			owner = ROOT 
+        		}
+        	}
+			change_relations = {
+				country = ROOT
+				value = -100
+			}
+		}
+		if = {
+			limit = {
+				any_scope_pop = { 
+					religion = rel:protestant 
+				}
+			}
+			add_radicals = {
+				religion = rel:protestant
+				value = very_large_radicals
+			}
+		}
+		if = {
+			limit = {
+				any_scope_pop = { 
+					religion = rel:catholic 
+				}
+			}
+			add_radicals = {
+				religion = rel:catholic
+				value = very_large_radicals
+			}
+		}
+		if = {
+			limit = {
+				any_scope_pop = { 
+					religion = rel:orthodox 
+				}
+			}
+			add_radicals = {
+				religion = rel:orthodox
+				value = very_large_radicals
+			}
+		}
+		add_radicals = {
+			value = large_radicals
+			culture = cu:han
+		}
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = boxer_rebellion_events.1.b
+		default_option = yes
+		every_country = {
+			limit = {
+        		any_scope_state = { 
+        			state_region = { 
+        				is_homeland = cu:han 
+        			} 
+        		}
+        		NOT = { 
+        			owner = ROOT 
+        		}
+        	}
+			change_relations = {
+				country = ROOT
+				value = 20
+			}
+		}
+		add_radicals = {
+			value = very_large_radicals
+			culture = cu:han
+		}
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+# The Mandate of Heaven
+boxer_rebellion_events.2 = {
+	type = country_event
+	placement = ROOT
+
+	title = boxer_rebellion_events.2.t
+	desc = boxer_rebellion_events.2.d
+	flavor = boxer_rebellion_events.2.f
+
+	duration = 3
+
+	gui_window = event_window_1char_tabloid
+
+	left_icon = root.ruler
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/misc/1Character_Banner"
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	trigger = {
+	}
+
+	immediate = {
+	}
+
+	option = {
+		name = boxer_rebellion_events.2.a
+		default_option = yes
+		add_loyalists = {
+			value = 0.2
+			culture = cu:han
+		}
+		add_modifier = {
+			name = revere_the_emperor	
+			months = long_modifier_time
+		}
+		hidden_effect = { post_notification = warlord_china_explosion_point_remove }
+		change_variable = {
+			name = china_warlord_explosion
+			subtract = 1
+		}
+		set_variable = won_boxer_rebellion
+	}
+	option = {
+		name = boxer_rebellion_events.2.b
+		add_loyalists = {
+			value = 0.2
+			culture = cu:han
+		}
+		add_modifier = {
+			name = united_in_righteousness	
+			months = long_modifier_time
+		}
+		hidden_effect = { post_notification = warlord_china_explosion_point_remove }
+		change_variable = {
+			name = china_warlord_explosion
+			subtract = 1
+		}
+		set_variable = won_boxer_rebellion
+	}
+}
+
+# The Qing and the Han
+boxer_rebellion_events.3 = {
+	type = country_event
+	placement = ROOT
+
+	title = boxer_rebellion_events.3.t
+	desc = boxer_rebellion_events.3.d
+	flavor = boxer_rebellion_events.3.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/asia_union_leader.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/asia/union_leader"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	minor_left_icon = c:CHI
+
+	trigger = {
+	}
+
+	immediate = {
+		cu:manchu = {
+			save_scope_as = manchu_culture
+		}
+		cu:han = {
+			save_scope_as = han_culture
+		}
+	}
+
+	option = {
+		name = boxer_rebellion_events.3.a
+		default_option = yes
+
+		hidden_effect = { 
+			post_notification = warlord_china_explosion_point_add 
+		}
+		change_variable = {
+			name = china_warlord_explosion
+			add = 1
+		}
+
+		remove_primary_culture = cu:han
+		add_radicals = {
+			value = very_large_radicals
+			culture = cu:han
+		}
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = boxer_rebellion_events.3.b
+		custom_tooltip = boxer_rebellion_events.3.tt1
+		set_variable = china_han_empire
+		hidden_effect = {
+			ruler = {
+				kill_character = yes
+			}
+			if = {
+				limit = {
+					any_scope_character = {
+						is_heir = yes
+					}
+				}
+				heir = {
+					kill_character = yes
+				}
+			}
+			post_notification = warlord_china_explosion_point_add
+		}
+		if = {
+			limit = {
+				year < 1862
+			}
+			create_character = {
+				first_name = "Fanhao"
+				last_name = "Kong"
+				culture = cu:han
+				ruler = yes
+				birth_date = 1806.3.21
+				interest_group = ig_devout
+				traits = {
+				}
+			}
+			create_character = {
+				first_name = "Xiangke"
+				last_name = "Kong"
+				culture = cu:han
+				heir = yes
+				birth_date = 1848.9.25
+				interest_group = ig_devout
+				traits = {
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				year >= 1848
+				year < 1876
+			}
+			create_character = {
+				first_name = "Xiangke"
+				last_name = "Kong"
+				culture = cu:han
+				ruler = yes
+				birth_date = 1848.9.25
+				traits = {
+				}
+			}
+			create_character = {
+				first_name = "Lingyi"
+				last_name = "Kong"
+				culture = cu:han
+				heir = yes
+				birth_date = 1872.11.29
+				interest_group = ig_devout
+				traits = {
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				year >= 1872
+				year < 1920 # Should be 1919, but for the sake of script it is not
+			}
+			create_character = {
+				first_name = "Lingyi"
+				last_name = "Kong"
+				culture = cu:han
+				ruler = yes
+				birth_date = 1872.11.29
+				interest_group = ig_devout
+				traits = {
+				}
+			}
+			create_character = {
+				first_name = "Teh_Cheng"
+				last_name = "Kong"
+				culture = cu:han
+				heir = yes
+				birth_date = 1920.8.17
+				interest_group = ig_devout
+				traits = {
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				year >= 1921
+				year < 1936
+			}
+			create_character = {
+				first_name = "Teh_Cheng"
+				last_name = "Kong"
+				culture = cu:han
+				ruler = yes
+				birth_date = 1920.8.17
+				interest_group = ig_devout
+				traits = {
+				}
+			}
+		}
+		change_variable = {
+			name = china_warlord_explosion
+			add = 1
+		}
+		if = {
+			limit = {
+				has_law = law_type:law_national_supremacy
+			}
+			activate_law = law_type:law_ethnostate
+		}
+		if = {
+			limit = {
+				has_law = law_type:law_racial_segregation
+			}
+			activate_law = law_type:law_national_supremacy
+		}
+		if = {
+			limit = {
+				has_law = law_type:law_cultural_exclusion
+			}
+			activate_law = law_type:law_racial_segregation
+		}
+		if = {
+			limit = {
+				has_law = law_type:law_multicultural
+			}
+			activate_law = law_type:law_cultural_exclusion
+		}
+		remove_primary_culture = cu:manchu
+		add_radicals = {
+			value = 0.75
+			culture = cu:manchu
+		}
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+# The Fall of the Qing Dynasty
+boxer_rebellion_events.4 = {
+	type = country_event
+	placement = ROOT
+
+	title = boxer_rebellion_events.4.t
+	desc = boxer_rebellion_events.4.d
+	flavor = boxer_rebellion_events.4.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_vandalized_storefront.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/vandalized_storefront"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	trigger = {
+	}
+
+	immediate = {
+		cu:manchu = {
+			save_scope_as = manchu_culture
+		}
+	}
+	option = {
+		name = boxer_rebellion_events.4.a
+		default_option = yes
+
+		hidden_effect = { 
+			post_notification = warlord_china_explosion_point_add 
+		}
+		change_variable = {
+			name = china_warlord_explosion
+			add = 1
+		}
+		if = {
+			limit = {
+				NOT = { country_has_primary_culture = cu:han }
+			}
+			add_primary_culture = cu:han
+		}
+		remove_primary_culture = cu:manchu
+		add_radicals = {
+			value = very_large_radicals
+			culture = cu:manchu
+		}
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = boxer_rebellion_events.4.b
+		if = {
+			limit = {
+				NOT = { country_has_primary_culture = cu:han }
+			}
+			add_primary_culture = cu:han
+		}
+		add_radicals = {
+			value = very_large_radicals
+			culture = cu:han
+		}
+		ai_chance = {
+			base = 0
+		}
+	}
+}

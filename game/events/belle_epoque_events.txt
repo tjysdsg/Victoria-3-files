@@ -1,0 +1,461 @@
+﻿namespace = belle_epoque_events
+
+belle_epoque_events.1 = { #Eiffel Tower
+	type = country_event
+    placement = scope:eiffel_state
+
+    title = belle_epoque_events.1.t
+    desc = belle_epoque_events.1.d
+    flavor = belle_epoque_events.1.f
+
+    event_image = {
+		video = "gfx/event_pictures/unspecific_world_fair.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/world_fair"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+    duration = 3
+	
+	trigger = {
+		owns_entire_state_region = STATE_ILE_DE_FRANCE
+		any_scope_state = {
+			has_building = building_eiffel_tower
+		}
+		NOT = { has_variable = eiffel_var }
+	}
+	
+	immediate = {
+		random_scope_state = {
+			limit = {
+				has_building = building_eiffel_tower
+			}
+			save_scope_as = eiffel_state
+		}
+		set_variable = eiffel_var
+	}
+	
+	option = { #yeeeehawwww
+		name = belle_epoque_events.1.a 
+		add_modifier = {
+			name = eiffel_tower_modifier #prestige bonus but it costs you some extra bureaucracy
+			months = short_modifier_time
+		}
+		create_character = {
+			ig_leader = yes
+			interest_group = ig_industrialists
+			female = no
+			first_name = Alexandre_Gustave
+			last_name = Eiffel
+			on_created = {
+				add_modifier = {
+					name = gustave_eiffel_modifier
+					months = normal_modifier_time
+				}
+			}
+		}
+	}
+	
+	option = { #it's lowkey ugly
+		name = belle_epoque_events.1.b 
+		default_option = yes
+		ig:ig_intelligentsia = { 
+			add_modifier = {
+				name = eiffel_tower_intelligentsia_modifier #they agree
+				months = normal_modifier_time
+			}
+		}
+		ig:ig_industrialists = {
+			add_modifier = {
+				name = eiffel_tower_slander_modifier #it's perfect!
+				months = normal_modifier_time
+			}
+		}
+		create_character = {
+			ig_leader = no
+			interest_group = ig_industrialists
+			female = no
+			first_name = Alexandre_Gustave
+			last_name = Eiffel
+			on_created = {
+				add_modifier = {
+					name = gustave_eiffel_sad_modifier
+					months = normal_modifier_time
+				}
+			}
+		}
+	}
+	
+	option = { #we shall dismantle it as soon as the exposition ends
+		name = belle_epoque_events.1.c 
+		scope:eiffel_state = { #outrageous!!!
+			add_radicals = {
+				pop_type = machinists #we worked so hard on this
+				value = small_radicals
+			}
+			add_loyalists = { #thank god
+				pop_type = academics
+				value = medium_radicals
+			}
+		}
+		create_character = {
+			ig_leader = yes #so they lose pol strenght
+			interest_group = ig_industrialists
+			female = no
+			first_name = Alexandre_Gustave
+			last_name = Eiffel
+			on_created = {
+				add_modifier = {
+					name = gustave_eiffel_angry_modifier
+					months = normal_modifier_time
+				}
+			}
+		}
+	}
+}
+
+belle_epoque_events.2 = { #Art Nouveau
+	type = country_event
+    placement = scope:belle_epoque_state
+
+    title = belle_epoque_events.2.t
+    desc = belle_epoque_events.2.d
+    flavor = belle_epoque_events.2.f
+
+    event_image = {
+		video = "gfx/event_pictures/europenorthamerica_art_gallery.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/art_gallery"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+    duration = 3
+	
+	trigger = {
+		any_primary_culture = {
+			NOT = { has_cultural_obsession = fine_art }
+		}
+		any_scope_state = {
+			any_scope_building = {
+				is_building_type = building_arts_academy
+				level >= 10
+			}
+		}
+		NOT = { has_variable = art_nouveau_var }
+	}
+	
+	immediate = {
+		random_primary_culture = {
+			limit = {
+				NOT = { has_cultural_obsession = fine_art }
+			}
+			save_scope_as = obsessed_culture
+		}
+		random_scope_state = {
+			limit = {
+				any_scope_building = {
+					is_building_type = building_arts_academy
+					level >= 10
+				}
+			}
+			save_scope_as = belle_epoque_state
+			random_scope_building = {
+				limit = {
+					is_building_type = building_arts_academy
+					level >= 10
+				}
+				save_scope_as = belle_epoque_building
+			}
+		}
+		set_variable = art_nouveau_var
+	}
+	
+	option = { #great stuff
+		name = belle_epoque_events.2.a 
+		scope:obsessed_culture = {
+			add_cultural_obsession = fine_art
+		}
+		add_modifier = {
+			name = art_nouveau_love_modifier
+			months = normal_modifier_time
+		}
+	}
+	
+	option = { #this sucks
+		name = belle_epoque_events.2.b 
+		default_option = yes
+		scope:belle_epoque_state = {
+			add_radicals = {
+				pop_type = academics
+				value = medium_radicals
+			}
+			add_radicals = {
+				pop_type = aristocrats
+				value = medium_radicals
+			}
+		}
+		scope:belle_epoque_building = {
+			add_modifier = { #strike at the academy
+				name = art_nouveau_strike_modifier
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+#IG leader joins the Symbolists
+belle_epoque_events.3 = {
+	type = country_event
+	placement = scope:belle_epoque_state
+	title = belle_epoque_events.3.t
+	desc = belle_epoque_events.3.d
+	flavor = belle_epoque_events.3.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_art_gallery.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/art_gallery"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+	
+	trigger = {
+		any_interest_group = {
+			leader = {
+				OR = {
+					has_trait = romantic
+					has_trait = hedonist
+					has_trait = charismatic
+					has_trait = brave
+					has_trait = innovative
+				}
+			}
+		}
+		any_scope_state = {
+			any_scope_building = {
+				is_building_type = building_arts_academy
+				level >= 10
+			}
+		}
+		NOT = { has_variable = symbolist_var }
+	}
+	
+	immediate = {
+		if = {
+			limit = {
+				any_interest_group = {
+					leader = {
+						OR = {
+							has_trait = romantic
+							has_trait = hedonist
+						}
+					}
+				}
+			}
+			random_interest_group = {
+				limit = {
+					leader = {
+						OR = {
+							has_trait = romantic
+							has_trait = hedonist
+						}
+					}
+				}
+				save_scope_as = symbolist_ig
+				leader = {
+					save_scope_as = symbolist_leader
+				}
+			}
+		}
+		else = {
+			random_interest_group = {
+				limit = {
+					leader = {
+						OR = {
+							has_trait = brave
+							has_trait = innovative
+							has_trait = charismatic
+						}
+					}
+				}
+				save_scope_as = symbolist_ig
+				leader = {
+					save_scope_as = symbolist_leader
+				}
+			}
+		}
+		random_scope_state = {
+			limit = {
+				any_scope_building = {
+					is_building_type = building_arts_academy
+					level >= 10
+				}
+			}
+			save_scope_as = belle_epoque_state
+			random_scope_building = {
+				limit = {
+					is_building_type = building_arts_academy
+					level >= 10
+				}
+				save_scope_as = belle_epoque_building
+			}
+		}
+		set_variable = symbolist_var
+	}
+	
+	option = { #good for them
+		name = belle_epoque_events.3.a 
+		scope:symbolist_leader = { #they gain traction
+			add_modifier = {
+				name = symbolist_leader_modifier
+				months = normal_modifier_time
+			}
+		}
+		scope:symbolist_ig = { #but they hate you
+			add_modifier = {
+				name = symbolist_ig_bad_modifier
+				months = normal_modifier_time
+			}
+		}		
+	}
+	
+	option = { #enough with this childish behaviour
+		name = belle_epoque_events.3.b 
+		default_option = yes
+		scope:symbolist_leader = { #they lose traction
+			add_modifier = {
+				name = symbolist_leader_bad_modifier
+				months = normal_modifier_time
+			}
+		}
+		scope:symbolist_ig = { #but they like you
+			add_modifier = {
+				name = symbolist_ig_good_modifier
+				months = normal_modifier_time
+			}
+		}	
+	}
+	
+	option = { #make him step down
+		name = belle_epoque_events.3.c 
+		trigger = {
+			OR = {
+				has_law = law_type:law_outlawed_dissent
+				has_law = law_type:law_censorship
+				has_law = law_type:law_secret_police
+				infamy >= infamy_threshold:infamous
+			}
+		}
+		scope:symbolist_leader = {
+			hidden_effect = {
+				kill_character = yes 
+			}
+		}
+		scope:belle_epoque_state = {
+			add_radicals = {
+				pop_type = academics
+				value = medium_radicals
+			}
+		}
+	}
+}
+
+belle_epoque_events.4 = { #they open a new cabaret
+	type = country_event
+	placement = scope:belle_epoque_state
+	title = belle_epoque_events.4.t
+	desc = belle_epoque_events.4.d
+	flavor = belle_epoque_events.4.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_opium_smoker.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/opium_smoker"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+	
+	trigger = {
+		any_scope_state = {
+			any_scope_building = {
+				is_building_type = building_urban_center
+				level >= 40
+			}
+		}
+		NOT = { has_variable = cabaret_var }
+	}
+	
+	immediate = {
+		random_scope_state = {
+			limit = {
+				any_scope_building = {
+					is_building_type = building_urban_center
+					level >= 40
+				}
+			}
+			save_scope_as = belle_epoque_state
+			random_scope_building = {
+				limit = {
+					is_building_type = building_urban_center
+					level >= 40
+				}
+				save_scope_as = belle_epoque_building
+			}
+		}
+		set_variable = cabaret_var
+	}
+	
+	option = { #this is pretty poggers
+		name = belle_epoque_events.4.a 
+		scope:belle_epoque_building = {
+			add_modifier = {
+				name = cabaret_building_modifier
+				months = normal_modifier_time
+			}
+		}
+		add_modifier = {
+			name = cabaret_modifier
+			months = normal_modifier_time
+		}
+	}
+	
+	option = { #try to shut it down
+		name = belle_epoque_events.4.b 
+		default_option = yes
+		if = {
+			limit = {
+				NOR = {
+					has_law = law_type:law_outlawed_dissent
+					has_law = law_type:law_censorship
+					has_law = law_type:law_secret_police
+				}
+			}
+			add_modifier = {
+				name = shut_down_cabaret_modifier #this costs some buraucracy
+				months = short_modifier_time
+			}
+		}
+		else = {
+			#costs nothing but you piss off people with your violence
+			scope:belle_epoque_state = {
+				add_radicals = {
+					value = small_radicals
+				}
+			}
+		}
+		add_modifier = {
+			name = cabaret_good_modifier
+			months = normal_modifier_time
+		}
+	}
+}

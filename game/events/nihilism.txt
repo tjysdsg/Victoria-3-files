@@ -1,0 +1,135 @@
+﻿namespace = nihilism
+
+nihilism.1 = {
+	type = country_event
+
+	title = nihilism.1.t
+	desc = nihilism.1.d
+	flavor = nihilism.1.f
+
+	gui_window = event_window_1char_tabloid
+	left_icon = scope:nihilist_scope
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/misc/1Character_Banner"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	duration = 3
+
+	trigger = {
+		has_technology_researched = egalitarianism
+		has_law = law_type:law_state_religion
+		OR = {
+			has_law = law_type:law_monarchy
+			has_law = law_type:law_theocracy
+		}
+		OR = {
+			has_law = law_type:law_autocracy
+			has_law = law_type:law_oligarchy
+		}
+		NOT = { has_variable = had_nihilism_event }
+		ig:ig_intelligentsia = {
+			ig_approval < 0
+			leader = {
+				NOT = {
+					has_ideology = ideology_atheist
+				}
+			}
+		}
+	}
+
+	immediate = {
+		set_variable = had_nihilism_event
+		create_character = {
+			#role = politician # Remove this line
+			ig_leader = yes
+			interest_group = ig_intelligentsia
+			ideology = ideology_atheist
+		}
+		ig:ig_intelligentsia = {
+			save_scope_as = nihilist_ig
+			leader = {
+				save_scope_as = nihilist_scope
+			}
+		}
+	}
+
+	option = { 
+		name = nihilism.1.a
+		default_option = yes
+		# nihilism becomes very popular
+		custom_tooltip = nihilism_tt
+		ig:ig_intelligentsia = {
+			set_variable = {
+				name = nihilism_var
+				months = long_modifier_time
+			}
+		}
+		show_as_tooltip = {
+			create_character = {
+				#role = politician # Remove this line
+				ig_leader = yes
+				interest_group = ig_intelligentsia
+				ideology = ideology_atheist
+			}
+		}
+		set_variable = {
+			name = nihilism_var
+			days = 9125
+		}
+		scope:nihilist_scope = {
+			add_modifier = {
+				name = popular_nihilist
+			}
+		}
+	}
+
+	option = { 
+		name = nihilism.1.b
+		# nihilism becomes a bit more popular
+		custom_tooltip = big_nihilism_tt
+		ig:ig_intelligentsia = {
+			set_variable = {
+				name = big_nihilism_var
+				days = 9125
+			}
+		}
+		show_as_tooltip = {
+			create_character = {
+				#role = politician # Remove this line
+				ig_leader = yes
+				interest_group = ig_intelligentsia
+				ideology = ideology_atheist
+			}
+		}
+		scope:nihilist_scope = {
+			add_modifier = {
+				name = less_popular_nihilist
+			}
+		}
+	}
+	option = { 
+		name = nihilism.1.c
+		trigger = {
+			OR = {
+				has_law = law_type:law_outlawed_dissent
+				has_law = law_type:law_censorship
+			}
+		}
+		show_as_tooltip = {
+			create_character = {
+				#role = politician # Remove this line
+				ig_leader = yes
+				interest_group = ig_intelligentsia
+				ideology = ideology_atheist
+			}
+		}
+		scope:nihilist_scope = {
+			add_modifier = {
+				name = less_popular_nihilist
+				multiplier = -1
+			}
+		}
+	}
+}

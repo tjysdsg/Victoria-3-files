@@ -1,0 +1,391 @@
+﻿namespace = titanic
+
+titanic.1 = { #you build the titanic
+	type = country_event
+	placement = scope:titanic_state
+	
+	event_image = {
+		video = "gfx/event_pictures/unspecific_steam_ship.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/steam_ship"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	title = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					exists = c:GBR
+					c:GBR = ROOT
+				}
+				desc = titanic.1.t
+			}
+			triggered_desc = {
+				trigger = {
+					OR = {
+						NOT = { exists = c:GBR }
+						NOT = { c:GBR = ROOT }
+					}
+				}
+				desc = titanic.1.t2
+			}
+		}
+	}
+	desc = titanic.1.d
+	flavor = titanic.1.f
+
+	trigger = {
+		NOT = { has_global_variable = built_the_titanic }
+		has_technology_researched = radio
+		any_scope_building = {
+			is_building_type = building_shipyards
+			has_active_production_method = pm_metal_shipbuilding #will need ironclad_tech to do this
+		}
+		OR = {
+			any_interest_group = {
+				is_in_government = yes
+				leader = {
+					OR = {
+						has_trait = ambitious
+						has_trait = romantic
+						has_trait = innovative
+					}
+				}
+			}
+			ig:ig_industrialists = {
+				OR = {
+					is_in_government = yes
+					is_powerful = yes
+				}
+			}
+			ig:ig_petty_bourgeoisie = {
+				OR = {
+					is_in_government = yes
+					is_powerful = yes
+				}
+			}
+		}
+	}
+
+	immediate = {
+		random_list = {
+			1 = {
+				set_variable = custom_titanic_var
+			}
+			1 = {
+				set_variable = custom_olympic_var
+			}
+			1 = {
+				set_variable = custom_gigantic_var
+			}
+			1 = {
+				set_variable = custom_colosssal_var
+			}
+			1 = {
+				set_variable = custom_herculean_var
+			}
+			1 = {
+				set_variable = custom_gargantuan_var
+			}
+		}
+		random_scope_state = {
+			limit = {
+				any_scope_building = {
+					is_building_type = building_shipyards
+					#has_active_production_method = pm_metal_shipbuilding
+				}
+			}
+			save_scope_as = titanic_state
+			set_variable = titanic_state_var
+			random_scope_building = {
+				limit = {
+					is_building_type = building_shipyards
+					has_active_production_method = pm_metal_shipbuilding
+				}
+				save_scope_as = titanic_building
+			}
+		}
+		if = {
+			limit = {
+				any_interest_group = {
+					is_in_government = yes
+					leader = {
+						OR = {
+							has_trait = ambitious
+							has_trait = romantic
+							has_trait = innovative
+						}
+					}
+				}
+			}
+			random_interest_group = {
+				limit = {
+					is_in_government = yes
+					leader = {
+						OR = {
+							has_trait = ambitious
+							has_trait = romantic
+							has_trait = innovative
+						}
+					}
+				}
+				save_scope_as = titanic_ig
+				set_variable = titanic_ig_var
+				leader = {
+					save_scope_as = titanic_leader
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				ig:ig_industrialists = {
+					OR = {
+						is_in_government = yes
+						is_powerful = yes
+					}
+					NOT = { has_variable = titanic_ig_var }
+				}
+			}
+			ig:ig_industrialists = {
+				save_scope_as = titanic_ig
+				set_variable = titanic_ig_var
+				leader = {
+					save_scope_as = titanic_leader
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				ig:ig_petty_bourgeoisie = {
+					NOT = { has_variable = titanic_ig_var }
+				}
+			}
+			ig:ig_petty_bourgeoisie = {
+				save_scope_as = titanic_ig
+				set_variable = titanic_ig_var
+				leader = {
+					save_scope_as = titanic_leader
+				}
+			}
+		}
+		else = {
+			random_interest_group = {
+				limit = {
+					NOT = { has_variable = titanic_ig_var }
+				}
+				save_scope_as = titanic_ig
+				set_variable = titanic_ig_var
+			}
+		}				
+	}
+
+	duration = 3
+
+	option = { #focus on making it luxurious
+		name = titanic.1.a
+		default_option = yes
+		set_global_variable = built_the_titanic
+		add_modifier = {
+			name = titanic_modifier
+			months = normal_modifier_time
+		}
+		hidden_effect = {
+			random_list = {
+				80 = {
+					trigger_event = { id = titanic.2 days = 90 }
+					#it's implied in the flavour text that the first event is about finishing the last touches, so getting this event later would probably make the player forget about it
+				}
+				20 = {
+					trigger_event = { id = titanic.3 days = 90 }
+				}
+			}
+		}
+	}
+
+    option = { #focus on making it more efficient
+		name = titanic.1.b
+		set_global_variable = built_the_titanic
+		scope:titanic_state = {
+			add_modifier = {
+				name = titanic_building_modifier
+				months = normal_modifier_time
+			}
+		}
+		hidden_effect = {
+			random_list = {
+				80 = {
+					trigger_event = { id = titanic.2 days = 90 }
+				}
+				20 = {
+					trigger_event = { id = titanic.3 days = 90 }
+				}
+			}
+		}
+	}
+	
+	option = { #dont
+		name = titanic.1.c
+		scope:titanic_ig = {
+			add_modifier = {
+				name = no_titanic_modifier
+				months = normal_modifier_time
+			}
+		}
+		scope:titanic_state = {
+			add_radicals = {
+				value = small_radicals
+				pop_type = laborers #they may lose they job
+			}
+		}
+		#rival company approves
+		if = {
+			limit = {
+				NOT = {	ig:ig_industrialists = scope:titanic_ig }
+			}
+			ig:ig_industrialists = {
+				add_modifier = {
+					name = rival_titanic_modifier
+					months = normal_modifier_time
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				NOT = {	ig:ig_petty_bourgeoisie = scope:titanic_ig }
+			}
+			ig:ig_petty_bourgeoisie = {
+				add_modifier = {
+					name = rival_titanic_modifier
+					months = normal_modifier_time
+				}
+			}
+		}
+	}
+}
+
+titanic.2 = { #the titanic sinks
+	type = country_event
+	placement = scope:titanic_state
+	
+	event_image = {
+		video = "gfx/event_pictures/unspecific_iceberg.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/iceberg_in_the_antartica"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	title = titanic.2.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					exists = c:GBR
+					c:GBR = ROOT
+				}
+				desc = titanic.2.d
+			}
+			triggered_desc = {
+				trigger = {
+					OR = {
+						NOT = { exists = c:GBR }
+						NOT = { c:GBR = ROOT }
+					}
+				}
+				desc = titanic.2.d2
+			}
+		}
+	}
+	flavor = titanic.2.f
+
+	immediate = {	
+		random_scope_state = {
+			limit = {
+				has_variable = titanic_state_var
+			}
+			save_scope_as = titanic_state
+		}
+	}
+
+	duration = 3
+
+	option = { #this is a tragedy
+		name = titanic.2.a
+		default_option = yes
+		add_modifier = { #people question your lifeboats choice
+			name = titanic_sank_modifier
+			months = normal_modifier_time
+		}
+		scope:titanic_state = {
+			add_radicals = { #public outrage
+				value = small_radicals
+			}
+		}
+	}
+}
+
+titanic.3 = { #it doesnt sink!
+	type = country_event
+	placement = scope:titanic_state
+	
+	event_image = {
+		video = "gfx/event_pictures/unspecific_steam_ship.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/steam_ship"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	title = titanic.3.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					exists = c:GBR
+					c:GBR = ROOT
+				}
+				desc = titanic.3.d
+			}
+			triggered_desc = {
+				trigger = {
+					OR = {
+						NOT = { exists = c:GBR }
+						NOT = { c:GBR = ROOT }
+					}
+				}
+				desc = titanic.3.d2
+			}
+		}
+	}
+	flavor = titanic.3.f
+
+	immediate = {	
+		random_scope_state = {
+			limit = {
+				has_variable = titanic_state_var
+			}
+			save_scope_as = titanic_state
+		}
+	}
+
+	duration = 3
+
+	option = { #wahoooo!
+		name = titanic.3.a
+		default_option = yes
+		add_modifier = { #more prestige! some tech progress!
+			name = titanic_good_modifier
+			months = normal_modifier_time
+		}
+		scope:titanic_state = {
+			add_loyalists = { #people are proud of their creation
+				value = 0.3
+				pop_type = laborers
+			}
+		}
+	}
+}

@@ -1,0 +1,1437 @@
+window = {
+    name = "component_library_window"
+    parentanchor = center
+    size = { 1400 950 }
+    layer = windows_layer
+
+    using = Window_Background
+
+    state = {
+        name = _show
+        using = Animation_FadeIn_Quick
+
+        on_start = "[GetVariableSystem.Set( 'ui_library_tabs', 'action_buttons' )]"
+    }
+
+    vbox = {
+        using = Window_Margins
+
+        header_pattern = {
+            layoutpolicy_horizontal = expanding
+
+            blockoverride "header_text"
+            {
+                text = "UI Components"
+            }
+
+            blockoverride "button_close"
+            {
+                onclick = "[ExecuteConsoleCommand('gui.clearwidgets')]"
+            }
+
+            button_checkbox_label = {
+                parentanchor = vcenter
+                position = { 10 0 }
+
+                onclick = "[GetVariableSystem.Toggle( 'ui_library_down_state')]"
+                blockoverride "checkbox"
+                {
+
+                    checked = "[GetVariableSystem.Exists('ui_library_down_state')]"
+                }
+                blockoverride "text"
+                {
+                    text = "Down State"
+                }
+            }
+        }
+
+        hbox = {
+            layoutpolicy_horizontal = expanding
+
+            button_tab = {
+                layoutpolicy_horizontal = expanding
+                text = "Action Buttons"
+
+                onclick = "[GetVariableSystem.Set( 'ui_library_tabs', 'action_buttons' )]"
+                down = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'action_buttons' )]"
+            }
+
+            button_tab = {
+                layoutpolicy_horizontal = expanding
+                text = "Other Input"
+
+                onclick = "[GetVariableSystem.Set( 'ui_library_tabs', 'other_inputs' )]"
+                down = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'other_inputs' )]"
+            }
+
+            button_tab = {
+                layoutpolicy_horizontal = expanding
+                text = "View Controls"
+
+                onclick = "[GetVariableSystem.Set( 'ui_library_tabs', 'view_controls' )]"
+                down = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'view_controls' )]"
+            }
+
+            button_tab = {
+                layoutpolicy_horizontal = expanding
+                text = "Selectors"
+
+                onclick = "[GetVariableSystem.Set( 'ui_library_tabs', 'selectors' )]"
+                down = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'selectors' )]"
+            }
+
+            button_tab = {
+                layoutpolicy_horizontal = expanding
+
+                text = "Indicators"
+
+                onclick = "[GetVariableSystem.Set( 'ui_library_tabs', 'indicators' )]"
+                down = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'indicators' )]"
+            }
+
+            button_tab = {
+                layoutpolicy_horizontal = expanding
+
+                text = "Text Formats"
+
+                onclick = "[GetVariableSystem.Set( 'ui_library_tabs', 'text_formats' )]"
+                down = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'text_formats' )]"
+            }
+
+            button_tab = {
+                layoutpolicy_horizontal = expanding
+                text = "Portraits"
+
+                onclick = "[GetVariableSystem.Set( 'ui_library_tabs', 'portraits' )]"
+                down = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'portraits' )]"
+            }
+
+            button_tab = {
+                layoutpolicy_horizontal = expanding
+                text = "Flags"
+
+                onclick = "[GetVariableSystem.Set( 'ui_library_tabs', 'flags' )]"
+                down = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'flags' )]"
+            }
+
+            #button_tab = {
+            #	layoutpolicy_horizontal = expanding
+            #
+            #	text = "Tooltips"
+            #
+            #	onclick = "[GetVariableSystem.Set( 'ui_library_tabs', 'tooltips' )]"
+            #	down = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'tooltips' )]"
+            #}
+
+            button_tab = {
+                layoutpolicy_horizontal = expanding
+                text = "Animations"
+
+                onclick = "[GetVariableSystem.Set( 'ui_library_tabs', 'animations' )]"
+                down = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'animations' )]"
+            }
+        }
+
+        scrollbox = {
+            name = "characters_scroll_area"
+            layoutpolicy_vertical = expanding
+            layoutpolicy_horizontal = expanding
+
+            blockoverride "scrollbox_content" {
+                vbox = {
+                    name = "action_buttons"
+                    visible = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'action_buttons' )]"
+
+                    layoutpolicy_horizontal = expanding
+
+                    hbox_text_entry = {
+                        blockoverride "hte_text"
+                        {
+                            text = "Action buttons represent an action you can DO, that change the game state or applies changes."
+                        }
+                    }
+					
+					vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Default Button"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            button = {
+								using = default_button
+								size = { 300 60 }
+                                text = "Verb Noun"
+                                #down = "[GetVariableSystem.Exists('ui_library_down_state')]"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "The most common button, used for alot of different things. When text is used on these it is mostly one or a few words. These buttons can also have icons such as production methods for example."
+                        }
+                    }
+
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "List Buttons"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            button = {
+								using = default_button
+								size = { 400 50 }
+                                text = "This pattern allows for advanced info inside"
+                                down = "[GetVariableSystem.Exists('ui_library_down_state')]"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "A more simple button, used mostly for lists, but also places where the default button is too 'heavy'. Can often be filled with alot of information such as characters, icons etc."
+                        }
+                    }
+					
+					vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Accordion Button"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            button = {
+								using = clean_button
+								text = "Info"
+								size = { 300 35 }
+							}
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "A very subtle button in lists such as the rightclick menu."
+                        }
+                    }
+					
+					vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Glow Button"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            button = {
+								using = glow_button
+								text = "Hover me to see glow."
+								size = { 250 30 }
+							}
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "This button is a very subtle button, which is used on clickable texts."
+                        }
+                    }
+					
+					vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Icon Buttons"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            hbox = {
+								button_icon_plus = {
+									size = { 40 40 }
+								}
+								button_icon_menu = {
+									size = { 40 40 }
+								}
+								button_icon_location_finder = {
+									size = { 40 40 }
+								}
+								button_icon_vickypedia = {
+									size = { 40 40 }
+								}
+							}
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Small round buttons with an icon. Used mostly for places where there isn't much room for a regular button with text."
+                        }
+                    }
+                }
+
+                vbox = {
+                    name = "other_inputs"
+                    visible = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'other_inputs' )]"
+                    layoutpolicy_horizontal = expanding
+
+                    hbox_text_entry = {
+                        blockoverride "hte_text"
+                        {
+                            text = "Other forms of input"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "editbox_standard"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            editbox_standard = {}
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Regular editbox, allows entry of text on one or more lines"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "editbox_standard_with_label"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            editbox_standard_with_label = {
+                                blockoverride "editbox_label"
+                                {
+                                    text = "Label:"
+                                }
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Regular editbox, with a label. This is preferrable if there is space. The label is above to make sure there is maximum room for the text itself"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "editbox_search_field"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            editbox_search_field = {
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Editbox for searching/filtering"
+                        }
+                    }
+                }
+
+                vbox = {
+                    name = "view_controls"
+                    visible = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'view_controls' )]"
+                    layoutpolicy_horizontal = expanding
+
+                    hbox_text_entry = {
+                        blockoverride "hte_text"
+                        {
+                            text = "View Controls hide or show parts of a UI, but they have no direct effect on the game itself."
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Tab"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            tab_button = {
+                                text = "Noun"
+                                down = "[GetVariableSystem.Exists('ui_library_down_state')]"
+                            }
+
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "A tab, gives a mutually exclusive choice of what subview to show. The text on them should simply be a Noun."
+                        }
+
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Vertical Tab"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            button_tab_vertical = {
+                                text = "Noun"
+                                down = "[GetVariableSystem.Exists('ui_library_down_state')]"
+                            }
+
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Works the same as a tab, but the tabs are arranged vertically instead. Currently, the only way to toggle it 'selected' is to change the upframe property, instead of using the down property as you would expect."
+                        }
+
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Expand/Collapse Heading"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+							container = {
+								section_header_button = {}
+							}
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "A heading you can click to expand/collapse what is under it."
+                        }
+
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Window Controls"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+							hbox = {
+								close_button_large = {}
+								back_button_large = {}
+							}
+
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Buttons controlling windows."
+                        }
+
+                    }
+					
+					vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Sort Button"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            sort_button = {
+								text = "Sort something in a list"
+								size = { 250 30 }
+							}
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "To sort things by order in a list"
+                        }
+                    }
+                }
+
+                vbox = {
+                    name = "selectors"
+                    visible = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'selectors' )]"
+                    layoutpolicy_horizontal = expanding
+
+                    hbox_text_entry = {
+                        blockoverride "hte_text"
+                        {
+                            text = "Selectors allow the player to choose among a few options. Currently we make no distinction between if this selection affects the gamestate or just what is shown/hidden, or if it is applied immediately or requires some confirmation."
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Checkbox"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            button = {
+								using = check_button_sound
+							}
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Used to choose between two states."
+                        }
+
+                    }
+                }
+
+                vbox = {
+                    name = "portraits"
+                    visible = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'portraits' )]"
+                    layoutpolicy_horizontal = expanding
+
+                    hbox_text_entry = {
+                        blockoverride "hte_text"
+                        {
+                            text = "Portraits."
+                        }
+                    }
+
+                    hbox_text_entry = {
+                        visible = "[Not(IsInGame)]"
+                        blockoverride "hte_text"
+                        {
+                            text = "You have to be in-game to see portraits and coat of arms"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        visible = "[IsInGame]"
+                        blockoverride "vce_name"
+                        {
+                            text = "character_portrait_mini"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            character_portrait_mini = {
+                                datacontext = "[AccessPlayer.AccessRuler]"
+                            }
+
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = ""
+                        }
+
+                    }
+                    vbox_component_entry = {
+                        visible = "[IsInGame]"
+                        blockoverride "vce_name"
+                        {
+                            text = "character_portrait_small"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            character_portrait_small = {
+                                datacontext = "[AccessPlayer.AccessRuler]"
+                            }
+
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = ""
+                        }
+
+                    }
+                    vbox_component_entry = {
+                        visible = "[IsInGame]"
+                        blockoverride "vce_name"
+                        {
+                            text = "character_portrait_medium"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            character_portrait_medium = {
+                                datacontext = "[AccessPlayer.AccessRuler]"
+                            }
+
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = ""
+                        }
+
+                    }
+                    vbox_component_entry = {
+                        visible = "[IsInGame]"
+                        blockoverride "vce_name"
+                        {
+                            text = "character_portrait_xl_torso"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            character_portrait_xl_torso = {
+                                datacontext = "[AccessPlayer.AccessRuler]"
+                            }
+
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "For full flavor where we have the room"
+                        }
+                    }
+                    vbox_component_entry = {
+                        visible = "[IsInGame]"
+                        blockoverride "vce_name"
+                        {
+                            text = "character_portrait_large_torso"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            character_portrait_large_torso = {
+                                datacontext = "[AccessPlayer.AccessRuler]"
+                            }
+
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "For full flavor where we have the room"
+                        }
+                    }
+                    vbox_component_entry = {
+                        visible = "[IsInGame]"
+                        blockoverride "vce_name"
+                        {
+                            text = "character_portrait_medium_torso"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            character_portrait_medium_torso = {
+                                datacontext = "[AccessPlayer.AccessRuler]"
+                            }
+
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "For full flavor where we have the room"
+                        }
+                    }
+                }
+
+                vbox = {
+                    name = "coas"
+                    visible = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'flags' )]"
+                    layoutpolicy_horizontal = expanding
+
+                    hbox_text_entry = {
+                        blockoverride "hte_text"
+                        {
+                            text = "Every flag in the game are clickable and will take you to countryview."
+                        }
+                    }
+
+                    hbox_text_entry = {
+                        visible = "[Not(IsInGame)]"
+                        blockoverride "hte_text"
+                        {
+                            text = "You have to be in-game to see portraits and flags"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "fancy_flag"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            fancy_flag = {
+                                datacontext = "[GetPlayer]"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Fancier version of flag, for places such as in the topbar."
+                        }
+                    }
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "large_flag"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            large_flag = {
+                                datacontext = "[GetPlayer]"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Large flag."
+                        }
+                    }
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "flag"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            flag = {
+                                datacontext = "[GetPlayer]"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Standard flag."
+                        }
+                    }
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "small_flag"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            small_flag = {
+                                datacontext = "[GetPlayer]"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Small flag."
+                        }
+                    }
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "tiny_flag"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            tiny_flag = {
+                                datacontext = "[GetPlayer]"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Tiny flag."
+                        }
+                    }
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "flag_icon"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            flag_icon = {
+                                datacontext = "[GetPlayer]"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Flag without frame."
+                        }
+                    }
+                }
+
+                vbox = {
+                    name = "indicators"
+                    visible = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'indicators' )]"
+                    layoutpolicy_horizontal = expanding
+
+                    hbox_text_entry = {
+                        blockoverride "hte_text"
+                        {
+                            text = "Indicators are visual elements that show a certain value or percentage. They usually do not have a way for the player to perform an action."
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Progressbar"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            default_progressbar_horizontal = {
+                                layoutpolicy_horizontal = expanding
+                                blockoverride "values" {
+									value = 40
+								}
+								textbox = {
+									text = "Default progressbar."
+									size = { 300 30 }
+									parentanchor = center
+									align = center
+								}
+                            }
+
+                            bad_progressbar_horizontal = {
+                                layoutpolicy_horizontal = expanding
+                                blockoverride "values" {
+									value = 40
+								}
+								textbox = {
+									text = "Bad/negative progressbar."
+									size = { 300 30 }
+									parentanchor = center
+									align = center
+								}
+                            }
+
+                            green_progressbar_horizontal = {
+                                layoutpolicy_horizontal = expanding
+                                blockoverride "values" {
+									value = 40
+								}
+								textbox = {
+									text = "Green progressbar. (not sure when this is used?)"
+									size = { 300 30 }
+									parentanchor = center
+									align = center
+								}
+                            }
+
+                            gold_progressbar_horizontal = {
+                                layoutpolicy_horizontal = expanding
+								blockoverride "values" {
+									value = 40
+								}
+								textbox = {
+									text = "Gold progressbar. (used for things involving money)"
+									size = { 300 30 }
+									parentanchor = center
+									align = center
+								}
+                            }
+
+                            white_progressbar_horizontal = {
+                                layoutpolicy_horizontal = expanding
+                                blockoverride "values" {
+									value = 40
+								}
+								textbox = {
+									text = "White progressbar. Should have scripted color."
+									size = { 300 30 }
+									parentanchor = center
+									align = center
+								}
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Premade standard horizontal progressbars, white one can be colored in script."
+                        }
+
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Vertical Progressbar"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            white_progressbar_vertical = {
+								blockoverride "values" {
+									value = 40
+								}
+								size = { 15 80 }
+                            }
+
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Used for Morale and such, can be colored in script."
+                        }
+                    }
+                }
+
+                vbox = {
+                    name = "text_formats"
+                    visible = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'text_formats' )]"
+                    layoutpolicy_horizontal = expanding
+
+                    hbox_text_entry = {
+                        blockoverride "hte_text"
+                        {
+                            text = "Text formats are defined in 'gui/textformatting.gui'. They are named based on their use rather than their look, so we can tweak them easily."
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "High Contrast (##high)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+
+                            text_single = {
+                                text = "Flygande bäckasiner söka hwila på mjuka tuvor"
+                                default_format = "#high"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "For text that needs to stand out"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Medium Contrast (##medium)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+
+                            text_single = {
+                                text = "Flygande bäckasiner söka hwila på mjuka tuvor"
+                                default_format = "#medium"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "For most regular text"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Low Contrast (##low)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+
+                            text_single = {
+                                text = "Flygande bäckasiner söka hwila på mjuka tuvor"
+                                default_format = "#low"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "For lowest contrast, mostly for short text and UI elements"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Weak (##weak)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+
+                            text_single = {
+                                text = "Flygande bäckasiner söka hwila på mjuka tuvor"
+                                default_format = "#weak"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Low contrast longer text that explains something that is not very important. For example, filling out an empty state, or instructing how a mechanic works."
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Flavor (##flavor, ##F)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+
+
+                            text_single = {
+                                text = "Flygande bäckasiner söka hwila på mjuka tuvor"
+                                default_format = "#flavor"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "For Flavor texts for entities such as Faiths, Men-at-Arms types, etc."
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Light background (##light_background)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            text_single = {
+                                text = "Flygande bäckasiner söka hwila på mjuka tuvor"
+                                default_format = "#light_background"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "For light backgrounds like letter events"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Help (##help)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+
+
+                            text_single = {
+                                text = "Flygande bäckasiner söka hwila på mjuka tuvor"
+                                default_format = "#help"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "For hints and tips in Alert/Suggestion/Current Situation Tooltips"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Instruction (##instruction, ##I)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+
+
+                            text_single = {
+                                text = "Shift-click to add to selection"
+                                default_format = "#I"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "For instructions to the Player (not their Character), either referring to the input controls or asking them to make a choice."
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Warning (##warning, ##X)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            text_single = {
+                                text = "@warning!You are a Child"
+                                default_format = "#X"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "For when things are wrong or buttons are disabled. Should always be paired with the Warning Text Icon"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Value (##value, ##V)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+
+
+                            text_single = {
+                                text = "42"
+                                default_format = "#V"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "For important values that should stand out. Usually it means the value changes. Supports skimming a page for values."
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Negative Value (##negative_value, ##N)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+
+
+                            text_single = {
+                                text = "+42"
+                                default_format = "#N"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "For 'bad' values, for example if a Character gains Stress. Used by code to color the '+/-' number formatting"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Positive Value (##positive_value, ##P)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+
+
+                            text_single = {
+                                text = "42"
+                                default_format = "#P"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "For 'good' values, for example if a Character gains Gold. Used by code to color the '+/-' number formatting"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Zero Value (##zero_value, ##Z)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            text_single = {
+                                text = "0"
+                                default_format = "#Z"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "For values that are neither good nor bad. Used by code to color the '+/-' number formatting"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Clickable (##clickable)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+
+
+                            text_single = {
+                                text = "Start Game"
+                                default_format = "#clickable"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "For interactible elements such as buttons"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Game Object Link (##game_link, ##L)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            text_single = {
+                                text = "House Canossa"
+                                default_format = "#L"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "For Game Objects (Characters, Titles, Traits, etc). Hover over the text to get a (dynamic) tooltip of this specific instance"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Game Concept Link (##explanation_link, ##E)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+
+
+                            text_single = {
+                                text = "Vassal"
+                                default_format = "#E"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Used for Game Concepts, hover over this text to get a (static) explanation of something in the game."
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Game Concept Link, Light background (##explanation_link_light_background, B)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                           text_single = {
+                                text = "Vassal"
+                                default_format = "#B"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Game Concept Link for light backgrounds such as letter events"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Tooltip Heading (##tooltip_heading, ##T)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+                            text_single = {
+                                text = "North Sea"
+                                default_format = "#T"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Used in text tooltips for the heading that tells the player what they have put their mouse on"
+                        }
+                    }
+
+                    vbox_component_entry = {
+                        blockoverride "vce_name"
+                        {
+                            text = "Tooltip Subheading (##tooltip_subheading, ##S)"
+                        }
+
+                        blockoverride "vce_area"
+                        {
+
+
+                            text_single = {
+                                text = "Effects"
+                                default_format = "#S"
+                            }
+                        }
+
+                        blockoverride "vce_desc"
+                        {
+                            text = "Some text tooltips are split into multiple segments, each headed by a subheading"
+                        }
+                    }
+                }
+
+                vbox = {
+                    name = "animations"
+                    visible = "[GetVariableSystem.HasValue( 'ui_library_tabs', 'animations' )]"
+                    layoutpolicy_horizontal = expanding
+
+                    hbox_text_entry = {
+                        blockoverride "hte_text"
+                        {
+                            text = "Will be filled with useful information about v3 animations."
+                        }
+                    }
+				}
+            }
+        }
+    }
+}
+
+types ComponentLibrary
+{
+    type vbox_component_entry = vbox {
+        layoutpolicy_horizontal = expanding
+        margin_bottom = 10
+
+        text_single = {
+            layoutpolicy_horizontal = expanding
+            margin = { 10 5 }
+
+            name = "heading"
+
+            using = Background_Area_Dark
+
+            # default_format = "#high"
+            using = Font_Size_Medium
+            align = nobaseline
+
+            block "vce_name"
+            {
+                text = "vce_name"
+            }
+        }
+
+        hbox = {
+            layoutpolicy_horizontal = expanding
+
+            vbox = {
+                min_width = 500
+                margin ={ 20 20 }
+                spacing = 10
+
+                block "vce_area"
+                {
+
+                }
+            }
+
+            hbox = {
+                layoutpolicy_horizontal = expanding
+                layoutpolicy_vertical = expanding
+
+                margin = { 15 15 }
+
+                background = {
+                    using = Background_Area
+                }
+
+                vbox = {
+                    layoutpolicy_vertical = expanding
+
+                    text_multi = {
+                        name = "desc"
+
+                        autoresize = yes
+                        max_width = 700
+
+                        block "vce_desc"
+                        {
+                            text = "vce_desc"
+                        }
+                    }
+
+                    expand = {}
+                }
+
+                expand = {}
+            }
+
+
+
+
+
+        }
+    }
+
+
+    type hbox_text_entry = hbox {
+        layoutpolicy_horizontal = expanding
+
+        background = {
+            using = Background_Area
+        }
+
+        margin = {15 15}
+
+
+        text_multi =  {
+
+            block "hte_text"
+            {
+                text = "hte_text"
+            }
+            autoresize = yes
+            max_width = 700
+        }
+
+        expand = {}
+    }
+
+    type debug_square = icon {
+        size = { 100% 100% }
+		parentanchor = center
+		widgetanchor = center
+        texture = "gfx/interface/debug_square.png"
+        spriteType = Corneredtiled
+        spriteborder = { 2 2 }
+    }
+}
+
+template debug_square
+{
+	background = {
+		texture = "gfx/interface/debug_square.png"
+		spriteType = Corneredtiled
+		spriteborder = { 1 1 }
+		alpha = 0.5
+	}
+}

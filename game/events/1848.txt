@@ -1,0 +1,614 @@
+﻿namespace = 1848
+
+# Regicide
+# Triggered from enactment pulse
+1848.1 = {
+	type = country_event
+	placement = root
+	title = 1848.1.t
+	desc = 1848.1.d
+	flavor = 1848.1.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_springtime_of_nations.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/springtime_of_nation"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	trigger = {
+		has_law = law_type:law_monarchy
+		OR = {
+			is_enacting_law = law_type:law_presidential_republic
+			is_enacting_law = law_type:law_parliamentary_republic
+		}
+		any_interest_group = {
+			is_in_government = yes
+			leader = {
+				has_ideology = ideology_radical
+			}
+		}
+		NOT = {
+			has_modifier = regicide_averted
+		}
+	}
+
+	option = {
+		name = 1848.1.a
+		if = {
+			limit = {
+				is_enacting_law = law_type:law_presidential_republic
+			}
+			activate_law = law_type:law_presidential_republic
+		}
+		if = {
+			limit = {
+				is_enacting_law = law_type:law_parliamentary_republic
+			}
+			activate_law = law_type:law_parliamentary_republic
+		}
+		# monarchists get VERY angry
+		every_interest_group = {
+			limit = {
+				law_stance = {
+					law = law_type:law_monarchy
+					value > neutral
+				}
+			}
+			add_modifier = {
+				name = regicide
+				months = short_modifier_time
+			}
+		}
+		ruler = {
+			kill_character = yes
+		}
+		ai_chance = {
+			base = 25
+		}
+	}
+	option = {
+		name = 1848.1.b
+		default_option = yes
+		# gain success chance, lose enactment time
+		add_enactment_modifier = {
+			name = regicide_averted
+		}
+		ai_chance = {
+			base = 75
+		}
+	}
+}
+
+# Monarchism Stamped Out
+1848.2 = {
+	type = country_event
+	placement = root
+	title = 1848.2.t
+	desc = 1848.2.d
+	flavor = 1848.2.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_london_center.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/london_center"
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	trigger = {
+		# triggered by je_abolish_monarchy
+	}
+
+	option = {
+		name = 1848.2.a
+		default_option = yes
+		ig:ig_landowners = {
+			remove_ideology = ideology_paternalistic
+			add_ideology = ideology_republican_paternalistic
+		}
+		custom_tooltip = {
+			text = no_more_royalists
+			set_variable = monarchy_stamped_out_var
+		}
+		every_interest_group = {
+			limit = {
+				leader = {
+					has_ideology = ideology_royalist	
+				}
+			}
+			leader = {
+				set_ideology = ideology_moderate
+			}
+		}
+	}
+	option = {
+		name = 1848.2.b
+		# don't do that, just make landowners lose power
+		ig:ig_landowners = {
+			add_modifier = {
+				name = monarchist_nostalgia
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+# New Constitution
+# Triggered from enactment pulse
+1848.3 = {
+	type = country_event
+	placement = root
+	title = 1848.3.t
+	desc = 1848.3.d
+	flavor = 1848.3.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_political_extremism.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/political_extremism"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	trigger = {
+		OR = {
+			is_enacting_law = law_type:law_census_voting
+			is_enacting_law = law_type:law_universal_suffrage
+		}
+		OR = {
+			has_law = law_type:law_autocracy
+			has_law = law_type:law_oligarchy
+			has_law = law_type:law_landed_voting
+			has_law = law_type:law_wealth_voting
+		}
+		any_interest_group = {
+			is_in_government = yes
+			leader = {
+				has_ideology = ideology_radical
+			}
+		}
+		NOT = {
+			has_modifier = no_new_constitution
+		}
+	}
+
+	immediate = {
+		currently_enacting_law = {
+			save_scope_as = current_law_scope
+		}
+		random_interest_group = {
+			limit = {
+				is_in_government = yes
+				leader = {
+					has_ideology = ideology_radical
+				}
+			}
+			leader = {
+				save_scope_as = radical_leader_scope
+			}
+		}
+		if = {
+			limit = {
+				has_law = law_type:law_autocracy
+			}
+			law_type:law_autocracy = {
+				save_scope_as = current_voting_law_scope
+			}
+		}
+		if = {
+			limit = {
+				has_law = law_type:law_oligarchy
+			}
+			law_type:law_oligarchy = {
+				save_scope_as = current_voting_law_scope
+			}
+		}
+		if = {
+			limit = {
+				has_law = law_type:law_landed_voting
+			}
+			law_type:law_landed_voting = {
+				save_scope_as = current_voting_law_scope
+			}
+		}
+		if = {
+			limit = {
+				has_law = law_type:law_wealth_voting
+			}
+			law_type:law_wealth_voting = {
+				save_scope_as = current_voting_law_scope
+			}
+		}
+	}
+
+	option = {
+		name = 1848.3.a
+		if = {
+			limit = {
+				is_enacting_law = law_type:law_census_voting
+			}
+			activate_law = law_type:law_census_voting
+		}
+		if = {
+			limit = {
+				is_enacting_law = law_type:law_universal_suffrage
+			}
+			activate_law = law_type:law_universal_suffrage
+		}
+		# reactionaries get VERY angry
+		every_interest_group = {
+			limit = {
+				is_marginal = no
+				law_stance = {
+					law = scope:current_voting_law_scope
+					value > neutral
+				}
+			}
+			add_modifier = {
+				name = radical_constitution
+				months = short_modifier_time
+			}
+		}
+		ai_chance = {
+			base = 25
+		}
+	}
+	option = {
+		name = 1848.3.b
+		default_option = yes
+		# gain success chance, lose enactment time
+		add_enactment_modifier = {
+			name = no_new_constitution
+		}
+		ai_chance = {
+			base = 75
+		}
+	}
+}
+
+# Rise of Radicalism
+1848.4 = {
+	type = country_event
+	placement = root
+	title = 1848.4.t
+	desc = 1848.4.d
+	flavor = 1848.4.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_political_extremism.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/political_extremism"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	trigger = {
+		# triggered by journal entry start
+	}
+
+	immediate = {
+		random_interest_group = {
+			limit = {
+				OR = {
+					is_powerful = yes
+					is_insurrectionary = yes
+				}
+				leader = {
+					has_ideology = ideology_radical
+				}
+			}
+			leader = {
+				save_scope_as = radical_leader_scope
+			}
+		}
+	}
+
+	option = { # reactionary option
+		name = 1848.4.a
+		default_option = yes
+		scope:radical_leader_scope = {
+			add_modifier = {
+				name = 1848_popular_radical
+			}
+		}
+		add_modifier = {
+			name = suppressing_radicals
+			months = short_modifier_time
+		}
+		add_loyalists = {
+			strata = rich
+			value = medium_radicals
+		}
+		add_radicals = {
+			value = medium_radicals
+		}
+		ai_chance = {
+			base = 66
+		}
+	}
+	option = { # radical option
+		name = 1848.4.b
+		scope:radical_leader_scope = {
+			add_modifier = {
+				name = 1848_popular_radical
+			}
+		}
+		if = {
+			limit = {
+				any_interest_group = {
+					is_marginal = no
+					leader = {
+						NOT = {
+							has_ideology = ideology_radical
+						}
+					}
+					OR = {
+						is_interest_group_type = ig_rural_folk
+						is_interest_group_type = ig_intelligentsia
+						is_interest_group_type = ig_trade_unions
+						is_interest_group_type = ig_petty_bourgeoisie
+						is_interest_group_type = ig_industrialists
+					}
+				}
+			}
+			random_interest_group = {
+				limit = {
+					is_marginal = no
+					leader = {
+						NOT = {
+							has_ideology = ideology_radical
+						}
+					}
+					OR = {
+						is_interest_group_type = ig_rural_folk
+						is_interest_group_type = ig_intelligentsia
+						is_interest_group_type = ig_trade_unions
+						is_interest_group_type = ig_petty_bourgeoisie
+						is_interest_group_type = ig_industrialists
+					}
+				}
+				leader = {
+					set_ideology = ideology_radical
+					add_modifier = {
+						name = 1848_popular_radical
+					}
+				}
+			}
+		}
+		add_radicals = {
+			value = medium_radicals
+		}
+		ai_chance = {
+			base = 33
+		}
+	}
+}
+
+# Radicals at the Gates
+1848.5 = {
+	type = country_event
+	placement = root
+	title = 1848.5.t
+	desc = 1848.5.d
+	flavor = 1848.5.f
+
+	duration = 3
+
+	cooldown = { months = normal_modifier_time }
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_springtime_of_nations.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/springtime_of_nation"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	trigger = {
+		# triggered by 1848 JE
+		NOT = {
+			any_interest_group = {
+				is_in_government = yes
+				leader = {
+					has_ideology = ideology_radical
+				}
+			}
+		}
+		any_interest_group = {
+			OR = {
+				is_powerful = yes
+				is_insurrectionary = yes
+			}
+			leader = {
+				has_ideology = ideology_radical
+			}
+		}
+		NOT = {
+			OR = {
+				has_law = law_type:law_secret_police
+				has_law = law_type:law_national_guard
+			}
+			institution_investment_level = {
+				institution = institution_home_affairs
+				value >= 3
+			}
+		}
+	}
+
+	option = { # go secret police
+		name = 1848.5.a
+		if = {
+			limit = {
+				NOT = {
+					has_technology_researched = central_archives
+				}
+				has_technology_researched = law_enforcement
+			}
+			add_technology_progress = { 
+				progress = 2500 
+				technology = central_archives 
+			}
+		}
+		if = {
+			limit = {
+				is_enacting_law = law_type:law_secret_police
+			}
+			# enactment chance
+			add_enactment_modifier = {
+				name = 1848_reactionary_enactment
+			}
+		}
+		if = {
+			limit = {
+				has_law = law_type:law_secret_police
+			}
+			add_modifier = {
+				name = 1848_institution_speed
+				months = short_modifier_time
+			}
+		}
+		add_journal_entry = {
+			type = je_secret_police
+		}
+		ai_chance = {
+			base = 1
+		}
+	}
+	option = { # go national guard
+		name = 1848.5.b
+		if = {
+			limit = {
+				is_enacting_law = law_type:law_national_guard
+			}
+			# enactment chance
+			add_enactment_modifier = {
+				name = 1848_reactionary_enactment
+			}
+		}
+		if = {
+			limit = {
+				has_law = law_type:law_national_guard
+			}
+			add_modifier = {
+				name = 1848_institution_speed
+				months = short_modifier_time
+			}
+		}
+		add_journal_entry = {
+			type = je_secret_police
+		}
+		ai_chance = {
+			base = 1
+		}
+	}
+	option = { # neither
+		name = 1848.5.c
+		default_option = yes
+		capital = {
+			add_radicals = {
+				value = medium_radicals
+			}
+		}
+		ai_chance = {
+			base = 10
+		}
+	}
+}
+
+# reaction completion event
+1848.6 = {
+	type = country_event
+	placement = root
+	title = 1848.6.t
+	desc = 1848.6.d
+	flavor = 1848.6.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_police_breaking_door.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/police_breaking_door"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	trigger = {
+		# triggered by je_secret_police
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				has_law = law_type:law_secret_police
+			}
+			law_type:law_secret_police = {
+				save_scope_as = home_affairs_law
+			}
+		}
+		else = {
+			law_type:law_national_guard = {
+				save_scope_as = home_affairs_law
+			}
+		}
+	}
+	option = {
+		name = 1848.6.a
+		trigger = {
+			has_law = law_type:law_secret_police
+			any_interest_group = {
+				is_in_government = no
+				is_marginal = no
+				leader = {
+					has_ideology = ideology_radical
+				}
+			}
+		}
+		random_interest_group = {
+			limit = {
+				is_in_government = no
+				is_marginal = no
+				leader = {
+					has_ideology = ideology_radical
+				}
+			}
+			leader = {
+				kill_character = yes
+			}
+		}
+	}
+	option = {
+		name = 1848.6.b
+		trigger = {
+			has_law = law_type:law_national_guard
+		}
+		add_modifier = {
+			name = rooting_out_radicals
+			months = short_modifier_time
+		}
+	}
+	option = {
+		name = 1848.6.c
+		default_option = yes
+		add_modifier = {
+			name = home_affairs_cost_mod
+			months = short_modifier_time
+		}
+	}
+}

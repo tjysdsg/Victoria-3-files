@@ -1,0 +1,157 @@
+# COPY-PASTED FOR NOW
+@panel_width_minus_10 = 530			# used to be 450
+@panel_width = 540  				# used to be 460
+@panel_width_half = 270				# used to be 230
+@panel_width_plus_10 = 550  		# used to be 470
+@panel_width_plus_14 = 554			# used to be 474
+@panel_width_plus_14_half = 277		# used to be 237
+@panel_width_plus_20 = 560			# used to be 480
+@panel_width_plus_30 = 570			# used to be 490
+@panel_width_plus_70 = 610			# used to be 530
+
+types countries_panel_types
+{
+	type countries_panel = default_block_window {
+		name = "countries_panel"
+		enabled = yes
+		
+		blockoverride "window_header_name"
+		{
+			text = "COUNTRIES_TITLE"
+		}
+		
+		blockoverride "scrollarea_content"
+		{
+			flowcontainer = {
+				margin_top = 10
+				using = default_list_position
+				direction = vertical
+				minimumsize = { @panel_width -1 }
+				maximumsize = { @panel_width -1 }
+
+				widget = {
+					size = { @panel_width 30 }
+					
+					hbox = {
+						
+						sort_button = {
+							size = { 40 30 }
+							onclick = "[CountriesPanel.Sort('rank')]"
+							button = {
+								texture = "gfx/interface/buttons/sort_button_icons/sort_icon_rank.dds"
+								size = { 25 25 }
+								parentanchor = center
+								alwaystransparent = yes
+							}
+
+							tooltip = "SORT_BY_RANK"
+						}
+
+						sort_button = {
+							layoutstretchfactor_horizontal = 4
+							layoutpolicy_horizontal = preferred
+							size = { 0 30 }
+							text = "COUNTRY_TITLE"
+							onclick = "[CountriesPanel.Sort('name')]"
+						}
+
+						sort_button = {
+							layoutstretchfactor_horizontal = 2
+							layoutpolicy_horizontal = preferred
+							size = { 0 30 }
+							text = "RELATIONS"
+							onclick = "[CountriesPanel.Sort('relations')]"
+						}
+
+						sort_button = {
+							layoutstretchfactor_horizontal = 1
+							layoutpolicy_horizontal = preferred
+							size = { 0 30 }
+							text = "INFAMY"
+							onclick = "[CountriesPanel.Sort('infamy')]"
+						}
+					}
+				}		
+				
+				flowcontainer = {
+					datamodel = "[CountriesPanel.GetCountries]"
+					minimumsize = { @panel_width -1 }
+					maximumsize = { @panel_width -1 }
+					direction = vertical
+					margin_top = 5
+					
+					item = {
+						widget = {
+							size = { @panel_width 35 }
+							name = "tutorial_highlight_country"
+							
+							divider_clean = {
+								parentanchor = bottom
+								position = { 0 2 }
+							}
+					
+							hbox = {
+								spacing = 10
+
+								textbox = {
+									size = { 40 30 }
+									text = "##[Country.GetCountryScorePositionDesc]"
+									align = right|nobaseline
+									tooltip = "[Country.GetRankTooltip]"
+								}
+
+								hbox = {
+									layoutstretchfactor_horizontal = 4
+									layoutpolicy_horizontal = preferred
+									size = { 0 30 }
+									spacing = 10
+									
+									tiny_flag = {}
+
+									button = {
+										using = clean_button
+										layoutpolicy_horizontal = preferred
+										size = { 0 30 }
+										
+										onclick = "[InformationPanelBar.OpenCountryPanel(Country.Self)]"
+											
+										textbox = {
+											text = "[Country.GetNameNoFlag]"
+											size = { 100% 100% }
+											elide = right
+											align = left|nobaseline
+											parentanchor = left|vcenter
+											alwaystransparent = yes
+											margin_left = 12
+										}
+									}
+								}
+
+								textbox = {
+									layoutstretchfactor_horizontal = 2
+									layoutpolicy_horizontal = preferred
+									size = { 0 30 }
+									text = "[Country.GetRelationsWithDesc( GetPlayer )|+]"
+									elide = right
+									align = left|nobaseline
+									tooltip = "[GetPlayer.GetRelationsTooltip( Country.Self )]"
+								}
+
+								textbox = {
+									layoutstretchfactor_horizontal = 1
+									layoutpolicy_horizontal = preferred
+									size = { 0 30 }
+									text = "#v [Country.GetInfamy|-1]#!"
+									elide = right
+									align = right|nobaseline
+									tooltip = "[Country.GetInfamyDesc]"
+									margin_right = 10
+								}
+							}
+						}
+					}
+				}	
+			}
+		}
+	}
+}

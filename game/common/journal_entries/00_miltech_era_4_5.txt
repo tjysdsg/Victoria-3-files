@@ -1,0 +1,84 @@
+﻿
+je_military_aviation = {
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		has_technology_researched = defense_in_depth
+		army_size >= 25
+	}
+
+	possible = {
+		has_technology_researched = military_aviation
+		army_size >= 40
+	}
+
+	complete = {
+		country_pm_usage = {
+			target = ROOT
+			production_method = pm_aerial_recon
+			value > 0.25
+		}
+		any_scope_war = {
+			any_scope_front = {
+				any_scope_character = {
+					owner = ROOT
+					commander_pm_usage = {
+						target = ROOT
+						production_method = pm_aerial_recon
+						value > 0.5
+					}
+				}
+			}
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = aviation.1 }
+	}
+
+	timeout = 3650
+}
+
+je_trench_warfare = {
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		OR = {
+			has_technology_researched = general_staff
+			has_technology_researched = electric_telegraph
+		}
+	}
+
+	possible = {
+		has_technology_researched = trench_works
+	}
+
+	complete = {
+		country_pm_usage = {
+			target = ROOT
+			production_method = pm_trench_infantry
+			value > 0.25
+		}
+		any_scope_war = {
+			any_scope_front = {
+				any_scope_character = {
+					owner = ROOT
+					NOT = { has_trait = trench_rat }
+					commander_pm_usage = {
+						target = ROOT
+						production_method = pm_trench_infantry
+						value > 0.5
+					}
+				}
+			}
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = trench_warfare.1 }
+	}
+
+	timeout = 3650
+}

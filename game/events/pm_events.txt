@@ -1,0 +1,446 @@
+﻿namespace = pm_events
+
+pm_events.1 = {
+	type = country_event
+	placement = scope:industrialized_pm_state
+
+	title = pm_events.1.t
+	desc = pm_events.1.d
+	flavor = pm_events.1.f
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_gears_pistons.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/gears_pistons"
+
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	duration = 3
+
+	trigger = {
+		OR = {
+			has_law = law_type:law_serfdom_banned
+			has_law = law_type:law_serfdom
+		}
+		any_scope_state = {
+			has_industrialized_pm = yes
+		}
+	}
+
+	immediate = {
+		save_industrialized_pm_building_and_state = yes
+	}
+
+	option = {
+		name = pm_events.1.a
+		scope:industrialized_pm_state = {
+			add_modifier = {
+				name = industrial_safety_slowdowns
+				months = normal_modifier_time
+			}
+		}
+		every_interest_group = {
+			limit = {
+				law_stance = {
+					law = law_type:law_regulatory_bodies
+					value < neutral
+				}
+			}
+			add_modifier = {
+				name = slowed_down_production
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = pm_events.1.b
+		scope:industrialized_pm_state = {
+			add_modifier = {
+				name = lacking_industrial_safety_regulations
+				months = normal_modifier_time
+			}
+		}
+		every_interest_group = {
+			limit = {
+				law_stance = {
+					law = law_type:law_regulatory_bodies
+					value > neutral
+				}
+			}
+			add_modifier = {
+				name = ignored_safety_concerns
+				months = normal_modifier_time
+			}
+		}
+		default_option = yes
+	}
+}
+
+pm_events.2 = {
+	type = country_event
+	placement = scope:industrialized_pm_state
+
+	title = pm_events.2.t
+	desc = pm_events.2.d
+	flavor = pm_events.2.f
+
+	event_image = {
+		video = "gfx/event_pictures/southamerica_child_labor.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/southamerica/child_labor"
+
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	duration = 3
+
+	trigger = {
+		has_law = law_type:law_child_labor_allowed
+		any_scope_state = {
+			has_industrialized_pm = yes
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				has_industrialized_pm = yes
+			}
+			save_industrialized_pm_building_and_state = yes
+		}
+	}
+
+	option = {
+		name = pm_events.2.a
+		scope:industrialized_pm_state = {
+			add_modifier = {
+				name = child_labor_restrictions
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = pm_events.2.b
+		scope:industrialized_pm_state = {
+			add_modifier = {
+				name = dangerous_child_labor
+				months = normal_modifier_time
+			}
+		}
+		every_interest_group = {
+			limit = {
+				law_stance = {
+					law = law_type:law_child_labor_allowed
+					value < neutral
+				}
+			}
+			add_modifier = {
+				name = child_crushing_machines
+				months = normal_modifier_time
+			}
+		}
+		default_option = yes
+	}
+}
+
+pm_events.3 = {
+	type = country_event
+	placement = scope:liquor_making_state
+
+	title = pm_events.3.t
+	desc = pm_events.3.d
+	flavor = pm_events.3.f
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_temperance_movement.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/temperance_movement"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	duration = 3
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		any_scope_state = {
+			OR = {
+				is_production_method_active = {
+					building_type = building_food_industry
+					production_method = pm_pot_stills
+				}
+				is_production_method_active = {
+					building_type = building_food_industry
+					production_method = pm_patent_stills
+				}
+			}
+			NOR = {
+				has_modifier = liquor_production_ban
+				has_modifier = liquor_production_restrictions
+			}
+		}
+		ig:ig_devout = {
+			NOR = {
+				has_modifier = permitted_limited_liquor_production
+				has_modifier = permitted_unrestricted_liquor_production
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				OR = {
+					is_production_method_active = {
+						building_type = building_food_industry
+						production_method = pm_pot_stills
+					}
+					is_production_method_active = {
+						building_type = building_food_industry
+						production_method = pm_patent_stills
+					}
+				}
+				NOR = {
+					has_modifier = liquor_production_ban
+					has_modifier = liquor_production_restrictions
+				}
+			}
+			save_scope_as = liquor_making_state
+		}
+	}
+
+	option = {
+		name = pm_events.3.a
+		scope:liquor_making_state = {
+			add_modifier = {
+				name = liquor_production_ban
+				months = normal_modifier_time
+			}
+		}
+		if = {
+			limit = {
+				has_variable = prohibition_laws_var
+			}
+			custom_tooltip = prohibition_laws_pm.tt
+			change_variable = {
+				name = prohibition_laws_var
+				add = 5
+			}
+		}
+	}
+
+	option = {
+		name = pm_events.3.b
+		scope:liquor_making_state = {
+			add_modifier = {
+				name = liquor_production_restrictions
+				months = normal_modifier_time
+			}
+		}
+		ig:ig_devout = {
+			add_modifier = {
+				name = permitted_limited_liquor_production
+				months = normal_modifier_time
+			}
+		}
+		if = {
+			limit = {
+				has_variable = prohibition_laws_var
+			}
+			custom_tooltip = prohibition_laws_weak_pm.tt
+			change_variable = {
+				name = prohibition_laws_var
+				add = 2
+			}
+		}
+	}
+
+	option = {
+		name = pm_events.3.c
+		ig:ig_devout = {
+			add_modifier = {
+				name = permitted_unrestricted_liquor_production
+				months = normal_modifier_time
+			}
+		}
+		default_option = yes
+		if = {
+			limit = {
+				has_variable = prohibition_laws_var
+			}
+			custom_tooltip = prohibition_laws_bad_pm.tt
+			change_variable = {
+				name = prohibition_laws_var
+				subtract = 5
+			}
+		}
+	}
+}
+
+pm_events.4 = {
+	type = country_event
+	placement = scope:arms_making_state
+
+	title = pm_events.4.t
+	desc = pm_events.4.d
+	flavor = pm_events.4.f
+
+	event_image = {
+		video = "gfx/event_pictures/africa_public_protest.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/africa/public_protest"
+
+	icon = "gfx/interface/icons/event_icons/event_trade.dds"
+
+	duration = 3
+
+	trigger = {
+		is_at_war = no
+		any_interest_group = {
+			leader = { has_ideology = ideology_pacifist }
+		}
+		any_scope_state = {
+			has_building = building_arms_industry
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				has_building = building_arms_industry
+			}
+			save_scope_as = arms_making_state
+		}
+		random_scope_character = {
+			limit = {
+				has_role = politician
+				has_ideology = ideology_pacifist
+			}
+			save_scope_as = pacifist_leader
+		}
+	}
+
+	option = {
+		name = pm_events.4.a
+		scope:arms_making_state = {
+			add_modifier = {
+				name = arms_manufacturing_ban
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = pm_events.4.b
+		scope:arms_making_state = {
+			add_modifier = {
+				name = arms_manufacturing_restrictions
+				months = normal_modifier_time
+			}
+		}
+		every_interest_group = {
+			limit = {
+				leader = { has_ideology = ideology_pacifist }
+			}
+			add_modifier = {
+				name = permitted_limited_arms_manufacturing
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = pm_events.4.c
+		every_interest_group = {
+			limit = {
+				leader = { has_ideology = ideology_pacifist }
+			}
+			add_modifier = {
+				name = permitted_unrestricted_arms_manufacturing
+				months = normal_modifier_time
+			}
+		}
+		default_option = yes
+	}
+}
+
+pm_events.5 = {
+	type = country_event
+	placement = scope:vinyard_state
+
+	title = pm_events.5.t
+	desc = pm_events.5.d
+	flavor = pm_events.5.f
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_capitalists_meeting.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/capitalists_meeting"
+
+	icon = "gfx/interface/icons/event_icons/event_trade.dds"
+
+	duration = 3
+
+	trigger = {
+		any_scope_state = {
+			OR = {
+				is_production_method_active = {
+					building_type = building_wheat_farm
+					production_method = pm_vineyards
+				}
+				is_production_method_active = {
+					building_type = building_maize_farm
+					production_method = pm_vineyards_building_maize_farm
+				}
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				OR = {
+					is_production_method_active = {
+						building_type = building_wheat_farm
+						production_method = pm_vineyards
+					}
+					is_production_method_active = {
+						building_type = building_maize_farm
+						production_method = pm_vineyards_building_maize_farm
+					}
+				}
+			}
+			save_scope_as = vinyard_state
+		}
+	}
+
+	option = {
+		name = pm_events.5.a
+		add_modifier = {
+			name = exclusive_wine
+			months = normal_modifier_time
+		}
+	}
+
+	option = {
+		name = pm_events.5.b
+		scope:vinyard_state = {
+			add_modifier = {
+				name = popular_wine
+				months = normal_modifier_time
+			}
+		}
+		default_option = yes
+	}
+}

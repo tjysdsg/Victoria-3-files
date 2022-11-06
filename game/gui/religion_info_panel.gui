@@ -1,0 +1,103 @@
+# COPY-PASTED FOR NOW
+@panel_width_minus_10 = 530			# used to be 450
+@panel_width = 540  				# used to be 460
+@panel_width_half = 270				# used to be 230
+@panel_width_plus_10 = 550  		# used to be 470
+@panel_width_plus_14 = 554			# used to be 474
+@panel_width_plus_14_half = 277		# used to be 237
+@panel_width_plus_20 = 560			# used to be 480
+@panel_width_plus_30 = 570			# used to be 490
+@panel_width_plus_70 = 610			# used to be 530
+
+types religion_info_panel_types
+{
+	type religion_info_panel = default_block_window_two_lines {
+		name = "religion_info_panel"
+		
+		blockoverride "window_header_name"
+		{
+			text = "[ReligionInfoPanel.GetReligion.GetName]"
+		}
+		
+		blockoverride "window_header_name_line_two"
+		{
+			text = "[concept_religion]"
+		}
+		
+		blockoverride "fixed_top"
+		{
+			map_modes = {
+				margin = { 0 10 }
+
+				blockoverride "third_button" {}
+				blockoverride "right_icon" {}
+				
+				blockoverride "first_button_text" {
+					text = "RELIGION_INFO_PANEL_SHOW_NATIONAL_ONLY"
+				}
+
+				blockoverride "first_button_click" {
+					onclick = "[ReligionInfoPanel.ToggleShowNationalOnly]"
+				}
+			
+				blockoverride "first_button_selected" {
+					visible = "[ReligionInfoPanel.IsShowingNationalOnly]"
+				}
+				blockoverride "first_button_not_selected" {
+					visible = "[Not(ReligionInfoPanel.IsShowingNationalOnly)]"
+				}
+				blockoverride "second_button_text" {
+					text = "RELIGION_INFO_PANEL_SHOW_GLOBAL"
+				}
+
+				blockoverride "second_button_click" {
+					onclick = "[ReligionInfoPanel.ToggleShowNationalOnly]"
+				}
+
+				blockoverride "second_button_selected" {
+					visible = "[Not(ReligionInfoPanel.IsShowingNationalOnly)]"
+				}
+				blockoverride "second_button_not_selected" {
+					visible = "[ReligionInfoPanel.IsShowingNationalOnly]"
+				}
+			}
+		}
+		
+		blockoverride "scrollarea_content"
+		{
+			flowcontainer = {
+				datacontext = "[ReligionInfoPanel.AccessReligion]"
+				direction = vertical
+				minimumsize = { 480 -1 }
+				
+				container = {
+					using = default_list_position
+					
+					pop_list = {
+						blockoverride "pop_list_context" {
+							datacontext = "[ReligionInfoPanel.AccessPopsList]"
+						}
+						
+						blockoverride "largest_IGs" {}
+
+						blockoverride "tooltipwidget" {
+							tooltipwidget = {
+								FancyTooltip_PopTypeReligion = {}
+							}
+						}
+					}
+				}
+
+				empty_state = {
+					datacontext = "[ReligionInfoPanel.AccessReligion]"
+					blockoverride "visible" {
+						visible = "[IsDataModelEmpty(ReligionInfoPanel.AccessPopsList.AccessPopList)]"
+					}
+					blockoverride "text" {
+						text = "POP_TYPE_IN_RELIGION_NO_PLAYER_POPULATION"
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,491 @@
+﻿namespace = native_resettlement
+
+# Worcester v. Georgia
+# Jackson defies the Supreme Court
+native_resettlement.1 = {
+	type = country_event
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_native_american.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/native_american"
+
+	placement = s:STATE_GEORGIA.region_state:USA
+
+	title = native_resettlement.1.t
+	desc = native_resettlement.1.d
+	flavor = native_resettlement.1.f
+
+	duration = 3
+	
+	trigger = {
+		exists = c:USA
+		exists = c:SEQ
+		c:USA = ROOT
+		NOT = { has_variable = indian_removal_var }
+		c:SEQ = { is_subject_of = c:USA }
+		owns_entire_state_region = STATE_GEORGIA
+		ruler = {
+			has_trait = bigoted
+		}
+	}
+
+	immediate = {
+		set_variable = indian_removal_var
+		ruler = {
+			save_scope_as = indian_removal_president
+		}
+		c:SEQ = {
+			save_scope_as = indian_territory_scope
+		}
+		cu:cherokee = {
+			save_scope_as = cherokee_culture
+		}
+	}
+
+	option = {
+		name = native_resettlement.1.a
+		default_option = yes
+		add_journal_entry = {
+			type = je_indian_removal
+		}
+	}
+}
+
+# John Ross' Protest Petition
+native_resettlement.2 = {
+	type = country_event
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_native_american.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/native_american"
+
+	title = native_resettlement.2.t
+	desc = native_resettlement.2.d
+	flavor = native_resettlement.2.f
+
+	duration = 3
+	
+	trigger = {
+		NOT = { has_variable = john_ross_petition }
+		NOT = { has_variable = trail_of_tears_stall }
+	}
+
+	immediate = {
+		set_variable = john_ross_petition
+		cu:cherokee = { 
+			save_scope_as = cherokee_culture 
+		}
+		c:SEQ = {
+			save_scope_as = indian_territory_scope
+		}
+		if = {
+			limit = {
+				any_interest_group = {
+					leader = {
+						OR = {
+							has_variable = is_andrew_jackson
+							has_trait = bigoted
+						}
+					}
+				}
+			}
+			random_interest_group = {
+				limit = { 
+					leader = { 
+						OR = {
+							has_variable = is_andrew_jackson 
+							has_trait = bigoted
+						}
+					}
+				}
+				save_scope_as = jackson_scope
+			}
+		}
+	}
+	
+	option = {
+		name = native_resettlement.2.a
+		default_option = yes
+		if = { 
+			limit = { 
+				exists = scope:jackson_scope 
+			}
+			scope:jackson_scope = {
+				add_modifier = {
+					name = USA_rejected_ross_petition
+					months = normal_modifier_time
+				}
+			}
+		}
+	}
+
+	option = {
+		name = native_resettlement.2.b
+		if = {
+			limit = {
+				OR = { 
+					is_enacting_law = law_type:law_multicultural
+					is_enacting_law = law_type:law_no_colonial_affairs
+				}
+			}
+			add_enactment_modifier = { # enactment success chance
+				name = john_ross_enactment
+			}
+		}
+		if = { 
+			limit = { 
+				exists = scope:jackson_scope 
+			}
+			scope:jackson_scope = {
+				add_modifier = {
+					name = USA_accepted_ross_petition
+					months = normal_modifier_time
+				}
+			}
+		}
+		custom_tooltip = {
+			text = trail_of_tears_stalled
+			set_variable = {
+				name = trail_of_tears_stall
+				months = 36
+			}
+		}
+	}
+}
+
+# Preparing for Removal
+native_resettlement.3 = {
+	type = country_event
+	placement = scope:indian_removal_state
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_native_american.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/native_american"
+
+	title = native_resettlement.3.t
+	desc = native_resettlement.3.d
+	flavor = native_resettlement.3.f
+
+	duration = 3
+	
+	trigger = {
+		NOT = { has_variable = trail_of_tears_stall }
+		has_journal_entry = je_indian_removal
+		any_scope_state = {
+			any_scope_pop = {
+				culture = cu:cherokee
+			}
+		}
+	}
+
+	immediate = {
+		set_variable = {
+			name = trail_of_tears_stall
+			months = 12
+		}
+		random_scope_state = {
+			limit = {
+				any_scope_pop = {
+					culture = cu:cherokee
+				}
+			}
+			save_scope_as = indian_removal_state
+		}
+		c:SEQ = {
+			save_scope_as = indian_territory_scope
+			capital = {
+				save_scope_as = oklahoma_state
+			}
+		}
+		cu:cherokee = { 
+			save_scope_as = cherokee_culture 
+		}
+	}
+	
+	option = { # use force
+		name = native_resettlement.3.a
+		default_option = yes
+		scope:indian_removal_state = {
+			every_scope_pop = {
+				limit = {
+					culture = cu:cherokee
+				}
+				move_pop = scope:oklahoma_state
+			}
+		}
+		custom_tooltip = {
+			text = indian_removal_force_tt
+			set_variable = { # affects severity of trail of tears
+				name = indian_removal_force
+				value = 2
+				months = 36
+			}
+		}
+	}
+	option = { # pay their way
+		name = native_resettlement.3.b
+		scope:indian_removal_state = {
+			every_scope_pop = {
+				limit = {
+					culture = cu:cherokee
+				}
+				move_pop = scope:oklahoma_state
+			}
+		}
+		add_modifier = {
+			name = USA_paying_removal_costs
+			multiplier = money_amount_multiplier_very_small
+			months = short_modifier_time
+		}
+		custom_tooltip = {
+			text = indian_removal_normal_tt
+			set_variable = { # affects severity of trail of tears
+				name = indian_removal_force
+				value = 1
+				months = 36
+			}
+		}
+	}
+}
+
+# The Trail of Tears
+native_resettlement.4 = {
+	type = country_event
+	placement = scope:oklahoma_state
+
+	event_image = {
+		video = "gfx/event_pictures/asia_poor_people_moving.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/asia/poor_people_moving"
+	
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	title = native_resettlement.4.t
+	desc = native_resettlement.4.d
+	flavor = native_resettlement.4.f
+
+	duration = 3
+	
+	trigger = {
+		has_variable = indian_removal_force
+		c:SEQ = {
+			capital = {
+				NOT = {
+					has_modifier = trail_of_tears_modifier
+				}
+				any_scope_pop = {
+					culture = cu:cherokee
+				}
+			}
+		}
+	}
+
+	immediate = {
+		c:SEQ = {
+			capital = {
+				save_scope_as = oklahoma_state
+			}
+		}
+		cu:cherokee = { 
+			save_scope_as = cherokee_culture 
+		}
+	}
+	
+	option = { # we did what we could
+		name = native_resettlement.4.a
+		trigger = {
+			root.var:indian_removal_force = 1
+		}
+		default_option = yes
+		scope:oklahoma_state = {
+			add_modifier = { # cherokee sol
+				name = trail_of_tears_modifier
+				months = normal_modifier_time
+			}
+		}
+		if = {
+			limit = {
+				OR = { 
+					is_enacting_law = law_type:law_multicultural
+					is_enacting_law = law_type:law_no_colonial_affairs
+				}
+			}
+			add_enactment_modifier = { # enactment success chance
+				name = trail_of_tears_enactment
+			}
+		}
+	}
+
+	option = { # their blood is on our hands
+		name = native_resettlement.4.b
+		trigger = {
+			root.var:indian_removal_force = 2
+		}
+		default_option = yes
+		scope:oklahoma_state = {
+			add_modifier = { # cherokee sol
+				name = trail_of_tears_modifier
+				months = normal_modifier_time
+				multiplier = 2
+			}
+		}
+	}
+}
+
+# The Clearing of the East
+native_resettlement.5 = {
+	type = country_event
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+	event_image = {
+		video = "gfx/event_pictures/southamerica_war_civilians.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/southamerica/war_civilians"
+
+	title = native_resettlement.5.t
+	desc = native_resettlement.5.d
+	flavor = native_resettlement.5.f
+
+	duration = 3
+
+	immediate = {
+		c:SEQ = {
+			save_scope_as = indian_territory_scope
+		}
+		cu:cherokee = { 
+			save_scope_as = cherokee_culture 
+		}
+	}
+
+	option = {
+		name = native_resettlement.5.a
+		default_option = yes
+		if = {
+			limit = {
+				any_interest_group = {
+					is_marginal = no
+					leader = {
+						OR = {
+							has_trait = bigoted
+							has_ideology = ideology_jingoist_leader
+						}
+					}
+				}
+			}
+			random_interest_group = {
+				limit = {
+					leader = {
+						OR = {
+							has_trait = bigoted
+							has_ideology = ideology_jingoist_leader
+						}
+					}
+				}
+				add_modifier = {
+					name = indian_removal_approval
+					months = normal_modifier_time
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_interest_group = {
+					is_marginal = no
+					leader = {
+						has_ideology = ideology_pacifist
+					}
+				}
+			}
+			random_interest_group = {
+				limit = {
+					is_marginal = no
+					leader = {
+						has_ideology = ideology_pacifist
+					}
+				}
+				add_modifier = {
+					name = indian_removal_approval
+					months = normal_modifier_time
+					multiplier = -1
+				}
+			}
+		}
+	}
+}
+
+native_resettlement.6 = {
+	type = country_event
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_native_american.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/native_american"
+
+	title = native_resettlement.6.t
+	desc = native_resettlement.6.d
+	flavor = native_resettlement.6.f
+
+	duration = 3
+
+	trigger = {
+		# triggered by je_indian_removal
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				has_law = law_type:law_no_colonial_affairs
+			}
+			law_type:law_no_colonial_affairs = {
+				save_scope_as = pronativelaw
+			}
+		}
+		else = {
+			law_type:law_multicultural = {
+				save_scope_as = pronativelaw
+			}
+		}
+		cu:cherokee = { 
+			save_scope_as = cherokee_culture 
+		}
+	}
+
+	option = {
+		name = native_resettlement.6.a
+		default_option = yes
+		if = {
+			limit = {
+				has_law = law_type:law_multicultural
+				c:SEQ = {
+					is_player = no
+				}
+			}
+			annex = c:SEQ
+		}
+		else = {
+			add_modifier = {
+				name = native_american_rights
+				months = long_modifier_time
+			}
+		}
+	}
+}

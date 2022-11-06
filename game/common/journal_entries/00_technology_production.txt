@@ -1,0 +1,730 @@
+﻿je_rubber = {
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		NOT = { has_variable = rubber_je_done }
+		any_scope_state = {
+			has_potential_resource = bg_rubber
+		}
+	}
+
+	possible = {
+		has_technology_researched = rubber_mastication
+		any_scope_building = {
+			is_building_type = building_rubber_plantation
+		}
+	}
+
+	complete = {
+		any_scope_building = {
+			is_building_type = building_rubber_plantation
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			occupancy >= 0.5
+			level >= 5
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = production_tech_events.1 }
+		set_variable = {
+			name = rubber_je_done
+		}
+	}
+
+	timeout = 3650
+}
+
+je_mechanized_farming = {
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		NOT = { has_variable = mechanized_farming_je_done }
+		has_technology_researched = threshing_machine
+	}
+
+	possible = {
+		has_technology_researched = mechanized_farming
+	}
+
+	complete = {
+		any_scope_building = {
+			filter = {
+				OR = {
+					is_building_type = building_rye_farm
+					is_building_type = building_wheat_farm
+					is_building_type = building_maize_farm
+					is_building_type = building_millet_farm
+				}
+			}
+			percent >= 0.75
+			trigger_if = {
+				limit = {
+					owner = {
+						has_technology_researched = compression_ignition
+					}
+				}
+				OR = {
+					has_active_production_method = pm_tractors
+					has_active_production_method = pm_compression_ignition_tractors
+				}
+			}
+			trigger_else = {
+				OR = {
+					has_active_production_method = pm_tractors
+                }
+			}
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			occupancy > 0.75
+		}
+	}
+
+	on_complete = {
+		set_variable = mechanized_farming_je_done
+		trigger_event = { id = production_tech_events.600 }
+	}
+
+	timeout = 3650
+}
+
+je_atmospheric_engine = {
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		NOT = { has_variable = atmospheric_engine_je_done }
+		has_technology_researched = shaft_mining
+		NOT = { has_technology_researched = watertube_boiler }
+	}
+
+	possible = {
+		has_technology_researched = atmospheric_engine
+		any_scope_building = {
+			OR = {
+				is_building_type = building_coal_mine
+				is_building_type = building_iron_mine
+				is_building_type = building_sulfur_mine
+				is_building_type = building_lead_mine
+			}
+			level >= 3
+		}
+	}
+
+	complete = {
+		any_scope_building = {
+			filter = {
+				OR = {
+					is_building_type = building_coal_mine
+					is_building_type = building_iron_mine
+					is_building_type = building_sulfur_mine
+					is_building_type = building_lead_mine
+				}
+			}
+			percent > 0.75
+			OR = {
+			    has_active_production_method = pm_atmospheric_engine_pump_building_coal_mine
+			    has_active_production_method = pm_atmospheric_engine_pump_building_iron_mine
+			    has_active_production_method = pm_atmospheric_engine_pump_building_lead_mine
+			    has_active_production_method = pm_atmospheric_engine_pump_building_sulfur_mine
+            }
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			occupancy > 0.75
+		}
+		OR = {
+			can_research = railways
+			can_research = watertube_boiler
+		}
+	}
+
+	on_complete = {
+		set_variable = atmospheric_engine_je_done
+		trigger_event = { id = production_tech_events.601 }
+	}
+
+	fail = {
+		has_technology_researched = watertube_boiler
+	}
+
+	timeout = 3650
+}
+
+je_plastics = {
+	icon = "gfx/interface/icons/event_icons/event_trade.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		NOT = { has_variable = plastics_je_done }
+		has_technology_researched = reinforced_concrete
+	}
+
+	possible = {
+		has_technology_researched = plastics
+		any_scope_building = {
+			is_building_type = building_glassworks
+		}
+	}
+
+	complete = {
+		any_scope_building = {
+			filter = {
+				is_building_type = building_glassworks
+			}
+
+			percent >= 0.5
+
+			occupancy > 0.75
+			weekly_profit > 10
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			level >= 5
+			has_active_production_method = pm_houseware_plastics
+		}
+	}
+
+
+
+	on_complete = {
+		trigger_event = { id = production_tech_events.200 }
+		set_variable = {
+			name = plastics_je_done
+		}
+	}
+}
+
+je_radio = {
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		NOT = { has_variable = radio_je_done }
+		has_technology_researched = telephone
+	}
+
+	possible = {
+		has_technology_researched = radio
+		any_scope_building = {
+			is_building_type = building_electrics_industry
+		}
+	}
+
+	complete = {
+		any_scope_building = {
+			filter = {
+				is_building_type = building_electrics_industry
+			}
+
+			percent >= 0.5
+			occupancy > 0.75
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			level >= 5
+			has_active_production_method = pm_radios
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = production_tech_events.210 }
+		set_variable = {
+			name = radio_je_done
+		}
+	}
+}
+
+je_dynamite = { 
+	icon = "gfx/interface/icons/event_icons/event_fire.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		NOT = { has_variable = dynamite_je_done }
+		has_technology_researched = nitroglycerin
+	}
+
+	possible = {
+		has_technology_researched = dynamite
+		any_scope_building = {
+			OR = {
+				is_building_type = building_munition_plants
+				is_building_type = building_iron_mine
+				is_building_type = building_coal_mine
+				is_building_type = building_lead_mine
+				is_building_type = building_sulfur_mine
+			}
+		}
+		any_scope_building = {
+			is_building_type = building_chemical_plants
+		}
+	}
+
+	complete = {
+		OR = {
+			any_scope_building = {
+				custom_tooltip = je_shortform_building_munition_plants_tooltip
+				filter = {
+					is_building_type = building_munition_plants
+				}
+				percent > 0.75
+				cash_reserves_ratio >= 0.25
+				weekly_profit > 0
+				occupancy >= 0.75
+			}
+			any_scope_building = {
+				custom_tooltip = je_shortform_building_mine_tooltip
+				filter = {
+					OR = {
+						is_building_type = building_iron_mine
+						is_building_type = building_coal_mine
+						is_building_type = building_lead_mine
+						is_building_type = building_sulfur_mine
+					}
+				}
+				percent > 0.75
+				hidden_trigger = {
+					OR = {
+	                    has_active_production_method = pm_dynamite_building_coal_mine
+	                    has_active_production_method = pm_dynamite_building_iron_mine
+	                    has_active_production_method = pm_dynamite_building_lead_mine
+	                    has_active_production_method = pm_dynamite_building_sulfur_mine
+	                }
+                }
+                custom_tooltip = has_activated_dynamite
+				cash_reserves_ratio >= 0.25
+				weekly_profit > 0
+				occupancy >= 0.75
+			}
+		}
+		any_scope_building = {
+			custom_tooltip = je_shortform_building_chemical_plants_tooltip
+			filter = {
+				is_building_type = building_chemical_plants
+			}
+			percent > 0.75
+			OR = {
+				has_active_production_method = pm_leblanc_process
+				has_active_production_method = pm_ammonia-soda_process
+				has_active_production_method = pm_vacuum_evaporation
+				has_active_production_method = pm_brine_electrolysis
+			}
+			cash_reserves_ratio >= 0.25
+			weekly_profit > 0
+			occupancy >= 0.75
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = production_tech_events.102 }
+		set_variable = {
+			name = dynamite_je_done
+		}
+	}
+
+	timeout = 3650
+}
+
+je_combustion_engines = {
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		NOT = { has_variable = combustion_engines_je_done }
+		has_technology_researched = rotary_valve_engine
+	}
+
+	possible = {
+		has_technology_researched = combustion_engine
+		any_scope_building = {
+			OR = {
+				is_building_type = building_urban_center
+				is_building_type = building_motor_industry
+			}
+		}
+	}
+
+	complete = {
+		OR = {
+			any_scope_building = {
+				filter = {
+					is_building_type = building_urban_center
+				}
+				percent > 0.75
+				has_active_production_method = pm_public_motor_carriages
+				cash_reserves_ratio >= 0.25
+				weekly_profit > 0
+				occupancy >= 0.75
+			}
+			any_scope_building = {
+				filter = {
+					is_building_type = building_motor_industry
+				}
+				percent > 0.75
+				has_active_production_method = pm_automobile_production
+				cash_reserves_ratio >= 0.25
+				weekly_profit > 0
+				occupancy >= 0.75
+			}
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = production_tech_events.103 }
+		set_variable = {
+			name = combustion_engines_je_done
+		}
+	}
+
+	timeout = 3650
+}
+
+# Branching Out
+je_railroads = {
+	icon = "gfx/interface/icons/event_icons/event_trade.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		NOT = { has_variable = railroad_je_done }
+		any_scope_building = {
+			OR = {
+				is_building_type = building_coal_mine
+				is_building_type = building_iron_mine
+				is_building_type = building_lead_mine
+				is_building_type = building_sulfur_mine
+				is_building_type = building_logging_camp
+				is_building_type = building_oil_rig
+				is_building_type = building_coffee_plantation
+				is_building_type = building_cotton_plantation
+				is_building_type = building_dye_plantation
+				is_building_type = building_opium_plantation
+				is_building_type = building_tea_plantation
+				is_building_type = building_tobacco_plantation
+				is_building_type = building_sugar_plantation
+				is_building_type = building_rubber_plantation
+				is_building_type = building_banana_plantation
+			}
+		}
+	}
+
+	possible = {
+		has_technology_researched = railways
+		any_scope_building = {
+			is_building_type = building_railway
+		}
+	}
+
+	complete = {
+		trigger_if = {
+			limit = {
+				any_scope_building = {
+					OR = {
+						is_building_type = building_coal_mine
+						is_building_type = building_iron_mine
+						is_building_type = building_lead_mine
+						is_building_type = building_sulfur_mine
+						is_building_type = building_logging_camp
+						is_building_type = building_oil_rig
+					}
+				}
+			}
+			any_scope_building = {
+				filter = {
+					OR = {
+						is_building_type = building_coal_mine
+						is_building_type = building_iron_mine
+						is_building_type = building_lead_mine
+						is_building_type = building_sulfur_mine
+						is_building_type = building_logging_camp
+						is_building_type = building_oil_rig
+					}
+				}
+				percent > 0.2
+				OR = {
+				    has_active_production_method = pm_rail_transport_mine
+				    has_active_production_method = pm_rail_transport_building_logging_camp
+				    has_active_production_method = pm_rail_transport_building_oil_rig
+                }
+				occupancy >= 0.75
+			}
+		}
+		trigger_if = {
+			limit = {
+				any_scope_building = {
+					OR = {
+						is_building_type = building_coffee_plantation
+						is_building_type = building_cotton_plantation
+						is_building_type = building_dye_plantation
+						is_building_type = building_opium_plantation
+						is_building_type = building_tea_plantation
+						is_building_type = building_tobacco_plantation
+						is_building_type = building_sugar_plantation
+						is_building_type = building_rubber_plantation
+						is_building_type = building_banana_plantation
+					}
+				}
+			}
+			any_scope_building = {
+				filter = {
+					OR = {
+						is_building_type = building_coffee_plantation
+						is_building_type = building_cotton_plantation
+						is_building_type = building_dye_plantation
+						is_building_type = building_opium_plantation
+						is_building_type = building_tea_plantation
+						is_building_type = building_tobacco_plantation
+						is_building_type = building_sugar_plantation
+						is_building_type = building_rubber_plantation
+						is_building_type = building_banana_plantation
+					}
+				}
+				percent > 0.2
+				has_active_production_method = pm_steam_rail_transport
+				occupancy >= 0.75
+			}
+		}
+		any_scope_state = {
+			has_building = building_motor_industry
+		}
+		any_scope_state = {
+			has_building = building_railway
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = production_tech_events.501 }
+		set_variable = {
+			name = railroad_je_done
+		}
+	}
+
+	timeout = 3650
+}
+
+je_telephone = {
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		NOT = { has_variable = telephone_je_done }
+		has_technology_researched = shift_work
+	}
+
+	possible = {
+		has_technology_researched = telephone
+		NOT = { has_technology_researched = radio }
+	}
+
+	complete = {
+		any_scope_building = {
+			is_building_type = building_electrics_industry
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			occupancy > 0.75
+			level >= 5
+		}
+		NOT = { has_technology_researched = radio }
+		can_research = radio
+	}
+
+	on_complete = {
+		trigger_event = { id = production_tech_events.300 }
+		set_variable = {
+			name = telephone_je_done
+		}
+	}
+
+	fail = {
+		has_technology_researched = radio
+	}
+
+	on_monthly_pulse = {
+		random_events = {
+			100 = 0
+			10 = technology_events.10
+		}
+	}
+
+	timeout = 3650
+}
+
+je_whaling = {
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		NOT = { has_variable = whaling_je_done }
+		any_scope_state = {
+			has_building = building_whaling_station
+		}
+		NOT = { has_technology_researched = pumpjacks }
+	}
+
+	possible = {
+		any_scope_state = {
+			has_building = building_whaling_station
+		}
+	}
+
+	complete = {
+		any_scope_building = {
+			is_building_type = building_whaling_station
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			occupancy > 0.75
+			level >= 3
+		}
+		any_scope_character = {
+			has_role = admiral
+			is_busy = no
+			is_ruler = no
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = production_tech_events.301 }
+		set_variable = {
+			name = whaling_je_done
+		}
+	}
+	
+	invalid = {
+		has_technology_researched = pumpjacks
+	}
+
+	timeout = 3650
+}
+
+je_pumpjacks = {
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		NOT = { has_variable = pumpjacks_je_done }
+		has_technology_researched = steam_donkey
+		has_technology_researched = dynamite
+		any_scope_state = {
+			has_potential_resource = bg_oil_extraction
+		}
+	}
+
+	possible = {
+		has_technology_researched = pumpjacks
+		any_scope_building = {
+			is_building_type = building_oil_rig
+		}
+	}
+
+	complete = {
+		any_scope_building = {
+			is_building_type = building_oil_rig
+			occupancy > 0.75
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			level >= 5
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = production_tech_events.401 }
+		set_variable = {
+			name = pumpjacks_je_done
+		}
+	}
+
+	timeout = 3650
+}
+
+je_electrical_generation = {
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		NOT = { has_variable = electrical_generation_je_done }
+		has_technology_researched = mechanized_workshops
+	}
+
+	possible = {
+		has_technology_researched = electrical_generation
+		any_scope_building = {
+			is_building_type = building_power_plant
+		}
+	}
+
+	complete = {
+		any_scope_building = {
+			is_building_type = building_power_plant
+			occupancy > 0.75
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			level >= 5
+		}
+		OR = {
+			can_research = electric_railway
+			can_research = steam_turbine
+			can_research = shift_work
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = production_tech_events.402 }
+		set_variable = {
+			name = electrical_generation_je_done
+		}
+	}
+
+	timeout = 3650
+}
+
+je_steam_engines = {
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		has_technology_researched = railways
+		NOT = { has_technology_researched = electric_railway }
+		any_scope_state = {
+			any_neighbouring_state = {
+				owner = ROOT
+			}
+		}
+	}
+
+	possible = {
+		any_scope_building = {
+			is_building_type = building_motor_industry
+		}
+	}
+
+	complete = {
+		any_scope_building = {
+			is_building_type = building_motor_industry
+			occupancy > 0.75
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			level >= 3
+		}
+		any_scope_state = {
+			any_scope_building = {
+				is_building_type = building_railway
+				occupancy > 0.75
+			}
+			custom_tooltip = {
+				text = has_adjacent_railway_tt
+				any_neighbouring_state = {
+					owner = ROOT
+					any_scope_building = {
+						is_building_type = building_railway
+						occupancy > 0.75
+					}
+				}
+			}
+		}
+		
+	}
+
+	on_complete = {
+		trigger_event = { id = production_tech_events.700 }
+	}
+
+	timeout = 3650
+}

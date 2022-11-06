@@ -1,0 +1,605 @@
+widget = {
+	name = "ticktask_graph_view"
+	size = { 800 600 }
+	layoutpolicy_horizontal = expanding
+	layoutpolicy_vertical = expanding
+
+	ticktask_graph = {
+		using = default_content_fade
+
+		blockoverride "datamodel_lines" {
+			datamodel = "[TickTaskDebuggerView.GetGraphLines]"
+		}
+
+		blockoverride "datamodel_items" {
+			datamodel = "[TickTaskDebuggerView.GetGraphItems]"
+		}
+
+		blockoverride "starting_pan_position" {
+			#pan_position = "[GetDefine('NGUI', 'TECH_TREE_PRODUCTION_INITIAL_POSITION')]"
+		}
+	}
+}
+
+
+widget = {
+	name = "ticktask_list_view"
+	size = { 640 480 }
+
+	layoutpolicy_horizontal = expanding
+	layoutpolicy_vertical = expanding
+	
+	vbox = {
+			
+		hbox = {
+			layoutpolicy_horizontal = preferred
+			
+			spacing = 5
+			
+			widget = { size = { 4 0 } }
+			
+			editor_editbox = {
+				layoutpolicy_horizontal = preferred
+				using = property_editbox
+				alwaystransparent = no
+				size = { 0 18 }
+				#text = [TickTaskListView.GetFilterString]
+				#ontextedited = [TickTaskListView.SetFilterString]
+			}
+			
+			ticktask_button = {
+				size = { 45 18 }
+				text = "Update"
+				#onclick = "[TickTaskListView.UpdateTextureList]"
+			}
+			
+			editor_checkbutton = {
+				blockoverride "checkbutton" {
+					#checked = "[TickTaskListView.GetAutoUpdate]"
+					#onclick = "[TickTaskListView.SetAutoUpdate(Not(TickTaskListView.GetAutoUpdate))]"
+				}
+				
+				blockoverride "label" {
+					text = "Auto Update"
+				}
+			}
+		}
+	
+		hbox = {
+			layoutpolicy_horizontal = preferred
+			spacing = 3
+			
+			ticktask_button = {
+				size = { 40 18 }
+				text = "TICKTASK_INDEX_HEADER"
+				tooltip = "TICKTASK_INDEX_TOOLTIP"
+				onclick = "[TickTaskListView.Sort('index')]"
+			}
+			
+			ticktask_button = {
+				layoutpolicy_horizontal = growing
+				size = { 0 18 }
+				text = "TICKTASK_NAME_HEADER"
+				onclick = "[TickTaskListView.Sort('name')]"
+			}
+			
+			ticktask_button = {
+				size = { 30 18 }
+				text = "TICKTASK_EXECUTION_RATE_HEADER"
+				tooltip = "TICKTASK_EXECUTION_RATE_TOOLTIP"
+				onclick = "[TickTaskListView.Sort('execution_rate')]"
+			}
+			
+			ticktask_button = {
+				size = { 30 18 }
+				text = "TICKTASK_EXECUTION_PRIORITY_HEADER"
+				tooltip = "TICKTASK_EXECUTION_PRIORITY_TOOLTIP"
+				onclick = "[TickTaskListView.Sort('execution_priority')]"
+			}
+			
+			ticktask_button = {
+				size = { 80 18 }
+				text = "TICKTASK_HIGHEST_LOCK_TIME_HEADER"
+				tooltip = "TICKTASK_HIGHEST_LOCK_TIME_TOOLTIP"
+				onclick = "[TickTaskListView.Sort('highest_lock_time')]"
+			}
+			
+			ticktask_button = {
+				size = { 80 18 }
+				text = "TICKTASK_AVERAGE_TIME_HEADER"
+				tooltip = "TICKTASK_AVERAGE_TIME_TOOLTIP"
+				onclick = "[TickTaskListView.Sort('average_sum_execution_time')]"
+			}
+			
+			ticktask_button = {
+				size = { 80 18 }
+				text = "TICKTASK_TIMES_EXECUTED_HEADER"
+				tooltip = "TICKTASK_TIMES_EXECUTED_TOOLTIP"
+				onclick = "[TickTaskListView.Sort('times_executed')]"
+			}
+			
+			ticktask_list_scrollbar_spacing = {}
+		}
+
+		scrollarea = {
+			layoutpolicy_horizontal = preferred
+			layoutpolicy_vertical = preferred
+			scrollbarpolicy_vertical = as_needed
+			scrollbarpolicy_horizontal = as_needed
+			scrollbaralign_vertical = right
+			scrollbaralign_horizontal = bottom
+			
+			scrollwidget = {
+				vbox = {
+					fixedgridbox = {
+						name = "list"
+						layoutpolicy_horizontal = preferred
+						layoutpolicy_vertical = growing
+						alwaystransparent = no
+						addcolumn = 100%
+						addrow = 18
+						setitemsizefromcell = yes
+						datamodel = "[TickTaskListView.GetTickTasks]"
+						
+						item = {
+							hbox = {
+								spacing = 3
+								tooltip_widgetanchor = top|right
+								tooltip_parentanchor = top|left
+								
+								ticktask_list_numberbox = {
+									maximumsize = { 40 -1 }
+									text = "[TickTaskData.GetIndex]"
+								}
+								
+								ticktask_button = {
+									maximumsize = { 18 -1 }
+									tooltip = "TICKTASK_SHOW_DETAILS"
+									onclick = "[TickTaskData.OpenDetails]"
+								}
+			
+								ticktask_list_textbox = {
+									text = "[TickTaskData.GetName]"
+								}
+								
+								ticktask_list_widget = {
+									maximumsize = { 30 16 }
+									
+									tooltip = "[TickTaskData.GetExecutionRate]"
+								
+									icon = {
+										parentanchor = center
+										size = { 16 16 }
+										texture = "gfx/interface/tools/ticktask_rate.png"
+										framesize = {32 32}
+										frame = "[TickTaskData.GetExecutionRateFrame]"
+									}
+								}
+								
+								ticktask_list_widget = {
+									maximumsize = { 30 16 }
+									
+									tooltip = "[TickTaskData.GetExecutionPriority]"
+									
+									icon = {
+										parentanchor = center
+										size = { 16 16 }
+										texture = "gfx/interface/tools/ticktask_priority.png"
+										framesize = {32 32}
+										frame = "[TickTaskData.GetExecutionPriorityFrame]"
+									}
+								}
+								
+								ticktask_list_numberbox = {
+									maximumsize = { 80 -1 }
+									text = "[TickTaskData.GetHighestLockTime]"
+								}
+								
+								ticktask_list_numberbox = {
+									maximumsize = { 80 -1 }
+									text = "[TickTaskData.GetAverageTime]"
+								}
+								
+								ticktask_list_numberbox = {
+									maximumsize = { 80 -1 }
+									text = "[TickTaskData.GetTimesExecuted]"
+								}
+								
+								ticktask_list_scrollbar_spacing = {}
+							}
+						}
+					}
+				}
+			}
+		
+			scrollbar_vertical = {
+				using = editor_vertical_scrollbar
+			}
+		
+			scrollbar_horizontal = {
+				using = editor_horizontal_scrollbar
+			}
+		}
+	}
+}
+
+
+widget = {
+	name = "ticktask_details_view"
+	size = { 640 480 }
+
+	layoutpolicy_horizontal = expanding
+	layoutpolicy_vertical = expanding
+	
+	datacontext = "[TickTaskDetailsView.GetTickTask]"
+								
+	vbox = {
+		scrollarea = {
+			layoutpolicy_horizontal = preferred
+			layoutpolicy_vertical = preferred
+			scrollbarpolicy_vertical = as_needed
+			scrollbarpolicy_horizontal = as_needed
+			scrollbaralign_vertical = right
+			scrollbaralign_horizontal = bottom
+			
+			scrollwidget = {
+				vbox = {
+					widget = {
+						layoutpolicy_horizontal = preferred
+						layoutpolicy_vertical = growing
+						
+						widget = {
+							position = { 0 0 }
+							size = { 100% 18 }
+							hbox = {
+								layoutpolicy_horizontal = preferred
+								spacing = 3
+								
+								ticktask_list_textbox = {
+									maximumsize = { 100 -1 }
+									text = "TICKTASK_NAME_HEADER"
+								}
+								
+								ticktask_list_textbox = {
+									layoutpolicy_horizontal = growing
+									text = "[TickTaskData.GetName]"
+								}
+							}
+						}
+
+						widget = {
+							position = { 0 21 }
+							size = { 100% 18 }
+							hbox = {
+								layoutpolicy_horizontal = preferred
+								spacing = 3
+								
+								ticktask_list_textbox = {
+									maximumsize = { 100 -1 }
+									text = "TICKTASK_INDEX_HEADER"
+									tooltip = "TICKTASK_INDEX_TOOLTIP"
+								}
+								
+								ticktask_list_numberbox = {
+									layoutpolicy_horizontal = growing
+									text = "[TickTaskData.GetIndex]"
+								}
+							}
+						}
+
+						widget = {
+							position = { 0 42 }
+							size = { 100% 18 }
+							hbox = {
+								layoutpolicy_horizontal = preferred
+								spacing = 3
+								
+								ticktask_list_textbox = {
+									maximumsize = { 100 -1 }
+									text = "TICKTASK_EXECUTION_RATE_HEADER"
+									tooltip = "TICKTASK_EXECUTION_RATE_TOOLTIP"
+								}
+								
+								ticktask_list_textbox = {
+									layoutpolicy_horizontal = growing
+									text = "[TickTaskData.GetExecutionRate]"
+								}
+							}
+						}
+
+						widget = {
+							position = { 0 63 }
+							size = { 100% 18 }
+							hbox = {
+								layoutpolicy_horizontal = preferred
+								spacing = 3
+								
+								ticktask_list_textbox = {
+									maximumsize = { 100 -1 }
+									text = "TICKTASK_EXECUTION_PRIORITY_HEADER"
+									tooltip = "TICKTASK_EXECUTION_PRIORITY_TOOLTIP"
+								}
+								
+								ticktask_list_textbox = {
+									layoutpolicy_horizontal = growing
+									text = "[TickTaskData.GetExecutionPriority]"
+								}
+							}
+						}
+						
+						widget = {
+							position = { 0 84 }
+							size = { 100% 18 }
+							hbox = {
+								layoutpolicy_horizontal = preferred
+								spacing = 3
+								
+								ticktask_list_textbox = {
+									maximumsize = { 100 -1 }
+									text = "TICKTASK_HIGHEST_LOCK_TIME_HEADER"
+									tooltip = "TICKTASK_HIGHEST_LOCK_TIME_TOOLTIP"
+								}
+								
+								ticktask_list_numberbox = {
+									layoutpolicy_horizontal = growing
+									text = "[TickTaskData.GetHighestLockTime]"
+								}
+							}
+						}
+						
+						widget = {
+							position = { 0 105 }
+							size = { 100% 18 }
+							hbox = {
+								layoutpolicy_horizontal = preferred
+								spacing = 3
+								
+								ticktask_list_textbox = {
+									maximumsize = { 100 -1 }
+									text = "TICKTASK_AVERAGE_TIME_HEADER"
+									tooltip = "TICKTASK_AVERAGE_TIME_TOOLTIP"
+								}
+								
+								ticktask_list_numberbox = {
+									layoutpolicy_horizontal = growing
+									text = "[TickTaskData.GetAverageTime]"
+								}
+							}
+						}
+						
+						widget = {
+							position = { 0 126 }
+							size = { 100% 18 }
+							hbox = {
+								layoutpolicy_horizontal = preferred
+								spacing = 3
+								
+								ticktask_list_textbox = {
+									maximumsize = { 100 -1 }
+									text = "TICKTASK_TIMES_EXECUTED_HEADER"
+									tooltip = "TICKTASK_TIMES_EXECUTED_TOOLTIP"
+								}
+								
+								ticktask_list_numberbox = {
+									layoutpolicy_horizontal = growing
+									text = "[TickTaskData.GetTimesExecuted]"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+types ticktask_debugger {
+	type ticktask_graph = zoomarea {
+		name = "graph_zoomarea"
+		size = { 100% 100% }
+
+		background = {
+			using = entry_header
+			
+			modify_texture = {
+				texture = "gfx/interface/masks/fade_vertical_top.dds"
+				spriteType = Corneredstretched
+				spriteborder = { 0 0 }
+				blend_mode = alphamultiply
+			}
+		}
+
+		state = {
+			name = "_zoom_changed"
+			duration = 0.15
+		}
+
+		zoom = 1
+		zoom_step = 0.2
+		zoom_min = 0.2
+		zoom_max = 10
+
+		draggable_by = left|middle
+
+		block "starting_pan_position" {}
+		
+		#scissor = yes
+
+		zoomwidget = {
+
+			container = {
+				widget = {
+					size = { 100% 100% }
+					alpha = 0.15
+					block "extra_lines" {}
+				}
+
+				container = { #Line Mech	
+					# These two widgets determine the margin between graph nodes
+					widget = {
+						name = "margin_top_left" # Do not change this name
+						size = { 30 20 }
+					}
+					widget = {
+						name = "margin_bottom_right" # Do not change this name
+						size = { 30 20 }
+					}
+
+					# This widget tells the layout how to offset and space the lines
+					widget = {
+						name = "line_offset" # Do not change this name
+						position = { 0 0 } # Fixed offset (i.e. to compensate for line width)
+						size = { 0 0 } # Spacing between edges
+					}
+					
+					# Container for all the edges in the graph
+					container = {
+						name = "line_area" # Do not change this name
+
+						block "datamodel_lines" {
+							#datamodel = "[TickTaskDebuggerView.GetGraphLines]"
+						}
+
+						item = {
+							container = {
+								line = {
+									position = "[TickTaskGraphLine.GetPosition]"
+									gfxtype = linegfx
+									line_type = BSpline
+									texture = "gfx/interface/tech_tree/tech_line_border.dds"
+									mask = "gfx/interface/tech_tree/tech_line_mask.dds"
+									width = 8
+									alpha = 0.6
+
+									points = "[TickTaskGraphLine.GetPointsInContainer]"
+									# points = "[TickTaskGraphLine.GetPoints]" # If no container is used for the line
+								}
+								line = {
+									position = "[TickTaskGraphLine.GetPosition]"
+									gfxtype = linegfx
+									line_type = BSpline
+									texture = "gfx/interface/tech_tree/tech_line.dds"
+									mask = "gfx/interface/tech_tree/tech_line_mask.dds"
+									width = 4
+									alpha = 0.8
+
+									points = "[TickTaskGraphLine.GetPointsInContainer]"
+									# points = "[TickTaskGraphLine.GetPoints]" # If no container is used for the line
+								}
+							}
+						}
+					}
+					
+					# Container for all the nodes in the graph
+					container = {
+						name = "node_area" # Do not change this name
+
+						block "datamodel_items" {
+							#datamodel = "[TickTaskDebuggerView.GetGraphItems]"
+						}
+						
+						item = {
+							widget = {
+								size = { 270 60 }
+								
+								position = "[TickTaskGraphItem.GetPosition]"
+								widgetid = "[TickTaskGraphItem.GetKey]"
+								
+								datacontext = "[TickTaskGraphItem.GetTickTask]"
+								
+								editor_button = {
+									size = { 100% 100% }
+									
+									text = "[TickTaskData.GetName]"
+									tooltip = "[TickTaskGraphItem.GetTooltip]"
+									
+									onclick = "[TickTaskData.OpenDetails]"
+								}
+								
+								flowcontainer = {
+									ignoreinvisible = yes
+									parentanchor = top|right
+									
+									editor_icon = {
+										size = { 16 16 }
+										texture = "gfx/tools/save_icon.dds"
+										visible = "[TickTaskData.IsPersisted]"
+										tooltip = "TICKTASK_PERSISTED"
+									}
+									
+									editor_icon = {
+										size = { 16 16 }
+										texture = "gfx/interface/tools/ticktask_rate.png"
+										framesize = {32 32}
+										frame = "[TickTaskData.GetExecutionRateFrame]"
+										tooltip = "[TickTaskData.GetExecutionRate]"
+									}
+									
+									editor_icon = {
+										size = { 16 16 }
+										texture = "gfx/interface/tools/ticktask_priority.png"
+										framesize = {32 32}
+										frame = "[TickTaskData.GetExecutionPriorityFrame]"
+										tooltip = "[TickTaskData.GetExecutionPriority]"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	type ticktask_list_textbox = textbox {
+		layoutpolicy_horizontal = growing
+		layoutpolicy_vertical = fixed
+		font = "tools_font"
+		fontcolor = { 1 1 1 1 }
+		fontsize = 11
+		align = left|vcenter|nobaseline
+		scissor = yes
+		margin = { 2 0 }
+		
+		background = {
+			texture = "gfx/editor_gui/editor_field.dds"
+			spriteType = CorneredStretched
+			spriteborder = { 4 4 }
+			shaderfile = "gfx/FX/pdxgui_default.shader"
+		}
+	}
+	
+	type ticktask_list_numberbox = ticktask_list_textbox {
+		align = right|vcenter|nobaseline
+	}
+	
+	type ticktask_list_widget = widget {
+		layoutpolicy_horizontal = growing
+		layoutpolicy_vertical = fixed
+		scissor = yes
+		
+		background = {
+			texture = "gfx/editor_gui/editor_field.dds"
+			spriteType = CorneredStretched
+			spriteborder = { 4 4 }
+			shaderfile = "gfx/FX/pdxgui_default.shader"
+		}
+	}
+	
+	type ticktask_button = editor_button {
+		font = "tools_font"
+		fontcolor = { 1 1 1 1 }
+		fontsize = 11
+		align = center|nobaseline
+		margin = { 2 0 }
+	}
+	
+	type ticktask_list_scrollbar_spacing = widget {
+		layoutpolicy_horizontal = growing
+		layoutpolicy_vertical = fixed
+		scissor = yes
+		
+		maximumsize = { 14 -1 }
+	}
+}

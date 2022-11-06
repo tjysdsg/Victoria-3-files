@@ -1,0 +1,527 @@
+﻿namespace = africa_colonial_events
+
+# Joining the Scramble for Africa
+africa_colonial_events.1 = {
+	type = country_event
+	placement = scope:african_colony_state
+
+	title = africa_colonial_events.1.t
+	desc = africa_colonial_events.1.d
+	flavor = africa_colonial_events.1.f
+
+	event_image = {
+		video = "gfx/event_pictures/africa_desert_expedition.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/africa/desert_expedition"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	duration = 3
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				is_incorporated = no
+				state_in_africa = yes
+			}
+			save_scope_as = african_colony_state
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.1.a
+		default_option = yes
+	}
+}
+
+# Completing the Scramble for Africa
+africa_colonial_events.2 = {
+	type = country_event
+	placement = scope:african_colony_state
+
+	title = africa_colonial_events.2.t
+	desc = africa_colonial_events.2.d
+	flavor = africa_colonial_events.2.f
+
+	event_image = {
+		video = "gfx/event_pictures/africa_prosperous_farm.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/africa/prosperous_farm"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	duration = 3
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				is_incorporated = no
+				state_in_africa = yes
+			}
+			save_scope_as = african_colony_state
+		}
+
+		set_variable = scramble_for_africa_complete
+	}
+
+	option = {
+		name = africa_colonial_events.2.a
+		default_option = yes
+
+		add_modifier = {
+			name = a_place_in_the_sun
+		}
+	}
+}
+
+# Failing the Scramble for Africa
+#africa_colonial_events.3 = {
+#	type = country_event
+#	placement = ROOT
+#
+#	title = africa_colonial_events.3.t
+#	desc = africa_colonial_events.3.d
+#	flavor = africa_colonial_events.3.f
+#
+#	event_image = {
+#		video = "gfx/event_pictures/africa_construction_colony.bk2"
+#	}
+#
+#	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+#	on_opened_soundeffect = "event:/SFX/Events/africa/construction_colony"
+#
+#	duration = 3
+#
+#	option = {
+#		name = africa_colonial_events.3.a
+#		default_option = yes
+#	}
+#}
+
+africa_colonial_events.4 = {
+	type = country_event
+	placement = scope:african_colony_state
+
+	title = africa_colonial_events.4.t
+	desc = africa_colonial_events.4.d
+	flavor = africa_colonial_events.4.f
+
+	event_image = {
+		video = "gfx/event_pictures/southamerica_christianity.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/southamerica/christianity"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	duration = 3
+
+	trigger = {
+		religion = {
+			has_discrimination_trait = christian
+		}
+		any_scope_state = {
+			is_incorporated = no
+			state_in_africa = yes
+			NOT = { has_modifier = christian_mission }
+			any_neighbouring_state = {
+				owner = {
+					is_country_type = decentralized
+					NOT = {
+						religion = {
+							has_discrimination_trait = christian
+						}
+					}
+				}
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				is_incorporated = no
+				state_in_africa = yes
+				NOT = { has_modifier = christian_mission }
+				any_neighbouring_state = {
+					owner = {
+						is_country_type = decentralized
+						NOT = {
+							religion = {
+								has_discrimination_trait = christian
+							}
+						}
+					}
+				}
+			}
+			save_scope_as = african_colony_state
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.4.a
+		scope:african_colony_state = {
+			add_modifier = {
+				name = christian_mission
+				months = normal_modifier_time
+			}
+		}
+		ig:ig_devout = {
+			add_modifier = {
+				name = approved_mission
+				months = normal_modifier_time
+			}
+		}
+		every_country = {
+			limit = {
+				is_country_type = decentralized
+				NOT = {
+					religion = {
+						has_discrimination_trait = christian
+					}
+				}
+				any_neighbouring_state = { this = scope:african_colony_state }
+			}
+			change_tension = {
+				country = root
+				value = 3
+			}
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.4.b
+		default_option = yes
+
+		ig:ig_devout = {
+			add_modifier = {
+				name = rejected_mission
+				months = normal_modifier_time
+			}
+		}
+		every_country = {
+			limit = {
+				is_country_type = decentralized
+				NOT = {
+					religion = {
+						has_discrimination_trait = christian
+					}
+				}
+				any_neighbouring_state = { this = scope:african_colony_state }
+			}
+			change_tension = {
+				country = root
+				value = -3
+			}
+		}
+	}
+}
+
+africa_colonial_events.5 = {
+	type = country_event
+	placement = scope:african_colony_state
+
+	title = africa_colonial_events.5.t
+	desc = africa_colonial_events.5.d
+	flavor = africa_colonial_events.5.f
+
+	event_image = {
+		video = "gfx/event_pictures/southamerica_child_labor.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/southamerica/child_labor"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	duration = 3
+
+	trigger = {
+		has_law = law_type:law_slavery_banned
+		NOT = { has_modifier = mission_to_abolish_slavery }
+		any_interest_group = {
+			law_stance = {
+				law = law_type:law_slave_trade
+				value < neutral
+			}
+		}
+		any_scope_state = {
+			is_incorporated = no
+			state_in_africa = yes
+			any_neighbouring_state = {
+				owner = {
+					is_country_type = decentralized
+					NOT = {	has_law = law_type:law_slavery_banned }
+				}
+			}
+		}
+	}
+
+	immediate = {
+		random_interest_group = {
+			limit = {
+				law_stance = {
+					law = law_type:law_slave_trade
+					value < neutral
+				}
+			}
+			save_scope_as = anti_slave_trade_ig
+			leader = { save_scope_as = anti_slave_trade_ig_leader }
+		}
+		random_scope_state = {
+			limit = {
+				is_incorporated = no
+				state_in_africa = yes
+				any_neighbouring_state = {
+					owner = {
+						is_country_type = decentralized
+						NOT = {	has_law = law_type:law_slavery_banned }
+					}
+				}
+			}
+			save_scope_as = african_colony_state
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.5.a
+		add_modifier = {
+			name = mission_to_abolish_slavery
+			months = long_modifier_time
+		}
+		scope:anti_slave_trade_ig = {
+			add_modifier = {
+				name = pledged_to_end_slave_trade
+				months = normal_modifier_time
+			}
+		}
+		every_country = {
+			limit = {
+				is_country_type = decentralized
+				NOT = {	has_law = law_type:law_slavery_banned }
+				any_neighbouring_state = { this = scope:african_colony_state }
+			}
+			change_tension = {
+				country = root
+				value = 20
+			}
+		}
+		custom_tooltip = africa_colonial_events.5.a.tt
+	}
+
+	option = {
+		name = africa_colonial_events.5.b
+		default_option = yes
+		scope:anti_slave_trade_ig = {
+			add_modifier = {
+				name = refused_pledge_to_end_slave_trade
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.5.c
+		scope:african_colony_state = {
+			add_modifier = {
+				name = slave_trade_collaboration
+				months = normal_modifier_time
+			}
+		}
+		scope:anti_slave_trade_ig = {
+			add_modifier = {
+				name = encouraged_slave_trade
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+africa_colonial_events.6 = {
+	type = country_event
+	placement = scope:african_colony_state
+
+	title = africa_colonial_events.6.t
+	desc = africa_colonial_events.6.d
+	flavor = africa_colonial_events.6.f
+
+	event_image = {
+		video = "gfx/event_pictures/africa_public_protest.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/africa/public_protest"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	duration = 3
+
+	trigger = {
+		has_modifier = mission_to_abolish_slavery
+		has_law = law_type:law_colonial_exploitation
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				is_incorporated = no
+				state_in_africa = yes
+				NOT = { has_modifier = improved_labor_conditions }
+			}
+			save_scope_as = african_colony_state
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.6.a
+
+		scope:african_colony_state = {
+			add_modifier = {
+				name = improved_labor_conditions
+				months = normal_modifier_time
+			}
+		}
+
+		ig:ig_landowners = {
+			add_modifier = {
+				name = curtailed_colonial_labor_abuses
+				months = normal_modifier_time
+			}
+		}
+
+		every_interest_group = {
+			limit = { has_modifier = pledged_to_end_slave_trade }
+			add_modifier = {
+				name = committed_to_ending_slave_trade
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.6.b
+		default_option = yes
+
+		every_interest_group = {
+			limit = {
+				law_stance = {
+					law = law_type:law_slave_trade
+					value < neutral
+				}
+			}
+			if = {
+				limit = { has_modifier = pledged_to_end_slave_trade }
+				remove_modifier = pledged_to_end_slave_trade
+			}
+			add_modifier = {
+				name = slavery_double_standard
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+africa_colonial_events.7 = {
+	type = country_event
+	placement = scope:african_colony_state
+
+	title = africa_colonial_events.7.t
+	desc = africa_colonial_events.7.d
+	flavor = africa_colonial_events.7.f
+
+	event_image = {
+		video = "gfx/event_pictures/Africa_diplomats_negotiating.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/africa/diplomats_negotiating"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	duration = 3
+
+	trigger = {
+		any_scope_state = {
+			is_incorporated = no
+			state_in_africa = yes
+			any_neighbouring_state = {
+				owner = {
+					is_country_type = decentralized
+				}
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				is_incorporated = no
+				state_in_africa = yes
+				any_neighbouring_state = {
+					owner = { is_country_type = decentralized }
+				}
+			}
+			random_neighbouring_state = {
+				limit = {
+					owner = { is_country_type = decentralized }
+				}
+				save_scope_as = african_colony_state
+				owner = { save_scope_as = visiting_colonized_country }
+			}
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.7.a
+		every_interest_group = {
+			limit = {
+				law_stance = {
+					law = law_type:law_protected_speech
+					value > neutral
+				}
+			}
+			add_modifier = {
+				name = expelled_visitors_from_colonies
+				months = normal_modifier_time
+			}
+		}
+
+		scope:visiting_colonized_country = {
+			change_tension = {
+				country = root
+				value = 20
+			}
+		}
+	}
+
+	option = {
+		name = africa_colonial_events.7.b
+		default_option = yes
+
+		every_scope_state = {
+			limit = {
+				is_incorporated = no
+				state_in_africa = yes
+				any_neighbouring_state = {
+					owner = scope:visiting_colonized_country
+				}
+			}
+			add_modifier = {
+				name = anti_colonial_sentiment
+				months = normal_modifier_time
+			}
+		}
+
+		scope:visiting_colonized_country = {
+			change_tension = {
+				country = root
+				value = -10
+			}
+		}
+	}
+}

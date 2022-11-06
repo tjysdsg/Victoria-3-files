@@ -1,0 +1,1440 @@
+﻿je_tutorial_expand_basic_building = {
+	should_be_pinned_by_default = yes
+	how_tutorial = lesson_expand_building_how
+	why_tutorial = lesson_expand_building_why
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+	
+	current_value = {
+		value = scope:target.level
+	}
+	
+	goal_add_value = {
+		value = 1
+	}
+	
+	is_progressing = {
+		exists = scope:target
+		scope:target = { is_under_construction = yes }
+	}
+	
+	invalid = {
+		custom_tooltip = {
+			text = je_tutorial_expand_basic_building_invalid_tooltip
+			OR = {
+				NOT = { exists = scope:target }
+				NOT = { scope:target.owner = root }
+			}
+		}
+	}
+	
+	on_complete = {
+		owner = {
+			start_tutorial_lesson = { 
+				tutorial_lesson = lesson_expand_basic_building_complete
+				journal_entry = je:je_tutorial_expand_basic_building
+			}
+		}
+	}
+	
+	on_invalid = {
+		remove_active_objective_subgoal = sg_expand_basic_building
+	}
+	
+	weight = 1000
+	inheritable = yes
+}
+
+je_tutorial_establish_trade_route = {
+	how_tutorial = lesson_establish_trade_route_how
+	why_tutorial = lesson_establish_trade_route_why	
+	should_be_pinned_by_default = yes
+	
+	status_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = je_tutorial_establish_trade_route_status_not_progressing
+				trigger = {
+					scope:journal_entry = {
+						is_progressing = no
+					}
+				}
+			}
+			desc = je_tutorial_establish_trade_route_status_progressing
+		}
+	}
+	
+	immediate = {
+		scope:journal_entry = {
+			set_variable = {
+				name = num_weeks_in_progress
+				value = 0
+			}
+			set_variable = {
+				name = original_num_import_routes
+				value = target.num_import_trade_routes
+			}
+		}
+	}
+	
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+	
+	current_value = {
+		value = scope:journal_entry.var:num_weeks_in_progress
+	}
+	
+	goal_add_value = {
+		value = 4
+	}
+	
+	is_progressing = {
+		scope:target = {
+			market_goods_has_goods_shortage = no
+		}
+	}
+	
+	on_weekly_pulse = {
+		effect = {
+			scope:journal_entry = { 
+				if = {
+					limit = {
+						is_progressing = yes 
+					}
+					change_variable = {
+						name = num_weeks_in_progress
+						add = 1
+					}
+				}
+			}
+		}
+	}
+	
+	invalid = {
+		NOT = { exists = scope:target }
+	}
+		
+	weight = 1010
+	inheritable = yes
+}
+
+je_tutorial_fix_budget_deficit = {
+	how_tutorial = lesson_budget_balance_how
+	why_tutorial = lesson_budget_balance_why	
+	should_be_pinned_by_default = yes
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+
+	immediate = {
+		set_variable = {
+			name = original_tax_level
+			value = tax_level_value
+		}
+		set_variable = {
+			name = original_num_taxed_goods
+			value = num_taxed_goods
+		}		
+	}
+	
+	complete = {
+		gold_reserves > 0
+	}
+
+	is_progressing = {
+		weekly_net_fixed_income > 0
+	}
+
+	fail = {
+		in_default = yes
+	}
+	
+	on_complete = {
+		owner = {
+			start_tutorial_lesson = { 
+				tutorial_lesson = lesson_budget_balance_complete
+				journal_entry = je:je_tutorial_fix_budget_deficit
+			}
+		}
+	}
+
+	on_fail = {
+		owner = {
+			start_tutorial_lesson = { 
+				tutorial_lesson = lesson_budget_balance_fail
+				journal_entry = je:je_tutorial_fix_budget_deficit
+			}
+		}
+	}
+	
+	weight = 1010
+	inheritable = yes
+}
+
+je_tutorial_change_production_method = {
+	how_tutorial = lesson_production_methods_how
+	why_tutorial = lesson_production_methods_why
+	should_be_pinned_by_default = yes
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	
+	immediate = {
+		scope:journal_entry = {
+			set_variable = {
+				name = num_weeks_in_progress
+				value = 0
+			}
+		}
+	}
+	
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+	
+	current_value = {
+		value = scope:journal_entry.var:num_weeks_in_progress
+	}
+	
+	goal_add_value = {
+		value = 4
+	}
+	
+	is_progressing = {
+		has_variable = has_changed_production_method
+	}
+	
+	on_weekly_pulse = {
+		effect = {
+			scope:journal_entry = { 
+				if = {
+					limit = {
+						is_progressing = yes 
+					}
+					change_variable = {
+						name = num_weeks_in_progress
+						add = 1
+					}
+				}
+			}
+		}
+	}
+	
+	invalid = {
+		custom_tooltip = {
+			text = je_tutorial_change_production_method_invalid_tooltip
+			OR = {
+				NOT = { exists = scope:target }
+				NOT = { scope:target.owner = root }
+			}	
+		} 			
+	}
+	
+	weight = 1010
+	inheritable = yes
+}
+
+je_tutorial_expand_productive_building = {
+	how_tutorial = lesson_expand_productive_building_how
+	why_tutorial = lesson_expand_productive_building_why
+	should_be_pinned_by_default = yes
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+	
+	is_progressing = {
+		exists = scope:target
+		scope:target = { is_under_construction = yes }
+	}
+	
+	current_value = {
+		value = scope:target.level
+	}
+	
+	goal_add_value = {
+		value = 1
+	}
+	
+	invalid = {
+		custom_tooltip = {
+			text = je_tutorial_expand_productive_building_invalid_tooltip
+			OR = {
+				NOT = { exists = scope:target }
+				NOT = { scope:target.owner = root }
+			}	
+		} 			
+	}
+	
+	on_invalid = {
+		remove_active_objective_subgoal = sg_expand_productive_building
+	}
+	
+	weight = 1001
+	inheritable = yes
+}
+
+je_tutorial_fix_unproductive_building = {
+	how_tutorial = lesson_fix_unproductive_building_how
+	should_be_pinned_by_default = yes
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+
+	immediate = {
+		scope:journal_entry = {
+			set_variable = {
+				name = num_weeks_in_progress_improve_market
+				value = 0
+			}
+		}
+	}
+
+	is_progressing = {
+		exists = scope:target
+		scope:target = { 
+			OR = {
+				earnings >= 5.0
+				is_subsidized = yes
+			}
+		}
+	}
+
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+
+	current_value = {
+		value = scope:journal_entry.var:num_weeks_in_progress_improve_market
+	}
+	
+	goal_add_value = {
+		value = 4
+	}
+
+	on_weekly_pulse = {
+		effect = {
+			scope:journal_entry = { 
+				if = {
+					limit = {
+						is_progressing = yes 
+					}
+					change_variable = {
+						name = num_weeks_in_progress_improve_market
+						add = 1
+					}
+				}
+			}
+		}
+	}
+	
+	invalid = {
+		custom_tooltip = {
+			text = je_tutorial_fix_unproductive_building_invalid_tooltip
+			OR = {
+				NOT = { exists = scope:target }
+				NOT = { scope:target.owner = root }
+			}	
+		} 			
+	}
+
+	on_complete = {
+		owner = {
+			start_tutorial_lesson = { 
+				tutorial_lesson = lesson_fix_unproductive_building_complete
+				journal_entry = je:je_tutorial_fix_unproductive_building
+			}
+		}
+	}
+	
+	weight = 1010
+	inheritable = yes
+	should_update_on_player_command = yes
+	should_be_pinned_by_default = yes
+}
+
+je_tutorial_grow_gdp = {
+	how_tutorial = lesson_grow_gdp_how
+	why_tutorial = lesson_grow_gdp_why
+	should_be_pinned_by_default = yes
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+	
+	current_value = {
+		value = gdp
+	}
+	goal_add_value = {
+		value = gdp
+		multiply = 0.25
+	}
+
+	on_complete = {
+		owner = {
+			start_tutorial_lesson = { 
+				tutorial_lesson = lesson_grow_gdp_complete
+				journal_entry = je:je_tutorial_grow_gdp
+			}
+		}
+	}
+	
+	weight = 1002
+	inheritable = yes
+}
+
+je_tutorial_promote_ig = {
+	
+	how_tutorial = lesson_promote_ig_how
+	why_tutorial = lesson_promote_ig_why
+	should_be_pinned_by_default = yes
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+	
+	is_progressing = {
+		any_interest_group = {
+			is_being_bolstered = yes
+		}
+	}
+	
+	immediate = {
+		scope:journal_entry = {
+			set_variable = {
+				name = num_weeks_in_progress
+				value = 0
+			}
+		}
+	}
+	
+	on_weekly_pulse = {
+		effect = {
+			scope:journal_entry = { 
+				if = {
+					limit = {
+						is_progressing = yes 
+					}
+					change_variable = {
+						name = num_weeks_in_progress
+						add = 1
+					}
+				}
+			}
+		}
+	}
+	
+	current_value = {
+		value = scope:journal_entry.var:num_weeks_in_progress
+	}
+	
+	goal_add_value = {
+		value = 26
+	}
+	
+	weight = 1002
+	inheritable = yes
+}
+
+je_tutorial_increase_market_access_by_decree = {
+	how_tutorial = lesson_market_access_by_decree_how
+	why_tutorial = lesson_market_access_by_decree_why
+	should_be_pinned_by_default = yes
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+
+	immediate = {
+		scope:journal_entry = {
+			set_variable = {
+				name = num_weeks_in_progress_improve_market
+				value = 0
+			}
+		}
+	}
+	
+	status_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = je_tutorial_increase_market_access_by_decree_status_first
+				trigger = {
+					scope:journal_entry = {
+						is_progressing = no
+					}
+				}
+			}
+			desc = je_tutorial_increase_market_access_by_decree_status_second
+		}
+	}
+	
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+
+	current_value = {
+		value = scope:journal_entry.var:num_weeks_in_progress_improve_market
+	}
+	
+	goal_add_value = {
+		value = 12
+	}
+
+	on_weekly_pulse = {
+		effect = {
+			scope:journal_entry = { 
+				if = {
+					limit = {
+						is_progressing = yes 
+					}
+					change_variable = {
+						name = num_weeks_in_progress_improve_market
+						add = 1
+					}
+				}
+			}
+		}
+	}
+	
+	is_progressing = {
+		exists = scope:target
+		scope:target = { 
+			has_decree = decree_road_maintenance
+		}
+	}
+
+	invalid = {
+		custom_tooltip = {
+			text = je_tutorial_increase_market_access_by_decree_invalid_tooltip
+			OR = {
+				NOT = { exists = scope:target }
+				NOT = { scope:target.owner = root }
+			}
+		}
+	}
+	
+	on_complete = {
+	}
+	
+	on_invalid = {
+		remove_active_objective_subgoal = sg_increase_market_access_by_decree
+	}
+	
+	weight = 1006
+	inheritable = yes
+}
+
+je_tutorial_improve_market_access_with_railways = {
+	how_tutorial = lesson_market_access_with_railways_how
+	why_tutorial = lesson_market_access_with_railways_why
+	should_be_pinned_by_default = yes
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+
+	immediate = {
+	}
+
+	complete = {
+		scope:target = {
+			any_scope_building = {
+				is_building_type = building_railway
+				level >= 1
+			}
+			state_infrastructure_balance > 0
+		}
+	}
+
+	is_progressing = {
+		scope:target = {
+			any_scope_building = {
+				is_building_type = building_railway
+				is_under_construction = yes
+			}
+		}
+	}
+	
+	invalid = {
+		custom_tooltip = {
+			text = je_tutorial_improve_market_access_with_railways_invalid_tooltip
+			OR = {
+				NOT = { exists = scope:target }
+				NOT = { scope:target.owner = root }
+			}
+		}
+	}
+	
+	on_complete = {
+	}
+	
+	on_invalid = {
+		remove_active_objective_subgoal = sg_improve_market_access_with_railways
+	}
+	
+	weight = 1008
+	inheritable = yes
+}
+
+je_tutorial_increase_immigration = {
+	how_tutorial = lesson_increase_immigration_how
+	why_tutorial = lesson_increase_immigration_why
+	should_be_pinned_by_default = yes
+	
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+	
+	current_value = {
+		value = scope:target.state_population
+	}
+
+	goal_add_value = {
+		add = 10000
+	}
+
+	invalid = {
+		custom_tooltip = {
+			text = je_tutorial_increase_immigration_invalid_tooltip
+			OR = {
+				NOT = { exists = scope:target }
+				NOT = { scope:target.owner = root }
+			}
+		}
+	}
+
+	on_invalid = {
+		remove_active_objective_subgoal = sg_increase_immigration
+	}
+	
+	weight = 1012
+	inheritable = yes
+}
+
+je_tutorial_expend_investment_pool = {
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	should_be_pinned_by_default = yes
+
+	complete = {
+		investment_pool = 0
+	}
+	
+	weight = 1015
+	inheritable = yes
+}
+
+je_tutorial_improve_supply_network = {
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	should_be_pinned_by_default = yes
+
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+
+	current_value = {
+		value = num_convoys_available
+	}
+
+	goal_add_value = {
+		value = {
+			add = num_convoys_required
+			add = 100
+			subtract = num_convoys_available
+		}
+	}
+	
+	weight = 1018
+	inheritable = yes
+}
+
+je_tutorial_improve_consumer_goods_access = {
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	should_be_pinned_by_default = yes
+		
+	complete = {
+		exists = scope:target
+		scope:target = { market_goods_pricier < 0.25 }
+	}
+	
+	weight = 1021
+	inheritable = yes
+}
+
+je_tutorial_make_interest_group_happy = {
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	should_be_pinned_by_default = yes
+		
+	complete = {
+		scope:target = { ig_approval >= 2 }
+	}
+	
+	weight = 1021
+	inheritable = yes
+	should_be_pinned_by_default = yes
+}
+
+je_tutorial_enact_institution_law = {
+	how_tutorial = lesson_enact_institution_law_how
+	why_tutorial = lesson_enact_institution_law_why
+	should_be_pinned_by_default = yes
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+		
+	complete = {
+		NOT = { has_law = scope:target }
+	}
+	
+	is_progressing = {
+		je_tutorial.target = {
+			is_same_law_group_as = root.currently_enacting_law.type
+		}
+	}
+
+	on_complete = {
+		owner = {
+			start_tutorial_lesson = { 
+				tutorial_lesson = lesson_enact_institution_law_complete
+				journal_entry = je:je_tutorial_enact_institution_law
+			}
+		}
+	}
+	
+	weight = 1022
+	inheritable = yes
+}
+
+je_tutorial_invest_into_an_institution = {
+	# how_tutorial = lesson_invest_into_an_institution_how
+	# why_tutorial = lesson_invest_into_an_institution_why
+	should_be_pinned_by_default = yes
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	
+	current_value = scope:target.investment
+	
+	is_progressing = {
+		expanding_institution = scope:target.type
+	}
+	
+	goal_add_value = 1
+	
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+	
+	invalid = {
+		NOT = { has_institution = scope:journal_entry.target.type }
+	}
+
+	on_complete = {
+		# owner = {
+		# 	start_tutorial_lesson = { 
+		# 		tutorial_lesson = lesson_invest_into_an_institution_complete
+		# 		journal_entry = je:je_tutorial_invest_into_an_institution
+		# 	}
+		# }
+	}
+	
+	weight = 1023
+	inheritable = yes
+}
+
+je_tutorial_reform_government = {
+	how_tutorial = lesson_reform_government_how
+	should_be_pinned_by_default = yes
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+		
+	complete = {
+		government_legitimacy >= 60 
+	}
+
+	current_value = legitimacy
+
+	on_complete = {
+		owner = {
+			start_tutorial_lesson = { 
+				tutorial_lesson = lesson_reform_government_complete
+				journal_entry = je:je_tutorial_reform_government
+			}
+		}
+	}
+	
+	weight = 1024
+	inheritable = yes
+	should_update_on_player_command = yes
+	should_be_pinned_by_default = yes
+}
+
+je_tutorial_increase_relations = {
+	how_tutorial = lesson_increase_relations_how
+	why_tutorial = lesson_increase_relations_why
+	should_be_pinned_by_default = yes
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+		
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+
+	current_value = {
+		value = scope:target.relations:root
+	}
+
+	goal_add_value = {
+		value = 0
+		scope:target = {
+			if = {
+				limit = {
+					relations:root < relations_threshold:hostile
+				}
+				add = define:NDiplomacy|RELATIONS_THRESHOLD_HOSTILE
+			}
+			else_if = {
+				limit = {
+					relations:root < relations_threshold:cold
+				}
+				add = define:NDiplomacy|RELATIONS_THRESHOLD_COLD
+			}
+			else_if = {
+				limit = {
+					relations:root < relations_threshold:poor
+				}
+				add = define:NDiplomacy|RELATIONS_THRESHOLD_POOR
+			}
+			else_if = {
+				limit = {
+					relations:root < relations_threshold:cordial
+				}
+				add = define:NDiplomacy|RELATIONS_THRESHOLD_CORDIAL
+			}
+			else_if = {
+				limit = {
+					relations:root < relations_threshold:amicable
+				}
+				add = define:NDiplomacy|RELATIONS_THRESHOLD_AMICABLE
+			}
+			else = {
+				add = define:NDiplomacy|RELATIONS_THRESHOLD_FRIENDLY
+			}
+			subtract = relations:root
+		}
+	}
+
+	is_progressing = {
+		has_diplomatic_pact = {
+			who = scope:target
+			type = increase_relations 
+	 	}
+	}
+
+	on_complete = {
+		owner = {
+			start_tutorial_lesson = { 
+				tutorial_lesson = lesson_increase_relations_complete
+				journal_entry = je:je_tutorial_increase_relations
+			}
+		}
+	}
+	
+	weight = 1026
+	inheritable = yes
+}
+
+je_tutorial_improve_rank = {
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	should_be_pinned_by_default = yes
+		
+	immediate = {
+		if = { 
+			limit = {
+				country_rank = rank_value:great_power
+			}
+			set_variable = tut_great_power
+		}
+	
+		else_if = { 
+			limit = {
+				country_rank = rank_value:major_power
+			}
+			set_variable = tut_major_power
+		}
+	
+		else_if = { 
+			limit = {
+				country_rank = rank_value:minor_power
+			}
+			set_variable = tut_minor_power
+		}
+	
+		else_if = { 
+			limit = {
+				country_rank = rank_value:insignificant_power
+			}
+			set_variable = tut_insignificant_power
+		}
+	
+		else_if= {
+			limit = {
+				country_rank = rank_value:unrecognized_power
+			}
+			set_variable = tut_unrecognized_power
+		}
+	}
+
+	complete = {
+		trigger_if = { 
+			limit = {
+				has_variable = tut_great_power
+			}
+			global_country_ranking = 1
+		} 
+		
+		trigger_else_if = {
+			limit = {
+				has_variable = tut_major_power		
+			}
+			country_rank = rank_value:great_power
+		}
+		
+		trigger_else_if = {
+			limit = {
+				has_variable = tut_minor_power
+			}
+			country_rank = rank_value:major_power
+		}
+		
+		trigger_else_if = {
+			limit = {
+				has_variable = tut_insignificant_power
+			}
+			country_rank = rank_value:minor_power
+		}
+
+		trigger_else_if = {
+			limit = {
+				has_variable = tut_unrecognized_power
+			}
+			country_rank >= rank_value:insignificant_power
+		}
+	}
+	
+	weight = 1028
+	inheritable = yes
+}
+
+je_tutorial_prevent_revolution = {
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	should_be_pinned_by_default = yes
+		
+	complete = {
+		any_civil_war = {
+			is_civil_war_type = revolution
+			civil_war_progress = 0
+		}
+	}
+	
+	weight = 1030
+	inheritable = yes
+}
+
+je_tutorial_earn_obligation = {
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	should_be_pinned_by_default = yes
+
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+
+	current_value = {
+		value = num_obligations_earned
+	}
+
+	goal_add_value = {
+		value = 2
+	}
+	
+	weight = 1040
+	inheritable = yes
+	should_be_pinned_by_default = yes
+}
+
+je_tutorial_expand_military = {
+	how_tutorial = lesson_expand_military_how
+	why_tutorial = lesson_expand_military_why
+	should_be_pinned_by_default = yes
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+
+	complete = {
+		scope:journal_entry = {
+			is_goal_complete = yes
+		}
+		has_healthy_economy = yes
+	}
+
+	current_value = {
+		value = root.army_size
+		add = root.navy_size
+	}
+
+	goal_add_value = {
+		value = root.army_size
+		add = root.navy_size
+		multiply = 0.2
+		min = 2
+		max = 20
+		round = yes
+	}
+
+	on_complete = {
+		owner = {
+			start_tutorial_lesson = { 
+				tutorial_lesson = lesson_expand_military_complete
+				journal_entry = je:je_tutorial_expand_military
+			}
+		}
+	}
+	
+	weight = 1044
+	inheritable = yes
+}
+
+je_tutorial_recruit_promote_commander = {
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	should_be_pinned_by_default = yes
+
+	how_tutorial = lesson_recruit_promote_commander_how
+	
+	status_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = je_tutorial_recruit_promote_commander_first
+				trigger = {
+					NOT = { exists = scope:journal_entry.var:tut_commander_target }
+				}
+			}
+			desc = je_tutorial_recruit_promote_commander_second
+		}
+	}
+	
+	complete = {
+		custom_tooltip = {
+			text = "je_tutorial_recruit_promote_commander_complete_trigger"
+			exists = scope:journal_entry.var:tut_commander_target
+			scope:journal_entry = {
+				var:tut_commander_target = {
+					prev.var:tut_commander_target_initial_rank < commander_rank
+				}
+			}
+		}
+	}
+
+	weight = 1046
+	inheritable = yes
+	should_update_on_player_command = yes
+	should_be_pinned_by_default = yes
+}
+
+je_tutorial_mobilize_army = {
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	should_be_pinned_by_default = yes
+
+	complete = {
+		any_scope_character = {
+			has_role = general
+			is_mobilized = yes
+#			fully_mobilized = yes
+		}
+	}
+
+	weight = 1048
+	inheritable = yes
+	should_be_pinned_by_default = yes
+}
+
+je_tutorial_send_general_to_front = {
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	should_be_pinned_by_default = yes
+
+	complete = {
+		scope:target = {
+			is_on_front = yes
+		}
+	}
+
+	weight = 1050
+	inheritable = yes
+	should_update_on_player_command = yes
+	should_be_pinned_by_default = yes
+}
+
+je_tutorial_convoy_raiding = {
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	should_be_pinned_by_default = yes
+
+	complete = {
+		scope:target = {
+			has_commander_order = raid_convoys
+		}
+	}
+
+	weight = 1052
+	inheritable = yes
+	should_update_on_player_command = yes
+	should_be_pinned_by_default = yes
+}
+
+je_tutorial_recover_from_default = {
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	should_be_pinned_by_default = yes
+
+	complete = {
+		in_default = no		
+	}
+	
+	weight = 1054
+	inheritable = yes
+	should_be_pinned_by_default = yes
+}
+
+je_tutorial_start_diplomatic_play = {
+	how_tutorial = lesson_start_diplomatic_play_how
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	should_be_pinned_by_default = yes
+
+	complete = {
+		is_diplomatic_play_initiator = yes
+	}
+	
+	weight = 1056
+	inheritable = yes
+	should_be_pinned_by_default = yes
+}
+
+je_tutorial_is_play_target = {
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	should_be_pinned_by_default = yes
+
+	complete = { #needs triggers
+		should_set_wargoal = no
+	}
+	
+	weight = 1058
+	inheritable = yes
+	should_be_pinned_by_default = yes
+}
+
+je_tutorial_capacity_deficit = {
+	how_tutorial = lesson_fix_capacity_deficit_how
+	
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	should_be_pinned_by_default = yes
+
+
+	on_weekly_pulse = {
+		effect = {
+			scope:journal_entry = { 
+				if = {
+					limit = {
+						is_progressing = yes 
+					}
+					change_variable = {
+						name = num_weeks_in_progress
+						add = 1
+					}
+				}
+			}
+		}
+	}
+	
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+	
+	current_value = {
+		value = scope:journal_entry.var:num_weeks_in_progress
+	}
+	
+	goal_add_value = {
+		value = 4
+	}
+
+	is_progressing = {
+		trigger_if = {
+			limit = {
+				has_variable = tut_bureaucracy_deficit
+			}
+			bureaucracy > 0
+		}
+		trigger_else_if = {
+			limit = {
+				has_variable = tut_authority_deficit
+			}
+			authority > 0
+		}
+		trigger_else_if = {
+			limit = {
+				has_variable = tut_influence_deficit
+			}
+			influence > 0
+		}
+	}
+	
+	immediate = {
+		scope:journal_entry = {
+			set_variable = {
+				name = num_weeks_in_progress
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				bureaucracy < -10
+			}
+			set_variable = tut_bureaucracy_deficit
+		}
+		else_if = {
+			limit = {
+				authority < -10
+			}
+			set_variable = tut_authority_deficit
+		}
+		else_if = {
+			limit = {
+				influence < -10
+			}
+			set_variable = tut_influence_deficit
+		}
+	}
+
+	status_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = je_tutorial_capacity_deficit_status_bureaucracy
+				trigger = {
+					has_variable = tut_bureaucracy_deficit
+				}
+			}
+			triggered_desc = {
+				desc = je_tutorial_capacity_deficit_status_authority
+				trigger = {
+					has_variable = tut_authority_deficit
+				}
+			}
+			triggered_desc = {
+				desc = je_tutorial_capacity_deficit_status_influence
+				trigger = {
+					has_variable = tut_influence_deficit
+				}
+			}
+		}
+	}
+	
+	on_complete = {
+		owner = {
+			start_tutorial_lesson = { 
+				tutorial_lesson = lesson_fix_capacity_deficit_complete
+				journal_entry = je:je_tutorial_capacity_deficit
+			}
+		}
+	}
+	
+	weight = 1056
+	inheritable = yes
+	should_update_on_player_command = yes
+	should_be_pinned_by_default = yes
+}
+
+je_tutorial_incorporate_state = {
+	how_tutorial = lesson_incorporate_state_how
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	should_be_pinned_by_default = yes
+
+	current_value = num_incorporated_states
+	
+	goal_add_value = 1
+	
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+	
+	status_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = je_tutorial_incorporate_state_status
+				trigger = {
+					NOT = {
+						any_scope_state = {
+							is_being_incorporated = yes
+						}
+					}
+				}
+			}
+			desc = je_tutorial_incorporate_state_status_progressing
+		}
+	}
+
+	is_progressing = {
+		any_scope_state = {
+			is_being_incorporated = yes
+		}
+	}
+	
+	on_complete = {
+		owner = {
+			start_tutorial_lesson = { 
+				tutorial_lesson = lesson_incorporate_state_complete
+				journal_entry = je:je_tutorial_incorporate_state
+			}
+		}
+	}
+	
+	weight = 1064
+	inheritable = yes
+}
+
+je_tutorial_declare_an_interest = {
+	how_tutorial = lesson_declare_interest_how
+	why_tutorial = lesson_declare_interest_why
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+	
+	current_value = num_active_interests
+	
+	goal_add_value = 1
+
+	is_progressing = {
+		num_interests >= scope:journal_entry.goal_value
+	}
+
+	on_complete = {
+		owner = {
+			start_tutorial_lesson = { 
+				tutorial_lesson = lesson_declare_interest_complete
+				journal_entry = je:je_tutorial_declare_an_interest
+			}
+		}
+	}
+
+	weight = 1066
+	inheritable = yes
+	should_be_pinned_by_default = yes
+}
+
+je_tutorial_colonize_state = {
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+
+	status_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = je_tutorial_colonize_state_status_first
+				trigger = {
+					scope:journal_entry = {
+						is_progressing = no
+					}
+				}
+			}
+			desc = je_tutorial_colonize_state_status_second
+		}
+	}
+
+	is_progressing = {
+		scope:journal_entry = {
+			has_variable = tut_colony_target
+			var:tut_colony_target = { 
+				is_under_colonization = yes 
+			}
+		}
+	}
+	
+	complete = {
+		custom_tooltip = {
+			text = "je_tutorial_colonize_state_grow_a_colony"
+			scope:journal_entry = {
+				has_variable = tut_colony_target
+				var:tut_colony_target = {
+					is_split_state = no
+				}
+			}
+		}
+	}
+	
+	weight = 1068
+	inheritable = yes
+	should_update_on_player_command = yes
+	should_be_pinned_by_default = yes
+}
+
+je_tutorial_make_peace = {
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+		
+	complete = {
+		is_at_war = no
+	}
+	
+	weight = 1068
+	inheritable = yes
+	should_update_on_player_command = yes
+	should_be_pinned_by_default = yes
+}
+
+je_tutorial_reach_end_date = {
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	active_update_frequency = 1
+	
+	complete = {
+		game_date > 1935.12.30
+	}
+	
+	weight = 1070
+	inheritable = yes
+	should_update_on_player_command = yes
+	should_be_pinned_by_default = no
+}
+
+je_tutorial_research_technology = {
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+
+	complete = {
+		custom_tooltip = {
+			text = je_tutorial_research_technology_complete_trigger
+			has_variable = tut_began_new_research
+			NOT = { exists = technology_being_researched }
+		}
+	}
+
+	is_progressing = {
+		exists = technology_being_researched
+	}
+	
+	status_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = je_tutorial_research_technology_status_progressing
+				trigger = {
+					scope:journal_entry = {
+						is_progressing = yes
+					}
+				}
+			}
+			desc = je_tutorial_research_technology_status_not_progressing
+		}
+	}
+	
+	weight = 1070
+	inheritable = yes
+	should_be_pinned_by_default = yes
+}

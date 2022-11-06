@@ -1,0 +1,101 @@
+﻿namespace = opium_events
+
+opium_events.1 = {
+	type = country_event
+
+	trigger = {
+	}
+
+	event_image = {
+		video = "gfx/event_pictures/southamerica_factory_opening.bk2"
+	}
+
+	duration = 3
+
+	placement = scope:opium_state
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/southamerica/factory_opening"
+
+	icon = "gfx/interface/icons/event_icons/event_trade.dds"
+
+	title = opium_events.1.t
+	desc = opium_events.1.d
+	flavor = opium_events.1.f
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				any_scope_building = {
+					is_building_type = building_opium_plantation
+					cash_reserves_ratio > 0.5
+					weekly_profit > 0
+					occupancy >= 0.75
+					level >= 10
+				}
+			}
+			save_scope_as = opium_state
+			random_scope_building = {
+				limit = {
+					is_building_type = building_opium_plantation
+					cash_reserves_ratio > 0.5
+					weekly_profit > 0
+					occupancy >= 0.75
+					level >= 10
+				}
+				save_scope_as = opium_building
+			}
+		}
+		random_market = {
+			limit = {
+				NOT = { owner = root }
+				any_trade_route = {
+					exporter.owner = root
+					goods = g:opium
+				}
+				owner = {
+					any_primary_culture = {
+						NOT = {
+							has_cultural_obsession = opium
+						}
+					}
+				}
+			}
+			owner = {
+				save_scope_as = opium_addict_country
+				random_primary_culture = {
+					limit = {
+						NOT = { has_cultural_obsession = opium }
+					}
+					save_scope_as = opium_addict_culture
+				}
+			}
+		}
+	}
+
+	option = {
+		name = opium_events.1.a
+		default_option = yes
+		add_modifier = {
+			name = opium_production_modifier
+			months = normal_modifier_time
+		}
+		ai_chance = {
+			base = 10
+		}
+	}
+
+	option = {
+		name = opium_events.1.b
+		scope:opium_addict_culture = {
+			add_cultural_obsession = opium
+		}
+		add_modifier = {
+			name = opium_exporter_modifier
+			months = normal_modifier_time
+		}
+		ai_chance = {
+			base = 1
+		}
+	}
+}

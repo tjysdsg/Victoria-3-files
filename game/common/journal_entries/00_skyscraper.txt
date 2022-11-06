@@ -1,0 +1,96 @@
+﻿je_skyscraper_site = {
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	on_monthly_pulse = {
+		effect = {
+			change_variable = {
+				name = skyscraper_var
+				add = 1
+			}
+		}
+	}
+
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+		any_scope_state = {
+			is_split_state = no
+			is_incorporated = yes
+			any_scope_building = {
+				is_building_type = building_urban_center
+				level >= 20
+			}
+		}
+	}
+
+	on_complete = {
+		remove_modifier = skyscraper_survey
+		trigger_event = { id = skyscraper.1 } # site found
+	}
+
+	invalid = {
+		NOT = {
+			any_scope_state = {
+				is_split_state = no
+				is_incorporated = yes
+				any_scope_building = {
+					is_building_type = building_urban_center
+					level >= 20
+				}
+			}
+		}
+	}
+
+	on_invalid = {
+		remove_modifier = skyscraper_survey
+		remove_variable = skyscraper_var
+	}
+
+	current_value = {
+		value = root.var:skyscraper_var
+	}
+
+	goal_add_value = {
+		value = 24
+	}
+
+	progressbar = yes
+
+	weight = 10
+
+	should_be_pinned_by_default = yes
+}
+
+je_skyscraper_construction = {
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	complete = {
+		scope:target = {
+			any_scope_building = {
+				is_building_type = building_skyscraper
+				is_under_construction = no
+			}
+		}
+	}
+
+	fail = {
+		NOT = {
+			any_scope_state = {
+				has_modifier = skyscraper_site
+			}
+		}
+	}
+	
+	on_fail = {
+		remove_variable = skyscraper_var
+	}
+
+	on_complete = {
+		trigger_event = { id = skyscraper.2 }
+		remove_variable = skyscraper_var
+		scope:target = {
+			remove_modifier = skyscraper_site
+		}
+	}
+
+	should_be_pinned_by_default = yes
+}

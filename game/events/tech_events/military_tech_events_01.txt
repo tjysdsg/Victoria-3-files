@@ -1,0 +1,341 @@
+﻿namespace = military_tech_events
+
+# Rifling
+military_tech_events.401 = {
+	type = country_event
+	placement = scope:rifle_state
+
+	title = military_tech_events.401.t
+	desc = military_tech_events.401.d
+	flavor = military_tech_events.401.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_gears_pistons.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/gears_pistons"
+
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	trigger = {
+		# triggered by rifling JE
+	}
+	immediate = {
+		random_scope_state = {
+			limit = {
+				any_scope_building = {
+					is_building_type = building_arms_industry
+            		level >= 3
+            		occupancy >= 0.75
+           		    OR = {
+              			has_active_production_method = pm_rifles
+                		has_active_production_method = pm_repeaters
+                		has_active_production_method = pm_bolt_action_rifles
+            		}
+				}
+			}
+			save_scope_as = rifle_state
+			random_scope_building = {
+				limit = {
+					is_building_type = building_arms_industry
+					level >= 3
+					occupancy >= 0.75
+		            OR = {
+              			has_active_production_method = pm_rifles
+                		has_active_production_method = pm_repeaters
+                		has_active_production_method = pm_bolt_action_rifles
+            		}
+				}
+				save_scope_as = rifle_factory
+			}
+		}
+		g:small_arms = { 
+			save_scope_as = small_arms_good 
+		}
+	}
+
+	option = { # 
+		name = military_tech_events.401.a
+		default_option = yes
+		scope:rifle_state = {
+			add_modifier = {
+				name = modern_rifle_arsenal
+				months = long_modifier_time
+			}
+		}
+	}
+	option = { # 
+		name = military_tech_events.401.b
+		add_technology_progress = { 
+			progress = 3000 technology = repeaters 
+		}
+		scope:rifle_state = {
+			add_modifier = {
+				name = arsenal_proving_ground
+				months = long_modifier_time
+			}
+		}
+	}
+}
+
+# Automatic Machine Guns
+military_tech_events.402 = {
+	type = country_event
+	placement = ROOT
+
+	title = military_tech_events.402.t
+	desc = military_tech_events.402.d
+	flavor = military_tech_events.402.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_before_the_battle.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/before_the_battle"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	trigger = {
+		# triggered by machine guns JE
+	}
+	immediate = {
+		random_scope_war = {
+			limit = {
+				any_scope_front = {
+					any_scope_general = {
+						owner = ROOT
+	                    commander_pm_usage = {
+	                        target = ROOT
+	                        production_method = pm_machine_gunners
+	                        value > 0.5
+	                    }
+					}
+				}
+			}
+			save_scope_as = machine_gun_war
+			random_scope_front = {
+				limit = {
+					any_scope_general = {
+						owner = ROOT
+						commander_pm_usage = {
+							target = ROOT
+							production_method = pm_machine_gunners
+							value > 0.5
+						}
+					}
+				}
+				random_scope_general = {
+					limit = {
+						owner = ROOT
+						commander_pm_usage = {
+							target = ROOT
+							production_method = pm_machine_gunners
+							value > 0.5
+						}
+					}
+					save_scope_as = machine_gun_general
+				}
+			}
+			random_country = {
+				limit = {
+					has_war_with = ROOT
+				}
+				save_scope_as = machine_gun_enemy
+			}
+		}
+	}
+	option = { # the enemy does have machine guns
+		name = military_tech_events.402.a
+		default_option = yes
+		trigger = {	# This event is available if the enemy has machine guns researched
+			scope:machine_gun_enemy = {
+				has_technology_researched = automatic_machine_guns
+			}
+		}
+		scope:machine_gun_general = {
+			add_modifier = {
+				name = machine_gun_expertise_low
+				months = short_modifier_time
+			}
+		}
+	}
+	option = { # the enemy does not have machine guns
+		name = military_tech_events.402.b
+		trigger = {	# This event is available if the enemy does not have machine guns researched
+			scope:machine_gun_enemy = {
+				NOT = {
+					has_technology_researched = automatic_machine_guns
+				}
+			}
+		}
+		scope:machine_gun_general = {
+			add_modifier = {
+				name = machine_gun_expertise_high
+				months = short_modifier_time
+			}
+		}
+	}
+	option = { # the general becomes adept at defensive warfare
+		name = military_tech_events.402.c
+		trigger = {
+			scope:machine_gun_general = {
+				OR = {
+					NOT = { has_trait = trench_rat }
+					NOT = { has_trait = stalwart_defender }
+				}
+			}
+		}
+		if = {
+			limit ={
+				scope:machine_gun_general = {
+					has_trait = stalwart_defender
+				}
+			}
+			scope:machine_gun_general = {
+				add_trait = trench_rat 
+			}
+		}
+		else = {
+			scope:machine_gun_general = {
+				add_trait = stalwart_defender
+			}
+		}
+	}
+}
+
+# Ironclads
+military_tech_events.403 = {
+	type = country_event
+	placement = ROOT
+
+	title = military_tech_events.403.t
+	desc = military_tech_events.403.d
+	flavor = military_tech_events.403.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_naval_battle.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/naval_battle"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	trigger = {
+		# triggered by ironclads JE
+	}
+	immediate = {
+		random_scope_character = {
+			limit = {
+				has_role = admiral
+				OR = {
+					has_commander_order = patrol_coast
+					has_commander_order = raid_convoys
+					has_commander_order = naval_invasion
+				}
+				commander_pm_usage = {
+					target = ROOT
+					production_method = pm_ironclads
+					value > 0.30
+				}
+			}
+			save_scope_as = ironclad_admiral
+		}
+	}
+
+	option = { # 
+		name = military_tech_events.403.a
+		add_modifier = {
+			name = armoured_doctrine
+			months = long_modifier_time
+		}
+	}
+	option = { # 
+		name = military_tech_events.403.b
+		add_modifier = {
+			name = ramming_doctrine
+			months = long_modifier_time
+		}
+	}
+	option = { # 
+		name = military_tech_events.403.c
+		default_option = yes
+		add_modifier = {
+			name = armoured_high_seas_fleet
+			months = long_modifier_time
+		}
+	}
+}
+
+# Monitors
+military_tech_events.404 = {
+	type = country_event
+	placement = ROOT
+
+	title = military_tech_events.404.t
+	desc = military_tech_events.404.d
+	flavor = military_tech_events.404.f
+
+	duration = 3
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_naval_battle.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/unspecific/naval_battle"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	trigger = {
+		# triggered by monitors JE
+	}
+	immediate = {
+		random_scope_character = {
+			limit = {
+				has_role = admiral
+				OR = {
+					has_commander_order = patrol_coast
+					has_commander_order = raid_convoys
+					has_commander_order = naval_invasion
+				}
+				commander_pm_usage = {
+					target = ROOT
+					production_method = pm_monitors
+					value > 0.30
+				}
+			}
+			save_scope_as = monitor_admiral
+		}
+	}
+	option = { # 
+		name = military_tech_events.404.a
+		default_option = yes
+		add_modifier = {
+			name = safer_shores
+			months = long_modifier_time
+		}
+	}
+	option = { # 
+		name = military_tech_events.404.b
+		add_modifier = {
+			name = defensive_doctrine
+			months = long_modifier_time
+		}
+	}
+	option = { # 
+		name = military_tech_events.404.c
+		add_modifier = {
+			name = quantity_over_quality
+			months = long_modifier_time
+		}
+	}
+}

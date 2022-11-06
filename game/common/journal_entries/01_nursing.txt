@@ -1,0 +1,57 @@
+﻿je_war_nursing = {
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	is_shown_when_inactive = {
+		is_player = yes
+		has_technology_researched = triage
+		is_at_war = yes
+		army_size >= 25
+	}
+
+	possible = {
+		has_technology_researched = modern_nursing
+		is_at_war = yes
+		army_size >= 40
+	}
+
+	immediate = {
+		trigger_event = { id = nursing_events.1 }
+		random_scope_war = {
+			save_scope_as = ongoing_journal_war
+		}
+	}
+
+	complete = {
+		country_pm_usage = {
+			target = ROOT
+			production_method = pm_field_hospitals
+			value > 0.25
+		}
+		# for these JE's we would want this to be true for X months, but excluding that for the sake of readability
+		any_scope_war = {
+			any_scope_front = {
+				front_side_pm_usage = {
+					target = ROOT
+					production_method = pm_field_hospitals
+					value > 0.5
+				}
+			}
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = nursing_events.4 }
+	}
+
+	invalid = {
+		is_at_war = no
+	}
+
+	on_monthly_pulse = {
+		random_events = {
+			100 = 0
+			10 = nursing_events.2
+			10 = nursing_events.3
+		}
+	}
+}
