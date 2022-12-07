@@ -7,15 +7,19 @@ types ongoing_outliner_items {
 			FancyTooltip_War = {}
 		}
 
-		cameracontrolwidget = {
-			parentanchor = center
-			position = { 0 0 }
-			size = { 500% 500% }
-			camera_position = { 0 0 -2 }
-			entity_instance = vfx_entity_ui_sidebar_war
-			alwaystransparent = yes
-			ignore_in_debug_draw = yes
-			gfxtype = jomini_entitygfx
+		vfx = {
+			blockoverride "size" {
+				size = { 500% 500% }
+			}
+			blockoverride "parent_anchor" {
+				parentanchor = center
+			}
+			blockoverride "camera_position" {
+				camera_position = { 0 0 -2 }
+			}
+			blockoverride "entity_instance" {
+				entity_instance = vfx_entity_ui_sidebar_war
+			}			
 		}
 		
 		icon = {
@@ -580,11 +584,11 @@ types ongoing_outliner_items {
 		
 		# OBJECTIVES / TUTORIAL
 		textbox = {
-			visible = no# "[And(GetPlayer.HasObjective, Not(IsDataModelEmpty(AccessPlayer.AccessActivePinnedPlayerObjectiveJournalEntries)))]"
+			visible = "[GetPlayer.HasObjective]"
 			text = "#title [AccessPlayer.GetObjective.GetName]#!"
 			autoresize = yes
 			multiline = yes
-			align = left|nobaseline
+			align = hcenter|nobaseline
 			minimumsize = { 340 -1 }
 			maximumsize = { 340 -1 }
 			margin = { 10 4 }
@@ -596,27 +600,30 @@ types ongoing_outliner_items {
 		}
 
 		textbox = {
-			visible = "[And(AccessPlayer.IsObjectiveIdle, Not(IsDataModelEmpty(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries)))]"
+			visible = "[GetPlayer.IsObjectiveIdle]"
 			text = "[AccessPlayer.GetObjective.GetObjectiveType.GetIdleHeader]"
 			autoresize = yes
 			multiline = yes
-			align = left|nobaseline
+			align = hcenter|nobaseline
 			minimumsize = { 340 -1 }
 			maximumsize = { 340 -1 }
 			margin = { 10 0 }
+			margin_top = 5
 			using = fontsize_large
 		}
 
 		textbox = {
-			visible = "[And(AccessPlayer.IsObjectiveIdle, Not(IsDataModelEmpty(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries)))]"
+			visible = "[GetPlayer.IsObjectiveIdle]"
 			text = "[AccessPlayer.GetObjective.GetObjectiveType.GetIdleHint]"
 			autoresize = yes
 			multiline = yes
-			align = left|nobaseline
+			align = hcenter|nobaseline
 			minimumsize = { 340 -1 }
 			maximumsize = { 340 -1 }
 			margin = { 10 0 }
+			margin_bottom = 5
 		}
+
 
 		flowcontainer = {
 			direction = vertical
@@ -627,14 +634,34 @@ types ongoing_outliner_items {
 				outliner_journal_entry = {}
 			}
 		}
+
+		flowcontainer = {
+			visible = "[And(And(Not(AccessPlayer.IsObjectiveIdle), And(GetPlayer.HasObjective, Not(IsDataModelEmpty(AccessPlayer.AccessActivePlayerObjectiveJournalEntries)) )), NotEqualTo_int32(GetDataModelSize(AccessPlayer.AccessActivePlayerObjectiveJournalEntries), GetDataModelSize(AccessPlayer.AccessActivePinnedPlayerObjectiveJournalEntries)))]"
+
+			textbox = {
+				text = "NUMBER_OF_PLAYER_OBJECTIVE_JOURNAL_ENTRIES"
+				autoresize = yes
+				multiline = yes
+				align = left|nobaseline
+				minimumsize = { 290 -1 }
+				maximumsize = { 290 -1 }
+				margin = { 10 5 }
+			}
+
+			button_icon_goto = {
+				parentanchor = vcenter
+				size = { 25 25 }
+				onclick = "[InformationPanelBar.OpenPanelTab('journal', 'journal')]"
+				tooltip = "GO_TO_BUTTON_JOURNAL"
+			}
+		}
 		
 		# OTHER JOURNAL ENTRIES
 		textbox = {
-			visible = "[Not(IsDataModelEmpty(AccessPlayer.AccessActivePinnedNonPlayerObjectiveJournalEntries))]"
-			text = "#title [SelectLocalization(Not(IsDataModelEmpty(AccessPlayer.AccessActivePlayerObjectiveJournalEntries)), 'OTHER_ACTIVE_JOURNAL_ENTRIES', 'ACTIVE_JOURNAL_ENTRIES')]#!"
+			text = "ACTIVE_JOURNAL_ENTRIES"
 			autoresize = yes
 			multiline = yes
-			align = left|nobaseline
+			align = hcenter|nobaseline
 			minimumsize = { 340 -1 }
 			maximumsize = { 340 -1 }
 			margin = { 10 4 }
@@ -654,6 +681,40 @@ types ongoing_outliner_items {
 			item = {
 				outliner_journal_entry = {}
 			}
+		}
+
+		flowcontainer = {
+			visible = "[And( Not( IsDataModelEmpty(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries) ), NotEqualTo_int32( GetDataModelSize(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries), GetDataModelSize(AccessPlayer.AccessActivePinnedNonPlayerObjectiveJournalEntries)))]"
+
+			textbox = {
+				text = "NUMBER_OF_NON_PLAYER_OBJECTIVE_JOURNAL_ENTRIES"
+				autoresize = yes
+				multiline = yes
+				align = left|nobaseline
+				minimumsize = { 290 -1 }
+				maximumsize = { 290 -1 }
+				margin = { 10 0 }
+				margin_top = 5
+				margin_bottom = 7
+			}
+
+			button_icon_goto = {
+				parentanchor = vcenter
+				size = { 25 25 }
+				onclick = "[InformationPanelBar.OpenPanelTab('journal', 'journal')]"
+				tooltip = "GO_TO_BUTTON_JOURNAL"
+			}
+		}
+
+		textbox = {
+			visible = "[IsDataModelEmpty(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries)]"
+			text = "NO_JOURNAL_ENTRIES_OUTLINER"
+			autoresize = yes
+			multiline = yes
+			align = hcenter|nobaseline
+			minimumsize = { 340 -1 }
+			maximumsize = { 340 -1 }
+			margin = { 10 5 }
 		}
 	}
 	

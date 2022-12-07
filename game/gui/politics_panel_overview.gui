@@ -193,7 +193,7 @@ types politics_panel_types
 				texture = "gfx/interface/icons/generic_icons/undecided_icon.dds"
 				size = { 18 18 }
 				tooltip = "[InterestGroup.GetPartyAffiliationTooltip]"
-			}		
+			}
 		}
 	}
 	
@@ -339,35 +339,44 @@ types politics_panel_types
 		margin = { 5 0 }
 		layoutpolicy_horizontal = expanding
 		layoutpolicy_vertical = preferred
-		tooltip = "GOVERNMENT_LEGITIMACY_TOOLTIP"
 		spacing = 5
 
 		hbox = {
 			layoutpolicy_horizontal = expanding
 			spacing = 10
+			datacontext = "[Country.GetGovernmentLegitimacyLevel]"
+			tooltip = "LEGITIMACY_LEVEL_ACTIVE_TOOLTIP"
 			
 			textbox = {
 				autoresize = yes
-				text = "#title [concept_legitimacy]:#!"
+				text = "[LegitimacyLevel.GetNameNoFormatting|v]"
 				align = left|nobaseline
 				elide = right
 			}
 			textbox = {
 				layoutpolicy_horizontal = expanding
 				size = { 0 20 }
-				text = "#variable [Country.GetGovernmentLegitimacy|0%]#!"
+				text = "#variable [Country.GetGovernmentLegitimacy]#!"
 				align = left|nobaseline
 				elide = right
 			}
 		}
 		
-		default_progressbar_horizontal = {
-			layoutpolicy_horizontal = expanding
-			size = { 0 15 }
-			blockoverride "values" {
-				value = "[FixedPointToFloat(Country.GetGovernmentLegitimacy)]"
-				min = 0
-				max = 1
+		levels_progressbar = {
+			datamodel = "[GetLegitimacyLevels]"
+			
+			blockoverride "item_properties" {
+				layoutstretchfactor_horizontal = "[LegitimacyLevel.GetWidth]"
+				tooltip = "[SelectLocalization( LegitimacyLevel.IsActive( Country.GetGovernmentLegitimacy ), 'LEGITIMACY_LEVEL_ACTIVE_TOOLTIP', 'LEGITIMACY_LEVEL_INACTIVE_TOOLTIP' )]"
+			}
+			blockoverride "level_active" {
+				visible = "[LegitimacyLevel.IsActive( Country.GetGovernmentLegitimacy )]"
+			}
+			blockoverride "last_level" {
+				visible = "[Not(EqualTo_int32( LegitimacyLevel.GetUpperBound, '(int32)100' ))]"
+			}
+			blockoverride "default_progressbar_value" {
+				value = "[LegitimacyLevel.GetProgress( Country.GetGovernmentLegitimacy )]"
 			}
 		}
 	}

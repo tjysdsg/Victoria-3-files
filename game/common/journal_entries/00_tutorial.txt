@@ -937,7 +937,7 @@ je_tutorial_prevent_revolution = {
 	complete = {
 		any_civil_war = {
 			is_civil_war_type = revolution
-			civil_war_progress = 0
+			count = 0
 		}
 	}
 	
@@ -1096,8 +1096,45 @@ je_tutorial_recover_from_default = {
 	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
 	should_be_pinned_by_default = yes
 
+	immediate = {
+		scope:journal_entry = {
+			set_variable = {
+				name = num_weeks_in_progress
+				value = 0
+			}
+		}
+	}
+	
 	complete = {
-		in_default = no		
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+	
+	current_value = {
+		value = scope:journal_entry.var:num_weeks_in_progress
+	}
+	
+	goal_add_value = {
+		value = 4
+	}
+	
+	is_progressing = {
+		taking_loans = no
+	}
+	
+	on_weekly_pulse = {
+		effect = {
+			scope:journal_entry = { 
+				if = {
+					limit = {
+						root = { in_default = no }
+					}
+					change_variable = {
+						name = num_weeks_in_progress
+						add = 1
+					}
+				}
+			}
+		}
 	}
 	
 	weight = 1054
@@ -1357,6 +1394,16 @@ je_tutorial_colonize_state = {
 			has_variable = tut_colony_target
 			var:tut_colony_target = { 
 				is_under_colonization = yes 
+			}
+		}
+	}
+	
+	invalid = {
+		scope:journal_entry = {
+			has_variable = tut_colony_target
+			OR = {
+				NOT = { exists = var:tut_colony_target }
+				var:tut_colony_target.num_provinces <= 0
 			}
 		}
 	}

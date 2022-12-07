@@ -15,6 +15,16 @@ types default_buttons
 		block "sound" {
 			using = sort_button_sound
 		}
+
+		### HIGHLIGHT
+		icon = {
+			block "selected_visibility" {
+				visible = no
+			}
+
+			using = highlighted_square_selection
+		}
+
 		texture = "gfx/interface/buttons/sort_button.dds"
 		gfxtype = buttongfx
 		effectname = "NoHighlight"
@@ -63,6 +73,7 @@ types default_buttons
 			alpha = 0
 		}		
 		using = default_mouse_states_animation
+
 	}
 	
 	type tab_button = button {
@@ -184,31 +195,37 @@ types default_buttons
 		}
 		
 		### TEXT
-		hbox = {
+		vbox = {
 			layoutpolicy_horizontal = expanding
-			layoutpolicy_vertical = expanding
+			layoutpolicy_vertical = preferred
 			
-			block "left_textbox" {
-				# title
-				textbox = {
-					layoutstretchfactor_horizontal = 5
-					layoutpolicy_horizontal = expanding
-					layoutpolicy_vertical = expanding
-					block "left_text" {}
-					margin_left = 40
-					margin_right = 5
-					elide = right
-					align = left|nobaseline
-					block "fontsize" {
-						using = fontsize_large
+			hbox = {
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+				
+				block "left_textbox" {
+					# title
+					textbox = {
+						layoutstretchfactor_horizontal = 5
+						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = expanding
+						block "left_text" {}
+						margin_left = 40
+						margin_right = 5
+						elide = right
+						align = left|nobaseline
+						block "fontsize" {
+							using = fontsize_large
+						}
+						default_format = "#title"
+						alwaystransparent = yes
+						fontsize_min = 12
 					}
-					default_format = "#title"
-					alwaystransparent = yes
-					fontsize_min = 12
 				}
+				# block for values
+				block "right_text" {}
 			}
-			# block for values
-			block "right_text" {}
+			block "below_textbox" {}
 		}
 	}
 	
@@ -891,20 +908,6 @@ template glow_button
 	gfxtype = buttongfx
 	effectname = "NoHighlight"
 	framesize = { 180 100 }
-	using = default_button_animation
-}
-
-template glow_button_intense
-{
-	block "sound" {
-		using = glow_button_sound
-	}
-	texture = "gfx/interface/buttons/glow_button_intense.dds"
-	spriteType = Corneredtiled
-	spriteborder = { 34 34 }
-	gfxtype = buttongfx
-	effectname = "NoHighlight"
-	framesize = { 70 70 }
 	using = default_button_animation
 }
 

@@ -286,17 +286,32 @@ types goods_state_panel_types
 
 					widget = { size = { 1 20 }}
 
-					default_header = {
-						parentanchor = hcenter
-						blockoverride "text" {
-							text = LOCAL_PRICE_STATE
+					### LOCAL PRICES
+				 	section_header_button = {
+				 		datacontext = "[GoodsStatePanel.GetGoods.GetState]"
+						size = { @panel_width_minus_10 38 }
+						
+						blockoverride "left_text" {
+							text = "LOCAL_PRICE_IN_STATE"
+						}
+						
+						blockoverride "onclick" {
+							onclick = "[GetVariableSystem.Toggle('local_prices_state')]"
+						}
+						
+						blockoverride "onclick_showmore" {
+							visible = "[Not(GetVariableSystem.Exists('local_prices_state'))]"
+						}
+
+						blockoverride "onclick_showless" {
+							visible = "[GetVariableSystem.Exists('local_prices_state')]"
 						}
 					}
 
 					flowcontainer = {
 						datamodel = "[GoodsStatePanel.AccessGoods.AccessMarket.AccessMarketStates]"
 						direction = vertical 
-						visible = "[Not(GetVariableSystem.Exists('local_prices_state'))]"
+						visible = "[GetVariableSystem.Exists('local_prices_state')]"
 						using = default_list_position
 
 						item = {

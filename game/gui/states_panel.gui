@@ -127,14 +127,17 @@ types state_panel_types
 				
 				state_panel_overview_content = {
 					visible = "[And(Not(GetVariableSystem.Exists('state_panel_condensed')), InformationPanel.IsTabSelected('overview'))]"
+					using = default_content_fade
 				}
 
 				state_panel_condensed = {
 					visible = "[And(GetVariableSystem.Exists('state_panel_condensed'), InformationPanel.IsTabSelected('overview'))]"
+					using = default_content_fade
 				}
 
 				state_panel_buildings_content = {
 					visible = "[InformationPanel.IsTabSelected('buildings')]"
+					using = default_content_fade
 
 					### To remove the "Right-click to open context menu" on buildings for States not owned by the player
 					onmousehierarchyenter = "[SetCanOpenRightClickContextMenu( ObjectsEqual(StatesPanel.GetState.GetCountry.Self, GetMetaPlayer.GetPlayedOrObservedCountry.Self) )]"
@@ -145,6 +148,7 @@ types state_panel_types
 
 				state_panel_modifiers_content = {
 					visible = "[InformationPanel.IsTabSelected('modifiers')]"
+					using = default_content_fade
 				}
 			}
 		}
@@ -831,7 +835,7 @@ types state_panel_types
 				}
 
 				state_panel_status_item_small = {
-					visible = "[State.IsTreatyPort]"
+					visible = "[State.IsFunctioningTreatyPort]"
 					tooltip = "TOOLTIP_TREATY_PORT"
 					
 					blockoverride "texture" {
@@ -842,6 +846,19 @@ types state_panel_types
 						text = "[concept_treaty_port]"
 					}
 				}
+				
+				state_panel_status_item_small = {
+					visible = "[And(Not(State.IsFunctioningTreatyPort),State.IsTreatyPort)]"
+					tooltip = "TOOLTIP_INACTIVE_TREATY_PORT"
+					
+					blockoverride "texture" {
+						texture = "gfx/interface/icons/state_status_icons/treaty_port_icon.dds"
+					}
+					
+					blockoverride "name" {
+						text = "Inactive [concept_treaty_port]"
+					}
+				}				
 				
 				state_panel_status_item_small = {
 					visible = "[State.HasClaims]"
@@ -941,6 +958,7 @@ types state_panel_types
 
 	type state_panel_population_content = flowcontainer {	
 		visible = "[InformationPanel.IsTabSelected('population')]"
+		using = default_content_fade
 		direction = vertical
 		using = default_list_position
 		margin_top = 10
@@ -1747,7 +1765,7 @@ types state_panel_types
 					}
 
 					state_panel_status_item_condensed_icon = {
-						visible = "[State.IsTreatyPort]"
+						visible = "[State.IsFunctioningTreatyPort]"
 						tooltip = "TOOLTIP_TREATY_PORT"
 						
 						blockoverride "texture" {
@@ -1756,6 +1774,19 @@ types state_panel_types
 						
 						blockoverride "name" {
 							text = "[concept_treaty_port]"
+						}
+					}
+				
+					state_panel_status_item_condensed_icon = {
+						visible = "[And(Not(State.IsFunctioningTreatyPort),State.IsTreatyPort)]"
+						tooltip = "TOOLTIP_INACTIVE_TREATY_PORT"
+						
+						blockoverride "texture" {
+							texture = "gfx/interface/icons/state_status_icons/treaty_port_icon.dds"
+						}
+						
+						blockoverride "name" {
+							text = "Inactive [concept_treaty_port]"
 						}
 					}
 				}
@@ -2574,7 +2605,19 @@ types building_item_types
 						tooltip = "[Building.GetDownsizeTooltip]"
 						onclick = "[Execute( Building.Downsize )]"
 						enabled = "[IsValid( Building.Downsize )]"
-						visible = "[And(Building.IsValid, Building.IsDownsizeable)]"
+						visible = "[And( And( Building.IsValid, Building.IsDownsizeable ), Not( ShouldAskConfirmation( Building.Downsize ) ) )]"
+						using = tooltip_below
+					}
+
+					### DOWNSIZE WITH CONFIRMATION
+					button_icon_minus_action = {
+						size = { 29 29 }
+						parentanchor = bottom
+						position = { 5 -5 }
+						tooltip = "[Building.GetDownsizeTooltip]"
+						onclick = "[PopupManager.AskConfirmation( Building.Downsize )]"
+						enabled = "[IsValid( Building.Downsize )]"
+						visible = "[And( And( Building.IsValid, Building.IsDownsizeable ), ShouldAskConfirmation( Building.Downsize ) )]"
 						using = tooltip_below
 					}
 

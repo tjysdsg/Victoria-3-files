@@ -68,16 +68,24 @@ types vfx_types {
 	type vfx = widget {
 		size = { 100% 100% }
 		allow_outside = yes
+
 		
 		cameracontrolwidget = {
+
 			alwaystransparent = yes
 			ignore_in_debug_draw = yes
 			gfxtype = jomini_entitygfx
-			
+		
+			block "parent_anchor" {}
+			block "position" {}
 			block "size" {
 				size = { 100% 100% }
 			}
+			
+			block "camera_position" {}
 			block "entity_instance" {}
+			block "alpha" {}
+			block "visible" {}
 		}
 	}
 }
@@ -127,41 +135,18 @@ types windows {
 			widget = {
 				size = { 100% 82 }
 			
-				icon = {
-					size = { 100% 100% }
-					using = top_header_bg
-								
-					modify_texture = {
-						texture = "gfx/interface/backgrounds/popup_bg_frame_mask.dds"
-						spriteType = Corneredstretched
-						texture_density = 2
-						spriteborder = { 120 150 }
-						blend_mode = alphamultiply
-					}
-					modify_texture = {
-						using = dec_pattern
-						alpha = 0.85
-					}
-					
-					icon = {
-						texture = "gfx/interface/backgrounds/popup_header_divider.dds"
-						size = { 100% 8 }
-						spriteType = Corneredtiled
-						spriteborder = { 120 0 }
-						texture_density = 2
-						parentanchor = bottom
-					}
-				}
+				popup_top_header = {}
 
 				textbox = {
 					block "first_line_position" {
 						position = { 0 24 }
 					}
-					size = { 85% 40 }
+					size = { 75% 40 }
 					block "window_header_name" {
 						text = ""
 					}
 					elide = right
+					fontsize_min = 14
 					parentanchor = hcenter
 					align = center|nobaseline
 					using = header_font
@@ -174,13 +159,7 @@ types windows {
 		}
 		
 		### FRAME
-		icon = {
-			size = { 100% 100% }
-			texture = "gfx/interface/backgrounds/popup_bg_frame.dds"
-			spriteType = Corneredstretched
-			spriteborder = { 120 90 }
-			texture_density = 2
-		}
+		popup_bg_frame = {}
 		
 		### BACK
 		container = {
@@ -372,30 +351,7 @@ types windows {
 							position = { 0 -4 }
 							parentanchor = hcenter
 							
-							background = {
-								using = top_header_bg
-								
-								modify_texture = {
-									texture = "gfx/interface/backgrounds/top_header_frame_mask.dds"
-									spriteType = Corneredstretched
-									texture_density = 2
-									spriteborder = { 80 0 }
-									blend_mode = alphamultiply
-								}
-								modify_texture = {
-									texture = "gfx/interface/backgrounds/top_header_dec.dds"
-									spriteType = Corneredstretched
-									texture_density = 2
-									spriteborder = { 280 0 }
-									blend_mode = overlay
-								}
-							}
-							background = {
-								texture = "gfx/interface/backgrounds/top_header_frame.dds"
-								spriteType = Corneredstretched
-								texture_density = 2
-								spriteborder = { 80 0 }
-							}
+							using = sidepanel_top_header
 						}
 						
 						### TEXT
@@ -531,7 +487,7 @@ types windows {
 		}
 	}
 
-	### DEFAULT WINDOW
+	### DEFAULT WINDOW VBOX
 	type default_block_window_vbox = default_block_window {
 
 		blockoverride "scrollarea_content_vbox" {
@@ -562,6 +518,7 @@ types windows {
 		size = { 10 10 }
 	}
 
+	### DEFAULT WINDOW TWO LINES
 	type default_block_window_two_lines = default_block_window {
 		blockoverride "header_texts" {
 			textbox = {
@@ -639,157 +596,7 @@ types windows {
 		}
 		
 		### HEADER BG
-		widget = {
-			size = { 100% 92 }
-			position = { 0 76 }
-			
-			# behind filler
-			background = {
-				texture = "gfx/interface/backgrounds/sidepanel_filler.dds"
-				spriteType = CorneredTiled
-				spriteborder = { 20 20 }
-				margin = { 30 0 }
-				
-				modify_texture = {
-					texture = "gfx/interface/backgrounds/default_bg_shading.dds"
-					spriteType = Corneredstretched
-					spriteborder = { 0 0 }
-					blend_mode = overlay
-					alpha = 0.8
-				}
-
-				modify_texture = {
-					using = texture_velvet
-				}
-			}
-			# behind decoration
-			background = {
-				texture = "gfx/interface/backgrounds/fullscreen_header_behind.dds"
-				spriteType = Corneredtiled
-				spriteborder = { 600 0 }
-				texture_density = 2
-				margin_left = -15
-				margin_right = -10
-				
-				modify_texture = {
-					using = texture_velvet
-				}
-				modify_texture = {
-					using = texture_cloth
-					alpha = 0.15
-				}
-			}
-			
-			# header base
-			background = {
-				using = top_header_bg
-				margin_left = -15
-				margin_right = -10
-				
-				modify_texture = {
-					texture = "gfx/interface/backgrounds/fullscreen_header_title_mask.dds"
-					spriteType = Corneredtiled
-					spriteborder = { 600 0 }
-					texture_density = 2
-					blend_mode = alphamultiply
-				}
-			}
-			
-			# header dec left (copied header base to be able to mask a fade)
-			widget = { 
-				size = { 50% 100% }
-				parentanchor = left
-				
-				background = {
-					using = top_header_bg
-					margin_left = -15
-					
-					modify_texture = {
-						texture = "gfx/interface/backgrounds/fullscreen_header_title_mask_half.dds"
-						spriteType = Corneredtiled
-						spriteborder = { 0 0 }
-						spriteborder_right = 0
-						spriteborder_left = 600
-						texture_density = 2
-						blend_mode = alphamultiply
-					}
-					
-					modify_texture = {
-						texture = "gfx/interface/backgrounds/fullscreen_header_dec.dds"
-						spriteType = Corneredtiled
-						spriteborder = { 0 0 }
-						spriteborder_right = 0
-						spriteborder_left = 600
-						texture_density = 2
-						blend_mode = overlay
-					}
-					
-					modify_texture = {
-						texture = "gfx/interface/masks/fade_horizontal_right.dds"
-						blend_mode = alphamultiply
-						alpha = 0.5
-					}
-				}
-			}
-			
-			# header dec right (copied header base to be able to mask a fade)
-			widget = { 
-				size = { 50% 100% }
-				parentanchor = right
-				
-				background = {
-					using = top_header_bg
-					margin_right = -10
-					
-					modify_texture = {
-						texture = "gfx/interface/backgrounds/fullscreen_header_title_mask_half.dds"
-						mirror = horizontal
-						spriteType = Corneredtiled
-						spriteborder = { 0 0 }
-						spriteborder_right = 0
-						spriteborder_left = 600
-						texture_density = 2
-						blend_mode = alphamultiply
-					}
-					
-					modify_texture = {
-						texture = "gfx/interface/backgrounds/fullscreen_header_dec.dds"
-						mirror = horizontal
-						spriteType = Corneredtiled
-						spriteborder = { 0 0 }
-						spriteborder_right = 0
-						spriteborder_left = 600
-						texture_density = 2
-						blend_mode = overlay
-					}
-					
-					modify_texture = {
-						texture = "gfx/interface/masks/fade_horizontal_left.dds"
-						blend_mode = alphamultiply
-						alpha = 0.5
-					}
-				}
-			}
-			
-			# header divider
-			divider_clean = {
-				blockoverride "fade" {}
-				parentanchor = bottom
-			}
-			
-			# header frame
-			widget = { 
-				size = { 100% 100% }
-				
-				background = {
-					texture = "gfx/interface/backgrounds/fullscreen_header_frame.dds"
-					spriteType = Corneredtiled
-					spriteborder = { 600 0 }
-					texture_density = 2
-					margin_right = 5
-				}
-			}
-		}
+		fullscreen_top_header = {}
 		
 		#left dark fade
 		widget = {

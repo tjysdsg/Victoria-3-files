@@ -176,7 +176,7 @@ types TooltipTypes
 		}
 
 		blockoverride "name" {
-			text = "[InterestGroup.GetNameNoFormatting]"
+			text = "INTEREST_GROUP_TOOLTIP_NAME"
 		}
 
 		blockoverride "type" {
@@ -395,6 +395,44 @@ types TooltipTypes
 				}
 			}
 		}
+	}
+
+	type FancyTooltip_Goods_Pop_Consumption = FancyTooltipWidgetType {
+		blockoverride "text" {
+			text = "DATA_GOODS_POP_CONSUMPTION_NAME_TOOLTIP"
+		}
+
+		blockoverride "icon_texture" {
+			texture = "[PopConsumptionGoods.GetGoods.GetTexture]"
+		}
+
+		blockoverride "name" {
+			text = "POP_GOODS_CONSUMPTION_TOOLTIP_HEADER"
+		}
+
+		blockoverride "type" {
+			text = "TOOLTIP_TYPE_GOODS"
+		}
+
+		blockoverride "color" {
+			color = "[PopConsumptionGoods.GetGoods.GetCategoryColor]"
+		}
+
+		blockoverride "buttons" {
+			flowcontainer = {
+				margin_top = 14
+				using = default_list_position
+
+				button = {
+					using = default_button
+					text = "BUTTON_DETAILS"
+					size = { 300 40 }
+					onclick = "[InformationPanelBar.OpenGoodsUsagePanel(PopConsumptionGoods.GetGoods.Self)]"
+				}
+			}
+		}
+
+		blockoverride "tooltip_content_after" {}
 	}
 
 	type FancyTooltip_PopType = FancyTooltipWidgetType {
@@ -1083,8 +1121,27 @@ types TooltipTypes
 			text = "DATA_WAR_NAME_TOOLTIP"
 		}
 
-		blockoverride "icon_texture" {
-			texture = "[War.GetDiplomaticPlay.GetInitiatorPrimaryWarGoal.GetType.GetTexture]"
+		blockoverride "replace_icon" {
+			icon = {
+				visible = "[War.GetDiplomaticPlay.GetInitiatorPrimaryWarGoal.IsValid]"
+				texture = "[War.GetDiplomaticPlay.GetInitiatorPrimaryWarGoal.GetType.GetTexture]"
+				size = { 45 45 }
+				parentanchor = center
+			}
+
+			icon = {
+				visible = "[And( Not( War.GetDiplomaticPlay.GetInitiatorPrimaryWarGoal.IsValid ),  War.GetDiplomaticPlay.GetTargetPrimaryWarGoal.IsValid )]"
+				texture = "[War.GetDiplomaticPlay.GetTargetPrimaryWarGoal.GetType.GetTexture]"
+				size = { 45 45 }
+				parentanchor = center
+			}
+
+			icon = {
+				visible = "[And( Not( War.GetDiplomaticPlay.GetInitiatorPrimaryWarGoal.IsValid ), Not( War.GetDiplomaticPlay.GetTargetPrimaryWarGoal.IsValid ) )]"
+				texture = "gfx/interface/icons/generic_icons/generic_concept_icon.dds"
+				size = { 45 45 }
+				parentanchor = center
+			}
 		}
 
 		blockoverride "name" {
@@ -1129,6 +1186,20 @@ types TooltipTypes
 
 		blockoverride "type" {
 			text = "TOOLTIP_TYPE_OBJECTIVE"
+		}
+	}
+
+	type FancyTooltip_LegitimacyLevel = FancyTooltipWidgetType {
+		blockoverride "text" {
+			text = "DATA_LEGITIMACY_LEVEL_TOOLTIP"
+		}
+
+		blockoverride "name" {
+			text = "[LegitimacyLevel.GetNameNoFormatting]"
+		}
+
+		blockoverride "type" {
+			text = "TOOLTIP_TYPE_LEGITIMACY_LEVEL"
 		}
 	}
 }

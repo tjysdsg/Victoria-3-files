@@ -148,6 +148,7 @@ types state_panel_types {
 			parentanchor = hcenter
 			direction = vertical
 			visible = "[Not(GetVariableSystem.Exists('buildings_list'))]"
+			using = default_content_fade
 			spacing = 10
 			margin_top = 10
 			
@@ -217,6 +218,7 @@ types state_panel_types {
 			parentanchor = hcenter
 			direction = vertical
 			visible = "[GetVariableSystem.Exists('buildings_list')]"
+			using = default_content_fade
 
 			buildings_list_item = {
 				datacontext = "[StatesPanel.AccessBuilding('building_urban_center')]"
@@ -267,6 +269,7 @@ types state_panel_types {
 			margin_top = 10
 			direction = vertical
 			visible = "[Not(GetVariableSystem.Exists('buildings_list'))]"
+			using = default_content_fade
 
 			fixedgridbox = {
 				datamodel = "[State.AccessCappedRuralBuildings]"
@@ -285,6 +288,7 @@ types state_panel_types {
 		### RESOURCE LIST VERSION
 		flowcontainer = {
 			visible = "[And( GetVariableSystem.Exists('buildings_list'), Not(IsDataModelEmpty(State.AccessCappedRuralBuildings)))]"
+			using = default_content_fade
 			margin_top = 5
 			parentanchor = hcenter
 			direction = vertical
@@ -305,6 +309,7 @@ types state_panel_types {
 
 		flowcontainer = {
 			visible = "[Not(GetVariableSystem.Exists('buildings_list'))]"
+			using = default_content_fade
 			minimumsize = { @panel_width -1 }
 			using = default_list_position
 			margin_top = 10 
@@ -344,6 +349,7 @@ types state_panel_types {
 			direction = vertical
 			using = default_list_position
 			visible = "[GetVariableSystem.Exists('buildings_list')]"
+			using = default_content_fade
 			
 			buildings_list = {
 				blockoverride "datamodel" {
@@ -366,6 +372,7 @@ types state_panel_types {
 		state_panel_button_unclickable = {
 			using = default_list_position
 			visible = "[Not(GetVariableSystem.Exists('buildings_list'))]"
+			using = default_content_fade
 			container = {
 				minimumsize = { @panel_width -1 }
 				resizeparent = yes
@@ -392,6 +399,7 @@ types state_panel_types {
 		### DEVELOPMENT LIST VERSION
 		flowcontainer = {
 			visible = "[GetVariableSystem.Exists('buildings_list')]"
+			using = default_content_fade
 			margin_top = 5
 			margin_bottom = 10
 			direction = vertical
@@ -528,7 +536,18 @@ types state_buildings
 
 						textbox = {
 							layoutpolicy_horizontal = expanding
-							alpha = "[TransparentIfFalse(Building.IsActive)]"
+							visible = "[Building.IsActive]"
+							text = "[Building.GetExpansionLevelDesc]"
+							using = tooltip_above
+							fontsize_min = 10
+							elide = right
+							align = left|nobaseline
+						}
+
+						textbox = {
+							layoutpolicy_horizontal = expanding
+							visible = "[Not(Building.IsActive)]"
+							alpha = 0.5
 							text = "[Building.GetExpansionLevelDesc]"
 							using = tooltip_above
 							fontsize_min = 10

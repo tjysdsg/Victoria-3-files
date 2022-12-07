@@ -12,7 +12,9 @@ types animation_assets {
 			block "visible" {}
 			
 			state = {
-				name = _show
+				block "trigger" {
+					name = _show
+				}
 				next = 2
 				
 				scale = 0.1
@@ -208,7 +210,7 @@ template window_hide_duration {
 	duration = 0.2
 }
 
-### look at me text
+### look at me text (alpha can't be too low)
 template look_at_me_text_animation {
 	state = {
 		trigger_on_create = yes
@@ -227,14 +229,23 @@ template look_at_me_text_animation {
 	}
 }
 
-### delay of info when you open interfaces
-template delay_secondary
-{
-	delay = 0.15
-}
-template delay_third
-{
-	delay = 0.3
+### look at me animation
+template look_at_me_animation {
+	state = {
+		trigger_on_create = yes
+		name = 1
+		next = 2
+		alpha = 0.2
+		duration = 0.8
+		using = Animation_Curve_Default
+	}
+	state = {
+		name = 2
+		next = 1
+		alpha = 1
+		duration = 0.8
+		using = Animation_Curve_Default
+	}
 }
 
 ### default fade in/out
@@ -454,7 +465,7 @@ template shimmer_fade_in {
 		}
 		next = shimmer
 		duration = 0
-		alpha = 0.5
+		alpha = 0
 
 		modify_texture = {
 			name = "glow"

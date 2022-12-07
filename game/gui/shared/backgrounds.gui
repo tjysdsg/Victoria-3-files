@@ -23,6 +23,186 @@ types background_components {
 		}
 	}
 	
+	# popup header
+	type popup_top_header = icon {
+		size = { 100% 100% }
+		using = top_header_bg
+					
+		modify_texture = {
+			texture = "gfx/interface/backgrounds/popup_bg_frame_mask.dds"
+			spriteType = Corneredstretched
+			texture_density = 2
+			spriteborder = { 120 150 }
+			blend_mode = alphamultiply
+		}
+		modify_texture = {
+			using = fancy_pattern_2
+			alpha = 0.5
+		}
+		
+		icon = {
+			texture = "gfx/interface/backgrounds/popup_header_divider.dds"
+			size = { 100% 8 }
+			spriteType = Corneredtiled
+			spriteborder = { 120 0 }
+			texture_density = 2
+			parentanchor = bottom
+		}
+	}
+	
+	# fullscreen header
+	type fullscreen_top_header = widget {
+		size = { 100% 92 }
+		position = { 0 76 }
+		
+		# behind filler
+		background = {
+			texture = "gfx/interface/backgrounds/sidepanel_filler.dds"
+			spriteType = CorneredTiled
+			spriteborder = { 20 20 }
+			margin = { 30 0 }
+			
+			modify_texture = {
+				texture = "gfx/interface/backgrounds/default_bg_shading.dds"
+				spriteType = Corneredstretched
+				spriteborder = { 0 0 }
+				blend_mode = overlay
+				alpha = 0.8
+			}
+
+			modify_texture = {
+				using = texture_velvet
+			}
+		}
+		# behind decoration
+		background = {
+			texture = "gfx/interface/backgrounds/fullscreen_header_behind.dds"
+			spriteType = Corneredtiled
+			spriteborder = { 600 0 }
+			texture_density = 2
+			margin_left = -15
+			margin_right = -10
+			
+			modify_texture = {
+				using = texture_velvet
+			}
+			modify_texture = {
+				using = texture_cloth
+				alpha = 0.15
+			}
+		}
+		
+		# header base
+		background = {
+			using = top_header_bg
+			margin_left = -15
+			margin_right = -10
+			
+			modify_texture = {
+				texture = "gfx/interface/backgrounds/fullscreen_header_title_mask.dds"
+				spriteType = Corneredtiled
+				spriteborder = { 600 0 }
+				texture_density = 2
+				blend_mode = alphamultiply
+			}
+		}
+		
+		# header dec left (copied header base to be able to mask a fade)
+		widget = { 
+			size = { 50% 100% }
+			parentanchor = left
+			
+			background = {
+				using = top_header_bg
+				margin_left = -15
+				
+				modify_texture = {
+					texture = "gfx/interface/backgrounds/fullscreen_header_title_mask_half.dds"
+					spriteType = Corneredtiled
+					spriteborder = { 0 0 }
+					spriteborder_right = 0
+					spriteborder_left = 600
+					texture_density = 2
+					blend_mode = alphamultiply
+				}
+				
+				modify_texture = {
+					texture = "gfx/interface/backgrounds/fullscreen_header_dec.dds"
+					spriteType = Corneredtiled
+					spriteborder = { 0 0 }
+					spriteborder_right = 0
+					spriteborder_left = 600
+					texture_density = 2
+					blend_mode = overlay
+				}
+				
+				modify_texture = {
+					texture = "gfx/interface/masks/fade_horizontal_right.dds"
+					blend_mode = alphamultiply
+					alpha = 0.5
+				}
+			}
+		}
+		
+		# header dec right (copied header base to be able to mask a fade)
+		widget = { 
+			size = { 50% 100% }
+			parentanchor = right
+			
+			background = {
+				using = top_header_bg
+				margin_right = -10
+				
+				modify_texture = {
+					texture = "gfx/interface/backgrounds/fullscreen_header_title_mask_half.dds"
+					mirror = horizontal
+					spriteType = Corneredtiled
+					spriteborder = { 0 0 }
+					spriteborder_right = 0
+					spriteborder_left = 600
+					texture_density = 2
+					blend_mode = alphamultiply
+				}
+				
+				modify_texture = {
+					texture = "gfx/interface/backgrounds/fullscreen_header_dec.dds"
+					mirror = horizontal
+					spriteType = Corneredtiled
+					spriteborder = { 0 0 }
+					spriteborder_right = 0
+					spriteborder_left = 600
+					texture_density = 2
+					blend_mode = overlay
+				}
+				
+				modify_texture = {
+					texture = "gfx/interface/masks/fade_horizontal_left.dds"
+					blend_mode = alphamultiply
+					alpha = 0.5
+				}
+			}
+		}
+		
+		# header divider
+		divider_clean = {
+			blockoverride "fade" {}
+			parentanchor = bottom
+		}
+		
+		# header frame
+		widget = { 
+			size = { 100% 100% }
+			
+			background = {
+				texture = "gfx/interface/backgrounds/fullscreen_header_frame.dds"
+				spriteType = Corneredtiled
+				spriteborder = { 600 0 }
+				texture_density = 2
+				margin_right = 5
+			}
+		}
+	}
+	
 	# header
 	type default_header_properties = widget {
 		block "size" {
@@ -130,6 +310,25 @@ types background_components {
 			}
 		}
 	}
+	
+	### FRAMES
+	
+	# popup frame
+	type popup_bg_frame = icon {
+		size = { 100% 100% }
+		texture = "gfx/interface/backgrounds/popup_bg_frame.dds"
+		spriteType = Corneredstretched
+		spriteborder = { 120 90 }
+		texture_density = 2
+	}
+	# frontend popup frame
+	type popup_bg_frame_frontend = icon {
+		texture = "gfx/interface/backgrounds/popup_bg_frame_frontend.dds"
+		spriteType = Corneredstretched
+		spriteborder = { 80 80 }
+		texture_density = 2
+		size = { 100% 100% }
+	}
 }
 
 ### TEMPLATES
@@ -192,6 +391,34 @@ template default_background #rounded bg
 	}
 	modify_texture = {
 		using = texture_velvet
+	}
+}
+
+template sidepanel_top_header
+{
+	background = {
+		using = top_header_bg
+		
+		modify_texture = {
+			texture = "gfx/interface/backgrounds/top_header_frame_mask.dds"
+			spriteType = Corneredstretched
+			texture_density = 2
+			spriteborder = { 80 0 }
+			blend_mode = alphamultiply
+		}
+		modify_texture = {
+			texture = "gfx/interface/backgrounds/top_header_dec.dds"
+			spriteType = Corneredstretched
+			texture_density = 2
+			spriteborder = { 280 0 }
+			blend_mode = overlay
+		}
+	}
+	background = {
+		texture = "gfx/interface/backgrounds/top_header_frame.dds"
+		spriteType = Corneredstretched
+		texture_density = 2
+		spriteborder = { 80 0 }
 	}
 }
 
@@ -693,21 +920,6 @@ template unclickable_listentry_small
 {
 	divider_clean = {
 		parentanchor = bottom|hcenter
-	}
-}
-
-template list_entry_fade
-{
-	texture = "gfx/interface/backgrounds/list_entry_fade.dds"
-	shaderfile = "gfx/FX/pdxgui_default.shader"
-	spriteType = Corneredtiled
-	spriteborder = { 2 2 }
-	
-	modify_texture = {
-		texture = "gfx/interface/masks/fade_vertical_bottom.dds"
-		spriteType = Corneredstretched
-		spriteborder = { 0 0 }
-		blend_mode = alphamultiply
 	}
 }
 

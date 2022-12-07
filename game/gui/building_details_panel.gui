@@ -103,14 +103,17 @@ types building_panels
 
 				building_details_panel_overview_content = {
 					visible = "[InformationPanel.IsTabSelected('overview')]"
+					using = default_content_fade
 				}
 
 				building_details_panel_workforce_content = {
 					visible = "[InformationPanel.IsTabSelected('workforce')]"
+					using = default_content_fade
 				}
 
 				modifier_list = {
 					visible = "[InformationPanel.IsTabSelected('modifiers')]"
+					using = default_content_fade
 				}
 			}
 		}
@@ -224,8 +227,19 @@ types building_panels
 							size = { 35 35 }
 							parentanchor = vcenter
 							tooltip = "[Building.GetDownsizeTooltip]"
-							visible = "[IsValid( Building.Downsize )]"
+							visible = "[And( IsValid( Building.Downsize ), Not( ShouldAskConfirmation( Building.Downsize ) ) )]"
 							onclick = "[Execute( Building.Downsize )]"
+							enabled = "[IsValid( Building.Downsize )]"
+							using = tooltip_below
+						}
+
+						### DOWNSIZE WITH CONFIRMATION
+						button_icon_minus_action = {
+							size = { 35 35 }
+							parentanchor = vcenter
+							tooltip = "[Building.GetDownsizeTooltip]"
+							visible = "[And( IsValid( Building.Downsize ), ShouldAskConfirmation( Building.Downsize ) )]"
+							onclick = "[PopupManager.AskConfirmation( Building.Downsize )]"
 							enabled = "[IsValid( Building.Downsize )]"
 							using = tooltip_below
 						}
@@ -1240,7 +1254,6 @@ types building_panels
 						parentanchor = hcenter
 						direction = vertical
 						datamodel = "[Building.AccessProducedGoods]"
-						spacing = 5
 
 						item = {
 							widget = {

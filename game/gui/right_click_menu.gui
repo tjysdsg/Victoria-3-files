@@ -41,6 +41,8 @@ types right_click_menu_types {
 				elide = right
 				margin = { 5 0 }
 			}
+
+			block "right_text" {}
 		}
 
 		block "margin" {
@@ -347,16 +349,38 @@ right_click_menu = {
 			}
 		}
 
+		### DOWNSIZE
 		right_click_menu_item = {
 			
 			blockoverride "margin" {
 				margin_left = 45
 			}
 			blockoverride "properties" {
-				visible = "[And(Building.IsValid, Building.IsDownsizeable)]"
+				visible = "[And( And( Building.IsValid, Building.IsDownsizeable ), Not( ShouldAskConfirmation( Building.Downsize ) ) )]"
 				tooltip = "[Building.GetDownsizeTooltip]"
 				enabled = "[IsValid( Building.Downsize )]"
 				onclick = "[Execute( Building.Downsize )]"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/buttons/button_icons/minus.dds"
+			}
+			
+			blockoverride = "text" {
+				text = "BUILDING_RIGHT_CLICK_MENU_DOWNSIZE"
+			}
+		}
+
+		### DOWNSIZE WITH CONFIRMATION
+		right_click_menu_item = {
+			blockoverride "margin" {
+				margin_left = 45
+			}
+			blockoverride "properties" {
+				visible = "[And( And( Building.IsValid, Building.IsDownsizeable ), ShouldAskConfirmation( Building.Downsize ) )]"
+				tooltip = "[Building.GetDownsizeTooltip]"
+				enabled = "[IsValid( Building.Downsize )]"
+				onclick = "[PopupManager.AskConfirmation( Building.Downsize )]"
 			}
 
 			blockoverride "texture" {
@@ -1043,6 +1067,32 @@ right_click_menu = {
 			blockoverride "text" {
 				text = "COUNTRY_RIGHT_CLICK_MENU_OBSERVE"
 			}
+		}
+		
+		textbox = {
+			text = "STATE_RIGHT_CLICK_MENU_STRATEGIC_REGION_TITLE"
+			autoresize = yes
+			align = left|nobaseline
+			margin_top = 15
+			margin_bottom = 2
+			margin_left = 10
+			visible = "[IsValid( GetPlayer.DeclareInterest( State.GetStateRegion.GetStrategicRegion ) )]"
+		}
+		
+		right_click_menu_item = {
+			blockoverride "properties" {
+				tooltip = "[SelectLocalization( GetPlayer.HasDeclaredInterest( State.GetStateRegion.GetStrategicRegion ), 'STATE_RIGHT_CLICK_MENU_REVOKE_INTEREST_TOOLTIP', 'STATE_RIGHT_CLICK_MENU_DECLARE_INTEREST_TOOLTIP' )]"
+				visible = "[IsValid( GetPlayer.DeclareInterest( State.GetStateRegion.GetStrategicRegion ) )]"
+				onclick = "[Execute( GetPlayer.DeclareInterest( State.GetStateRegion.GetStrategicRegion ) )]"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/lens_toolbar_icons/declare_interest.dds"
+			}
+			
+			blockoverride "text" {
+				text = "[SelectLocalization( GetPlayer.HasDeclaredInterest( State.GetStateRegion.GetStrategicRegion ), 'STATE_RIGHT_CLICK_MENU_REVOKE_INTEREST', 'STATE_RIGHT_CLICK_MENU_DECLARE_INTEREST' )]" 
+			}	
 		}
 	}
 }

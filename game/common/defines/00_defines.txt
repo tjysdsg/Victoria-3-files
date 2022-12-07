@@ -4,9 +4,6 @@
 	SAVE_VERSION = 0
 	MP_LAG_TICKS_BOUNDS = 28 # Host will advance up to a week ahead of players ( 7 * 4 )
 	DEAD_OBJ_UNDESTROYED_DAYS = 0	# number of days "killed"/removed objects will persist in memory before ultimately destroyed as they are referenced by events etc
-	DEFAULT_INCREMENT_DECREMENT_MAGNITUDE = 1
-	DEFAULT_INCREMENT_DECREMENT_MAGNITUDE_SHIFT = 10
-	DEFAULT_INCREMENT_DECREMENT_MAGNITUDE_CONTROL = 100
 	MAX_NUMBER_OF_AUTOSAVES = 5 	# The game will only keep the MAX_NUMBER_OF_AUTOSAVES latest autosaves.
 }
 
@@ -46,13 +43,13 @@ NAI = {
 	COUNTRY_GOAL_RECALC_PLAY_ALLY_STATUS_CHANGED = 20 # How many 'change points' are added to country AI goal when play ally status (on same side of diplomatic play) with another country changes
     COUNTRY_GOAL_RECALC_UNIFICATION_SUPPORT_CHANGED = 100 # How many 'change points' are added to country AI goal when then other country begins or stops supporting them as unification candidate
     COUNTRY_GOAL_RECALC_BANKRUPTCY = 50 # How many 'change points' are added to all other relevant countries' country AI goal when we go bankrupt
- 
+
 	DECLARE_BANKRUPTCY_MIN_DAYS_IN_DEFAULT = 30 # After this many days in default, the AI will declare bankruptcy
 
 	BASE_AGGRESSION = 0.5 # Base chance that AI will consider starting a diplo play each time the goal is checked (1 = 1%)
 	UNIFICATION_AGGRESSION_MULT_HIGHER_TIER = 20 # AI aggression is multiplied by this for calculating whether they should try to start a unification/leadership play, if the country would end up forming a nation of a higher tier
 	UNIFICATION_AGGRESSION_MULT_SAME_TIER = 0.1 # AI aggression is multiplied by this for calculating whether they should try to start a unification/leadership play, if the country would end up forming a nation of the same tier
-	
+
 	DIPLO_PROPOSAL_DAYS_LEFT_MAX = 12  # AI will not answer a proposal when it has more than this amount of days left (should map to DIPLOMATIC_ACTION_PENDING_APPROVAL_DAYS)
 	DIPLO_PROPOSAL_DAYS_LEFT_MIN = 4	# AI will always answer a proposal when it has this or less amount of days left (should map to DIPLOMATIC_ACTION_PENDING_APPROVAL_DAYS)
 	DIPLO_PROPOSAL_ANSWER_CHANCE = 5000 # Chance per tick of AI answering a proposal (1000 = 1%)
@@ -98,9 +95,6 @@ NAI = {
 	RECRUITABLE_COMMANDER_FAVORED_IG_FACTOR	= 1.5		# If a recruitable commander comes from an IG the AI likes, multiply score by this
 	RECRUITABLE_COMMANDER_DISFAVORED_IG_FACTOR = 0.5	# If a recruitable commander comes from an IG the AI dislikes, multiply score by this
 	
-	COMBAT_UNIT_ASSIGNMENT_THRESHOLD = 0.75			# If combat units assigned to a HQ is at least this of wanted amount, don't try to assign more units
-	COMBAT_UNIT_ASSIGNMENT_STICKINESS = 0.10		# If moving a commander makes a HQ's unit ratio worse than the ratio of target HQ + this, don't do the move
-	
 	CONSCRIPTION_ESTIMATED_MILITARY_POWER_MULT = 0.5 		# AI multiplies the value of conscriptable battalions by this to estimate potential combat power
 	
 	MOBILIZATION_BASE_DESIRED_RATIO_TO_ENEMY = 0.5   		# AI wants to have a total amount of mobilized army power that is equal to enemy mobilized army power * this
@@ -118,6 +112,7 @@ NAI = {
 	MOBILIZATION_MIN_MOBILIZATION_TERRITORIAL_RISK = 0.15   #  AI will always mobilize at least this amount of forces if they might lose territory from the war/play
 	MOBILIZATION_MIN_MOBILIZATION_LOCAL_FRONTS = 0.25       # AI will always mobilize at least this amount of forces if they have any local fronts
 	MOBILIZATION_MIN_MOBILIZATION_CONTAINMENT_WAR = 1.0   # AI will always mobilize at least this amount of forces if fighting in a containment war
+	MOBILIZATION_DEFAULT_CONSCRIPT_POWER_PROJECTION = 1 	# If conscript power projection can't be calculated due to lack of a regular army, use this default value
 	
 	CONSCRIPTION_INSUFFICIENT_FORCES_FACTOR = 1 					# For each 1% of mobilization the AI isn't able to meet, raise a base of 1% * this conscripts
 	CONSCRIPTION_RELATIVE_CONSCRIPTED_COMBAT_POWER_DIVISOR = 1		# Conscripted forces fraction of combat power is multiplied by this, then the result of CONSCRIPTION_INSUFFICIENT_FORCES_FACTOR is divided by (1 + the result)
@@ -176,7 +171,6 @@ NAI = {
 	CONSTRUCTION_MAX_NUM_GOVERNMENT_CONSTRUCTIONS_BASE = 1 # If country has this number of government building constructions queued, don't add anymore (base)
 	CONSTRUCTION_MAX_NUM_GOVERNMENT_CONSTRUCTIONS_SCALED = 0.05 # If country has this number of government building constructions queued, don't add anymore (scaled by construction production)
 	CONSTRUCTION_MAX_NUM_GOVERNMENT_CONSTRUCTIONS_SCALED_MAX = 19 # CONSTRUCTION_MAX_NUM_GOVERNMENT_CONSTRUCTIONS_SCALED can't be higher than this	
-	CONSTRUCTION_WANTED_SUPPLY_OF_CONSTRUCTION_GOODS = 1.0 # Try to import construction goods if supply-to-demand ratio is below this
 	CONSTRUCTION_RESERVES_NEW_CONSTRUCTIONS = 0.2 # If gold reserves are less than this after adding the cost of a new construction, don't queue it
 	CONSTRUCTION_DEBT_RESUME = 0.2 # If constructions are paused, resume once debt is this low relative to ceiling
 	CONSTRUCTION_DEBT_PAUSE = 0.4 # If in this much relative debt to debt ceiling, pause all non-critical constructions 	
@@ -237,16 +231,18 @@ NAI = {
 	# Confidence is added to boldness to determine whether the AI is willing to back down
 	DIPLO_PLAY_CONFIDENCE_FORCE_BALANCE_FACTOR = 75	 # Confidence level if force balance to the enemy is at DIPLO_PLAY_FORCE_BALANCE_SCALE, scaled down if lower
 	DIPLO_PLAY_CONFIDENCE_STRONG_ARMY_FACTOR = 15 	 # Scaled by our relative forces compared to DIPLO_PLAY_STRONG_ARMY_MAX
-	DIPLO_PLAY_CONFIDENCE_CIVIL_WAR_OR_UPRISING = 50 	 # Add this confidence to both sides in a civil war or native uprising
+	DIPLO_PLAY_CONFIDENCE_CIVIL_WAR_OR_UPRISING = 75 	 # Add this confidence to both sides in a civil war or native uprising
 	DIPLO_PLAY_CONFIDENCE_FROM_TURMOIL = -15 		 # At 100% turmoil across the country (weighted by state population), subtract this amount of confidence
 	DIPLO_PLAY_CONFIDENCE_FROM_LOYALISTS = 15 		 # At 100% turmoil across the country (weighted by state population), add this amount of confidence
 	DIPLO_PLAY_CONFIDENCE_FROM_DEVASTATION = -15	 # At 100% devastation, subtract this amount of confidence
 	DIPLO_PLAY_CONFIDENCE_FROM_DEBT_LEVEL = -25		 # At 100% debt level, subtract this amount of confidence
+	DIPLO_PLAY_CONFIDENCE_FROM_BANKRUPTCY = -25		 # Subtract this amount of confidence when bankrupt
 	DIPLO_PLAY_CONFIDENCE_FROM_GOLD_RESERVES = 15	 # At 100% gold reserves, add this amount of confidence
 	DIPLO_PLAY_CONFIDENCE_FROM_OWN_CONFLICTS = -25 # If we are in another conflict where military strength compared to our enemies is equal to or above DIPLO_PLAY_FORCE_BALANCE_SCALE, subtract this amount of confidence
 	DIPLO_PLAY_CONFIDENCE_FROM_ENEMY_TURMOIL = 10 		 # At 100% turmoil across the enemy country (weighted by state population), add this amount of confidence
 	DIPLO_PLAY_CONFIDENCE_FROM_ENEMY_DEVASTATION = 10	 # At 100% devastation for enemy, add this amount of confidence
 	DIPLO_PLAY_CONFIDENCE_FROM_ENEMY_DEBT_LEVEL = 10	 # At 100% debt level for enemy, add this amount of confidence
+	DIPLO_PLAY_CONFIDENCE_FROM_ENEMY_BANKRUPTCY = 10	 # If enemy is bankrupt, add this amount of confidence
 	DIPLO_PLAY_CONFIDENCE_FROM_ENEMY_CONFLICTS = 25 # If the other side is in another conflict where military strength compared to their enemies is equal to or above DIPLO_PLAY_FORCE_BALANCE_SCALE, add this amount of confidence	
 	DIPLO_PLAY_CONFIDENCE_VERY_LOW_THRESHOLD = -50 		# If confidence is this or below, show it as very low
 	DIPLO_PLAY_CONFIDENCE_LOW_THRESHOLD = -25 		# If confidence is this or below, show it as low
@@ -261,6 +257,7 @@ NAI = {
 	DIPLO_PLAY_NEUTRALITY_MIN = 0
 	DIPLO_PLAY_NEUTRALITY_PREFERENCE_DELTA_THRESHOLD = 50 # If the preference delta between the two sides is less than this, add the difference between the delta and this value to neutrality score
 	DIPLO_PLAY_NEUTRALITY_FROM_DEBT_LEVEL = 100 # At 100% debt level, add this amount of neutrality score
+	DIPLO_PLAY_NEUTRALITY_FROM_BANKRUPTCY = 100 # When bankrupt, add this amount of neutrality score
 	DIPLO_PLAY_NEUTRALITY_FROM_DEVASTATION_LEVEL = 100 # At 100% devastation across the country (weighted by state population), add this amount of neutrality score
 	DIPLO_PLAY_NEUTRALITY_FROM_TURMOIL = 100 # At 100% turmoil across the country (weighted by state population), add this amount of neutrality score
 	DIPLO_PLAY_NEUTRALITY_IN_SUBJECT_CONFLICT = -50 # If either side in the play is a subject, subtract this amount of neutrality score
@@ -392,9 +389,11 @@ NAI = {
 	
     # Below data is used for General Orders:
 	HQ_DEFENSE_MIN_THEATER_SCORE = 100								# Theater of local HQ must have at least this importance score to have a minimum garrison
-	HQ_DEFENSE_MIN_WANTED_GARRISON = 0.15						# Keep at least this number of local troops to garrison important HQs against enemy invasion
-	
+	HQ_DEFENSE_MIN_WANTED_GARRISON = 0.15							# Keep at least this number of local troops to garrison important HQs against enemy invasion
+
 	MAX_CONVOY_USAGE_FOR_SUPPLY_ROUTES = 0.5						# AI will not commit more than this fraction of its convoys to supporting overseas operations
+	
+	NUM_DAYS_TO_REMEMBER_FAILED_FRONT_ASSIGNMENT = 100 				# For how many days should the AI remember failing to assign a general to a front (and thus not try with that front again) 
 	
 	# If a front is worth less than this, the AI will not assign any generals to it
 	FRONT_IMPORTANCE_MIN_SCORE = 50		
@@ -495,9 +494,9 @@ NAI = {
 	MONEY_SPENDING_MIN_SURPLUS_TO_ADD_SHOULD_HAVE = 2000 # How much of a surplus in absolute money does AI want to have after increasing spending for a 'should-have' project
 	MONEY_SPENDING_MIN_SURPLUS_TO_ADD_WANTS_TO_HAVE = 5000 # How much of a surplus in absolute money does AI want to have after increasing spending for a 'wants-to-have' project
 	MONEY_SPENDING_MIN_SURPLUS_TO_ADD_NICE_TO_HAVE = 10000 # How much of a surplus in absolute money does AI want to have after increasing spending for a 'nice-to-have' project
-	MONEY_SPENDING_MIN_SURPLUS_TO_ALWAYS_ADD_SHOULD_HAVE = 25000 # If AI has this surplus in absolute money, it's always fine to increase spending on a 'should-have' project, regardless of income ratio
-	MONEY_SPENDING_MIN_SURPLUS_TO_ALWAYS_ADD_WANTS_TO_HAVE = 50000 # If AI has this surplus in absolute money, it's always fine to increase spending on a 'wants-to-have' project, regardless of income ratio
-	MONEY_SPENDING_MIN_SURPLUS_TO_ALWAYS_ADD_NICE_TO_HAVE = 100000 # If AI has this surplus in absolute money, it's always fine to increase spending on a 'nice-to-have' project, regardless of income ratio
+	MONEY_SPENDING_MIN_SURPLUS_TO_ALWAYS_ADD_SHOULD_HAVE = 20000 # If AI has this surplus in absolute money, it's always fine to increase spending on a 'should-have' project, regardless of income ratio
+	MONEY_SPENDING_MIN_SURPLUS_TO_ALWAYS_ADD_WANTS_TO_HAVE = 40000 # If AI has this surplus in absolute money, it's always fine to increase spending on a 'wants-to-have' project, regardless of income ratio
+	MONEY_SPENDING_MIN_SURPLUS_TO_ALWAYS_ADD_NICE_TO_HAVE = 60000 # If AI has this surplus in absolute money, it's always fine to increase spending on a 'nice-to-have' project, regardless of income ratio
 	MONEY_SPENDING_ACCEPTABLE_WAR_DEBT = 0.5 # If the AI has less than this % debt to ceiling, avoid doing cost-cutting at war for 'wants to have' and above
 	MONEY_SPENDING_MIN_RATIO_TO_CONSIDER_GOLD_RESERVES = 0.8 # How low of a income-to-expenses ratio does the AI need to have to try to cut spending regardless of how plentiful its gold reserves are (when at peace)
 	MONEY_SPENDING_MIN_WEEKS_OF_GOLD_RESERVES_TO_NOT_REMOVE_SHOULD_HAVE = 20 # If we have enough gold reserves to maintain our current spending for this long, don't decrease spending on a 'should-have'
@@ -509,7 +508,6 @@ NAI = {
 	MONEY_SPENDING_LAND_THREAT_THRESHOLD = 0.25 # If a hostile country has a more than this much larger army than AI does, it wants to increase military spending
 	MONEY_SPENDING_NAVY_THREAT_THRESHOLD = 0.50 # If a hostile country has a more than this much larger navy than AI does, it wants to increase military spending
 	MONEY_SPENDING_PRESTIGE_RIVAL_THRESHOLD = 0.5 # If a rival has this much more prestige than AI does, it wants to increase spending on art academies
-	MONEY_SPENDING_TECH_RIVAL_THRESHOLD = 0.25 # If a rival has this much more weekly innovation than AI does, it wants to increase spending on universities
 	
 	MONEY_SPENDING_MILITARY_CRITICAL_THRESHOLD = 0.5 # If actual-to-wanted number of barracks/naval bases is below this, AI will not consider downsizing them further
 	MONEY_SPENDING_CONSTRUCTION_CRITICAL_THRESHOLD = 0.25 # If actual-to-wanted number of construction sector buildings is below this, AI considers it very important to get more
@@ -635,18 +633,21 @@ NAI = {
 	PRODUCTION_METHOD_PRODUCED_VALUE_FACTOR = 0.25 # Per pound of produced goods in base value
 	PRODUCTION_METHOD_REDUCE_OUTPUT_PENALTY_FACTOR = 10 # Multiply method score by this if we're reducing the building's output penalties
 	PRODUCTION_METHOD_INCREASE_OUTPUT_PENALTY_FACTOR = 0.01 # Multiply method score by this if we're increasing the building's output penalties
-	PRODUCTION_METHOD_FAVORED_GOODS_FACTOR = 0.5 # Per base cost * units of goods produced that the AI favors
+	PRODUCTION_METHOD_FAVORED_GOODS_FACTOR = 0.5 # Per base cost * units of goods produced that the AI favors (for non military goods)
+	PRODUCTION_METHOD_FAVORED_MILITARY_GOODS_FACTOR = 1.0 # Per base cost * units of goods produced that the AI favors (for military goods)
 	PRODUCTION_METHOD_DISFAVORED_GOODS_FACTOR = -0.25 # Per base cost * units of goods produced that the AI disfavors
 	PRODUCTION_METHOD_UNDESIRABLE_GOODS_PRICE_THRESHOLD = 1.5 # If a PM using the 'most productive' logic makes use of a good whose price is above ( base * this ), reduce the score
 	PRODUCTION_METHOD_UNDESIRABLE_GOODS_PRICE_FACTOR = -0.5 # Per base cost * units of goods whose price is above undesirable price threshold
-	PRODUCTION_METHOD_STICKINESS = 1.25 # Score of current method is multiplied by this
+	PRODUCTION_METHOD_STICKINESS_UPGRADE = 0.95 # Score of non-current method is multiplied by this when it produces more goods base value in total
+	PRODUCTION_METHOD_STICKINESS_DOWNGRADE = 0.75 # Score of non-current method is multiplied by this when it produces less (or equal) goods base value in total
 	PRODUCTION_METHOD_CHANCE_TO_CHANGE = 0.1 # Chance that the AI will consider changing a production method when evaluating methods
 	PRODUCTION_METHOD_LOW_POP_THRESHOLD = 50000 # If a state's population is less than this, use the scoring factor below for low-pop PMs
 	PRODUCTION_METHOD_LOW_POP_FACTOR = 100 # If a state's population is less than PRODUCTION_METHOD_LOW_POP_THRESHOLD, multiply score by this
 		
 	# Below data is used to calculate AI's desire for peace
 	AI_PEACE_AGREEMENT_BASE_VALUE = 0
-	AI_PEACE_AGREEMENT_WHITE_PEACE = 10 # If no wargoals are being enforced on either side
+	AI_PEACE_AGREEMENT_WHITE_PEACE_BASE = 10 # If no wargoals are being enforced on either side
+	AI_PEACE_AGREEMENT_WHITE_PEACE_WAR_DURATION = 1 # For each month the war goes on add this to the acceptance for a white peace
 	AI_PEACE_AGREEMENT_WAR_SUPPORT_FACTOR = -1	
 	AI_PEACE_AGREEMENT_ALLY_WARGOAL_FACTOR = 10 # For each wargoal that our allies are pressing
 	AI_PEACE_AGREEMENT_SELF_WARGOAL_FACTOR = 30 # For each wargoal we have that's being pressed
@@ -663,12 +664,13 @@ NAI = {
 	
 	AI_PEACE_DESIRE_DROP_WAR_GOAL_THRESHOLD = 20 # For each this amount of ( peace desire - war support ) above 0, remove a war goal on our side
 	AI_PEACE_DESIRE_DROP_ALL_WAR_GOALS_THRESHOLD = 100 # At this amount of ( peace desire - war support ), drop all war goals on our side
-	AI_MONTHS_OF_REDUCED_PEACE_DESIRE = 6 # Before this amount of months, reduce AI peace desire
-	AI_PEACE_DESIRE_FROM_SHORT_WAR = -100 # Subtract this amount of peace desire for the above number of months
+	AI_MONTHS_OF_REDUCED_PEACE_DESIRE = 10 # Before this amount of months, reduce AI peace desire
+	AI_PEACE_DESIRE_FROM_SHORT_WAR = -10 # Subtract this amount of peace desire for the above number of months (multiplied by AI_MONTHS_OF_REDUCED_PEACE_DESIRE - months of war duration)
 	AI_PEACE_DESIRE_FROM_TURMOIL = 25 # Add this amount of peace desire at 100% radicals
 	AI_PEACE_DESIRE_FROM_DEVASTATION = 50 # Add this amount of peace desire at 100% devastation
 	AI_PEACE_DESIRE_FROM_LOYALISTS = -25 # Subtract this amount of peace desire at 100% loyalists
 	AI_PEACE_DESIRE_FROM_DEBT_LEVEL = 100 # Add this amount of peace desire at 100% debt level
+	AI_PEACE_DESIRE_FROM_BANKRUPTCY = 100 # Add this amount of peace desire when bankrupt
 	AI_PEACE_DESIRE_FROM_GOLD_RESERVES = -50 # Subtract this amount of peace desire at 100% gold reserves
 	
 	# AI country-specific goal data
@@ -750,7 +752,6 @@ NAI = {
 	TRADE_ROUTE_EXISTING_ROUTES_DIVISOR = 1.0 # Score for trade route is divided by (1 + this) for each trade route the market has of the same goods
 	TRADE_ROUTE_FAVORED_GOODS_MULT = 2.0 # Total weight is multiplied by this if the trade route is trading a good in a way the AI favors
 	TRADE_ROUTE_DISFAVORED_GOODS_MULT = 0.5 # Total weight is multiplied by this if the trade route is trading a good in a way the AI disfavors
-	TRADE_ROUTE_MIN_AVAILABLE_WORKFORCE = 5000 # If trade center state has less than this amount of available workforce, don't start a new trade route
 	TRADE_ROUTE_REPLACE_THRESHOLD = 5.0 # If there is a sufficiently better new trade route (old route score x this), remove the old one
 	TRADE_ROUTE_SUPPLY_NETWORK_STRENGTH_THRESHOLD = 1.0 # If supply network strength less than this, don't make new trade routes
 	TRADE_ROUTE_REDUCE_SHORTAGE_MULT = 10 # Multiply score by this if we're reducing the market's shortages
@@ -759,8 +760,6 @@ NAI = {
 	TRADE_ROUTE_BELOW_ACCEPTABLE_PRODUCTIVITY_MULT = 0.25 # Multiply score by this if the trade route is below TRADE_ROUTE_MIN_ACCEPTABLE_PRODUCTIVITY
 	TRADE_ROUTE_IMPORT_SCORE_MULT = 1.0 # How much does AI multiply score of import routes
 	TRADE_ROUTE_EXPORT_SCORE_MULT = 1.5 # How much does AI multiply score of export routes
-  
-	TAKE_NO_DECISION_WEIGHT = 5
 }
 
 NCountry = {
@@ -770,8 +769,6 @@ NCountry = {
 	COUNTRY_FORMATION_ANNEXATION_TARGET_MAX_RANK = 6
 	MOVE_CAPITAL_COOLDOWN_YEARS = 5
 	MOVE_MARKET_CAPITAL_COOLDOWN_YEARS = 5
-	MIN_DISAPPROVAL_VALUE = 0			
-	MAX_DISAPPROVAL_VALUE = 100
 	MAX_POWER_EFFECT = 1.0 # The max by which a power excess/deficiency modifier can scale						
 	SPLIT_STATE_MIN_LAND_SHARE = 0.05
 	SPLIT_STATE_DOMINANT_LAND_SHARE_THRESHOLD = 0.5	# States with more land share than this can use the region's name
@@ -797,8 +794,6 @@ NCountry = {
 }
 
 NPolitics = {
-	LEADER_IDEOLOGY_RANDOM_FACTOR = 5	# The higher this is, the more random leader ideologies will be
-	
 	TARIFF_LAW_GROUP = "lawgroup_trade_policy"	# Law from this group is shown to player as their tariff law
 	TAX_LAW_GROUP = "lawgroup_taxation"	# Law from this group is shown to player as their tax law
 	
@@ -979,8 +974,6 @@ NEconomy = {
 	POLLUTION_MAX = 255
 	POLLUTION_SPREAD_TO_NEIGHBOR = 0.25					# Adjacent state regions always have at least this much of their neighbor's pollution level
 
-	MARKET_UPDATE_COUNT = 5						# How many markets have their buy package caches updated per tick
-	
 	GOODS_LEADERBOARD_SIZE = 10					# How many spots there are on each goods leaderboard
 	MIN_SPOT_PRESTIGE_AWARD = 3					# How many spots on the goods leaderboard get awarded Prestige
 	
@@ -1032,6 +1025,7 @@ NEconomy = {
 
 	COUNTRY_MIN_CREDIT_BASE = 100000			# Added to the total Building Cash Reserves to determine credit limit (base)
 	COUNTRY_MIN_CREDIT_SCALED = 0.05 			# Added to the total Building Cash Reserves to determine credit limit (multiplied by GDP)
+	CREDIT_RATIO_MAX_OVERRUN = 0.01 			# Countries can accumulate this percentage more of a debt "hole" than their credit limit when in default
 	GOLD_RESERVE_RATIO_AT_START = 0.5			# Unless a country history's 'treasury' parameter is set to a non-zero value, countries start with this ratio of their gold reserve in gold
 	BUILDING_INITIAL_WAGE_WEEKS = 2				# A building will not adjust its wages for the first this many weeks of its existence
 	MAX_WAGE_STEP_CHANGE = 0.1					# Wage rates can change at most this much each week
@@ -1039,9 +1033,11 @@ NEconomy = {
 	HIRING_RATE = 0.1 							# Weekly hiring limit applied in a building per profession as a ratio of full employment
 	EMPLOYMENT_PROPORTIONALITY_LIMIT = 0.1		# A building cannot have a difference of ratio of full employment between any two professions greater than this limit
 	BUILDING_INIT_PROFIT_TARGET_MIN = 0.10 		# Minimum % income a building wants to have as profit during initialization (will decrease wages towards this)
-	BUILDING_INIT_PROFIT_TARGET_MAX = 0.20 		# Maximum % income a building wants to have as profit during initialization (will increase wages towards this)
-	BUILDING_PROFIT_TARGET_TO_RAISE_WAGES = 0.2	# Required profit margin raise wages no matter what, with BUILDING_WEEKS_BETWEEN_PAY_RAISES weeks cooldown
-	BUILDING_WEEKS_BETWEEN_PAY_RAISES = 26		# Cooldown between pay raises no matter what
+	BUILDING_INIT_PROFIT_TARGET_MAX = 0.30 		# Maximum % income a building wants to have as profit during initialization (will increase wages towards this)
+	BUILDING_RAISE_WAGES_MIN_RELEVANT_POP_SIZE = 50 # Pops with less workforce than this are ignored when checking whether a profitable building should raise wages because of radicalizing workers
+	BUILDING_RAISE_WAGES_DISCRIMINATION_FACTOR = 0.75 # Profitable buildings only care to raise wages for discriminated pops if their wealth to expected SoL ratio is less than this
+	BUILDING_PROFIT_TARGET_TO_RAISE_WAGES = 0.2	# Required profit margin to consider raising wages towards expected minimum, with BUILDING_WEEKS_BETWEEN_PAY_RAISES weeks cooldown
+	BUILDING_WEEKS_BETWEEN_PAY_RAISES = 26		# Cooldown between pay raises towards expected minimum
 	MIN_RAISE_TO_HIRE = 0.10					# The minimum required increase in wages for an employee to switch jobs (1.0 = +100% = x2)
 	BASE_RESOURCE_DISCOVER_CHANCE = 0.02 		# Per day (1.0 = 1%)
 	EMPLOYMENT_RESOURCE_DEPLETE_CHANCE = 0.005	# Multiplied by number of fully employed levels of the building
@@ -1070,13 +1066,8 @@ NEconomy = {
 	PRICE_REPORT_MAX_ENTRIES = 4
 	
 	NUM_COIN_ICONS = 13
-	COIN_ICON_EARNINGS_COMPARISON_STEP = 0.15
-	COIN_ICON_WAGE_COMPARISON_STEP = 0.05
 	COIN_ICON_PRICE_COMPARISON_STEP = 0.12
 	
-	EXPENSIVE_GOODS_THRESHOLD = 1.24			# Used for some triggers and gui functions
-	CHEAP_GOODS_THRESHOLD = 0.76				# Used for some triggers and gui functions
-
 	NUM_PROFITABILITY_ICONS = 13
 	PROFITABILITY_ICON_COMPARISON_STEP = 0.15
 
@@ -1094,7 +1085,7 @@ NEconomy = {
 	DEBT_SLAVERY_ENSLAVEMENT_RATE = 0.005		# Under debt slavery up to this much of a state's populace can be enslaved for their debts each week
 	DEBT_SLAVERY_ENSLAVEMENT_RATE_PER_POP = 0.1 # No more than this fraction of a single pop can be enslaved each week
 	DEBT_SLAVERY_ENSLAVEMENT_RATE_DROP_OFF_PER_WEALTH = 0.01 # Each point of wealth reduces max enslavement rate on a pop by this 
-	DEBT_SLAVERY_MAX_STATE_SLAVE_FRACTION = 0.2 # If more than this % of a state's population are slaves, do not enslave any more pops under debt slavery
+	DEBT_SLAVERY_MAX_STATE_SLAVE_FRACTION = 0.15 # If more than this % of a state's population are slaves, do not enslave any more pops under debt slavery
 
 	SLAVE_TRADE_MIN_VACANCIES_NEEDED_TO_IMPORT = 500 # There needs to be at least this many (non-subsistence) vacancies in buildings that can be filled by slaves in order for slave import to happen
 	SLAVE_TRADE_MIN_POPULATION_TO_EXPORT = 100000	 # There needs to be at least this many people in the state in order for it to be selected, or remain valid, as a slave import target
@@ -1138,36 +1129,13 @@ NMilitary = {
 	MANPOWER_DIVISOR = 10000 						# the strategic goods needed by soldiers are counted in sets of
 	MANPOWER_LOST_DUE_TO_ATTRITION_PER_WEEK_MIN = 0.05 	# The minimum percentage of manpower a unit can lose each week due to attrition
 	MANPOWER_LOST_DUE_TO_ATTRITION_PER_WEEK_MAX = 0.15 	# The maximum percentage of manpower a unit can lose each week due to attrition
-	PLANNING_COUNTER_DAILY_INCREMENT = 0.01 		# Planning counter will be incremented with this value on every partial daily tick 
-	PLANNING_COUNTER_DIV_ON_BATTLE_END = 2.0 		# Planning counter will be divided with this value when a battle ends
 	MIN_VARIABLE_DISTRIBUTION_PER_POP = 0
 	MAX_VARIABLE_DISTRIBUTION_PER_POP = 100
-	CMDR_CAUTION_FACTOR = 1.75						# The "strength factor" compared to expected average resistance the Commander wants in a Battle Plan before attacking
-	CONCENTRATION_GAIN_PER_TICK = 0.01
-	BATTLE_PLAN_COOLDOWN_TICKS_PER_DAY = 4
-	BATTLE_PLAN_COOLDOWN_BASE = 6					# In ticks (4 ticks = 1 day)		
-	BATTLE_PLAN_COOLDOWN_MIN = 2					# In ticks (4 ticks = 1 day)	
-	BATTLE_PLAN_COOLDOWN_MAX = 20					# In ticks (4 ticks = 1 day)	
 	BATTLE_LETHALITY_MIN = 0.001
 	BATTLE_LETHALITY_MAX = 0.005
-	BATTLE_PICKING_BASE_RANDOM = 0.5				# Base weight is 0 to this to ensure some randomness between provinces with similar weight
-	BATTLE_PICKING_STRENGTH_WEIGHT = 1.0			# Weight for picking province to attack, this is how important it is to attack under-defended provinces
-	BATTLE_PICKING_WIDTH_WEIGHT = 1.0				# this is for attacking provinces with a wide combat width
-	BATTLE_PICKING_NEIGHBOR_WEIGHT = 1.3			# this is for attacking provinces where we control many neighbors
-	BATTLE_PICKING_UNCONTROLLED_STATE = 2.0			# Add weight to ensure full control of contested States before advancing into new ones
-	BATTLE_PICKING_INVASION_TARGET = 2.0			# for target state of invasion
-	BATTLE_PICKING_INVASION_TARGET_CLOSENESS = 0.8	# added weight for being closer to the invasion target. Scaled by how close province is relative to other in the front
+	BATTLE_MAX_CASUALTY_DISADVANTAGE_PENALTY = 1.0  # a limit for the battle_casualties_disadvantage static modifier. 1.0 means a maximum of 100% penalty is applied.
 	MAX_CE_ADVANTAGE = 1
-	MIN_CE = 0.01									# to make sure countries have atleast 0.01 CE
-	MORALE_GAIN_ON_WIN_MULT = 0.01
-	WAR_SUPPORT_ON_BATTLE_WIN = 0.01
-	MORALE_CHANGE = 0.1								# Maximum percentage of morale change
-	SUPPLY_CHANGE_RATE = 0.5						# How much we try to move towards the current supply per week
-	SUPPLY_MIN_CHANGE = 0.05						# Minimum amount of supply change per week 
 	MIN_MANPOWER_CASUALTY_PER_ROUND = 5					# Minimum manpower losses per round
-	SUPPLY_PENALTY_PER_SEA_ZONE = -0.05				# Supply rating penalty for each Sea Zone jump from the closest port
-	SUPPLY_SEA_COASTAL = 0.1
-	SUPPLY_SEA_OCEAN = 0.05
     GENERAL_TRAVEL_PIXELS_TO_DAYS_SCALE = 0.045     # Used to convert a travel distance from pixels to days. Example: a travel of 500px becomes 500 * 0.05 = 25 days
     GENERAL_TRAVEL_CAP = 50                         # Limits the travel time to GENERAL_TRAVEL_CAP days. The overseas penalty (GENERAL_TRAVEL_OVERSEAS_SCALE) is still applied.
     GENERAL_TRAVEL_OVERSEAS_SCALE = 1.25            # Used if a general is traveling overseas. So the total duration of the travel becomes Duration * GENERAL_TRAVEL_OVERSEAS_SCALE
@@ -1177,26 +1145,12 @@ NMilitary = {
 	BASE_MORALE_RECOVERED_PER_DAY = 0.03			# Default morale recovered is 3% per day
 	BASE_MORALE_LOST_PER_DAY = 0.05					# Default morale lost when out of supply is 5%
 
-	# How manpower packages are selected in battle plans with several countries
-	BATTLE_PLAN_MULTI_ARMY_MORALE_WEIGHT = 1.5		# scale weight by how demoralized a country army is overall. Zero means its ignored.
-	BATTLE_PLAN_MULTI_ARMY_PER_COMMITTED = 0.2		# flat weight added per manpower package already committed to battle plan for country
-
-	# How manpower packages are selected in attacking battle plans with any number of countries. As the name suggest they are only applied to the attacker
-	BATTLE_PLAN_ATTACK_NO_SUPPLY_WEIGHT = 2.0		# the weight of a manpower package at 0% supply (applied last) (linearly interpolated with BATTLE_PLAN_ATTACK_FULL_SUPPLY_WEIGHT)
-	BATTLE_PLAN_ATTACK_FULL_SUPPLY_WEIGHT = 1.0		# the weight of a manpower package at 100% supply (applied last) (linearly interpolated with BATTLE_PLAN_ATTACK_NO_SUPPLY_WEIGHT)
-
 	BATTLE_PLAN_ADVANCE_PROGRESS_TO_LAUNCH = 100 			# required accumulated advance progress to launch
 	BATTLE_PLAN_SWITCH_ORDER_LOST_PROGRESS_PERCENT = 0.5	# 50% accumulated advance progress lost when switching from an attacking order
 	
-	BATTLE_BATTALIONS_MIN_BASELINE = 10					# minimum num combat units in Battle
-	BATTLE_BATTALIONS_MAX_PERCENTAGE = 1.0				# max num combat units as percentage of commanders units. Default 100%
-	BATTLE_BATTALIONS_MAX_BASELINE_GARRISON = 10		# max num combat units in Battle unassigned units in a HQ can give
-	BATTLE_REINFORCEMENT_CHANCE_POW = 2.0				# Random chance POW'd to this value to get final reinforcement percentage over baseline
-	BATTLE_REINFORCEMENT_COMMANDERLESS_FACTOR = 0.5		# Troops without a commander take this penalty to the number of reinforcements they can bring
 	BATTLE_BASE_MIN_PROVINCES_TAKEN = 10
 	BATTLE_BASE_MAX_PROVINCES_TAKEN = 30
 	BATTLE_PROVINCES_TAKEN_FRONT_PROVINCES_NUM_DIVISOR = 5		# Attacker takes (num provinces in front) divided by this as extra, clamped to BATTLE_BASE_MIN_PROVINCES_TAKEN and BATTLE_BASE_MAX_PROVINCES_TAKEN
-	BATTLE_PROVINCES_TAKEN_MAX_UNIT_RATIO_SCALE = 0.03			# Attacker gains 1 + ( this * attacking units left standing at end of battle ) taken province multiplier
 	BATTLE_PROVINCES_TAKEN_MAX_DEPTH = 3						# Maximum distance from battle provinces that provinces can be taken
 	DEFENSIVE_PROVINCES_RETAKEN_MAX_DEPTH = 1					# Maximum distance from battle provinces that provinces can be retaken in defensive battle
 	BATTLE_PROVINCES_TAKEN_THEATER_UNIT_SCALE = 2			# Scales number of provinces captured by theater-provinces / ( units-in-theater * this-define )
@@ -1321,11 +1275,11 @@ NDiplomacy = {
 	ALLIANCE_PACT_ACTION_NAME = "alliance"
 
 	WAR_GOAL_REPARATIONS_PACT_TYPE = "war_reparations"
-	WAR_GOAL_REPARATIONS_DURATION = 60 # In months
-	WAR_GOAL_OPEN_MARKET_DURATION = 60 # In months
-	WAR_GOAL_BAN_SLAVERY_DURATION = 60 # In months
+	WAR_GOAL_REPARATIONS_MONTHS = 60	# [>= 0]
+	WAR_GOAL_OPEN_MARKET_MONTHS = 60	# [>= 0]
+	WAR_GOAL_BAN_SLAVERY_MONTHS = 60	# [>= 0]
 	WAR_GOAL_HUMILIATION_PACT_TYPE = "humiliation"
-	WAR_GOAL_HUMILIATION_DURATION = 60 # In months
+	WAR_GOAL_HUMILIATION_MONTHS = 60	# [>= 0]
 	WAR_GOAL_MAKE_PUPPET_SUBJECT_TYPE = "subject_type_puppet"
 	WAR_GOAL_MAKE_DOMINION_SUBJECT_TYPE = "subject_type_dominion"
 	WAR_GOAL_MAKE_VASSAL_SUBJECT_TYPE = "subject_type_vassal"	
@@ -1337,7 +1291,7 @@ NDiplomacy = {
 	WAR_GOAL_LIBERATE_COUNTRY_LIBERATOR_START_RELATIONS = 50
 	WAR_GOAL_LIBERATE_COUNTRY_OPPRESSOR_START_RELATIONS = -50
 	WAR_GOAL_CONTAIN_THREAT_YEARS_SINCE_CONQUEST = 10
-	WAR_GOAL_REGIME_CHANGE_DURATION = 60 # Government in country with forced regime change is locked in for this number of months
+	WAR_GOAL_REGIME_CHANGE_MONTHS = 60 # Government in country with forced regime change is locked in for this number of months [>= 0]
 	WAR_GOAL_REGIME_CHANGE_MAX_IDEOLOGICAL_OPINION = -5 # If ideological opinion is above this, regime change can't be used
 	
 	WAR_GOAL_INFAMY_POPULATION_SCALING_FACTOR = 10000 # The amount of population by which the factor below is multiplied
@@ -1398,8 +1352,6 @@ NDiplomacy = {
 	DIPLOMATIC_PLAY_CLOSING_PHASE_START = 80 # After this, it isn't possible to join/sway further countries
 	DIPLOMATIC_PLAY_ESCALATION_WAR_BREAKOUT = 100
 	
-	BASE_COLONIAL_PROGRESS = 3 # Per day
-	MIN_COLONIAL_PROGRESS = 0.1 # Per day
 	COLONY_PROVINCE_BASE_SCORE = 10
 	COLONY_PROVINCE_COASTAL_SCORE = 30 # Replaces COLONY_BASE_SCORE for provinces with a coastline
 	COLONY_PROVINCE_ADJACENCY_SCORE = 20 # How much will colonies prioritize adjacency to existing provinces when growing the colony
@@ -1409,10 +1361,6 @@ NDiplomacy = {
 	BASE_WAR_SUPPORT = 100
 	MAX_WAR_SUPPORT = 100
 	MIN_WAR_SUPPORT = -100
-	BATTLE_WS_WINNER = 2
-	BATTLE_WS_LOSER = -1
-	BATTLE_WS_LOSSES_MULT = -0.2
-	BATTLE_WS_KILLS_MULT = 0.1
 	
 	COUNTRY_TIER_CITY_STATE_PRESTIGE = 0
 	COUNTRY_TIER_PRINCIPALITY_PRESTIGE = 5
@@ -1438,8 +1386,6 @@ NDiplomacy = {
 	RELEASE_COUNTRY_AS_INDEPENDENT_RELATIONS_BOOST = 50
 
 	INTEREST_NUM_DAYS_CHANGE = 30
-
-	ESCALATION_THRESHOLD_TO_SWITCH_COUNTRY = 50
 }
 
 NPops = {
@@ -1458,6 +1404,7 @@ NPops = {
 	WEALTH_PROGRESS_DECREASE = 0.1				# How fast wealth decrease when a pop can no longer afford its buy package. This factor is modified by how large the difference between income and cost is
 	WEALTH_PROGRESS_DECREASE_DEFICIT_MULT = 5
 
+	LOYALTIES_GAIN_GRACE_PERIOD = "1838.1.1"	# Until this date, only a scaling part of the Radicals and Loyalists gained from SOL changes will be applied
 	RADICALS_MAX_FROM_LOW_SOL = 0.1				# If pop is already this % radical, don't add more radicals from low SOL (Scales by delta between SoL and expected min SoL)
 	RADICALS_MAX_FROM_DISCRIMINATION = 0.5		# If pop is already this % radical, don't add more radicals from discrimination (Scales by literacy)
 	RADICALS_MONTHLY_FROM_LOW_SOL = 0.001		# Scales by delta between SoL and expected min SoL
@@ -1494,7 +1441,8 @@ NPops = {
 	LITERACY_DIEOFF_BIAS = 0.7					# Percentage of literate pops who die of old age compared to the current literacy rate, the higher this value the faster the population becomes illiterate when literacy suffers
 	
 	DISCRIMINATION_BASE = 25					# The base value of discrimination for a discriminated pop; maps to the % pay cut they take and the level of Turmoil they get
-	SOL_ADJUSTMENT_POP_IMPACT_FACTOR = 0.05		# How large part of a pop become revolutary/loyalist or stop being revolutionary/loyalist as a result of a change in standard of living
+	SOL_INCREASE_POP_IMPACT_FACTOR = 0.04		# How large part of a pop become more loyalist as a result of an increase in standard of living
+	SOL_DECREASE_POP_IMPACT_FACTOR = 0.06		# How large part of a pop become more radical as a result of a decrease in standard of living
 	
 	SOL_STARVING_THRESHOLD = 5
 	SOL_STRUGGLING_THRESHOLD = 10
@@ -1539,7 +1487,7 @@ NPops = {
 	MIGRATION_CULTURE_TARGET_MIN_MARKET_POPS = 100000	# A market must have at least this many possible migrants to trigger a mass migration
 	MIGRATION_CULTURE_TARGET_MIN_STATE_POPS = 10000		# A state must have at least this many possible migrants for mass emigration to occur
 	MIGRATION_CULTURE_TARGET_MIN_MARKET_ACCESS = 0.5	# A state must have at least this much market access to their market to be a mass migration target
-	MIGRATION_CULTURE_TARGET_MIN_ARABLE_LAND = 30		# A state must have at least this much arable land to be a mass migration target
+	MIGRATION_CULTURE_TARGET_MIN_ARABLE_LAND = 50		# A state must have at least this much arable land to be a mass migration target
 	MIGRATION_CULTURE_TARGET_APPEAR_CHANCE = 0.2 		# Per week (1 = 1%)
 	MIGRATION_CULTURE_TARGET_APPEAR_CHANCE_STRUGGLING_FACTOR = 0.1 # Chance increases by this for each point of SoL below 10
 	MIGRATION_CULTURE_TARGET_APPEAR_CHANCE_STARVING_FACTOR = 0.5 # Chance increases by this for each point of SoL below 5 (added on top of struggling factor)
@@ -1618,16 +1566,13 @@ NCharacters = {
 	AGE_GENERATION_STARTVAL = 20
 	AGE_GENERATION_DICE_ROLL_MAGNITUDE = 6
 	AGE_GENERATION_NUM_DICE_ROLLS = 5
-	DEATH_CHECKS_YEAR_BEGIN = 60		# first year to start checking for death by natural causes
-	DEATH_CHECKS_YEAR_END = 100			# definately dead by this year
 	RECRUIT_COMMANDER_NUM_OPTIONS = 2
 	RECRUIT_COMMANDER_POOL_SIZE = 3
 	RECRUIT_COMMANDER_VALUE_MARGINAL = -50
 	RECRUIT_COMMANDER_VALUE_AGE_MULT = 0.5
 	RECRUIT_COMMANDER_VALUE_SAME_IGS = -40
 	RECRUIT_COMMANDER_REMOVE_AGE = 55	# removed from the recruit pool when they reach 55 years
-	RANDOM_MIN_RANK_DEFAULT = 1
-	RANDOM_MAX_RANK_DEFAULT = 3
+	COMMANDER_START_RANK = 1
 	HIGHEST_PROMOTION_RANK = 5
 	RULER_COMMANDER_START_RANK = 6
 	POPULARITY_HATED_THRESHOLD = -50
@@ -1636,7 +1581,8 @@ NCharacters = {
 	POPULARITY_LOVED_THRESHOLD = 50
 	POPULARITY_AUTHORITY_FACTOR = 1			# Popularity of ruler is multiplied by this when turned into Authority
 	MAX_NUM_CHARACTERS_PER_TYPE = 20		# The maximum number of characters of a certain primary role (e.g. General, Admiral) you can manually recruit. This is a hard cap failsafe and should be set high enough that players have no legitimate reason to recruit more than this.
-	ADULT_AGE = 16 # Characters under this age have more limited options. For example they cannot become military leaders
+	ADULT_AGE = 16 # Characters under this age have more limited options. For example they cannot become military leaders [>= 0]
+	OLD_AGE = 60 # Characters above this age may get some specific traits and events [>= ADULT_AGE]
 	
 	VOIDED_CHARACTER_DEFAULT_DURATION = 12 # Default months a character will be in the void before being deleted
 
@@ -1656,40 +1602,37 @@ NCharacters = {
 	TRAIT_GAIN_POLITICIAN_MARGINALIZED = 0.001		# Marginalized Politicians Expected Traits meter increases by this much per week
 	TRAIT_GAIN_RULER = 0.005						# Rulers Expected Traits meter increases by this much per week
 	TRAIT_GAIN_COMMANDER_AT_WAR_ADDITIONAL = 0.01	# Commanders increase their Expected Traits Value meter this much *extra* each week while at war, in addition to the Activity Level of their Order
-}
 
-NCommands = {
-	BASE_ADVANCE_CHANCE = 0.1	# Base chance for an AO to advance each tick
-	RETREAT_CUTOFF = 0.8	# Start considering retreat from a battle after the ratio of current manpower to initial manpower is below this
-	RESOLVED_COMBAT_TIME_DAYS = 30
-	PAST_COMBAT_LINGER_TIME_DAYS = 365
-	MIN_REINFORCE_FACTOR = 0.02
-	MAX_REINFORCE_FACTOR = 0.10
-	WINNER_SPIRIT_REGAIN_FACTOR = 0.5	# Give back some spirit used for reinforcement to the winner after a battle
-	LOSER_SPIRIT_REGAIN_FACTOR = 0	# Give back some spirit used for reinforcement to the loser after a battle
-	WINNER_SPIRIT_REDUCTION = 0.5 # spirit lost after winning a battle
-	LOSER_SPIRIT_REDUCTION = 0.2 # spirit lost after losing a battle
-	REGENERATE_ORGSPIRIT_THRESHOLD = 0.9 # when organisation/spirit begins to regenerate linearly
-	CONCENTRATION_ORG_LOSS_CUTOFF = 0.25 # when concentration starts to affect ao organisation gain and loss
-	SECOND_ROW_TERRAIN_WEIGHT = 0.33
-	BATTLEFIELD_WEIGHT_BASE = 1.0
-	BATTLEFIELD_WEIGHT_PROVINCE_OCCUPIED_BY_ENEMY = 1.0
-	BATTLEFIELD_WEIGHT_INVADED_ENEMY_STATE = 1.0
-	SCOUTING_POWER_PER_PROVINCE = 0.1
+	# The following parameters determine how character life expectancy is calculated. The calculation is based on a normal distribution with parameters:
+	# µ = CHARACTER_LIFE_EXPECTANCY_BASE_YEARS
+	# σ = CHARACTER_LIFE_EXPECTANCY_STDDEV_YEARS
+	#
+	# While the mean of the distribution is fixed, the result is modified by the health value of the character.
+	# The way character health affects the life expectancy is given by the formula ((h / bh) - 1) * d, where:
+	# - h is the character health
+	# - bh is the baseline health
+	# - d is the value of CHARACTER_LIFE_EXPECTANCY_DELTA_YEARS
+	#
+	# (h / bh) - 1 is the "distance to baseline health" of the character. For each point of distance away from baseline, a character will live CHARACTER_LIFE_EXPECTANCY_DELTA_YEARS more or less.
+	#
+	# Since the domain of the normal distribution is [-∞; +∞], we establish a hard cutoff defined by CHARACTER_LIFE_EXPECTANCY_CUTOFF. This value is expressed in σ, or standard deviations away from the mean.
+	# It is recommended to leave that value to 3, as 99.73% of values of the ditribution fall in the range [-3σ; +3σ].
+	# Because of the above, with default values a character with 0 health will die between the ages of 50 and 80, while a character with 2 health will die between the ages of 70 and 100.
+	#
+	# NOTE: due to some performance optimizations, changing these values will either have no effect or unexpected behaviour until the game is restarted, even if they are hot reloaded.
+
+	MIN_CHARACTER_HEALTH = 0.0					# Baseline is 1.0 (meaning 100%), defined in the base_values modifier. 0.0 means -100% from baseline. [any value]
+	MAX_CHARACTER_HEALTH = 2.0					# Baseline is 1.0 (meaning 100%), defined in the base_values modifier. 2.0 means +100% from baseline. [>= MIN_CHARACTER_HEALTH]
+	CHARACTER_LIFE_EXPECTANCY_BASE_YEARS = 75	# The median life expecancy in years at baseline health. It's the µ parameter of the normal distribution [> 0]
+	CHARACTER_LIFE_EXPECTANCY_STDDEV = 5		# The standard deviation for the life expectancy distribution. It's the σ parameter [> 0]
+	CHARACTER_LIFE_EXPECTANCY_DELTA_YEARS = 10	# Amount of years that life expectancy is increased or decreased by, for every point of distance to baseline health [>= 0]
+	CHARACTER_LIFE_EXPECTANCY_CUTOFF = 3		# We clamp the distribution between this amount of σ in both directions. A range of [-3σ; +3σ] accounts for 99.73% of values. [> 0]
+
+	GUARANTEED_SURVIVABILITY_DAYS_MIN = 30		# A character that stops being immortal and that should have died when it happens will instead live at least this amount of days, to avoid situations like a character dieing immediately upon finishing an expedition [>= 0]
+	GUARANTEED_SURVIVABILITY_DAYS_MAX = 180		# As above, but the upper limit of the range [>= GUARANTEED_SURVIVABILITY_DAYS_MIN]
 }
 
 NBattle = {
-	LEADING_ATTACKER_NAVAL_SP_MIN = 0.5
-	LEADING_ATTACKER_NAVAL_SP_MAX = 0.7
-	LEADING_DEFENDER_NAVAL_SP_MIN = 0.3
-	LEADING_DEFENDER_NAVAL_SP_MAX = 0.5
-	SEA_RETREAT_CUTOFF = 0.75
-	NAVAL_BATTLE_ROUND_DEVIATION = 0.5
-	NAVAL_BATTLE_MIN_PURSUIT_FIRE_ROUNDS = 0
-	NAVAL_BATTLE_MAX_PURSUIT_FIRE_ROUNDS = 4
-	NAVAL_MORALE_FACTOR = 0.2						# Normal Morale damage is multiplied by this factor if the battle is naval
-	MASTER_CASUALTY_RATIO_ADD = 0.01
-	MASTER_CASUALTY_RATIO_MULT = 0.04
 	CASUALTY_MAJORITY_CULTURE_WEIGHT = 1.5			# Majority culture pops will be weighted to take 1.5x more casualties
 	CASUALTY_ROLL_MIN = 50							# min ...
 	CASUALTY_ROLL_MAX = 200							# max amount of casualties a unit can take each roll when applying casualties to units

@@ -81,10 +81,12 @@ types battle_panel_types
 
 				battle_panel_overview_content = {
 					visible = "[InformationPanel.IsTabSelected('overview')]"
+					using = default_content_fade
 				}
 				
 				battle_panel_details_content = {
 					visible = "[InformationPanel.IsTabSelected('details')]"
+					using = default_content_fade
 				}
 			}
 		}
@@ -453,12 +455,24 @@ types battle_panel_types
 					blockoverride "commander_icon" {
 						texture = "[Battle.GetDefenderCommander.GetCommanderRank.GetTexture]"
 					}
+					blockoverride "manpower" {
+						text = "[Battle.CalcCurrentDefenderManpower|*1]"
+					}
+					blockoverride "manpower_tooltip" {
+						tooltip = "[Battle.GetDefenderBattalionBreakdown]"
+					}					
 					blockoverride "battalions_or_warships" {
 						text = "[Battle.GetCurrentDefenderUnits]"
 					}
 					blockoverride "current_battalions_tooltip" {
 						tooltip = "[Battle.GetDefenderBattalionBreakdown]"
 					}
+					blockoverride "start_of_battle_manpower" {
+						text = "[Battle.GetStartingDefenderManpower|*1]"
+					}
+					blockoverride "start_of_battle_manpower_tooltip" {
+						tooltip = "[Battle.GetStartingDefenderBattalionBreakdown]"
+					}						
 					blockoverride "start_of_battle_battalions_or_warships" {
 						text = "[Battle.GetStartingDefenderUnits]"
 					}
@@ -692,16 +706,32 @@ types battle_panel_types
 					layoutpolicy_horizontal = expanding
 					layoutpolicy_vertical = expanding
 					spacing = 5
-					block "current_battalions_tooltip" {
-						tooltip = "[Battle.GetAttackerBattalionBreakdown]"
-					}
 
 					textbox = {
 						layoutpolicy_horizontal = expanding
 						size = { 0 20 }
 						align = left|nobaseline
 						text = "CURRENT"
+					}			
+					
+					textbox = {
+						align = nobaseline
+						autoresize = yes
+						block "manpower" {
+							text = "[Battle.CalcCurrentAttackerManpower|*1]"
+						}
+						using = fontsize_large
+						default_format = "#variable"
+
+						block "manpower_tooltip" {
+							tooltip = "[Battle.GetAttackerBattalionBreakdown]"
+						}
 					}
+
+					icon = {
+						texture = "gfx/interface/icons/military_icons/manpower.dds"
+						size = { 20 20 }
+					}						
 					
 					textbox = {
 						align = nobaseline
@@ -711,6 +741,10 @@ types battle_panel_types
 						}
 						using = fontsize_large
 						default_format = "#variable"
+
+						block "current_battalions_tooltip" {
+							tooltip = "[Battle.GetAttackerBattalionBreakdown]"
+						}
 					}
 
 					icon = {
@@ -773,9 +807,6 @@ types battle_panel_types
 					layoutpolicy_horizontal = expanding
 					layoutpolicy_vertical = expanding
 					spacing = 5
-					block "starting_battalions_tooltip" {
-						tooltip = "[Battle.GetStartingAttackerBattalionBreakdown]"
-					}
 
 					textbox = {
 						layoutpolicy_horizontal = expanding
@@ -787,16 +818,44 @@ types battle_panel_types
 					textbox = {
 						align = nobaseline
 						autoresize = yes
+
+						block "start_of_battle_manpower" {
+							text = "[Battle.GetStartingAttackerManpower|*1]"
+						}
+
+						alpha = 0.5
+
+						block "start_of_battle_manpower_tooltip" {
+							tooltip = "[Battle.GetStartingAttackerBattalionBreakdown]"
+						}
+					}	
+
+					icon = {
+						texture = "gfx/interface/icons/military_icons/manpower.dds"
+						size = { 20 20 }
+						alpha = 0.5
+					}					
+					
+					textbox = {
+						align = nobaseline
+						autoresize = yes
+
 						block "start_of_battle_battalions_or_warships" {
 							text = "[Battle.GetStartingAttackerUnits]"
 						}
+
 						alpha = 0.5
+						
+						block "starting_battalions_tooltip" {
+							tooltip = "[Battle.GetStartingAttackerBattalionBreakdown]"
+						}
 					}
 
 					icon = {
 						visible = "[Not( Battle.IsNavalBattle )]"
 						texture = "gfx/interface/icons/generic_icons/battalions.dds"
 						size = { 25 25 }
+						alpha = 0.5
 					}
 
 					icon = {
@@ -807,6 +866,7 @@ types battle_panel_types
 					
 					white_progressbar_vertical = {
 						size = { 8 22 }
+
 						block "initial_morale_tooltip" {
 							tooltip = "BATTLE_ATTACKER_INITIAL_MORALE_TOOLTIP"
 						}
@@ -814,6 +874,7 @@ types battle_panel_types
 						blockoverride "values" {
 							min = 0
 							max = 1
+
 							block "start_of_battle_morale" {
 								value = "[FixedPointToFloat( Battle.GetInitialAttackerMorale )]"
 							}

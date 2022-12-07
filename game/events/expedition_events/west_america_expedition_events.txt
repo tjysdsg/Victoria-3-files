@@ -187,6 +187,12 @@ expedition_events.300 = { #Sucessful expedition - Buenaventura River
 		remove_variable = on_expedition
 		remove_expedition_events_effect = yes
 		set_global_variable = buenaventura_river_disproven
+		random_scope_character = {
+			limit = {
+				has_variable = expedition_leader_var 
+			}
+			save_scope_as = expedition_leader
+		}
 	}
 
 	option = {
@@ -227,6 +233,12 @@ expedition_events.301 = { #Sucessful expedition - Oregon Trail
 		remove_variable = on_expedition
 		remove_expedition_events_effect = yes
 		set_global_variable = oregon_trail_mapped
+		random_scope_character = {
+			limit = {
+				has_variable = expedition_leader_var 
+			}
+			save_scope_as = expedition_leader
+		}
 	}
 
 	option = {
@@ -314,6 +326,7 @@ expedition_events.205 = { #Failed expedition
 			limit = { has_variable = expedition_leader_var }
 			save_scope_as = expedition_leader
 		}
+		remove_expedition_events_effect = yes
     }
 
 	option = {
@@ -328,6 +341,7 @@ expedition_events.205 = { #Failed expedition
 			months = normal_modifier_time
 			is_decaying	= yes
 		}
+
 	}
 }
 
@@ -367,10 +381,10 @@ expedition_events.220 = { #crossing a river
 		name = expedition_events.220.a
 		default_option = yes
 		random_list = {
-			10 = { #50%
+			20 = {
 				trigger_event = { id = expedition_events.221 days = 0 popup = yes }
 			}
-			10 = { #50%
+			10 = {
 				trigger_event = { id = expedition_events.222 days = 0 popup = yes}
 			}
 		}
@@ -392,11 +406,11 @@ expedition_events.220 = { #crossing a river
 		custom_tooltip = jump_river_tt
 		hidden_effect = {
 			random_list = {
-				99 = {
+				75 = {
 					set_variable = jump_river_fail_var
 					trigger_event = { id = expedition_events.222 days = 0 popup = yes }
 				}
-				1 = {
+				25 = {
 					set_variable = jump_river_success_var
 					trigger_event = { id = expedition_events.221 days = 0 popup = yes }
 				}
@@ -504,7 +518,7 @@ expedition_events.230 = { #Bear sighted
 		name = expedition_events.230.a
 		default_option = yes
 		random_list = {
-			10 = {
+			20 = {
 				trigger_event = { id = expedition_events.231 days = 0 popup = yes } #Success
 			}
 			10 = {
@@ -516,10 +530,10 @@ expedition_events.230 = { #Bear sighted
 	option = { #Leave the bear be
 		name = expedition_events.220.b
 		random_list = {
-			60 = {
+			30 = {
 				trigger_event = { id = expedition_events.233 days = 0 popup = yes }
 			}
-			40 = {
+			70 = {
 				custom_tooltip = expedition_event_ongoing_tt
 			}
 		}
@@ -634,18 +648,18 @@ expedition_events.240 = { #Expedition Photographs
 
     option = { #Yes
 		name = expedition_events.240.a
-		custom_tooltip = expedition_event_delayed_tt
 		add_modifier = {
 			name = modifier_west_america_wildlife_photography
 			months = normal_modifier_time
 		}
 		set_variable = expedition_photography_var #grand exhibition bonus
+		expedition_minor_progress_effect = yes
 	}
 
 	option = { #No
 		name = expedition_events.240.b
 		default_option = yes
-		expedition_minor_progress_effect = yes
+		expedition_moderate_progress_effect = yes
 	}
 }
 
@@ -680,7 +694,7 @@ expedition_events.250 = { #Mountain spotted
     option = { #Climb it
 		name = expedition_events.250.a
 		random_list = {
-			10 = {
+			20 = {
 				custom_tooltip = expedition_events_mountain_claim_tt
 				hidden_effect = {
 					if = {
@@ -736,6 +750,7 @@ expedition_events.251 = { #Mountain already discovered
 	option = {
 		name = expedition_events.251.a
 		add_small_peril_effect = yes
+		expedition_minor_progress_effect = yes
 		custom_tooltip = expedition_event_ongoing_tt
 	}
 }
@@ -835,7 +850,7 @@ expedition_events.260 = { #Snow Falls
 		name = expedition_events.260.a
 		default_option = yes
 		random_list = {
-			10 = {
+			15 = {
 				trigger_event = { id = expedition_events.261 days = 0 popup = yes } #Success
 			}
 			10 = {
@@ -929,7 +944,7 @@ expedition_events.263 = { #Snow clears
 	option = {
 		name = expedition_events.263.a
 		default_option = yes
-		custom_tooltip = expedition_event_ongoing_tt
+		expedition_minor_progress_effect = yes
 	}
 }
 
@@ -984,12 +999,13 @@ expedition_events.270 = { #Gather plants
 			months = normal_modifier_time
 		}
 		set_variable = expedition_plants_var #grand exhibition bonus
+		expedition_minor_progress_effect = yes
 	}
 
 	option = { #No
 		name = expedition_events.270.b
 		default_option = yes
-		expedition_minor_progress_effect = yes
+		expedition_moderate_progress_effect = yes
 	}
 }
 
@@ -1058,7 +1074,7 @@ expedition_events.280 = { #Lost
     option = { #push on
 		name = expedition_events.280.a
 		random_list = {
-			30 = {
+			20 = {
 				trigger_event = { id = expedition_events.281 days = 0 popup = yes }
 			}
 			10 = {
@@ -1070,7 +1086,7 @@ expedition_events.280 = { #Lost
 	option = { #Wait for night
 		name = expedition_events.280.b
 		default_option = yes
-		custom_tooltip = expedition_event_delayed_tt
+		add_small_peril_effect = yes
 	}
 }
 
@@ -1181,7 +1197,7 @@ expedition_events.290 = { #Build a fort
 			NOT = { has_global_variable = north_america_fort_var }
 		}
 		set_global_variable = north_america_fort_var
-		expedition_peril_decrease_small_effect = yes
+		expedition_peril_decrease_medium_effect = yes
 		custom_tooltip = expedition_event_delayed_tt
 	}
 	
@@ -1201,8 +1217,8 @@ expedition_events.290 = { #Build a fort
 				has_global_variable = north_america_fort_var
 			}
 		}
-		expedition_peril_decrease_small_effect = yes
-		expedition_minor_progress_effect = yes
+		expedition_peril_decrease_medium_effect = yes
+		expedition_moderate_progress_effect = yes
 	}
 }
 
@@ -1400,7 +1416,7 @@ expedition_events.293 = { #give these men a quest
 				has_variable = disciplinary_sanctions_var
 			}
 			random_list = {
-				50 = { #they flee
+				25 = { #they flee
 					add_medium_peril_effect = yes
 				}
 				50 = {
@@ -1422,7 +1438,7 @@ expedition_events.293 = { #give these men a quest
 				has_variable = disciplinary_sanctions_var
 			}
 			random_list = {
-				50 = { #they flee
+				25 = { #they flee
 					add_medium_peril_effect = yes
 				}
 				50 = {
@@ -1498,7 +1514,7 @@ expedition_events.294 = { #found a native settlement
 				has_variable = expedition_baby_var
 			}
 		}
-		expedition_peril_decrease_small_effect = yes
+		expedition_peril_decrease_medium_effect = yes
 		expedition_minor_progress_effect = yes
 		set_variable = expedition_barter_var
 	}
@@ -1528,7 +1544,7 @@ expedition_events.295 = { #hunting party
 		default_option = yes
 		random_list = {
 			33 = {
-				add_medium_peril_effect = yes
+				add_small_peril_effect = yes
 			}
 			66 = {
 				expedition_minor_progress_effect = yes
@@ -1539,13 +1555,13 @@ expedition_events.295 = { #hunting party
 	option = { #go for the great game
 		name = expedition_events.295.b
 		random_list = {
-			33 = {
+			25 = {
+				add_small_peril_effect = yes
+			}
+			25 = {
 				add_medium_peril_effect = yes
 			}
-			33 = {
-				add_large_peril_effect = yes
-			}
-			33 = {
+			50 = {
 				expedition_moderate_progress_effect = yes
 			}
 		}
@@ -1626,7 +1642,7 @@ expedition_events.296 = { #listen to your guide
 		}
 		default_option = yes
 		highlighted_option = yes
-		expedition_minor_progress_effect = yes
+		expedition_moderate_progress_effect = yes
 	}
 }
 

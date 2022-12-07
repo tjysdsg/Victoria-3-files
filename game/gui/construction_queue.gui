@@ -48,7 +48,7 @@ types construction_queue {
 				text = "CONSTRUCTION_BUTTON_PAUSE"
 				tooltip = "[Country.PauseConstructionTooltip]"
 				onclick = "[Execute( Country.PauseConstruction )]"
-				enabled = "[IsValid( Country.PauseConstruction )]"
+				enabled = "[And(IsValid( Country.PauseConstruction ), Country.HasConstructionQueued)]"
 				visible = "[Not(Country.IsConstructionPaused)]"
 			}
 
@@ -65,45 +65,69 @@ types construction_queue {
 			}
 
 		}
-		
-		container = {
-			using = default_list_position
-			minimumsize = { @panel_width -1 }
-			maximumsize = { @panel_width -1 }
-			
-			textbox = {
-				text = "CONSTRUCTION_CURRENT_PAGE"				
-				autoresize = yes
-				margin_top = 10
-				parentanchor = center
+
+		widget = {
+			visible = "[Country.HasConstructionQueued]"
+			size = { 1 5 }
+		}
+
+		flowcontainer = {
+			visible = "[Country.HasConstructionQueued]"
+			parentanchor = hcenter
+			spacing = 20
+
+			button_select_arrow = {
+				visible = "[GreaterThan_int32(ProductionMethodsPanel.GetNumConstructionQueuePages(GetMetaPlayer.GetPlayedOrObservedCountry), '(int32)1')]"
+				size = { 25 25 }
+				mirror = horizontal
+				parentanchor = vcenter
+				using = decrease_button_sound
+				using = tooltip_above
+
+				block "tooltip_left_arrow" {
+					tooltip = "PREVIOUS_PAGE"
+				}
+
+				block "onclick_prev"
+				{
+					onclick = "[ProductionMethodsPanel.PrevConstructionQueuePage(GetMetaPlayer.GetPlayedOrObservedCountry)]"
+				}
+			}
+
+			text_single = {
+				text = "CONSTRUCTION_CURRENT_PAGE"
+				parentanchor = vcenter
 				align = nobaseline
 			}
-			
-			button = {
-				using = default_button
-				parentanchor = vcenter|left
-				position = { 10 0 }
-				size = { 160 40 }
-				text = "CONSTRUCTION_PREVIOUS_PAGE"
-				enabled = "[GreaterThan_int32(ProductionMethodsPanel.GetNumConstructionQueuePages(GetMetaPlayer.GetPlayedOrObservedCountry), '(int32)1')]"
-				onclick = "[ProductionMethodsPanel.PrevConstructionQueuePage(GetMetaPlayer.GetPlayedOrObservedCountry)]"
-			}				
-			button = {
-				using = default_button
-				parentanchor = vcenter|right
-				position = { -10 0 }
-				size = { 160 40 }
-				text = "CONSTRUCTION_NEXT_PAGE"
-				enabled = "[GreaterThan_int32(ProductionMethodsPanel.GetNumConstructionQueuePages(GetMetaPlayer.GetPlayedOrObservedCountry), '(int32)1')]"
-				onclick = "[ProductionMethodsPanel.NextConstructionQueuePage(GetMetaPlayer.GetPlayedOrObservedCountry)]"
-			}						
-		}		
+
+			button_select_arrow = {
+				visible = "[GreaterThan_int32(ProductionMethodsPanel.GetNumConstructionQueuePages(GetMetaPlayer.GetPlayedOrObservedCountry), '(int32)1')]"
+				size = { 25 25 }
+				parentanchor = vcenter
+				using = increase_button_sound
+				using = tooltip_above
+
+				block "tooltip_right_arrow" {
+					tooltip = "NEXT_PAGE"
+				}
+
+				block "onclick_next"
+				{
+					onclick = "[ProductionMethodsPanel.NextConstructionQueuePage(GetMetaPlayer.GetPlayedOrObservedCountry)]"
+				}
+			}
+		}
+
+		widget = {
+			visible = "[Country.HasConstructionQueued]"
+			size = { 1 5 }
+		}
 
 		flowcontainer = {
 			datamodel = "[Country.AccessPagedConstructionQueue(ProductionMethodsPanel.AccessCurrentConstructionQueuePage(GetMetaPlayer.GetPlayedOrObservedCountry))]"
 			visible = "[Not(IsDataModelEmpty(Country.AccessPagedConstructionQueue(ProductionMethodsPanel.AccessCurrentConstructionQueuePage(GetMetaPlayer.GetPlayedOrObservedCountry))))]"
 			direction = vertical
-			spacing = 3
+			#spacing = 3
 
 			item = {
 				flowcontainer = {
@@ -115,19 +139,20 @@ types construction_queue {
 					margin_bottom = 5
 
 					button = {
+						onclick = "[InformationPanelBar.OpenBuildingDetailsPanel(ConstructionQueueElement.AccessBuilding)]"
 						onrightclick = "[RightClickMenuManager.ShowForBuilding(ConstructionQueueElement.AccessBuilding)]"
 						parentanchor = vcenter
-						
-						icon = {
-							size = { 45 45 }
-							resizeparent = yes
-							texture = "[ConstructionQueueElement.GetBuilding.GetTexture]"
-						}
+						tooltip = "GO_TO_BUTTON_BUILDING"
+						onmousehierarchyenter = "[AccessHighlightManager.HighlightState(ConstructionQueueElement.GetState)]"
+						onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
+
+						size = { 35 35 }
+						texture = "[ConstructionQueueElement.GetBuilding.GetTexture]"
 					}
 					
 					### NAME + PROGRESS
 					widget = {
-						size = { 360 30 }
+						size = { 360 25 }
 						parentanchor = vcenter
 
 						background = {
@@ -158,7 +183,11 @@ types construction_queue {
 								visible = "[Not(GreaterThan_CFixedPoint(ConstructionQueueElement.GetConstructionSpeed, '(CFixedPoint)0'))]"
 								parentanchor = left|vcenter
 								align = right|nobaseline
-								position = { 300 0 }
+								position = { 245 0 }
+								max_width = 70
+								autoresize = yes
+								elide = right
+								fontsize_min = 12
 								text = "QUEUED"
 							}
 
@@ -180,8 +209,12 @@ types construction_queue {
 								autoresize = yes
 								align = left|nobaseline
 								parentanchor = vcenter
-								text = "[ConstructionQueueElement.GetBuilding.GetName]"
+								max_width = 200
+								elide = right
+								fontsize_min = 14
+								text = "CONSTRUCTION_QUEUE_BUILDING_IN_STATE"
 							}
+
 							button_icon_goto = {
 								parentanchor = vcenter
 								size = { 25 25 }
@@ -247,6 +280,58 @@ types construction_queue {
 						tooltip = "CANCEL_CONSTRUCTION"
 						onclick = "[Execute( ConstructionQueueElement.CancelConstruction )]"
 					}
+				}
+			}
+		}
+
+		widget = {
+			visible = "[Country.HasConstructionQueued]"
+			size = { 1 5 }
+		}
+
+		flowcontainer = {
+			visible = "[And(Country.HasConstructionQueued, GreaterThan_int32(GetDataModelSize(Country.AccessPagedConstructionQueue(ProductionMethodsPanel.AccessCurrentConstructionQueuePage(GetMetaPlayer.GetPlayedOrObservedCountry))), '(int32)14'))]"
+			parentanchor = hcenter
+			spacing = 20
+
+			button_select_arrow = {
+				visible = "[GreaterThan_int32(ProductionMethodsPanel.GetNumConstructionQueuePages(GetMetaPlayer.GetPlayedOrObservedCountry), '(int32)1')]"
+				size = { 25 25 }
+				mirror = horizontal
+				parentanchor = vcenter
+				using = decrease_button_sound
+				using = tooltip_above
+
+				block "tooltip_left_arrow" {
+					tooltip = "PREVIOUS_PAGE"
+				}
+
+				block "onclick_prev"
+				{
+					onclick = "[ProductionMethodsPanel.PrevConstructionQueuePage(GetMetaPlayer.GetPlayedOrObservedCountry)]"
+				}
+			}
+
+			text_single = {
+				text = "CONSTRUCTION_CURRENT_PAGE"
+				parentanchor = vcenter
+				align = nobaseline
+			}
+
+			button_select_arrow = {
+				visible = "[GreaterThan_int32(ProductionMethodsPanel.GetNumConstructionQueuePages(GetMetaPlayer.GetPlayedOrObservedCountry), '(int32)1')]"
+				size = { 25 25 }
+				parentanchor = vcenter
+				using = increase_button_sound
+				using = tooltip_above
+
+				block "tooltip_right_arrow" {
+					tooltip = "NEXT_PAGE"
+				}
+
+				block "onclick_next"
+				{
+					onclick = "[ProductionMethodsPanel.NextConstructionQueuePage(GetMetaPlayer.GetPlayedOrObservedCountry)]"
 				}
 			}
 		}

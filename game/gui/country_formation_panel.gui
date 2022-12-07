@@ -98,15 +98,19 @@ types country_formation_types
 						parentanchor = hcenter
 
 						item = {
-							container = {	
+							
+							flowcontainer = {	
 								minimumsize = { 500 100 }
+								spacing = 20
 								
 								background = {
 									using = entry_bg_simple
 								}
+								widget = {
+									size = { 1 1 }
+								}
 								
 								flag_icon = {
-									position = { 10 -1 }
 									size = { 48 32 }
 									block "flag_definition" {			
 										texture = "[Country.GetFlag.GetSmallFlagTexture]"
@@ -119,39 +123,47 @@ types country_formation_types
 										}
 									}
 									parentanchor = vcenter
-								}							
-								
-								textbox = {
-									position = { 65 -1 }
-									parentanchor = vcenter
-									using = fontsize_large
-									text = "[Country.GetNameNoFlag]"
-									autoresize = yes
-								}	
-								
-								textbox = {
-									position = { 165 -1 }
-									visible = "[GreaterThan_int32( CountryFormation.GetNumSupportingCountries(Country.Self), '(int32)0' )]"
-									parentanchor = vcenter
-									using = fontsize_large
-									text = "FORM_COUNTRY_SUPPORTING_COUNTRIES"
-									tooltip = "FORM_COUNTRY_SUPPORTING_COUNTRIES_TOOLTIP"
-									autoresize = yes
 								}
 
-								textbox = {
-									position = { 165 -1 }
-									visible = "[Not(GreaterThan_int32( CountryFormation.GetNumSupportingCountries(Country.Self), '(int32)0' ))]"
+								flowcontainer = {
+									direction = vertical
 									parentanchor = vcenter
-									using = fontsize_large
-									text = "FORM_COUNTRY_NO_SUPPORTING_COUNTRIES"
-									tooltip = "FORM_COUNTRY_NO_SUPPORTING_COUNTRIES_TOOLTIP"
-									autoresize = yes
-								}									
-
+									textbox = {
+										using = fontsize_large
+										text = "[Country.GetNameNoFlag]"
+										align = nobaseline
+										autoresize = yes
+										maximumsize = { 200 30 }
+										elide = right
+										fontsize_min = 12
+									}	
+									
+									textbox = {
+										visible = "[GreaterThan_int32( CountryFormation.GetNumSupportingCountries(Country.Self), '(int32)0' )]"
+										using = fontsize_large
+										text = "FORM_COUNTRY_SUPPORTING_COUNTRIES"
+										tooltip = "FORM_COUNTRY_SUPPORTING_COUNTRIES_TOOLTIP"
+										autoresize = yes
+										align = nobaseline
+										maximumsize = { 200 30 }
+										elide = right
+										fontsize_min = 12
+									}
+									textbox = {
+										visible = "[Not(GreaterThan_int32( CountryFormation.GetNumSupportingCountries(Country.Self), '(int32)0' ))]"
+										using = fontsize_large
+										text = "FORM_COUNTRY_NO_SUPPORTING_COUNTRIES"
+										tooltip = "FORM_COUNTRY_NO_SUPPORTING_COUNTRIES_TOOLTIP"
+										autoresize = yes
+										align = nobaseline
+										maximumsize = { 200 30 }
+										elide = right
+										fontsize_min = 12
+									}									
+								}						
+								
 								button = {
-									parentanchor = vcenter|right
-									position = { -5 -1 }
+									parentanchor = vcenter
 									visible = "[And(Not(CountryFormation.IsCandidateForFormation(GetPlayer)),Not(CountryFormation.IsSupportingCandidate(GetPlayer, Country.Self)))]"
 									enabled = "[IsValid(CountryFormation.SupportCandidate(GetPlayer, Country.Self))]"		
 									onclick = "[Execute(CountryFormation.SupportCandidate(GetPlayer, Country.Self))]"
@@ -162,8 +174,7 @@ types country_formation_types
 								}
 								
 								button = {
-									parentanchor = vcenter|right
-									position = { -5 -1 }
+									parentanchor = vcenter
 									visible = "[And(CountryFormation.IsCandidateForFormation(GetPlayer),Not(Country.IsLocalPlayer))]"
 									enabled = "[CountryFormation.CanLaunchLeadershipPlay(Country.Self)]"		
 									onclick = "[CountryFormation.ShowLeadershipPlayConfirmation(Country.Self)]"
@@ -172,10 +183,8 @@ types country_formation_types
 									using = default_button
 									size = { 185 60 }
 								}								
-
 								button = {
-									parentanchor = vcenter|right
-									position = { -5 -1 }
+									parentanchor = vcenter
 									visible = "[And(Not(CountryFormation.IsCandidateForFormation(GetPlayer)),CountryFormation.IsSupportingCandidate(GetPlayer, Country.Self))]"
 									enabled = "[IsValid(CountryFormation.SupportCandidate(GetPlayer, Country.Self))]"		
 									onclick = "[Execute(CountryFormation.SupportCandidate(GetPlayer, Country.Self))]"

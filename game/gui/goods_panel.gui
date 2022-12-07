@@ -335,21 +335,184 @@ types goods_panel_types
 							}
 						}
 					}
+
+					widget = {
+						size = { 1 20 }
+					}
+
+					default_header = {
+						parentanchor = hcenter
+						blockoverride "text"
+						{
+							text = "TRADE_ROUTES"
+						}
+					}
+
+					datacontext = "[GoodsPanel.GetMarketGoods]"
+
+					empty_state = {
+						blockoverride "visible" {
+							visible = "[And(IsDataModelEmpty(MarketGoods.AccessPlayerTradeRoutes), IsDataModelEmpty(MarketGoods.AccessOthersTradeRoutes))]"
+						}
+						blockoverride "text" {
+							text = "NO_TRADE_ROUTES"
+						}
+					}
+
+					flowcontainer = {
+			            direction = vertical
+			            parentanchor = hcenter
+			            margin_bottom = 5
+			            margin_top = 10
+			            max_width = 540
+			            min_width = 540
+			            visible = "[Not(IsDataModelEmpty(MarketGoods.AccessPlayerTradeRoutes))]"
+
+						background = {
+							using = dropdown_background
+
+							modify_texture = {
+								texture = "gfx/interface/masks/fade_vertical_top.dds"
+								blend_mode = alphamultiply
+								alpha = 1
+							}
+						}
+
+						textbox = {
+							text = "TRADE_ROUTE_PLAYER"
+							autoresize = yes
+							align = left|nobaseline
+							margin_left = 15
+							margin_bottom = 5
+						}
+
+						datamodel = "[MarketGoods.AccessPlayerTradeRoutes]"
+
+						item = {
+			            	traded_good_trade_route = {
+			            		datacontext = "[MarketGoods.GetMarket]"
+
+			            		blockoverride "first_flag_or_icon" {
+									icon = {
+										datacontext = "[TradeRoute.GetGoods]"
+										texture = "gfx/interface/market_view/trade_good_icon_bg.dds"
+										size = { 55 55 }
+										color = "[Goods.GetCategoryColor]"
+
+										tooltipwidget = {
+											FancyTooltip_Goods = {}
+										}
+										
+										icon = {
+											texture = "[Goods.GetTexture]"
+											size = { 40 40 }
+											parentanchor = center
+										}
+										icon = {
+											size = { 25 25 }
+											visible = "[Goods.HasGoodsShortage]"
+											texture = "gfx/interface/icons/generic_icons/goods_shortage.dds"
+											tooltip = "GOODS_SHORTAGE_TOOLTIP"
+											parentanchor = bottom
+										}
+									}
+								}
+			            	}
+			            }
+			        }
+
+			        divider_decorative = {
+			        	visible = "[And(Not(IsDataModelEmpty(MarketGoods.AccessPlayerTradeRoutes)), Not(IsDataModelEmpty(MarketGoods.AccessOthersTradeRoutes)))]"
+			        }
+
+			        flowcontainer = {
+			            direction = vertical
+			            parentanchor = hcenter
+			            margin_bottom = 5
+			            margin_top = 10
+			            max_width = 540
+			            min_width = 540
+			            visible = "[Not(IsDataModelEmpty(MarketGoods.AccessOthersTradeRoutes))]"
+
+						background = {
+							using = dropdown_background
+
+							modify_texture = {
+								texture = "gfx/interface/masks/fade_vertical_top.dds"
+								blend_mode = alphamultiply
+								alpha = 1
+							}
+						}
+
+						textbox = {
+							text = "OTHER_COUNTRIES_TRADE_ROUTES"
+							autoresize = yes
+							align = left|nobaseline
+							margin_left = 15
+							margin_bottom = 5
+						}
+
+						datamodel = "[MarketGoods.AccessOthersTradeRoutes]"
+						item = {
+			               traded_good_trade_route = {
+			               		datacontext = "[MarketGoods.GetMarket]"
+
+			               		blockoverride "first_flag_or_icon" {
+									icon = {
+										datacontext = "[TradeRoute.GetGoods]"
+										texture = "gfx/interface/market_view/trade_good_icon_bg.dds"
+										size = { 55 55 }
+										color = "[Goods.GetCategoryColor]"
+
+										tooltipwidget = {
+											FancyTooltip_Goods = {}
+										}
+										
+										icon = {
+											texture = "[Goods.GetTexture]"
+											size = { 40 40 }
+											parentanchor = center
+										}
+										icon = {
+											size = { 25 25 }
+											visible = "[Goods.HasGoodsShortage]"
+											texture = "gfx/interface/icons/generic_icons/goods_shortage.dds"
+											tooltip = "GOODS_SHORTAGE_TOOLTIP"
+											parentanchor = bottom
+										}
+									}
+								}
+			                }
+			            }
+			        }
 					
 					widget = { size = { 1 20 }}
 
 					### LOCAL PRICES
-					default_header = {
-						parentanchor = hcenter
-						blockoverride "text" {
-							text = LOCAL_PRICE_IN
+				 	section_header_button = {
+						size = { @panel_width_minus_10 38 }
+						
+						blockoverride "left_text" {
+							text = "LOCAL_PRICE_IN"
+						}
+						
+						blockoverride "onclick" {
+							onclick = "[GetVariableSystem.Toggle('local_prices')]"
+						}
+						
+						blockoverride "onclick_showmore" {
+							visible = "[Not(GetVariableSystem.Exists('local_prices'))]"
+						}
+
+						blockoverride "onclick_showless" {
+							visible = "[GetVariableSystem.Exists('local_prices')]"
 						}
 					}
 
 					flowcontainer = {
 						datamodel = "[GoodsPanel.AccessGoods.AccessMarket.AccessMarketStates]"
 						direction = vertical 
-						visible = "[Not(GetVariableSystem.Exists('local_prices'))]"
+						visible = "[GetVariableSystem.Exists('local_prices')]"
 						using = default_list_position
 
 						item = {

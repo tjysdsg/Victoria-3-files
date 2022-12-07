@@ -40,7 +40,9 @@
 
  COMMAND_CONFIRMATION_REMOVE_INCORPORATE_STATE:0 "Are you sure you want to stop incorporating [STATE.GetName]?"
  COMMAND_CONFIRMATION_REMOVE_INCORPORATE_STATE_UNSPECIFIED:0 "Are you sure you want to stop incorporating this state?"
-
+ 
+ COMMAND_CONFIRMATION_DOWNSIZE_LAST_EXIT_PORT:0 "This would destroy the [GetBuildingType('building_port').GetName]. Are you sure you wish to continue?\n\n@information! Demolishing this [GetBuildingType('building_port').GetNameNoFormatting] might isolate [Concept('concept_state','$concept_states$')] from their [concept_market] if they cannot access the [concept_market_capital] through another [GetBuildingType('building_port').GetNameNoFormatting]."
+ 
  AGE:0 "Age"
  CHARACTER_AGE:0 "#v [Character.GetAge]#!"
  CHARACTER_AGE_TOOLTIP:0 "#header [Character.GetFullName]#! is #v [Character.GetAge]#! years old\n$TOOLTIP_DELIMITER$\n[Character.GetFirstName] was born on #v [Character.GetBirthday]#!"
@@ -189,10 +191,6 @@
  DATA_TIMED_MODIFIER_REMAINING:1 "Remaining Time: $DURATION$$MAYBE_DECAYING_WITH_SPACE_BEFORE$"
  DATA_TIMED_MODIFIER_ONELINE:1 "$MODIFIERDESC$ from #title $NAME$#! ($DURATION$)$MAYBE_DECAYING_WITH_SPACE_BEFORE$"
  MODIFIERS_PANEL_MODIFIER_ENTRIES:0 "#bold Modifier Entries#!"
- GOVERNMENT_LEGITIMACY:0 "#title [concept_legitimacy]:#! #variable [Country.GetGovernmentLegitimacy|0%]#!"
- GOVERNMENT_LEGITIMACY_TOOLTIP:0 "#HEADER [concept_legitimacy]#!\nValue: #variable [Country.GetGovernmentLegitimacy|0%]#!\n$TOOLTIP_DELIMITER$\n[Country.GetGovernmentLegitimacyDesc]"
- REFORM_GOVERNMENT_LEGITIMACY:0 "#title [concept_legitimacy]:#! #variable [ReformGovernment.GetLegitimacy|0%]#!"
- REFORM_GOVERNMENT_LEGITIMACY_TOOLTIP:0 "#HEADER [concept_legitimacy]#!\nValue: #variable [ReformGovernment.GetPredictedLegitimacy|0%]#!\n$TOOLTIP_DELIMITER$\n[ReformGovernment.GetPredictedLegitimacyDesc]"
  RELIGION_INFO_PANEL_SHOW_GLOBAL:1 "Listing [ReligionInfoPanel.GetReligion.GetName] [Concept('concept_pop', '$concept_pops$')] Globally"
  RELIGION_INFO_PANEL_SHOW_NATIONAL_ONLY:1 "Listing [ReligionInfoPanel.GetReligion.GetName] [Concept('concept_pop', '$concept_pops$')] in [GetPlayer.GetName]"
  BUILDING_DETAILS_PANEL_INFORMATION_TAB:0 "Information"
@@ -215,11 +213,24 @@
  POP_DETAILS_LINE_TWO:1 "[SelectLocalization(Pop.GetBuilding.IsValid,'POP_DETAILS_LINE_TWO_EMPLOYED','POP_DETAILS_LINE_TWO_UNEMPLOYED')]"
  POP_DETAILS_LINE_TWO_EMPLOYED:0 "[concept_pop] in [Pop.GetWorksAt] in [Pop.GetState.GetName]"
  POP_DETAILS_LINE_TWO_UNEMPLOYED:0 "[concept_unemployed] [concept_pop] in [Pop.GetState.GetName]"
+ POP_OVERVIEW_HEADER:0 "Overview"
+ POP_ECONOMY_HEADER:0 "Economy"
+ POP_CONSUMPTION_HEADER:0 "Consumption"
+ PERCENTAGE_OF_BUDGET:0 "% of Budget"
+ POP_AMOUNT:0 "Amount"
+ POP_TOP_GOODS_EXPENDITURES_HEADER:0 "#title Top [GetDefine('NGUI','NUM_TOP_CONSUMPTION_GOODS_SHOWN')|0] [Concept('concept_good','$concept_goods$')] expenditures#!"
  STATE_POPULATION_PANEL_LINE_TWO:0 "in [StatePopulationPanel.GetState.GetName]"
  BASE_FROM_POPS:0 "Base from Population: #v $VAL|D=+$#!"
  LEGITIMACY_BASE_VALUE:0 "Base Value: #bold #P $VAL|=+$#!#!"
- LEGITIMACY_GOVT_SIZE:0 "Size of [concept_government]: #tooltippable #tooltip:[GetRawTextTooltipTag('$BREAKDOWN$')] #variable $VAL|=+$#!#!#!"
+ LEGITIMACY_GOVT_SIZE:0 "Size of [concept_government]: #tooltippable #tooltip:$BREAKDOWN$ #variable $VAL|=+$#!#!#!"
  LEGITIMACY_GOVT_SIZE_BREAKDOWN:0 "$BREAKDOWN$"
+ 
+ IDEOLOGICAL_INCOHERENCE_ALIAS:0 "Government Ideology Penalty"
+ GREATEST_ENDORSEMENT_DIFFERENCE:0 "#header [LawType.GetName]#!\n$INTEREST_GROUP_ONE$ - $INTEREST_GROUP_TWO$\n$TOOLTIP_DELIMITER$\n$TAB$$BREAKDOWN_ONE$\n$TAB$$BREAKDOWN_TWO$"
+ IDEOLOGICAL_INCOHERENCE:0 "#header $IDEOLOGICAL_INCOHERENCE_ALIAS$: #variable $VALUE|-$#!#!\n$TOOLTIP_DELIMITER$\n$BREAKDOWN$"
+ IDEOLOGICAL_INCOHERENCE_ENTRY:0 "[LawGroup.GetName]: #tooltippable #tooltip:$BREAKDOWN_TAG$ #variable $VALUE|-$#!#!#!"
+ LEGITIMACY_IDEOLOGICAL_INCOHERENCE:0 "$IDEOLOGICAL_INCOHERENCE_ALIAS$: #tooltippable #tooltip:$BREAKDOWN_TAG$ #variable $VAL|=+$#!#!#!"
+ 
  LEGITIMACY_GOVT_SIZE_PARTY_ENTRY:0 "[PARTY.GetName]: #variable $VAL|=+$#!"
  LEGITIMACY_GOVT_SIZE_IG_ENTRY:0 "[INTEREST_GROUP.GetName]: #variable $VAL|=+$#!"
  LEGITIMACY_HEAD_OF_STATE_VALUE:0 "Head of State's [concept_interest_group] #variable [InterestGroup.GetName]#! [concept_in_government]: #tooltippable #tooltip:$BREAKDOWN_TAG$ #variable $VAL|+=0$#!#!#!"
@@ -228,6 +239,8 @@
  LEGITIMACY_GOVERNMENT_CLOUT_MODIFIER_BREAKDOWN:0 "$BREAKDOWN$"
  LEGITIMACY_GOVT_TOTAL_CLOUT_VALUE:0 "Total [concept_clout] of [concept_government]: #variable $VAL|+=0$#!\n$TAB$[concept_government] [concept_clout] #variable $CLOUT|%+1$#! × #tooltippable #tooltip:[GetRawTextTooltipTag('$BREAKDOWN$')] #variable $FACTOR|2+$#!#!#!"
  LEGITIMACY_GOVT_TOTAL_CLOUT_VALUE_BREAKDOWN:0 "$BREAKDOWN$"
+ LEGITIMACY_GOVT_TOTAL_VOTES_VALUE:0 "Total percentage of [concept_votes] of [concept_government]: #variable $VAL|+=0$#!\n$TAB$[concept_government] [concept_votes] #variable $VOTES|%+1$#! × #tooltippable #tooltip:[GetRawTextTooltipTag('$BREAKDOWN$')] #variable $FACTOR|2+$#!#!#!"
+ LEGITIMACY_GOVT_TOTAL_VOTES_VALUE_BREAKDOWN:0 "$BREAKDOWN$"
  LEGITIMACY_GOVT_STRENGTH_ENTRY:0 "#variable $FACTION$#!: #variable $VAL|=$%#!"
  LEGITIMACY_GOVT_STRENGTH_IG_ENTRY:0 "#variable [INTEREST_GROUP.GetName]#! #variable [INTEREST_GROUP.GetClout|=%]#!"
 
@@ -365,6 +378,7 @@
 
  MAP_MODE:0 "Map Mode"
  LOCAL_PRICE_IN:0 "Local Prices in [GoodsPanel.GetGoods.GetMarket.GetName]"
+ LOCAL_PRICE_IN_STATE:0 "Local Prices in [State.GetMarket.GetName]"
  USAGE:0 "Applications"
  LOCAL_PRICE_STATE:0 "Local Prices in [GoodsStatePanel.GetGoods.GetMarket.GetName]"
  TRADE_ROUTES:2 "$concept_trade_routes$"
@@ -374,8 +388,7 @@
 
  NO_IMPORT_TRADE_ROUTES:0 "You Currently Have No Import Trade Routes"
  NO_EXPORT_TRADE_ROUTES:0 "You Currently Have No Export Trade Routes"
- NO_TRADE_ROUTES:0 "No Trade Routes Available"
- NO_TRADE_ROUTES_HINT:1 "@information! You can gain additional Trade Routes from building more Trade Centers"
+ NO_TRADE_ROUTES:1 "No [MarketGoods.GetGoods.GetName] Trade Routes"
 
  OUTLINER_PANEL_DESCRIPTION:0 "Pin any of the below lists or list items to the Outliner to the right of the screen by hovering any of them and clicking the star (@unpinned_star!) in the right corner.\n\nClick the star (@pinned_star!) again to unpin them."
 
@@ -477,10 +490,11 @@
  NO_FORMABLE_COUNTRIES:0 "#bold No Possible Country-Formations#!"
 
  NO_JOURNAL_ENTRIES:1 "Currently no active [Concept('concept_journal_entry', '$concept_journal_entries$')]"
+ NO_JOURNAL_ENTRIES_OUTLINER:0 "Currently no active $concept_journal_entries$"
  NO_DECISIONS:0 "#bold No Decisions can be taken#!"
 
- ACTIVE_JOURNAL_ENTRIES:1 "Active [Concept('concept_journal_entry', '$concept_journal_entries$')]"
- OTHER_ACTIVE_JOURNAL_ENTRIES:1 "Other Active [Concept('concept_journal_entry', '$concept_journal_entries$')]"
+ ACTIVE_JOURNAL_ENTRIES:2 "[Concept('concept_journal_entry', '$concept_journal_entries$')]"
+ OTHER_ACTIVE_JOURNAL_ENTRIES:2 "Other [Concept('concept_journal_entry', '$concept_journal_entries$')]"
  INACTIVE_JOURNAL_ENTRIES:1 "Potential [Concept('concept_journal_entry', '$concept_journal_entries$')]"
 
  RELEASE_COUNTRY_NAME:0 "#HEADER [CountryCreation.GetDefinition.GetName]#!"
@@ -584,7 +598,7 @@
  PANEL_MILITARY_ARMY_CURRENT_CONSCRIPTS:2 "@battalions![Country.GetConscriptedBattalions|0v]/[Country.CalcConscriptableBattalions|0]"
  PANEL_MILITARY_ARMY_CURRENT_BATTALIONS:0 "@battalions![Country.GetBattalions|0v]"
  PANEL_MILITARY_NATIVE_POTENTIAL_BATTALIONS_TOOLTIP:1 "In the event of [Concept('concept_tension', '$concept_tensions$')] escalating into a [concept_native_uprising], [Country.GetName] will be able to field up to @battalions![Country.CalcConscriptableBattalions|0] [Concept('concept_battalion', '$concept_battalions$')] of warriors."
- PANEL_MILITARY_ARMY_OVERVIEW_TOOLTIP:0 "#header [Country.GetAdjective] [Concept('concept_battalion', '$concept_battalions$')] and [Concept('concept_conscript_battalion','$concept_conscript_battalions$')]#!\n$TOOLTIP_DELIMITER$\n[Country.GetName] has @battalions!#tooltippable #tooltip:[Country.GetTooltipTag],PANEL_MILITARY_ARMY_CURRENT_BATTALIONS_TOOLTIP  [Country.GetBattalions|v]#!#! regular [Concept('concept_battalion', '$concept_battalions$')] and can raise up to @battalions!#tooltippable #tooltip:[Country.GetTooltipTag],PANEL_MILITARY_ARMY_CURRENT_CONSCRIPTS_TOOLTIP [Country.CalcConscriptableBattalions|v]#!#! [Concept('concept_conscript_battalion','$concept_conscript_battalions$')]\n$PANEL_MILITARY_ARMY_POWER_PROJECTION$"
+ PANEL_MILITARY_ARMY_OVERVIEW_TOOLTIP:0 "#header [Country.GetAdjective] [Concept('concept_battalion', '$concept_battalions$')] and [Concept('concept_conscript_battalion','$concept_conscript_battalions$')]#!\n$TOOLTIP_DELIMITER$\n[Country.GetName] has @battalions!#tooltippable #tooltip:[Country.GetTooltipTag],PANEL_MILITARY_ARMY_CURRENT_BATTALIONS_TOOLTIP  [Country.GetRegularBattalions|v]#!#! regular [Concept('concept_battalion', '$concept_battalions$')] and can raise up to @battalions!#tooltippable #tooltip:[Country.GetTooltipTag],PANEL_MILITARY_ARMY_CURRENT_CONSCRIPTS_TOOLTIP [Country.CalcConscriptableBattalions|v]#!#! [Concept('concept_conscript_battalion','$concept_conscript_battalions$')]\n$PANEL_MILITARY_ARMY_POWER_PROJECTION$"
  PANEL_MILITARY_ARMY_CURRENT_BATTALIONS_TOOLTIP:4 "#header Total amount of [Concept('concept_battalion', '$concept_battalions$')]: [Country.GetBattalions|v]#!\n$TOOLTIP_DELIMITER$\n[Country.GetBattalionsDesc]\n[Country.GetBattalionsBreakdown]"
  PANEL_MILITARY_ARMY_CURRENT_CONSCRIPTS_TOOLTIP:2 "#header Total amount of [Concept('concept_conscript_battalion','$concept_conscript_battalions$')]: [Country.CalcConscriptableBattalions|v]#!\n$TOOLTIP_DELIMITER$\n[Country.GetConscriptsDesc]\n\n[Country.GetConscriptsBreakdown]"
  PANEL_MILITARY_ARMY_CURRENT_REGULARS_TOOLTIP:1 "#header Total amount of Regular [Concept('concept_battalion','$concept_battalions$')]#!\n$TOOLTIP_DELIMITER$\n[Country.GetRegularsDesc]\n\n[Country.GetRegularsBreakdown]"
@@ -621,8 +635,8 @@
  MILITARY_PANEL_ACTIVATE_CONSCRIPTS:0 "Activate conscripts"
  MILITARY_PANEL_CURRENT_GARRISON:0 "@battalions![Country.GetNumGarrisonUnits|0v]"
  MILITARY_PANEL_IN_GARRISON:0 "In Garrison: [Country.GetNumGarrisonUnits|0v]"
- MILITARY_PANEL_POTENTIAL_GARRISON:1 "[Add_int32( Country.GetNumGarrisonMaxUnits, Country.GetNumGarrisonMaxUnitsFromConscripts )]"
- MILITARY_PANEL_POTENTIAL_GARRISON_TOOLTIP:1 "Potential Garrisons from Army: #variable [Country.GetNumGarrisonMaxUnits] @army_SP!#!\nPotential Garrisons from Conscripts: #variable [Country.GetNumGarrisonMaxUnitsFromConscripts] @army_SP!#!"
+ MILITARY_PANEL_POTENTIAL_GARRISON:1 "[Country.GetNumGarrisonMaxUnits]"
+ MILITARY_PANEL_POTENTIAL_GARRISON_TOOLTIP:1 "Potential Garrisons from Army: #variable [Country.GetNumGarrisonMaxUnitsFromRegulars] @army_SP!#!\nPotential Garrisons from Conscripts: #variable [Country.GetNumGarrisonMaxUnitsFromConscripts] @army_SP!#!"
  MILITARY_PANEL_GARRISON_TOTAL_DEFENSES:0 "Total defenses"
  MILITARY_PANEL_HQ_HEADER_FORMAT:0 "#variable [Hq.GetName]#!"
  MILITARY_PANEL_HQ_UNITS_FORMAT:0 "[Hq.GetHomeGarrisonUnits|v0]/[Hq.GetHomeGarrisonMaxUnits] [Hq.GetCombatUnitsIcon]"
@@ -702,6 +716,8 @@
  SHIPPING_LANES:0 "Shipping Lanes"
  NO_CONVOY_RAIDING_ADMIRALS:0 "No [Concept('concept_admiral', '$concept_admirals$')] are [Concept('concept_raid_convoys', '$concept_convoy_raiding$')] here"
  NO_INTERCEPTING_ADMIRALS:0 "No [Concept('concept_admiral', '$concept_admirals$')] are patrolling here"
+ NO_FLOTILLAS_IN_HQ:0 "No @flotillas! [Concept('concept_flotilla', '$concept_flotillas$')] in this [concept_hq]"
+ NO_BATTALIONS_IN_HQ:0 "No @battalions! [Concept('concept_battalion', '$concept_battalions$')] in this [concept_hq]"
 
  ORIGIN_STATE_NAME:0 "[State.GetName]"
  ORIGIN_STATE_NUMBER_OF_SHIPPING_LANES:0 "(#v [GetDataModelSize( State.AccessShippingLanesFromThisState )]#!)"
@@ -727,7 +743,9 @@
  SHIPPING_LANE_NAME_INVALID:0 "Invalid Shipping Lane"
  SHIPPING_LANE_CONVOY_COST:0 "[Concept('concept_convoys', '$CONVOY_COST$')]: #tooltippable #tooltip:$BREAKDOWN_TAG$  @convoys!$VALUE$#!#!"
  SHIPPING_LANE_CONVOY_COST_SHORT:1 "#tooltippable #tooltip:$BREAKDOWN_TAG$ @convoys!$VALUE|v$#!#!"
- SHIPPING_LANE_EFFECTIVENESS_BASE:2 "#header [concept_shipping_lane_effectiveness]#!\n$TOOLTIP_DELIMITER$\nSupply Network Strength: #$COLOR_TAG$ $VALUE|%0$#!"
+ SHIPPING_LANE_EFFECTIVENESS_BASE:3 "#header [concept_shipping_lane_effectiveness]#!\n#$COLOR_TAG$ $VALUE|%0$#! Supply Network Strength\n\n[SelectLocalization(EqualTo_CFixedPoint(ShippingLane.GetEffectivenessRaw,'(CFixedPoint)1'), 'SHIPPING_LANE_FULL_EFFECT', 'SHIPPING_LANE_NOT_FULL_EFFECT')]"
+ SHIPPING_LANE_FULL_EFFECT:0 "This [concept_shipping_lane] is working at full effect"
+ SHIPPING_LANE_NOT_FULL_EFFECT:0 "This [concept_shipping_lane] is not working at full effect. Depending of the type of $concept_shipping_lane$, this means it is either reducing [concept_supply], [concept_market_access], or the amount of [Concept('concept_good', '$concept_goods$')] being moved."
  SHIPPING_LANE_EFFECTIVENESS_CONVOY_RAIDING_DMG:1 "[Concept('concept_raid_convoys', '$concept_convoy_raiding$')]: $VALUE|%2+$"
  SHIPPING_LANE_EFFECTIVENESS:2 "#$COLOR_TAG$ #tooltippable #tooltip:$BREAKDOWN_TAG$ $VALUE|%0$#!#!#!"
  SHIPPING_LANE_TRADE_ROUTE_BREAKDOWN_GOODS_QUANTITY:0 "Desired Goods Quantity: $VALUE|1v$"
@@ -919,7 +937,8 @@
  COMBAT_UNIT_BATTLE_TOOLTIP:0 "In the Battle of #variable [CombatUnit.GetBattle.GetName]#!"
  COMBAT_UNIT_MORALE_ONE_DAY_TOOLTIP:0 "(#variable 1#! day remaining)"
  COMBAT_UNIT_MORALE_DAYS_TOOLTIP:0 "($DAYS|v$ days remaining)"
- COMBAT_UNIT_MORALE_TOOLTIP:2 "Current [concept_morale]: #$COLOR_STR$ $MORALE|0%$#!\nTrending towards: [Character.GetSupplyFormatted] $DAYS_HINT$\n$TOOLTIP_DELIMITER$\nTotal manpower: $MANPOWER$\nDemoralized: $DEMORALIZED|v$"
+ COMBAT_UNIT_MORALE_TOOLTIP:2 "Current [concept_morale]: #$COLOR_STR$ $MORALE|0%$#!\n[ConcatIfNeitherEmpty(CombatUnit.GetMoraleModifierBreakdown,'\n')]Trending towards: [Character.GetSupplyFormatted] $DAYS_HINT$\n$TOOLTIP_DELIMITER$\nTotal manpower: $MANPOWER$\nDemoralized: $DEMORALIZED|v$"
+ COMBAT_UNIT_ENEMY_MORALE_DAMAGE_DESC:0 "$VALUE|=-0%$ from enemy side $modifier_unit_morale_damage_mult$"
  COMMANDER_SUPPLY_TOOLTIP_HEADER:0 "Supply of $NAME$: #$COLOR_STRING$ $VALUE|0%$#!"
  COMMANDER_SUPPLY_FORMATTED:0 "#tooltippable #tooltip:$BREAKDOWN_TAG$ #$COLOR_STRING$ $VALUE|0%$#!#!#!"
  COMMANDER_SUPPLY_ISOLATED:0 "#R Unable to reach [HQ.GetName]#!"
@@ -1257,7 +1276,7 @@
  
  TAX_CAPACITY_USAGE:1 "#header [concept_tax_capacity] Usage#!\n[State.GetName] uses $USAGE|1v$ [concept_tax_capacity]\n$TOOLTIP_DELIMITER$\nOne point of [concept_tax_capacity] is required per $POPS_PER_CAPACITY|vK$ [Concept('concept_pop', '$concept_pops$')] and [State.GetName] has a total population of $TOTAL_POPS|vK$"
  STATE_TAX_CAPACITY:2 "[concept_tax_capacity]\n$STATE_TAX_CAPACITY_CONDENSED$"
- STATE_TAX_CAPACITY_DESC:2 "#header [concept_tax_capacity]#!\nThe [concept_tax_capacity] balance in [State.GetName] is [State.CalcTaxCapacityBalance|1+=]\n$TOOLTIP_DELIMITER$\n[concept_tax_capacity]: #tooltippable #tooltip:[State.GetTooltipTag],STATE_TAX_CAPACITY_TOOLTIP [State.CalcTaxCapacity|1+]#!#!\n[concept_tax_capacity] Usage: #tooltippable #tooltip:[State.GetTooltipTag],STATE_TAX_CAPACITY_USAGE_TOOLTIP [State.CalcTaxCapacityUsage|1-]#!#![SelectLocalization(GreaterThan_CFixedPoint(State.CalcTaxCapacityUsage,State.CalcTaxCapacity), 'STATE_TAX_CAPACITY_INSUFFICIENT_LONG', '')]"
+ STATE_TAX_CAPACITY_DESC:3 "#header [concept_tax_capacity]#!\nThe [concept_tax_capacity] balance in [State.GetName] is [State.CalcTaxCapacityBalance|1+=]\n$TOOLTIP_DELIMITER$\n[concept_tax_capacity]: #tooltippable #tooltip:[State.GetTooltipTag],STATE_TAX_CAPACITY_TOOLTIP [State.CalcTaxCapacity|1+]#!#!\n[concept_tax_capacity] Usage: #tooltippable #tooltip:[State.GetTooltipTag],STATE_TAX_CAPACITY_USAGE_TOOLTIP [State.CalcTaxCapacityUsage|1-]#!#![SelectLocalization(GreaterThan_CFixedPoint(State.CalcTaxCapacityUsage, State.CalcTaxCapacity), 'STATE_TAX_CAPACITY_INSUFFICIENT_LONG', '')]"
  STATE_TAX_CAPACITY_USAGE_TOOLTIP:0 "[State.GetTaxCapacityUsageDesc]"
  STATE_TAX_CAPACITY_TOOLTIP:1 "#header [concept_tax_capacity]#!\n[State.GetName] has a [concept_tax_capacity] of [State.CalcTaxCapacity|+0]\n$TOOLTIP_DELIMITER$\n[State.GetTaxCapacityDesc]"
  STATE_TAX_CAPACITY_INSUFFICIENT:0 "\n[State.GetTaxCapacityEffectsDesc]"
@@ -1268,6 +1287,7 @@
  POP_VOTING_POWER_WEALTH_TOO_LOW:0 "@warning! Not eligible to vote due to [concept_wealth] $WEALTH|v0$ below the cutoff of $THRESHOLD|v0$\n$TAB$$BREAKDOWN$"
  POP_VOTING_POWER_WEALTH_SUFFICIENT:0 "[concept_wealth] $WEALTH|v0$ meets the voting cutoff of $THRESHOLD|v0$\n$TAB$$BREAKDOWN$"
  POP_VOTING_POWER_POPULATION:0 "x$NUM|v0$ potentially eligible voters"
+ POP_VOTING_INCORPORATION_LEVEL:0 "x$INCORPORATION|v%$ [Concept('concept_incorporated_state','$concept_incorporation$')] of [State.GetName]"
  POP_VOTING_POWER:0 "Number of [concept_votes]: #v $VAL|+D0$#!\n$BREAKDOWN$"
 
  NEXT_ELECTION_DATE:0 "Next [concept_election]: [AccessPlayer.GetNextElectionDate|v]"
@@ -1393,6 +1413,10 @@
  JOURNAL_WINDOW_HEADER:0 "Journal"
  JOURNAL_ENTRY_HEADING:0 "[concept_journal_entry]"
 
+ NUMBER_OF_PLAYER_OBJECTIVE_JOURNAL_ENTRIES:0 "You have #v [Subtract_int32(GetDataModelSize(AccessPlayer.AccessActivePlayerObjectiveJournalEntries), GetDataModelSize(AccessPlayer.AccessActivePinnedPlayerObjectiveJournalEntries))]#! unpinned [SelectLocalization(EqualTo_int32(Subtract_int32(GetDataModelSize(AccessPlayer.AccessActivePlayerObjectiveJournalEntries), GetDataModelSize(AccessPlayer.AccessActivePinnedPlayerObjectiveJournalEntries)), '(int32)1'), 'challenge', 'challenges')]"
+
+ NUMBER_OF_NON_PLAYER_OBJECTIVE_JOURNAL_ENTRIES:0 "You have #v [Subtract_int32(GetDataModelSize(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries), GetDataModelSize(AccessPlayer.AccessActivePinnedNonPlayerObjectiveJournalEntries))]#! unpinned [SelectLocalization(EqualTo_int32(Subtract_int32(GetDataModelSize(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries), GetDataModelSize(AccessPlayer.AccessActivePinnedNonPlayerObjectiveJournalEntries)), '(int32)1'), 'JOURNAL_ENTRY_HEADING', 'ACTIVE_JOURNAL_ENTRIES')]"
+
  EFFECT_RATIO_BELOW_MAX:0 "#v $EFFECT_RATIO|0%$#!"
  EFFECT_RATIO_ABOVE_MAX:0 "#v $EFFECT_RATIO|0%$#! or more"
 
@@ -1414,7 +1438,16 @@
  GOLD_RESERVES_DESC:1 "[concept_gold_reserves]: #tooltippable #tooltip:GOLD_RESERVES_BREAKDOWN @money![GetPlayer.GetGoldReserves|Dv]#!#!"
  CREDIT_DESC:0 "[concept_credit]: #tooltippable #tooltip:CREDIT_PROGRESS #variable @money![GetPlayer.GetPrincipal|K]#!#!#! / #maximum [GetPlayer.GetMaxCredit|K]#!"
  CREDIT_LIMIT:1 "[concept_credit]: #variable [GetPlayer.GetMaxCredit|2*]#!"
- CAPITAL_MONEY_DELAYED:1 "\n$TOOLTIP_DELIMITER$\n$INVESTMENT_POOL$\n$TOOLTIP_DELIMITER$\n[GetPlayer.GetIncomeBreakdown]\n\n[GetPlayer.GetExpensesBreakdown]"
+
+ CAPITAL_MONEY_DELAYED:1 "\n$TOOLTIP_DELIMITER$\n$INVESTMENT_POOL$\n$TOOLTIP_DELIMITER$\n$UNREALIZED_TAXES$\n$TOOLTIP_DELIMITER$\n[GetPlayer.GetIncomeBreakdown]\n\n[GetPlayer.GetExpensesBreakdown]"
+ UNREALIZED_TAXES:0 "[concept_unrealized_taxes]: #tooltippable #tooltip:UNREALIZED_TAXES_BREAKDOWN #v @money![GetPlayer.GetUnrealizedTaxes|D-]#!#!#!"
+ UNREALIZED_TAXES_BREAKDOWN:0 "#header [concept_unrealized_taxes]#!\nTotal: #v @money![GetPlayer.GetUnrealizedTaxes|D-]#!\n$TOOLTIP_DELIMITER$\nAverage Tax Collection: #tooltippable #tooltip:AVG_STATE_COLLECTION_MULT_BREAKDOWN #v [GetPlayer.GetAverageStateTaxCollectionMult|+%0]#!#!#!\nAverage [concept_tax_waste]: #tooltippable #tooltip:AVG_TAX_WASTE_BREAKDOWN #v [GetPlayer.GetAverageTaxWaste|+%0]#!#!#!"
+ AVG_STATE_COLLECTION_MULT_BREAKDOWN:0 "#header Average Tax Collection: #v [GetPlayer.GetAverageStateTaxCollectionMult|+%0]#!\n$TOOLTIP_DELIMITER$\n[GetPlayer.GetAverageStateTaxCollectionMultBreakdown]"
+ STATE_TAX_COLLECTION_MULT_SINGLE_STATE:0 "$STATE_NAME$: $UNCOLLECTED_TAX|D-$ (#tooltippable #tooltip:$STATE_TAX_COLLECTION_MULTIPLIER_SUMMARY_TAG$ $TAX_COLLECTION_MULT|+%0$#!#!)"
+ STATE_TAX_COLLECTION_MULTIPLIER_SUMMARY:0 "#header Tax Collection Malus in $STATE_NAME$ is $TAX_COLLECTION_MULT|+%0$ due to#!:\n$TOOLTIP_DELIMITER$\n$SUMMARY$"
+ AVG_TAX_WASTE_BREAKDOWN:0 "#header Average [concept_tax_waste]: #v [GetPlayer.GetAverageTaxWaste|+%0]#!\n$TOOLTIP_DELIMITER$\n[GetPlayer.GetAverageTaxWasteBreakdown]"
+ STATE_TAX_WASTE_SINGLE_STATE:0 "$STATE_NAME$: $TAX_WASTE_VALUE|D+$ ($TAX_WASTE_PERCENT|+%0$)"
+
  GOLD_RESERVES_BREAKDOWN:1 "[AccessPlayer.GetGoldProgressDesc]"
  POWER_BASE_INCOME:0 "Base Income: #variable #P +$POWER_BASE_GENERATION|1$ #!#!\n"
  CAPITAL_TRUST:0 "#tooltip_header Trust#!\nCurrent: #HEADER [GetPlayer.GetTrust|2]#!\nMonthly decay: #BOLD #V [GetPlayer.GetMonthlyTrustChange|+=3]#!#!"
@@ -1460,15 +1493,18 @@
  RADICALS_INCREASE_lost_job:0 "#v #n +$AMOUNT|*$#!#! from being fired from [Concept('concept_building', '$concept_buildings$')]"
  RADICALS_INCREASE_lost_ownership_job:0 "#v #n +$AMOUNT|*$#!#! from being fired from [Concept('concept_building', '$concept_buildings$')] where they had [Concept('concept_ownership_share', '$concept_ownership_shares$')]"
  RADICALS_INCREASE_building_downsized:0 "#v #n +$AMOUNT|*$#!#! from downsizing of [concept_state] [Concept('concept_building', '$concept_buildings$')] where their [concept_profession] has [Concept('concept_ownership_share', '$concept_ownership_shares$')]"
+ RADICALS_INCREASE_legitimacy:0 "#v #n +$AMOUNT|*$#!#! from low [concept_legitimacy]"
  RADICALS_INCREASE_government_reform:0 "#v #n +$AMOUNT|*$#!#! from recent change of [concept_government]"
 
  RADICALS_DECREASE_other:0 "#v #p -$AMOUNT|*$#!#! from [Concept('concept_pop', '$concept_pops$')] dying, events and other reasons"
  RADICALS_DECREASE_standard_of_living_increase:0 "#v #p -$AMOUNT|*$#!#! from increases in [concept_sol]"
  RADICALS_DECREASE_political_movement_success:1 "#v #p -$AMOUNT|*$#!#! from successful [Concept('concept_political_movement', '$concept_political_movements$')]"
+ RADICALS_DECREASE_legitimacy:0 "$LOYALISTS_INCREASE_legitimacy$"
 
  LOYALISTS_INCREASE_other:0 "#v #p +$AMOUNT|*$#!#! from events and other reasons"
  LOYALISTS_INCREASE_standard_of_living_increase:0 "#v #p +$AMOUNT|*$#!#! from increases in [concept_sol]"
  LOYALISTS_INCREASE_political_movement_success:1 "#v #p +$AMOUNT|*$#!#! from successful [Concept('concept_political_movement', '$concept_political_movements$')]"
+ LOYALISTS_INCREASE_legitimacy:0 "#v #p +$AMOUNT|*$#!#! from high [concept_legitimacy]"
 
  LOYALISTS_DECREASE_other:0 "#v #n -$AMOUNT|*$#!#! from [Concept('concept_pop', '$concept_pops$')] dying, events and other reasons"
  LOYALISTS_DECREASE_standard_of_living_reduction:0 "#v #n -$AMOUNT|*$#!#! from decreases in [concept_sol]"
@@ -1482,6 +1518,7 @@
  LOYALISTS_DECREASE_lost_ownership_job:0 "#v #n -$AMOUNT|*$#!#! from losing jobs in [Concept('concept_building', '$concept_buildings$')] where they had [Concept('concept_ownership_share', '$concept_ownership_shares$')]"
  LOYALISTS_DECREASE_building_downsized:1 "#v #n -$AMOUNT|*$#!#! from downsizing of [concept_state] [Concept('concept_building', '$concept_buildings$')] where their [concept_profession] has [Concept('concept_ownership_share', '$concept_ownership_shares$')]"
  LOYALISTS_DECREASE_government_reform:0 "#v #n -$AMOUNT|*$#!#! from [concept_government_reform]"
+ LOYALISTS_DECREASE_legitimacy:0 "$RADICALS_INCREASE_legitimacy$"
 
  LOYALISTS_IG_APPROVAL:0 "Effects of $LOYALISTS$ on [concept_interest_group] approval:\n[Country.GetIGApprovalFromLoyalistsBreakdown]"
  RADICALS_IG_APPROVAL:0 "Effects of $RADICALS$ on [concept_interest_group] approval:\n[Country.GetIGApprovalFromRadicalsBreakdown]"
@@ -1596,8 +1633,8 @@
  POLITICS:0 "Politics"
  BUTTON_POLITICS:0 "#header Politics#!\n$LAW_ENACTMENT_PROGRESS_TOPBAR$"
  BUTTON_POPULATION:0 "#header Population#!"
- BUTTON_TRADE_OVERVIEW:0 "#header Markets#!"
- BUTTON_CULTURE_OVERVIEW:0 "#header Culture#!"
+ BUTTON_TRADE_OVERVIEW:1 "#header Market#!"
+ BUTTON_CULTURE_OVERVIEW:1 "#header Cultures#!"
  BUTTON_BUDGET:0 "#header Budget#!"
  BUTTON_MILITARY:0 "#header Military#!"
  BUTTON_TECHNOLOGY:0 "#header Technology#!\n[SelectLocalization( Technology.IsValid, 'RESEARCHING', 'NOT_RESEARCHING' )]"
@@ -1700,8 +1737,12 @@
  
  INFRASTRUCTURE_FROM_POPS:1 "$VALUE|+=1$ from [Concept('concept_pop', '$concept_pops$')]: "
  INFRASTRUCTURE_FROM_POPS_CAPPED:1 "$VALUE|+=1$ (Capped at maximum value of #tooltippable #tooltip:$BREAKDOWN_TAG$ $CAP|1v$#!#!) from [Concept('concept_pop', '$concept_pops$')] "
+
+ NEXT_PAGE:0 "Next page"
+ PREVIOUS_PAGE:0 "Previous page"
  
  CONSTRUCTION_QUEUE_HEADER:0 "Construction Queue"
+ CONSTRUCTION_QUEUE_BUILDING_IN_STATE:0 "[ConstructionQueueElement.GetBuilding.GetName] in [ConstructionQueueElement.GetBuilding.GetState.GetName]"
  CONSTRUCTION_QUEUE_ITEM_VALID:2 "#header Expanding [Building.GetName] in [State.GetName]#!\n#v $WEEKS$#! week(s) until complete\n$TOOLTIP_DELIMITER$\n#v $PROGRESS|0$#!/#v $REQUIRED|0$#! [concept_construction] progress (#v $PERCENT_COMPLETE|%$#!)\n#v [ConstructionQueueElement.GetBaseConstructionSpeed|2]#! [concept_construction] provided by [Building.GetOwner.GetName] results in a total of #v #tooltippable #tooltip:[ConstructionQueueElement.GetTooltipTag],CONSTRUCTION_QUEUE_SPEED_TOOLTIP $SPEED$#!#!#! progress each week\n"
  CONSTRUCTION_QUEUE_ITEM_INVALID:0 "#header [Building.GetName] in [State.GetName]#!\n$TOOLTIP_DELIMITER$\n$INVALID_DESC$"
  CONSTRUCTION_SPEED_BASE_TOOLTIP:4 "#tooltip_header @construction![Nbsp][concept_construction]#![AddLocalizationIf(Country.IsConstructionPaused, '$CONSTRUCTION_IS_PAUSED$')]\nTotal: #v [Country.CalcBaseConstructionSpeed|2]#!\nBeing used: #v [Country.CalcUsedConstruction|0]/[Country.CalcBaseConstructionSpeed|0]#!\n$TOOLTIP_DELIMITER$\n[Country.GetBaseConstructionSpeedDesc]"
@@ -1800,7 +1841,7 @@
  ENCOURAGE_GOODS:0 "Encourage Consumption"
  UNENCOURAGE_GOODS:0 "End Encouragement"
  DISCOURAGE_GOODS:0 "Discourage Consumption"
- UNDISCOURAGE_GOODS:0 "End Discourgements"
+ UNDISCOURAGE_GOODS:0 "End Discouragements"
  TAX_GOODS:0 "Add Consumption Tax"
  NO_GOODS_TO_TAX:0 "There are no goods on which you can collect [Concept('concept_consumption_tax', '$concept_consumption_taxes$')]"
  UNTAX_GOODS:0 "Remove Consumption Tax"
@@ -1828,8 +1869,8 @@
 
  SHOW_PER_LEVEL_VALUES:0 "Show per Level values"
  PER_LEVEL_VALUES_NESTED_TOOLTIP:0 "#tooltippable #tooltip:[GetRawTextTooltipTag('$PER_LEVEL_VALUES_OUTPUT$')] [AddTextIf(Not(StringIsEmpty('$PER_LEVEL_VALUES_OUTPUT$')), '$SHOW_PER_LEVEL_VALUES$')]#!#!"
- PRODUCTION_METHOD_TOOLTIP_FORMAT:0 "[ConcatIfNeitherEmpty('$PREDICTION$', '\n')][AddTextIf(Not(StringIsEmpty('$PREDICTION$')), '$TOOLTIP_DELIMITER$\n')][ConcatIfNeitherEmpty('$TOTAL_VALUES_OUTPUT$','\n')][AddTextIf(Not(StringIsEmpty('$TIMED_MODIFIERS$')),'\n')][ConcatIfNeitherEmpty('$TIMED_MODIFIERS$','\n')]\n$PER_LEVEL_VALUES_NESTED_TOOLTIP$"
- PRODUCTION_METHOD_WITH_REQUIREMENTS_TOOLTIP_FORMAT:1 "[ConcatIfNeitherEmpty('$PREDICTION$', '\n')][AddTextIf(Not(StringIsEmpty('$PREDICTION$')), '$TOOLTIP_DELIMITER$\n')][ConcatIfNeitherEmpty('$TOTAL_VALUES_OUTPUT$','\n')][AddTextIf(Not(StringIsEmpty('$TIMED_MODIFIERS$')),'\n')][ConcatIfNeitherEmpty('$TIMED_MODIFIERS$','\n')]\n$PER_LEVEL_VALUES_NESTED_TOOLTIP$\n\n[AddTextIf(Not(StringIsEmpty('$EMPTY_REQUIREMENTS$')), '\n$TOOLTIP_REQUIREMENTS_ANY$\n')]$REQUIREMENTS$[AddTextIf(Not(StringIsEmpty('$EMPTY_REQUIREMENTS$')), '\n')]$BUILDING_TYPE_INFO$"
+ PRODUCTION_METHOD_TOOLTIP_FORMAT:1 "[ConcatIfNeitherEmpty('$PREDICTION$', '\n')][AddTextIf(Not(StringIsEmpty('$TOTAL_VALUES_OUTPUT$')),'$TOOLTIP_DELIMITER$\n')][ConcatIfNeitherEmpty('$TIMED_MODIFIERS$','\n\n')][ConcatIfNeitherEmpty('$TOTAL_VALUES_OUTPUT$','\n\n')]$PER_LEVEL_VALUES_NESTED_TOOLTIP$"
+ PRODUCTION_METHOD_WITH_REQUIREMENTS_TOOLTIP_FORMAT:2 "[ConcatIfNeitherEmpty('$PREDICTION$', '\n')][AddTextIf(Not(StringIsEmpty('$TOTAL_VALUES_OUTPUT$')),'$TOOLTIP_DELIMITER$\n')][ConcatIfNeitherEmpty('$TIMED_MODIFIERS$','\n')][ConcatIfNeitherEmpty('$TOTAL_VALUES_OUTPUT$','\n\n')]$PER_LEVEL_VALUES_NESTED_TOOLTIP$[AddTextIf(Not(StringIsEmpty('$EMPTY_REQUIREMENTS$')), '\n$TOOLTIP_REQUIREMENTS_ANY$\n')]$REQUIREMENTS$[AddTextIf(Not(StringIsEmpty('$EMPTY_REQUIREMENTS$')), '\n')]$BUILDING_TYPE_INFO$"
  PER_LEVEL_VALUES_ONLY:0 "$VALUES$"
 
  PRODUCTION_METHOD_TEXT_ICON_DESC:0 "#v $MORE_GOODS$\n$MORE_EMPLOYEES$#!"
@@ -2004,6 +2045,7 @@
  TOOLTIP_MARKET_CAPITAL_STATE:1 "#HEADER [concept_market_capital]#!\n[State.GetName] is the [concept_market_capital] of [State.GetMarket.GetName]\n[State.GetMarketCapitalEffectsDesc]\n$TOOLTIP_DELIMITER$\n[State.GetMarketAccessDesc]"
  TOOLTIP_CAPITAL_STATE:0 "#HEADER [concept_capital_state]#!\n[State.GetName] is the [concept_capital_state] of [State.GetOwner.GetName]\n$TOOLTIP_DELIMITER$\n[State.GetCapitalEffectsDesc]"
  TOOLTIP_TREATY_PORT:1 "#BOLD #V [concept_treaty_port]#!#!\n$TOOLTIP_DELIMITER$\n# [State.GetName] is a [concept_treaty_port] for:\n[State.GetTreatyPortMarkets]"
+ TOOLTIP_INACTIVE_TREATY_PORT:0 "#header Inactive [concept_treaty_port]#!\n$TOOLTIP_DELIMITER$\n[State.GetName] is a potential [concept_treaty_port] that is currently inactive due to:\n[State.GetTreatyPortNonFunctioningDesc]"
  TOOLTIP_TREATY_PORT_MARKET_ENTRY:0 "$TAB$[Market.GetName]"
  TOOLTIP_UNINCORPORATED_STATE_NOT_VALID:0 "#BOLD #V [concept_unincorporated_state]#!#!\n[GetDesc( State.IncorporateState )]\n$TOOLTIP_DELIMITER$\n$concept_unincorporated_state_desc$"
  TOOLTIP_UNINCORPORATED_STATE_VALID:2 "#bold [concept_unincorporated_state]#!\n#instruction Click to [Concept('concept_incorporated_state', '$concept_incorporate$')][State.GetName]#!\nCost: [State.PredictBureaucracyCost|1v] @bur![Nbsp][concept_bureaucracy]\n$TOOLTIP_DELIMITER$\n$TOOLTIP_UNINCORPORATED_STATE_INSTITUTIONS_EFFECT$\n$TOOLTIP_DELIMITER$\n$concept_unincorporated_state_desc$"
@@ -2013,6 +2055,10 @@
  TOOLTIP_UNINCORPORATED_STATE_INSTITUTIONS_EFFECT:0 "[State.GetOwner.GetAdjectiveNoFormatting] [Concept('concept_institution', '$concept_institutions$')] have no effect on [State.GetName] because it's an [concept_unincorporated_state].\n[Concept('concept_incorporated_state', '$concept_incorporating$')] [State.GetName] would have the following effects:\n[State.GetOwner.GetInstitutionsSummary]"
  TOOLTIP_INCORPORATED_STATE_INSTITUTIONS_EFFECT:0 "The effects of [State.GetName] being an [concept_incorporated_state] are the following:\n[State.GetOwner.GetInstitutionsSummary]"
  INSTITUTION_BUR_FACTOR_BREAKDOWN:0 "[Country.GetInstitutionInvestmentBureaucracyFactorDesc]"
+ 
+ TREATY_PORT_INACTIVE_COUNTRY_RANK:0 "@simple_box! [COUNTRY.GetAdjective] [concept_rank] must be higher than [TARGET_COUNTRY.GetAdjective] [concept_rank] of [TARGET_COUNTRY.GetRank]"
+ TREATY_PORT_INACTIVE_OCCUPIED:0 "@simple_box! [State.GetName] must not be occupied by a hostile [concept_country]"
+ TREATY_PORT_INACTIVE_ISOLATED:0 "@simple_box! [State.GetName] must not be isolated from [Market.GetName]"
 
  INCORPORATE_STATE_COST:0 "Cost: $COST|1v$ @bur![Nbsp][concept_bureaucracy]"
  
@@ -2119,6 +2165,7 @@
  GO_TO_BUTTON_CONSTRUCTION_QUEUE:0 "Go to [concept_construction_queue]"
  GO_TO_BUTTON_INTEREST_GROUP:0 "Go to [InterestGroup.GetName]"
  GO_TO_BUTTON_WAR:0 "Go to [War.GetName]"
+ GO_TO_BUTTON_JOURNAL:0 "Go to your Journal"
 
  START_RESEARCHING:0 "Start Researching"
 
@@ -2143,7 +2190,7 @@
  STATE_INFRASTRUCTURE_PRODUCTION_MARKER:0 "$concept_infrastructure$: [State.GetInfrastructureBalance|0+=]"
  STATE_UNEMPLOYED:2 "$concept_unemployed$: #v [State.GetNumUnemployedWorkingAdults|D-]#!"
  STATE_PEASANTS:1 "[GetPopType('peasants').GetNameNoFormatting]: [State.GetNumSubsistenceWorkingAdults|Dv]"
- STATE_PRODUCTION_MARKER_TOOLTIP:0 "#header [State.GetName]#!\n$TOOLTIP_DELIMITER$\n[concept_infrastructure]: #tooltippable #tooltip:[State.GetTooltipTag],STATE_INFRASTRUCTURE_DESC [State.GetInfrastructureBalance|v0+=]#!#!\n[concept_unemployed]:#v [State.GetNumUnemployedWorkingAdults|D-]#!\n[GetPopType('peasants').GetName]:#v [State.GetNumSubsistenceWorkingAdults|D]#!"
+ STATE_PRODUCTION_MARKER_TOOLTIP:2 "#header [State.GetName]#!\n$TOOLTIP_DELIMITER$\n[concept_infrastructure]: #tooltippable #tooltip:[State.GetTooltipTag],STATE_INFRASTRUCTURE_DESC [State.GetInfrastructureBalance|v0+=]#!#!\n[concept_unemployed]: #v [State.GetNumUnemployedWorkingAdults|D-]#!\n[GetPopType('peasants').GetName]: #v [State.GetNumSubsistenceWorkingAdults|D]#!"
  STATE_LITERACY:0 "#header [concept_literacy]#!\n[State.GetLiteracy|%1v] of the [Concept('concept_pop', '$concept_pops$')] in [State.GetName] are literate."
  TOOLTIP_MASS_MIGRATION_TARGET:0 "#header [concept_migration_target]#!\n$TOOLTIP_DELIMITER$\nThis state and its surrounding states are the targets of extensive migration from people of #variable [State.GetMassMigrationCulture.GetName]#! culture. This migration will continue until #variable [State.GetMassMigrationEndDate]#!."
  TOOLTIP_UNDISCOVERED_RESOURCES:0 "#header Discoverable Resources#!\n$TOOLTIP_DELIMITER$\nThere are undiscovered resource deposits in this state. These resources have a chance to be discovered each day if the state is part of a non-[concept_isolated_state]."
@@ -2271,6 +2318,7 @@
  POP_LITERACY:0 "Literacy"
  POP_WEALTH:0 "Wealth"
  POP_DANGEROUS_JOBS:0 "Dangerous Employment"
+ POP_WORKPLACE:0 "Workplace"
  LITERACY_0_10:0 "Literacy below #variable 25%#!"
  LITERACY_10_20:0 "Literacy between #variable 10%#! and #variable 20%#!"
  LITERACY_20_30:0 "Literacy between #variable 20%#! and #variable 30%#!"
@@ -2308,7 +2356,7 @@
  POPS_LIST_TYPE_NAME:0 "#bold [PopListItem.GetTotalPopSize|D] [PopListItem.GetPopType.GetName]#!\n#bold [PopListItem.GetTotalPolStr|D]#! [concept_political_strength]"
  POPS_LIST_TYPE_SIZE_AND_NAME:0 "#bold [PopListItem.GetTotalPopSize|D] [PopListItem.GetPopType.GetName]#!"
  POPS_LIST_TYPE_POL_STR:0 "#v [PopListItem.GetTotalPolStr|D]#! [concept_political_strength]"
- POPS_LIST_MAX_SIZE:0 "#header [PopListItem.GetPopType.GetName]#!\nEmployed: [PopListItem.GetWorkingAdultsPopSize|Dv]\n$TOOLTIP_DELIMITER$\nThis building can employ #variable [PopListItem.GetMaxPopSize|D]#! [PopListItem.GetPopType.GetName] due to:\n[PopListItem.GetMaxPopSizeDesc][Building.GetEmployeesTransferDesc( PopListItem.GetPopType )][Building.GetFailedHiresDesc( PopListItem.GetPopType )]"
+ POPS_LIST_MAX_SIZE:0 "#header [PopListItem.GetPopType.GetName]#!\nEmployed: [PopListItem.GetWorkingAdultsPopSize|Dv]\n$TOOLTIP_DELIMITER$\nThis building can employ #variable [PopListItem.GetMaxPopSize|D]#! [PopListItem.GetPopType.GetName] due to:\n[PopListItem.GetMaxPopSizeDesc] $TRANSFERS_DESC$ $FAILED_HIRES_DESC$"
  POPS_LIST_SLAVES_ROLE_MAX_SIZE:0 "#header [PopListItem.GetPopType.GetName]#!\nEmployed: [PopListItem.GetWorkingAdultsPopSize|Dv]\n[PopListItem.GetPopTypeReplacementDesc]\n$TOOLTIP_DELIMITER$\nThis building can employ #variable $MAX_POP_SIZE|D$#! [POP_TYPE.GetName] or [TARGET_POP_TYPE.GetName] due to:\n$MAX_POP_SIZE_DESC$ $TRANSFERS_DESC$ $FAILED_HIRES_DESC$"
  POPS_LIST_SOL:0 "[LabelingHelper.GetLabelForStandardOfLivingFloat(PopListItem.GetAverageSoL)|v] ([PopListItem.GetAverageSoL|1y])"
  POPS_LIST_SOL_TOOLTIP:0 "#header [concept_sol]#!\nAverage [concept_sol]: [LabelingHelper.GetLabelForStandardOfLivingFloat(PopListItem.GetAverageSoL)|v] ([PopListItem.GetAverageSoL|1y])\n\n[SelectLocalization(PopListItem.IsSlave, '', 'POPS_LIST_SOL_TOOLTIP_AVG_INCOME')]"
@@ -2432,8 +2480,8 @@
  POP_ATTRACTION_REASON_POSITIVE:0 "#g #b +#!#! $REASON$"
  POP_ATTRACTION_REASON_NEGATIVE:0 "#r #b -#!#! $REASON$"
  
- IG_POPULATION_PIECHART:1 "#header [InterestGroup.GetName]#!\nPopulation: #variable [InterestGroup.GetPopulation|K]#!\n$TOOLTIP_DELIMITER$\nPercentage of politically enfrachised population in [GetPlayer.GetName]: #variable [InterestGroup.GetPopulationInCountryAsPercentage|%1]#!"
- POPULATION_PIECHART:1 "#header [InterestGroup.GetName]#!\nLeader Ideology: [InterestGroup.GetLeaderIdeologyDesc]\nIdeologies: [InterestGroup.GetIdeologyDesc]\nPopulation: #variable [InterestGroup.GetPopulation|K]#!\n$TOOLTIP_DELIMITER$\nPercentage of politically enfrachised population in [GetPlayer.GetName]: #variable [InterestGroup.GetPopulationInCountryAsPercentage|%1]#!"
+ IG_POPULATION_PIECHART:1 "#header [InterestGroup.GetName]#!\nPopulation: #variable [InterestGroup.GetPopulation|K]#!\n$TOOLTIP_DELIMITER$\nPercentage of politically enfranchised population in [GetPlayer.GetName]: #variable [InterestGroup.GetPopulationInCountryAsPercentage|%1]#!"
+ POPULATION_PIECHART:1 "#header [InterestGroup.GetName]#!\nLeader Ideology: [InterestGroup.GetLeaderIdeologyDesc]\nIdeologies: [InterestGroup.GetIdeologyDesc]\nPopulation: #variable [InterestGroup.GetPopulation|K]#!\n$TOOLTIP_DELIMITER$\nPercentage of politically enfranchised population in [GetPlayer.GetName]: #variable [InterestGroup.GetPopulationInCountryAsPercentage|%1]#!"
  IG_CLOUT_PIECHART:1 "#header [InterestGroup.GetName]#!\n$POL_STR_RATIO$\n$TOOLTIP_DELIMITER$\n$RAW_POL_STR$\n\n[concept_political_strength_desc]"
  CLOUT_PIECHART:1 "#header [InterestGroup.GetName]#!\nLeader Ideology: [InterestGroup.GetLeaderIdeologyDesc]\nIdeologies: [InterestGroup.GetIdeologyDesc]\n$POL_STR_RATIO$\n$TOOLTIP_DELIMITER$\n$RAW_POL_STR$\n\n[concept_political_strength_desc]"
  CLOUT_PIECHART_STATE:1 "#header [InterestGroup.GetName]#!\nLeader Ideology: [InterestGroup.GetLeaderIdeologyDesc]\nIdeologies: [InterestGroup.GetIdeologyDesc]\n[concept_clout] in [State.GetName]: #variable [InterestGroup.GetPoliticalStrengthInStateAsPercentage(State.Self)|%1]#!\n$TOOLTIP_DELIMITER$\nTotal [concept_clout] in [Country.GetName]: #variable [InterestGroup.GetClout|%1]#![InterestGroup.GetInfluenceDesc]\n\n$RAW_POL_STR$\n\n[concept_political_strength_desc]"
@@ -2528,7 +2576,7 @@
 
  TOOLTIP_WAR_SUMMARY:0 "#HEADER [War.GetName]#!\n#BOLD Attackers#!:\n#V [War.GetAttackerListString]#!\n#BOLD Defenders#!:\n#V [War.GetDefenderListString]#!"
  TOOLTIP_REVOLUTION_SUMMARY:0 "#HEADER Revolution!"
- CALC_WAR_EXHAUSTION:1 "In #variable $TIMER$#! days they will get #bold $LOSS|+$#! due to Exhaustion\n$TAB$#N #bold $BASE$#!#! from Base Decay\n$TAB$#bold $OCCUPATION_CHANGE|+$#! because they are #variable $OCCUPATION|%1$#! Occupied\n$TAB$#bold $WARGOALS_CHANGE|+$#! because their enemy controls #variable $WARGOALS|%1$#! of their Wargoals\n$TAB$#bold $CASUALTIES_CHANGE|+$#! because they have taken #variable $CASUALTIES$K#! casualities\n$TAB$#bold $TURMOIL_CHANGE|+$#! because #variable $TURMOIL|%1$#! of their population are [concept_radical]\n$TAB$#bold $SITUATIONS_CHANGE|+$#! because of events"
+ CALC_WAR_EXHAUSTION:1 "In #variable $TIMER$#! days they will get #bold $LOSS|+$#! due to Exhaustion\n$TAB$#N #bold $BASE$#!#! from Base Decay\n$TAB$#bold $OCCUPATION_CHANGE|+$#! because they are #variable $OCCUPATION|%1$#! Occupied\n$TAB$#bold $WARGOALS_CHANGE|+$#! because their enemy controls #variable $WARGOALS|%1$#! of their Wargoals\n$TAB$#bold $CASUALTIES_CHANGE|+$#! because they have taken #variable $CASUALTIES$K#! causalities\n$TAB$#bold $TURMOIL_CHANGE|+$#! because #variable $TURMOIL|%1$#! of their population are [concept_radical]\n$TAB$#bold $SITUATIONS_CHANGE|+$#! because of events"
 
  TOOLTIP_COUNTRY:0 "#BOLD #V [GetPlayer.GetName]#!#!"
  TOOLTIP_COUNTRY_DELAYED:0 "\n$TOOLTIP_DELIMITER$\nCultures: #VARIABLE [GetPlayer.GetPrimaryCulturesDesc]#!\nReligion: #VARIABLE [GetPlayer.GetStateReligion.GetName]#!\nCapital: #VARIABLE [GetPlayer.GetCapital.GetName]#!\n\n[concept_country_desc]"
@@ -2595,7 +2643,7 @@
  POP_DEPENDENTS_TOOLTIP:0 "#header Dependents#!\nValue: #variable [Pop.GetDependentsSize|1K]#!\n$TOOLTIP_DELIMITER$\n[concept_dependents_desc]"
  DEPENDENT_WAGE_SOURCES:0 "from $BREAKDOWN$"
  DEPENDENT_WAGE_SOURCE_ODD_JOBS:0 "odd jobs"
- DEPENDENT_WAGES_TOOLTIP:0 "#header Dependent Wages: #variable @money!$VAL|+0$#!#!\n$TOOLTIP_DELIMITER$\n$BREAKDOWN$"
+ DEPENDENT_WAGES_TOOLTIP:1 "#header Dependent Wages: #variable @money!$VAL|=+D$#!#!\n$TOOLTIP_DELIMITER$\n$BREAKDOWN$"
  DEPENDENT_BASE_WAGES:0 "Base: @money!$VAL|0v$ (@money!$PERPOP|3v$ per Dependent)"
 
  POP_POPULATION_GROWTH:0 "#tooltip_header Population Growth#!\nYearly Population Change: #variable [Pop.GetPopGrowth|+=0]#!\n$TOOLTIP_DELIMITER$\n[Pop.GetPopGrowthDesc]"
@@ -2634,6 +2682,7 @@
  BUY_PACKAGE_POP_CONSUMPTION_WEALTH_BETWEEN_LEVELS:0 "Consumed by [Concept('concept_pop', '$concept_pops$')] between [concept_wealth] Levels $FROM|v$ to $TO|v$"
  BUY_PACKAGE_POP_CONSUMPTION_WEALTH_ALL:0 "Consumed by [Concept('concept_pop', '$concept_pops$')] of all [concept_wealth] Levels"
  BUY_PACKAGE_POP_CONSUMPTION_WEALTH_NONE:0 "Not consumed by any [Concept('concept_pop', '$concept_pops$')]"
+ POPNEED_NAME_TOOLTIPABLE:0 "#tooltippable #tooltip:$TAG$,POPNEED_DETAILS_TOOLTIP $NAME$#!#!"
  POPNEED_SUMMARY_DESC:0 "#tooltippable #tooltip:$TAG$,POPNEED_EXPENSES_TOOLTIP @money![POP_NEED.CalcTotalCost|Dv]#!#! - #tooltippable #tooltip:$TAG$,POPNEED_DETAILS_TOOLTIP [POP_NEED.GetName]#!#!"
  POPNEED_DETAILS_DESC:0 "#header [POP_NEED.GetName]#!\n$CONSUMPTIONDESC$\n$TOOLTIP_DELIMITER$\n$GOODSDESC$"
  POPNEED_EXPENSES_DESC:0 "Current [POP_NEED.GetName] expenses for [POP.GetTotalSize|Kv] [POP.GetCulture.GetName] [POP.GetPopType.GetName] in [POP.GetState.GetName]:\n$CONTENTS$\nTotal Cost: @money![POP_NEED.CalcTotalCost|Dv]"
@@ -2667,9 +2716,14 @@
  TOOLTIP_WEALTH:1 "#header Wealth#!\nLevel [Pop.GetCurrentWealth|v] [Concept('concept_pop_needs','$concept_pop_needs_short$')]\n$TOOLTIP_DELIMITER$\n$POP_NET_INCOME$"
  TOOLTIP_WEALTH_SLAVE:1 "#header Wealth#!\nSlave upkeep is satisfying this Slave [concept_pop]'s [Concept('concept_pop_needs','$concept_pop_needs_short$')] to Level [Pop.GetCurrentWealth|v]\n$TOOLTIP_DELIMITER$\n#bold Slave Upkeep Breakdown:#!\n[Pop.GetNeedsDesc]"
  TOOLTIP_WEALTH_SUBSISTENCE:3 "#header Wealth#!\nTheir [concept_subsistence_output] of @money![Pop.GetAverageAnnualWage|Dv] and annual [concept_budget_poll_taxes] of @money![Pop.CalcAnnualPollTaxAmount|Dv] is satisfying the [GetPopType('peasants').GetName]' [Concept('concept_pop_needs','$concept_pop_needs_short$')] equivalent to Level [Pop.GetCurrentWealth|v]\n\nA [concept_building] that wants to hire from this [concept_pop] will need to offer a wage of at least @money![Pop.GetWageRequiredToHireFrom|Dv]."
- TOOLTIP_POP_NET_INCOME:0 "#header Net Income#!\n$POP_NET_INCOME$"
+ TOOLTIP_POP_NET_INCOME:1 "#header Net [Concept('concept_pop_income','$concept_pop_income_short$')]#!\n#variable @money![Subtract_CFixedPoint(Pop.GetIncome, Pop.GetExpenses)|+=D]#!\n$TOOLTIP_DELIMITER$\n$POP_NET_INCOME$"
  POP_NET_INCOME:0 "[Pop.GetIncomeExpensesBalanceDesc]\nProgress towards next Wealth level: #v [Pop.GetWealthProgression|+=%0]#!\n\nAnnual Income per Working Adult: @money![Pop.GetAverageAnnualWage|Dv]"
- POP_MONEY_BALANCE:0 "$INCOME$\n$EXPENSES$\n#bold Net Income: #variable @money!$VAL|+=D$#!#!"
+ POP_MONEY_BALANCE:1 "$INCOME$\n$EXPENSES$"
+ POP_ECONOMY_WEEKLY_INCOME:0 "#title Weekly $concept_pop_income$#!"
+ POP_ECONOMY_WEEKLY_EXPENSES:0 "#title Weekly $concept_pop_income_expenses$#!"
+ POP_GOODS_CONSUMPTION_TOOLTIP_HEADER:0 "[PopConsumptionGoods.GetGoods.GetNameNoFormatting] $concept_good_consumption$"
+ POP_GOODS_BUDGET_EXPENDITURE_PERCENTAGE:0 "#header [Goods.GetTextIcon] [Goods.GetName] Expenditure Percentage#!\n#v [PopConsumptionGoods.GetConsumptionRatio|1%v]#! of this [Concept('concept_pop','$concept_pop_possessive$')] budget is spent on [Goods.GetName].\nPart of the [PopConsumptionGoods.GetPopNeedsDesc] [concept_pop_needs]."
+ POP_GOODS_AMOUNT_CONSUMED:0 "Amount of [Goods.GetTextIcon] [Goods.GetName] [Concept('concept_good_consumption','$concept_good_consumed$')] by [Pop.GetName]"
  POP_LIST_SOL:0 "#variable [LabelingHelper.GetLabelForStandardOfLiving(Pop.GetCurrentStandardOfLiving)]#!  ([Pop.GetCurrentStandardOfLiving|v])"
  NEEDS_BREAKDOWN:0 "#header [concept_pop_needs]#!\n[Pop.GetNeedsDesc]"
  AVG_WAGE_POP_LIST:0 "Avg. Annual Wage: @money![PopListItem.GetAverageAnnualWage|vD]"
@@ -2747,7 +2801,7 @@
  DOWNSIZE_BUILDING_MODIFIERS_INSTRUCTIONS:0 "#instruction Click to downsize 1 level#!\n#instruction $SHORTCUT_KEY_MOD_shift$Click to downsize $SHIFT_NUM_LEVELS$ levels#!\n#instruction $SHORTCUT_KEY_MOD_ctrl$Click to downsize $CTRL_NUM_LEVELS$ levels#!"
  EXPANSION_PROFIT_IMPACT:2 "#header Predicted Revenue after Expansion#!\n#v @money!$VAL|K+=$#! Predicted Earnings / week\n$TOOLTIP_DELIMITER$\n$IMPACT_DETAILS$"
  EXPANSION_PRODUCTIVITY_IMPACT:0 "#header Predicted $EARNINGS_PER_EMPLOYEE$ after Expansion#!: #v @money!$VAL|+$#!\n$TOOLTIP_DELIMITER$\n$IMPACT_DETAILS$"
- EXPANSION_EMPLOYEES_VS_REVENUE:0  "#v @money!$REVENUE|K+$#! predicted Yearly Revenue\n#v $EMPLOYEES|v$#! Total Employees"
+ EXPANSION_EMPLOYEES_VS_REVENUE:0 "#v @money!$REVENUE|K+$#! predicted Yearly Revenue\n#v $EMPLOYEES|v$#! Total Employees"
  EXPANSION_WAGES_IMPACT:1 "#v @money!$IMPACT|K+=$#! for Weekly Wages"
  GOODS_PROFIT_CONSUMPTION:2 "#v @money!$IMPACT|K+=$#! for $NUM_UNITS|0Y=$ [Goods.GetTextIcon] #v [Goods.GetName]#! ($PRICE_CUR_ICON$@arrow_right!$PRICE_NEW_ICON$)"
  GOODS_PROFIT_CONSUMPTION_AFTER_SUBSTITUTION:2 "#v @money!$IMPACT|K+=$#! for $NUM_UNITS|0Y=$ [Goods.GetTextIcon] #v [Goods.GetName]#! ($PRICE_CUR_ICON$@arrow_right!$PRICE_NEW_ICON$ after [concept_goods_substitution])"
@@ -3232,6 +3286,7 @@
  TRADE_ROUTE_TOTAL_DESIRED_IMPORTS:1 "Current Desired Imports: #v #tooltippable #tooltip:$BREAKDOWN_TAG$ $VAL|0$#!#!#!"
  TRADE_ROUTE_TOTAL_AVAILABLE_IMPORTS:0 "Potential Imports: #v #tooltippable #tooltip:$BREAKDOWN_TAG$ $VAL|0$#!#!#!"
  TRADE_ROUTE_NO_INTEREST_IN_REGIONS:0 "Either [COUNTRY.GetName] or [TARGET_COUNTRY.GetName] must have an [concept_interest] in a [concept_strategic_region] where the other [Concept('concept_country','$concept_country_possessive$')] [concept_market] is present for trade to be possible"
+ TRADE_ROUTE_LANDLOCKED_COUNTRY:0 "You cannot trade overseas since your [concept_market_capital] has no access to a coast"
  TRADE_ROUTE_EXPORTS_CAPPED:0 "Desired exports exceed potential, limiting traded amount to #v $POSSIBLE_QUANTITY|0$#! (#v $TOTAL_POSSIBLE_QUANTITY|0$#! x #v $QUANTITY_PERC|0%$#! competitiveness share)"
  TRADE_ROUTE_IMPORTS_CAPPED:0 "Desired imports exceed potential, limiting traded amount to #v $POSSIBLE_QUANTITY|0$#! (#v $TOTAL_POSSIBLE_QUANTITY|0$#! x #v $QUANTITY_PERC|0%$#! competitiveness share)"
  TRADE_ROUTE_MARKET_LACKS_PORT:0 "Not possible to establish this [concept_trade_route] because [MARKET.GetName] lacks a port."
@@ -3516,6 +3571,7 @@
 
  COMMANDER_ORDER_REDUNDANT:0 "#V Already assigned to this order#!"
  COMMANDER_ORDER_NAVAL_NO_COASTAL:1 "#N [STATE.GetName] controls no coastal provinces#!"
+ COMMANDER_ORDER_NAVAL_COAST_FULLY_IMPASSABLE:0 "#N The $ENEMY_ADJ$ coast of $STATE_NAME$ has no passable provinces#!"
  COMMANDER_ORDER_NAVAL_NOT_ENEMY:0 "#N Not at war with [COUNTRY.GetName]#!"
  COMMANDER_ORDER_NAVAL_REPAIRING:0 "#N $ADMIRAL_REPAIRING_DATE$#!"
  COMMANDER_ORDER_NAVAL_NEED_GENERAL:2 "#N [HQ.GetName] has no [Concept('concept_general', '$concept_generals$')] with troops to perform a Naval Invasion#!"
@@ -3530,7 +3586,7 @@
  COMMANDER_ORDER_PATROL_NOT_FRIENDLY_HQ:0 "#N Can only target friendly HQs#!"
  COMMANDER_ORDER_FRONT_FAIL_UNREACHABLE:0 "#N [Country.GetName] cannot reach [Front.GetName]#!"
 
- COMMANDER_ORDER_CONVOY_RAIDING_INVALID_TARGET:0 "#N Not a hostile [concept_supply_network]#!"
+ COMMANDER_ORDER_CONVOY_RAIDING_INVALID_TARGET:1 "#N No hostile [Concept('concept_supply_network', '$concept_supply_networks$')] present#!"
 
  COMMANDER_PANEL_CURRENT_ORDER:1 "Current [concept_order]: #b [Character.GetCommanderOrder.GetType.GetNameGerund]#! [AddLocalizationIf(Not(Or(Character.IsAdmiral, Character.GetCommanderOrder.GetType.IsStandBy)), Character.GetCommanderOrder.GetFrontTarget.GetName)]"
  COMMANDER_PANEL_ORDER_TOOLTIP:0 "[Character.GetSwitchOrderButtonDesc( CommanderOrderType.Self )][ConcatIfNeitherEmpty('\n\n', Character.CanSelectOrderDesc( CommanderOrderType.Self ))]"
@@ -3815,7 +3871,7 @@
 
  ADD_TO_GOVERNMENT:0 "Add To Government"
  REMOVE_FROM_GOVERNMENT:0 "Remove From Government"
- LEGITIMACY_CHANGE_SWITCH_TOOLTIP:0 "This would result in a [concept_legitimacy] change of #variable $VAL|+=0$#! (Currently #variable [GetPlayer.GetGovernmentLegitimacy|0%]#!)\n$TOOLTIP_DELIMITER$\nThe resulting Government Legitimacy would look like this:\n$DESC$"
+ LEGITIMACY_CHANGE_SWITCH_TOOLTIP:0 "This would result in a [concept_legitimacy] change of #variable $VAL|+=0$#! (Currently #variable [GetPlayer.GetGovernmentLegitimacy]#!)\n$TOOLTIP_DELIMITER$\nThe resulting Government Legitimacy would look like this:\n$DESC$"
  TOOLTIP_REFORM_GOVERNMENT:0 "#HEADER $REFORM_GOVERNMENT$#!\n[ReformGovernment.GetConfirmDesc]"
 
  ADD_TO_GOVERNMENT_SHORT:0 "Add"
@@ -3838,8 +3894,8 @@
 
  RULER_JOIN_IG_SHORT:0 "Join"
  RULER_JOIN_IG_LONG:0 "Have [concept_ruler] Join [concept_interest_group]"
- RULER_LEGITEMACY_NO_CHANGE_TOOLTIP:0 "This would not result in a [concept_legitimacy] change (Currently #variable [GetPlayer.GetGovernmentLegitimacy|0%]#!)"
- RULER_LEGITEMACY_CHANGE_TOOLTIP:0 "This would result in a [concept_legitimacy] change of #variable $VAL|+=0$#! (Currently #variable [GetPlayer.GetGovernmentLegitimacy|0%]#!)"
+ RULER_LEGITEMACY_NO_CHANGE_TOOLTIP:0 "This would not result in a [concept_legitimacy] change (Currently #variable [GetPlayer.GetGovernmentLegitimacy]#!)"
+ RULER_LEGITEMACY_CHANGE_TOOLTIP:0 "This would result in a [concept_legitimacy] change of #variable $VAL|+=0$#! (Currently #variable [GetPlayer.GetGovernmentLegitimacy]#!)"
  TOOLTIP_RULER_JOIN_IG_DESC:0 "\n$TOOLTIP_DELIMITER$\nHave your [concept_ruler] join this [concept_interest_group] to promote their ideologies\n\nThis will greatly anger their current [concept_interest_group] and we will be unable to change the [concept_ruler]'s [concept_interest_group] again for [GetDefine( 'NPolitics', 'RULER_CHANGE_IG_COOLDOWN_YEARS' )|v] years#!"
  TOOLTIP_RULER_JOIN_IG:0 "#HEADER $IG_RIGHT_CLICK_MENU_RULER_JOIN_IG$#!\n[InterestGroup.GetRulerJoinGovDesc]"
 
@@ -4227,7 +4283,9 @@
  TOTAL_CAPITAL_GAIN_TITLE:0 "#title [concept_authority] Gain#!"
  POPULATION_TITLE:0 "#title Population#!"
  WORKING_ADULTS_TITLE:0 "#title Workforce#!"
+ WORKING_ADULTS_INCOME_TITLE:0 "#title Workforce Income#!"
  DEPENDENTS_TITLE:0 "#title Dependents#!"
+ DEPENDENTS_INCOME_TITLE:0 "#title Dependents Income#!"
  VOTES_TITLE:0 "#title Votes#!"
  CULTURE_TITLE:0 "#title [concept_culture]#!"
  RELIGION_TITLE:0 "#title [concept_religion]#!"
@@ -4304,7 +4362,9 @@
 
  ESTABLISH_COLONY_BUILDING_TOOLTIP:0 "#variable [BUILDING_TYPE.GetName]#!"
 
- STATE_COLONY_TOOLTIP:2 "#header Establishing [State.GetOwner.GetAdjective] Colony in [State.GetName]#!\n$TOOLTIP_DELIMITER$\nProgress towards gaining an additional province: #variable [State.GetColonyProgress|%]#!\nThe next growth of the colony is estimated to occur on #variable [State.GetColonyGrowthDateDesc]#!\n\nProgress increases each day by #variable [State.GetDailyColonyProgress|%]#! due to: \n[State.GetColonyGrowthModifierDesc]"
+ STATE_COLONY_ACTIVE_INTEREST:0 "The next growth of the colony is estimated to occur on #variable [State.GetColonyGrowthDateDesc]#!\n\nProgress increases each day by #variable [State.GetDailyColonyProgress|%]#! due to: \n[State.GetColonyGrowthModifierDesc]"
+ STATE_COLONY_TOOLTIP_INACTIVE_INTEREST:0 "\n#R Cannot gain additional progress due to no [concept_active_interest] in [State.GetStateRegion.GetStrategicRegion.GetName]#!"
+ STATE_COLONY_TOOLTIP:3 "#header Establishing [State.GetOwner.GetAdjective] Colony in [State.GetName]#!\n$TOOLTIP_DELIMITER$\nProgress towards gaining an additional province: #variable [State.GetColonyProgress|%]#!\n[SelectLocalization( State.IsColonyProgressBlockedByInactiveInterest, 'STATE_COLONY_TOOLTIP_INACTIVE_INTEREST', 'STATE_COLONY_ACTIVE_INTEREST' )]"
 
  MARKET_CAPITAL:0 "#title [concept_market_capital]#!\n[Market.GetMarketCapital.GetName]"
  MOVE_CAPITAL_FORBIDDEN_WHILE_IN_ACTIVE_DIPLO_PLAY:0 "#N Cannot move the capital while involved in a [concept_diplomatic_play]#!"
@@ -4366,7 +4426,7 @@
  SET_INTEREST_MARKER:0 "#header Set Level $LEVEL$ [concept_interest]#!"
  IM_RANK_UNDER_MIN:0 "#N Can't Downgrade Level $LEVEL$ [concept_interest]#!"
  IM_RANK_OVER_MAX:0 "#N Can't Upgrade Level $LEVEL$ [concept_interest]#!"
- IM_COUNTRY_RANK_TOO_LOW:0 "#N Country rank needs to be atleast $RANK$ to do this#!"
+ IM_COUNTRY_RANK_TOO_LOW:0 "#N Country rank needs to be at least $RANK$ to do this#!"
 
  INTERESTS:0 "[Concept('concept_interest', '$concept_interests$')]"
  DECLARE_INTEREST_ALREADY_HAS_INTEREST:0 "[Country.GetName] already has an [concept_interest] in [StrategicRegion.GetName]"
@@ -4431,7 +4491,7 @@
  STATE_SOL_MIDDLE:0 "#header Average [concept_sol] for $middle$ in [State.GetName]#!\n#v [State.GetFormattedStandardOfLivingLabelMiddle] ([State.GetFormattedStandardOfLivingMiddle]#!)\n$TOOLTIP_DELIMITER$\n[State.GetAdditionalSOLFactorsDescMiddle]"
  STATE_SOL_RICH:0 "#header Average [concept_sol] for $rich$ in [State.GetName]#!\n#v [State.GetFormattedStandardOfLivingLabelRich] ([State.GetFormattedStandardOfLivingRich]#!)\n$TOOLTIP_DELIMITER$\n[State.GetAdditionalSOLFactorsDescRich]"
  STATE_EXPECTED_SOL_ALL:0 "#header Average [concept_expected_sol] for all [Concept('concept_pop', '$concept_pops$')] in [State.GetName]#!\n#v [LabelingHelper.GetLabelForStandardOfLivingCFixedPoint(State.GetExpectedStandardOfLivingAll)] ([State.GetExpectedStandardOfLivingAll|1]#!)\n$TOOLTIP_DELIMITER$\n[State.GetExpectedSOLFactorsDescAll]"
- STATE__EXPECTEDSOL_POOR:0 "#header Average [concept_expected_sol] for $poor$ in [State.GetName]#!\n#v [LabelingHelper.GetLabelForStandardOfLivingCFixedPoint(State.GetExpectedStandardOfLivingPoor)] ([State.GetExpectedStandardOfLivingPoor|1]#!)\n$TOOLTIP_DELIMITER$\n[State.GetExpectedSOLFactorsDescPoor]"
+ STATE_EXPECTED_SOL_POOR:0 "#header Average [concept_expected_sol] for $poor$ in [State.GetName]#!\n#v [LabelingHelper.GetLabelForStandardOfLivingCFixedPoint(State.GetExpectedStandardOfLivingPoor)] ([State.GetExpectedStandardOfLivingPoor|1]#!)\n$TOOLTIP_DELIMITER$\n[State.GetExpectedSOLFactorsDescPoor]"
  STATE_EXPECTED_SOL_MIDDLE:0 "#header Average [concept_expected_sol] for $middle$ in [State.GetName]#!\n#v [LabelingHelper.GetLabelForStandardOfLivingCFixedPoint(State.GetExpectedStandardOfLivingMiddle)] ([State.GetExpectedStandardOfLivingMiddle|1]#!)\n$TOOLTIP_DELIMITER$\n[State.GetExpectedSOLFactorsDescMiddle]"
  STATE_EXPECTED_SOL_RICH:0 "#header Average [concept_expected_sol] for $rich$ in [State.GetName]#!\n#v [LabelingHelper.GetLabelForStandardOfLivingCFixedPoint(State.GetExpectedStandardOfLivingRich)] ([State.GetExpectedStandardOfLivingRich|1]#!)\n$TOOLTIP_DELIMITER$\n[State.GetExpectedSOLFactorsDescRich]"
 
@@ -4522,7 +4582,6 @@
  INTEREST_GROUP:0 "[concept_interest_group]"
  INCREASE:0 "increase"
  DECREASE:0 "decrease"
- INCREMENT_DECREMENT_TOOLTIP:0 "#instruction Click#! to $CHANGE_DIR$ $ITEM_DESCRIPTION$ by #variable $CLICK_MAGNITUDE$#!\n#instruction Shift+Click#! to $CHANGE_DIR$ by #variable $SHIFT_MAGNITUDE$#!\n#instruction Ctrl+Click#! to $CHANGE_DIR$ by #variable $CTRL_MAGNITUDE$#!"
 
  ADMIRAL_REPAIRING_DATE:0 "[Character.GetFullName] has recently lost a naval battle and is unavailable until [Character.GetRepairDateEnd|v]"
  ADMIRAL_REPAIRING_DATE_TOOLTIP:0 "#header Repairing#!\n[Character.GetFullName] has recently lost a naval battle and is unavailable until [Character.GetRepairDateEnd|v]"
@@ -4843,15 +4902,22 @@
  ENACTING_LAW:0 "[GetPlayer.GetName] is currently enacting #variable [GetPlayer.GetLawBeingEnacted.GetName]#!"
  NOT_ENACTING_LAW:0 "[GetPlayer.GetName] is not actively enacting a new [concept_law]."
  LAW_ENACTMENT_ATTEMPT_TOO_SOON:0 "An attempt to enact [Law.GetName] was made too recently. Wait $TIME_REMAINING$ before another attempt."
- LAW_ENACTMENT_PROGRESS:1 "[ConcatIfNeitherEmpty(Law.PredictLegitimacyChangeToEnactDesc, '\n')][Law.GetCheckpointRemainingDays|v] days until next checkpoint\n\n$LAW_NEXT_CHECKPOINT_OUTCOME_CHANCES_DESC$"
+ LAW_ENACTMENT_PROGRESS:2 "[ConcatIfNeitherEmpty(Law.PredictLegitimacyChangeToEnactDesc, '\n')][SelectLocalization(EqualTo_CFixedPoint(Law.GetCountry.GetModifier.GetValueFor('country_cannot_enact_laws'), '(CFixedPoint)0'), 'LAW_ENACTMENT_PROGRESS_NOT_STALLED', 'LAW_ENACTMENT_PROGRESS_STALLED')]"
+ LAW_ENACTMENT_PROGRESS_NOT_STALLED:0 "[Law.GetCheckpointRemainingDays|v] days until next checkpoint\n\n$LAW_NEXT_CHECKPOINT_OUTCOME_CHANCES_DESC$"
+ LAW_ENACTMENT_PROGRESS_STALLED:0 "$LAW_ENACTMENT_STALLED_WARNING$#indent_newline:2 \n$LAW_ENACTMENT_STALL_BREAKDOWN$#!\n$LAW_NEXT_CHECKPOINT_OUTCOME_CHANCES_DESC_NO_DATE$"
+ LAW_ENACTMENT_STALLED_WARNING:0 "#r Law enactment is currently stalled!#!"
+ LAW_ENACTMENT_STALL_BREAKDOWN:0 "[Law.GetCountry.GetModifier.GetDescFor('country_cannot_enact_laws')]"
+ LAW_ENACTMENT_STALL_BREAKDOWN_FULL:0 "[Law.GetCountry.GetModifier.GetTooltipFor('country_cannot_enact_laws')]"
  LAW_NEXT_CHECKPOINT_TIME:0 "In [Law.GetCheckpointRemainingDays|v] days ([Law.GetCheckpointEndDateString])"
  LAW_NEXT_CHECKPOINT_TIME_DESC:1 "#header Next Checkpoint#!\nEstimated: #v [Law.GetCheckpointEndDateString]#!\n$TOOLTIP_DELIMITER$\n$LAW_NEXT_CHECKPOINT_OUTCOME_CHANCES_DESC_NO_NESTING$\n\n#tooltippable #tooltip:[Law.GetTooltipTag],LAW_NEXT_CHECKPOINT_TIME_FACTORS_TOOLTIP $LAW_NEXT_CHECKPOINT_TIME_FACTORS$#!#!"
  LAW_NEXT_CHECKPOINT_TIME_FACTORS:0 "Factors for the total time between checkpoints of [Law.GetCheckpointTotalDays|v] days."
- LAW_NEXT_CHECKPOINT_TIME_FACTORS_TOOLTIP:0 "Base Days for [Law.GetName]: [Law.GetCheckpointBaseDays|v]\nMultiplied by Legitimacy Factor: [Law.GetCheckpointLegitimacyFactor|v]\nDivided by Legislative Efficiency: [Law.GetCheckpointLegislativeEfficiency|v]\nSubtracted by Legislative Efficiency Factor: #v [Law.GetCheckpointLegislativeEfficiencyFactor|%-]#! x Total"
+ LAW_NEXT_CHECKPOINT_TIME_FACTORS_TOOLTIP:0 "Base Days for [Law.GetName]: [Law.GetCheckpointBaseDays|v]\n[Law.GetCheckpointTotalDaysBreakdown]"
 
  LAW_NEXT_CHECKPOINT_OUTCOME_CHANCES_DESC:0 "$NEXT_CHECKPOINT$\n$TAB$$OUTCOME_SUCCESS$\n$TAB$$OUTCOME_ADVANCE$\n$TAB$$OUTCOME_DEBATE$\n$TAB$$OUTCOME_STALL$"
+ LAW_NEXT_CHECKPOINT_OUTCOME_CHANCES_DESC_NO_DATE:0 "$NEXT_CHECKPOINT_NO_DATE$\n$TAB$$OUTCOME_SUCCESS$\n$TAB$$OUTCOME_ADVANCE$\n$TAB$$OUTCOME_DEBATE$\n$TAB$$OUTCOME_STALL$"
  LAW_NEXT_CHECKPOINT_OUTCOME_CHANCES_DESC_NO_NESTING:0 "$NEXT_CHECKPOINT_NO_NESTING$\n$TAB$$OUTCOME_SUCCESS$\n$TAB$$OUTCOME_ADVANCE$\n$TAB$$OUTCOME_DEBATE$\n$TAB$$OUTCOME_STALL$"
  NEXT_CHECKPOINT:1 "On next checkpoint on #tooltippable #tooltip:[Law.GetTooltipTag],LAW_NEXT_CHECKPOINT_TIME_DESC #v [Law.GetCheckpointEndDateString]#!#!#!, one of the following will happen:"
+ NEXT_CHECKPOINT_NO_DATE:0 "On next checkpoint, one of the following will happen:"
  NEXT_CHECKPOINT_SHORT:0 "#tooltippable #tooltip:[Law.GetTooltipTag],LAW_NEXT_CHECKPOINT_TIME_DESC #v [Law.GetCheckpointEndDateString]#!#!#!:"
  NEXT_CHECKPOINT_IS:0 "The next checkpoint is: #tooltippable #tooltip:[Law.GetTooltipTag],LAW_NEXT_CHECKPOINT_TIME_DESC #v [Law.GetCheckpointEndDateString]#!#!#!"
  NEXT_CHECKPOINT_NO_NESTING:1 "On next checkpoint on #v [Law.GetCheckpointEndDateString]#!, one of the following will happen:"
@@ -4920,8 +4986,9 @@
  CHANGE_LAW_HEADER:0 "#BOLD $concept_law_group$#!"
 
  LAW_ALREADY_ENACTED:0 "[Law.GetName] has already been enacted"
- LAW_ALREADY_ENACTING:0 "[GetPlayer.GetName] is already enacting #variable [Law.GetName]#!, the progress so far is #variable [Law.GetCheckpointProgress|%1]#!"
+ LAW_ALREADY_ENACTING:1 "[Law.GetCountry.GetName] is already enacting #variable [Law.GetName]#!, the progress so far is #variable [Law.GetCheckpointProgress|%1]#!"
  LAW_IS_CIVIL_WAR:0 "#N Cannot do this while in Civil War!#!"
+ LAW_CANNOT_ENACT:0 "[Law.GetCountry.GetName] is unable to enact any [Concept('concept_law','$concept_laws$')]#indent_newline:4 \n[Law.GetCountry.GetModifier.GetDescFor('country_cannot_enact_laws')]#!"
 
  YOU_MUST_HAVE:0 "You #bold must#! have "
  YOU_CANNOT_HAVE:0 "You #bold can not#! have "
@@ -5282,7 +5349,7 @@
 
  MAP_INTERACTION_CONVOY_RAIDING_DESC:0 "Select Sea Node for [Character.GetFullName] to raid convoys"
  MAP_INTERACTION_CONVOY_RAIDING_PERFORMED:0 "Convoy raiding started"
- MAP_INTERACTION_CONVOY_RAIDING_TOOLTIP:0 "Issue [Character.GetFullName] an #header [COMMANDER_ORDER_TYPE.GetName]#! Order"
+ MAP_INTERACTION_CONVOY_RAIDING_TOOLTIP:1 "Issue [Character.GetFullName] an #header [COMMANDER_ORDER_TYPE.GetName]#! Order in the [STRATEGIC_REGION.GetName]"
 
  MAP_INTERACTION_PATROL_DESC:0 "Select Headquarters for [Character.GetFullName] to patrol towards"
  MAP_INTERACTION_PATROL_PERFORMED:0 "#variable [COMMANDER_ORDER_TYPE.GetName]#! Order given to [Character.GetFullName]"
@@ -5487,7 +5554,7 @@
  SUBSIDIZED_ALL_NO:1 "None of the buildings in this group are [Concept('concept_subsidies', '$concept_subsidized$')].\n\n#instruction Click to subsidize all buildings.#!"
  SUBSIDIZED_ALL_MIXED:1 "Some of the buildings in this group are [Concept('concept_subsidies', '$concept_subsidized$')].\n\n#instruction Click to subsidize all buildings.#!"
 
- AUTO_EXPAND_ALL_YES:0 "#header Automatic Expansion#!\nAll buildings in this group are being Automatically Expanded.\n\n#instruction Click to remove all Automatical Expansion.#!"
+ AUTO_EXPAND_ALL_YES:0 "#header Automatic Expansion#!\nAll buildings in this group are being Automatically Expanded.\n\n#instruction Click to remove all Automatic Expansion.#!"
  AUTO_EXPAND_ALL_NO:0 "#header No Automatic Expansion#!\nNone of the buildings in this group are being Automatically Expanded.\n\n#instruction Click to Automatically Expand all buildings.#!"
  AUTO_EXPAND_ALL_MIXED:0 "#header Some Automatic Expansion#!\nSome of the buildings in this group are being Automatically Expanded.\n\n#instruction Click to Automatically Expand all buildings.#!"
 
@@ -5531,7 +5598,12 @@
 
  DECREE_RIGHT_CLICK_MENU_TITLE:0 "[Decree.GetName] in [Decree.GetState.GetName]"
  DECREE_RIGHT_CLICK_MENU_REMOVE:0 "Cancel"
-
+ 
+ STATE_RIGHT_CLICK_MENU_DECLARE_INTEREST:0 "Declare Interest"
+ STATE_RIGHT_CLICK_MENU_REVOKE_INTEREST:0 "Revoke Interest"
+ STATE_RIGHT_CLICK_MENU_REVOKE_INTEREST_TOOLTIP:0 "Revoke our Interest in [State.GetStateRegion.GetStrategicRegion.GetName]"
+ STATE_RIGHT_CLICK_MENU_DECLARE_INTEREST_TOOLTIP:0 "Declare an Interest in [State.GetStateRegion.GetStrategicRegion.GetName]"
+ 
  DECREE_DUPLICATE_ROAD_MAINTENANCE:0 "No other countries have set $decree_road_maintenance$ in the [concept_state_region]"
 
  NAVAL_INVASION_RIGHT_CLICK_MENU_TITLE:1 "Select General for amphibious landing in [State.GetName]"
@@ -5556,7 +5628,8 @@
 
  BUILD_URBAN_BUILDINGS:0 "Build Urban Buildings"
  ADD_CONSUMPTION_TAX:0 "Add Consumption Tax"
- ADD_CONSUMPTION_TAX_ENTRY:3 "[Goods.GetNameNoFormatting]: @money!#v [Goods.CalcPotentialConsumptionTaxAmount(GetPlayer)|+=D]#! ( @aut! [Multiply_CFixedPoint(Goods.CalcConsumptionTaxAuthorityCost(GetPlayer),'(CFixedPoint)-1')|v0+])"
+ ADD_CONSUMPTION_TAX_ENTRY:4 "[Goods.GetNameNoFormatting]"
+ ADD_CONSUMPTION_TAX_ENTRY_COST:0 "@money!#v [Goods.CalcPotentialConsumptionTaxAmount(GetPlayer)|+=D]#! ( @aut! [Multiply_CFixedPoint(Goods.CalcConsumptionTaxAuthorityCost(GetPlayer),'(CFixedPoint)-1')|v0+])"
  BUDGET_CONSUMPTION_TAX_TOOLTIP:1 "#header [concept_consumption_tax] on [Goods.GetName]#!\nCurrent cost: @aut! [Multiply_CFixedPoint(Goods.CalcConsumptionTaxAuthorityCost(GetPlayer),'(CFixedPoint)-1')|v0+]\nCurrent Revenue: #v [Goods.CalcConsumptionTaxAmount(GetPlayer)|+K]#!"
  GOODS_ADD_REMOVE_CONSUMPTION_TAX_TOOLTIP:0 "#header [SelectLocalization(GreaterThan_CFixedPoint(Goods.CalcConsumptionTaxAmount(GetPlayer), '(CFixedPoint)0'), 'Remove', 'Add')] [concept_consumption_tax] on [Goods.GetName]#!\n$TOOLTIP_DELIMITER$\nCurrent Revenue: #v [Goods.CalcConsumptionTaxAmount(GetPlayer)|+K]#!"
 
@@ -5593,6 +5666,9 @@
  SORT_BY_MARKET_GOODS:0 "Sort by [Concept('concept_good', '$concept_goods$')]"
  SORT_BY_BALANCE_TOOLTIP:0 "Sort by Balance. The number you get when you subtract [concept_buy_orders] from [concept_sell_orders]."
  SORT_BY_COUNTRY:0 "Sort by [concept_country] name"
+ SORT_BY_MAREKT_PRICE:0 "Sort by [concept_market_price]"
+ SORT_BY_AMOUNT_CONSUMED:0 "Sort by amount of [Concept('concept_good', '$concept_goods$')] [Concept('concept_good_consumption', '$concept_good_consumed$')]"
+ SORT_BY_BUDGET_EXPENDITURE:0 "Sort by the percentage of the [Concept('concept_pop', '$concept_pop_possessive$')] budget spent on each [concept_good]"
 
  MAP_MODE_ATTITUDE_COUNTRY:0 "Show [concept_attitude] to [CountryPanel.GetCountry.GetName] on the map"
  MAP_MODE_RELATIONS_COUNTRY:0 "Show [concept_relations] to [CountryPanel.GetCountry.GetName] on the map"
@@ -5618,8 +5694,8 @@
  BUILDING_MAP_LIST_PANEL_STATUS_EXPAND:0 "Expand"
  BUILDING_MAP_LIST_PANEL_EFFICIENCY_TOOLTIP:0 "#header [concept_construction] Efficiency in [State.GetName]: $VAL|v%1$#!\n$TOOLTIP_DELIMITER$\n$BREAKDOWN$"
 
- BUILDING_MAP_LIST_PANEL_PROFIT_IMPACT_HEADER:1 "Revenue"
- BUILDING_MAP_LIST_PANEL_PROFIT_IMPACT_TOOLTIP:1 "#header Predicted Revenue after Expansion#!\n$TOOLTIP_DELIMITER$\nA prediction of how much expanding this Building would affect its' weekly Earnings."
+ BUILDING_MAP_LIST_PANEL_PROFIT_IMPACT_HEADER:2 "Earnings"
+ BUILDING_MAP_LIST_PANEL_PROFIT_IMPACT_TOOLTIP:2 "#header Predicted earnings after expansion#!\n$TOOLTIP_DELIMITER$\nA prediction of how much expanding this building would affect its weekly earnings."
 
  COLONY_MAP_LIST_PANEL_STATUS_HEADER:0 "Status"
  COLONY_MAP_LIST_PANEL_STATUS_HEADER_TOOLTIP:1 "#header Status#!\n$TOOLTIP_DELIMITER$\n#concept The availability of colonizing each [concept_state_region].\n\n@map_list_plus!: You can select this.\n@map_list_plus_and_checkmark!: You can select this and you are already doing this here.\n@map_list_checkmark!: You are already doing this here and you can deselect this.\n@map_list_lock!: You are already doing this here, but you can NOT deselect this.\n@map_list_cross!: You can NOT select this.\n@map_list_cross_and_checkmark!: You are already doing this here, but you can NOT select this.#!"
@@ -5636,7 +5712,7 @@
 
  TRADE_ROUTE_LIST_PANEL_STATUS_HEADER_TOOLTIP:0 "#header Status#!\n$TOOLTIP_DELIMITER$\n#concept The availability of this [concept_trade_route] to each [concept_market].\n\n@map_list_plus!: You can select this.\n@map_list_plus_and_checkmark!: You can select this and you are already doing this here.\n@map_list_checkmark!: You are already doing this here and you can deselect this.\n@map_list_lock!: You are already doing this here, but you can NOT deselect this.\n@map_list_cross!: You can NOT select this.\n@map_list_cross_and_checkmark!: You are already doing this here, but you can NOT select this.#!"
  TRADE_ROUTE_LIST_PANEL_MARKET_HEADER:0 "Market"
- TRADE_ROUTE_LIST_PANEL_MARKET_HEADER_TOOLTIP:1 "#header [concept_market]#!"
+ TRADE_ROUTE_LIST_PANEL_MARKET_HEADER_TOOLTIP:2 "#header Sort [Concept('concept_market','$concept_markets$')] alphabetically#!"
  TRADE_ROUTE_LIST_PANEL_VALUE_HEADER:1 "Productivity"
  TRADE_ROUTE_LIST_PANEL_VALUE_HEADER_TOOLTIP:1 "#header Amount of [concept_trade_revenue]/employee annually#!"
  TRADE_ROUTE_LIST_PANEL_QUANTITY_HEADER:0 "Amount"
@@ -5717,7 +5793,7 @@
  TOOLTIP_DISALLOW_PRODUCTION_METHOD:0 "Disallows $PRODUCTION_METHOD$ for $BUILDING_TYPE$ ([concept_production_method])"
  TOOLTIP_UNLOCK_BUILDING_TYPE:0 "Unlocks $BUILDING_TYPE$ ([concept_building])"
  TOOLTIP_UNLOCK_STATE_TRAIT_COLONIZATION:0 "Allows establishment of [Concept('concept_colony','$concept_colonies$')] in [Concept('concept_state', '$concept_states$')] with [STATE_TRAIT.GetName]"
- TOOLTIP_DISABLE_STATE_TRAIT:0 "Removs all effects from [STATE_TRAIT.GetName] in your owned [Concept('concept_colony','$concept_colonies$')] in [Concept('concept_state', '$concept_states$')]"
+ TOOLTIP_DISABLE_STATE_TRAIT:0 "Removes all effects from [STATE_TRAIT.GetName] in your owned [Concept('concept_colony','$concept_colonies$')] in [Concept('concept_state', '$concept_states$')]"
  TOOLTIP_UNLOCK_LAW_TYPE:0 "Unlocks $LAW$"
  TOOLTIP_UNLOCK_PARTY:0 "Unlocks $PARTY$"
  TOOLTIP_UNLOCK_DECREE:0 "Unlocks [DECREE_TYPE.GetName] ([concept_decree])"
@@ -5861,7 +5937,7 @@
  MOBILIZE_GENERAL_COST_WITH_BREAKDOWN:1 "#tooltippable #tooltip:[GetRawTextTooltipTag('$BREAKDOWN$')] @money!$COST|K-=$#!#!"
  MOBILIZE_GENERAL_COST_NO_BREAKDOWN:1 "@money!$COST|K-=$"
  MOBILIZE_GENERAL_COST_ITEM:1 "[Building.GetName] in [Building.GetState.GetName]: #tooltippable #tooltip:[GetRawTextTooltipTag('$BREAKDOWN$')] @money!$COST|K-=$#!#!"
- MOBILIZE_GENERAL_COST_ITEM_NO_BREAKDOWN: "[Building.GetName] in [Building.GetState.GetName]: @money!$COST|K-=$"
+ MOBILIZE_GENERAL_COST_ITEM_NO_BREAKDOWN:0 "[Building.GetName] in [Building.GetState.GetName]: @money!$COST|K-=$"
  MOBILIZE_ALL_GENERALS_BUTTON:0 "Mobilize All"
  MOBILIZE_ALL_GENERALS:0 "Mobilize all [Concept('concept_general', '$concept_generals$')]"
  MOBILIZE_ALL_GENERALS_HEADER:0 "Mobilize all [Concept('concept_general', '$concept_generals$')]?"
@@ -5928,7 +6004,7 @@
  notification_country_revolution_tooltip:0 "#header $notification_country_revolution_name$#!\n$notification_country_revolution_desc$"
 
  notification_country_secession_name:0 "[concept_secession]!"
- notification_country_secession_desc:0 "The [SCOPE.GetRootScope.GetCivilWar.GetCulture.GetName] has seceeded!"
+ notification_country_secession_desc:0 "The [SCOPE.GetRootScope.GetCivilWar.GetCulture.GetName] has seceded!"
  notification_country_secession_tooltip:0 "#header $notification_country_secession_name$#!\n$notification_country_secession_desc$"
 
  notification_wargoal_added_name:0 "[concept_war_goal] Added!"
@@ -6085,6 +6161,7 @@
  TOOLTIP_TYPE_CANAL_TYPE:0 "Canal Type"
  TOOLTIP_TYPE_OBJECTIVE_TYPE:0 "Objective Type"
  TOOLTIP_TYPE_OBJECTIVE:0 "Objective"
+ TOOLTIP_TYPE_LEGITIMACY_LEVEL:0 "Legitimacy Level"
  TOOLTIP_TYPE_FRONT:0 "[concept_front]"
 
  NON_TRADEABLE_GOODS:0 "[Concept('concept_good','$NON_TRADEABLE_GOODS_FULL$')]"
@@ -6148,7 +6225,8 @@
  ### DIPLOMATIC PLAY / WAR POPUP
  DEMANDS:0 "Demands"
  WARGOALS:0 "Wargoals"
- CAN_SWAY_COUNTRY_TOOLTIP:0 "Has atleast one [concept_sway] that [Country.GetName] would accept"
+ NO_WARGOAL:0 "No [concept_war_goal]"
+ CAN_SWAY_COUNTRY_TOOLTIP:0 "Has at least one [concept_sway] that [Country.GetName] would accept"
  CANNOT_SWAY_COUNTRY_TOOLTIP:0 "Has no [concept_sway] that [Country.GetName] would accept"
  HAS_NO_COUNTRIES_YOU_CAN_SWAY_TOOLTIP:0 "You can sway no countries"
  HAS_COUNTRIES_YOU_CAN_SWAY_TOOLTIP:1 "You can [concept_sway] [DiplomaticPlay.GetNumberOfPossibleSwayCountriesFormatted( GetPlayer.Self )] countries."
@@ -6219,17 +6297,17 @@
  SINGLE_GOODS_DELTA_CONSUMPTION_PER_LEVEL:0 "#v $PER_LEVEL_DELTA|=-D$#! $MORE_OR_LESS$ per Level"
  SINGLE_GOODS_MARKET_PRICE:0 "@money!$PRICE|1v$ $PRICE_ICON$ in [Market.GetName]"
  SINGLE_GOODS_STATE_PRICE:0 "@money!$PRICE|1v$ $PRICE_ICON$ in [State.GetName]"
- SINGLE_GOODS_STATE_PRICE_TOOLTIPPABLE:0 "(#tooltippable #tooltip:[GetRawTextTooltipTag('$SINGLE_GOODS_STATE_PRICE_TOOLTIP$')] @money!$PRICE|1v$#!#! $PRICE_ICON$)"
+ SINGLE_GOODS_STATE_PRICE_TOOLTIPPABLE:0 "(#tooltippable #tooltip:$SINGLE_GOODS_STATE_PRICE_TOOLTIP_BREAKDOWN$ @money!$PRICE|1v$#!#! $PRICE_ICON$)"
  SINGLE_GOODS_MARKET_PRICE_RANGE:1 "@money!$MIN_PRICE|1v$ $MIN_PRICE_ICON$ - @money!$MAX_PRICE|1v$ $MAX_PRICE_ICON$ in $NUM_MARKETS$ [Concept('concept_market', '$concept_markets$')]"
  SINGLE_GOODS_STATE_PRICE_RANGE:0 "@money!$MIN_PRICE|1v$ $MIN_PRICE_ICON$ - @money!$MAX_PRICE|1v$ $MAX_PRICE_ICON$ in $NUM_STATES$ [Concept('concept_state', '$concept_states$')]"
- SINGLE_GOODS_STATE_PRICE_RANGE_TOOLTIPPABLE:0 "#tooltippable #tooltip:[GetRawTextTooltipTag('$SINGLE_GOODS_STATE_PRICE_TOOLTIP$')] @money!$MIN_PRICE|1v$#!#! $MIN_PRICE_ICON$ - #tooltippable #tooltip:[GetRawTextTooltipTag('$SINGLE_GOODS_STATE_PRICE_TOOLTIP$')] @money!$MAX_PRICE|1v$#!#! $MAX_PRICE_ICON$ in $NUM_STATES$ [Concept('concept_state', '$concept_states$')]"
+ SINGLE_GOODS_STATE_PRICE_RANGE_TOOLTIPPABLE:0 "#tooltippable #tooltip:$SINGLE_GOODS_STATE_PRICE_TOOLTIP_BREAKDOWN$ @money!$MIN_PRICE|1v$#!#! $MIN_PRICE_ICON$ - #tooltippable #tooltip:$SINGLE_GOODS_STATE_PRICE_TOOLTIP_BREAKDOWN$ @money!$MAX_PRICE|1v$#!#! $MAX_PRICE_ICON$ in $NUM_STATES$ [Concept('concept_state', '$concept_states$')]"
  GOODS_PRICE_DELTA_SUBSTITUTION_DISCLAIMER:0 "@information! Some predicted price changes may not fully take effect until after [concept_goods_substitution] has occurred"
  SINGLE_GOODS_MARKET_PRICE_WITH_DELTA:0 "@money!$PRICE|1v$ $PRICE_ICON$ @arrow_right! @money!$AFTER_PRICE|1v$ $AFTER_PRICE_ICON$ in [Market.GetName]"
  SINGLE_GOODS_STATE_PRICE_WITH_DELTA:0 "@money!$PRICE|1v$ $PRICE_ICON$ @arrow_right! @money!$AFTER_PRICE|1v$ $AFTER_PRICE_ICON$ in [State.GetName]"
- SINGLE_GOODS_STATE_PRICE_TOOLTIPPABLE_WITH_DELTA:0 "(#tooltippable #tooltip:[GetRawTextTooltipTag('$SINGLE_GOODS_STATE_PRICE_TOOLTIP$')] @money!$PRICE|1v$#!#! $PRICE_ICON$) @arrow_right! (#tooltippable #tooltip:[GetRawTextTooltipTag('$SINGLE_GOODS_STATE_PRICE_TOOLTIP$')] @money!$AFTER_PRICE|1v$#!#! $AFTER_PRICE_ICON$)"
+ SINGLE_GOODS_STATE_PRICE_TOOLTIPPABLE_WITH_DELTA:0 "(#tooltippable #tooltip:$SINGLE_GOODS_STATE_PRICE_TOOLTIP_BREAKDOWN$ @money!$PRICE|1v$#!#! $PRICE_ICON$) @arrow_right! (#tooltippable #tooltip:$SINGLE_GOODS_STATE_PRICE_TOOLTIP_BREAKDOWN$ @money!$AFTER_PRICE|1v$#!#! $AFTER_PRICE_ICON$)"
  SINGLE_GOODS_MARKET_PRICE_RANGE_WITH_DELTA:0 "(@money!$MIN_PRICE|1v$ $MIN_PRICE_ICON$ - @money!$MAX_PRICE|1v$ $MAX_PRICE_ICON$) @arrow_right! (@money!$MIN_AFTER_PRICE|1v$ $MIN_AFTER_PRICE_ICON$ - @money!$MAX_AFTER_PRICE|1v$ $MAX_AFTER_PRICE_ICON$) in $NUM_MARKETS$ [Concept('concept_market', '$concept_markets$')]"
  SINGLE_GOODS_STATE_PRICE_RANGE_WITH_DELTA:0 "(@money!$MIN_PRICE|1v$ $MIN_PRICE_ICON$ - @money!$MAX_PRICE|1v$ $MAX_PRICE_ICON$) @arrow_right! (@money!$MIN_AFTER_PRICE|1v$ $MIN_AFTER_PRICE_ICON$ - @money!$MAX_AFTER_PRICE|1v$ $MAX_AFTER_PRICE_ICON$) in $NUM_STATES$ [Concept('concept_state', '$concept_states$')]"
- SINGLE_GOODS_STATE_PRICE_RANGE_TOOLTIPPABLE_WITH_DELTA:0 "(#tooltippable #tooltip:[GetRawTextTooltipTag('$SINGLE_GOODS_STATE_PRICE_TOOLTIP$')] @money!$MIN_PRICE|1v$#!#! $MIN_PRICE_ICON$ - #tooltippable #tooltip:[GetRawTextTooltipTag('$SINGLE_GOODS_STATE_PRICE_TOOLTIP$')] @money!$MAX_PRICE|1v$#!#! $MAX_PRICE_ICON$) @arrow_right! (#tooltippable #tooltip:[GetRawTextTooltipTag('$SINGLE_GOODS_STATE_PRICE_TOOLTIP$')] @money!$MIN_AFTER_PRICE|1v$#!#! $MIN_AFTER_PRICE_ICON$ - #tooltippable #tooltip:[GetRawTextTooltipTag('$SINGLE_GOODS_STATE_PRICE_TOOLTIP$')] @money!$MAX_AFTER_PRICE|1v$#!#! $MAX_AFTER_PRICE_ICON$) in $NUM_STATES$ [Concept('concept_state', '$concept_states$')]"
+ SINGLE_GOODS_STATE_PRICE_RANGE_TOOLTIPPABLE_WITH_DELTA:0 "(#tooltippable #tooltip:$SINGLE_GOODS_STATE_PRICE_TOOLTIP_BREAKDOWN$ @money!$MIN_PRICE|1v$#!#! $MIN_PRICE_ICON$ - #tooltippable #tooltip:$SINGLE_GOODS_STATE_PRICE_TOOLTIP_BREAKDOWN$ @money!$MAX_PRICE|1v$#!#! $MAX_PRICE_ICON$) @arrow_right! (#tooltippable #tooltip:$SINGLE_GOODS_STATE_PRICE_TOOLTIP_BREAKDOWN$ @money!$MIN_AFTER_PRICE|1v$#!#! $MIN_AFTER_PRICE_ICON$ - #tooltippable #tooltip:$SINGLE_GOODS_STATE_PRICE_TOOLTIP_BREAKDOWN$ @money!$MAX_AFTER_PRICE|1v$#!#! $MAX_AFTER_PRICE_ICON$) in $NUM_STATES$ [Concept('concept_state', '$concept_states$')]"
  SINGLE_POP_EMPLOYMENT_CHANGE_FORMAT:0 "[PopType.GetName]: [SelectLocalization(StringIsEmpty('$DELTA$'), '$AMOUNT$', '$DELTA$')]"
  SINGLE_POP_EMPLOYMENT_CHANGE_SLAVES_ROLE:0 "[POP_TYPE.GetName] or [TARGET_POP_TYPE.GetName]: [SelectLocalization(StringIsEmpty('$DELTA$'), '$AMOUNT$', '$DELTA$')]"
  SINGLE_POP_EMPLOYMENT_CHANGE_FROM_BASE_TOTAL:0 "$TOTAL_CHANGE|=+D$ Total"
@@ -6340,6 +6418,7 @@
  LOAD_MISSING_ITEMS_TT:1 "[SelectLocalization( SaveGameItem.HasMissingDLCs, 'MISSING_DLC', '' )]\n[SelectLocalization( SaveGameItem.HasMissingMods, 'MISSING_MODS', '' )]\n[SelectLocalization( SaveGameItem.IsDifferentVersion, 'LOAD_GAME_DIFFERENT_VERSION_TT', '' )]"
  LOAD_GAME_DIFFERENT_VERSION_CONFIRM:0 "$LOAD_GAME_DIFFERENT_VERSION_TT$\nAre you sure you want to load this game?"
  LOAD_INGAME_BUTTON_DISABLED_NOSAVES:0 "You have no saved games"
+ LOAD_INGAME_BUTTON_DISABLED:0 "Loading saved games disabled"
 
  BUILDING_GENERAL_INFO_HEADER:0 "#title General Info#!:"
  BUILDING_TYPE_PORT_GENERAL_INFO:2 "Building a [GetBuildingType('building_port').GetName] may connect the [concept_state] it's built in to a [concept_market]"

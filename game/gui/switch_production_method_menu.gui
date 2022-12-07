@@ -12,62 +12,138 @@ right_click_menu = {
 		datamodel = "[ChangeProductionMethodsMenuItems.AccessItems]"
 
 		item = {
-			right_click_menu_item = {
-				blockoverride "size" {
-					size = { 460 66 }
-				}
-				blockoverride "properties" {
-					datacontext = "[ChangeProductionMethodMenuItem.AccessMethod]"
-					tooltip = "CHANGE_PRODUCTION_METHOD_TOOLTIP"
-					onclick = "[ChangeProductionMethodMenuItem.Execute]"
-					enabled = "[Or(ChangeProductionMethodMenuItem.IsValid, ChangeProductionMethodMenuItem.IsActive)]"
+			production_methods_right_click_menu_item = {}
+		}
+	}
+}
 
-					icon = {
-						size = { 50 50 }
-						parentanchor = vcenter
-						position = { 10 0 }
+types production_methods_right_click 
+{
+
+	type production_methods_right_click_menu_item = widget {
+
+		right_click_menu_item = {
+			visible = "[ChangeProductionMethodMenuItem.IsActive]"
+
+			blockoverride "size" {
+				size = { 460 66 }
+				resizeparent = yes
+			}
+
+			blockoverride "onclick" {}
+
+			blockoverride "button" {
+				background = {
+					using = paper_bg
+				}
+			}
+
+			blockoverride "properties" {
+				datacontext = "[ChangeProductionMethodMenuItem.AccessMethod]"
+				tooltip = "CHANGE_PRODUCTION_METHOD_TOOLTIP"
+				enabled = "[Or(ChangeProductionMethodMenuItem.IsValid, ChangeProductionMethodMenuItem.IsActive)]"
+
+				icon = {
+					size = { 50 50 }
+					parentanchor = vcenter
+					position = { 10 0 }
+				}
+
+				has_new_pm_icon	= {
+					size = { 25 25 }
+					blockoverride "visible" {
+						visible = "[GetPlayer.IsNewProductionMethod( ProductionMethod.Self )]"
 					}
+					position = { -444 -23 }
+					tooltip = "TOOLTIP_NEW_PRODUCTION_METHOD"
+					parentanchor = right|vcenter
+				}												
+				
+				icon = {
+					visible = "[ChangeProductionMethodMenuItem.IsActive]"
+					using = highlighted_square_selection
+					size = { 100% 100% }
+				}
 
-					has_new_pm_icon	= {
-						size = { 25 25 }
-						blockoverride "visible" {
-							visible = "[GetPlayer.IsNewProductionMethod( ProductionMethod.Self )]"
-						}
-						position = { -444 -23 }
-						tooltip = "TOOLTIP_NEW_PRODUCTION_METHOD"
-						parentanchor = right|vcenter
-					}												
-					
-					icon = {
-						visible = "[ChangeProductionMethodMenuItem.IsActive]"
-						using = highlighted_square_selection
-						size = { 100% 100% }
+				textbox = {
+					visible = "[Not(StringIsEmpty(ProductionMethod.GetTextIconDesc))]"
+					text = "[ProductionMethod.GetTextIconDesc]"
+					parentanchor = right|vcenter
+					widgetanchor = right|vcenter
+					autoresize = yes
+					align = right|nobaseline
+					margin = { 12 6 }
+					using = fontsize_large
+				}
+			}
+
+			blockoverride "margin" {
+				margin_left = 64
+			}
+
+			blockoverride "texture" {
+				texture = "[ProductionMethod.GetTexture]"
+			}
+		
+			blockoverride = "text" {
+				text = "[ProductionMethod.GetNameNoFormatting]"
+			}
+		}
+
+		right_click_menu_item = {
+			visible = "[Not(ChangeProductionMethodMenuItem.IsActive)]"
+
+			blockoverride "size" {
+				size = { 460 66 }
+				resizeparent = yes
+			}
+
+			blockoverride "properties" {
+				datacontext = "[ChangeProductionMethodMenuItem.AccessMethod]"
+				tooltip = "CHANGE_PRODUCTION_METHOD_TOOLTIP"
+				onclick = "[ChangeProductionMethodMenuItem.Execute]"
+				enabled = "[Or(ChangeProductionMethodMenuItem.IsValid, ChangeProductionMethodMenuItem.IsActive)]"
+
+				icon = {
+					size = { 50 50 }
+					parentanchor = vcenter
+					position = { 10 0 }
+				}
+
+				has_new_pm_icon	= {
+					size = { 25 25 }
+					blockoverride "visible" {
+						visible = "[GetPlayer.IsNewProductionMethod( ProductionMethod.Self )]"
 					}
+					position = { -444 -23 }
+					tooltip = "TOOLTIP_NEW_PRODUCTION_METHOD"
+					parentanchor = right|vcenter
+				}												
 
-					textbox = {
-						visible = "[Not(StringIsEmpty(ProductionMethod.GetTextIconDesc))]"
-						text = "[ProductionMethod.GetTextIconDesc]"
-						parentanchor = right|vcenter
-						widgetanchor = right|vcenter
-						autoresize = yes
-						align = right|nobaseline
-						margin = { 12 6 }
-						using = fontsize_large
-					}
+				textbox = {
+					visible = "[Not(StringIsEmpty(ProductionMethod.GetTextIconDesc))]"
+					text = "[ProductionMethod.GetTextIconDesc]"
+					parentanchor = right|vcenter
+					widgetanchor = right|vcenter
+					autoresize = yes
+					align = right|nobaseline
+					margin = { 12 6 }
+					using = fontsize_large
 				}
+			}
 
-				blockoverride "margin" {
-					margin_left = 64
-				}
+			blockoverride "margin" {
+				margin_left = 64
+			}
 
-				blockoverride "texture" {
-					texture = "[ProductionMethod.GetTexture]"
-				}
-			
-				blockoverride = "text" {
-					text = "[ProductionMethod.GetNameNoFormatting]"
-				}
+			blockoverride "texture" {
+				texture = "[ProductionMethod.GetTexture]"
+			}
+		
+			blockoverride = "text" {
+				text = "[ProductionMethod.GetNameNoFormatting]"
 			}
 		}
 	}
 }
+	

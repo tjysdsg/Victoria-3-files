@@ -103,6 +103,141 @@ types progressbars {
 		block "on_top_of_the_progressbar" {}
 	}
 	
+	### LEVELS PROGRESSBAR
+	type levels_progressbar = hbox {
+		layoutpolicy_horizontal = expanding
+		spacing = 3
+		
+		background = {
+			texture = "gfx/interface/progressbar/progressbar_empty.dds"
+			spriteType = Corneredtiled
+			spriteborder = { 4 4 }
+			texture_density = 2
+			alpha = 0.8
+			
+			using = progressbar_texture_properties
+		}
+		background = {
+			texture = "gfx/interface/progressbar/progressbar_frame.dds"
+			spriteType = Corneredstretched
+			spriteborder = { 6 6 }
+			texture_density = 2
+			margin = { 3 3 }
+		}
+		
+		item = {
+			widget = {
+				size = { 0 15 }
+				layoutpolicy_horizontal = expanding
+				block "item_properties" {}
+				using = tooltip_se
+				
+				# active background
+				widget = {
+					size = { 100% 100% }
+					block "level_active" {}
+
+					background = {
+						using = dark_area
+						alpha = 0.4
+					}
+				}
+
+				# progress default
+				default_progressbar_horizontal = {
+					block "default_progressbar_visible" {
+						visible = yes
+					}
+					size = { 100% 100% }
+					blockoverride "background" {}
+					blockoverride "frame" {}
+					blockoverride "glow_visible" {
+						block "level_active" {}
+					}
+
+					blockoverride "values" {
+						block "default_progressbar_value" {}
+						min = 0
+						max = 1
+					}
+				}
+				
+				# progress predicted value (will increase)
+				changed_value_increased_progressbar_horizontal = {
+					block "will_increase_visible" {
+						visible = no
+					}
+					size = { 100% 100% }
+					blockoverride "background" {}
+					blockoverride "frame" {}
+					blockoverride "glow_visible" {
+						block "level_active" {}
+					}
+					
+					blockoverride "new_value" {
+						block "will_change_new_value" {}
+					}
+					blockoverride "start_value" {
+						block "will_change_start_value" {}
+					}
+				}
+				
+				# progress predicted value (will decrease)
+				changed_value_decreased_progressbar_horizontal = {
+					block "will_decrease_visible" {
+						visible = no
+					}
+					size = { 100% 100% }
+					blockoverride "background" {}
+					blockoverride "frame" {}
+					blockoverride "glow_visible" {
+						block "level_active" {}
+					}
+					
+					blockoverride "new_value" {
+						block "will_change_new_value" {}
+					}
+					blockoverride "start_value" {
+						block "will_change_start_value" {}
+					}
+				}
+				
+				# divider between levels
+				widget = {
+					block "last_level" {}
+					size = { 3 100% }
+					position = { 3 0 }
+					parentanchor = right
+					
+					background = {
+						margin = { 0 1 }
+						texture = "gfx/interface/progressbar/progressbar_center_divider.dds"
+						spriteType = Corneredstretched
+						spriteborder = { 0 0 }
+						texture_density = 2
+					}
+				}
+				
+				# active indicator
+				widget = {
+					size = { 100% 100% }
+					block "level_active" {}
+					block "level_predicted" {}
+
+					icon = {
+						size = { 100% 100% }
+						texture = "gfx/interface/progressbar/progressbar_active_level.dds"
+						spriteType = Corneredstretched
+						spriteborder = { 6 6 }
+						texture_density = 2
+						
+						using = shimmer
+					}
+				}
+			}
+		}
+	}
+	
 	### DOUBLE DIRECTION PROGRESSBAR
 	type double_direction_progressbar = widget {
 		size = { 300 40 }
@@ -216,7 +351,7 @@ types progressbars {
 		}
 	}
 
-	### DOUBLE DIRECTION PROGRESSBAR
+	### DOUBLE DIRECTION PROGRESSBAR GOLD
 	type double_direction_progressbar_gold = widget {
 		size = { 300 40 }
 		
@@ -722,16 +857,26 @@ types progressbars {
 		size = { 500 30 }
 		
 		blockoverride "behind_the_progressbar" {
-			cameracontrolwidget = {
-				parentanchor = center
-				size = { 550 400 }
-				position = { 0 -20 }
-				camera_position = { 0 0 -1 }
-				gfxtype = jomini_entitygfx
-				entity_instance = vfx_ui_plane_battle_progressbar_entity 
-				ignore_in_debug_draw = yes
 
-				alpha = 0.35
+			vfx = {
+				blockoverride "size" {
+					size = { 100% 400 }
+				}
+				blockoverride "parent_anchor" {
+					parentanchor = center
+				}
+				blockoverride "position" {
+					position = { 0 -20 }
+				}
+				blockoverride "camera_position" {
+					camera_position = { 0 0 -1 }
+				}
+				blockoverride "entity_instance" {
+					entity_instance = vfx_ui_plane_battle_progressbar_entity
+				}		
+				blockoverride "alpha" {
+					alpha = 0.3
+				}	
 			}
 		}
 		

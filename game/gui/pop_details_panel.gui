@@ -41,13 +41,11 @@ types pop_details_panel
 			}
 		}
 
-		blockoverride "scrollarea_content"
-		{
+		blockoverride "fixed_top" {
+
 			flowcontainer = {
-				using = default_list_position
 				direction = vertical
 				spacing = 9
-				margin_bottom = 20
 
 				### POP PORTRAIT
 				widget = {
@@ -120,193 +118,70 @@ types pop_details_panel
 					align = nobaseline
 					parentanchor = hcenter
 				}
+			}
 
-				### MAIN STATS
-				flowcontainer = {
-					name = "tutorial_highlight_population"
-					minimumsize = { @panel_width -1 }
-					maximumsize = { @panel_width -1 }
-					parentanchor = hcenter
-					direction = vertical
-					margin = { 20 15 }
-					margin_bottom = 15
+			tab_buttons = {
+				blockoverride "first_button" {
+					text = "POP_OVERVIEW_HEADER"
+				}
+				blockoverride "first_button_click" {
+					onclick = "[InformationPanel.SelectTab('pop_overview')]"
+				}
+				blockoverride "first_button_visibility" {
+					visible = "[InformationPanel.IsTabSelected('pop_overview')]"
+				}
+				blockoverride "first_button_visibility_checked" {
+					visible = "[Not( InformationPanel.IsTabSelected('pop_overview') )]"
+				}
+				blockoverride "first_button_selected" {
+					text = "POP_OVERVIEW_HEADER"
+				}
 
-					using = main_bg
+				blockoverride "second_button" {
+					text = "POP_ECONOMY_HEADER"
+				}
+				blockoverride "second_button_click" {
+					onclick = "[InformationPanel.SelectTab('pop_economy')]"
+				}
+				blockoverride "second_button_visibility" {
+					visible = "[InformationPanel.IsTabSelected('pop_economy')]"
+				}
+				blockoverride "second_button_visibility_checked" {
+					visible = "[Not( InformationPanel.IsTabSelected('pop_economy') )]"
+				}
+				blockoverride "second_button_selected" {
+					text = "POP_ECONOMY_HEADER"
+				}
 
-					textbox = {
-						text = "POPULATION_TITLE"
-						using = pop_population_tooltip_with_graph
-						size = { 500 23 }
-						elide = right
-						align = left|nobaseline
-					}
+				blockoverride "third_button" {
+					text = "POP_CONSUMPTION_HEADER"
+				}
+				blockoverride "third_button_click" {
+					onclick = "[InformationPanel.SelectTab('pop_consumption')]"
+				}
+				blockoverride "third_button_visibility" {
+					visible = "[InformationPanel.IsTabSelected('pop_consumption')]"
+				}
+				blockoverride "third_button_visibility_checked" {
+					visible = "[Not( InformationPanel.IsTabSelected('pop_consumption') )]"
+				}
+				blockoverride "third_button_selected" {
+					text = "POP_CONSUMPTION_HEADER"
+				}
+			}
+		}
 
-					flowcontainer = {
-						margin_bottom = 10
-						textbox = {
-							text = "[Pop.GetTotalSize|Dv] (#variable [Pop.GetPopGrowth|+=D]#!)"
-							using = pop_population_tooltip_with_graph
-							size = { 170 35 }
-							elide = right
-							align = left|nobaseline
-							using = fontsize_xl
-						}
+		blockoverride "scrollarea_content"
+		{
 
-						textbox = {
-							text = "@money![Pop.GetIncome|vD]"
-							tooltip = "[Pop.GetIncomeDesc]"
-							size = { 90 35 }
-							elide = right
-							align = right|nobaseline
-							using = fontsize_xl
-						}
+			flowcontainer = {
+				visible = "[InformationPanel.IsTabSelected('pop_overview')]"
+				using = default_fade_in_out
+				direction = vertical
+				spacing = 9
 
-						widget = { size = { 10 5 }}
-
-						textbox = {
-							text = "IN_TOTAL"
-
-							size = { 240 35 }
-							elide = right
-							align = left|nobaseline
-							using = fontsize_xl
-						}
-					}
-
-					widget = { size = { 1 1 }}
-
-					flowcontainer = {
-						direction = vertical
-						minimumsize = { 500 -1 }
-
-						textbox = {
-							text = "WORKING_ADULTS_TITLE"
-							tooltip = "POP_WORKFORCE_TOOLTIP"
-							size = { 500 23 }
-							elide = right
-							align = left|nobaseline
-						}
-
-						flowcontainer = {
-
-							textbox = {
-								text = "[Pop.GetNumWorkforce|Dv]"
-								tooltip = "POP_WORKFORCE_TOOLTIP"
-
-								size = { 130 25 }
-								elide = right
-								align = left|nobaseline
-							}
-
-							textbox = {
-								text = "@money![Pop.GetWorkforceIncome|vD]"
-								tooltip = "[Pop.GetWorkforceIncomeDesc]"
-
-								size = { 130 25 }
-								elide = right
-								align = right|nobaseline
-							}
-
-							widget = { size = { 10 5 }}
-
-							button = {
-								visible = "[Pop.IsEmployed]"
-								size = { 240 27 }
-								using = clean_button
-								onclick = "[InformationPanelBar.OpenBuildingDetailsPanel(Pop.AccessBuilding)]"
-
-								textbox = {
-									margin_right = 35
-									margin_left = 10
-									text = "POP_WORK_INFO"
-									size = { 100% 100% }
-									align = nobaseline
-									elide = right
-									parentanchor = vcenter
-								}
-								icon = {
-									position = { -5 0 }
-									size = { 22 22 }
-									texture = "[Pop.GetBuilding.GetTexture]"
-									tooltip = "[Pop.GetBuilding.GetTooltip]"
-									parentanchor = right|vcenter
-								}
-							}
-
-							textbox = {
-								size = { 240 27 }
-								text = "UNEMPLOYED"
-								align = left|nobaseline
-								visible = "[Not(Pop.IsEmployed)]"
-								alpha = 0.5
-								elide = right
-							}
-						}
-					}
-
-					flowcontainer = {
-						direction = vertical
-						minimumsize = { 500 -1 }
-
-						textbox = {
-							text = "DEPENDENTS_TITLE"
-							tooltip = "POP_DEPENDENTS_TOOLTIP"
-							size = { 500 23 }
-							elide = right
-							align = left|nobaseline
-						}
-
-						flowcontainer = {
-
-							textbox = {
-								text = "[Pop.GetDependentsSize|Dv]"
-								tooltip = "POP_DEPENDENTS_TOOLTIP"
-
-								size = { 130 25 }
-								elide = right
-								align = left|nobaseline
-							}
-							textbox = {
-								text = "@money![Pop.GetDependentIncome|vD]"
-								tooltip = "[Pop.GetDependentIncomeDesc]"
-								visible = "[GreaterThan_CFixedPoint(Pop.GetDependentIncome, '(CFixedPoint)0')]"
-
-								size = { 130 25 }
-								elide = right
-								align = right|nobaseline
-							}
-
-							widget = { size = { 10 5 }}
-
-							textbox = {
-								text = "[Pop.GetDependentIncomeSources]"
-								visible = "[GreaterThan_CFixedPoint(Pop.GetDependentIncome, '(CFixedPoint)0')]"
-								size = { 240 27 }
-								elide = right
-								align = left|nobaseline
-							}
-						}
-					}
-
-					widget = { size = { 10 10 }}
-
-					flowcontainer = {
-						direction = horizontal
-
-						textbox = {
-							text = "NET_INCOME_TITLE"
-							tooltip = TOOLTIP_POP_NET_INCOME
-
-							size = { 100 25 }
-						}
-
-						textbox = {
-							text = "#variable @money![Pop.GetMoney|D=+]#!"
-							tooltip = TOOLTIP_POP_NET_INCOME
-
-							size = { 100 25 }
-						}
-					}
+				spacer = {
+					size = { 5 0 }
 				}
 
 				### SIDE STATS
@@ -341,6 +216,61 @@ types pop_details_panel
 										elide = right
 										parentanchor = vcenter
 									}
+								}
+							}
+						}
+						pop_details_side_stats_item = {
+							visible = "[Pop.IsEmployed]"
+							size = { @stat_item_width 54 }
+
+							blockoverride "text_left" {
+								text = "[concept_building]"
+							}
+							blockoverride "widget_right" {
+								button = {
+									datacontext = "[Pop.AccessBuilding]"
+									size = { @right_max_width 54 }
+									using = clean_button
+									onclick = "[InformationPanelBar.OpenStatePanel(Building.AccessSelf)]"
+
+									textbox = {
+										margin = { 10 0 }
+										text = "[Pop.GetBuilding.GetName]"
+										size = { 65% 100% }
+										align = right|nobaseline
+										elide = right
+										fontsize_min = 12
+										parentanchor = vcenter|right
+										multiline = yes
+									}
+
+									tooltipwidget = {
+										FancyTooltip_Building = {}
+									}
+
+									icon = {
+										size = { 40 40 }
+										position = { 7 0 }
+										texture = "[Pop.GetBuilding.GetTexture]"
+										parentanchor = left|vcenter
+									}
+								}
+							}
+						}
+
+						pop_details_side_stats_item = {
+							visible = "[Not(Pop.IsEmployed)]"
+
+							blockoverride "text_left" {
+								text = "[concept_building]"
+							}
+							blockoverride "widget_right" {
+								textbox = {
+									autoresize = yes
+									text = "UNEMPLOYED"
+									align = right|nobaseline
+									alpha = 0.5
+									elide = right
 								}
 							}
 						}
@@ -563,7 +493,6 @@ types pop_details_panel
 					}
 				}
 
-
 				default_header = {
 					blockoverride = "text" {
 						text = "POP_TYPE_INFORMATION"
@@ -599,6 +528,360 @@ types pop_details_panel
 					alpha = 0.5
 				}
 			}
+
+			flowcontainer = {
+				visible = "[InformationPanel.IsTabSelected('pop_economy')]"
+				using = default_fade_in_out
+				direction = vertical
+				spacing = 9
+
+				spacer = {
+					size = { 5 0 }
+				}
+
+				### MAIN STATS
+				flowcontainer = {
+					name = "tutorial_highlight_population"
+					minimumsize = { @panel_width -1 }
+					maximumsize = { @panel_width -1 }
+					parentanchor = hcenter
+					direction = vertical
+					margin = { 20 15 }
+					margin_bottom = 15
+
+					background = {
+						using = entry_bg_simple
+					}
+
+					flowcontainer = {
+
+						flowcontainer = {
+							direction = vertical
+							minimumsize = { 200 50 }
+							
+							textbox = {
+								text = "POPULATION_TITLE"
+								autoresize = yes
+								elide = right
+								align = left|nobaseline
+							}
+
+							textbox = {
+								text = "[Pop.GetTotalSize|Dv] (#variable [Pop.GetPopGrowth|+=D]#!)"
+								using = pop_population_tooltip_with_graph
+								autoresize = yes
+								elide = right
+								align = left|nobaseline
+								using = fontsize_xl
+							}
+
+						}
+
+						flowcontainer = {
+							direction = vertical
+							minimumsize = { 150 50 }
+
+							textbox = {
+								text = "WORKING_ADULTS_TITLE"
+								autoresize = yes
+								elide = right
+								align = left|nobaseline
+							}
+
+							textbox = {
+								text = "[Pop.GetNumWorkforce|Dv]"
+								tooltip = "POP_WORKFORCE_TOOLTIP"
+								autoresize = yes
+								elide = right
+								align = left|nobaseline
+							}
+						}
+
+						flowcontainer = {
+							direction = vertical
+							minimumsize = { 150 50 }
+
+							textbox = {
+								text = "DEPENDENTS_TITLE"
+								autoresize = yes
+								elide = right
+								align = left|nobaseline
+							}
+
+							textbox = {
+								text = "[Pop.GetDependentsSize|Dv]"
+								tooltip = "POP_DEPENDENTS_TOOLTIP"
+								autoresize = yes
+								elide = right
+								align = left|nobaseline
+							}
+						}
+					}
+
+					widget = { size = { 10 10 }}
+
+					flowcontainer = {
+
+						flowcontainer = {
+							direction = vertical
+							minimumsize = { 200 50 }
+							
+							textbox = {
+								text = "POP_ECONOMY_WEEKLY_INCOME"
+								autoresize = yes
+								elide = right
+								align = left|nobaseline
+							}
+
+							textbox = {
+								text = "@money![Pop.GetIncome|+=D]"
+								tooltip = "[Pop.GetIncomeDesc]"
+								autoresize = yes
+								elide = right
+								align = left|nobaseline
+							}
+
+						}
+
+						flowcontainer = {
+							direction = vertical
+							minimumsize = { 150 50 }
+
+							textbox = {
+								text = "WORKING_ADULTS_INCOME_TITLE"
+								autoresize = yes
+								elide = right
+								align = left|nobaseline
+							}
+
+
+							textbox = {
+								visible = "[Not(Pop.IsEmployed)]"
+								autoresize = yes
+								text = "UNEMPLOYED"
+								align = left|nobaseline
+								alpha = 0.5
+								elide = right
+							}
+
+							flowcontainer = {
+								visible = "[Pop.IsEmployed]"
+
+								textbox = {
+									text = "@money![Pop.GetWorkforceIncome|D=+]"
+									tooltip = "[Pop.GetWorkforceIncomeDesc]"
+									autoresize = yes
+									elide = right
+									align = left|nobaseline
+								}
+
+								widget = {
+									size = { 5 20 }
+								}
+
+								button = {
+									datacontext = "[Pop.AccessBuilding]"
+									size = { 23 23 }
+									using = clean_button
+									onclick = "[InformationPanelBar.OpenBuildingDetailsPanel(Building.AccessSelf)]"
+
+									tooltipwidget = {
+										FancyTooltip_Building = {}
+									}
+
+									icon = {
+										size = { 23 23 }
+										texture = "[Pop.GetBuilding.GetTexture]"
+										parentanchor = right|vcenter
+									}
+								}
+							}
+						}
+
+						flowcontainer = {
+							direction = vertical
+							minimumsize = { 150 50 }
+
+							textbox = {
+								text = "DEPENDENTS_INCOME_TITLE"
+								autoresize = yes
+								elide = right
+								align = left|nobaseline
+							}
+
+							textbox = {
+								visible = "[NotEqualTo_CFixedPoint(Pop.GetDependentIncome, '(CFixedPoint)0')]"
+								text = "@money![Pop.GetDependentIncome|D=+]"
+								tooltip = "[Pop.GetDependentIncomeDesc]"
+								autoresize = yes
+								elide = right
+								align = left|nobaseline
+							}
+
+							textbox = {
+								visible = "[EqualTo_CFixedPoint(Pop.GetDependentIncome, '(CFixedPoint)0')]"
+								autoresize = yes
+								text = "UNEMPLOYED"
+								align = left|nobaseline
+								alpha = 0.5
+								elide = right
+							}
+						}
+					}
+
+					widget = { size = { 10 10 }}
+
+					flowcontainer = {
+
+						flowcontainer = {
+							direction = vertical
+							minimumsize = { 350 50 }
+
+							textbox = {
+								text = "POP_ECONOMY_WEEKLY_EXPENSES"
+								autoresize = yes
+								elide = right
+								align = left|nobaseline
+							}
+
+							textbox = {
+								text = "@money![Negate_CFixedPoint(Pop.GetExpenses)|=D+]"
+								tooltip = "[Pop.GetExpensesDesc]"
+								autoresize = yes
+								elide = right
+								align = right|nobaseline
+							}
+						}
+
+						flowcontainer = {
+							direction = vertical
+							minimumsize = { 150 50 }
+							
+							textbox = {
+								text = "NET_INCOME_TITLE"
+								tooltip = "TOOLTIP_POP_NET_INCOME"
+								autoresize = yes
+								elide = right
+								align = left|nobaseline
+							}
+
+							textbox = {
+								text = "#v @money![Pop.GetMoney|D=+]#!"
+								tooltip = "TOOLTIP_POP_NET_INCOME"
+								elide = right
+								align = left|nobaseline
+								autoresize = yes
+							}
+						}
+					}
+
+				}
+
+				flowcontainer = {
+					direction = vertical
+					parentanchor = hcenter
+					minimumsize = { @panel_width 100 }
+					margin = { 20 15 }
+
+					background = {
+						using = entry_bg_simple
+					}
+
+					textbox = {
+						align = left|nobaseline
+						text = "POP_TOP_GOODS_EXPENDITURES_HEADER"
+						autoresize = yes
+						margin_bottom = 10
+					}
+
+					fixedgridbox = {
+						parentanchor = hcenter
+						datamodel_wrap = 5
+						addcolumn = 90
+						addrow = 90
+						flipdirection = yes
+
+						datamodel = "[Pop.GetTopGoodsConsumption]"
+
+						item = {
+							widget = {
+								size = { 90 90 }
+								consumption_goods_fancy = {}
+							}
+						}
+					}
+				}
+			}
+
+			flowcontainer = {
+				visible = "[InformationPanel.IsTabSelected('pop_consumption')]"
+				using = default_fade_in_out
+				direction = vertical
+				spacing = 9
+
+				spacer = {
+					size = { 5 0 }
+				}
+
+				flowcontainer = {
+					visible = no
+					using = default_list_position
+					
+					sort_button = {
+						align = hcenter|nobaseline
+						text = "GOODS"
+						size = { 190 20 }
+						tooltip = "SORT_BY_GOODS"
+						#onclick = "[Pop.Sort('name')]"
+						#onclick = "[Pop.RestoreSort]"
+					}
+
+					sort_button = {
+						align = hcenter|nobaseline
+						text = "[concept_market_price]"
+						tooltip = "SORT_BY_MARKET_PRICE"
+						size = { 130 20 }
+						#onclick = "[Pop.Sort('price')]"
+						#onclick = "[Pop.RestoreSort]"
+					}
+
+					sort_button = {
+						align = hcenter|nobaseline
+						text = "POP_AMOUNT"
+						size = { 110 20 }
+						tooltip = "SORT_BY_AMOUNT_CONSUMED"
+						#onclick = "[Pop.Sort('amount')]"
+						#onclick = "[Pop.RestoreSort]"
+					}
+
+					sort_button = {
+						align = hcenter|nobaseline
+						text = "PERCENTAGE_OF_BUDGET"
+						tooltip = "SORT_BY_BUDGET_EXPENDITURE"
+						size = { 110 20 }
+						#onclick = "[Pop.Sort('budget')]"
+						#onclick = "[Pop.RestoreSort]"
+						margin_right = 7
+					}
+					
+				}
+
+				flowcontainer = {
+					direction = vertical
+					parentanchor = hcenter
+
+					flowcontainer = {
+						parentanchor = hcenter
+						direction = vertical
+
+						datamodel = "[Pop.GetGoodsConsumption]"
+
+						item = {
+							consumption_goods_list_item = {}
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -625,6 +908,213 @@ types pop_details_panel
 					elide = right
 					align = right|nobaseline
 				}
+			}
+		}
+	}
+
+	type consumption_goods_fancy = button {
+		
+		datacontext = "[PopConsumptionGoods.GetGoods]"
+
+		size = { 60 80 }
+		parentanchor = center
+		using = default_button
+		using = select_button_sound
+		onclick = "[InformationPanelBar.OpenGoodsPanel(Goods.GetMarket, Goods.Self)]"
+		onrightclick = "[RightClickMenuManager.ShowForGoods(Goods.AccessSelf)]"
+
+		tooltipwidget = {
+			FancyTooltip_Goods_Pop_Consumption = {}
+		}
+
+		icon = {
+			position = { 0 -5 }
+			parentanchor = bottom|hcenter
+			size = { 45 45 }
+			texture = "[Goods.GetTexture]"
+		}
+
+
+		textbox = {
+			parentanchor = top|hcenter
+			position = { 0 4 }
+			align = center|nobaseline
+			#using = fontsize_large
+			size = { 100% 25 }
+			elide = right
+			fontsize_min = 14
+
+			block "goods_consumption_info" {
+				text = "#v [PopConsumptionGoods.GetConsumptionRatio|1%v]#!"
+			}
+			
+			background = {
+				using = dark_area
+				margin = { -5 0 }
+			}
+		}
+
+		icon = {
+			visible = "[Goods.HasGoodsShortage]"
+			parentanchor = bottom|left
+			size = { 25 25 }
+			position = { -10 5 }
+			texture = "gfx/interface/icons/generic_icons/goods_shortage.dds"
+			tooltip = "GOODS_SHORTAGE_TOOLTIP"
+		}
+
+		textbox = {
+			parentanchor = bottom|right
+			position = { 10 5 }
+			autoresize = yes
+			using = fontsize_xl
+			text = "[Goods.GetCompareIconAgainstBasePrice(Goods.GetMarketPrice)]"
+		}
+	}
+
+	type consumption_goods_list_item = widget {
+
+		
+		datacontext = "[PopConsumptionGoods.GetGoods]"
+
+		size = { @panel_width 50 }
+		
+		background = {
+			using = entry_bg_simple
+		}
+
+		flowcontainer = {
+			parentanchor = left|vcenter
+			widgetanchor = left|vcenter
+
+			button = {
+				using = default_button
+				using = select_button_sound
+				onclick = "[InformationPanelBar.OpenGoodsPanel(Goods.GetMarket, Goods.Self)]"
+				onrightclick = "[RightClickMenuManager.ShowForGoods(Goods.AccessSelf)]"
+				size = { 190 50 }
+				parentanchor = vcenter
+
+				tooltipwidget = {
+					FancyTooltip_Goods_Pop_Consumption = {}
+				}
+
+				flowcontainer = {
+					using = goods_list_item
+
+					textbox = {
+						align = left|nobaseline
+						text = "[Goods.GetNameNoFormatting]"
+						size = { 135 40 }
+						margin_left = 3
+						parentanchor = vcenter
+						elide = right
+						fontsize_min = 12
+					}
+				}
+			}
+
+			vertical_divider = {}
+			
+			widget = {
+				using = market_price_tooltip_with_graph
+				size = { 130 55 }
+				
+				textbox = {
+					align = left|nobaseline
+					text = "[Goods.GetCompareIconAgainstBasePrice( Goods.GetMarketPrice )]"
+					size = { 110 40 }
+					margin_left = 20
+					parentanchor = vcenter
+				}
+
+				flowcontainer = {
+					direction = vertical
+					minimumsize = { 80 52 }
+					spacing = 5
+					margin_top = 10
+					parentanchor = right
+
+					textbox = {
+						visible = "[GreaterThanOrEqualTo_CFixedPoint(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetMarketPrice), '(CFixedPoint)0.01')]"
+						align = right|nobaseline
+						text = "MARKET_PANEL_GOODS_PRICE_GOLD"
+						autoresize = yes
+						margin_right = 10
+						parentanchor = right
+					}
+
+					textbox = {
+						visible = "[And( Not(LessThanOrEqualTo_CFixedPoint(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetMarketPrice), '(CFixedPoint)-0.01')), Not(GreaterThanOrEqualTo_CFixedPoint(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetMarketPrice), '(CFixedPoint)0.01')))]"
+						align = hcenter|nobaseline
+						text = "MARKET_PANEL_GOODS_PRICE"
+						autoresize = yes
+						parentanchor = hcenter
+					}
+
+					textbox = {
+						visible = "[LessThanOrEqualTo_CFixedPoint(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetMarketPrice), '(CFixedPoint)-0.01')]"
+						align = left|nobaseline
+						text = "MARKET_PANEL_GOODS_PRICE_BLUE"
+						autoresize = yes
+						margin_left = 10
+						parentanchor = left
+					}
+
+					double_direction_progressbar_gold = {
+						size = { 60 6 }
+						parentanchor = hcenter
+
+						blockoverride "negative_min_max_values" {
+							min = -0.75
+							max = 0
+						}
+
+						blockoverride "positive_min_max_values" {
+							min = 0
+							max = 0.75
+						}
+						
+						blockoverride "value_left" {
+							value = "[FixedPointToFloat(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetMarketPrice))]"
+						}
+						blockoverride "value_right" {
+							value = "[FixedPointToFloat(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetMarketPrice))]"
+						}
+					}
+				}
+			}
+
+			vertical_divider = {}
+
+			textbox = {
+				parentanchor = vcenter
+				align = center|nobaseline
+				size = { 110 25 }
+				elide = right
+				fontsize_min = 14
+				tooltip = "POP_GOODS_AMOUNT_CONSUMED"
+
+				block "goods_consumption_info" {
+					text = "#v [PopConsumptionGoods.GetConsumptionAmount|D]#!"
+				}
+
+			}
+
+			vertical_divider = {}
+
+			textbox = {
+				parentanchor = vcenter
+				align = center|nobaseline
+				size = { 110 25 }
+				elide = right
+				fontsize_min = 14
+				tooltip = "POP_GOODS_BUDGET_EXPENDITURE_PERCENTAGE"
+
+				block "goods_consumption_info" {
+					text = "#v [PopConsumptionGoods.GetConsumptionRatio|v%1]#!"
+				}
+
 			}
 		}
 	}

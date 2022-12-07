@@ -637,6 +637,17 @@ ai_strategy_default = {
 	}
 
 	strategic_region_scores = {
+		region_arabic = {
+			if = {
+				limit = { # Great Powers care about Egyptian-Ottoman conflict in Arabia early game
+					exists = c:TUR
+					c:TUR = { has_journal_entry = je_sick_man_syria }
+					country_rank = rank_value:great_power
+					navy_size >= 50
+				}
+				add = 1000
+			}
+		}
 		region_japan = {	
 			if = {
 				limit = { # Great Powers should try to open Japan
@@ -843,7 +854,7 @@ ai_strategy_default = {
 				limit = {
 					has_variable = monroe_doctrine	
 				}
-				add = 100
+				add = 1000
 			}			
 		}
 		region_great_plains = {
@@ -1593,11 +1604,15 @@ ai_strategy_default = {
 			
 			if = {
 				limit = {
-					scope:target_country = { is_subject_of = root }	
+					scope:target_country = { 
+						is_subject_of = root
+						relations:root < relations_threshold:cordial 
+						scope:target_country.country_rank < rank_value:major_power
+					}
 				}
-				add = 100
-			}			
-			
+				add = 50
+			}	
+
 			if = {
 				limit = {
 					can_reach_target_country = yes

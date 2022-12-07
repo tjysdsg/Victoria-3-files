@@ -32,7 +32,7 @@ types panel_military {
 				### Mobilize button
 				button = {
 					enabled = "[IsValid( Country.MobilizeAllGenerals )]"
-					using = default_button_action
+					using = default_button
 					using = diplomatic_play_mobilize_button_sound
 					size = { 240 50 }
 					using = fontsize_large
@@ -470,7 +470,20 @@ types panel_military {
 
 		widget = { size = { 1 10 }}
 
-		hq_list = {}
+		hq_list = {
+			blockoverride "empty_state" {
+				empty_state = {
+
+					blockoverride "visible" {
+						visible = "[IsDataModelEmpty(Hq.GetBuildingsWithUnitsInReserve)]"
+					}
+					
+					blockoverride "text" {
+						text = "NO_BATTALIONS_IN_HQ"
+					}
+				}
+			}
+		}
 
 		widget = { size = { 1 10 }}
 
@@ -577,6 +590,19 @@ types panel_military {
 			blockoverride "recruit_text" {
 				text = "RECRUIT_ADMIRAL_BUTTON"
 			}
+
+			blockoverride "empty_state" {
+				empty_state = {
+
+					blockoverride "visible" {
+						visible = "[IsDataModelEmpty(Hq.GetBuildingsWithUnitsInReserve)]"
+					}
+
+					blockoverride "text" {
+						text = "NO_FLOTILLAS_IN_HQ"
+					}
+				}
+			}
 		}
 
 		widget = { size = { 1 10 }}
@@ -670,14 +696,17 @@ types panel_military {
 				
 				military_panel_army_content = {
 					visible = "[InformationPanel.IsTabSelected('army')]"
+					using = default_fade_in_out
 				}
 
 				military_panel_garrison_content = {
 					visible = "[InformationPanel.IsTabSelected('garrison')]"
+					using = default_fade_in_out
 				}
 
 				military_panel_navy_content = {
 					visible = "[InformationPanel.IsTabSelected('navy')]"
+					using = default_fade_in_out
 				}
 
 				widget = { size = { 1 20 } }
@@ -702,6 +731,7 @@ types panel_military {
 					onclick = "[PanelMilitary.OnClickRecruitGenerals]"
 					enabled = yes
 					visible = "[InformationPanel.IsTabSelected('army')]"
+					using = default_content_fade
 
 					flowcontainer = {
 						parentanchor = center
@@ -730,6 +760,7 @@ types panel_military {
 					onclick = "[PanelMilitary.OnClickRecruitAdmirals]"
 					enabled = yes
 					visible = "[InformationPanel.IsTabSelected('navy')]"
+					using = default_content_fade
 
 					flowcontainer = {
 						parentanchor = center

@@ -280,7 +280,18 @@ land_battle_size = {
 # own_commander = the commander leading this side in battle (if any; could be garrison)
 # province = land province this battle takes place in
 land_battle_unit_selection_weight = {
-     value = morale
+    value = manpower
+	multiply = morale
+	
+	# Generals have a stronger tendency to bring their own Battalions than borrowed ones
+	if = {
+		limit = {
+			exists = scope:own_commander
+			exists = commander
+			commander = scope:own_commander
+		}
+		multiply = 1.25
+	}
 }
 
 # the warships size for each side in a naval battle

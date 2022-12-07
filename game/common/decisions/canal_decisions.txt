@@ -1,6 +1,10 @@
 ﻿suez_survey_decision = {
 	is_shown = {
 		has_interest_marker_in_region = region_nile_basin
+		NOT = { 
+			has_variable = survey_suez_taken 
+			has_global_variable = suez_canal_complete
+		}
 		OR = {
 			country_rank = rank_value:great_power
 			s:STATE_SINAI = {
@@ -9,8 +13,15 @@
 				}
 			}
 		}
-		NOT = { has_variable = survey_suez_taken }
-		NOT = { has_global_variable = suez_canal_complete }
+		s:STATE_SINAI = {
+			any_scope_state = {
+				NOT = {
+					any_scope_building = { 
+						is_building_type = building_suez_canal 
+					}
+				}
+			}
+		}
 	}
 
 	possible = {
@@ -54,26 +65,54 @@
 	}
 }
 
+stop_suez_survey_decision = {
+	is_shown = {
+		has_variable = survey_suez_taken
+	}
+	possible = {
+		has_modifier = modifier_surveying_suez
+	}
+	when_taken = {
+		remove_variable = survey_suez_taken
+		remove_modifier = modifier_surveying_suez
+	}
+	ai_chance = {
+		base = 0
+	}
+}
+
 suez_canal_purchase = {
 	is_shown = {
 		has_variable = suez_canal_purchase
-		NOT = { has_global_variable = suez_canal_purchase_var }
-		NOT = { has_global_variable = suez_canal_complete }
-		NOT = {
+		NOT = { 
+			has_global_variable = suez_canal_purchase_var
+			has_global_variable = suez_canal_complete
+		}
+		s:STATE_SINAI = {
 			any_scope_state = {
-				state_region = s:STATE_SINAI
+				NOT = {
+					any_scope_building = { 
+						is_building_type = building_suez_canal 
+					}
+				}
+				owner = {
+					owns_treaty_port_in = STATE_SINAI
+					NOT = { 
+						has_variable = suez_survey_complete 
+					}
+				}
 			}
 		}
 	}
 
 	possible = {
 		gdp > 50000000
-		s:STATE_SINAI = {
-			any_scope_state = {
-				owner = {
-					relations:root >= relations_threshold:cordial
-					NOT = { has_war_with = ROOT }
-				}
+		any_state = {
+			state_region = s:STATE_SINAI
+			owner = {
+				owns_treaty_port_in = STATE_SINAI
+				relations:root >= relations_threshold:cordial
+				NOT = { has_war_with = ROOT }
 			}
 		}
 	}
@@ -84,7 +123,27 @@ suez_canal_purchase = {
 			limit = {
 				s:STATE_SINAI = {
 					any_scope_state = {
-						owner = { is_player = no }
+						owner = {
+							owns_treaty_port_in = STATE_SINAI
+							is_player = no 
+						}
+					}
+				}
+			}
+			hidden_effect = {
+				s:STATE_SINAI = {
+					random_scope_state = {
+						limit = {
+							owner = {
+								owns_treaty_port_in = STATE_SINAI 
+							}
+						}
+						owner = {
+							add_modifier = {
+								name = suez_sale
+								months = 120
+							}
+						}
 					}
 				}
 			}
@@ -97,18 +156,6 @@ suez_canal_purchase = {
 			add_modifier = {
 				name = suez_purchase
 				months = 120
-			}
-			hidden_effect = {
-				s:STATE_SINAI = {
-					random_scope_state = {
-						owner = {
-							add_modifier = {
-								name = suez_sale
-								months = 120
-							}
-						}
-					}
-				}
 			}
 		}
 		else = {
@@ -146,12 +193,24 @@ suez_canal_purchase = {
 panama_survey_decision = {
 	is_shown = {
 		has_interest_marker_in_region = region_central_america
-		NOT = { has_variable = survey_panama_taken }
+		NOT = { 
+			has_variable = survey_panama_taken 
+			has_global_variable = panama_canal_complete
+		}
 		OR = {
 			country_rank = rank_value:great_power
 			s:STATE_PANAMA = {
 				any_scope_state = {
 					owner = ROOT
+				}
+			}
+		}
+		s:STATE_PANAMA = {
+			any_scope_state = {
+				NOT = {
+					any_scope_building = { 
+						is_building_type = building_panama_canal 
+					}
 				}
 			}
 		}
@@ -198,27 +257,54 @@ panama_survey_decision = {
 	}
 }
 
+stop_panama_survey_decision = {
+	is_shown = {
+		has_variable = survey_panama_taken
+	}
+	possible = {
+		has_modifier = modifier_surveying_panama
+	}
+	when_taken = {
+		remove_variable = survey_panama_taken
+		remove_modifier = modifier_surveying_panama
+	}
+	ai_chance = {
+		base = 0
+	}
+}
+
 panama_canal_purchase = {
 	is_shown = {
-		has_variable = panama_canal_purchase
-		NOT = { has_global_variable = panama_canal_purchase_var }
-		NOT = { has_global_variable = panama_canal_complete }
 		is_subject = no
-		NOT = {
+		has_variable = panama_canal_purchase
+		NOT = { 
+			has_global_variable = panama_canal_purchase_var
+			has_global_variable = panama_canal_complete
+		}
+		s:STATE_PANAMA = {
 			any_scope_state = {
-				state_region = s:STATE_PANAMA
+				NOT = {
+					any_scope_building = { 
+						is_building_type = building_panama_canal 
+					}
+				}
+				owner = {
+					owns_treaty_port_in = STATE_PANAMA
+					NOT = { 
+						has_variable = panama_survey_complete 
+					}
+				}
 			}
 		}
 	}
 
 	possible = {
 		gdp > 50000000
-		s:STATE_PANAMA = {
-			any_scope_state = {
-				owner = {
-					relations:root >= relations_threshold:cordial
-					NOT = { has_war_with = ROOT }
-				}
+		any_state = {
+			owner = {
+				owns_treaty_port_in = STATE_PANAMA
+				relations:root >= relations_threshold:cordial
+				NOT = { has_war_with = ROOT }
 			}
 		}
 	}
@@ -229,7 +315,27 @@ panama_canal_purchase = {
 			limit = {
 				s:STATE_PANAMA = {
 					any_scope_state = {
-						owner = { is_player = no }
+						owner = { 
+							owns_treaty_port_in = STATE_PANAMA
+							is_player = no 
+						}
+					}
+				}
+			}
+			hidden_effect = {
+				s:STATE_PANAMA = {
+					random_scope_state = {
+						limit = {
+							owner = {
+								owns_treaty_port_in = STATE_PANAMA
+							}
+						}
+						owner = {
+							add_modifier = {
+								name = panama_sale
+								months = 120
+							}
+						}
 					}
 				}
 			}
@@ -242,18 +348,6 @@ panama_canal_purchase = {
 			add_modifier = {
 				name = panama_purchase
 				months = 120
-			}
-			hidden_effect = {
-				s:STATE_PANAMA = {
-					random_scope_state = {
-						owner = {
-							add_modifier = {
-								name = panama_sale
-								months = 120
-							}
-						}
-					}
-				}
 			}
 		}
 		else = {

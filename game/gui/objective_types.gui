@@ -263,7 +263,7 @@ types objective_types
 				}
 				
 				widget = {
-					visible = "[GameSetup.HasSelectedObjective]"
+					#visible = "[GameSetup.HasSelectedObjective]"
 					size = { 1 20 }
 				}
 				
@@ -558,185 +558,45 @@ types objective_types
 					size = { 1 20 }
 				}
 				
-				### BOTTOM BAR
+				### BOTTOM BAR - OBJECTIVE NOT SELECTED
 				hbox = {
-					name = "bottom_panel"
+					name = "bottom_panel_not_selected"
+					visible = "[Not(GameSetup.HasSelectedObjective)]"
 					layoutpolicy_horizontal = expanding
 					margin = { 15 0 }
-					visible = "[GameSetup.HasSelectedObjective]"
+					using = default_fade_in_out
 
-					### GAME RULES
-					hbox = {
-						visible = "[And( GameSetup.HasSelectedObjective, GameSetup.HasSelectedTag )]"
-						layoutpolicy_horizontal = preferred
-						spacing = 15
-						margin = { 15 0 }
-						using = default_fade_in_out
-						
-						background = {
-							using = dark_area_rounded
-							alpha = 0.3
-						}
-						
-						button_standard = {
-							name = "game_rules_button"
-							size = { 200 45 }
-
-							text = "GAME_RULES"
-							onclick = "[OpenGameRules]"
-
-							button_rules = {
-								size = { 25 25 }
-								parentanchor = left|vcenter
-								position = { 5 0 }
-								alwaystransparent = yes
-							}
-						}
-						
-						divider_light = {
-							layoutpolicy_vertical = expanding
-						}
-						
-						flowcontainer_game_rules_mini = {
-							name = "game_rules_mini"
-						}
-						
-						divider_light = {
-							layoutpolicy_vertical = expanding
-						}
-
-						widget = {
-							size = { 180 60 }
-							
-							hbox = {
-								name = "buttons"
-								visible = "[Not( IsInGame )]"
-
-								button_checkbox_label = {
-									visible = "[Not( IsIronmanEnabled )]"
-									onclick = "[SetIronmanEnabledStatus( '(bool)yes' )]"
-
-									blockoverride "checkbox"
-									{
-										checked = "[IsIronmanEnabled]"
-									}
-
-									blockoverride "text"
-									{
-										text = "BOOKMARK_IRONMAN_DISABLED"
-									}
-								}
-
-								button_checkbox_label = {
-									visible = "[IsIronmanEnabled]"
-									onclick = "[SetIronmanEnabledStatus( '(bool)no' )]"
-
-									blockoverride "checkbox"
-									{
-										checked = "[IsIronmanEnabled]"
-									}
-
-									blockoverride "text"
-									{
-										text = "BOOKMARK_IRONMAN_ENABLED"
-									}
-								}
-							}
-						}						
-
-						divider_light = {
-							layoutpolicy_vertical = expanding
-						}
-
-						widget = {
-							size = { 180 80 }
-							
-							hbox_achievements_info = {
-								using = tooltip_ne
-								blockoverride "ai_background" {}
-
-								blockoverride "ai_icon_size"
-								{
-									size = { 36 36 }
-								}
-							}
-						}
+					widget = {
+						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = expanding
 					}
-					
+
+					game_rules_hbox = {}
+
 					widget = {
 						layoutpolicy_horizontal = expanding
 						layoutpolicy_vertical = expanding
 					}
 					
-					### BUTTONS BOTTOM RIGHT
+					start_game_buttons = {}
+				}
+
+				### BOTTOM BAR - OBJECTIVE SELECTED
+				hbox = {
+					name = "bottom_panel"
+					visible = "[GameSetup.HasSelectedObjective]"
+					layoutpolicy_horizontal = expanding
+					margin = { 15 0 }
+					using = default_fade_in_out
+
+					game_rules_hbox = {}
+
 					widget = {
-						size = { 680 80 }
-						
-						# select any country
-						button = {
-							using = default_button_primary_big_action
-							parentanchor = left|vcenter
-							size = { 330 60 }
-							enabled = "[Not(GameSetup.HasSelectedTag)]"
-							onclick = "[GameSetup.OnStart]"
-							onclick = "[PdxGuiTriggerAllAnimations('bookmarks_game_start')]"
-							using = default_fade_in_out
-							using = start_game_button_sound
-							
-							using = tooltip_above
-							tooltip = "[SelectLocalization(GameSetup.HasSelectedTag, 'HAS_SELECTED_COUNTRY_TOOLTIP', 'START_ANY_COUNTRY_TOOLTIP')]"
-
-							textbox = {
-								size = { 100% 100% }
-								text = "SELECT_ANY_COUNTRY"
-								align = center|nobaseline
-								using = fontsize_xl
-								fontsize_min = 14
-								elide = right
-								margin = { 20 0 }
-							}
-						}
-						
-						# start game
-						button = {
-							using = default_button_primary_big_action
-							parentanchor = right|vcenter
-							size = { 330 60 }
-							enabled = "[GameSetup.HasSelectedTag]"
-							visible = "[GameSetup.HasSelectedObjective]"
-							onclick = "[GameSetup.OnStart]"
-							onclick = "[PdxGuiTriggerAllAnimations('bookmarks_game_start')]"
-							using = default_fade_in_out
-							using = start_game_button_sound
-
-							# tooltip if country selected
-							widget = {
-								visible = "[GameSetup.HasSelectedTag]"
-								size = { 100% 100% }
-								using = tooltip_above
-								datacontext = "[GameSetup.GetSelectedTag]"
-								tooltip = "START_GAME_TOOLTIP"
-							}
-
-							# tooltip if no country selected
-							widget = {
-								visible = "[Not(GameSetup.HasSelectedTag)]"
-								size = { 100% 100% }
-								using = tooltip_above
-								tooltip = "NO_SELECTED_COUNTRY_TOOLTIP"
-							}
-
-							textbox = {
-								size = { 100% 100% }
-								text = "START_GAME"
-								align = center|nobaseline
-								using = fontsize_xxl
-								fontsize_min = 14
-								elide = right
-								margin = { 20 0 }
-							}
-						}
+						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = expanding
 					}
+					
+					start_game_buttons = {}
 				}
 			}
 			
@@ -775,5 +635,177 @@ types objective_types
 				expand = {}
 			}
 		}	
+	}
+
+	type game_rules_hbox = hbox {
+
+		### GAME RULES
+		layoutpolicy_horizontal = preferred
+		spacing = 15
+		margin = { 15 0 }
+		using = default_fade_in_out
+		
+		background = {
+			using = dark_area_rounded
+			alpha = 0.3
+		}
+		
+		button_standard = {
+			name = "game_rules_button"
+			size = { 200 45 }
+
+			text = "GAME_RULES"
+			onclick = "[OpenGameRules]"
+
+			button_rules = {
+				size = { 25 25 }
+				parentanchor = left|vcenter
+				position = { 5 0 }
+				alwaystransparent = yes
+			}
+		}
+		
+		divider_light = {
+			layoutpolicy_vertical = expanding
+		}
+		
+		flowcontainer_game_rules_mini = {
+			name = "game_rules_mini"
+		}
+		
+		divider_light = {
+			layoutpolicy_vertical = expanding
+		}
+
+		widget = {
+			size = { 180 60 }
+			
+			hbox = {
+				name = "buttons"
+				visible = "[Not( IsInGame )]"
+
+				button_checkbox_label = {
+					visible = "[Not( IsIronmanEnabled )]"
+					onclick = "[SetIronmanEnabledStatus( '(bool)yes' )]"
+
+					blockoverride "checkbox"
+					{
+						checked = "[IsIronmanEnabled]"
+					}
+
+					blockoverride "text"
+					{
+						text = "BOOKMARK_IRONMAN_DISABLED"
+					}
+				}
+
+				button_checkbox_label = {
+					visible = "[IsIronmanEnabled]"
+					onclick = "[SetIronmanEnabledStatus( '(bool)no' )]"
+
+					blockoverride "checkbox"
+					{
+						checked = "[IsIronmanEnabled]"
+					}
+
+					blockoverride "text"
+					{
+						text = "BOOKMARK_IRONMAN_ENABLED"
+					}
+				}
+			}
+		}						
+
+		divider_light = {
+			layoutpolicy_vertical = expanding
+		}
+
+		widget = {
+			size = { 180 80 }
+			
+			hbox_achievements_info = {
+				using = tooltip_ne
+				blockoverride "ai_background" {}
+
+				blockoverride "ai_icon_size"
+				{
+					size = { 36 36 }
+				}
+			}
+		}
+	}
+
+	type start_game_buttons = widget {
+		
+		### BUTTONS BOTTOM RIGHT
+		size = { 680 80 }
+		visible = "[GameSetup.HasSelectedObjective]"
+		using = default_fade_in_out
+		
+		# select any country
+		button = {
+			using = default_button_primary_big_action
+			parentanchor = left|vcenter
+			size = { 330 60 }
+			enabled = "[Not(GameSetup.HasSelectedTag)]"
+			visible = "[GameSetup.HasSelectedObjective]"
+			onclick = "[GameSetup.OnStart]"
+			onclick = "[PdxGuiTriggerAllAnimations('bookmarks_game_start')]"
+			using = default_fade_in_out
+			using = start_game_button_sound
+			
+			using = tooltip_above
+			tooltip = "[SelectLocalization(GameSetup.HasSelectedTag, 'HAS_SELECTED_COUNTRY_TOOLTIP', 'START_ANY_COUNTRY_TOOLTIP')]"
+
+			textbox = {
+				size = { 100% 100% }
+				text = "SELECT_ANY_COUNTRY"
+				align = center|nobaseline
+				using = fontsize_xl
+				fontsize_min = 14
+				elide = right
+				margin = { 20 0 }
+			}
+		}
+		
+		# start game
+		button = {
+			using = default_button_primary_big_action
+			parentanchor = right|vcenter
+			size = { 330 60 }
+			enabled = "[GameSetup.HasSelectedTag]"
+			visible = "[GameSetup.HasSelectedObjective]"
+			onclick = "[GameSetup.OnStart]"
+			onclick = "[PdxGuiTriggerAllAnimations('bookmarks_game_start')]"
+			using = default_fade_in_out
+			using = start_game_button_sound
+
+			# tooltip if country selected
+			widget = {
+				visible = "[GameSetup.HasSelectedTag]"
+				size = { 100% 100% }
+				using = tooltip_above
+				datacontext = "[GameSetup.GetSelectedTag]"
+				tooltip = "START_GAME_TOOLTIP"
+			}
+
+			# tooltip if no country selected
+			widget = {
+				visible = "[Not(GameSetup.HasSelectedTag)]"
+				size = { 100% 100% }
+				using = tooltip_above
+				tooltip = "NO_SELECTED_COUNTRY_TOOLTIP"
+			}
+
+			textbox = {
+				size = { 100% 100% }
+				text = "START_GAME"
+				align = center|nobaseline
+				using = fontsize_xxl
+				fontsize_min = 14
+				elide = right
+				margin = { 20 0 }
+			}
+		}
 	}
 }

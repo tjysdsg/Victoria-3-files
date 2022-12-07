@@ -63,7 +63,7 @@
   
  WARGOAL_NO_TREATY_PORT:1 " L’État cible n’a pas de province avec un [concept_treaty_port|l] valide"
  WARGOAL_IS_TREATY_PORT:1 " L’État cible est un [concept_treaty_port|l]"
- WARGOAL_NOT_SUBJECT_OF:1 " [TARGET_COUNTRY.GetAltNameNoFormatting('Le')|U][TARGET_COUNTRY.GetName] n’est pas un sujet"
+ WARGOAL_NOT_SUBJECT_OF:2 " [TARGET_COUNTRY.GetAltNameNoFormatting('Le')|U][TARGET_COUNTRY.GetName] n’est pas un sujet"
  WARGOAL_IS_SUBJECT_OF:1 " [COUNTRY.GetAltNameNoFormatting('Le')|U][COUNTRY.GetName] [COUNTRY.GetAltNameNoFormatting('EstSont')] un sujet [TARGET_COUNTRY.GetAltNameNoFormatting('Du')][TARGET_COUNTRY.GetName]"
  WARGOAL_NOT_SUBSERVIENT_SUBJECT:0 " [COUNTRY.GetAltNameNoFormatting('Le')|U][COUNTRY.GetName] n’est pas un sujet d’un autre pays"
  WARGOAL_WRONG_COUNTRY_RANK:1 " $COUNTRY_NAME|v$ n’a pas le rang $RANK|vl$"
@@ -79,7 +79,7 @@
  WARGOAL_NOT_SOLE_UNIFICATION_CANDIDATE:1 " [Country.GetAltNameNoFormatting('Le')|U][Country.GetName] doit être le seul [concept_unification_candidate|l] pour [CountryFormation.GetName]"
  WARGOAL_COUNTRY_HAS_SLAVERY:1 " [COUNTRY.GetAltNameNoFormatting('Le')|U][COUNTRY.GetName] pratique une forme d’[concept_slavery|l]"
  WARGOAL_COUNTRY_NO_SLAVERY:1 " [COUNTRY.GetAltNameNoFormatting('Le')|U][COUNTRY.GetName] ne pratique pas l’[concept_slavery|l] sous quelque forme que ce soit"
- WARGOAL_COUNTRY_HAS_LAW:0 "[COUNTRY.GetAltNameNoFormatting('Le')|U][COUNTRY.GetName] [COUNTRY.GetAltNameNoFormatting('AOnt')] promulgué [LAW_TYPE.GetName|l]"
+ WARGOAL_COUNTRY_HAS_LAW:1 "[COUNTRY.GetAltNameNoFormatting('Le')|U][COUNTRY.GetName] [COUNTRY.GetAltNameNoFormatting('AOnt')] promulgué [LAW_TYPE.GetName|l]"
  WARGOAL_COUNTRY_HAS_NOT_LAW:0 " [COUNTRY.GetAltNameNoFormatting('Le')|U][COUNTRY.GetName] n’[COUNTRY.GetAltNameNoFormatting('AOnt')] pas promulgué [LAW_TYPE.GetName|l]"
  WARGOAL_STAKEHOLDER_DOES_NOT_EXIST:1 " Cet [concept_war_goal|l] n’a pas de partie prenante valide !"
  WARGOAL_TARGET_DOES_NOT_OWN_STATE:1 " #variable $COUNTRY_NAME$#! ne possède pas #variable $STATE_NAME$#!"
@@ -125,6 +125,7 @@
  DIPLO_PLAY_CONFIDENCE_OR_NEUTRALITY_FACTOR_STRATEGY:0 "$NAME|v$ [concept_ai_strategy|l] : #bold $VALUE|+=$#!"
  DIPLO_PLAY_CONFIDENCE_OR_NEUTRALITY_FACTOR_WEAK_PREFERENCE:0 "Pas de préférence marquée pour l’un ou l’autre camp : #bold $VALUE|+=$#!"
  DIPLO_PLAY_CONFIDENCE_OR_NEUTRALITY_FACTOR_DEBT:0 "Montant des [concept_loans|l] [Country.GetAltAdjective('MP')|l] : #bold $VALUE|+=$#!"
+ DIPLO_PLAY_CONFIDENCE_OR_NEUTRALITY_FACTOR_BANKRUPTCY:0 "[Country.GetAltNameNoFormatting('Le')|U][Country.GetName] [Country.GetAltNameNoFormatting('EstSont')] en [concept_bankruptcy|l] : #bold $VALUE|+=$#!"
  DIPLO_PLAY_CONFIDENCE_OR_NEUTRALITY_FACTOR_GOLD_RESERVES:0 "Montant des [concept_gold_reserves|l] [Country.GetAltAdjective('FP')|l] : #bold $VALUE|+=$#!"
  DIPLO_PLAY_CONFIDENCE_OR_NEUTRALITY_FACTOR_DEVASTATION:0 "[concept_devastation] [Country.GetAltNameNoFormatting('En')][Country.GetName] : #bold $VALUE|+=$#!"
  DIPLO_PLAY_CONFIDENCE_OR_NEUTRALITY_FACTOR_TURMOIL:0 "[concept_turmoil] [Country.GetAltNameNoFormatting('En')][Country.GetName] : #bold $VALUE|+=$#!"
@@ -138,7 +139,7 @@
  DIPLO_PLAY_CONFIDENCE_OR_NEUTRALITY_FACTOR_FORCE_BALANCE:0 "Force militaire relative et niveau de mobilisation : #bold $VALUE|+=$#!"
  DIPLO_PLAY_CONFIDENCE_OR_NEUTRALITY_FACTOR_LOYALISTS:0 "Nombre de [Concept('concept_loyalist','$concept_loyalists$')|l] [Country.GetAltNameNoFormatting('En')][Country.GetName] : #bold $VALUE|+=$#!"
  DIPLO_PLAY_CONFIDENCE_OR_NEUTRALITY_FACTOR_CIVIL_WAR_OR_UPRISING:0 "[concept_civil_war] ou [concept_native_uprising|l] : #bold $VALUE|+=$#!"
- DIPLO_PLAY_CONFIDENCE_OR_NEUTRALITY_FACTOR_SHORT_WAR:0 "Guerre courte: #bold $VALUE|+=$#!"
+ DIPLO_PLAY_CONFIDENCE_OR_NEUTRALITY_FACTOR_SHORT_WAR:1 "Courte durée de la [concept_war|l] : #bold $VALUE|+=$#!"
  
  DIPLO_PLAY_CONFIDENCE_PLAYER:0 "#v Joueur#!"
  DIPLO_PLAY_CONFIDENCE_PLAYER_DESC:0 "[Country.GetAltNameNoFormatting('Le')|U][Country.GetName] [Country.GetAltNameNoFormatting('AOnt')] un niveau d’[concept_confidence|l] qui n’est connu que du joueur qui contrôle ce pays."
@@ -361,10 +362,10 @@
  war_goal_open_market_sway_desc:0 "Essayer de convaincre [WAR_GOAL.GetHolder.GetAltNameNoFormatting('Le')][WAR_GOAL.GetHolder.GetName] de rallier votre cause en forçant [WAR_GOAL.GetTarget.GetAltNameNoFormatting('Le')][WAR_GOAL.GetTarget.GetName] à adopter la loi de libre-échange et à ouvrir son marché au commerce extérieur."
 
  war_goal_regime_change_type_name:0 "Changement de régime"
- war_goal_regime_change_type_desc:1 "Forcer un pays à changer son [concept_government|l] et ses [Concept('concept_law', '$concept_laws$')|l] pour mieux s’aligner sur votre gouvernement."
- war_goal_regime_change:0 "Changement de régime [WAR_GOAL.GetTarget.GetAltNameNoFormatting('En')][WAR_GOAL.GetTarget.GetName]"
- war_goal_regime_change_desc:1 "[WAR_GOAL.GetHolder.GetAltNameNoFormatting('Le')|U][WAR_GOAL.GetHolder.GetName] forc[WAR_GOAL.GetHolder.GetAltNameNoFormatting('EEnt')] [WAR_GOAL.GetTarget.GetAltNameNoFormatting('Le')][WAR_GOAL.GetTarget.GetName] à changer de [concept_government|l] et de [Concept('concept_law', '$concept_laws$')|l] afin de les aligner sur les [WAR_GOAL.GetHolder.GetAltAdjective('MP')|l]."
- war_goal_regime_change_sway_desc:0 "Essayer de convaincre [WAR_GOAL.GetHolder.GetAltNameNoFormatting('Le')][WAR_GOAL.GetHolder.GetName] de rallier votre cause en forçant [WAR_GOAL.GetTarget.GetAltNameNoFormatting('Le')][WAR_GOAL.GetTarget.GetName] à changer de [concept_government|l] et de [Concept('concept_law', '$concept_laws$')|l] afin de les aligner sur les [WAR_GOAL.GetHolder.GetAltAdjective('MP')|l]."
+ war_goal_regime_change_type_desc:2 "Forcer un pays à changer son [concept_government|l] et ses [Concept('concept_law', '$concept_laws$')|l] pour mieux s’aligner sur votre gouvernement."
+ war_goal_regime_change:1 "Changement de régime [WAR_GOAL.GetTarget.GetAltNameNoFormatting('En')][WAR_GOAL.GetTarget.GetName]"
+ war_goal_regime_change_desc:2 "[WAR_GOAL.GetHolder.GetAltNameNoFormatting('Le')|U][WAR_GOAL.GetHolder.GetName] forc[WAR_GOAL.GetHolder.GetAltNameNoFormatting('EEnt')] [WAR_GOAL.GetTarget.GetAltNameNoFormatting('Le')][WAR_GOAL.GetTarget.GetName] à changer de [concept_government|l] et de [Concept('concept_law', '$concept_laws$')|l] afin de les aligner sur les [WAR_GOAL.GetHolder.GetAltAdjective('MP')|l]."
+ war_goal_regime_change_sway_desc:1 "Essayer de convaincre [WAR_GOAL.GetHolder.GetAltNameNoFormatting('Le')][WAR_GOAL.GetHolder.GetName] de rallier votre cause en forçant [WAR_GOAL.GetTarget.GetAltNameNoFormatting('Le')][WAR_GOAL.GetTarget.GetName] à changer de [concept_government|l] et de [Concept('concept_law', '$concept_laws$')|l] afin de les aligner sur les [WAR_GOAL.GetHolder.GetAltAdjective('MP')|l]."
   
  war_goal_ban_slavery_type_name:0 "Interdire l’esclavage"
  war_goal_ban_slavery_type_desc:0 "Forcer un pays à abolir la pratique rétrograde et inhumaine de l’esclavage."
@@ -432,14 +433,3 @@
  war_goal_unification_desc:1 "[WAR_GOAL.GetHolder.GetAltNameNoFormatting('Le')|U][WAR_GOAL.GetHolder.GetName] tente d’annexer tous les pays [WAR_GOAL.GetCountryFormation.GetAdjective] de moindre importance."
  war_goal_unification_sway_desc:1 "Essayer de convaincre [WAR_GOAL.GetHolder.GetAltNameNoFormatting('Le')][WAR_GOAL.GetHolder.GetName] de rallier votre cause en lui faisant annexer tous les pays [WAR_GOAL.GetCountryFormation.GetAdjective] de moindre importance."
   
-
-# === [LocEditor:OrphanedKeys] Keys that do not exist in English ===
- WARGOAL_NO_INTEREST_MARKER_IN_REGION:0 "#bold #N #variable $COUNTRY_NAME$#! n’a pas d’[concept_interest|l] en #variable $REGION_NAME$#!#!#!"
- OWES_FAVOR_TO_TARGET:0 "#N [COUNTRY.GetName] doit une [concept_favor|l] à [TARGET_COUNTRY.GetName|v]#!"
- DIPLO_PLAY_BACKER_PROMISED_INITIATOR_FAVOR:0 "[Country.GetName] a reçu la promesse d’une [concept_favor|l] pour soutenir le camp de l’initiateur de ce [concept_diplomatic_play|l]"
- DIPLO_PLAY_BACKER_PROMISED_TARGET_FAVOR:0 "[Country.GetName] a reçu la promesse d’une [concept_favor|l] pour soutenir le camp de la cible de ce [concept_diplomatic_play|l]"
- DIPLO_PLAY_SWAY_OFFER_FAVOR_DESC:0 "Essayer de convaincre [COUNTRY.GetName] de rallier votre cause en lui proposant une [concept_favor|l].[ConcatIfNeitherEmpty( '\n$TOOLTIP_DELIMITER$\n', '$ERRORS$' )]"
- JOIN_DIPLO_PLAY_FACTOR_OFFERED_FAVOR:0 "[concept_favor] proposée : #bold $VALUE|+=$#!"
- JOIN_DIPLO_PLAY_FACTOR_CURRENT_OFFERED_FAVOR:0 "[concept_favor] proposée par l’autre camp : #bold $VALUE|+=$#!"
- DIPLO_PLAY_NOT_NOW:0 "Pas maintenant"
- WARGOAL_IG_NOT_RADICAL:0 "#bold #N [INTEREST_GROUP.GetName] n’est pas un [concept_interest_group|l] [concept_radicalized|l]#!#!"

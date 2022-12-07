@@ -312,23 +312,24 @@ types politics_panel_types
 						margin = { 5 0 }
 						layoutpolicy_horizontal = expanding
 						layoutpolicy_vertical = preferred
-						tooltip = "REFORM_GOVERNMENT_LEGITIMACY_TOOLTIP"
 						spacing = 5
 						
 						hbox = {
 							layoutpolicy_horizontal = expanding
 							spacing = 10
+							datacontext = "[ReformGovernment.GetPredictedLegitimacyLevel]"
+							tooltip = "LEGITIMACY_LEVEL_PREDICTED_TOOLTIP"
 								
 							textbox = {
 								autoresize = yes
-								text = "#title [concept_legitimacy]:#!"
+								text = "[LegitimacyLevel.GetNameNoFormatting|v]"
 								align = left|nobaseline
 								elide = right
 							}
 							textbox = {
 								layoutpolicy_horizontal = expanding
 								size = { 0 20 }
-								text = "#variable [ReformGovernment.GetPredictedLegitimacy|0%]#!"
+								text = "#variable [ReformGovernment.GetPredictedLegitimacy]#!"
 								align = left|nobaseline
 								elide = right
 							}
@@ -337,7 +338,7 @@ types politics_panel_types
 							widget = {
 								layoutpolicy_horizontal = expanding
 								size = { 0 20 }
-								visible = "[GreaterThan_CFixedPoint(ReformGovernment.GetPredictedLegitimacyDelta, '(CFixedPoint)0')]"
+								visible = "[GreaterThan_int32(ReformGovernment.GetPredictedLegitimacyDelta, '(int32)0')]"
 								
 								icon = {
 									position = { 35 0 }
@@ -349,7 +350,7 @@ types politics_panel_types
 								
 								textbox = {
 									size = { 100% 100% }
-									text = "#p [ReformGovernment.GetPredictedLegitimacyDelta|=0%]#!"
+									text = "[ReformGovernment.GetPredictedLegitimacyDelta|=p]"
 									align = right|nobaseline
 									elide = right
 									using = fontsize_large
@@ -360,7 +361,7 @@ types politics_panel_types
 							widget = {
 								layoutpolicy_horizontal = expanding
 								size = { 0 20 }
-								visible = "[LessThan_CFixedPoint(ReformGovernment.GetPredictedLegitimacyDelta, '(CFixedPoint)0')]"
+								visible = "[LessThan_int32(ReformGovernment.GetPredictedLegitimacyDelta, '(int32)0')]"
 								
 								icon = {
 									position = { 35 0 }
@@ -375,7 +376,7 @@ types politics_panel_types
 								
 								textbox = {
 									size = { 100% 100% }
-									text = "#r [ReformGovernment.GetPredictedLegitimacyDelta|0%]#!"
+									text = "[ReformGovernment.GetPredictedLegitimacyDelta|r]"
 									align = right|nobaseline
 									elide = right
 									using = fontsize_large
@@ -383,43 +384,39 @@ types politics_panel_types
 							}
 						}
 						
-						#unchanged
-						default_progressbar_horizontal = {
-							visible = "[EqualTo_CFixedPoint(ReformGovernment.GetPredictedLegitimacyDelta, '(CFixedPoint)0')]"
-							layoutpolicy_horizontal = expanding
-							size = { 0 15 }
-							blockoverride "values" {
-								value = "[FixedPointToFloat(ReformGovernment.GetPredictedLegitimacy)]"
-								min = 0
-								max = 1
-							}
-						}
-						
-						#will increase
-						changed_value_increased_progressbar_horizontal = {
-							visible = "[GreaterThan_CFixedPoint(ReformGovernment.GetPredictedLegitimacyDelta, '(CFixedPoint)0')]"
-							layoutpolicy_horizontal = expanding
-							size = { 0 15 }
+						levels_progressbar = {
+							datamodel = "[GetLegitimacyLevels]"
 							
-							blockoverride "new_value" {
-								value = "[FixedPointToFloat(ReformGovernment.GetPredictedLegitimacy)]"
+							blockoverride "item_properties" {
+								layoutstretchfactor_horizontal = "[LegitimacyLevel.GetWidth]"
+								tooltip = "[SelectLocalization( LegitimacyLevel.IsActive( ReformGovernment.GetPredictedLegitimacy ), 'LEGITIMACY_LEVEL_PREDICTED_TOOLTIP', 'LEGITIMACY_LEVEL_INACTIVE_TOOLTIP' )]"
 							}
-							blockoverride "start_value" {
-								value = "[FixedPointToFloat(Country.GetGovernmentLegitimacy)]"
+							blockoverride "level_active" {
+								visible = "[LegitimacyLevel.IsActive( ReformGovernment.GetPredictedLegitimacy )]"
 							}
-						}
-						
-						#will decrease
-						changed_value_decreased_progressbar_horizontal = {
-							visible = "[LessThan_CFixedPoint(ReformGovernment.GetPredictedLegitimacyDelta, '(CFixedPoint)0')]"
-							layoutpolicy_horizontal = expanding
-							size = { 0 15 }
-							
-							blockoverride "new_value" {
-								value = "[FixedPointToFloat(ReformGovernment.GetPredictedLegitimacy)]"
+							blockoverride "last_level" {
+								visible = "[Not(EqualTo_int32( LegitimacyLevel.GetUpperBound, '(int32)100' ))]"
 							}
-							blockoverride "start_value" {
-								value = "[FixedPointToFloat(Country.GetGovernmentLegitimacy)]"
+							blockoverride "default_progressbar_visible" {
+								visible = "[EqualTo_int32( LegitimacyLevel.GetDeltaSign( Country.GetGovernmentLegitimacy, ReformGovernment.GetPredictedLegitimacy ), '(int32)0' )]"
+							}
+							blockoverride "will_increase_visible" {
+								visible = "[GreaterThan_int32( LegitimacyLevel.GetDeltaSign( Country.GetGovernmentLegitimacy, ReformGovernment.GetPredictedLegitimacy ), '(int32)0' )]"
+							}
+							blockoverride "will_decrease_visible" {
+								visible = "[LessThan_int32( LegitimacyLevel.GetDeltaSign( Country.GetGovernmentLegitimacy, ReformGovernment.GetPredictedLegitimacy ), '(int32)0' )]"
+							}
+							blockoverride "default_progressbar_value" {
+								value = "[LegitimacyLevel.GetProgress( ReformGovernment.GetPredictedLegitimacy )]"
+							}
+							blockoverride "will_change_new_value" {
+								value = "[LegitimacyLevel.GetProgress( ReformGovernment.GetPredictedLegitimacy )]"
+							}
+							blockoverride "will_change_start_value" {
+								value = "[LegitimacyLevel.GetProgress( Country.GetGovernmentLegitimacy )]"
+							}
+							blockoverride "level_predicted" {
+								using = look_at_me_animation
 							}
 						}
 					}

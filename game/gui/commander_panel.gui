@@ -77,6 +77,7 @@ types commander_panel_types
 			### CHARACTER PANEL
 			flowcontainer = {
 				visible = "[InformationPanel.IsTabSelected('overview')]"
+				using = default_content_fade
 				direction = vertical
 				using = default_list_position
 				minimumsize = { @panel_width -1 }
@@ -94,7 +95,8 @@ types commander_panel_types
 						widget = {
 							size = { 100% 100% }
 							visible = "[And( Character.IsRuler, Character.IsGeneral )]"
-							
+							using = default_fade_in_out
+
 							background = {
 								texture = "gfx/interface/character_panel/backgrounds/char_role_rulergeneral.dds"
 							}
@@ -115,7 +117,8 @@ types commander_panel_types
 						# Politician
 						widget = {
 							size = { 100% 100% }
-							visible = "[Character.IsPolitician]"
+							visible = "[And(Character.IsPolitician, Not(Character.IsRuler))]"
+							using = default_fade_in_out
 							
 							background = {
 								texture = "gfx/interface/character_panel/backgrounds/char_role_politician.dds"
@@ -146,8 +149,9 @@ types commander_panel_types
 						# Ruler
 						widget = {
 							size = { 100% 100% }
-							visible = "[Character.IsRuler]"
-							
+							visible = "[And(Character.IsRuler, Not(Character.IsGeneral))]"
+							using = default_fade_in_out
+
 							background = {
 								texture = "gfx/interface/character_panel/backgrounds/char_role_ruler.dds"
 							}
@@ -228,17 +232,13 @@ types commander_panel_types
 							}
 
 							# VFX birds
-							cameracontrolwidget = {
-								alwaystransparent = yes
-								ignore_in_debug_draw = yes
-								gfxtype = jomini_entitygfx
-								
-								size = { 100% 100% }
-								position = { 0 0 }
-
-								camera_position = { 0 0 15 }
-
-								entity_instance = vfx_entity_ui_bg_char_admiral_seagulls
+							vfx = {
+								blockoverride "camera_position" {
+									camera_position = { 0 0 15 }
+								}
+								blockoverride "entity_instance" {
+									entity_instance = vfx_entity_ui_bg_char_admiral_seagulls
+								}			
 							}
 						}	
 					}
@@ -786,6 +786,7 @@ types commander_panel_types
 				### SHIPPING LANE
 				default_header = {
 					visible = "[Character.HasShippingLane]"
+					using = default_fade_in_out
 
 					blockoverride "text" {
 						text = "SHIPPING_LANE_CHARACTER_HEADER"
@@ -803,6 +804,7 @@ types commander_panel_types
 				### COMBAT UNITS
 				default_header = {
 					visible = "[Character.IsCommander]"
+					using = default_fade_in_out
 
 					blockoverride "text" {
 						datacontext = "[Character]"
@@ -818,6 +820,7 @@ types commander_panel_types
 					size = { 95% 38 }
 				
 					visible = "[And(Character.IsCommander, GreaterThan_int32(Character.GetNumCombatUnits, '(int32)0'))]"
+					using = default_fade_in_out
 					enabled = "[And( Not( Character.IsOffer ), Not(IsDataModelEmpty( Character.GetCombatUnits )))]"
 					
 					blockoverride "onclick" {
@@ -989,6 +992,7 @@ types commander_panel_types
 
 			flowcontainer = {
 				visible = "[InformationPanel.IsTabSelected('modifiers')]"
+				using = default_content_fade
 				direction = vertical
 				using = default_list_position
 				minimumsize = { @panel_width -1 }
@@ -1014,6 +1018,7 @@ types commander_panel_types
 				minimumsize = { 400 120 }
 				direction = vertical
 				visible = "[And(Character.IsCommander, Character.GetCountry.IsPlayer)]"
+				using = default_fade_in_out
 
 				# Mobilize this general button
 				flowcontainer = {
@@ -1101,6 +1106,10 @@ types commander_panel_types
 									blockoverride "icon_size" {
 										size = { 75% 75% }
 									}
+
+									blockoverride "button_selected" {
+										visible = "[Character.HasOrder( CommanderOrderType.Self )]"
+									}
 								}
 
 								button_icon_round_big_map_interaction = {
@@ -1116,6 +1125,10 @@ types commander_panel_types
 									onclick = "[Character.SelectOrder( CommanderOrderType.Self )]"
 									enabled = "[Character.CanSelectOrder( CommanderOrderType.Self )]"
 									clicksound = "[CommanderOrderType.GetClickSound]"
+
+									blockoverride "button_selected" {
+										visible = "[Character.HasOrder( CommanderOrderType.Self )]"
+									}
 								}
 
 								container = {

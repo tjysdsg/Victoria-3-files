@@ -12,10 +12,21 @@ widget = {
 		### network interaction
 		button = {
 			alwaystransparent = yes
-			size = { 200% 200%% }
+			size = { 250% 250%% }
 			alpha = 0.8
-			texture ="gfx/interface/map_markers/what_round_highlight.dds"
-			visible = "[MapInteractions.IsActiveMapInteraction( 'commander_order_sea_node' )]"
+			texture ="gfx/interface/map_markers/round_highlight_orange.dds"
+			visible = "[And(And(MapInteractions.IsActiveMapInteraction( 'commander_order_sea_node' ),SeaNodeMarker.IsValidInteractionNode),SeaNodeMarker.IsActiveInteractionNode)]"
+			onclick = "[SeaNodeMarker.SelectInteractionClick]"
+			parentanchor = center 
+			position = { 0 0 }
+		}
+		### network interaction
+		button = {
+			alwaystransparent = yes
+			size = { 250% 250%% }
+			alpha = 0.8
+			texture ="gfx/interface/map_markers/round_highlight_green.dds"
+			visible = "[And(And(MapInteractions.IsActiveMapInteraction( 'commander_order_sea_node' ),SeaNodeMarker.IsValidInteractionNode),Not(SeaNodeMarker.IsActiveInteractionNode))]"
 			onclick = "[SeaNodeMarker.SelectInteractionClick]"
 			parentanchor = center 
 			position = { 0 0 }
@@ -1028,7 +1039,7 @@ container = {
 			onmousehierarchyenter = "[AccessHighlightManager.HighlightState(Building.GetState)]"
 			onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
 			using = default_button
-			visible = "[Building.GetState.IsBeingHighlighted]"
+			visible = "[And(Building.GetState.IsBeingHighlighted, IsZoomLevelNear)]"
 
 			flowcontainer = {
 				margin = { 6 2 }
@@ -1336,7 +1347,7 @@ container = {
 		tiny_flag = {
 			datacontext = "[CityMarker.GetCountry]"
 			parentanchor = vcenter
-			size = { 25.5 17 }
+			size = { 24 16 }
 
 			blockoverride "visibility" {
 				visible = no
@@ -1355,7 +1366,7 @@ container = {
 	button = {
 		datacontext = "[ColonyMarker.GetState]"
 		tooltip = "STATE_COLONY_TOOLTIP"
-		size = { 90 26 }
+		size = { 97 26 }
 		onclick = "[InformationPanelBar.OpenStatePanel(ColonyMarker.AccessState)]"
 		using = default_button
 
@@ -1369,7 +1380,7 @@ container = {
 		}
 
 		default_progressbar_horizontal = {
-			size = { 55 15 }
+			size = { 62 15 }
 			position = { 31 0 }
 			parentanchor = vcenter
 			blockoverride "values" {
@@ -1380,7 +1391,7 @@ container = {
 		}
 
 		textbox = {
-			visible = "[GreaterThan_int32( State.GetColonyProgressAsDays, '(int32)-1')]"
+			visible = "[And( Not(State.IsColonyProgressBlockedByInactiveInterest), GreaterThan_int32( State.GetColonyProgressAsDays, '(int32)-1'))]"
 			text = "COLONY_MAP_MARKER_DAYS_LEFT"
 			autoresize = yes
 			position = { -7 0 }
@@ -1391,7 +1402,7 @@ container = {
 		}
 
 		textbox = {
-			visible = "[Not(GreaterThan_int32( State.GetColonyProgressAsDays, '(int32)-1'))]"
+			visible = "[Or(State.IsColonyProgressBlockedByInactiveInterest, Not(GreaterThan_int32( State.GetColonyProgressAsDays, '(int32)-1')))]"
 			text = "NO_PROGRESS"
 			autoresize = yes
 			position = { -7 0 }
@@ -1828,6 +1839,8 @@ button = {
 types front_marker {
 	type front_marker_content = container {
 
+		resizeparent = yes
+
 		flowcontainer = {
 			direction = vertical
 			parentanchor = bottom|hcenter
@@ -2078,7 +2091,7 @@ types front_marker {
 
 			### FRONT SUMMARY (ZOOMED IN OR IS HIGHLIGHTED)
 			container =  {
-				visible = "[Or(Or(IsZoomLevelNear, IsZoomLevelMid), FrontMarker.GetFront.IsBeingHighlighted)]"
+				visible = "[Or(IsZoomLevelNear, FrontMarker.GetFront.IsBeingHighlighted)]"
 				minimumsize = { 280 -1 }
 				parentanchor = hcenter
 				
@@ -2333,10 +2346,10 @@ types front_marker {
 			}
 		}
 		
-		### FRONT INDICATOR
+		### FRONT INDICATOR - LARGE
 		flowcontainer = {
 			parentanchor = bottom|hcenter
-			visible = "[Or( Not(IsZoomLevelFar), Not(StringIsEmpty( FrontMarker.GetFront.GetPlayerAdvantageDesc )))]"
+			visible = "[Or(IsZoomLevelNear, FrontMarker.GetFront.IsBeingHighlighted)]"
 			
 			background = {
 				visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
@@ -2378,6 +2391,98 @@ types front_marker {
 				}
 			}
 		}
+
+		### FRONT INDICATOR - MEDIUM
+		flowcontainer = {
+			parentanchor = bottom|hcenter
+			visible = "[And(IsZoomLevelMid, Not(FrontMarker.GetFront.IsBeingHighlighted))]"
+			
+			background = {
+				visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
+				texture = "gfx/interface/map_markers/round_highlight.dds"
+			}
+			
+			background = {
+				visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
+				texture = "gfx/interface/map_markers/front_indicator_behind.dds"
+				margin = { 20 20 }
+			}
+			
+			icon = {
+				texture = "gfx/interface/map_markers/front_indicator.dds"
+				size = { 45 45 }
+				tooltip = "[FrontMarker.GetFront.GetPlayerAdvantageDesc]"
+				visible = "[And(Not( IsDataModelEmpty( FrontMarker.AccessFront.AccessFirstCountries ) ), Not( IsDataModelEmpty( FrontMarker.AccessFront.AccessSecondCountries ) ) ) ]"
+				framesize = { 188 188 }
+				frame = "[FrontMarker.GetFront.GetAdvantageFrame]"
+				using = tooltip_below
+				
+				textbox = {
+					visible = "[Not(StringIsEmpty( FrontMarker.GetFront.GetPlayerAdvantageDesc ))]"
+					using = tooltip_above
+					text = "#bold [FrontMarker.GetFront.GetPlayerAdvantageRaw|+]#!"
+					autoresize = yes
+					align = center|nobaseline
+					parentanchor = center
+				}
+				textbox = {
+					visible = "[StringIsEmpty( FrontMarker.GetFront.GetPlayerAdvantageDesc )]"
+					text = "?"
+					using = tooltip_above
+					autoresize = yes
+					align = center|nobaseline
+					parentanchor = center
+					margin_left = 10
+					margin_right = 10
+				}
+			}
+		}
+
+		### FRONT INDICATOR - SMALL
+		flowcontainer = {
+			parentanchor = bottom|hcenter
+			visible = "[And(IsZoomLevelFar, Not(FrontMarker.GetFront.IsBeingHighlighted))]"
+			
+			background = {
+				visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
+				texture = "gfx/interface/map_markers/round_highlight.dds"
+			}
+			
+			background = {
+				visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
+				texture = "gfx/interface/map_markers/front_indicator_behind.dds"
+				margin = { 20 20 }
+			}
+			
+			icon = {
+				texture = "gfx/interface/map_markers/front_indicator.dds"
+				size = { 40 40 }
+				tooltip = "[FrontMarker.GetFront.GetPlayerAdvantageDesc]"
+				visible = "[And(Not( IsDataModelEmpty( FrontMarker.AccessFront.AccessFirstCountries ) ), Not( IsDataModelEmpty( FrontMarker.AccessFront.AccessSecondCountries ) ) ) ]"
+				framesize = { 188 188 }
+				frame = "[FrontMarker.GetFront.GetAdvantageFrame]"
+				using = tooltip_below
+				
+				textbox = {
+					visible = "[Not(StringIsEmpty( FrontMarker.GetFront.GetPlayerAdvantageDesc ))]"
+					using = tooltip_above
+					text = "#bold [FrontMarker.GetFront.GetPlayerAdvantageRaw|+]#!"
+					autoresize = yes
+					align = center|nobaseline
+					parentanchor = center
+				}
+				textbox = {
+					visible = "[StringIsEmpty( FrontMarker.GetFront.GetPlayerAdvantageDesc )]"
+					text = "?"
+					using = tooltip_above
+					autoresize = yes
+					align = center|nobaseline
+					parentanchor = center
+					margin_left = 10
+					margin_right = 10
+				}
+			}
+		}
 	}
 }
 
@@ -2387,14 +2492,14 @@ container = {
 	layer = layer_map_markers
 	parentanchor = bottom|hcenter
 	using = clickthrough_blocker
+	allow_outside = yes
 	onmousehierarchyenter = "[AccessHighlightManager.HighlightFront(FrontMarker.GetFront)]"
 	onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-	allow_outside = yes
 	
 	button = {
 		visible = "[Not( MapInteractions.IsActiveMapInteraction( 'commander_order_front' ))]"
 		onclick = "[InformationPanelBar.OpenFrontPanel(FrontMarker.AccessFront)]"
-		size = { 282 70 }
+		size = { 70 70 }
 		allow_outside = yes
 		front_marker_content = {
 			parentanchor = bottom|hcenter
@@ -2404,7 +2509,7 @@ container = {
 	button = {
 		visible = "[MapInteractions.IsActiveMapInteraction( 'commander_order_front' )]"
 		onclick = "[FrontMarker.OnInteractionClick]"
-		size = { 282 70 }
+		size = { 70 70 }
 		allow_outside = yes
 		front_marker_content = {
 			parentanchor = bottom|hcenter

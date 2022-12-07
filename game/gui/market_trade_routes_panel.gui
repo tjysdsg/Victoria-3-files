@@ -420,7 +420,11 @@ types market_panel
 					using = select_button_sound
 					parentanchor = right|vcenter
 					tooltip = "TRADE_ROUTE_TOOLTIP"
-					onclick = "[InformationPanelBar.OpenMarketPanel( TradeRoute.GetOtherMarket(Market.Self) )]"
+
+					block "onclick" {
+						onclick = "[InformationPanelBar.OpenMarketPanel( TradeRoute.GetOtherMarket(Market.Self) )]"
+					}
+
 					onrightclick = "[RightClickMenuManager.ShowForTradeRoute(TradeRoute.AccessSelf)]"								
 
 					onmousehierarchyenter = "[AccessHighlightManager.HighlightTradeRouteSupplyNetwork( TradeRoute.Self )]"
@@ -432,7 +436,7 @@ types market_panel
 						text = "GOODS_NUMBER_WITH_TRADE_LEVEL"
 						align = nobaseline
 						parentanchor = hcenter|vcenter
-						margin_left = 20
+						margin_left = 40
 					}
 
 					textbox = {
@@ -441,27 +445,37 @@ types market_panel
 						text = "INACTIVE"
 						align = nobaseline
 						parentanchor = hcenter|vcenter
-						margin_left = 20
+						margin_left = 40
 					}
 				}
 
 				icon = {
 					size = { 50 50 }
 					parentanchor = left|vcenter
-					visible = "[TradeRoute.IsConsideredImportForMarket( Market.Self )]"
+
+					block "import_icon_visibility" {
+						visible = "[TradeRoute.IsConsideredImportForMarket( Market.Self )]"
+					}
+
 					texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_import_lens_option.dds"
 				}
 
 				icon = {
 					size = { 50 50 }
 					parentanchor = left|vcenter
-					visible = "[Not(TradeRoute.IsConsideredImportForMarket( Market.Self ))]"
+
+					block "export_icon_visibility" {
+						visible = "[Not(TradeRoute.IsConsideredImportForMarket( Market.Self ))]"
+					}
+
 					texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_export_lens_option.dds"
 				}
 			}
 
-			small_flag = {
-				datacontext = "[TradeRoute.GetOtherMarket(Market.Self).GetOwner]"
+			block "second_flag_or_icon" {
+				small_flag = {
+					datacontext = "[TradeRoute.GetOtherMarket(Market.Self).GetOwner]"
+				}
 			}
 
 			textbox = {

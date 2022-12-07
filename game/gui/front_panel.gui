@@ -95,6 +95,7 @@ types front_panel_types
 		{
 			flowcontainer = {
 				visible = "[InformationPanel.IsTabSelected('overview')]"
+				using = default_content_fade
 				direction = vertical
 				using = default_list_position
 
@@ -167,7 +168,7 @@ types front_panel_types
 								size = { 60 60 }
 								tooltip = "[Front.GetPlayerAdvantageDesc]"
 
-								visible = "[And(Not( IsDataModelEmpty( Front.AccessLeftCountries ) ), Not( IsDataModelEmpty( Front.AccessRightCountries ) ) ) ]"
+								visible = "[And(Not(StringIsEmpty( Front.GetPlayerAdvantageDesc )), And(Not( IsDataModelEmpty( Front.AccessLeftCountries ) ), Not( IsDataModelEmpty( Front.AccessRightCountries ) ) ) ) ]"
 								framesize = { 188 188 }
 								frame = "[Front.GetAdvantageFrame]"
 								using = tooltip_below
@@ -765,6 +766,7 @@ types front_panel_types
 			### HISTORY LOG
 			flowcontainer = {
 				visible = "[InformationPanel.IsTabSelected('battles')]"
+				using = default_content_fade
 				direction = vertical
 				using = default_list_position
 
@@ -922,7 +924,7 @@ types front_panel_types
 
 			default_progressbar_horizontal = {
 				parentanchor = hcenter
-				visible = "[And(Front.IsParticipantInFirst( GetPlayer.Self ), GreaterThan_CFixedPoint( Front.GetFirstAdvanceProgress, '(CFixedPoint)0'))]"
+				visible = "[And(Front.IsParticipantOrAllyInFirst( GetPlayer.Self ), GreaterThan_CFixedPoint( Front.GetFirstAdvanceProgress, '(CFixedPoint)0'))]"
 				tooltip = "ADVANCEMENT_PROGRESS_BAR_FIRST_TOOLTIP"
 				using = tooltip_below
 				size = { 400 20 }
@@ -943,7 +945,7 @@ types front_panel_types
 
 			default_progressbar_horizontal = {
 				parentanchor = hcenter
-				visible = "[And(Front.IsParticipantInSecond( GetPlayer.Self ), GreaterThan_CFixedPoint( Front.GetSecondAdvanceProgress, '(CFixedPoint)0'))]"
+				visible = "[And(Front.IsParticipantOrAllyInSecond( GetPlayer.Self ), GreaterThan_CFixedPoint( Front.GetSecondAdvanceProgress, '(CFixedPoint)0'))]"
 				tooltip = "ADVANCEMENT_PROGRESS_BAR_SECOND_TOOLTIP"
 				using = tooltip_below
 				size = { 400 20 }
@@ -1245,6 +1247,10 @@ types front_panel_types
 									commander_order_button = {
 										blockoverride "button_size" {
 											size = { 30 30 }
+										}
+
+										blockoverride "button_selected" {
+											visible = "[Character.HasOrder( CommanderOrderType.Self )]"
 										}
 									}
 								}
