@@ -5,8 +5,14 @@
 
 	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
 
+	immediate = {
+		scope:target.state = {
+			unset_available_for_autonomous_investment = scope:target.type
+		}
+	}
+
 	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
+		scope:journal_entry = { is_goal_complete = yes }	
 	}
 	
 	current_value = {
@@ -39,10 +45,22 @@
 				journal_entry = je:je_tutorial_expand_basic_building
 			}
 		}
+		scope:target.state = {
+			set_available_for_autonomous_investment = scope:target.type
+		}
 	}
 	
 	on_invalid = {
 		remove_active_objective_subgoal = sg_expand_basic_building
+		scope:target.state = {
+			set_available_for_autonomous_investment = scope:target.type
+		}
+	}
+
+	on_fail = {
+		scope:target.state = {
+			set_available_for_autonomous_investment = scope:target.type
+		}
 	}
 	
 	weight = 1000
@@ -53,6 +71,8 @@ je_tutorial_establish_trade_route = {
 	how_tutorial = lesson_establish_trade_route_how
 	why_tutorial = lesson_establish_trade_route_why	
 	should_be_pinned_by_default = yes
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
 	
 	status_desc = {
 		first_valid = {
@@ -244,6 +264,12 @@ je_tutorial_expand_productive_building = {
 
 	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
 
+	immediate = {
+		scope:target.state = {
+			unset_available_for_autonomous_investment = scope:target.type
+		}
+	}
+
 	complete = {
 		scope:journal_entry = { is_goal_complete = yes }
 	}
@@ -271,8 +297,23 @@ je_tutorial_expand_productive_building = {
 		} 			
 	}
 	
+	on_complete = {
+		scope:target.state = {
+			set_available_for_autonomous_investment = scope:target.type
+		}
+	}
+
 	on_invalid = {
 		remove_active_objective_subgoal = sg_expand_productive_building
+		scope:target.state = {
+			set_available_for_autonomous_investment = scope:target.type
+		}
+	}
+
+	on_fail = {
+		scope:target.state = {
+			set_available_for_autonomous_investment = scope:target.type
+		}
 	}
 	
 	weight = 1001
@@ -624,7 +665,7 @@ je_tutorial_expend_investment_pool = {
 	complete = {
 		investment_pool = 0
 	}
-	
+
 	weight = 1015
 	inheritable = yes
 }
@@ -835,6 +876,14 @@ je_tutorial_increase_relations = {
 	 	}
 	}
 
+	invalid = {
+		NOT = { exists = scope:target }
+	}
+
+	on_invalid = {
+		remove_active_objective_subgoal = sg_increase_relations
+	}
+
 	on_complete = {
 		owner = {
 			start_tutorial_lesson = { 
@@ -880,6 +929,20 @@ je_tutorial_improve_rank = {
 			}
 			set_variable = tut_insignificant_power
 		}
+
+		else_if= {
+			limit = {
+				country_rank = rank_value:unrecognized_major_power
+			}
+			set_variable = tut_unrecognized_major_power
+		}
+		
+		else_if= {
+			limit = {
+				country_rank = rank_value:unrecognized_regional_power
+			}
+			set_variable = tut_unrecognized_regional_power
+		}
 	
 		else_if= {
 			limit = {
@@ -920,9 +983,23 @@ je_tutorial_improve_rank = {
 
 		trigger_else_if = {
 			limit = {
+				has_variable = tut_unrecognized_major_power
+			}
+			country_rank > rank_value:unrecognized_major_power
+		}
+		
+		trigger_else_if = {
+			limit = {
+				has_variable = tut_unrecognized_regional_power
+			}
+			country_rank >= rank_value:unrecognized_major_power
+		}
+
+		trigger_else_if = {
+			limit = {
 				has_variable = tut_unrecognized_power
 			}
-			country_rank >= rank_value:insignificant_power
+			country_rank >= rank_value:unrecognized_regional_power
 		}
 	}
 	
@@ -1326,7 +1403,7 @@ je_tutorial_incorporate_state = {
 			is_being_incorporated = yes
 		}
 	}
-	
+
 	on_complete = {
 		owner = {
 			start_tutorial_lesson = { 
@@ -1350,12 +1427,12 @@ je_tutorial_declare_an_interest = {
 		scope:journal_entry = { is_goal_complete = yes }
 	}
 	
-	current_value = num_active_interests
+	current_value = num_active_declared_interests
 	
 	goal_add_value = 1
 
 	is_progressing = {
-		num_interests >= scope:journal_entry.goal_value
+		num_interests > scope:journal_entry.goal_value
 	}
 
 	on_complete = {
@@ -1389,40 +1466,26 @@ je_tutorial_colonize_state = {
 		}
 	}
 
-	is_progressing = {
-		scope:journal_entry = {
+	is_progressing = { 
+		any_scope_state = {
 			has_variable = tut_colony_target
-			var:tut_colony_target = { 
-				is_under_colonization = yes 
-			}
-		}
-	}
-	
-	invalid = {
-		scope:journal_entry = {
-			has_variable = tut_colony_target
-			OR = {
-				NOT = { exists = var:tut_colony_target }
-				var:tut_colony_target.num_provinces <= 0
-			}
+			is_under_colonization = yes 
 		}
 	}
 	
 	complete = {
 		custom_tooltip = {
 			text = "je_tutorial_colonize_state_grow_a_colony"
-			scope:journal_entry = {
+			any_scope_state = {
+				is_split_state = no
 				has_variable = tut_colony_target
-				var:tut_colony_target = {
-					is_split_state = no
-				}
 			}
 		}
 	}
 	
 	weight = 1068
 	inheritable = yes
-	should_update_on_player_command = yes
+	should_update_on_player_command = no
 	should_be_pinned_by_default = yes
 }
 
@@ -1441,6 +1504,7 @@ je_tutorial_make_peace = {
 
 je_tutorial_reach_end_date = {
 	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+	should_be_pinned_by_default = yes
 	active_update_frequency = 1
 	
 	complete = {
@@ -1450,7 +1514,6 @@ je_tutorial_reach_end_date = {
 	weight = 1070
 	inheritable = yes
 	should_update_on_player_command = yes
-	should_be_pinned_by_default = no
 }
 
 je_tutorial_research_technology = {

@@ -27,6 +27,22 @@ law_autocracy = {
 		law_landed_voting
 		law_elder_council
 	}
+
+	pop_support = {
+		value = 0
+		add = {
+			desc = "POP_ARISTOCRATS"			
+			if = {
+				limit = {
+					owner = {
+						NOT = { has_law = law_type:law_oligarchy }
+					}
+					is_pop_type = aristocrats
+				}
+				value = 0.25
+			}
+		}
+	}
 }
 
 law_oligarchy = {
@@ -55,6 +71,34 @@ law_oligarchy = {
 		law_autocracy 
 		law_landed_voting
 		law_elder_council
+	}
+
+	pop_support = {
+		value = 0
+		add = {
+			desc = "POP_ARISTOCRATS"			
+			if = {
+				limit = {
+					owner = {
+						NOT = { has_law = law_type:law_autocracy }
+					}
+					is_pop_type = aristocrats
+				}
+				value = 0.25
+			}
+		}
+		add = {
+			desc = "POP_ARISTOCRATS"			
+			if = {
+				limit = {
+					owner = {
+						NOT = { has_law = law_type:law_wealth_voting }
+					}
+					is_pop_type = capitalists
+				}
+				value = 0.25
+			}
+		}
 	}
 }
 
@@ -94,6 +138,10 @@ law_elder_council = {
 		law_oligarchy
 		law_landed_voting
 	}
+
+	pop_support = {
+		value = 0
+	}
 }
 
 law_landed_voting = {
@@ -109,6 +157,7 @@ law_landed_voting = {
 
 	disallowing_laws = {
 		law_chiefdom
+		law_command_economy
 	}
 
 	modifier = {
@@ -160,7 +209,7 @@ law_landed_voting = {
 					divide = 2
 				}
 			}
-		}			
+		}
 	}
 }
 
@@ -177,6 +226,7 @@ law_wealth_voting = {
 
 	disallowing_laws = {
 		law_chiefdom
+		law_command_economy
 	}
 	
 	modifier = {
@@ -221,7 +271,7 @@ law_wealth_voting = {
 					divide = 2
 				}
 			}
-		}			
+		}
 	}
 }
 
@@ -238,6 +288,7 @@ law_census_voting = {
 
 	disallowing_laws = {
 		law_chiefdom
+		law_command_economy
 	}
 
 	modifier = {
@@ -281,7 +332,7 @@ law_census_voting = {
 					divide = 2
 				}
 			}
-		}			
+		}
 	}
 }
 
@@ -298,6 +349,7 @@ law_universal_suffrage = {
 
 	disallowing_laws = {
 		law_chiefdom
+		law_command_economy
 	}
 	
 	modifier = {
@@ -325,34 +377,32 @@ law_universal_suffrage = {
 			
 			if = {
 				limit = { 
-					wealth < 15
 					owner = { 
 						NOT = {
 							has_law = law_type:law_anarchy
 						}	
 					}
 				}
-				add = {
-					value = literacy_rate
-					divide = 2
-				}
-			}
-			
-			if = {
-				limit = { 
-					wealth < 10
-					owner = { 
-						NOT = {
-							has_law = law_type:law_anarchy
-						}	
+				if = {
+					limit = {
+						wealth < 15
+					}
+					add = {
+						value = literacy_rate
+						divide = 2
 					}
 				}
-				add = {
-					value = literacy_rate
-					divide = 2
+				if = {
+					limit = {
+						wealth < 10
+					}
+					add = {
+						value = literacy_rate
+						divide = 2
+					}
 				}
 			}			
-		}			
+		}
 	}
 }
 
@@ -368,7 +418,7 @@ law_anarchy = {
 	}
 	
 	unlocking_laws = {
-		law_council_republic
+		law_cooperative_ownership
 	}
 	
 	modifier = {
@@ -404,10 +454,8 @@ law_anarchy = {
 				limit = { 
 					wealth < 10
 				}
-				add = {
-					value = literacy_rate
-				}
+				add = literacy_rate
 			}
-		}			
+		}
 	}
 }

@@ -535,6 +535,10 @@ tax.6 = {
 			strata = middle
 			pop_is_discriminated = no
 		}
+		NOT = { has_modifier = temporary_tax_cut_land_based }
+		NOT = { has_modifier = temporary_tax_cut_per_capita }
+		NOT = { has_modifier = temporary_tax_cut_graduated }
+		NOT = { has_modifier = temporary_tax_cut_proportional }
 	}
 
 	immediate = {
@@ -572,9 +576,41 @@ tax.6 = {
 		add_enactment_modifier = {
 			name = temporary_embarrassment
 		}
-		add_modifier = {
-			name = temporary_tax_cut
-			months = short_modifier_time
+		if = {
+			limit = {
+				has_law = law_type:law_land_based_taxation
+			}
+			add_modifier = {
+				name = temporary_tax_cut_land_based
+				months = short_modifier_time
+			}
+		}
+		else_if = {
+			limit = {
+				has_law = law_type:law_per_capita_based_taxation
+			}
+			add_modifier = {
+				name = temporary_tax_cut_per_capita
+				months = short_modifier_time
+			}
+		}
+		else_if = {
+			limit = {
+				has_law = law_type:law_graduated_taxation
+			}
+			add_modifier = {
+				name = temporary_tax_cut_graduated
+				months = short_modifier_time
+			}
+		}
+		else_if = {
+			limit = {
+				has_law = law_type:law_proportional_taxation
+			}
+			add_modifier = {
+				name = temporary_tax_cut_proportional
+				months = short_modifier_time
+			}
 		}
 	}
 }

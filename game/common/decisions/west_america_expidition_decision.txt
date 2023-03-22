@@ -27,10 +27,19 @@
 	}
 
 	when_taken = {
-		trigger_event = { id = expedition_events.200 popup = yes }
-		set_variable = {
-			name = on_expedition
-			value = yes
+		if = {
+			limit = {
+				is_player = yes
+			}
+			trigger_event = { id = expedition_events.200 popup = yes }
+			set_variable = {
+				name = on_expedition
+				value = yes
+			}
+		}
+		else = {
+			set_variable = AI_EXPEDITION_WAMERICA
+			ai_expedition_simulator_start = yes
 		}
 		hidden_effect = {
 			set_variable = {
@@ -48,7 +57,13 @@
 				weekly_net_fixed_income > money_amount_multiplier_medium
 				gold_reserves > 0
 			}
-			add = 1
+			add = 10
+		}
+		modifier = { #new
+			trigger = { 
+				has_journal_entry = je_oregon
+			}
+			add = 500
 		}
 		modifier = {
 			trigger = {

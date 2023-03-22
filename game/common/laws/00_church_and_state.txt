@@ -28,6 +28,15 @@ law_state_religion = {
 	possible_political_movements = {
 		law_freedom_of_conscience
 	}
+
+	pop_support = {
+		value = 0
+		# Clergy like theocracy
+		add = {
+			desc = "POP_CLERGYMEN"
+			value = 0.5
+		}
+	}
 	
 	ai_will_do = {
 		exists = ruler
@@ -73,7 +82,20 @@ law_freedom_of_conscience = {
 	
 	pop_support = {
 		value = 0
-		
+		add = {
+			desc = "POP_ACADEMICS"
+			# Academics generally against religious perseecution
+			if = {
+				limit = {
+					owner = {
+						NOT = { has_law = law_type:law_total_separation }
+					}
+					is_pop_type = academics
+				}
+				value = 0.25
+			}
+		}
+
 		add = {
 			desc = "POP_DISCRIMINATED"
 			if = {
@@ -81,15 +103,14 @@ law_freedom_of_conscience = {
 					religion_accepted = no
 					owner = { NOT = { has_law = law_type:law_total_separation } }
 				}
-				value = 0.5				
-			}
-			if = {
-				limit = { 
-					religion_accepted = no
-					owner = { NOT = { has_law = law_type:law_total_separation } }
-					standard_of_living <= 10 
+				add = 0.5
+				
+				if = {
+					limit = { 
+						standard_of_living <= 10
+					}
+					add = 0.5
 				}
-				value = 0.5				
 			}			
 		}
 	}
@@ -126,19 +147,30 @@ law_total_separation = {
 		value = 0
 		
 		add = {
+			desc = "POP_ACADEMICS"
+			# Academics generally against religious perseecution
+			if = {
+				limit = {
+					is_pop_type = academics
+				}
+				value = 0.25
+			}
+		}
+
+		add = {
 			desc = "POP_DISCRIMINATED"
 			if = {
 				limit = { 
 					religion_accepted = no
 				}
-				value = 0.5				
-			}
-			if = {
-				limit = { 
-					religion_accepted = no
-					standard_of_living <= 10 
+				add = 0.5
+
+				if = {
+					limit = { 
+						standard_of_living <= 10
+					}
+					add = 0.5
 				}
-				value = 0.5				
 			}			
 		}
 	}

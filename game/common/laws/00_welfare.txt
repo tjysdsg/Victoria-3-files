@@ -10,6 +10,10 @@
 		law_wage_subsidies
 	}
 	
+	pop_support = {
+		value = 0
+	}
+
 	# AI will never abolish institutions entirely
 	ai_will_do = {
 		always = no
@@ -26,10 +30,6 @@ law_poor_laws = {
 	unlocking_technologies = {
 		democracy
 	}
-
-	modifier = {
-		state_welfare_payments_add = 0.4
-	}
 	
 	institution = institution_social_security
 	institution_modifier = {
@@ -45,127 +45,13 @@ law_poor_laws = {
 		
 		add = {
 			desc = "POP_POVERTY"			
-			if = {
-				limit = { 
-					standard_of_living <= 14
-					owner = { 
-						NOR = { 
-							has_law = law_type:law_old_age_pension 
-							has_law = law_type:law_wage_subsidies
-						} 
-					}
-				}
-				value = 0.1
-			}
-			if = {
-				limit = { 
-					standard_of_living <= 13
-					owner = { 
-						NOR = { 
-							has_law = law_type:law_old_age_pension 
-							has_law = law_type:law_wage_subsidies
-						} 
-					}
-				}
-				value = 0.1
-			}
-			if = {
-				limit = { 
-					standard_of_living <= 12
-					owner = { 
-						NOR = { 
-							has_law = law_type:law_old_age_pension 
-							has_law = law_type:law_wage_subsidies
-						} 
-					}
-				}
-				value = 0.1
-			}	
-			if = {
-				limit = { 
-					standard_of_living <= 11
-					owner = { 
-						NOR = { 
-							has_law = law_type:law_old_age_pension 
-							has_law = law_type:law_wage_subsidies
-						} 
-					}
-				}
-				value = 0.1
-			}				
-			if = {
-				limit = { 
-					standard_of_living <= 10
-					owner = { 
-						NOR = { 
-							has_law = law_type:law_old_age_pension 
-							has_law = law_type:law_wage_subsidies
-						} 
-					}
-				}
-				value = 0.1
-			}			
-			if = {
-				limit = { 
-					standard_of_living <= 9
-					owner = { 
-						NOR = { 
-							has_law = law_type:law_old_age_pension 
-							has_law = law_type:law_wage_subsidies
-						} 
-					}
-				}
-				value = 0.1
-			}
-			if = {
-				limit = { 
-					standard_of_living <= 8
-					owner = { 
-						NOR = { 
-							has_law = law_type:law_old_age_pension 
-							has_law = law_type:law_wage_subsidies
-						} 
-					}
-				}
-				value = 0.1
-			}
-			if = {
-				limit = { 
-					standard_of_living <= 7
-					owner = { 
-						NOR = { 
-							has_law = law_type:law_old_age_pension 
-							has_law = law_type:law_wage_subsidies
-						} 
-					}
-				}
-				value = 0.1
-			}	
-			if = {
-				limit = { 
-					standard_of_living <= 6
-					owner = { 
-						NOR = { 
-							has_law = law_type:law_old_age_pension 
-							has_law = law_type:law_wage_subsidies
-						} 
-					}
-				}
-				value = 01
-			}	
-			if = {
-				limit = { 
-					standard_of_living <= 5
-					owner = { 
-						NOR = { 
-							has_law = law_type:law_old_age_pension 
-							has_law = law_type:law_wage_subsidies
-						} 
-					}
-				}
-				value = 0.1
-			}					
-		}		
+			# SoL 14 gives 0.1 pop support, 13 -> 0.2, 12 -> 0.3, ... 5 -> 1.0
+			value = 15
+			subtract = standard_of_living
+			multiply = 0.1
+			min = 0
+			max = 1					
+		}
 	}
 }
 
@@ -181,7 +67,6 @@ law_wage_subsidies = {
 	}
 	
 	modifier = {
-		state_welfare_payments_add = 0.5
 		country_institution_social_security_max_investment_add = 2
 	}
 
@@ -198,75 +83,17 @@ law_wage_subsidies = {
 			desc = "POP_POVERTY"		
 			if = {
 				limit = { 
-					standard_of_living <= 14
 					owner = { NOT = { has_law = law_type:law_old_age_pension } }
 				}
-				value = 0.1
-			}
-			if = {
-				limit = { 
-					standard_of_living <= 13
-					owner = { NOT = { has_law = law_type:law_old_age_pension } }
-				}
-				value = 0.1
-			}
-			if = {
-				limit = { 
-					standard_of_living <= 12
-					owner = { NOT = { has_law = law_type:law_old_age_pension } }
-				}
-				value = 0.1
-			}	
-			if = {
-				limit = { 
-					standard_of_living <= 11
-					owner = { NOT = { has_law = law_type:law_old_age_pension } }
-				}
-				value = 0.1
+				
+				# SoL 14 gives 0.1 pop support, 13 -> 0.2, 12 -> 0.3, ... 5 -> 1.0
+				value = 15
+				subtract = standard_of_living
+				multiply = 0.1
+				min = 0
+				max = 1
 			}				
-			if = {
-				limit = { 
-					standard_of_living <= 10
-					owner = { NOT = { has_law = law_type:law_old_age_pension } }
-				}
-				value = 0.1
-			}			
-			if = {
-				limit = { 
-					standard_of_living <= 9
-					owner = { NOT = { has_law = law_type:law_old_age_pension } }
-				}
-				value = 0.1
-			}
-			if = {
-				limit = { 
-					standard_of_living <= 8
-					owner = { NOT = { has_law = law_type:law_old_age_pension } }
-				}
-				value = 0.1
-			}
-			if = {
-				limit = { 
-					standard_of_living <= 7
-					owner = { NOT = { has_law = law_type:law_old_age_pension } }
-				}
-				value = 0.1
-			}	
-			if = {
-				limit = { 
-					standard_of_living <= 6
-					owner = { NOT = { has_law = law_type:law_old_age_pension } }
-				}
-				value = 0.1
-			}	
-			if = {
-				limit = { 
-					standard_of_living <= 5
-					owner = { NOT = { has_law = law_type:law_old_age_pension } }
-				}
-				value = 0.1
-			}				
-		}		
+		}
 	}
 }
 
@@ -282,7 +109,6 @@ law_old_age_pension = {
 	}	
 	
 	modifier = {
-		state_welfare_payments_add = 0.5
 		country_institution_social_security_max_investment_add = 2
 	}
 
@@ -307,66 +133,12 @@ law_old_age_pension = {
 		
 		add = {
 			desc = "POP_POVERTY"			
-			if = {
-				limit = { 
-					standard_of_living <= 14
-				}
-				value = 0.1
-			}		
-			if = {
-				limit = { 
-					standard_of_living <= 13
-				}
-				value = 0.1
-			}
-			if = {
-				limit = { 
-					standard_of_living <= 12
-				}
-				value = 0.1
-			}
-			if = {
-				limit = { 
-					standard_of_living <= 11
-				}
-				value = 0.1
-			}			
-			if = {
-				limit = { 
-					standard_of_living <= 10
-				}
-				value = 0.1
-			}			
-			if = {
-				limit = { 
-					standard_of_living <= 9
-				}
-				value = 0.1
-			}
-			if = {
-				limit = { 
-					standard_of_living <= 8
-				}
-				value = 0.1
-			}
-			if = {
-				limit = { 
-					standard_of_living <= 7
-				}
-				value = 0.1
-			}	
-			if = {
-				limit = { 
-					standard_of_living <= 6
-				}
-				value = 0.1
-			}	
-			if = {
-				limit = { 
-					standard_of_living <= 5
-				}
-				value = 0.1
-			}				
-		}		
+			# SoL 14 gives 0.1 pop support, 13 -> 0.2, 12 -> 0.3, ... 5 -> 1.0
+			value = 15
+			subtract = standard_of_living
+			multiply = 0.1
+			min = 0
+			max = 1
+		}
 	}
 }

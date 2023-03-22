@@ -12,7 +12,7 @@
 types state_panel_types {
 	### WORKFORCE
 	type state_panel_buildings_fixed_bottom = container {
-		tooltip = "STATE_AVAILABLE_LABOR"
+		tooltip = "STATE_AVAILABLE_LABOR_TOOLTIP"
 		minimumsize = { @panel_width -1 }
 		
 		background = {
@@ -36,7 +36,7 @@ types state_panel_types {
 				}
 
 				textbox = {
-					text = "#variable [State.GetNumUnemployedWorkingAdults|D]#!"
+					raw_text = "#variable [State.GetNumUnemployedWorkingAdults|D]#!"
 					autoresize = yes
 					align = nobaseline
 				}
@@ -47,7 +47,7 @@ types state_panel_types {
 				spacing = 7
 
 				textbox = {
-					text = "[GetPopType('peasants').GetName]:"
+					raw_text = "[GetPopType('peasants').GetName]:"
 					autoresize = yes
 					align = nobaseline
 					elide = right
@@ -68,7 +68,7 @@ types state_panel_types {
 			margin_right = 10
 
 			textbox = {
-				text = "[concept_pop_qualifications]: "
+				raw_text = "[concept_pop_qualifications]: "
 				autoresize = yes
 				align = nobaseline
 				elide = right
@@ -77,7 +77,7 @@ types state_panel_types {
 			
 			textbox = {
 				visible = "[Not(State.HasInsufficientQualificationsForAvailablePositions)]"
-				text = "@green_checkmark!"
+				raw_text = "@green_checkmark!"
 				autoresize = yes
 				align = nobaseline
 				maximumsize = { 130 -1 }
@@ -86,7 +86,7 @@ types state_panel_types {
 			
 			textbox = {
 				visible = "[State.HasInsufficientQualificationsForAvailablePositions]"
-				text = "@red_cross!"
+				raw_text = "@red_cross!"
 				autoresize = yes
 				align = nobaseline
 				maximumsize = { 130 -1 }
@@ -188,7 +188,7 @@ types state_panel_types {
 						enabled = "[Not(IsDataModelEmpty(StatesPanel.AccessState.AccessPotentialUrbanBuildings))]"
 						size = { 135 170 }
 						tooltip = "BUILD_URBAN_BUILDING"
-						onclick = "[StatesPanel.ToggleBuildUrbanBuildingsMenu(PdxGuiWidget.Self)]"
+						onclick = "[StatesPanel.ToggleBuildUrbanBuildingsMenu(PdxGuiWidget.AccessSelf)]"
 
 						
 						blockoverride "icon_size" {
@@ -198,7 +198,7 @@ types state_panel_types {
 
 					textbox = {
 						using = fontsize_mega
-						text = "#BOLD [StatesPanel.AccessState.GetNumConstructableUrbanBuildings|+]#!"
+						raw_text = "#BOLD [StatesPanel.AccessState.GetNumConstructableUrbanBuildings|+]#!"
 						parentanchor = right
 						align = hcenter|nobaseline
 						autoresize = yes
@@ -235,14 +235,14 @@ types state_panel_types {
 				enabled = "[GreaterThan_int32( StatesPanel.AccessState.GetNumConstructableUrbanBuildings,'(int32)0')]"
 				size = { @panel_width 45 }
 				tooltip = "BUILD_URBAN_BUILDING"
-				onclick = "[StatesPanel.ToggleBuildUrbanBuildingsMenu(PdxGuiWidget.Self)]"
+				onclick = "[StatesPanel.ToggleBuildUrbanBuildingsMenu(PdxGuiWidget.AccessSelf)]"
 				blockoverride "icon_size" {
 					size = { 45 100% }
 				}
 
 				textbox = {
 					using = fontsize_large
-					text = "#BOLD [StatesPanel.AccessState.GetNumConstructableUrbanBuildings|+]#!"
+					raw_text = "#BOLD [StatesPanel.AccessState.GetNumConstructableUrbanBuildings|+]#!"
 					parentanchor = right
 					align = hcenter|nobaseline
 					autoresize = yes
@@ -558,7 +558,7 @@ types state_buildings
 						textbox = {
 							layoutpolicy_horizontal = expanding
 							alpha = "[TransparentIfFalse(Building.IsActive)]"
-							text = "#v @money![Building.GetAverageAnnualEarningsPerEmployeeFormatted|1+]#!"
+							raw_text = "#v @money![Building.GetAverageAnnualEarningsPerEmployeeFormatted|1+]#!"
 							tooltip = "TOOLTIP_BUILDING_PRODUCTIVITY"
 							tooltipwidget = {
 								GraphTooltip_Productivity = {}
@@ -594,7 +594,7 @@ types state_buildings
 						
 						textbox = {
 							datacontext = "[Building]"
-							text = "#N @money!#bold -[Building.GetSubsidies|D]#!"
+							raw_text = "#N @money!#bold -[Building.GetSubsidies|D]#!"
 							tooltip = "[Building.GetSubsidiesDesc]"
 							autoresize = yes
 							position = { 0 0 }

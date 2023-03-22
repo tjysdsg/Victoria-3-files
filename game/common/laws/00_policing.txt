@@ -11,6 +11,10 @@
 		law_militarized_police
 	}	
 	
+	pop_support = {
+		value = 0
+	}
+
 	# AI shouldn't try to abolish institutions
 	ai_will_do = {
 		always = no
@@ -37,6 +41,19 @@ law_local_police = {
 	possible_political_movements = {
 		law_dedicated_police
 		law_militarized_police
+	}
+
+	pop_support = {
+		value = 0
+		add = {
+			desc = "POP_ARISTOCRATS"
+			if = {
+				limit = { 
+					is_pop_type = aristocrats
+				}
+				value = 0.25
+			}
+		}
 	}
 	
 	# Don't return to local police if we have something more advanced
@@ -71,6 +88,38 @@ law_dedicated_police = {
 	possible_political_movements = {
 		law_militarized_police
 	}
+
+	pop_support = {
+		value = 0
+		add = {
+			desc = "POP_SOLDIERS"
+			if = {
+				limit = {
+					NOT = {
+						owner = {
+							has_law = law_type:law_militarized_police
+						}
+					}
+					is_pop_type = soldiers
+				}
+				value = 0.33
+			}
+		}
+		add = {
+			desc = "POP_OFFICERS"
+			if = {
+				limit = {
+					NOT = {
+						owner = {
+							has_law = law_type:law_militarized_police
+						}
+					}
+					is_pop_type = officers
+				}
+				value = 0.33
+			}
+		}
+	}
 }
 
 law_militarized_police = {
@@ -98,5 +147,27 @@ law_militarized_police = {
 	
 	possible_political_movements = {
 		law_dedicated_police
+	}
+
+	pop_support = {
+		value = 0
+		add = {
+			desc = "POP_SOLDIERS"
+			if = {
+				limit = {
+					is_pop_type = soldiers
+				}
+				value = 0.25
+			}
+		}
+		add = {
+			desc = "POP_OFFICERS"
+			if = {
+				limit = {
+					is_pop_type = officers
+				}
+				value = 0.25
+			}
+		}
 	}
 }

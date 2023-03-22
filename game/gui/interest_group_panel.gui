@@ -31,15 +31,18 @@ types interest_group_panel_types
 				blockoverride "first_button" {
 					text = "OVERVIEW"
 				}
+				blockoverride "first_button_tooltip" {
+					tooltip = "OVERVIEW"
+				}
 				blockoverride "first_button_click" {
-					onclick = "[InformationPanel.SelectTab('ig_overview')]"
+					onclick = "[InformationPanel.SelectTab('default')]"
 				}
 				blockoverride "first_button_visibility" {
-					visible = "[InformationPanel.IsTabSelected('ig_overview')]"
+					visible = "[InformationPanel.IsTabSelected('default')]"
 				}
 
 				blockoverride "first_button_visibility_checked" {
-					visible = "[Not( InformationPanel.IsTabSelected('ig_overview') )]"
+					visible = "[Not( InformationPanel.IsTabSelected('default') )]"
 				}
 				blockoverride "first_button_selected" {
 					text = "OVERVIEW"
@@ -47,6 +50,9 @@ types interest_group_panel_types
 
 				blockoverride "second_button" {
 					text = "POPULATION"
+				}
+				blockoverride "second_button_tooltip" {
+					tooltip = "POPULATION"
 				}
 				blockoverride "second_button_click" {
 					onclick = "[InformationPanel.SelectTab('ig_pops')]"
@@ -63,6 +69,9 @@ types interest_group_panel_types
 
 				blockoverride "third_button" {
 					text = "LAWS"
+				}
+				blockoverride "third_button_tooltip" {
+					tooltip = "LAWS"
 				}
 				blockoverride "third_button_click" {
 					onclick = "[InformationPanel.SelectTab('ig_laws')]"
@@ -83,6 +92,9 @@ types interest_group_panel_types
 				# Modifiers
 				blockoverride "fourth_button" {
 					text = "INTEREST_GROUP_PANEL_MODIFIERS_TAB"
+				}
+				blockoverride "fourth_button_tooltip" {
+					tooltip = "INTEREST_GROUP_PANEL_MODIFIERS_TAB"
 				}
 				blockoverride "fourth_button_click" {
 					onclick = "[InformationPanel.SelectTab('modifiers')]"
@@ -107,7 +119,7 @@ types interest_group_panel_types
 				minimumsize = { @panel_width_plus_20 -1 }
 				
 				flowcontainer = {
-					visible = "[InformationPanel.IsTabSelected('ig_overview')]"
+					visible = "[InformationPanel.IsTabSelected('default')]"
 					using = default_content_fade
 
 					flowcontainer = {
@@ -219,11 +231,18 @@ types interest_group_panel_types
 					minimumsize = { @panel_width -1 }
 
 					flowcontainer = {
-						spacing = 20 
+						spacing = 5 
 						margin_top = 10
+						margin_bottom = 10
 						
 						ig_icon = {
-							size = { 100 100 }
+							size = { 80 80 }
+
+							blockoverride "in_government_icon" {}
+						}
+
+						widget = {
+							size = { 10 10 }
 						}
 
 						flowcontainer = {
@@ -237,14 +256,17 @@ types interest_group_panel_types
 								autoresize = yes
 								text = "CLOUT_HEADER"
 								align = left|nobaseline
-								minimumsize = { 130 -1 }
+								minimumsize = { 90 -1 }
+								maximumsize = { 90 -1 }
 							}
 							
 							textbox = {
-								text = "#BOLD [InterestGroup.GetClout|1%] #!"
-								using = fontsize_mega
+								raw_text = "#BOLD [InterestGroup.GetClout|1%] #!"
+								using = fontsize_xxl
 								autoresize = yes
 								align = left|nobaseline
+								minimumsize = { 90 -1 }
+								maximumsize = { 90 -1 }
 							}
 						}
 						flowcontainer = {
@@ -256,69 +278,149 @@ types interest_group_panel_types
 								autoresize = yes
 								align = left|nobaseline
 								text = "IG_STATUS_HEADER"
+								minimumsize = { 160 -1 }
+								maximumsize = { 160 -1 }
 							}
 
 							textbox = {
 								align = left|nobaseline
-								text = "[InterestGroup.GetApprovalRating] (#variable [InterestGroup.GetApprovalValue|+=]#!)"
+								raw_text = "[InterestGroup.GetApprovalRating] (#variable [InterestGroup.GetApprovalValue|+=]#!)"
 								autoresize = yes
-								using = fontsize_mega
+								using = fontsize_xxl
+								minimumsize = { 160 -1 }
+								maximumsize = { 160 -1 }
+								elide = right
+								fontsize_min = 14
 							}
 						}
-					}
 
-					widget = { size = { 10 10 }}
-					divider_clean = {}
-					widget = { size = { 10 10 }}
-
-					container = {
-						visible = "[InterestGroup.HasParty]"
-						datacontext = "[InterestGroup.GetParty]"
-
-						flowcontainer = {
-							direction = vertical
-							margin_right = 10
-							minimumsize = { @panel_width -1 }
-
-							tooltipwidget = {
-								FancyTooltip_Party = {}
-							}
-							
-							textbox = {
-								autoresize = yes
-								text = "[concept_party]"
-								align = left|nobaseline
-							}
-
-							widget = { size = { 5 5 }}
+						container = {
+							visible = "[InterestGroup.HasParty]"
+							datacontext = "[InterestGroup.GetParty]"
+							parentanchor = vcenter
 
 							flowcontainer = {
-								spacing = 10
-								icon = {
-									texture = "[Party.GetIcon]"
-									size = { 35 35 }
+								direction = vertical
+
+								tooltipwidget = {
+									FancyTooltip_Party = {}
 								}
+								
 								textbox = {
 									autoresize = yes
-									text = "[Party.GetNameNoFormatting]"
+									text = "[concept_party]"
 									align = left|nobaseline
-									using = fontsize_large 
-									parentanchor = vcenter
 								}
-								button_icon_goto = {
-									visible = no # toggle back on when doing PRCAL-15542
-									size = { 25 25 }
-									parentanchor = vcenter
-									onclick = "[InformationPanelBar.OpenPartyPanel(Party.AccessSelf)]"
+
+								flowcontainer = {
+									spacing = 5
+									icon = {
+										texture = "[Party.GetIcon]"
+										size = { 34 34 }
+									}
+									textbox = {
+										autoresize = yes
+										text = "[Party.GetNameNoFormatting]"
+										align = left|nobaseline
+										using = fontsize_large 
+										parentanchor = vcenter
+										minimumsize = { 135 -1 }
+										maximumsize = { 135 -1 }
+										elide = right
+										fontsize_min = 14
+									}
+									button_icon_goto = {
+										visible = no # toggle back on when doing PRCAL-15542
+										size = { 25 25 }
+										parentanchor = vcenter
+										onclick = "[InformationPanelBar.OpenPartyPanel(Party.AccessSelf)]"
+									}
 								}
 							}
-							
-
-							widget = { size = { 10 10 }}
-							divider_clean = {}
-							widget = { size = { 10 10 }}
 						}
 					}
+
+					divider_clean = {
+						parentanchor = hcenter
+					}
+					widget = { size = { 10 10 }}
+
+					### POPULATION
+					flowcontainer = {
+						parentanchor = hcenter
+						spacing = 13
+
+						number_of_pops = {}
+
+						number_of_pops = {
+							blockoverride "tooltip" {
+								tooltip = "IG_RADICALS_TOOLTIP"
+							}
+							blockoverride "texture" {
+								texture = "gfx/interface/icons/generic_icons/population_radical.dds"
+							}
+							blockoverride "header" {
+								text = "RADICALS_TITLE"
+							}
+							blockoverride "value" {
+								text = "[InterestGroup.CalcNumRadicals|Kv]"
+							}
+						}
+
+						number_of_pops = {
+							blockoverride "tooltip" {
+								tooltip = "IG_LOYALISTS_TOOLTIP"
+							}
+							blockoverride "texture" {
+								texture = "gfx/interface/icons/generic_icons/population_loyalist.dds"
+							}
+							blockoverride "header" {
+								text = "LOYALISTS_TITLE"
+							}
+							blockoverride "value" {
+								text = "[InterestGroup.CalcNumLoyalists|Kv]"
+							}
+						}
+						
+						container = {
+							parentanchor = vcenter
+							icon = {
+								texture = "gfx/interface/icons/generic_icons/in_government_icon.dds"
+								size = { 40 40 }
+								visible = "[InterestGroup.IsInGovernment]"
+								tooltip = IN_GOVERNMENT_DESC
+
+								icon = {
+									tooltip = "LEADING_IG"
+									texture = "gfx/interface/icons/generic_icons/leading_interest_group_icon.dds"
+									size = { 30 30 }
+									parentanchor = bottom|right
+									visible = "[InterestGroup.IsLeadingGovernment]"
+									position = { 5 5 }
+								}
+							}
+
+							icon = {
+								tooltip = IN_OPPOSITION_DESC
+								texture = "gfx/interface/icons/generic_icons/in_opposition_icon.dds"
+								size = { 40 40 }
+								visible = "[And(Not( InterestGroup.IsInGovernment ), Not( InterestGroup.IsMarginal ) )]"
+							}
+
+							icon = {
+								tooltip = MARGINAL_DESC
+								texture = "gfx/interface/icons/generic_icons/marginalized.dds"
+								size = { 40 40 }
+								visible = "[InterestGroup.IsMarginal]"
+							}
+						}
+					}
+				
+					widget = { size = { 10 10 }}
+					divider_clean = {
+						parentanchor = hcenter
+					}
+					widget = { size = { 10 10 }}
 
 					flowcontainer = {
 						margin_bottom = 20
@@ -331,7 +433,7 @@ types interest_group_panel_types
 								autoresize = yes
 								text = "IDEOLOGY_HEADER"
 								align = left|nobaseline
-								margin_bottom = 2
+								margin_bottom = 4
 							}
 							
 							flowcontainer = {
@@ -348,7 +450,7 @@ types interest_group_panel_types
 										}
 										icon = {						
 											texture = "[Ideology.GetTexture]"
-											size = { 57 57 }
+											size = { 40 40 }
 											using = tooltip_above
 										}
 
@@ -357,7 +459,6 @@ types interest_group_panel_types
 											autoresize = yes
 											parentanchor = vcenter
 											align = nobaseline
-											using = fontsize_large
 										}
 									}
 								}
@@ -374,6 +475,7 @@ types interest_group_panel_types
 								autoresize = yes
 								text = "TRAITS_TITLE"
 								align = left|nobaseline
+								margin_bottom = 4
 							}
 
 							flowcontainer = {
@@ -388,13 +490,13 @@ types interest_group_panel_types
 										tooltipwidget = {
 											FancyTooltip_InterestGroupTrait = {}
 										}
-											icon = {						
-												texture = "[InterestGroupTrait.GetTexture]"
-												enabled = "[InterestGroupTrait.IsEnabled(InterestGroup.Self)]"
-										
-											size = { 60 80 }
+										icon = {						
+											texture = "[InterestGroupTrait.GetTexture]"
+											enabled = "[InterestGroupTrait.IsEnabled(InterestGroup.Self)]"
+											size = { 45 60 }
 											alpha = "[TransparentIfFalse(InterestGroupTrait.IsEnabled(InterestGroup.Self))]"
 											using = tooltip_above
+											parentanchor = vcenter
 										}
 
 										flowcontainer = {
@@ -405,10 +507,9 @@ types interest_group_panel_types
 												text = "[InterestGroupTrait.GetNameNoFormatting]"
 												autoresize = yes
 												align = nobaseline
-												using = fontsize_large
 												maximumsize = { 190 -1 }
 												multiline = yes
-												}
+											}
 											textbox = {
 												alpha = "[TransparentIfFalse(InterestGroupTrait.IsEnabled(InterestGroup.Self))]"
 												text = "[InterestGroupTrait.GetInactiveString(InterestGroup.Self)]"
@@ -433,7 +534,7 @@ types interest_group_panel_types
 						
 						textbox = {
 							autoresize = yes
-							text = "[concept_political_movement]:"
+							raw_text = "[concept_political_movement]:"
 						}	
 						
 						widget = { size = { 5 5 } }
@@ -484,7 +585,7 @@ types interest_group_panel_types
 								}
 								
 								textbox = {
-									text = "#BOLD [Character.GetFullNameNoFormatting]#!"
+									raw_text = "#BOLD [Character.GetFullNameNoFormatting]#!"
 									maximumsize = { 180 -1 }
 									minimumsize = { 180 -1 }
 									autoresize = yes
@@ -560,69 +661,6 @@ types interest_group_panel_types
 							}
 						}
 					}
-					
-					widget = { size = { 20 20 }}
-
-					### POPULATION
-					flowcontainer = {
-						parentanchor = hcenter
-						
-						icon = {
-							tooltip = "TOOLTIP_POPULATION"
-							# tooltip = "IG_POP_POTENTIAL_DESC"
-							texture = "gfx/interface/icons/generic_icons/population.dds"
-							size = { 40 40 }
-							parentanchor = vcenter
-						}
-						flowcontainer = {
-							tooltip = "TOOLTIP_POPULATION"
-							direction = vertical
-							parentanchor = vcenter
-
-							textbox = {
-								autoresize = yes
-								text = "POPULATION_HEADER"
-								align = left|nobaseline
-							}
-
-							textbox = {
-								text = "[InterestGroup.GetPopulation|v1*]"
-								autoresize = yes
-								using = fontsize_large
-								align = left|nobaseline
-							}
-						}
-
-						widget = { size = { 20 20 }}
-						
-						### government header
-						flowcontainer = {
-							parentanchor = vcenter
-							icon = {
-								tooltip = "LEADING_IG"
-								texture = "gfx/interface/icons/generic_icons/leading_interest_group_icon.dds"
-								size = { 40 40 }
-								parentanchor = vcenter
-								visible = "[InterestGroup.IsLeadingGovernment]"
-							}
-
-							in_government_header = {
-								parentanchor = vcenter
-								visible = "[InterestGroup.IsInGovernment]"
-							}
-
-							in_opposition_header = {
-								parentanchor = vcenter
-								visible = "[And(Not( InterestGroup.IsInGovernment ), Not( InterestGroup.IsMarginal ) )]"
-							}
-
-							marginal_header = {
-								parentanchor = vcenter
-								visible = "[InterestGroup.IsMarginal]"
-								margin_bottom = 10
-							}
-						}
-					}
 				}
 		
 				pop_list = {
@@ -654,6 +692,7 @@ types interest_group_panel_types
 					direction = vertical
 					spacing = 10
 					using = default_list_position
+					margin_top = 10
 					
 					default_header = {
 						blockoverride "text" {
@@ -678,6 +717,7 @@ types interest_group_panel_types
 				}
 				
 				flowcontainer = {
+					parentanchor = hcenter
 					modifier_list = {
 						visible = "[InformationPanel.IsTabSelected('modifiers')]"
 						using = default_content_fade
@@ -702,6 +742,47 @@ types interest_group_panel_types
 			onclick = "[InterestGroupPanel.AccessInterestGroup.TogglePinInOutliner]"
 			datacontext = "[InterestGroupPanel.AccessInterestGroup]"
 			tooltip = "PIN_IG"
+		}
+	}
+
+	type number_of_pops = flowcontainer {
+		spacing = 5
+		block "tooltip" {
+			tooltip = "TOOLTIP_POPULATION"
+		}
+		
+		icon = {
+			block "texture" {
+				texture = "gfx/interface/icons/generic_icons/population.dds"
+			}
+			size = { 45 45 }
+			parentanchor = vcenter
+		}
+		flowcontainer = {
+			direction = vertical
+			parentanchor = vcenter
+
+			textbox = {
+				autoresize = yes
+				block "header" {
+					text = "POPULATION_HEADER"
+				}
+				default_format = "#title"
+				align = left|nobaseline
+				maximumsize = { 100 -1 }
+				minimumsize = { 100 -1 }
+			}
+
+			textbox = {
+				block "value" {
+					text = "[InterestGroup.GetPopulation|v1*]"
+				}
+				autoresize = yes
+				align = left|nobaseline
+				maximumsize = { 100 -1 }
+				minimumsize = { 100 -1 }
+				using = fontsize_large
+			}
 		}
 	}
 }

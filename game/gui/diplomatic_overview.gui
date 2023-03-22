@@ -70,14 +70,17 @@ types diplomatic_panel
 				blockoverride "first_button" {
 					text = OVERVIEW
 				}
+				blockoverride "first_button_tooltip" {
+					tooltip = "OVERVIEW"
+				}
 				blockoverride "first_button_click" {
-					onclick = "[InformationPanel.SelectTab('diplomatic_overview')]"
+					onclick = "[InformationPanel.SelectTab('default')]"
 				}
 				blockoverride "first_button_visibility" {
-					visible = "[InformationPanel.IsTabSelected('diplomatic_overview')]"
+					visible = "[InformationPanel.IsTabSelected('default')]"
 				}
 				blockoverride "first_button_visibility_checked" {
-					visible = "[Not( InformationPanel.IsTabSelected('diplomatic_overview') )]"
+					visible = "[Not( InformationPanel.IsTabSelected('default') )]"
 				}
 				blockoverride "first_button_selected" {
 					text = OVERVIEW
@@ -86,6 +89,9 @@ types diplomatic_panel
 				# Release subjects
 				blockoverride "second_button" {
 					text = RELEASE_SUBJECT
+				}
+				blockoverride "second_button_tooltip" {
+					tooltip = "RELEASE_SUBJECT"
 				}
 				blockoverride "second_button_click" {
 					onclick = "[InformationPanel.SelectTab('release_subject')]"
@@ -108,7 +114,7 @@ types diplomatic_panel
 				flowcontainer = {
 					direction = vertical
 					using = default_list_position
-					visible = "[InformationPanel.IsTabSelected('diplomatic_overview')]"
+					visible = "[InformationPanel.IsTabSelected('default')]"
 					using = default_content_fade
 
 					flowcontainer = {
@@ -220,19 +226,6 @@ types diplomatic_panel
 						}
 					}
 
-					button = {
-						parentanchor = hcenter
-						using = default_button
-						text = "declare_interest"
-						align = center|nobaseline
-						size = { @panel_width 50 }
-						using = fontsize_large
-						onclick = "[GetLensToolbar.ActivateOption('declare_interest')]"
-						tooltip = "declare_interest_tooltip"
-					}
-
-					widget = { size = { 10 10 }}
-
 					diplomatic_info = {
 						using = default_list_position
 						datacontext = "[AccessPlayer]"
@@ -286,9 +279,22 @@ types diplomatic_panel
 		{
 			fixed_bottom_spacer = {}
 
-			container = {
-				name = "tutorial_highlight_country_browser"
+			flowcontainer = {
+				direction = vertical
+				spacing = 5
+
 				button = {
+					using = default_button
+					text = "declare_interest"
+					align = center|nobaseline
+					size = { @panel_width 50 }
+					using = fontsize_large
+					onclick = "[GetLensToolbar.ActivateOption('declare_interest')]"
+					tooltip = "declare_interest_tooltip"
+				}
+
+				button = {
+					name = "tutorial_highlight_country_browser"
 					using = default_button
 					text = "OPEN_DIPLOMATIC_BROWSER"
 					align = center|nobaseline

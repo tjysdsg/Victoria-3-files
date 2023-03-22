@@ -78,7 +78,27 @@ acw_je_events.1 = {
 					country_definition = root.country_definition
 				}
 				change_tag = CSA
-				save_scope_as = csa_scope
+				save_scope_as = csa_scope	
+				
+				# Re-enslave pops if the ACW happens after slavery has been abolished
+				if = {
+					limit = {
+						c:USA = {
+							has_variable = slavery_recently_abolished
+						}						
+					}
+					
+					every_scope_state = {
+						enslave_discriminated_farm_workers = yes
+					}					
+				}
+								
+				
+				every_scope_state = {
+					state_region = {
+						add_claim = root
+					}
+				}
 			}
 		}
 		else = {
@@ -89,6 +109,13 @@ acw_je_events.1 = {
 				}
 				change_tag = FSA
 				save_scope_as = fsa_scope
+						
+				every_scope_state = {
+					state_region = {
+						add_claim = root
+					}
+				}				
+				
 				if = {
 					limit = {
 						NOT = { has_law = law_type:law_slavery_banned }
@@ -110,22 +137,18 @@ acw_je_events.1 = {
 					}
 				}
 			}
-			add_war_goal = {
-				holder = initiator
-				type = secession
-			}
 			remove_war_goal = {
 				who = initiator
 				war_goal = annex_country
 			}
+			add_war_goal = {
+				holder = initiator
+				type = revoke_all_claims
+				target_country = target				
+				primary_demand = yes
+			}			
 		}
-	}
-
-	option = {
-		name = acw_je_events.1.a
-		default_option = yes
-
-		set_variable = union_side_acw
+		
 		if = {
 			limit = { exists = c:CSA }
 			add_journal_entry = {
@@ -141,27 +164,23 @@ acw_je_events.1 = {
 				target = scope:fsa_scope
 			}
 		}
+		set_variable = union_side_acw
+	}
+
+	option = {
+		name = acw_je_events.1.a
+		default_option = yes
 	}
 	option = {
 		name = acw_je_events.1.b
-
 		trigger = { is_player = yes }
 
-		set_variable = union_side_acw
 		if = {
 			limit = { exists = c:CSA }
-			add_journal_entry = {
-				type = je_acw_war
-				target = scope:csa_scope
-			}
 			play_as = scope:csa_scope
 		}
 		else_if = {
 			limit = { exists = c:FSA }
-			add_journal_entry = {
-				type = je_acw_war
-				target = scope:fsa_scope
-			}
 			play_as = scope:fsa_scope
 		}
 	}

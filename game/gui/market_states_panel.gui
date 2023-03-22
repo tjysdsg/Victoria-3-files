@@ -69,9 +69,10 @@ types market_states_panel
 			using = default_list_position
 
 			sort_button = {
-				size = { 50 20 }
+				size = { 40 20 }
 				onclick = "[Market.SortStates('country')]"
 				tooltip = "SORT_BY_COUNTRY"
+
 				button = {
 					texture = "gfx/interface/flag/flag_overlay.dds"
 					size = { 27 18 }
@@ -82,15 +83,21 @@ types market_states_panel
 			}
 
 			sort_button = {
-				size = { 240 20 }
+				size = { 190 20 }
 				text = "STATE_REGION"
 				align = left|nobaseline
 				onclick = "[Market.SortStates('region')]"
 			}
 
 			sort_button = {
-				size = { 150 20 }
-				text = "MARKET_ACCESS"
+				size = { 120 20 }
+				text = "[GetBuildingType('building_trade_center').GetName]"
+				onclick = "[Market.SortStates('trade_center_levels')]"
+			}
+
+			sort_button = {
+				size = { 90 20 }
+				text = "MARKET_ACCESS_SHORT"
 				onclick = "[Market.SortStates('market_access')]"
 			}
 
@@ -112,65 +119,98 @@ types market_states_panel
 		}
 	}
 
-	type market_states_panel_state_entry = button {
-		size = { @panel_width 40 }
-		using = default_button
+	type market_states_panel_state_entry = widget {
+		size = { @panel_width 46 }
 		onmousehierarchyenter = "[AccessHighlightManager.HighlightState(State.Self)]"
 		onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-		onclick = "[InformationPanelBar.OpenStatePanel(State.AccessSelf)]"
-		onrightclick = "[State.PanCamera]"
+		alwaystransparent = no
 
-		icon = {
-			using = highlighted_square_selection
-			visible = "[State.IsBeingHighlighted]"
+		divider_clean = {
+			size = { 100% 1 }
 		}
 		
 		hbox = {
-			margin = { 15 0 }
-			spacing = 10
-
-			tiny_flag = {
-				datacontext = "[State.GetCountry]"
+			widget = {
+				size = { 40 40 }
+				tiny_flag = {
+					parentanchor = center
+					datacontext = "[State.GetCountry]"
+				}
 			}
 
-			textbox = {
-				visible = "[State.IsMarketCapital]"
-				layoutstretchfactor_horizontal = 5
-				layoutpolicy_horizontal = expanding
-				size = { 0 30 }
-				text = "[State.GetName] ([concept_market_capital])"
-				align = left|nobaseline
-				multiline = yes
-				margin_left = 5
+			button = {
+				using = default_button
+				size = { 190 36 }
+				onclick = "[InformationPanelBar.OpenStatePanel(State.AccessSelf)]"
+				onrightclick = "[State.PanCamera]"
+
+				textbox = {
+					size = { 100% 100% }
+					visible = "[State.IsMarketCapital]"
+					raw_text = "[State.GetName] ([concept_market_capital])"
+					align = left|nobaseline
+					margin = { 10 0 }
+					elide = right
+				}
+
+				textbox = {
+					visible = "[Not(State.IsMarketCapital)]"
+					size = { 100% 100% }
+					text = "[State.GetName]"
+					align = left|nobaseline
+					margin = { 10 0 }
+					elide = right
+				}
 			}
 
-			textbox = {
-				visible = "[Not(State.IsMarketCapital)]"
-				layoutstretchfactor_horizontal = 5
-				layoutpolicy_horizontal = expanding
-				size = { 0 30 }
-				text = "[State.GetName]"
-				align = left|nobaseline
-				multiline = yes
-				margin_left = 5
+			widget = {
+				size = { 120 40 }
+				datacontext = "[State.AccessBuilding('building_trade_center')]"
+
+				flowcontainer = {
+					parentanchor = vcenter
+					visible = "[Building.IsValid]"
+					spacing = 10
+					margin_left = 10
+					tooltipwidget = {
+						FancyTooltip_Building = {}
+					}
+
+					icon = {
+						parentanchor = vcenter
+						size = { 40 40 }
+						texture = "[Building.GetTexture]"
+					}
+					textbox = {
+						text = "[Building.GetExpansionLevel]"
+						default_format = "#v"
+						parentanchor = vcenter
+						autoresize = yes
+						align = nobaseline
+					}
+					button_icon_goto = {
+						size = { 25 25 }
+						parentanchor = vcenter
+						onclick = "[InformationPanelBar.OpenBuildingDetailsPanel(Building.AccessSelf)]"
+					}
+				}
 			}
+
 			
 			textbox = {
-				layoutstretchfactor_horizontal = 2
-				layoutpolicy_horizontal = expanding
-				size = { 0 30 }
-				text = "#v [State.GetMarketAccess|%0]#!"
+				size = { 90 30 }
+				raw_text = "#v [State.GetMarketAccess|%0]#!"
 				tooltip = "MARKET_STATES_PANEL_MARKET_ACCESS_TOOLTIP"
 				align = right|nobaseline
+				margin_right = 5
 			}
 
 			textbox = {
-				layoutstretchfactor_horizontal = 2
-				layoutpolicy_horizontal = expanding
-				size = { 0 30 }
-				text = "@money!#v [State.GetGDPContribution|0K]#!"
+				size = { 100 30 }
+				raw_text = "@money!#v [State.GetGDPContribution|0K]#!"
 				tooltip = "CURRENT_GDP_STATE"
 				align = right|nobaseline
+				margin_right = 5
 			}
 		}
 	}

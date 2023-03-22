@@ -88,6 +88,10 @@
  CLEAR_DEBT_NEG:1 "#variable [COUNTRY.GetAdjectiveNoFormatting]#! financial debts are NOT cleared"
  CLEAR_SCALED_DEBT:1 "#variable [COUNTRY.GetAdjectiveNoFormatting]#! financial debts are cleared by a factor of #variable $VALUE$#! of GDP"
  
+ SEIZE_INVESTMENT_POOL:1 "Seize all funds in the [concept_investment_pool] for the [concept_treasury] and convert any [Concept('concept_private_construction', '$concept_private_constructions$')] into [Concept('concept_government_construction', '$concept_government_constructions$')]"
+ SEIZE_INVESTMENT_POOL_FIRST:0 "$SEIZE_INVESTMENT_POOL$"
+ SEIZE_INVESTMENT_POOL_THIRD:1 "[Country.GetName] seizes all funds in the [concept_investment_pool] for the [concept_treasury] and converts any [Concept('concept_private_construction', '$concept_private_constructions$')] into [Concept('concept_government_construction', '$concept_government_constructions$')]"
+ 
  TAKE_ON_SCALED_DEBT:1 "Takes on [TARGET_COUNTRY.GetAdjective] [Concept('concept_credit','$concept_credit_debt$')] of @money!#variable $VALUE|vD$#!"
  TAKE_ON_SCALED_DEBT_FIRST:0 "[COUNTRY.GetNameNoFlag] takes on [TARGET_COUNTRY.GetAdjective] [Concept('concept_credit','$concept_credit_debt$')] of @money!#variable $VALUE|vD$#!"
  TAKE_ON_SCALED_DEBT_THIRD:0 "[COUNTRY.GetName] takes on [TARGET_COUNTRY.GetAdjective] [Concept('concept_credit','$concept_credit_debt$')] of @money!#variable $VALUE|vD$#!"
@@ -95,11 +99,11 @@
  CREATE_TRADE_ROUTE:1 "[COUNTRY.GetName] establishes a level $LEVEL|v0$ $TRADE_DIR$ Route for [Goods.GetTextIcon][Nbsp][Goods.GetName] in [TARGET_MARKET.GetName]"
  LOCK_TRADE_ROUTE:0 "[TradeRoute.GetName] becomes locked $DURATION$"
  
- ADD_PRIMARY_CULTURE:1 "[TARGET_CULTURE.GetName] becomes a [Concept('concept_primary_cultures','$concept_primary_culture$')] of [COUNTRY.GetName]"
- ADD_PRIMARY_CULTURE_FIRST:1 "[TARGET_CULTURE.GetName] becomes a [Concept('concept_primary_cultures','$concept_primary_culture$')] of [COUNTRY.GetNameNoFlag]"
- ADD_PRIMARY_CULTURE_THIRD:1 "[TARGET_CULTURE.GetName] becomes a [Concept('concept_primary_cultures','$concept_primary_culture$')] of [COUNTRY.GetName]"
- REMOVE_PRIMARY_CULTURE:1 "[TARGET_CULTURE.GetName] stops being a [Concept('concept_primary_cultures','$concept_primary_culture$')] of [COUNTRY.GetName]"
- REMOVE_PRIMARY_CULTURE_FIRST:1 "[TARGET_CULTURE.GetName] stops being a [Concept('concept_primary_cultures','$concept_primary_culture$')] of [COUNTRY.GetNameNoFlag]"
+ ADD_PRIMARY_CULTURE:2 "[TARGET_CULTURE.GetName] becomes a [Concept('concept_primary_cultures','$concept_primary_culture$')] of [COUNTRY.GetName]"
+ ADD_PRIMARY_CULTURE_FIRST:2 "[TARGET_CULTURE.GetName] becomes a [Concept('concept_primary_cultures','$concept_primary_culture$')] of [COUNTRY.GetNameNoFlag]"
+ ADD_PRIMARY_CULTURE_THIRD:2 "[TARGET_CULTURE.GetName] becomes a [Concept('concept_primary_cultures','$concept_primary_culture$')] of [COUNTRY.GetName]"
+ REMOVE_PRIMARY_CULTURE:2 "[TARGET_CULTURE.GetName] stops being a [Concept('concept_primary_cultures','$concept_primary_culture$')] of [COUNTRY.GetName]"
+ REMOVE_PRIMARY_CULTURE_FIRST:2 "[TARGET_CULTURE.GetName] stops being a [Concept('concept_primary_cultures','$concept_primary_culture$')] of [COUNTRY.GetNameNoFlag]"
  REMOVE_PRIMARY_CULTURE_THIRD:2 "[TARGET_CULTURE.GetName] stops being a [Concept('concept_primary_cultures','$concept_primary_culture$')] of [COUNTRY.GetName]"
  
  SET_STATE_RELIGION:1 "[TARGET_RELIGION.GetName] becomes the state religion in [COUNTRY.GetName]"
@@ -183,6 +187,7 @@
  SET_WAR_NEG:0 "[DIPLOMATIC_PLAY.GetName] does NOT break out into war"
  
  CREATE_TRUCE:1 "[COUNTRY.GetName] and [TARGET_COUNTRY.GetName] gets a #variable truce for $MONTHS|0v$ months#!"
+ END_TRUCE:0 "[COUNTRY.GetName] and [TARGET_COUNTRY.GetName] end their #variable truce in $MONTHS|0v$ months#!"
  
  VIOLATE_SOVEREIGNTY_JOIN:2 "[COUNTRY.GetName] joins the [concept_war] on the side of [TARGET_COUNTRY.GetName]"
  VIOLATE_SOVEREIGNTY_JOIN_FIRST:0 "[TARGET_COUNTRY.GetName] joins the [concept_war] on the side of [COUNTRY.GetName]"
@@ -225,6 +230,7 @@
  CREATE_BUILDING:0 "Creates a Size $LEVEL|v$ [BuildingType.GetName] in [State.GetName]"
  ADD_BUILDING_LEVEL:0 "Change [BuildingType.GetName] level by $LEVEL|v$ in [State.GetName]"
  START_BUILDING_CONSTRUCTION:0 "Start building [BuildingType.GetName] in [State.GetName]"
+ START_PRIVATELY_FUNDED_BUILDING_CONSTRUCTION:0 "Start building [BuildingType.GetName] in [State.GetName] as a [concept_private_construction]"
  CREATE_POP:0 "[STATE.GetName] gets $SIZE|+$ #variable [POP_TYPE.GetName]#!"
  ADD_HOMELAND:0 "[STATE_REGION.GetName] becomes an #variable [CULTURE.GetName]#! [concept_homeland]"
  REMOVE_HOMELAND:0 "[STATE_REGION.GetName] is no longer an #variable [CULTURE.GetName]#! [concept_homeland]"
@@ -285,6 +291,7 @@
   
  ADD_RULING_INTEREST_GROUP:0 "[INTEREST_GROUP.GetName] becomes part of the government"
  REMOVE_RULING_INTEREST_GROUP:0 "[INTEREST_GROUP.GetName] is removed from the government"
+ SET_RULING_PARTY:0 "[PARTY.GetName] is added to the government while everyone else are removed"
  SET_RULING_INTEREST_GROUPS:0 "The specified set of Interest Groups are added to the government while everyone else are removed"
  
  ADD_MODIFIER:1 "$SUBJECT_NAME$ gets #tooltippable #tooltip:[GetRawTextTooltipTag('$ADD_MODIFIER_BREAKDOWN$')] $MODIFIER_NAME$#!#! $MAYBE_DECAYING_WITH_SPACE_AFTER$$DURATION$\n$TAB$#indent_newline:3 $MODIFIER_DESC$#!"
@@ -392,9 +399,9 @@
  ADD_RADICALS_FIRST:2 "#variable $NUM|-=1%$#! of$FILTER$ [Concept('concept_pop', '$concept_pops$')] in $SUBJECT_NAME$ become more [concept_radical]"
  ADD_RADICALS_THIRD:2 "#variable $NUM|-=1%$#! of$FILTER$ [Concept('concept_pop', '$concept_pops$')] in $SUBJECT_NAME$ become more [concept_radical]"
  
- ADD_LOYALISTS:2 "#variable $NUM|+=1%$#! of$FILTER$ [Concept('concept_pop', '$concept_pops$')] in $SUBJECT_NAME$ become more [concept_loyalist]"
- ADD_LOYALISTS_FIRST:2 "#variable $NUM|+=1%$#! of$FILTER$ [Concept('concept_pop', '$concept_pops$')] in $SUBJECT_NAME$ become more [concept_loyalist]"
- ADD_LOYALISTS_THIRD:2 "#variable $NUM|+=1%$#! of$FILTER$ [Concept('concept_pop', '$concept_pops$')] in $SUBJECT_NAME$ become more [concept_loyalist]"
+ ADD_LOYALISTS:3 "#variable $NUM|+=1%$#! of$FILTER$ [Concept('concept_pop', '$concept_pops$')] in $SUBJECT_NAME$ become more [Concept('concept_loyalist', '$concept_loyal$')]"
+ ADD_LOYALISTS_FIRST:3 "#variable $NUM|+=1%$#! of$FILTER$ [Concept('concept_pop', '$concept_pops$')] in $SUBJECT_NAME$ become more [Concept('concept_loyalist', '$concept_loyal$')]"
+ ADD_LOYALISTS_THIRD:3 "#variable $NUM|+=1%$#! of$FILTER$ [Concept('concept_pop', '$concept_pops$')] in $SUBJECT_NAME$ become more [Concept('concept_loyalist', '$concept_loyal$')]"
 
  ADD_CIVIL_WAR_PROGRESS:0 "Change progress of civil war by $VALUE|%$"
  ADD_LAW_PROGRESS:0 "Change progress of law [Law.GetName] by $VALUE|0%$"
@@ -428,3 +435,5 @@
  UPDATE_PARTY_SUPPORT_EFFECT:0 "Interest Groups will re-evaluate their party support."
  
  ADD_CULTURE_STANDARD_OF_LIVING_MODIFIER:0 "Add $MODIFIER_DESC$ to [State.GetName]"
+
+ ADD_RELIGION_STANDARD_OF_LIVING_MODIFIER:0 "Add $MODIFIER_DESC$ [Concept('concept_pop', '$concept_pops$')] in [State.GetName]"

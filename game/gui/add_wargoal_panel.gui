@@ -6,6 +6,22 @@ types wargoal_types
 		blockoverride "window_header_name" {
 			text = "ADD_WARGOAL_HEADER"
 		}
+
+		blockoverride "entire_back_button" {
+			back_button_large = {
+				position = { 8 30 }
+				onclick = "[AddWarGoalPanel.ClearSelectedWarGoalType]"
+				input_action = "back"
+				visible = "[AddWarGoalPanel.HasSelectedWarGoalType]"
+			}
+
+			back_button_large = {
+				position = { 8 30 }
+				onclick = "[InformationPanelBar.OpenPreviousPanel]"
+				input_action = "back"
+				visible = "[Not(AddWarGoalPanel.HasSelectedWarGoalType)]"
+			}
+		}
 		
 		blockoverride "scrollarea_content" {	
 			flowcontainer = {
@@ -146,7 +162,7 @@ types wargoal_types
 					autoresize = yes
 					minimumsize = { 190 -1 }
 					maximumsize = { 190 -1 }
-					text = "#BOLD [WarGoal.GetName]#!"
+					raw_text = "#BOLD [WarGoal.GetName]#!"
 					align = center|nobaseline
 					parentanchor = hcenter
 				}
@@ -259,7 +275,7 @@ types wargoal_types
 			autoresize = yes
 			minimumsize = { 150 -1 }
 			maximumsize = { 150 -1 }
-			text = "#BOLD [WarGoal.GetName]#!"
+			raw_text = "#BOLD [WarGoal.GetName]#!"
 			align = center|nobaseline
 			parentanchor = hcenter
 		}
@@ -289,57 +305,69 @@ types wargoal_types
 
 			icon = {
 				position = { 10 0 }
-				size = { 60 50 }
+				size = { 50 50 }
 				texture = "[WarGoal.GetTexture]"
 				parentanchor = left|vcenter
 				widgetanchor = left|vcenter
 			}				
 			
-			small_flag = {
-				position = { -15 0 }
-				datacontext = "[WarGoal.GetTarget]"
-				parentanchor = right|vcenter
-			}
-
-			flag_icon = {
-				position = { -70 0 }
-				size = { 48 32 }
-				visible = "[WarGoal.HasCountryCreation]"
-				block "flag_definition" {			
-					texture = "[WarGoal.GetCountryCreation.GetDefinition.GetFlag('release').GetSmallFlagTexture]"
-					frame = "[WarGoal.GetCountryCreation.GetDefinition.GetFlag('release').GetSmallFlagFrame]"			
-				}
-				framesize = "[GetSmallFlagFrameSize]"
-				blockoverride "flag_tooltip" {}
-				parentanchor = right|vcenter
-			}
-			
 			flowcontainer = {
-				direction = horizontal
-				parentanchor = right|vcenter				
-				position = { -75 0 }
-				margin_bottom = 10			
-					
-				textbox = {				
-					visible = "[GreaterThan_CFixedPoint(WarGoal.GetInfamyAmount, '(CFixedPoint)0')]"
-					tooltip = "WARGOAL_INFAMY_TOOLTIP"
-					using = fontsize_large
-					text = "WARGOAL_INFAMY"
-					autoresize = yes
-					maximumsize = { 100 -1 }
-					multiline = yes				
-				}	
+				position = { -15 0 }
+				parentanchor = right|vcenter
+				spacing = 10
 
-				textbox = {
-					tooltip = "WARGOAL_MANEUVERS_COST_TOOLTIP"
-					using = fontsize_large
-					text = "WARGOAL_MANEUVERS_COST"
-					autoresize = yes
-					maximumsize = { 100 -1 }
-					multiline = yes
-					margin_left = 10
+				flowcontainer = {
+					direction = horizontal
+					parentanchor = vcenter		
+						
+					textbox = {				
+						visible = "[GreaterThan_CFixedPoint(WarGoal.GetInfamyAmount, '(CFixedPoint)0')]"
+						tooltip = "WARGOAL_INFAMY_TOOLTIP"
+						using = fontsize_large
+						text = "WARGOAL_INFAMY"
+						autoresize = yes
+						maximumsize = { 100 -1 }
+						minimumsize = { 60 -1 }
+						multiline = yes
+						parentanchor = vcenter
+						align = right|nobaseline				
+					}	
+
+					textbox = {
+						tooltip = "WARGOAL_MANEUVERS_COST_TOOLTIP"
+						using = fontsize_large
+						text = "WARGOAL_MANEUVERS_COST"
+						autoresize = yes
+						maximumsize = { 100 -1 }
+						minimumsize = { 60 -1 }
+						multiline = yes
+						margin_left = 10
+						parentanchor = vcenter
+						align = right|nobaseline
+					}				
 				}				
-			}				
+
+				flag_icon = {
+					size = { 48 32 }
+					visible = "[WarGoal.HasCountryCreation]"
+					block "flag_definition" {			
+						texture = "[WarGoal.GetCountryCreation.GetDefinition.GetFlag('release').GetSmallFlagTexture]"
+						frame = "[WarGoal.GetCountryCreation.GetDefinition.GetFlag('release').GetSmallFlagFrame]"			
+					}
+					framesize = "[GetSmallFlagFrameSize]"
+					blockoverride "flag_tooltip" {}
+					parentanchor = vcenter
+					onmousehierarchyenter = "[AccessHighlightManager.HighlightCountryFormation(WarGoal.GetCountryCreation.Self)]"
+					onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
+					alwaystransparent = no
+				}
+				
+				small_flag = {
+					datacontext = "[WarGoal.GetTarget]"
+					parentanchor = vcenter
+				}
+			}
+
 
 			textbox = {
 				position = { 70 0 }
@@ -349,7 +377,9 @@ types wargoal_types
 				align = left|nobaseline
 				elide = right
 				fontsize_min = 14
-				size = { 270 40 }
+				maximumsize = { 260 -1 }
+				autoresize = yes
+				multiline = yes
 			}
 		}
 	}
@@ -366,7 +396,7 @@ types wargoal_types
 
 			icon = {
 				position = { 10 0 }
-				size = { 60 50 }
+				size = { 50 50 }
 				texture = "[WarGoalType.GetTexture]"
 				parentanchor = left|vcenter
 				widgetanchor = left|vcenter

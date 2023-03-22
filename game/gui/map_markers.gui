@@ -289,7 +289,7 @@ container = {
 				margin_bottom = 9
 				
 				textbox = {
-					text = "#BOLD [Market.GetNameNoFormatting]#!"
+					raw_text = "#BOLD [Market.GetNameNoFormatting]#!"
 					minimumsize = { 120 -1 }
 					autoresize = yes
 					align = center|nobaseline
@@ -317,7 +317,7 @@ flowcontainer = {
 		visible = "[And(Not(ObjectsEqual(Market.GetOwner, GetPlayer.Self)), Not(MapListPanelManager.HasCurrentInteraction))]"
 
 		item = {
-			trade_route_button_small = {}
+			trade_route_map_marker_list_item = {}
 		}
 	}
 
@@ -327,7 +327,7 @@ flowcontainer = {
 		visible = "[And(Not(ObjectsEqual(Market.GetOwner, GetPlayer.Self)), Not(MapListPanelManager.HasCurrentInteraction))]"
 
 		item = {
-			trade_route_button_small = {}
+			trade_route_map_marker_list_item = {}
 		}
 	}
 }
@@ -419,7 +419,7 @@ button = {
 
 		### MARKET ACCESS WARNING
 		textbox = {
-			visible = "[And(And(StateInfraMarker.IsConnectedMarker, LessThan_CFixedPoint(StateInfraMarker.GetState.GetMarketAccess, '(CFixedPoint)1')), ObjectsEqual(StateInfraMarker.GetState.GetMarket.GetOwner, GetPlayer.Self))]"
+			visible = "[And(And(StateInfraMarker.IsConnectedMarker, LessThan_CFixedPoint(StateInfraMarker.GetState.GetMarketAccess, '(CFixedPoint)1')), GreaterThan_CFixedPoint(StateInfraMarker.GetState.GetMarket.GetMarketSharePercentageFor( GetPlayer.Self ), '(CFixedPoint)0'))]"
 			text = "MARKET_ACCESS_WARNING"
 			autoresize = yes
 			align = center|nobaseline
@@ -522,7 +522,7 @@ container = {
 	}
 
 	textbox = {
-		text = "#bold [EventMarker.GetAnyEvent.GetRemainingDays]#!"
+		raw_text = "#bold [EventMarker.GetAnyEvent.GetRemainingDays]#!"
 		autoresize = yes
 		parentanchor = hcenter|bottom
 		position = { -4 -4 }
@@ -633,7 +633,7 @@ container = {
 		textbox = {
 			multiline = yes
 			datacontext = "[StrategicRegionMarker.GetStrategicRegion]"
-			text = "#BOLD [StrategicRegion.GetNameNoFormatting]#!"
+			raw_text = "#BOLD [StrategicRegion.GetNameNoFormatting]#!"
 			autoresize = yes
 			align = hcenter|nobaseline
 			parentanchor = top|hcenter
@@ -1336,7 +1336,7 @@ container = {
 		}
 		textbox = {
 			parentanchor = vcenter
-			text = "#bold [CityMarker.GetCityName]#!"
+			raw_text = "#bold [CityMarker.GetCityName]#!"
 			align = nobaseline
 			autoresize = yes
 			font = "PlayfairDisplay"
@@ -1573,7 +1573,7 @@ container = {
 				
 				textbox = {
 					position = { -23 0 }
-					text = "[Battle.GetCurrentAttackerUnits|0v]#!"
+					raw_text = "[Battle.GetCurrentAttackerUnits|0v]#!"
 					autoresize = yes
 					align = right|nobaseline
 					parentanchor = right|vcenter
@@ -1591,7 +1591,7 @@ container = {
 				
 				textbox = {
 					position = { 23 0 }
-					text = "[Battle.GetCurrentDefenderUnits|0v]#!"
+					raw_text = "[Battle.GetCurrentDefenderUnits|0v]#!"
 					autoresize = yes
 					align = left|nobaseline
 					parentanchor = left|vcenter
@@ -1642,7 +1642,7 @@ container = {
 					}
 					
 					textbox = {
-						text = "[Battle.GetCurrentAttackerUnits|0v]#!"
+						raw_text = "[Battle.GetCurrentAttackerUnits|0v]#!"
 						autoresize = yes
 						align = right|nobaseline
 						parentanchor = right|vcenter
@@ -1688,7 +1688,7 @@ container = {
 					}
 					
 					textbox = {
-						text = "[Battle.GetCurrentDefenderUnits|0v]#!"
+						raw_text = "[Battle.GetCurrentDefenderUnits|0v]#!"
 						autoresize = yes
 						align = left|nobaseline
 						parentanchor = left|vcenter
@@ -1766,7 +1766,7 @@ container = {
 		
 		textbox = {
 			visible = "[Not(Country.IsValid)]"
-			text = "?"
+			raw_text = "?"
 			align = center|nobaseline
 			size = { 100% 100% }
 		}
@@ -1835,12 +1835,14 @@ button = {
 	}
 }
 
-### FRONTS
-types front_marker {
-	type front_marker_content = container {
-
-		resizeparent = yes
-
+container = {
+	name = "front_marker"
+	layer = layer_map_markers
+	parentanchor = bottom|hcenter
+	onmousehierarchyenter = "[AccessHighlightManager.HighlightFront(FrontMarker.GetFront)]"
+	onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
+	
+	container = {
 		flowcontainer = {
 			direction = vertical
 			parentanchor = bottom|hcenter
@@ -1849,6 +1851,19 @@ types front_marker {
 			container = {
 				minimumsize = { 280 -1 }
 				parentanchor = hcenter
+
+				state = {
+					name = _show
+					duration = 0.2
+					alpha = 1
+					using = Animation_Curve_Default
+				}
+				state = {
+					name = _hide
+					duration = 0.2
+					alpha = 0
+					using = Animation_Curve_Default
+				}
 				
 				visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
 				
@@ -2091,15 +2106,31 @@ types front_marker {
 
 			### FRONT SUMMARY (ZOOMED IN OR IS HIGHLIGHTED)
 			container =  {
+				onmousehierarchyenter = "[AccessHighlightManager.HighlightFront(FrontMarker.GetFront)]"
+				alwaystransparent = no
 				visible = "[Or(IsZoomLevelNear, FrontMarker.GetFront.IsBeingHighlighted)]"
 				minimumsize = { 280 -1 }
 				parentanchor = hcenter
+
+				state = {
+					name = _show
+					duration = 0.2
+					alpha = 1
+					using = Animation_Curve_Default
+				}
+				state = {
+					name = _hide
+					duration = 0.2
+					alpha = 0
+					using = Animation_Curve_Default
+				}
 				
 				### LEFT SIDE
 				flowcontainer = {
 					direction = vertical
 					parentanchor = left|bottom
 					datacontext = "[FrontMarker.GetFront.GetFirstLeadingCountry]"
+					visible = "[Or(GreaterThan_int32(FrontMarker.AccessFront.GetNumFirstCombatUnits, '(int32)0'), GreaterThan_int32( FrontMarker.AccessFront.GetNumFirstCombatUnitsTravelingRaw, '(int32)0' ))]"
 					
 					widget = {
 						size = { 110 10 }
@@ -2129,17 +2160,18 @@ types front_marker {
 								visible = no
 								parentanchor = center
 								autoresize = yes
-								text = "#bold [Front.GetFirstAdvanceProgress|1] / [Front.GetRequiredAdvanceProgressForBattle|0]#!"
+								raw_text = "#bold [Front.GetFirstAdvanceProgress|1] / [Front.GetRequiredAdvanceProgressForBattle|0]#!"
 								align = nobaseline
 								using = fontsize_small
 							}
 						}
 					}
 					
-					icon = {
+					button = {
 						using = colored_panel
 						color = "[Country.GetMapColor]"
 						size = { 120 25 }
+						onclick = "[FrontMarker.OnClick]"
 						
 						hbox = {
 							layoutpolicy_horizontal = expanding
@@ -2163,7 +2195,7 @@ types front_marker {
 							textbox = {
 								layoutpolicy_horizontal = expanding
 								size = { 0 20 }
-								text = "#variable [FrontMarker.AccessFront.GetNumFirstCombatUnits]#!"
+								raw_text = "#variable [FrontMarker.AccessFront.GetNumFirstCombatUnits]#!"
 								tooltip = "[FrontMarker.AccessFront.GetNumFirstCombatUnitsTooltip]"
 								align = right|nobaseline
 								margin_right = 7
@@ -2173,6 +2205,7 @@ types front_marker {
 							
 							tiny_flag = {
 								blockoverride "onhover" {}
+								distribute_visual_state = no
 							}
 						}
 					}
@@ -2203,7 +2236,7 @@ types front_marker {
 								
 								textbox = {
 									size = { 40 16 }
-									text = "#v [FrontMarker.AccessFront.GetNumFirstCombatUnitsTravelingRaw]#!"
+									raw_text = "#v [FrontMarker.AccessFront.GetNumFirstCombatUnitsTravelingRaw]#!"
 									tooltip = "[FrontMarker.AccessFront.GetNumFirstCombatUnitsTravelingTooltip]"
 									align = center|nobaseline
 									using = fontsize_small
@@ -2220,6 +2253,7 @@ types front_marker {
 					direction = vertical
 					parentanchor = right|bottom
 					datacontext = "[FrontMarker.GetFront.GetSecondLeadingCountry]"
+					visible = "[Or(GreaterThan_int32(FrontMarker.AccessFront.GetNumSecondCombatUnits, '(int32)0'), GreaterThan_int32( FrontMarker.AccessFront.GetNumSecondCombatUnitsTravelingRaw, '(int32)0' ))]"
 					
 					widget = {
 						size = { 110 10 }
@@ -2259,17 +2293,18 @@ types front_marker {
 								visible = no
 								parentanchor = center
 								autoresize = yes
-								text = "#bold [Front.GetSecondAdvanceProgress|1] / [Front.GetRequiredAdvanceProgressForBattle|0]#!"
+								raw_text = "#bold [Front.GetSecondAdvanceProgress|1] / [Front.GetRequiredAdvanceProgressForBattle|0]#!"
 								align = nobaseline
 								using = fontsize_small
 							}
 						}
 					}
 
-					icon = {
+					button = {
 						using = colored_panel
 						color = "[Country.GetMapColor]"
 						size = { 120 25 }
+						onclick = "[FrontMarker.OnClick]"
 						
 						hbox = {
 							layoutpolicy_horizontal = expanding
@@ -2279,12 +2314,13 @@ types front_marker {
 							
 							tiny_flag = {
 								blockoverride "onhover" {}
+								distribute_visual_state = no
 							}
 							
 							textbox = {
 								layoutpolicy_horizontal = expanding
 								size = { 0 20 }
-								text = "#variable [FrontMarker.AccessFront.GetNumSecondCombatUnits]#!"
+								raw_text = "#variable [FrontMarker.AccessFront.GetNumSecondCombatUnits]#!"
 								tooltip = "[FrontMarker.AccessFront.GetNumSecondCombatUnitsTooltip]"
 								align = left|nobaseline
 								margin_left = 7
@@ -2327,7 +2363,7 @@ types front_marker {
 								
 								textbox = {
 									size = { 40 16 }
-									text = "#v [FrontMarker.AccessFront.GetNumSecondCombatUnitsTravelingRaw]#!"
+									raw_text = "#v [FrontMarker.AccessFront.GetNumSecondCombatUnitsTravelingRaw]#!"
 									tooltip = "[FrontMarker.AccessFront.GetNumSecondCombatUnitsTravelingTooltip]"
 									align = center|nobaseline
 									using = fontsize_small
@@ -2346,173 +2382,154 @@ types front_marker {
 			}
 		}
 		
-		### FRONT INDICATOR - LARGE
-		flowcontainer = {
+		container = {
 			parentanchor = bottom|hcenter
-			visible = "[Or(IsZoomLevelNear, FrontMarker.GetFront.IsBeingHighlighted)]"
 			
-			background = {
-				visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
-				texture = "gfx/interface/map_markers/round_highlight.dds"
-			}
-			
-			background = {
-				visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
-				texture = "gfx/interface/map_markers/front_indicator_behind.dds"
-				margin = { 20 20 }
-			}
-			
-			icon = {
-				texture = "gfx/interface/map_markers/front_indicator.dds"
-				size = { 60 60 }
-				tooltip = "[FrontMarker.GetFront.GetPlayerAdvantageDesc]"
-				visible = "[And(Not( IsDataModelEmpty( FrontMarker.AccessFront.AccessFirstCountries ) ), Not( IsDataModelEmpty( FrontMarker.AccessFront.AccessSecondCountries ) ) ) ]"
-				framesize = { 188 188 }
-				frame = "[FrontMarker.GetFront.GetAdvantageFrame]"
-				using = tooltip_below
+			### FRONT INDICATOR - LARGE
+			flowcontainer = {
+				visible = "[Or(IsZoomLevelNear, FrontMarker.GetFront.IsBeingHighlighted)]"
 				
-				textbox = {
-					visible = "[Not(StringIsEmpty( FrontMarker.GetFront.GetPlayerAdvantageDesc ))]"
-					using = tooltip_above
-					text = "#bold [FrontMarker.GetFront.GetPlayerAdvantageRaw|+]#!"
-					autoresize = yes
-					align = center|nobaseline
-					parentanchor = center
+				background = {
+					visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
+					texture = "gfx/interface/map_markers/round_highlight.dds"
 				}
-				textbox = {
-					visible = "[StringIsEmpty( FrontMarker.GetFront.GetPlayerAdvantageDesc )]"
-					text = "?"
-					using = tooltip_above
-					autoresize = yes
-					align = center|nobaseline
-					parentanchor = center
-					margin_left = 10
-					margin_right = 10
+				
+				background = {
+					visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
+					texture = "gfx/interface/map_markers/front_indicator_behind.dds"
+					margin = { 20 20 }
+				}
+				
+				icon = {
+					texture = "gfx/interface/map_markers/front_indicator.dds"
+					size = { 60 60 }
+					tooltip = "[FrontMarker.GetFront.GetPlayerAdvantageDesc]"
+					visible = "[And(Not( IsDataModelEmpty( FrontMarker.AccessFront.AccessFirstCountries ) ), Not( IsDataModelEmpty( FrontMarker.AccessFront.AccessSecondCountries ) ) ) ]"
+					framesize = { 188 188 }
+					frame = "[FrontMarker.GetFront.GetAdvantageFrame]"
+					using = tooltip_below
+					
+					textbox = {
+						alpha = "[TransparentIfFalse(Or(GreaterThan_int32(FrontMarker.AccessFront.GetNumFirstCombatUnits, '(int32)0'), GreaterThan_int32( FrontMarker.AccessFront.GetNumSecondCombatUnits, '(int32)0' )))]"
+						visible = "[Not(StringIsEmpty( FrontMarker.GetFront.GetPlayerAdvantageDesc ))]"
+						using = tooltip_below
+						raw_text = "#bold [FrontMarker.GetFront.GetPlayerAdvantageRaw|+]#!"
+						autoresize = yes
+						align = center|nobaseline
+						parentanchor = center
+					}
+					textbox = {
+						visible = "[StringIsEmpty( FrontMarker.GetFront.GetPlayerAdvantageDesc )]"
+						raw_text = "?"
+						using = tooltip_below
+						autoresize = yes
+						align = center|nobaseline
+						parentanchor = center
+						margin_left = 10
+						margin_right = 10
+					}
+				}
+			}
+
+			### FRONT INDICATOR - MEDIUM
+			flowcontainer = {
+				visible = "[And(IsZoomLevelMid, Not(FrontMarker.GetFront.IsBeingHighlighted))]"
+				
+				background = {
+					visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
+					texture = "gfx/interface/map_markers/round_highlight.dds"
+				}
+				
+				background = {
+					visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
+					texture = "gfx/interface/map_markers/front_indicator_behind.dds"
+					margin = { 20 20 }
+				}
+				
+				icon = {
+					texture = "gfx/interface/map_markers/front_indicator.dds"
+					size = { 45 45 }
+					tooltip = "[FrontMarker.GetFront.GetPlayerAdvantageDesc]"
+					visible = "[And(Not( IsDataModelEmpty( FrontMarker.AccessFront.AccessFirstCountries ) ), Not( IsDataModelEmpty( FrontMarker.AccessFront.AccessSecondCountries ) ) ) ]"
+					framesize = { 188 188 }
+					frame = "[FrontMarker.GetFront.GetAdvantageFrame]"
+					using = tooltip_below
+					
+					textbox = {
+						alpha = "[TransparentIfFalse(Or(GreaterThan_int32(FrontMarker.AccessFront.GetNumFirstCombatUnits, '(int32)0'), GreaterThan_int32( FrontMarker.AccessFront.GetNumSecondCombatUnits, '(int32)0' )))]"
+						visible = "[Not(StringIsEmpty( FrontMarker.GetFront.GetPlayerAdvantageDesc ))]"
+						using = tooltip_below
+						raw_text = "#bold [FrontMarker.GetFront.GetPlayerAdvantageRaw|+]#!"
+						autoresize = yes
+						align = center|nobaseline
+						parentanchor = center
+					}
+					textbox = {
+						visible = "[StringIsEmpty( FrontMarker.GetFront.GetPlayerAdvantageDesc )]"
+						raw_text = "?"
+						using = tooltip_below
+						autoresize = yes
+						align = center|nobaseline
+						parentanchor = center
+						margin_left = 10
+						margin_right = 10
+					}
+				}
+			}
+
+			### FRONT INDICATOR - SMALL
+			flowcontainer = {
+				visible = "[And(IsZoomLevelFar, Not(FrontMarker.GetFront.IsBeingHighlighted))]"
+				
+				background = {
+					visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
+					texture = "gfx/interface/map_markers/round_highlight.dds"
+				}
+				
+				background = {
+					visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
+					texture = "gfx/interface/map_markers/front_indicator_behind.dds"
+					margin = { 20 20 }
+				}
+				
+				icon = {
+					texture = "gfx/interface/map_markers/front_indicator.dds"
+					size = { 40 40 }
+					tooltip = "[FrontMarker.GetFront.GetPlayerAdvantageDesc]"
+					visible = "[And(Not( IsDataModelEmpty( FrontMarker.AccessFront.AccessFirstCountries ) ), Not( IsDataModelEmpty( FrontMarker.AccessFront.AccessSecondCountries ) ) ) ]"
+					framesize = { 188 188 }
+					frame = "[FrontMarker.GetFront.GetAdvantageFrame]"
+					using = tooltip_below
+					
+					textbox = {
+						alpha = "[TransparentIfFalse(Or(GreaterThan_int32(FrontMarker.AccessFront.GetNumFirstCombatUnits, '(int32)0'), GreaterThan_int32( FrontMarker.AccessFront.GetNumSecondCombatUnits, '(int32)0' )))]"
+						visible = "[Not(StringIsEmpty( FrontMarker.GetFront.GetPlayerAdvantageDesc ))]"
+						using = tooltip_below
+						raw_text = "#bold [FrontMarker.GetFront.GetPlayerAdvantageRaw|+]#!"
+						autoresize = yes
+						align = center|nobaseline
+						parentanchor = center
+					}
+					textbox = {
+						visible = "[StringIsEmpty( FrontMarker.GetFront.GetPlayerAdvantageDesc )]"
+						raw_text = "?"
+						using = tooltip_below
+						autoresize = yes
+						align = center|nobaseline
+						parentanchor = center
+						margin_left = 10
+						margin_right = 10
+					}
 				}
 			}
 		}
 
-		### FRONT INDICATOR - MEDIUM
-		flowcontainer = {
+		button = {
+			tooltip = "[FrontMarker.GetFront.GetPlayerAdvantageDesc]"
+			onclick = "[FrontMarker.OnClick]"
 			parentanchor = bottom|hcenter
-			visible = "[And(IsZoomLevelMid, Not(FrontMarker.GetFront.IsBeingHighlighted))]"
-			
-			background = {
-				visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
-				texture = "gfx/interface/map_markers/round_highlight.dds"
-			}
-			
-			background = {
-				visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
-				texture = "gfx/interface/map_markers/front_indicator_behind.dds"
-				margin = { 20 20 }
-			}
-			
-			icon = {
-				texture = "gfx/interface/map_markers/front_indicator.dds"
-				size = { 45 45 }
-				tooltip = "[FrontMarker.GetFront.GetPlayerAdvantageDesc]"
-				visible = "[And(Not( IsDataModelEmpty( FrontMarker.AccessFront.AccessFirstCountries ) ), Not( IsDataModelEmpty( FrontMarker.AccessFront.AccessSecondCountries ) ) ) ]"
-				framesize = { 188 188 }
-				frame = "[FrontMarker.GetFront.GetAdvantageFrame]"
-				using = tooltip_below
-				
-				textbox = {
-					visible = "[Not(StringIsEmpty( FrontMarker.GetFront.GetPlayerAdvantageDesc ))]"
-					using = tooltip_above
-					text = "#bold [FrontMarker.GetFront.GetPlayerAdvantageRaw|+]#!"
-					autoresize = yes
-					align = center|nobaseline
-					parentanchor = center
-				}
-				textbox = {
-					visible = "[StringIsEmpty( FrontMarker.GetFront.GetPlayerAdvantageDesc )]"
-					text = "?"
-					using = tooltip_above
-					autoresize = yes
-					align = center|nobaseline
-					parentanchor = center
-					margin_left = 10
-					margin_right = 10
-				}
-			}
-		}
-
-		### FRONT INDICATOR - SMALL
-		flowcontainer = {
-			parentanchor = bottom|hcenter
-			visible = "[And(IsZoomLevelFar, Not(FrontMarker.GetFront.IsBeingHighlighted))]"
-			
-			background = {
-				visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
-				texture = "gfx/interface/map_markers/round_highlight.dds"
-			}
-			
-			background = {
-				visible = "[FrontMarker.GetFront.IsBeingHighlighted]"
-				texture = "gfx/interface/map_markers/front_indicator_behind.dds"
-				margin = { 20 20 }
-			}
-			
-			icon = {
-				texture = "gfx/interface/map_markers/front_indicator.dds"
-				size = { 40 40 }
-				tooltip = "[FrontMarker.GetFront.GetPlayerAdvantageDesc]"
-				visible = "[And(Not( IsDataModelEmpty( FrontMarker.AccessFront.AccessFirstCountries ) ), Not( IsDataModelEmpty( FrontMarker.AccessFront.AccessSecondCountries ) ) ) ]"
-				framesize = { 188 188 }
-				frame = "[FrontMarker.GetFront.GetAdvantageFrame]"
-				using = tooltip_below
-				
-				textbox = {
-					visible = "[Not(StringIsEmpty( FrontMarker.GetFront.GetPlayerAdvantageDesc ))]"
-					using = tooltip_above
-					text = "#bold [FrontMarker.GetFront.GetPlayerAdvantageRaw|+]#!"
-					autoresize = yes
-					align = center|nobaseline
-					parentanchor = center
-				}
-				textbox = {
-					visible = "[StringIsEmpty( FrontMarker.GetFront.GetPlayerAdvantageDesc )]"
-					text = "?"
-					using = tooltip_above
-					autoresize = yes
-					align = center|nobaseline
-					parentanchor = center
-					margin_left = 10
-					margin_right = 10
-				}
-			}
-		}
-	}
-}
-
-container = {
-	alwaystransparent = yes
-	name = "front_marker"
-	layer = layer_map_markers
-	parentanchor = bottom|hcenter
-	using = clickthrough_blocker
-	allow_outside = yes
-	onmousehierarchyenter = "[AccessHighlightManager.HighlightFront(FrontMarker.GetFront)]"
-	onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-	
-	button = {
-		visible = "[Not( MapInteractions.IsActiveMapInteraction( 'commander_order_front' ))]"
-		onclick = "[InformationPanelBar.OpenFrontPanel(FrontMarker.AccessFront)]"
-		size = { 70 70 }
-		allow_outside = yes
-		front_marker_content = {
-			parentanchor = bottom|hcenter
-		}
-	}
-	
-	button = {
-		visible = "[MapInteractions.IsActiveMapInteraction( 'commander_order_front' )]"
-		onclick = "[FrontMarker.OnInteractionClick]"
-		size = { 70 70 }
-		allow_outside = yes
-		front_marker_content = {
-			parentanchor = bottom|hcenter
+			using = tooltip_below
+			size = { 70 70 }
 		}
 	}
 }
@@ -2551,7 +2568,7 @@ flowcontainer = {
 				textbox = {
 					layoutpolicy_horizontal = expanding
 					size = { 0 30 }
-					text = "#bold [InterestGroup.GetClout|%1]#!"
+					raw_text = "#bold [InterestGroup.GetClout|%1]#!"
 					margin = { 5 0 }
 					align = left|nobaseline
 					using = fontsize_large
@@ -2579,7 +2596,7 @@ flowcontainer = {
 				textbox = {
 					layoutpolicy_horizontal = expanding
 					size = { 0 25 }
-					text = "#bold [InterestGroup.GetClout|%1]#!"
+					raw_text = "#bold [InterestGroup.GetClout|%1]#!"
 					margin = { 5 0 }
 					align = left|nobaseline
 				}
@@ -2705,7 +2722,7 @@ container = {
 	using = clickthrough_blocker
 
 	container = {
-		visible = "[Or(HQMarker.HasLandHQ, HQMarker.HasNavalHQ)]"
+		visible = "[Or(And(Or(HQMarker.HasLandHQ, HQMarker.HasNavalHQ), HQMarker.GetCountry.IsPlayer), HQMarker.GetEitherHQ.IsBeingHighlighted)]"
 		
 		using = small_nib
 		button = {
@@ -2721,7 +2738,7 @@ container = {
 			datacontext = "[HQMarker.GetEitherHQ]"
 			tooltip = "HQ_PANEL_TOTAL_TOTAL_TOOLTIP"
 			size = { 100% 100% }
-			onclick = "[InformationPanelBar.OpenCountryPanelTab(HQMarker.GetCountry.Self, 'information')]"
+			onclick = "[InformationPanelBar.OpenCountryPanelTab(HQMarker.GetCountry.Self, 'default')]"
 		}
 		
 		background = {
@@ -2817,7 +2834,7 @@ container = {
 						visible = "[Or( GreaterThan_int32(Hq.GetTotalUnits, '(int32)0'), Not(IsDataModelEmpty(Hq.GetLocationCommanders)))]"
 						autoresize = yes
 						align = center|nobaseline
-						text = "@flotillas! #v [Hq.GetTotalUnits]#!"
+						raw_text = "@flotillas! #v [Hq.GetTotalUnits]#!"
 						minimumsize = { 120 -1 }
 					}
 				}
@@ -2978,7 +2995,7 @@ container = {
 		textbox = {
 			visible = "[GreaterThan_CFixedPoint(State.GetTaxationRevenue, '(CFixedPoint)0')]"
 			tooltip = "[State.GetTaxationRevenueTooltip]"
-			text = "#variable [State.GetTaxationRevenue|+=d]#!"
+			raw_text = "#variable [State.GetTaxationRevenue|+=d]#!"
 			autoresize = yes
 			align = left|nobaseline
 			parentanchor = hcenter
@@ -2990,7 +3007,7 @@ container = {
 			autoresize = yes
 			align = right|nobaseline
 			tooltip = "[State.GetGovernmentExpensesTooltip]"
-			text = "#variable [State.GetGovernmentExpenses|+d]#!"
+			raw_text = "#variable [State.GetGovernmentExpenses|+d]#!"
 			parentanchor = hcenter
 			using = fontsize_small
 		}
@@ -3018,6 +3035,38 @@ button = {
 			tooltip = "TOOLTIP_MASS_MIGRATION_TARGET"
 		}
 	}
+}
+
+### STRATEGIC OBJECTIVE
+button = {
+	name = "strategic_objective_marker"
+	layer = layer_map_markers
+	datacontext = "[StateMarker.GetState]"
+	parentanchor = bottom|hcenter
+	tooltip = "STATE_STRATEGIC_OBJECTIVE_TOOLTIP"
+	
+	icon = {
+		parentanchor = bottom|hcenter
+		size = { 11 8 }
+		position = { 0 4 }
+		texture = "/gfx/interface/map_markers/small_nib.dds"
+	}
+
+	flowcontainer = {
+		resizeparent = yes
+
+		icon = {
+			visible = "[IsZoomLevelNear]"
+			texture = "gfx/interface/icons/lens_toolbar_icons/designate_strategic_objective_lens_option.dds"
+			size = { 50 50 }
+		}
+		icon = {
+			visible = "[Not(IsZoomLevelNear)]"
+			texture = "gfx/interface/icons/lens_toolbar_icons/designate_strategic_objective_lens_option.dds"
+			size = { 36 36 }
+		}
+	}
+	
 }
 
 ### STATE PRICE OF GOODS

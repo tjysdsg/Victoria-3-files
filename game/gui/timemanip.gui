@@ -28,7 +28,7 @@ template speed_button_1
 	size = { 24 31 }
 	using = speedometer_set_speed_properties
 	onclick = "[TimeKeeper.SetGameSpeed('(int32)0')]"
-	shortcut = "speed_1"
+	input_action = "speed_1"
 	tooltip = "CHANGE_SPEED_TOOLTIP_1"
 }
 template speed_button_2
@@ -38,7 +38,7 @@ template speed_button_2
 	size = { 32 34 }
 	using = speedometer_set_speed_properties
 	onclick = "[TimeKeeper.SetGameSpeed('(int32)1')]"
-	shortcut = "speed_2"
+	input_action = "speed_2"
 	tooltip = "CHANGE_SPEED_TOOLTIP_2"
 }
 template speed_button_3
@@ -48,7 +48,7 @@ template speed_button_3
 	size = { 37 23 }
 	using = speedometer_set_speed_properties
 	onclick = "[TimeKeeper.SetGameSpeed('(int32)2')]"
-	shortcut = "speed_3"
+	input_action = "speed_3"
 	tooltip = "CHANGE_SPEED_TOOLTIP_3"
 }
 template speed_button_4
@@ -58,7 +58,7 @@ template speed_button_4
 	size = { 32 34 }
 	using = speedometer_set_speed_properties
 	onclick = "[TimeKeeper.SetGameSpeed('(int32)3')]"
-	shortcut = "speed_4"
+	input_action = "speed_4"
 	tooltip = "CHANGE_SPEED_TOOLTIP_4"
 }
 template speed_button_5
@@ -68,7 +68,7 @@ template speed_button_5
 	size = { 24 31 }
 	using = speedometer_set_speed_properties
 	onclick = "[TimeKeeper.SetGameSpeed('(int32)4')]"
-	shortcut = "speed_5"
+	input_action = "speed_5"
 	tooltip = "CHANGE_SPEED_TOOLTIP_5"
 }
 
@@ -278,9 +278,8 @@ types timekeeper
 	}
 	
 
-	type timemanip = widget {
+	type timemanip = container {
 		name = "timemanip"
-		size = { 440 125 }
 		alwaystransparent = no
 		using = clickthrough_blocker
 		visible = "[And( And( Not( IsPauseMenuShown ), Not( IsGameOverScreenShown )), IsInGame)]"
@@ -288,6 +287,201 @@ types timekeeper
 		
 		using = default_fade_in_out
 		
+		### CONSTRUCTION
+		widget = {
+			name = "tutorial_highlight_outliner_construction"
+			size = { 410 75 }
+			position = { 0 76 }
+			parentanchor = right
+			using = fullscreen_hide
+			
+			background = {
+				texture = "gfx/interface/main_hud/topbar_bg.dds"
+				mirror = horizontal
+				shaderfile = "gfx/FX/pdxgui_default.shader"
+				spriteType = Corneredstretched
+				spriteborder = { 0 0 }
+				spriteborder_bottom = 94
+				spriteborder_right = 100
+				texture_density = 2
+				using = hud_elements_alpha
+				
+				modify_texture = {
+					texture = "gfx/interface/backgrounds/default_bg_shading.dds"
+					spriteType = Corneredstretched
+					spriteborder = { 0 0 }
+					blend_mode = overlay
+					alpha = 0.5
+				}
+				modify_texture = {
+					using = texture_velvet
+				}
+				modify_texture = {
+					using = fancy_pattern
+				}
+			}
+			icon = {
+				size = { 100% 100% }
+				texture = "gfx/interface/main_hud/topbar_side_dec_simple.dds"
+				mirror = horizontal
+				spriteType = Corneredstretched
+				spriteborder = { 0 0 }
+				spriteborder_bottom = 94
+				spriteborder_right = 110
+				texture_density = 2
+				
+				using = hud_shiny_effect
+			}
+			
+			flowcontainer = {
+				position = { 25 -2 }
+				parentanchor = vcenter
+				datacontext = "[AccessMetaPlayer.AccessPlayedOrObservedCountry]"
+				spacing = 10
+
+				# Hidden buttons to toggle pause/unpause
+				button = {
+					size = { 0 0 }
+					onclick = "[Execute( Country.PauseConstruction )]"
+					enabled = "[And(IsValid( Country.PauseConstruction ), Country.HasConstructionQueued)]"
+					visible = "[Not(Country.IsConstructionPaused)]"
+					input_action = "toggle_construction_queue_pause"
+				}
+
+				button = {
+					size = { 0 0 }
+					onclick = "[Execute( Country.ResumeConstruction )]"
+					enabled = "[IsValid( Country.ResumeConstruction )]"
+					visible = "[Country.IsConstructionPaused]"
+					input_action = "toggle_construction_queue_pause"
+				}
+
+				button = {
+					parentanchor = vcenter
+					size = { 100 58 }
+					using = default_button
+					onclick = "[InformationPanelBar.OpenPanelTab('production_methods', 'construction_queues')]"
+					enabled = "[Country.IsValid]"
+					tooltip = "CONSTRUCTION_QUEUE_TOOLTIP"
+					input_action = construction_queue
+
+					flowcontainer = {
+						direction = vertical
+
+						widget = {
+							parentanchor = hcenter
+							size = { 32 32 }
+							
+							icon = {
+								visible = "[Not(Country.IsConstructionPaused)]"
+								parentanchor = hcenter
+								size = { 32 32 }
+								position = { 0 -3 }
+								#onclick = "[Execute( Country.PauseConstruction )]"
+								#enabled = "[And(IsValid( Country.PauseConstruction ), Country.HasConstructionQueued)]"
+								texture = "gfx/interface/icons/state_status_icons/has_construction.dds"
+							}
+
+							icon = {
+								parentanchor = hcenter
+								#onclick = "[Execute( Country.ResumeConstruction )]"
+								#enabled = "[IsValid( Country.ResumeConstruction )]"
+								position = { 0 -3 }
+								size = { 32 32 }
+								visible = "[Country.IsConstructionPaused]"
+								texture = "gfx/interface/icons/state_status_icons/has_construction_paused.dds"
+							}
+						}
+
+
+						textbox = {
+							parentanchor = hcenter
+							align = hcenter|nobaseline
+							text = "CONSTRUCTION_VALUE"
+							autoresize = yes
+							fontsize_min = 12
+							maximumsize = { 100 -1 }
+							minimumsize = { 100 -1 }
+							margin_left = 5
+							margin_top = -2
+						}
+					}
+				}
+
+
+				flowcontainer = {
+					direction = vertical
+					parentanchor = vcenter
+					mini_construction_queue = {
+						visible = "[Country.HasConstructionQueued]"
+						
+						blockoverride "alpha" {
+							#alpha = "[TransparentIfZero_int32(Country.GetNumInactiveAndNonShownGovernmentConstructionQueueElements)]"
+						}
+
+						blockoverride "tooltip" {
+							tooltip = "NUM_GOVERNMENT_CONSTRUCTION_TOOLTIP"
+						}
+
+						blockoverride "icon" {
+							texture = "gfx/interface/icons/generic_icons/government_building_icon.dds"
+						}
+
+						blockoverride "text" {
+							raw_text = "[Country.GetNumInactiveAndNonShownGovernmentConstructionQueueElements|v=]"
+						}
+
+						blockoverride "text_visible" {
+							#visible = "[GreaterThan_int32(Country.GetNumInactiveAndNonShownGovernmentConstructionQueueElements, '(int32)15')]"
+						}
+
+						blockoverride "buildings_datamodel" {
+							datamodel = "[Country.AccessShownCurrentlyConstructingGovernmentQueue]"
+						}
+					}
+	
+					mini_construction_queue = {
+						visible = "[And(Country.HasConstructionQueued, Country.ShouldShowPrivateConstructionQueue)]"
+						
+						blockoverride "alpha" {	
+							#alpha = "[TransparentIfZero_int32(Country.GetNumInactiveAndNonShownPrivateConstructionQueueElements)]"
+						}
+
+						blockoverride "tooltip" {
+							tooltip = "NUM_PRIVATE_CONSTRUCTION_TOOLTIP"
+						}
+
+						blockoverride "icon" {
+							texture = "gfx/interface/icons/generic_icons/privately_owned_building_icon.dds"
+						}
+
+						blockoverride "text" {
+							raw_text = "[Country.GetNumInactiveAndNonShownPrivateConstructionQueueElements|v=]"
+						}
+
+						blockoverride "text_visible" {
+							#visible = "[GreaterThan_int32(Country.GetNumInactiveAndNonShownPrivateConstructionQueueElements, '(int32)15')]"
+						}
+
+						blockoverride "buildings_datamodel" {
+							datamodel = "[Country.AccessShownCurrentlyConstructingPrivateQueue]"
+						}
+					}
+				}
+
+
+				textbox = {
+					autoresize = yes
+					visible = "[Not(GetPlayer.HasConstructionQueued)]"
+					parentanchor = vcenter
+					align = left|nobaseline
+					text = "NOTHING_CONSTRUCTING"
+					minimumsize = { 215 -1 }
+					maximumsize = { 215 -1 }
+				}
+			}
+		}
+
 		### TOP RIGHT STUFF
 		widget = {
 			size = { 440 80 }
@@ -473,7 +667,7 @@ types timekeeper
 				size = { 180 80 }
 				parentanchor = right
 				name = "tutorial_highlight_speedometer"
-				position = { -43 1 }
+				position = { -53 1 }
 				
 				# animation triggers
 				widget = {
@@ -654,7 +848,7 @@ types timekeeper
 					onclick = "[TimeKeeper.TogglePause]"
 					tooltip = "[TimeKeeper.GetTogglePauseTooltip]"
 					using = play_continue_button_sound
-					shortcut = "pause"
+					input_action = "pause"
 				}
 				button = {
 					position = { 25 14 }
@@ -673,7 +867,7 @@ types timekeeper
 					onclick = "[TimeKeeper.TogglePause]"
 					tooltip = "[TimeKeeper.GetTogglePauseTooltip]"
 					using = play_pause_button_sound
-					shortcut = "pause"
+					input_action = "pause"
 				}
 				
 				
@@ -885,8 +1079,7 @@ types timekeeper
 					onclick = "[TimeKeeper.DecreaseGameSpeed]"
 					tooltip = "[TimeKeeper.GetDecreaseSpeedTooltip]"
 					using = decrease_button_sound
-					shortcut = "decrease_speed"
-					shortcut = "decrease_speed_2"
+					input_action = "decrease_speed"
 				}			
 				
 				button = {
@@ -897,8 +1090,7 @@ types timekeeper
 					onclick = "[TimeKeeper.IncreaseGameSpeed]"
 					tooltip = "[TimeKeeper.GetIncreaseSpeedTooltip]"
 					using = increase_button_sound
-					shortcut = "increase_speed"
-					shortcut = "increase_speed_2"
+					input_action = "increase_speed"
 				}
 			}
 			
@@ -910,194 +1102,131 @@ types timekeeper
 				spacing = 2
 				
 				### menu
-				button_icon_menu = {
-					size = { 32 32 }
-					onclick = "[ToggleMainMenu]"
-					enabled = "[Not( IsGameOverScreenShown )]"
+				flowcontainer = {
+					direction = horizontal
+					parentanchor = hcenter
+					spacing = 2
+
+					button_icon_settings = {
+						size = { 24 24 }
+						onclick = "[ToggleMessageSettings]"
+						parentanchor = vcenter
+						tooltip = "MESSAGE_SETTINGS"
+					}
+
+					button_icon_menu = {
+						size = { 32 32 }
+						onclick = "[ToggleMainMenu]"
+						enabled = "[Not( IsGameOverScreenShown )]"
+						parentanchor = vcenter
+						tooltip = "MAIN_MENU"
+					}
+
 				}
 				
-				### other
 				flowcontainer = {
-					direction = vertical
+					direction = horizontal
+					parentanchor = hcenter
+					spacing = 2
 					
-					#background = {
-					#	using = default_background
-					#	alpha = 1
-					#	#visible = when other is shown
-					#}
-					
-					#button_icon_other = {
-						button_icon_vickypedia = {
-							size = { 32 32 }
-							onclick = "[ToggleEncyclopedia]"
-							#onclick = toggle other
-						}
-						
-						#flowcontainer = {
-						#	#visible = when other is shown
-						#	direction = vertical
-						#	
-						#	button_icon_vickypedia = {
-						#		size = { 32 32 }
-						#		#onclick = "[]"
-						#	}
-						#	button_icon_music_player = {
-						#		size = { 32 32 }
-						#		#onclick = "[]"
-						#	}
-						#}
-					#}	
+					button_icon_vickypedia = {
+						size = { 24 24 }
+						onclick = "[ToggleEncyclopedia]"
+						tooltip = "HEADING_ENCYCLOPEDIA"
+					}
+					button_icon_music_player = {
+						size = { 24 24 }
+						onclick = "[ToggleMusicPlayer]"
+						tooltip = "MUSIC_PLAYER_HEADER"
+					}
 				}
 			}
 		}
 		
-		### CONSTRUCTION
+
+	}
+}
+
+types construction_in_outliner
+{
+	type mini_construction_queue = widget {
+		size = { 265 32 }
+
+		block "alpha" {}
+
+		block "tooltip" {
+			tooltip = "NUM_GOVERNMENT_CONSTRUCTION_TOOLTIP"
+		}
+
 		widget = {
-			name = "tutorial_highlight_outliner_construction"
-			size = { 410 50 }
-			parentanchor = right|bottom
-			using = fullscreen_hide
-			
-			background = {
-				texture = "gfx/interface/main_hud/topbar_bg.dds"
-				mirror = horizontal
-				shaderfile = "gfx/FX/pdxgui_default.shader"
-				spriteType = Corneredstretched
-				spriteborder = { 0 0 }
-				spriteborder_bottom = 94
-				spriteborder_right = 100
-				texture_density = 3
-				using = hud_elements_alpha
-				
-				modify_texture = {
-					texture = "gfx/interface/backgrounds/default_bg_shading.dds"
-					spriteType = Corneredstretched
-					spriteborder = { 0 0 }
-					blend_mode = overlay
-					alpha = 0.5
-				}
-				modify_texture = {
-					using = texture_velvet
-				}
-				modify_texture = {
-					using = fancy_pattern
-				}
-			}
+			size = { 32 32 }
+			parentanchor = vcenter
+		
 			icon = {
+				block "icon" {}
+
 				size = { 100% 100% }
-				texture = "gfx/interface/main_hud/topbar_side_dec_simple.dds"
-				mirror = horizontal
-				spriteType = Corneredstretched
-				spriteborder = { 0 0 }
-				spriteborder_bottom = 94
-				spriteborder_right = 110
-				texture_density = 3
-				
-				using = hud_shiny_effect
+				parentanchor = vcenter
+				position = { 0 -2 }
 			}
-			
-			flowcontainer = {
-				position = { 35 4 }
-				spacing = 5
+		}
 
-				button = {
-					size = { 120 37 }
-					onclick = "[InformationPanelBar.OpenPanelTab('production_methods', 'construction_queues')]"
-					enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
-					datacontext = "[GetPlayer]"
-					using = default_button
-					tooltip = "CONSTRUCTION_QUEUE_TOOLTIP"
-					using = tooltip_ws
-					parentanchor = vcenter
-					
+		textbox = {
+			block "text" {}
+			block "text_visible" {}
 
-					icon = {
-						parentanchor = left|vcenter
-						position = { 8 0 }
-						size = { 28 28 }
-						texture = "gfx/interface/icons/state_status_icons/has_construction.dds"
-						visible = "[Not(Country.IsConstructionPaused)]"
-					}
+			autoresize = yes
+			align = right|nobaseline
+			parentanchor = vcenter|right
+			minimumsize = { 60 -1 }
+			maximumsize = { 60 -1 }
+			margin_right = 10
+		}
 
-					icon = {
-						parentanchor = left|vcenter
-						position = { 8 0 }
-						size = { 28 28 }
-						texture = "gfx/interface/icons/state_status_icons/has_construction_paused.dds"
-						visible = "[Country.IsConstructionPaused]"
-					}
+		overlappingitembox = {
+			parentanchor = vcenter
+			position = { 33 0 }
+			size = { 172 30 }
 
-					textbox = {
-						parentanchor = right|vcenter
-						margin_right = 15
-						align = left|nobaseline
-						text = "CONSTRUCTION_VALUE"
-						autoresize = yes
-						elide = right
-						fontsize_min = 12
-						maximumsize = { 80 -1 }
-					}
-				}
-					
-				overlappingitembox = {
-					datamodel = "[AccessPlayer.AccessConstructionQueue]"
-					maximumsize = { 205 37 }
-					autoresize = yes
-				
-					item = {
-						button = {
+			block "buildings_datamodel" {}
+
+			item = {
+				widget = {
+					size = { 32 30 }
+					button = {
+						parentanchor = vcenter
+						datacontext = "[ConstructionQueueElement.GetBuilding]"
+						tooltipwidget = {
+							FancyTooltip_Building = {}
+						}
+						onclick = "[InformationPanelBar.OpenBuildingDetailsPanel(Building.AccessSelf)]"
+
+						size = { 30 30 }
+						texture = "[Building.GetTexture]"
+
+						default_progressbar_horizontal = {
 							datacontext = "[ConstructionQueueElement.GetBuilding]"
-							visible = "[ConstructionQueueElement.IsCurrentlyUnderConstruction]"
-							parentanchor = vcenter
-							onclick = "[InformationPanelBar.OpenBuildingDetailsPanel(ConstructionQueueElement.AccessBuilding)]"
-							onrightclick = "[RightClickMenuManager.ShowForBuilding(Building.AccessSelf)]"
-							onmousehierarchyenter = "[AccessHighlightManager.HighlightState(ConstructionQueueElement.GetState)]"
-							onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-
-							size = { 37 37 }
-							texture = "[Building.GetTexture]"
-							tooltip = "[ConstructionQueueElement.GetTooltip]"
-
-				
-							default_progressbar_horizontal = {
-								visible = "[ConstructionQueueElement.IsCurrentlyUnderConstruction]"
-								tooltip = "BUILDING_PROGRESS_TOOLTIP"
-								size = { 29 3 }
-								parentanchor = top|hcenter
-								position = { 0 5 }
-								
-								blockoverride "values" {
-									value = "[ConstructionQueueElement.CalcPercentComplete]"
-									min = 0
-									max = 1
-								}
+							size = { 24 2 }
+							parentanchor = hcenter
+							position = { 0 4 }
+							
+							blockoverride "values" {
+								value = "[ConstructionQueueElement.CalcPercentComplete]"
+								min = 0 
+								max = 1 
 							}
 						}
 					}
 				}
-
-				textbox = {
-					layoutpolicy_horizontal = expanding
-					visible = "[GreaterThan_int32(GetPlayer.GetNumInactiveConstructionQueueElements, '(int32)0')]"
-					size = { 0 30 }
-					align = left|nobaseline
-					parentanchor = vcenter
-					text = "IN_CONSTRUCTION_QUEUE"
-					using = tooltip_ws
-					tooltip = "IN_CONSTRUCTION_QUEUE_TOOLTIP"
-					fontsize_min = 10
-					elide = right
-					autoresize = yes
-				}
-
-				textbox = {
-					autoresize = yes
-					visible = "[Not(GetPlayer.HasConstructionQueued)]"
-					parentanchor = vcenter
-					align = left|nobaseline
-					text = "NOTHING_CONSTRUCTING"
-				}
 			}
+		}
+
+		background = {
+			using = entry_bg_simple
+			margin_left = -10
+			margin_top = -5
+			margin_bottom = -5
+			margin_right = 0
 		}
 	}
 }

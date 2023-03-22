@@ -15,123 +15,6 @@ types market_panel
 		using = default_list_position
 		direction = vertical
 
-		flowcontainer = {
-			using = default_list_position
-			visible = "[Market.CanCreateTradeRoutesInMarket(GetPlayer.Self)]"
-			direction = vertical
-			margin = { 0 15 }
-
-			possible_trade_routes = {}
-		}
-
-		flowcontainer = {
-			direction = vertical
-			parentanchor = hcenter
-			visible = "[Not(IsDataModelEmpty(Market.AccessInactivePlayerRoutes))]"
-			margin_top = 10
-			margin_bottom = 10
-			margin_left = 10
-			margin_right = 10
-
-			background = {
-				using = entry_bg
-			}
-			textbox = {
-				text = "INACTIVE_TRADE_ROUTES"
-				autoresize = yes
-				align = nobaseline
-				margin_bottom = 5
-			}
-			flowcontainer = {
-				direction = vertical
-				datamodel = "[Market.AccessInactivePlayerRoutes]"
-
-				item = {
-					traded_good_trade_route = {
-						blockoverride "first_flag_or_icon" {
-							icon = {
-								datacontext = "[TradeRoute.GetGoods]"
-								texture = "gfx/interface/market_view/trade_good_icon_bg.dds"
-								size = { 55 55 }
-								color = "[Goods.GetCategoryColor]"
-
-								tooltipwidget = {
-									FancyTooltip_Goods = {}
-								}
-								
-								icon = {
-									texture = "[Goods.GetTexture]"
-									size = { 40 40 }
-									parentanchor = center
-								}
-								icon = {
-									size = { 25 25 }
-									visible = "[Goods.HasGoodsShortage]"
-									texture = "gfx/interface/icons/generic_icons/goods_shortage.dds"
-									tooltip = "GOODS_SHORTAGE_TOOLTIP"
-									parentanchor = bottom
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		flowcontainer = {
-			direction = vertical
-			parentanchor = hcenter
-			visible = "[Not(IsDataModelEmpty(Market.AccessUnproductivePlayerRoutes))]"
-			margin_top = 10
-			margin_bottom = 10
-			margin_left = 10
-			margin_right = 10
-
-			background = {
-				using = entry_bg
-			}
-
-			textbox = {
-                text = "UNPRODUCTIVE_TRADE_ROUTES"
-                autoresize = yes
-                align = nobaseline
-                margin_bottom = 5
-            }
-            flowcontainer = {
-                direction = vertical
-                datamodel = "[Market.AccessUnproductivePlayerRoutes]"
-
-                item = {
-                    traded_good_trade_route = {
-                    	blockoverride "first_flag_or_icon" {
-							icon = {
-								datacontext = "[TradeRoute.GetGoods]"
-								texture = "gfx/interface/market_view/trade_good_icon_bg.dds"
-								size = { 55 55 }
-								color = "[Goods.GetCategoryColor]"
-
-								tooltipwidget = {
-									FancyTooltip_Goods = {}
-								}
-								
-								icon = {
-									texture = "[Goods.GetTexture]"
-									size = { 40 40 }
-									parentanchor = center
-								}
-								icon = {
-									size = { 25 25 }
-									visible = "[Goods.HasGoodsShortage]"
-									texture = "gfx/interface/icons/generic_icons/goods_shortage.dds"
-									tooltip = "GOODS_SHORTAGE_TOOLTIP"
-									parentanchor = bottom
-								}
-							}
-						}
-                    }
-                }
-            }
-        }
-
 		# Empty state, is a nested mess because the alternative of doing a [And(And(And(And)))] check is even less readable
 		container = {
 			using = default_list_position
@@ -165,38 +48,116 @@ types market_panel
 		}
 
 		flowcontainer = {
+			visible = "[Not(GetVariableSystem.Exists( 'trade_route_grouping' ))]"
+			parentanchor = hcenter
+			direction = vertical
+			margin_top = 10
+
+			widget = {
+				size = { @panel_width 30 }
+
+				hbox = {
+					sort_button = {
+						size = { 60 30 }
+						text = "TRADE_ROUTES_SORT_GOODS"
+						onclick = "[Market.SortTradeRoutes('goods')]" 
+						layoutpolicy_horizontal = expanding
+						tooltip = "TRADE_ROUTE_NAME_OF_GOODS"
+					}
+					sort_button = {
+						size = { 60 30 }
+						text = "TRADE_ROUTES_SORT_AMOUNT"
+						onclick = "[Market.SortTradeRoutes('amount')]"
+						layoutpolicy_horizontal = expanding
+						tooltip = "TRADE_ROUTE_NUMBER_OF_GOODS"
+					}
+					sort_button = {
+						size = { 45 30 }
+						text = "TRADE_ROUTES_SORT_DIRECTION"
+						onclick = "[Market.SortTradeRoutes('direction')]"
+						layoutpolicy_horizontal = expanding
+						tooltip = "TRADE_ROUTE_DIRECTION"
+					}
+					sort_button = {
+						size = { 60 30 }
+						text = "TRADE_ROUTES_SORT_COUNTRY"
+						onclick = "[Market.SortTradeRoutes('country')]"
+						layoutpolicy_horizontal = expanding
+						tooltip = "TRADE_ROUTE_COUNTRY"
+					}
+					sort_button = {
+						size = { 70 30 }
+						text = "TRADE_ROUTES_SORT_COST"
+						onclick = "[Market.SortTradeRoutes('cost')]"
+						layoutpolicy_horizontal = expanding
+						tooltip = "TRADE_ROUTE_CONVOY_COST"
+					}
+					sort_button = {
+						size = { 70 30 }
+						text = "TRADE_ROUTES_SORT_PRODUCTIVITY"
+						onclick = "[Market.SortTradeRoutes('productivity')]"
+						layoutpolicy_horizontal = expanding
+						tooltip = "TRADE_ROUTE_PRODUCTIVITY"
+					}
+					sort_button = {
+						size = { 100 30 }
+						text = "TRADE_ROUTES_SORT_REVENUE"
+						onclick = "[Market.SortTradeRoutes('revenue')]"
+						layoutpolicy_horizontal = expanding
+						tooltip = "TRADE_ROUTE_REVENUE"
+					}
+					sort_button = {
+						size = { 45 30 }
+						text = "TRADE_ROUTES_SORT_OWNER"
+						onclick = "[Market.SortTradeRoutes('owner')]"
+						layoutpolicy_horizontal = expanding
+					}
+				}
+			}
+
+			flowcontainer = {
+				direction = vertical
+				datamodel = "[Market.AccessAllTradeRoutes]"
+
+				item = {
+					trade_route_list_item = {}
+				}
+			}
+		}
+
+		flowcontainer = {
+			visible = "[GetVariableSystem.HasValue( 'trade_route_grouping', 'country' )]"
+			parentanchor = hcenter
+			direction = vertical
+			datamodel = "[Market.AccessAllCountriesWithTradeRoutes]"
+
+			item = {
+				trade_routes_grouped_by_country_summary = {}
+			}
+		}
+
+		flowcontainer = {
+			visible = "[GetVariableSystem.HasValue( 'trade_route_grouping', 'goods' )]"
+
 			direction = vertical
 			parentanchor = hcenter
 			using = default_list_position
-			margin_bottom = 10
 			datamodel = "[Market.AccessAllGoodsWithTradeRoutes]"
 
 			item = {
-				traded_good = {
-					blockoverride "onclick" {
-						onclick = "[GetVariableSystem.Toggle( Concatenate( 'market_goods_', MarketGoods.GetIDString ) )]"
-					}
-					
-					blockoverride "onclick_showmore" {
-						visible = "[Not(GetVariableSystem.Exists( Concatenate( 'market_goods_', MarketGoods.GetIDString )))]"
-					}
-
-					blockoverride "onclick_showless" {
-						visible = "[GetVariableSystem.Exists( Concatenate( 'market_goods_', MarketGoods.GetIDString ))]"
-					}	
-				}
+				trade_routes_grouped_by_goods_summary = {}
 			}
 		}
 		
 		widget = { size = { 10 15 }}
 	}
 
-	type traded_good = flowcontainer {
+	type trade_routes_grouped_by_goods_summary = flowcontainer {
 		datacontext = "[MarketGoods.GetGoods]"
 		datacontext = "[MarketGoods.GetMarket]"
 		direction = vertical
 		parentanchor = hcenter
-		margin_top = 15
+		margin_top = 10	
 
 		flowcontainer = {
 			maximumsize = { @panel_width 100 }
@@ -227,6 +188,18 @@ types market_panel
 				
 				### DROPDOWN / EXPAND
 				section_header_button = {
+					blockoverride "onclick" {
+						onclick = "[GetVariableSystem.Toggle( Concatenate( 'market_goods_', MarketGoods.GetIDString ) )]"
+					}
+					
+					blockoverride "onclick_showmore" {
+						visible = "[Not(GetVariableSystem.Exists( Concatenate( 'market_goods_', MarketGoods.GetIDString )))]"
+					}
+
+					blockoverride "onclick_showless" {
+						visible = "[GetVariableSystem.Exists( Concatenate( 'market_goods_', MarketGoods.GetIDString ))]"
+					}
+
 					blockoverride "layout" {
 						size = { 450 40 }
 					}
@@ -241,7 +214,7 @@ types market_panel
 
 					blockoverride "right_text" {
 						section_header_right_text = {
-							text = "@money![Goods.GetMarketPrice|0v] [Goods.GetCompareIconAgainstBasePrice( Goods.GetMarketPrice )] (#v [Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetMarketPrice)|%0=-]#!)"
+							raw_text = "@money![Goods.GetMarketPrice|0v] [Goods.GetCompareIconAgainstBasePrice( Goods.GetMarketPrice )] (#v [Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetMarketPrice)|%0=-]#!)"
 						}
 					}
 				}
@@ -256,7 +229,6 @@ types market_panel
 						hbox = {
 							alpha = "[TransparentIfTrue(EqualTo_CFixedPoint(MarketGoods.GetImportAmount, '(CFixedPoint)0'))]"
 							layoutpolicy_horizontal = expanding
-							#visible = "[GreaterThan_int32(MarketGoods.GetNumImportTradeRoutes, '(int32)0')]"
 							margin_left = 10
 							
 							icon = {
@@ -281,7 +253,6 @@ types market_panel
 						hbox = {
 							alpha = "[TransparentIfTrue(EqualTo_CFixedPoint(MarketGoods.GetExportAmount, '(CFixedPoint)0'))]"
 							layoutpolicy_horizontal = expanding
-							#visible = "[GreaterThan_int32(MarketGoods.GetNumExportTradeRoutes, '(int32)0')]"
 							margin_left = 10
 							
 							icon = {
@@ -291,7 +262,6 @@ types market_panel
 							textbox = {
 								layoutpolicy_horizontal = expanding
 								margin = { 10 0 }
-								#visible = "[NotEqualTo_CFixedPoint(MarketGoods.GetExportAmount, '(CFixedPoint)0')]"
 								using = fontsize_large
 								elide = right
 								fontsize_min = 12
@@ -307,378 +277,419 @@ types market_panel
 			}
 		}
 
-        flowcontainer = {
-            direction = vertical
-            parentanchor = hcenter
-            margin_bottom = 5
-            margin_top = 5
-            max_width = 540
-            min_width = 540
-            visible = "[And( Not(IsDataModelEmpty(MarketGoods.AccessPlayerTradeRoutes)), GetVariableSystem.Exists( Concatenate( 'market_goods_', MarketGoods.GetIDString )))]"
+		flowcontainer = {
+			parentanchor = hcenter
+			direction = vertical
+			visible = "[Not(Market.GetOnlyShowPlayerTradeRoutes)]"
+			
+			flowcontainer = {
+				direction = vertical
+				parentanchor = hcenter
+				margin_top = 5
+				max_width = 540
+				min_width = 540
+				visible = "[And( Not(IsDataModelEmpty(MarketGoods.AccessPlayerTradeRoutes)), GetVariableSystem.Exists( Concatenate( 'market_goods_', MarketGoods.GetIDString )))]"
 
-			background = {
-				using = dropdown_background
+				background = {
+					using = dropdown_background
 
-				modify_texture = {
-					texture = "gfx/interface/masks/fade_vertical_top.dds"
-					blend_mode = alphamultiply
-					alpha = 1
+					modify_texture = {
+						texture = "gfx/interface/masks/fade_vertical_top.dds"
+						blend_mode = alphamultiply
+						alpha = 1
+					}
+				}
+
+				textbox = {
+					text = "TRADE_ROUTE_PLAYER"
+					autoresize = yes
+					align = left|nobaseline
+					margin_left = 15
+					margin_bottom = 5
+				}
+
+				datamodel = "[MarketGoods.AccessPlayerTradeRoutes]"
+				item = {
+					trade_route_list_item = {}
 				}
 			}
 
-			textbox = {
-				text = "TRADE_ROUTE_PLAYER"
-				autoresize = yes
-				align = left|nobaseline
-				margin_left = 15
-				margin_bottom = 5
+			flowcontainer = {
+				direction = vertical
+				parentanchor = hcenter
+				margin_top = 5
+				max_width = 540
+				min_width = 540
+				visible = "[And( Not(IsDataModelEmpty(MarketGoods.AccessOthersTradeRoutes)), GetVariableSystem.Exists( Concatenate( 'market_goods_', MarketGoods.GetIDString )))]"
+
+				background = {
+					using = dropdown_background
+
+					modify_texture = {
+						texture = "gfx/interface/masks/fade_vertical_top.dds"
+						blend_mode = alphamultiply
+						alpha = 1
+					}
+				}
+
+				textbox = {
+					text = "OTHER_COUNTRIES_TRADE_ROUTES"
+					autoresize = yes
+					align = left|nobaseline
+					margin_left = 15
+					margin_bottom = 5
+				}
+
+				datamodel = "[MarketGoods.AccessOthersTradeRoutes]"
+				item = {
+					trade_route_list_item = {}
+				}
 			}
+		}
+		flowcontainer = {
+			parentanchor = hcenter
+			direction = vertical
+			visible = "[Market.GetOnlyShowPlayerTradeRoutes]"
 
-			datamodel = "[MarketGoods.AccessPlayerTradeRoutes]"
-			item = {
-            	traded_good_trade_route = {}
-            }
-        }
+			flowcontainer = {
+				direction = vertical
+				parentanchor = hcenter
+				margin_top = 5
+				max_width = 540
+				min_width = 540
+				visible = "[GetVariableSystem.Exists( Concatenate( 'market_goods_', MarketGoods.GetIDString ))]"
 
-        divider_decorative = {
-        	visible = "[And( Not(IsDataModelEmpty(MarketGoods.AccessOthersTradeRoutes)), GetVariableSystem.Exists( Concatenate( 'market_goods_', MarketGoods.GetIDString )))]"
-        }
+				background = {
+					using = dropdown_background
 
-        flowcontainer = {
-            direction = vertical
-            parentanchor = hcenter
-            margin_bottom = 5
-            margin_top = 5
-            max_width = 540
-            min_width = 540
-            visible = "[And( Not(IsDataModelEmpty(MarketGoods.AccessOthersTradeRoutes)), GetVariableSystem.Exists( Concatenate( 'market_goods_', MarketGoods.GetIDString )))]"
+					modify_texture = {
+						texture = "gfx/interface/masks/fade_vertical_top.dds"
+						blend_mode = alphamultiply
+						alpha = 1
+					}
+				}
 
-			background = {
-				using = dropdown_background
-
-				modify_texture = {
-					texture = "gfx/interface/masks/fade_vertical_top.dds"
-					blend_mode = alphamultiply
-					alpha = 1
+				datamodel = "[MarketGoods.AccessPlayerTradeRoutes]"
+				item = {
+					trade_route_list_item = {}
 				}
 			}
 
-			textbox = {
-				text = "OTHER_COUNTRIES_TRADE_ROUTES"
-				autoresize = yes
-				align = left|nobaseline
-				margin_left = 15
-				margin_bottom = 5
-			}
-
-			datamodel = "[MarketGoods.AccessOthersTradeRoutes]"
-			item = {
-               traded_good_trade_route = {}
-            }
-        }
-
-        divider_decorative = {}
+		}
+		divider_decorative = {}
+			
 	}
 
-	type traded_good_trade_route = widget {
+	type trade_routes_grouped_by_country_summary = flowcontainer {
+		direction = vertical
+		parentanchor = hcenter
+		margin_top = 10
 
-		layoutpolicy_horizontal = expanding
-		divider_clean = {
-			size = { 510 1 }
+		flowcontainer = {
+			maximumsize = { @panel_width 100 }
+			parentanchor = hcenter
+			
+			### Goods icon
+			widget = {
+				size = { 80 80 }
+				flag = {
+					parentanchor = center
+				}
+			}
+
+			flowcontainer = {
+				direction = vertical
+				
+				### DROPDOWN / EXPAND
+				section_header_button = {
+					blockoverride "layout" {
+						size = { 320 40 }
+					}
+
+					blockoverride "onclick" {
+						onclick = "[GetVariableSystem.Toggle( Concatenate( 'trade_route_group_country_', Country.GetIDString ))]"
+					}
+					
+					blockoverride "onclick_showmore" {
+						visible = "[Not(GetVariableSystem.Exists( Concatenate( 'trade_route_group_country_', Country.GetIDString )))]"
+					}
+
+					blockoverride "onclick_showless" {
+						visible = "[GetVariableSystem.Exists( Concatenate( 'trade_route_group_country_', Country.GetIDString ))]"
+					}
+
+					blockoverride "left_text" {
+						text = "COUNTRY_NAME_WITH_TRADE_ROUTES"
+						fontsize_min = 12
+						elide = right
+					}
+				}
+
+				flowcontainer = {
+					spacing = 5
+					
+					widget = {
+						size = { 150 50 }
+						tooltip = "COUNTRY_IMPORTED_TOOLTIP"
+
+						hbox = {
+							alpha = "[TransparentIfTrue(EqualTo_CFixedPoint(Country.GetImportAmountOnMarket( Market.Self ), '(CFixedPoint)0'))]"
+							layoutpolicy_horizontal = expanding
+							margin_left = 10
+							
+							icon = {
+								texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_import_lens_option.dds"
+								size = { 35 35 }
+							}
+							textbox = {
+								layoutpolicy_horizontal = expanding
+								margin = { 10 0 }
+								using = fontsize_large
+								elide = right
+								fontsize_min = 12
+								text = "COUNTRY_IMPORTED_AND_NUMBER_OF_IMPORT_ROUTES"
+							}
+						}
+					}
+
+					widget = {
+						size = { 150 50 }
+						tooltip = "COUNTRY_EXPORTED_TOOLTIP"
+
+						hbox = {
+							alpha = "[TransparentIfTrue(EqualTo_CFixedPoint(Country.GetExportAmountOnMarket( Market.Self ), '(CFixedPoint)0'))]"
+							layoutpolicy_horizontal = expanding
+							margin_left = 10
+							
+							icon = {
+								texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_export_lens_option.dds"
+								size = { 35 35 }
+							}
+							textbox = {
+								layoutpolicy_horizontal = expanding
+								margin = { 10 0 }
+								using = fontsize_large
+								elide = right
+								fontsize_min = 12
+								text = "COUNTRY_EXPORTED_AND_NUMBER_OF_EXPORT_ROUTES"
+							}
+						}
+					}
+				}
+			}
+
+			flowcontainer = {
+				direction = vertical
+				spacing = 5
+				parentanchor = vcenter
+				margin_left = 10
+				minimumsize = { 130 85 }
+
+				button = {
+					using = default_button_action
+					size = { 120 40 }
+					text = "EMBARGO"
+					datacontext = "[GetPlayer.GetDiplomaticAction( 'embargo', Country.Self )]"
+					tooltip = "DIPLOMATIC_ACTION_TOOLTIP"
+					onclick = "[DiplomaticAction.ExecuteWithConfirmation]"
+					enabled = "[IsValid(DiplomaticAction.ExecuteAction)]"
+					clicksound = "[DiplomaticAction.GetSoundWithConfirmation]"
+					visible = "[Not(ObjectsEqual(GetPlayer.Self, Country.Self))]"
+
+					icon = {
+						visible = "[DiplomaticAction.IsActivePact]"
+						using = highlighted_square_selection
+					}
+				}
+
+				button = {
+					using = default_button_action
+					size = { 120 40 }
+					text = "TRADE_AGREEMENT"
+					datacontext = "[GetPlayer.GetDiplomaticAction( 'trade_agreement', Country.Self )]"
+					tooltip = "DIPLOMATIC_ACTION_TOOLTIP"
+					onclick = "[DiplomaticAction.ExecuteWithConfirmation]"
+					enabled = "[IsValid(DiplomaticAction.ExecuteAction)]"
+					clicksound = "[DiplomaticAction.GetSoundWithConfirmation]"
+					visible = "[Not(ObjectsEqual(GetPlayer.Self, Country.Self))]"
+					margin_right = 30
+					margin_left = 15
+					elide = right
+
+					icon = {
+						visible = "[DiplomaticAction.IsActivePact]"
+						using = highlighted_square_selection
+					}
+
+					diplomatic_action_acceptance_icon = {
+						blockoverride "icon_size" {
+							size = { 20 20 }
+						}
+						position = { -8 0 }
+					}
+				}
+			}
 		}
 
-		size = { 510 60 }
-		parentanchor = hcenter
+		flowcontainer = {
+			parentanchor = hcenter
+			direction = vertical
 
-		button_icon_cancel = {
-			size = { 30 30 }
-			parentanchor = right|vcenter
-			onclick = "[Execute( TradeRoute.Cancel )]"
-			visible = "[IsValid( TradeRoute.Cancel )]"
+			flowcontainer = {
+				direction = vertical
+				parentanchor = hcenter
+				margin_top = 5
+				max_width = 540
+				min_width = 540
+				visible = "[GetVariableSystem.Exists( Concatenate( 'trade_route_group_country_', Country.GetIDString ))]"
+
+				background = {
+					using = dropdown_background
+
+					modify_texture = {
+						texture = "gfx/interface/masks/fade_vertical_top.dds"
+						blend_mode = alphamultiply
+						alpha = 1
+					}
+				}
+
+				datamodel = "[Country.AccessTradeRoutesOnMarket( Market.Self )]" 
+				item = {
+					trade_route_list_item = {}
+				}
+			}
+		}
+		divider_decorative = {}
+			
+	}
+
+	type trade_route_list_item = button {
+		size = { @panel_width 50 }
+		parentanchor = hcenter
+		onmousehierarchyenter = "[AccessHighlightManager.HighlightTradeRouteSupplyNetwork( TradeRoute.Self )]"
+		onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
+		
+		
+		block "onclick" {
+			onclick = "[InformationPanelBar.OpenMarketPanel( TradeRoute.GetOtherMarket(Market.Self) )]"
+		}
+		onrightclick = "[RightClickMenuManager.ShowForTradeRoute(TradeRoute.AccessSelf)]"
+
+		divider_clean = {
+			size = { 100% 1 }
 		}
 
 		hbox = {
 			layoutpolicy_horizontal = expanding
 			layoutpolicy_vertical = expanding
-			margin = { 10 0 }
-			spacing = 10
-			margin_right = 35
 
+			widget = {
+				datacontext = "[TradeRoute.GetGoods]"
+				layoutpolicy_horizontal = preferred
+				layoutpolicy_vertical = preferred
+				size = { 60 30 }
+				using = goods_list_item
+			}
 
-			block "first_flag_or_icon" {
-				small_flag = {
-					datacontext = "[Market.GetOwner]"
-				}
+			textbox = {
+				text = "[TradeRoute.GetTradeQuantity|Dv]"
+				visible = "[NotEqualTo_CFixedPoint(TradeRoute.GetTradeQuantity, '(CFixedPoint)0')]"
+				layoutpolicy_horizontal = preferred
+				layoutpolicy_vertical = preferred
+				size = { 60 30 }
+				margin_left = 5
+				align = nobaseline
+				tooltip = "TRADE_ROUTE_TOOLTIP"
+				using = tooltip_above
+			}
+			textbox = {
+				text = "INACTIVE"
+				visible = "[EqualTo_CFixedPoint(TradeRoute.GetTradeQuantity, '(CFixedPoint)0')]"
+				layoutpolicy_horizontal = preferred
+				layoutpolicy_vertical = preferred
+				size = { 60 30 }
+				align = nobaseline
+				tooltip = "TRADE_ROUTE_TOOLTIP"
+				using = tooltip_above
 			}
 
 			widget = {
-				size = { 190 50 }
-
-				button = {
-					size = { 100% 40 }
-					using = clean_button
-					using = select_button_sound
-					parentanchor = right|vcenter
-					tooltip = "TRADE_ROUTE_TOOLTIP"
-
-					block "onclick" {
-						onclick = "[InformationPanelBar.OpenMarketPanel( TradeRoute.GetOtherMarket(Market.Self) )]"
-					}
-
-					onrightclick = "[RightClickMenuManager.ShowForTradeRoute(TradeRoute.AccessSelf)]"								
-
-					onmousehierarchyenter = "[AccessHighlightManager.HighlightTradeRouteSupplyNetwork( TradeRoute.Self )]"
-					onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-					
-					textbox = {
-						visible = "[NotEqualTo_CFixedPoint(TradeRoute.GetTradeQuantity, '(CFixedPoint)0')]"
-						autoresize = yes
-						text = "GOODS_NUMBER_WITH_TRADE_LEVEL"
-						align = nobaseline
-						parentanchor = hcenter|vcenter
-						margin_left = 40
-					}
-
-					textbox = {
-						visible = "[EqualTo_CFixedPoint(TradeRoute.GetTradeQuantity, '(CFixedPoint)0')]"
-						autoresize = yes
-						text = "INACTIVE"
-						align = nobaseline
-						parentanchor = hcenter|vcenter
-						margin_left = 40
-					}
-				}
+				layoutpolicy_horizontal = preferred
+				layoutpolicy_vertical = preferred
+				size = { 45 30 }
 
 				icon = {
-					size = { 50 50 }
-					parentanchor = left|vcenter
-
-					block "import_icon_visibility" {
-						visible = "[TradeRoute.IsConsideredImportForMarket( Market.Self )]"
-					}
-
+					size = { 45 45 }
+					parentanchor = center
+					visible = "[TradeRoute.IsConsideredImportForMarket( Market.Self )]"
 					texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_import_lens_option.dds"
+					tooltip = "IMPORT_TRADE_ROUTE"
 				}
 
 				icon = {
-					size = { 50 50 }
-					parentanchor = left|vcenter
-
-					block "export_icon_visibility" {
-						visible = "[Not(TradeRoute.IsConsideredImportForMarket( Market.Self ))]"
-					}
-
+					size = { 45 45 }
+					parentanchor = center
+					visible = "[Not(TradeRoute.IsConsideredImportForMarket( Market.Self ))]"
 					texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_export_lens_option.dds"
+					tooltip = "EXPORT_TRADE_ROUTE"
 				}
 			}
+			widget = {
+				layoutpolicy_horizontal = preferred
+				layoutpolicy_vertical = preferred
+				size = { 60 30 }
 
-			block "second_flag_or_icon" {
-				small_flag = {
+				tiny_flag = {
 					datacontext = "[TradeRoute.GetOtherMarket(Market.Self).GetOwner]"
+					parentanchor = center
 				}
 			}
-
 			textbox = {
-				margin_left = 10
-				size = { 70 50 }
-				align = left|nobaseline
-				text = "@convoys! #v [TradeRoute.GetNumUsedConvoys]#!"
+				layoutpolicy_horizontal = preferred
+				layoutpolicy_vertical = preferred
+				size = { 70 30 }
+				raw_text = "@convoys! #v [TradeRoute.GetNumUsedConvoys]#!"
+				tooltip = "TRADE_ROUTE_CONVOY_COST_TOOLTIP"
 				elide = right
 				fontsize_min = 12
-				tooltip = "[TradeRoute.GetNumUsedConvoysDesc]"
-			}
-
-			textbox = {
-				layoutpolicy_horizontal = expanding
-				layoutpolicy_vertical = expanding
 				align = left|nobaseline
-				text = "@money! #v [TradeRoute.CalcProductivity|1=+]#!"
-				tooltip = "[TradeRoute.GetRevenueAfterTariffDesc]"
+				alpha = "[TransparentIfTrue(EqualTo_CFixedPoint(TradeRoute.GetTradeQuantity, '(CFixedPoint)0'))]"
 			}
-		}
-	}
-
-
-	type trade_route_button = widget {
-		minimumsize = { @panel_width_minus_10 56 }
-		
-		background = {
-			using = entry_bg_simple
-			margin = { 0 -3 }
-		}
-
-		using = goods_list_item
-		block "goods_list_item_datacontext" {
-			datacontext = "[TradeRoute.GetGoods]"
-		}
-		
-		# flags + button
-		widget = {
-			size = { 300 100% }
-			position = { 75 0 }
-			parentanchor = vcenter
-			
-			small_flag = {
-				parentanchor = vcenter
-				block "left_flag" {}
-			}
-			
-			button = {
-				size = { 180 40 }
-				parentanchor = center
-				using = clean_button
-				using = select_button_sound
-				tooltip = "TRADE_ROUTE_TOOLTIP"
-				onclick = "[InformationPanelBar.OpenMarketPanel( TradeRoute.GetOtherMarket(Market.Self) )]"
-				onrightclick = "[RightClickMenuManager.ShowForTradeRoute(TradeRoute.AccessSelf)]"								
-
-				onmousehierarchyenter = "[AccessHighlightManager.HighlightTradeRouteSupplyNetwork( TradeRoute.Self )]"
-				onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-				
-				icon = {
-					block "arrow_texture" {}	
-					size = { 50 50 }
-					parentanchor = vcenter
-					position = { 12 0 }
-				}
-				
-				textbox = {
-					visible = "[NotEqualTo_CFixedPoint(TradeRoute.GetTradeQuantity, '(CFixedPoint)0')]"
-					autoresize = yes
-					text = "[TradeRoute.GetTradeQuantitySignedFor(Market.Self)|=dv]"
-					align = nobaseline
-					parentanchor = right|vcenter
-					margin_right = 18
-				}
-
-				textbox = {
-					visible = "[EqualTo_CFixedPoint(TradeRoute.GetTradeQuantity, '(CFixedPoint)0')]"
-					autoresize = yes
-					text = "TRADE_ROUTE_ZERO_TRADES"
-					align = nobaseline
-					parentanchor = right|vcenter
-					margin_right = 18
-				}
-			}
-
-			small_flag = {
-				parentanchor = right|vcenter
-				block "right_flag" {}
-			}
-		}
-
-		### trade route level
-		widget = {
-			position = { -5 0 }
-			parentanchor = vcenter|right
-			size = { 130 40 }
-
-			block "interactable_background" {
-				background = {
-					using = entry_bg_simple
-				}
-			}
-			
 			textbox = {
-				parentanchor = center
-				autoresize = yes
-				text = "[TradeRoute.GetLevel|v]"
-				align = hcenter|nobaseline
-				using = fontsize_large
+				layoutpolicy_horizontal = preferred
+				layoutpolicy_vertical = preferred
+				size = { 70 30 }
+				raw_text = "@money!#v [TradeRoute.CalcProductivity|1+]#!"
+				tooltip = "[TradeRoute.GetRevenueAfterTariffBreakdown]"
+				align = left|nobaseline
+				alpha = "[TransparentIfTrue(EqualTo_CFixedPoint(TradeRoute.GetTradeQuantity, '(CFixedPoint)0'))]"
 			}
-		}
-	}
-	
-	type trade_route_button_building = widget {
-		minimumsize = { @panel_width_minus_10 56 }
-		
-		background = {
-			using = entry_bg_simple
-			margin = { 0 -3 }
-		}
-
-		using = goods_list_item
-		block "goods_list_item_datacontext" {
-			datacontext = "[TradeRoute.GetGoods]"
-		}
-		
-		# flags + button
-		widget = {
-			size = { 300 100% }
-			position = { 75 0 }
-			parentanchor = vcenter
-			
-			small_flag = {
-				parentanchor = vcenter
-				block "left_flag" {}
-			}
-			
-			button = {
-				size = { 180 40 }
-				parentanchor = center
-				using = clean_button
-				using = select_button_sound
-				tooltip = "TRADE_ROUTE_TOOLTIP"
-				onclick = "[InformationPanelBar.OpenMarketPanel( TradeRoute.GetOtherMarket(Building.GetState.GetMarket) )]"
-
-				onmousehierarchyenter = "[AccessHighlightManager.HighlightTradeRouteSupplyNetwork( TradeRoute.Self )]"
-				onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-				
-				icon = {
-					block "arrow_texture" {}	
-					size = { 50 50 }
-					parentanchor = vcenter
-					position = { 12 0 }
-				}
-				
-				textbox = {
-					visible = "[NotEqualTo_CFixedPoint(TradeRoute.GetTradeQuantity, '(CFixedPoint)0')]"
-					autoresize = yes
-					text = "[TradeRoute.GetTradeQuantitySignedFor(Building.GetState.GetMarket)|=dv]"
-					align = nobaseline
-					parentanchor = right|vcenter
-					margin_right = 18
-				}
-
-				textbox = {
-					visible = "[EqualTo_CFixedPoint(TradeRoute.GetTradeQuantity, '(CFixedPoint)0')]"
-					autoresize = yes
-					text = "TRADE_ROUTE_ZERO_TRADES"
-					align = nobaseline
-					parentanchor = right|vcenter
-					margin_right = 18
-				}
-			}
-
-			small_flag = {
-				parentanchor = right|vcenter
-				block "right_flag" {}
-			}
-		}
-
-		### trade route level
-		widget = {
-			position = { -5 0 }
-			parentanchor = vcenter|right
-			size = { 130 40 }
-
-			block "interactable_background" {
-				background = {
-					using = entry_bg_simple
-				}
-			}
-			
 			textbox = {
-				parentanchor = center
-				autoresize = yes
-				text = "[TradeRoute.GetLevel|v]"
-				align = hcenter|nobaseline
-				using = fontsize_large
+				layoutpolicy_horizontal = preferred
+				layoutpolicy_vertical = preferred
+				size = { 100 30 }
+				raw_text = "@money!#v [TradeRoute.CalcRevenueAfterTariff|D+]#!"
+				tooltip = "[TradeRoute.GetRevenueAfterTariffBreakdown]"
+				align = nobaseline
+				alpha = "[TransparentIfTrue(EqualTo_CFixedPoint(TradeRoute.GetTradeQuantity, '(CFixedPoint)0'))]"
+			}
+			widget = {
+				layoutpolicy_horizontal = preferred
+				layoutpolicy_vertical = preferred
+				size = { 45 30 }
+
+				button_icon_cancel = {
+					size = { 30 30 }
+					parentanchor = center
+					onclick = "[Execute( TradeRoute.Cancel )]"
+					visible = "[IsValid( TradeRoute.Cancel )]"
+					tooltip = "REMOVE_TRADE_ROUTE"
+				}
 			}
 		}
 	}	
 
-	type trade_route_button_small = button {
+	type trade_route_map_marker_list_item = button {
 		using = default_button
 		using = select_button_sound
 		tooltip = "TRADE_ROUTE_TOOLTIP"
@@ -749,367 +760,6 @@ types market_panel
 					parentanchor = vcenter
 				}
 			}
-		}
-	}
-
-	### POSSIBLE TRADE ROUTES
-	type possible_trade_routes = flowcontainer {
-		parentanchor = hcenter
-		spacing = 5
-		margin = { 0 8 }
-		direction = vertical
-		
-		background = {
-			using = entry_bg
-		}
-		
-		### SUGGESTIONS IMPORT
-		section_header_button = {
-			size = { @panel_width_minus_10 38 }
-			
-			blockoverride "left_text" {
-				text = "IMPORT_SUGGESTIONS_TITLE"
-			}
-			
-			blockoverride "onclick" {
-				onclick = "[GetVariableSystem.Toggle('suggest_import_trade_routes')]"
-			}
-			
-			blockoverride "onclick_showmore" {
-				visible = "[Not(GetVariableSystem.Exists('suggest_import_trade_routes'))]"
-			}
-
-			blockoverride "onclick_showless" {
-				visible = "[GetVariableSystem.Exists('suggest_import_trade_routes')]"
-			}
-		}
-		suggest_trade_goods = {}
-
-		### SUGGESTIONS EXPORT
-		section_header_button = {
-			size = { @panel_width_minus_10 38 }
-			
-			blockoverride "left_text" {
-				text = "EXPORT_SUGGESTIONS_TITLE"
-			}
-			
-			blockoverride "onclick" {
-				onclick = "[GetVariableSystem.Toggle('suggest_export_trade_routes')]"
-			}
-			
-			blockoverride "onclick_showmore" {
-				visible = "[Not(GetVariableSystem.Exists('suggest_export_trade_routes'))]"
-			}
-
-			blockoverride "onclick_showless" {
-				visible = "[GetVariableSystem.Exists('suggest_export_trade_routes')]"
-			}
-		}
-		suggest_trade_goods = {
-			blockoverride "visible" {
-				visible = "[GetVariableSystem.Exists('suggest_export_trade_routes')]"
-			}
-			blockoverride "empty_state_visibility" {
-				visible = "[IsDataModelEmpty(Market.AccessGoodsSuggestedForExport)]"
-			}
-			blockoverride "goods_visibility" {
-				visible = "[Not(IsDataModelEmpty(Market.AccessGoodsSuggestedForExport))]"
-			}
-			blockoverride "empty_state_text" {
-				text = "NO_GOODS_EXPORT_SUGGESTION"
-			}
-			blockoverride "datamodel" {
-				datamodel = "[Market.AccessGoodsSuggestedForExport]"
-			}
-			blockoverride "button_functions" {
-				enabled = "[Goods.CanEstablishExportTradeRoute]"
-				onclick = "[Goods.EstablishExportTradeRoute]"
-			}
-		}
-	}
-	
-	### SUGGEST TRADE GOODS
-	type suggest_trade_goods = flowcontainer {
-		direction = vertical
-		margin = { 0 5 }
-		parentanchor = hcenter
-		
-		block "visible" {
-			visible = "[GetVariableSystem.Exists('suggest_import_trade_routes')]"
-		}
-
-		empty_state = {
-			blockoverride "visible" {
-				block "empty_state_visibility" {
-					visible = "[IsDataModelEmpty(Market.AccessGoodsSuggestedForImport)]"
-				}
-			}
-			blockoverride "text" {
-				block "empty_state_text" {
-					text = "NO_GOODS_IMPORT_SUGGESTION"
-				}
-			}
-		}
-		
-		fixedgridbox = {
-			name = buttons
-			parentanchor = hcenter
-			block "goods_visibility" {
-				visible = "[Not(IsDataModelEmpty(Market.AccessGoodsSuggestedForImport))]"
-			}
-			block "datamodel" {
-				datamodel = "[Market.AccessGoodsSuggestedForImport]"
-			}
-			maxhorizontalslots = 6
-			addrow = 70
-			addcolumn = 80
-			flipdirection = yes
-			
-			item = {
-				widget = {
-					size = { 80 70 }
-					
-					button_icon_square_map_interaction = {
-						parentanchor = center
-						size = { 70 70 }
-						block "button_functions" {
-							onclick = "[Goods.EstablishImportTradeRoute]"
-						}
-
-						tooltipwidget = {
-							FancyTooltip_Goods = {}
-						}
-
-						blockoverride "icon" {
-							texture = "[Goods.GetTexture]"
-						}
-						blockoverride "icon_size" {
-							size = { 80% 80% }
-						}
-					}
-				}
-			}
-		}
-	}
-
-	type shipping_lane_information = flowcontainer {
-		block "visible" {
-			visible = "[Not(IsDataModelEmpty( Country.AccessShippingLanes ))]"
-		}
-		parentanchor = hcenter
-		direction = vertical
-		margin_left = 10
-		minimumsize = { @panel_width -1 }
-		maximumsize = { @panel_width -1 }
-
-		flowcontainer = {
-			block "datamodel" {
-				datamodel = "[Country.AccessShippingLanes]"
-			}
-
-			spacing = 10
-			direction = vertical
-			parentanchor = hcenter
-
-			item = {
-				shipping_lane_item = { }
-			}
-		}
-	}
-
-	type shipping_lane_item = flowcontainer {
-		background = {
-			using = entry_bg
-		}
-		margin_top = 10
-		margin_bottom = 10
-		spacing = 2
-		parentanchor = hcenter
-		direction = vertical
-		onmousehierarchyenter = "[AccessHighlightManager.HighlightShippingLane(ShippingLane.Self)]"
-		onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-		alwaystransparent = no
-		minimumsize = { @panel_width -1 }
-		maximumsize = { @panel_width -1 }
-
-		textbox = {
-			margin_left = 10
-			autoresize = yes
-			align = left|nobaseline
-			text = "[ShippingLane.GetCountry.GetFlagTextIcon] [ShippingLane.GetTypeDescription]"
-		}
-
-		textbox = {
-			margin_left = 10
-			autoresize = yes
-			align = left|nobaseline
-			text = "SHIPPING_LANE_STATE_BEGIN_END"
-		}
-
-		flowcontainer = {
-			margin_left = 10
-			direction = horizontal
-			spacing = 10
-
-			textbox = {
-				autoresize = yes
-				align = left|nobaseline
-				text = "[ShippingLane.GetConvoyCostFormatted]"
-			}
-
-			textbox = {
-				autoresize = yes
-				align = left|nobaseline
-				text = "[ShippingLane.GetEffectivenessFormatted]"
-			}
-		}
-	}
-
-	type supply_network_information = flowcontainer {
-		direction = vertical
-		alwaystransparent = no
-
-		default_header = {
-			parentanchor = hcenter
-			blockoverride "text"
-			{
-				text = "SUPPLY_NETWORK_HEADER"
-			}
-		}
-		
-		widget = { size = { 1 5 }}
-
-		flowcontainer = {
-			visible = "[GreaterThan_int32(Country.GetSupplyNetworkNumSeaNodes, '(int32)0')]"
-			parentanchor = top|left
-			widgetanchor = top|left
-			direction = vertical
-			margin_left = 10
-			minimumsize = { @panel_width -1 }
-			maximumsize = { @panel_width -1 }
-			onmousehierarchyenter = "[AccessHighlightManager.HighlightSupplyNetwork(Country.Self)]"
-			onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-			alwaystransparent = no
-
-			textbox = {
-				autoresize = yes
-				text = "NUM_CONVOYS_NO_DAMAGE"
-				tooltip = "NUM_CONVOYS_TOOLTIP"
-				visible = "[Not(Country.HasDamagedConvoys)]"
-			}
-
-			textbox = {
-				autoresize = yes
-				text = "NUM_CONVOYS_DAMAGE"
-				tooltip = "NUM_CONVOYS_TOOLTIP"
-				visible = "[Country.HasDamagedConvoys]"
-			}
-
-			textbox = {
-				autoresize = yes
-				text = "USED_CONVOYS"
-				tooltip = "USED_CONVOYS_TOOLTIP"
-			}
-
-			textbox = {
-				autoresize = yes
-				text = "NUM_SEA_NODES"
-				tooltip = "NUM_SEA_NODES_TOOLTIP"
-			}
-
-			textbox = {
-				autoresize = yes
-				text = "SUPPLY_NETWORK_STRENGTH"
-				tooltip = "SUPPLY_NETWORK_STRENGTH_TOOLTIP"
-			}
-		}
-					
-		flowcontainer = {
-			using = default_list_position
-			visible = "[Not(GreaterThan_int32(Country.GetSupplyNetworkNumSeaNodes, '(int32)0'))]"
-			direction = vertical
-			spacing = 40
-
-			textbox = {
-				margin_top = 40
-				using = default_list_position
-				text = "SUPPLY_NETWORK_EMPTY_STATE"
-				autoresize = yes
-				align = nobaseline
-			}
-
-			divider_decorative = {}
-		}
-	}
-
-	type supply_network_information_small = widget {
-		onmousehierarchyenter = "[AccessHighlightManager.HighlightSupplyNetwork(Country.Self)]"
-		onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-		alwaystransparent = no
-		size = { 410 110 }
-	
-		using = entry_bg_fancy_solid_bg
-
-		vbox = {
-			margin = { 20 20 }
-			
-			hbox = {
-				tooltip = "SUPPLY_NETWORK_STRENGTH_TOOLTIP"
-				layoutpolicy_horizontal = expanding
-				layoutpolicy_vertical = expanding
-
-				textbox = {
-					layoutpolicy_horizontal = expanding
-					layoutpolicy_vertical = expanding
-					text = "SUPPLY_NETWORK_STRENGTH_TEXT"
-					align = left|nobaseline
-				}	
-				textbox = {
-					layoutpolicy_horizontal = expanding
-					layoutpolicy_vertical = expanding
-					text = "SUPPLY_NETWORK_STRENGTH_VALUE"
-					align = right|nobaseline
-				}
-			}
-
-			hbox = {
-				layoutpolicy_horizontal = expanding
-				layoutpolicy_vertical = expanding
-				tooltip = "NUM_SEA_NODES_TOOLTIP"
-
-				textbox = {
-					layoutpolicy_horizontal = expanding
-					layoutpolicy_vertical = expanding
-					text = "NUM_SEA_NODES_TEXT"
-					align = left|nobaseline
-				}
-				textbox = {
-					layoutpolicy_horizontal = expanding
-					layoutpolicy_vertical = expanding
-					text = "NUM_SEA_NODES_VALUE"
-					align = right|nobaseline
-				}
-			}
-
-			hbox = {
-				layoutpolicy_horizontal = expanding
-				layoutpolicy_vertical = expanding
-				tooltip = "NUM_CONVOYS_TOOLTIP_EXTENDED"
-				
-				textbox = {
-					layoutpolicy_horizontal = expanding
-					layoutpolicy_vertical = expanding
-					text = "USED_AVAILABE_CONVOYS_TEXT"
-					align = left|nobaseline
-				}
-				textbox = {
-					layoutpolicy_horizontal = expanding
-					layoutpolicy_vertical = expanding
-					text = "USED_AVAILABE_CONVOYS_VALUE"
-					align = right|nobaseline
-				}
-			}
-		
 		}
 	}
 }

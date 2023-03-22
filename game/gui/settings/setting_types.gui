@@ -127,11 +127,11 @@ types Settings
 
 					# jomini_settings_restart_required_indicator = {
 					# 	tooltip = "REQUIRES_RESTART"
-					# 	visible = "[JominiSettingsWindow.RequireRestart]"
+					# 	visible = "[JominiSettingsWindow.AppliedOnRestart]"
 					# }
 
 					text_single = {
-						visible = "[JominiSettingsWindow.RequireRestart]"
+						visible = "[JominiSettingsWindow.AppliedOnRestart]"
 						layoutpolicy_horizontal = expanding
 						margin_right = 10
 						autoresize = no
@@ -140,13 +140,13 @@ types Settings
 					}
 
 					expand = {
-						visible = "[Not(JominiSettingsWindow.RequireRestart)]"
+						visible = "[Not(JominiSettingsWindow.AppliedOnRestart)]"
 					}
 
 					# This button is hidden, it is just a trap that resets your settings
 					#button_standard = {
 					#	text = "CANCEL"
-					#	onclick = [JominiSettingsWindow.Hide]
+					#	onclick = [JominiSettingsWindow.Close]
 					#	onclick = "[ClearResetReactiveTutorialPopup]"
 					#	default_format = "#low"
 					#}
@@ -212,7 +212,7 @@ types Settings
 		margin = { 20 6 }
 		block "setting_title" {}
 		jomini_settings_restart_required_indicator = {
-			visible = "[And(And(JominiGUISetting.ShouldShow,PdxSetting.HasChanged),PdxSetting.GetSettingPromoted.RequireRestart)]"
+			visible = "[And( And( JominiGUISetting.ShouldShow, JominiGUISetting.HasChanged ), And( JominiSettingsWindow.AppliedOnRestart, PdxSetting.GetSettingPromoted.RequireRestart ) )]"
 		}
 	}
 
@@ -276,7 +276,7 @@ types Settings
 
 	type jomini_settings_restart_required_indicator = text_single {
 
-		text = "*"
+		raw_text = "*"
 		tooltip = "REQUIRES_RESTART"
 		margin_left = 10
 	}
@@ -427,6 +427,127 @@ types Settings
 			}
 		}
 	}
+
+	type jomini_setting_input_popup_window = default_popup {
+		name = "jomini_settings_popup"
+		parentanchor = center
+		layer = layer_jomini_popup_using_set_popup_from_code
+
+		blockoverride "window_header_name" {
+			text = SETTINGS_INPUT_REMAP_INPUT
+		}
+
+		blockoverride "scrollarea_content" {
+			flowcontainer = {
+				direction = vertical
+				resizeparent = yes
+				spacing = 20
+
+				flowcontainer = {
+					parentanchor = vcenter
+					spacing = 20
+					minimumsize = { -1 200 }
+					direction = vertical
+	
+					textbox = {
+						autoresize = yes
+						minimumsize = { 540 -1 }
+						maximumsize = { 540 -1 }
+						multiline = yes
+						align = center|nobaseline
+						text = "[JominiSettingsWindow.GetInputBindingText]"
+						using = fontsize_large
+					}
+
+					textbox = {
+						visible = "[JominiSettingsWindow.ShouldShowWarningText]"
+						autoresize = yes
+						minimumsize = { 540 -1 }
+						maximumsize = { 540 -1 }
+						multiline = yes
+						align = center|nobaseline
+						text = "[JominiSettingsWindow.GetWarningText]"
+					}
+				}
+
+
+				container = {
+					minimumsize = { 540 -1 }
+					maximumsize = { 540 -1 }
+
+					button = {
+						name = "jomini_settings_popup_cancel"
+						size = { 140 33 }
+						text = "SETTINGS_INPUT_CANCEL"
+						onclick = "[JominiSettingsWindow.OnClickCancel]"
+						using = default_button
+						shortcut = "close_window"
+					}
+
+					flowcontainer = {
+						parentanchor = right
+						spacing = 5
+						
+						button = {
+							name = "jomini_settings_popup_clear"
+							size = { 140 33 }
+							text = "SETTINGS_INPUT_CLEAR"
+							onclick = "[JominiSettingsWindow.OnClickClear]"
+							using = default_button
+						}
+
+						button = {
+							name = "jomini_settings_popup_confirm"
+							size = { 140 33 }
+							text = "SETTINGS_INPUT_CONFIRM"
+							onclick = "[JominiSettingsWindow.OnClickConfirm]"
+							using = default_button_primary_action
+						}
+					}
+				}
+			}
+		}
+	}
+
+	type jomini_setting_input_binding = container {
+		name = "setting_input_binding"
+
+		dynamicgridbox = {
+			name = "setting_input_actions_gridbox"
+
+			item = {
+				flowcontainer = {
+					visible = "[JominiSettingsWindow.IsInputPopUpEnabled]"
+
+					textbox = {
+						text = "[JominiSettingsWindow.GetInputActionName( InputActionBinding.Self )]"
+						autoresize = yes
+						maximumsize = { 160 -1 }
+						minimumsize = { 160 -1 }
+						align = nobaseline
+						parentanchor = vcenter
+						elide = right
+					}
+
+					button = {
+						name = "input_hotkey_1"
+						size = { 120 30 }
+						using = default_button
+						text = "[JominiSettingsWindow.GetKeyCodeName( InputActionBinding.Self, '(int32)0' )]"
+						onclick = "[JominiSettingsWindow.ShowInputPopUp( CPdxInputBindingSetting.Self, InputActionBinding.Self, '(int32)0' ) ]"
+					}
+
+					button = {
+						name = "input_hotkey_2"
+						size = { 120 30 }
+						using = default_button
+						text = "[JominiSettingsWindow.GetKeyCodeName( InputActionBinding.Self, '(int32)1' )]"
+						onclick = "[JominiSettingsWindow.ShowInputPopUp( CPdxInputBindingSetting.Self, InputActionBinding.Self, '(int32)1' ) ]"
+					}
+				}
+			}
+		}
+	}
 }
 
 
@@ -458,6 +579,7 @@ template SettingsValueTrack
 	block "settings_value_track"
 	{
 		button = {
+			parentanchor = vcenter
 			### v3 replacement
 			using = dark_area
 			#texture ="gfx/frontend/interface/progressbars/progress_black.dds"
@@ -475,7 +597,6 @@ template SettingsValueIncButton
 {
 	block "settings_value_inc_button"
 	{
-
 		button_select_arrow = {
 			size = { 20 20 }
 			using = increase_button_sound
@@ -493,5 +614,23 @@ template SettingsValueDecButton
 			size = { 20 20 }
 			using = decrease_button_sound
 		}
+	}
+}
+
+template SettingsButtonStyle
+{
+	block "settings_button_style"
+	{
+		texture = "gfx/editor_gui/editor_button.dds"
+		gfxtype = framedbuttongfx
+		spriteType = CorneredStretched
+		spriteborder = { 4 4 }
+		effectname = "NoHighlight"
+		framesize = { 16 16 }
+		upframe = 1
+		downframe = 2
+		overframe = 3
+		disableframe = 4
+		intersectionmask = yes
 	}
 }

@@ -19,12 +19,12 @@ types front_panel_types
 		
 		blockoverride "window_header_name"
 		{
-			text = "#BOLD [FrontPanel.GetFront.GetName]#!"
+			raw_text = "#BOLD [FrontPanel.GetFront.GetName]#!"
 		}
 
 		blockoverride "window_header_name_line_two"
 		{
-			text = "FRONT_IN_WAR_SUBTITLE"
+			text = "FRONT_IN_WAR_OR_DP_SUBTITLE"
 		}
 
 		blockoverride "goto_button" {
@@ -43,18 +43,21 @@ types front_panel_types
 				{
 					text = "OVERVIEW"
 				}
+				blockoverride "first_button_tooltip" {
+					tooltip = "OVERVIEW"
+				}
 				blockoverride "first_button_click"
 				{
-					onclick = "[InformationPanel.SelectTab('overview')]"
+					onclick = "[InformationPanel.SelectTab('default')]"
 					onclick = "[FrontPanel.ToggleShowPastBattles]"
 				}
 				blockoverride "first_button_visibility"
 				{
-					visible = "[InformationPanel.IsTabSelected('overview')]"
+					visible = "[InformationPanel.IsTabSelected('default')]"
 				}
 				blockoverride "first_button_visibility_checked"
 				{
-					visible = "[Not( InformationPanel.IsTabSelected('overview') )]"
+					visible = "[Not( InformationPanel.IsTabSelected('default') )]"
 				}
 				blockoverride "first_button_selected"
 				{
@@ -67,6 +70,9 @@ types front_panel_types
 				blockoverride "second_button"
 				{
 					text = "FRONT_PANEL_BATTLES"
+				}
+				blockoverride "second_button_tooltip" {
+					tooltip = "FRONT_PANEL_BATTLES"
 				}
 				blockoverride "second_button_click"
 				{
@@ -94,7 +100,7 @@ types front_panel_types
 		blockoverride "scrollarea_content"
 		{
 			flowcontainer = {
-				visible = "[InformationPanel.IsTabSelected('overview')]"
+				visible = "[InformationPanel.IsTabSelected('default')]"
 				using = default_content_fade
 				direction = vertical
 				using = default_list_position
@@ -177,7 +183,7 @@ types front_panel_types
 								textbox = {
 									visible = "[Not(StringIsEmpty( Front.GetPlayerAdvantageDesc ))]"
 									using = tooltip_above
-									text = "#bold [Front.GetPlayerAdvantageRaw|+]#!"
+									raw_text = "#bold [Front.GetPlayerAdvantageRaw|+]#!"
 									autoresize = yes
 									align = center|nobaseline
 									parentanchor = center
@@ -922,45 +928,110 @@ types front_panel_types
 				}
 			}
 
-			default_progressbar_horizontal = {
-				parentanchor = hcenter
-				visible = "[And(Front.IsParticipantOrAllyInFirst( GetPlayer.Self ), GreaterThan_CFixedPoint( Front.GetFirstAdvanceProgress, '(CFixedPoint)0'))]"
-				tooltip = "ADVANCEMENT_PROGRESS_BAR_FIRST_TOOLTIP"
-				using = tooltip_below
-				size = { 400 20 }
-				
-				blockoverride "values" {
-					min = 0
-					max = 1
-					value = "[FixedPointToFloat( Front.GetFirstAdvanceProgressPercent )]"
-				}
+			default_header = {
+				visible = "[Or(GreaterThan_CFixedPoint(Front.GetFirstAdvanceProgress, '(CFixedPoint)0'), GreaterThan_CFixedPoint(Front.GetSecondAdvanceProgress, '(CFixedPoint)0'))]"
 
-				textbox = {
-					parentanchor = center
-					autoresize = yes
-					text = "#bold [Front.GetFirstAdvanceProgress|1] / [Front.GetRequiredAdvanceProgressForBattle|0]#!"
-					align = left|nobaseline
+				parentanchor = hcenter
+				blockoverride "text" {
+					text = "[concept_advancement_progress]"
 				}
 			}
 
-			default_progressbar_horizontal = {
+			flowcontainer = {
+				spacing = 15
 				parentanchor = hcenter
-				visible = "[And(Front.IsParticipantOrAllyInSecond( GetPlayer.Self ), GreaterThan_CFixedPoint( Front.GetSecondAdvanceProgress, '(CFixedPoint)0'))]"
-				tooltip = "ADVANCEMENT_PROGRESS_BAR_SECOND_TOOLTIP"
-				using = tooltip_below
-				size = { 400 20 }
 
-				blockoverride "values" {
-					min = 0
-					max = 1
-					value = "[FixedPointToFloat( Front.GetSecondAdvanceProgressPercent )]"
+				visible = "[Or(GreaterThan_CFixedPoint(Front.GetFirstAdvanceProgress, '(CFixedPoint)0'), GreaterThan_CFixedPoint(Front.GetSecondAdvanceProgress, '(CFixedPoint)0'))]"
+				widget = {
+					size = { 250 48 }
+
+					flowcontainer = {
+						direction = vertical
+						minimumsize = { 250 -1 }
+						spacing = 5
+						visible = "[GreaterThan_CFixedPoint(Front.GetFirstAdvanceProgress, '(CFixedPoint)0')]"
+
+						textbox = {
+							text = "YOU_AND_ALLIES_FIRST"
+							autoresize = yes
+							align = left|nobaseline
+							visible = "[Front.IsParticipantOrAllyInFirst( GetPlayer.Self )]"
+						}
+
+						textbox = {
+							text = "ENEMIES_FIRST"
+							autoresize = yes
+							align = left|nobaseline
+							visible = "[Front.IsParticipantOrAllyInSecond( GetPlayer.Self )]"
+						}
+
+						default_progressbar_horizontal = {
+							parentanchor = hcenter
+							tooltip = "ADVANCEMENT_PROGRESS_BAR_FIRST_TOOLTIP"
+							using = tooltip_below
+							size = { 250 20 }
+							
+							blockoverride "values" {
+								min = 0
+								max = 1
+								value = "[FixedPointToFloat( Front.GetFirstAdvanceProgressPercent )]"
+							}
+
+							textbox = {
+								parentanchor = center
+								autoresize = yes
+								raw_text = "#bold [Front.GetFirstAdvanceProgress|1] / [Front.GetRequiredAdvanceProgressForBattle|0]#!"
+								align = left|nobaseline
+							}
+						}
+					}
 				}
+				
+				vertical_divider_full = {}
 
-				textbox = {
-					parentanchor = center
-					autoresize = yes
-					text = "#bold [Front.GetSecondAdvanceProgress|1] / [Front.GetRequiredAdvanceProgressForBattle|0]#!"
-					align = left|nobaseline
+				widget = {
+					size = { 250 48 }
+
+					flowcontainer = {
+						direction = vertical
+						minimumsize = { 250 -1 }
+						spacing = 5
+						visible = "[GreaterThan_CFixedPoint(Front.GetSecondAdvanceProgress, '(CFixedPoint)0')]"
+
+						textbox = {
+							text = "YOU_AND_ALLIES_SECOND"
+							autoresize = yes
+							align = left|nobaseline
+							visible = "[Front.IsParticipantOrAllyInSecond( GetPlayer.Self )]"
+						}
+						
+						textbox = {
+							text = "ENEMIES_SECOND"
+							autoresize = yes
+							align = left|nobaseline
+							visible = "[Front.IsParticipantOrAllyInFirst( GetPlayer.Self )]"
+						}
+
+						default_progressbar_horizontal = {
+							parentanchor = hcenter
+							tooltip = "ADVANCEMENT_PROGRESS_BAR_SECOND_TOOLTIP"
+							using = tooltip_below
+							size = { 250 20 }
+
+							blockoverride "values" {
+								min = 0
+								max = 1
+								value = "[FixedPointToFloat( Front.GetSecondAdvanceProgressPercent )]"
+							}
+
+							textbox = {
+								parentanchor = center
+								autoresize = yes
+								raw_text = "#bold [Front.GetSecondAdvanceProgress|1] / [Front.GetRequiredAdvanceProgressForBattle|0]#!"
+								align = left|nobaseline
+							}
+						}
+					}
 				}
 			}
 		}
@@ -1291,11 +1362,18 @@ types front_panel_types
 	type battle_item = button {
 		using = default_button
 		size = { @panel_width 55 }
-		onClick = "[InformationPanelBar.OpenBattlePanelTab(Battle.AccessSelf, 'overview')]"
+		onClick = "[InformationPanelBar.OpenBattlePanelTab(Battle.AccessSelf, 'default')]"
 		onmousehierarchyenter = "[AccessHighlightManager.HighlightBattle(Battle.Self)]"
 		onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
 		alwaystransparent = no
 		tooltip = "[Battle.GetStatusString]"
+
+		
+
+		icon = {
+			visible = "[Battle.IsBeingHighlighted]"
+			using = highlighted_square_selection
+		}
 			
 		small_flag = {
 			datacontext = "[Battle.GetAttacker]"
@@ -1309,11 +1387,27 @@ types front_panel_types
 			
 			textbox = {
 				margin_left = 0
-				text = "[Battle.GetUnitIcon] [Battle.GetCurrentAttackerUnits|v]#!"
+				raw_text = "[Battle.GetUnitIcon] [Battle.GetCurrentAttackerUnits|v]#!"
 				size = { 100 50 }
 				align = right|nobaseline
 				parentanchor = vcenter
 				using = fontsize_large
+			}
+
+			white_progressbar_vertical = {
+				datacontext = "[Battle.AccessAttackerBattleParticipant]"
+				size = { 6 24 }
+				tooltip = "BATTLE_MORALE_TOOLTIP"
+				parentanchor = vcenter
+				
+				blockoverride "values" {
+					min = 0
+					max = 1
+					value = "[FixedPointToFloat( BattleParticipant.GetMorale )]"
+				}
+				blockoverride "color" {
+					color = "[GetMoraleColorVec( BattleParticipant.GetMorale )]"
+				}
 			}
 			
 			button = {
@@ -1322,10 +1416,26 @@ types front_panel_types
 				alwaystransparent = yes
 				parentanchor = vcenter
 			}
+
+			white_progressbar_vertical = {
+				datacontext = "[Battle.AccessDefenderBattleParticipant]"
+				size = { 6 24 }
+				tooltip = "BATTLE_MORALE_TOOLTIP"
+				parentanchor = vcenter
+				
+				blockoverride "values" {
+					min = 0
+					max = 1
+					value = "[FixedPointToFloat( BattleParticipant.GetMorale )]"
+				}
+				blockoverride "color" {
+					color = "[GetMoraleColorVec( BattleParticipant.GetMorale )]"
+				}
+			}
 			
 			textbox = {
 				margin_left = 0
-				text = "[Battle.GetUnitIcon] [Battle.GetCurrentDefenderUnits|v]#!"
+				raw_text = "[Battle.GetUnitIcon] [Battle.GetCurrentDefenderUnits|v]#!"
 				size = { 100 50 }
 				align = left|nobaseline
 				parentanchor = vcenter
@@ -1339,18 +1449,13 @@ types front_panel_types
 			parentanchor = right|vcenter
 			position = { -10 0 }
 		}
-
-		icon = {
-			visible = "[Battle.IsBeingHighlighted]"
-			using = highlighted_square_selection
-		}
 	}
 	
 	### ENDED BATTLE ITEM
 	type ended_battle_item = button {
 		using = default_button
 		size = { @panel_width 50 }
-		onClick = "[InformationPanelBar.OpenBattlePanelTab(Battle.AccessSelf, 'overview')]"
+		onClick = "[InformationPanelBar.OpenBattlePanelTab(Battle.AccessSelf, 'default')]"
 		onmousehierarchyenter = "[AccessHighlightManager.HighlightBattle(Battle.Self)]"
 		onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
 		tooltip = "[Battle.GetStatusString]"
@@ -1373,7 +1478,7 @@ types front_panel_types
 			widget = { size = { 15 5 }}
 			
 			textbox = {
-				text = "[Battle.GetStartingAttackerUnits]#!"
+				text = "[Battle.GetStartingAttackerUnits]"
 				tooltip = "BATTLE_STARTING_ATTACKER_STATS"
 				size = { 40 20 }
 				align = left|nobaseline
@@ -1389,7 +1494,7 @@ types front_panel_types
 			}
 			textbox = {
 				size = { 40 20 }
-				text = "[Battle.GetFinalAttackerUnits|v]#!"
+				text = "[Battle.GetFinalAttackerUnits|v]"
 				tooltip = "BATTLE_END_ATTACKER_STATS"
 				align = left|nobaseline
 				parentanchor = vcenter
@@ -1440,7 +1545,7 @@ types front_panel_types
 			parentanchor = vcenter|right
 
 			textbox = {
-				text = "[Battle.GetStartingDefenderUnits]#!"
+				text = "[Battle.GetStartingDefenderUnits]"
 				tooltip = "BATTLE_STARTING_DEFENDER_STATS"
 				size = { 40 20 }
 				align = right|nobaseline
@@ -1456,7 +1561,7 @@ types front_panel_types
 			}
 			textbox = {
 				size = { 40 20 }
-				text = "[Battle.GetFinalDefenderUnits|v]#!"
+				text = "[Battle.GetFinalDefenderUnits|v]"
 				tooltip = "BATTLE_END_DEFENDER_STATS"
 				align = right|nobaseline
 				parentanchor = vcenter

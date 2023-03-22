@@ -382,26 +382,14 @@ discrimination_events.4 = {
 		any_scope_state = {
 			any_scope_building = {
 				OR = {
-					is_building_type = building_food_industry
-					is_building_type = building_textile_mills
-					is_building_type = building_furniture_manufacturies
-					is_building_type = building_glassworks
-					is_building_type = building_tooling_workshops
-					is_building_type = building_paper_mills
-					is_building_type = building_chemical_plants
-					is_building_type = building_synthetics_plants
-					is_building_type = building_steel_mills
-					is_building_type = building_motor_industry
-					is_building_type = building_shipyards
-					is_building_type = building_war_machine_industry
-					is_building_type = building_electrics_industry
-					is_building_type = building_arms_industry
-					is_building_type = building_munition_plants
-					is_building_type = building_power_plant
+					is_building_group = bg_light_industry
+					is_building_group = bg_heavy_industry
 				}
+				occupancy >= 0.25
 			}
 			any_scope_pop = {
 				culture_accepted = no
+				pop_employment_building_group = bg_manufacturing
 			}
 		}
 		any_interest_group = {
@@ -414,35 +402,30 @@ discrimination_events.4 = {
 	}
 
 	immediate = {
-		random_scope_state = {
+		ROOT = {
+			save_scope_as = home_country
+		}
+		ordered_scope_state = {
 			limit = {
 				any_scope_building = {
 					OR = {
-						is_building_type = building_food_industry
-						is_building_type = building_textile_mills
-						is_building_type = building_furniture_manufacturies
-						is_building_type = building_glassworks
-						is_building_type = building_tooling_workshops
-						is_building_type = building_paper_mills
-						is_building_type = building_chemical_plants
-						is_building_type = building_synthetics_plants
-						is_building_type = building_steel_mills
-						is_building_type = building_motor_industry
-						is_building_type = building_shipyards
-						is_building_type = building_war_machine_industry
-						is_building_type = building_electrics_industry
-						is_building_type = building_arms_industry
-						is_building_type = building_munition_plants
-						is_building_type = building_power_plant
+						is_building_group = bg_light_industry
+						is_building_group = bg_heavy_industry
 					}
+					occupancy >= 0.25
 				}
 				any_scope_pop = {
 					culture_accepted = no
+					pop_employment_building_group = bg_manufacturing
 				}
 			}
+			order_by = state_population
 			save_scope_as = discrimination_state
 			random_scope_pop = {
-				limit = { culture_accepted = no }
+				limit = { 
+					culture_accepted = no 
+					pop_employment_building_group = bg_manufacturing
+				}
 				culture = { save_scope_as = discriminated_culture_pop }
 			}
 		}
@@ -450,34 +433,80 @@ discrimination_events.4 = {
 
 	option = {
 		name = discrimination_events.4.a
-		random_interest_group = {
+		if = {
 			limit = {
-				law_stance = {
-					law = law_type:law_national_supremacy
-					value > neutral
+				any_interest_group = {
+					law_stance = {
+						law = law_type:law_national_supremacy
+						value > neutral
+					}
+					is_in_government = yes
 				}
-				is_marginal = no
 			}
-			add_modifier = {
-				name = segregation_eroding
-				months = normal_modifier_time
+			ordered_interest_group = {
+				limit = {
+					law_stance = {
+						law = law_type:law_national_supremacy
+						value > neutral
+					}
+					is_in_government = yes
+				}
+				order_by = ig_clout
+				add_modifier = {
+					name = segregation_eroding
+					months = normal_modifier_time
+				}
 			}
+		}
+		else = {
+			ordered_interest_group = {
+				limit = {
+					law_stance = {
+						law = law_type:law_national_supremacy
+						value > neutral
+					}
+					is_marginal = no
+				}
+				order_by = ig_clout
+				add_modifier = {
+					name = segregation_eroding
+					months = normal_modifier_time
+				}
+			}
+		}
+		add_modifier = {
+			name = modifier_industrial_barriers_nat_supremacy
+			months = normal_modifier_time
 		}
 	}
 
 	option = {
 		name = discrimination_events.4.b
 		default_option = yes
+
+		custom_tooltip = {
+			text = industrial_barriers_b_tt
+			every_scope_state = {
+				add_culture_standard_of_living_modifier = {
+					culture = scope:discriminated_culture_pop
+					months = normal_modifier_time
+					multiplier = -2
+				}
+			}
+		}
 		scope:discrimination_state = {
-			add_modifier = {
-				name = employment_discrimination
-				months = normal_modifier_time
-			}
-			add_culture_standard_of_living_modifier = {
+			add_radicals = {
+				value = medium_radicals
 				culture = scope:discriminated_culture_pop
-				months = 13 #this is actually 1 in game year for some reason
-				multiplier = -1
 			}
+		}
+		add_radicals = {
+			value = small_radicals
+			culture = scope:discriminated_culture_pop
+		}
+		add_modifier = {
+			name = modifier_industrial_barriers_against_nat_supremacy
+			months = normal_modifier_time
 		}
 	}
 }

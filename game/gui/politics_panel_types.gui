@@ -208,7 +208,7 @@ types information_panels_types
 							textbox = {
 								layoutpolicy_horizontal = expanding
 								size = { 0 40 }
-								text = "#v [Party.GetName]#!"
+								raw_text = "#v [Party.GetName]#!"
 								align = right|nobaseline
 								block "highlight_name" {}
 								elide = right
@@ -425,7 +425,7 @@ types information_panels_types
 						textbox = {
 							#layoutpolicy_horizontal = expanding
 							size = { 0 30 }
-							text = "#v [InterestGroup.GetNameNoFormatting]#!"
+							raw_text = "#v [InterestGroup.GetNameNoFormatting]#!"
 							align = left|nobaseline
 							autoresize = yes
 							using = fontsize_large
@@ -528,7 +528,7 @@ types information_panels_types
 							margin_left = 10
 							size = { 0 25 }
 							elide = right
-							text = "[InterestGroup.GetApprovalRating] #bold ([InterestGroup.GetApprovalValue|=+])#!"
+							raw_text = "[InterestGroup.GetApprovalRating] #bold ([InterestGroup.GetApprovalValue|=+])#!"
 							tooltip = "IG_APPROVAL_BREAKDOWN"
 						}
 
@@ -556,7 +556,7 @@ types information_panels_types
 					textbox = {
                         layoutpolicy_horizontal = expanding
                         size = { 0 30 }
-                        text = "#v [InterestGroup.GetWillJoinPartyDesc]#!"
+                        raw_text = "#v [InterestGroup.GetWillJoinPartyDesc]#!"
                         tooltip = "[InterestGroup.GetWillJoinPartyTooltip]"
                     }
 				}
@@ -631,7 +631,7 @@ types information_panels_types
 					default_format = "#title"
 
 					block "heading" {
-						text = "#todo heading#!"
+						raw_text = "#todo heading#!"
 					}
 				}
 			}
@@ -690,7 +690,7 @@ types information_panels_types
 									size = { 0 18 }
 									align = nobaseline
 									block "leftside_info" {
-										text = "#todo leftside_info#!"
+										raw_text = "#todo leftside_info#!"
 									}
 									margin_left = 3
 									fontsize_min = 14
@@ -701,7 +701,7 @@ types information_panels_types
 									autoresize = yes
 									align = left|nobaseline
 									block "rightside1_info" {
-										text = "#todo rightside1_info#!"
+										raw_text = "#todo rightside1_info#!"
 									}
 									margin_right = 5
 								}
@@ -710,7 +710,7 @@ types information_panels_types
 									autoresize = yes
 									align = right|nobaseline
 									block "rightside2_info" {
-										text = "#todo rightside2_info#!"
+										raw_text = "#todo rightside2_info#!"
 									}
 									margin_right = 3
 								}
@@ -867,7 +867,7 @@ types information_panels_types
 			text = "[PoliticsPanel.GetCloutGraphMax|%0]"
 		}
 		blockoverride "minvalue" {
-			text = "0%"
+			raw_text = "0%"
 		}
 		blockoverride "startdate" {
 			text = "[PoliticsPanel.GetCloutGraphDateStart]"
@@ -913,7 +913,7 @@ types information_panels_types
 			text = "[GetMax(Country.GetGDPTrend)|K]"
 		}
 		blockoverride "minvalue" {
-			text = "0"
+			raw_text = "0"
 		}
 		blockoverride "startdate" {
 			text = "[GetOldestDate(Country.GetGDPTrend)]"
@@ -952,7 +952,7 @@ types information_panels_types
 			text = "[GetMax(Country.GetPopulationTrend)|K]"
 		}
 		blockoverride "minvalue" {
-			text = "0"
+			raw_text = "0"
 		}
 		blockoverride "startdate" {
 			text = "[GetOldestDate(Country.GetPopulationTrend)]"
@@ -991,7 +991,7 @@ types information_panels_types
 			text = "[GetMax(Country.GetPrestigeTrend)|K]"
 		}
 		blockoverride "minvalue" {
-			text = "0"
+			raw_text = "0"
 		}
 		blockoverride "startdate" {
 			text = "[GetOldestDate(Country.GetPrestigeTrend)]"
@@ -1003,6 +1003,45 @@ types information_panels_types
 
 		blockoverride "empty_state_visibility" {
 			visible = "[IsEmpty(Country.GetPrestigeTrend)]"
+		}
+		blockoverride "empty_state_text" {
+			text = "GRAPH_NOT_INITIALIZED"
+		}
+	}
+
+	type v3_plotline_incorporated_literacy = v3_plotline {
+		using = default_list_position
+
+		blockoverride "header" {
+			text = "[concept_literacy]"
+		}
+
+		blockoverride "size" {
+			size = { 280 100 }
+		}
+		blockoverride "line_color" {
+			color = { .9 .9 .9 1.0 }
+		}
+		blockoverride "line_plotpoints" {
+			visible = "[Not(IsEmpty(Country.GetIncorporatedLiteracyTrend))]"
+			plotpoints = "[GetTrendPlotPointsNormalized(Country.GetIncorporatedLiteracyTrend, '(CFixedPoint)0', GetMax(Country.GetIncorporatedLiteracyTrend) )]"
+		}
+		blockoverride "maxvalue" {
+			text = "[GetMax(Country.GetIncorporatedLiteracyTrend)|1%]"
+		}
+		blockoverride "minvalue" {
+			raw_text = "0"
+		}
+		blockoverride "startdate" {
+			text = "[GetOldestDate(Country.GetIncorporatedLiteracyTrend)]"
+		}
+		blockoverride "enddate" {
+			text = "[GetLatestDate(Country.GetIncorporatedLiteracyTrend)]"
+		}
+		blockoverride "multiitem" {}
+
+		blockoverride "empty_state_visibility" {
+			visible = "[IsEmpty(Country.GetIncorporatedLiteracyTrend)]"
 		}
 		blockoverride "empty_state_text" {
 			text = "GRAPH_NOT_INITIALIZED"
@@ -1030,7 +1069,7 @@ types information_panels_types
 			text = "[GetMax(Country.GetLowerStrataPopulationTrend)|K]"
 		}
 		blockoverride "minvalue" {
-			text = "0"
+			raw_text = "0"
 		}
 		blockoverride "startdate" {
 			text = "[GetOldestDate(Country.GetLowerStrataPopulationTrend)]"
@@ -1069,7 +1108,7 @@ types information_panels_types
 			text = "[GetMax(Country.GetMiddleStrataPopulationTrend)|K]"
 		}
 		blockoverride "minvalue" {
-			text = "0"
+			raw_text = "0"
 		}
 		blockoverride "startdate" {
 			text = "[GetOldestDate(Country.GetMiddleStrataPopulationTrend)]"
@@ -1108,7 +1147,7 @@ types information_panels_types
 			text = "[GetMax(Country.GetUpperStrataPopulationTrend)|K]"
 		}
 		blockoverride "minvalue" {
-			text = "0"
+			raw_text = "0"
 		}
 		blockoverride "startdate" {
 			text = "[GetOldestDate(Country.GetUpperStrataPopulationTrend)]"
@@ -1146,7 +1185,7 @@ types information_panels_types
 			text = "[GetMax(Country.GetAverageSoLByPopulationTrend)|1]"
 		}
 		blockoverride "minvalue" {
-			text = "0"
+			raw_text = "0"
 		}
 		blockoverride "startdate" {
 			text = "[GetOldestDate(Country.GetAverageSoLByPopulationTrend)]"
@@ -1184,7 +1223,7 @@ types information_panels_types
 			text = "[GetMax(Country.GetAverageSoLLowerTrend)|1]"
 		}
 		blockoverride "minvalue" {
-			text = "0"
+			raw_text = "0"
 		}
 		blockoverride "startdate" {
 			text = "[GetOldestDate(Country.GetAverageSoLLowerTrend)]"
@@ -1222,7 +1261,7 @@ types information_panels_types
 			text = "[GetMax(Country.GetAverageSoLMiddleTrend)|1]"
 		}
 		blockoverride "minvalue" {
-			text = "0"
+			raw_text = "0"
 		}
 		blockoverride "startdate" {
 			text = "[GetOldestDate(Country.GetAverageSoLMiddleTrend)]"
@@ -1260,7 +1299,7 @@ types information_panels_types
 			text = "[GetMax(Country.GetAverageSoLUpperTrend)|1]"
 		}
 		blockoverride "minvalue" {
-			text = "0"
+			raw_text = "0"
 		}
 		blockoverride "startdate" {
 			text = "[GetOldestDate(Country.GetAverageSoLUpperTrend)]"
@@ -1344,7 +1383,7 @@ types information_panels_types
 				using = default_list_position
 
 				block "header" {
-					text = "#title header name#!"
+					raw_text = "#title header name#!"
 				}
 				autoresize = yes
 				align = hcenter|nobaseline
@@ -1367,7 +1406,7 @@ types information_panels_types
 							visible = no
 						}
 						block "empty_state_text" {
-							text = "#todo nothing to see here#!"
+							raw_text = "#todo nothing to see here#!"
 						}
 						parentanchor = center
 						align = hcenter|nobaseline
@@ -1450,7 +1489,7 @@ types information_panels_types
 							#default_format = "#title"
 
 							block "minvalue" {
-								text = "0"
+								raw_text = "0"
 							}
 						}
 					}
@@ -1467,7 +1506,7 @@ types information_panels_types
 							#default_format = "#title"
 
 							block "maxvalue" {
-								text = "100%"
+								raw_text = "100%"
 							}
 						}
 					}
@@ -1513,61 +1552,6 @@ types information_panels_types
 		}
 	}
 
-	type in_government_header = flowcontainer {
-		direction = horizontal
-		tooltip = IN_GOVERNMENT_DESC
-		margin_left = 10
-		spacing = 5
-
-		icon = {
-			texture = "gfx/interface/icons/generic_icons/in_government_icon.dds"
-			size = { 40 40 }
-		}
-
-
-		textbox = {
-			parentanchor = left|vcenter
-			widgetanchor = left|vcenter
-			autoresize = yes
-			text = IN_GOVERNMENT_TITLE
-			align = left|nobaseline
-		}
-	}
-
-	type in_opposition_header = flowcontainer {
-		direction = horizontal
-		tooltip = IN_OPPOSITION_DESC
-		margin_left = 10
-		spacing = 5
-
-		icon = {
-			texture = "gfx/interface/icons/generic_icons/in_opposition_icon.dds"
-			size = { 40 40 }
-		}
-
-		textbox = {
-			parentanchor = left|vcenter
-			widgetanchor = left|vcenter
-			autoresize = yes
-			text = IN_OPPOSITION_TITLE
-			align = left|nobaseline
-		}
-	}
-
-	type marginal_header = flowcontainer {
-		direction = horizontal
-		tooltip = MARGINAL_DESC
-		margin_left = 5
-
-		textbox = {
-			parentanchor = left|vcenter
-			widgetanchor = left|vcenter
-			autoresize = yes
-			text = MARGINAL_TITLE
-			align = left|nobaseline
-		}
-	}
-
 	type active_law = vbox {
 		layoutpolicy_horizontal = preferred
 		layoutpolicy_vertical = expanding
@@ -1591,7 +1575,6 @@ types information_panels_types
 			button = {
 				using = default_button
 				size = { 100% 100% }
-				widgetid = "[Law.GetGroup.GetKey]"
 				onclick = "[InformationPanelBar.OpenChangeLaw(Law.AccessSelf)]"
 			}
 
@@ -1677,7 +1660,7 @@ types information_panels_types
 						using = fontsize_xl
 						align = hcenter|nobaseline
 						alpha = "[TransparentIfZero_int32(LawGroup.GetNumEnactable)]"
-						text = "#variable [LawGroup.GetNumEnactable]#!"
+						raw_text = "#variable [LawGroup.GetNumEnactable]#!"
 						parentanchor = hcenter
 					}
 
@@ -1686,7 +1669,7 @@ types information_panels_types
 						background = {
 							using = blurry_dark_background
 						}
-						text = "#variable [LawGroup.GetNumPotentialEnactable]#!"
+						raw_text = "#variable [LawGroup.GetNumPotentialEnactable]#!"
 						tooltip = "TOOLTIP_CHANGE_FROM_LAW_CURRENTLY_ENACTING"
 						alpha = "[TransparentIfZero_int32(LawGroup.GetNumPotentialEnactable)]"
 						size = { 40 30 }
@@ -1786,8 +1769,6 @@ types information_panels_types
 							item = {
 								ig_button = {
 									size = { 35 35 }
-
-									#PRCAL-7234
 									tooltip = "CLOUT_PIECHART"
 								}
 							}
@@ -1968,7 +1949,7 @@ types information_panels_types
 								{
 									textbox = {
 										layoutpolicy_horizontal = preferred
-										text = "#title [Law.GetGroup.GetNameNoFormatting]#!"
+										raw_text = "#title [Law.GetGroup.GetNameNoFormatting]#!"
 										align = left|nobaseline
 										size = { 0 20 }
 										elide = right
@@ -2212,7 +2193,7 @@ types information_panels_types
 
 			textbox = {
 				block "header" {
-					text = "INSERT_HEADER"
+					raw_text = "INSERT_HEADER"
 				}
 				size = { 100% 100% }
 				align = center|nobaseline
@@ -2230,16 +2211,11 @@ types information_panels_types
 			}
 
 			item = {
-
-				#TODO PRCAL-18747 - comment this in again. Should work.
-				#highlight_tutorial_ui = {
-		   		#	visible = "[Law.IsBeingTutorialHighlighted]"
-		    	#}
-
 				vbox = {
 					margin = { 10 3 }
 					layoutpolicy_horizontal = preferred
 					layoutpolicy_vertical = expanding
+					widgetid = "[Law.GetGroup.GetKey]"
 
 					background = {
 						visible = "[Law.IsBeingEnacted]"
@@ -2371,7 +2347,7 @@ types information_panels_types
 
 		textbox = {
 			block "text" {
-				text = "#todo todo#!"
+				raw_text = "#todo todo#!"
 			}
 			position = { 0 -1 }
 			using = fontsize_large
@@ -2389,7 +2365,7 @@ types information_panels_types
 
 		textbox = {
 			block "text" {
-				text = "#todo todo#!"
+				raw_text = "#todo todo#!"
 			}
 			position = { 0 -2 }
 			using = fontsize_xxl

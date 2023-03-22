@@ -47,7 +47,10 @@
 	texture = "gfx/interface/icons/alert_icons/wasted_construction.dds"
 
 	valid = {
-		is_construction_paused = yes
+		OR = {
+			is_construction_paused = yes
+			construction_queue_num_queued_levels = 0
+		}
 	}
 
 	open_panel = production_methods|construction_queues
@@ -102,7 +105,7 @@ revolution_alert = {
 		}
 	}
 
-	open_panel = politics|overview
+	open_panel = politics|default
 	type = alert
 }
 
@@ -176,6 +179,30 @@ active_peace_deal_alert = {
 	type = alert
 }
 
+legitimacy_level_illegitimate_alert = {
+	script_context = player_country
+	texture = "gfx/interface/icons/alert_icons/low_legitimacy.dds"
+	
+	valid = {
+		government_legitimacy < 25
+	}
+	
+	open_panel = politics|interest_groups
+	type = alert
+}
+
+market_goods_shortage_alert = { 
+	script_context = player_market_goods
+	texture = "gfx/interface/icons/alert_icons/market_over_capacity.dds"
+
+	valid = {
+		market_goods_shortage_ratio < 0.33
+	}
+
+	open_panel = goods_panel
+	type = alert
+}
+
 ### ANGRY IMPORTANT ACTIONS (should not have icons, if you move an alert here then remove the texture path and move the icon to the unused folder)
 
 wasted_construction = {
@@ -183,6 +210,17 @@ wasted_construction = {
 
 	valid = {
 		has_wasted_construction = yes
+	}
+
+	type = angry_important_action
+	open_panel = production_methods|construction_queues
+}
+
+insufficient_construction_for_investment = {
+	script_context = player_country
+
+	valid = {
+		has_sufficient_construction_capacity_for_investment = no
 	}
 
 	type = angry_important_action
@@ -325,7 +363,30 @@ has_convoys_being_sunk = {
 	type = angry_important_action
 }
 
+legitimacy_level_unacceptable_alert = {
+	script_context = player_country
+
+	valid = {
+		government_legitimacy < 50
+		government_legitimacy >= 25
+	}
+
+	open_panel = politics|interest_groups
+	type = angry_important_action
+}
+
 ### IMPORTANT ACTIONS (should not have icons, if you move an alert here then remove the texture path and move the icon to the unused folder)
+
+can_take_decisions = {
+	script_context = player_country
+
+	valid = {
+		has_possible_decisions = yes
+	}
+
+	open_panel = journal|decisions
+	type = important_action
+}
 
 unhealthy_economy_alert = {
 	script_context = player_country
@@ -334,7 +395,7 @@ unhealthy_economy_alert = {
 		has_healthy_economy = no
 	}
 
-	open_panel = budget|overview
+	open_panel = budget|default
 	type = important_action
 }
 
@@ -346,20 +407,22 @@ stockpiling_gold_alert = {
 		weekly_net_fixed_income > 0
 	}
 
-	open_panel = budget_panel
+	open_panel = budget|default
 	type = important_action
 }
 
-low_legitimacy_alert = {
+legitimacy_level_contested_alert = {
 	script_context = player_country
 
 	valid = {
-		government_legitimacy <= 50
+		government_legitimacy < 75
+		government_legitimacy >= 50
 	}
 
 	open_panel = politics|interest_groups
 	type = important_action
 }
+
 
 unused_interests_alert = {
 	script_context = player_country
@@ -397,7 +460,7 @@ trade_route_needs_convoys_alert = {
 	alert_group = trade_routes_need_convoys
 }
 
-market_goods_shortage_alert = { 
+market_goods_shortage = { 
 	script_context = player_market_goods
 
 	valid = {

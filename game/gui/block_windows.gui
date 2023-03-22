@@ -10,7 +10,7 @@
 @panel_width_plus_70 = 610			# used to be 530
 
 template sidebar_margin {
-	margin_left = 53
+	margin_left = "[GetDefine('NGUI', 'LENS_TOOLBAR_MARGIN_LEFT')]"
 }
 template sidepanel_plus_sidebar_size {
 	size = { 613 0 } #@panel_width_plus_20 plus sidebar_margin
@@ -68,7 +68,6 @@ types vfx_types {
 	type vfx = widget {
 		size = { 100% 100% }
 		allow_outside = yes
-
 		
 		cameracontrolwidget = {
 
@@ -271,7 +270,7 @@ types windows {
 		blockoverride "second_line" {
 			textbox = {
 				block "second_text" {
-					text = "Second text"
+					raw_text = "Second text"
 				}
 				position = { 0 49 }
 				parentanchor = hcenter
@@ -361,7 +360,7 @@ types windows {
 								using = header_font_fancy_size
 
 								block "window_header_name" {
-									text = "Default Window Name"
+									raw_text = "Default Window Name"
 								}
 								
 								parentanchor = center
@@ -376,11 +375,13 @@ types windows {
 							}
 						}
 						
-						back_button_large = {
-							position = { 8 30 }
-							block "header_back_button" {
-								onclick = "[InformationPanelBar.OpenPreviousPanel]"
-								shortcut = "back"
+						block "entire_back_button" {
+							back_button_large = {
+								position = { 8 30 }
+								block "header_back_button" {
+									onclick = "[InformationPanelBar.OpenPreviousPanel]"
+									input_action = "back"
+								}
 							}
 						}
 						
@@ -529,7 +530,7 @@ types windows {
 				using = header_font_fancy_size
 
 				block "window_header_name" {
-					text = "Default Window Name"
+					raw_text = "Default Window Name"
 				}
 				
 				align = center|nobaseline
@@ -558,7 +559,7 @@ types windows {
 						align = center|nobaseline
 
 						block "window_header_name_line_two" {
-							text = "Default Window Line Two"
+							raw_text = "Default Window Line Two"
 						}
 					}
 					
@@ -703,7 +704,7 @@ types windows {
 						using = header_font_fancy_size
 
 						block "window_header_name" {
-							text = "Default Window Name"
+							raw_text = "Default Window Name"
 						}
 						
 						default_format = "#header"
@@ -715,10 +716,11 @@ types windows {
 					position = { 11 15 }
 					parentanchor = top|left
 					onclick = "[InformationPanelBar.OpenPreviousPanel]"
-					shortcut = "back"
+					input_action = "back"
 				}
 				
 				close_button_large = {
+					name = "tutorial_highlight_close_button"
 					position = { -11 15 }
 					parentanchor = top|right
 					onclick = "[InformationPanelBar.ClosePanel]"

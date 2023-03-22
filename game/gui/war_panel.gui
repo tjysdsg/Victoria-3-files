@@ -18,7 +18,7 @@ types war_panel
 		
 		blockoverride "window_header_name"
 		{
-			text = "#BOLD [WarPanel.GetWar.GetName]#!"
+			raw_text = "#BOLD [WarPanel.GetWar.GetName]#!"
 		}
 		
 		blockoverride "fixed_top" {
@@ -28,18 +28,21 @@ types war_panel
 				{
 					text = "WAR_PANEL_OVERVIEW"
 				}
+				blockoverride "first_button_tooltip" {
+					tooltip = "WAR_PANEL_OVERVIEW"
+				}
 				blockoverride "first_button_click"
 				{
-					onclick = "[InformationPanel.SelectTab('overview')]"
+					onclick = "[InformationPanel.SelectTab('default')]"
 					onclick = "[WarPanel.ToggleShowPeaceDeal]"
 				}
 				blockoverride "first_button_visibility"
 				{
-					visible = "[InformationPanel.IsTabSelected('overview')]"
+					visible = "[InformationPanel.IsTabSelected('default')]"
 				}
 				blockoverride "first_button_visibility_checked"
 				{
-					visible = "[Not( InformationPanel.IsTabSelected('overview') )]"
+					visible = "[Not( InformationPanel.IsTabSelected('default') )]"
 				}
 				blockoverride "first_button_selected"
 				{
@@ -52,6 +55,9 @@ types war_panel
 				blockoverride "second_button"
 				{
 					text = "WAR_PANEL_PEACE"
+				}
+				blockoverride "second_button_tooltip" {
+					tooltip = "WAR_PANEL_PEACE"
 				}
 				blockoverride "second_button_click"
 				{
@@ -79,7 +85,7 @@ types war_panel
 		blockoverride "scrollarea_content"
 		{
 			flowcontainer = {
-				visible = "[InformationPanel.IsTabSelected('overview')]"
+				visible = "[InformationPanel.IsTabSelected('default')]"
 				using = default_content_fade
 				parentanchor = hcenter
 				direction = vertical
@@ -303,7 +309,7 @@ types war_panel
 										textbox = {
 											align = left|nobaseline
 											autoresize = yes
-											text = "[concept_wounded]:"
+											raw_text = "[concept_wounded]:"
 										}
 
 										widget = {
@@ -338,7 +344,7 @@ types war_panel
 										textbox = {
 											align = left|nobaseline
 											autoresize = yes
-											text = "[concept_dead]:"
+											raw_text = "[concept_dead]:"
 										}
 
 										widget = {
@@ -497,7 +503,7 @@ types war_panel
 										textbox = {
 											align = left|nobaseline
 											autoresize = yes
-											text = "[concept_wounded]:"
+											raw_text = "[concept_wounded]:"
 										}
 
 										widget = {
@@ -532,7 +538,7 @@ types war_panel
 										textbox = {
 											align = left|nobaseline
 											autoresize = yes
-											text = "[concept_dead]:"
+											raw_text = "[concept_dead]:"
 										}
 
 										widget = {
@@ -637,7 +643,7 @@ types war_panel
 										}
 
 										button = {
-											tooltip = "PANEL_MILITARY_NAVY_CURRENT_WARSHIPS_TOOLTIP_LEFT"
+											tooltip = "PANEL_MILITARY_NAVY_CURRENT_FLOTILLAS_TOOLTIP_LEFT"
 											using = default_button
 											parentanchor = left
 											visible = "[WarPanel.GetLeftLeader.IsLocalPlayer]"
@@ -667,7 +673,7 @@ types war_panel
 
 										textbox = {
 											visible = "[Not(WarPanel.GetLeftLeader.IsLocalPlayer)]"
-											tooltip = "PANEL_MILITARY_NAVY_CURRENT_WARSHIPS_TOOLTIP_LEFT"
+											tooltip = "PANEL_MILITARY_NAVY_CURRENT_FLOTILLAS_TOOLTIP_LEFT"
 											datacontext = "[WarPanel.GetWar]"
 											margin_left = 10
 											parentanchor = left
@@ -767,7 +773,7 @@ types war_panel
 										}
 
 										textbox = {
-											tooltip = "PANEL_MILITARY_NAVY_CURRENT_WARSHIPS_TOOLTIP_RIGHT"
+											tooltip = "PANEL_MILITARY_NAVY_CURRENT_FLOTILLAS_TOOLTIP_RIGHT"
 											margin_right = 10
 											parentanchor = right
 											text = "WAR_LEADER_RIGHT_NUM_FLOTILLAS"
@@ -846,6 +852,28 @@ types war_panel
 					}
 				}
 
+				### BATTLES
+				default_header = {
+					blockoverride "text" {
+						text = "ACTIVE_BATTLES"
+					}
+					parentanchor = hcenter
+					visible = "[Not(IsDataModelEmpty(WarPanel.AccessWar.GetActiveBattles))]"
+				}
+
+				flowcontainer = {
+					spacing = 10
+					direction = vertical
+					parentanchor = hcenter
+					margin = { 0 10 }
+
+					datamodel = "[WarPanel.AccessWar.GetActiveBattles]"
+
+					item = {
+						battle_item = {}
+					}
+				}
+
 				### FRONTS
 				default_header = {
 					parentanchor = hcenter
@@ -874,6 +902,29 @@ types war_panel
 						blockoverride "text" {
 							text = "NO_ACTIVE_FRONTS"
 						}
+					}
+				}
+
+				widget = { size = { 10 10 }}
+
+				### ENDED BATTLES
+				default_header = {
+					blockoverride "text" {
+						text = "ENDED_BATTLES"
+					}
+					parentanchor = hcenter
+					visible = "[Not(IsDataModelEmpty(WarPanel.AccessWar.GetEndedBattles))]"
+				}
+
+				flowcontainer = {
+					direction = vertical
+					parentanchor = hcenter
+					margin = { 0 10 }
+
+					datamodel = "[WarPanel.AccessWar.GetEndedBattles]"
+
+					item = {
+						ended_battle_item = {}
 					}
 				}
 			}
@@ -1045,7 +1096,7 @@ types war_panel
 										#visible "[IsDataModelEmpty(WarPanel.AccessAttackersWarGoals)]"
 									}
 									blockoverride "text" {
-										text = "No Unpressed War Goals"
+										text = "NO_UNPRESSED_WAR_GOALS"
 									}
 									blockoverride "size" {
 										minimumsize = { @panel_width_half -1 }
@@ -1085,7 +1136,7 @@ types war_panel
 										#visible "[IsDataModelEmpty(WarPanel.AccessDefendersWarGoals)]"
 									}
 									blockoverride "text" {
-										text = "No Unpressed War Goals"
+										text = "NO_UNPRESSED_WAR_GOALS"
 									}
 									blockoverride "size" {
 										minimumsize = { @panel_width_half -1 }
@@ -1275,7 +1326,7 @@ types war_panel
 			### MOBILIZATION
 			mobilization_controls = {
 				datacontext = "[GetPlayer]"
-				visible = "[And(WarPanel.GetWar.IsParticipant( GetPlayer.Self ), InformationPanel.IsTabSelected('overview'))]"
+				visible = "[And(WarPanel.GetWar.IsParticipant( GetPlayer.Self ), InformationPanel.IsTabSelected('default'))]"
 			}
 			
 			flowcontainer = {
@@ -1395,17 +1446,17 @@ types war_panel
 			textbox = {
 				margin_top = 5
 				autoresize = yes
-				text = "#variable @battalions![Country.GetBattalions|0]#! "
+				raw_text = "#variable @battalions![Country.GetBattalions|0]#! "
 				align = center|nobaseline
 				alpha = "[TransparentIfZero_int32(Country.GetBattalions)]"
 				tooltip = "PANEL_MILITARY_ARMY_CURRENT_BATTALIONS_TOOLTIP"
 			}
 			textbox = {
 				autoresize = yes
-				text = "#variable @flotillas![Country.GetWarships|0]#!"
+				raw_text = "#variable @flotillas![Country.GetWarships|0]#!"
 				align = center|nobaseline
 				alpha = "[TransparentIfZero_int32(Country.GetWarships)]"
-				tooltip = "PANEL_MILITARY_NAVY_CURRENT_WARSHIPS_TOOLTIP"
+				tooltip = "PANEL_MILITARY_NAVY_CURRENT_FLOTILLAS_TOOLTIP"
 			}
 		}
 
@@ -1437,7 +1488,7 @@ types war_panel
 				}
 
 				textbox = {
-					text = "#variable [War.GetActivePeaceDealAcceptanceScore(WarParticipant.GetCountry)|+=0]#!"
+					raw_text = "#variable [War.GetActivePeaceDealAcceptanceScore(WarParticipant.GetCountry)|+=0]#!"
 					visible = "[Not(Country.IsPlayer)]"
 					autoresize = yes
 					align = left|nobaseline
@@ -1481,7 +1532,7 @@ types war_panel
 				}
 
 				textbox = {
-					text = "#variable [War.GetProposedPeaceDealAcceptanceScore(WarParticipant.GetCountry, GetPlayer)|+=0]#!"
+					raw_text = "#variable [War.GetProposedPeaceDealAcceptanceScore(WarParticipant.GetCountry, GetPlayer)|+=0]#!"
 					visible = "[Not(Country.IsPlayer)]"
 					autoresize = yes
 					align = left|nobaseline
@@ -1511,7 +1562,7 @@ types war_panel
 			### war support
 			textbox = {
 				margin_top = 5
-				text = "[concept_war_support]: #variable [War.GetWarSupport(Country.Self)|+=0]#!"
+				raw_text = "[concept_war_support]: #variable [War.GetWarSupport(Country.Self)|+=0]#!"
 				autoresize = yes
 				align = right|nobaseline
 				tooltip = "WAR_PANEL_PARTICIPANT_TOOLTIP"
@@ -1931,7 +1982,7 @@ types war_panel
 					textbox = {
 						visible = "[Not(StringIsEmpty( Front.GetPlayerAdvantageDesc ))]"
 						using = tooltip_above
-						text = "#bold [Front.GetPlayerAdvantageRaw|+]#!"
+						raw_text = "#bold [Front.GetPlayerAdvantageRaw|+]#!"
 						autoresize = yes
 						align = nobaseline
 						parentanchor = center

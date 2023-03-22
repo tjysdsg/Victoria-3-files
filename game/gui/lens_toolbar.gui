@@ -65,7 +65,7 @@ types lens_toolbar_types {
 								onclick = "[LensToolbar.Toggle('production_lens')]"
 								tooltip = "[SelectLocalization(GetMetaPlayer.GetPlayedOrObservedCountry.IsValid, 'PRODUCTION_LENS', '')]"
 								using = maplens_generic_sound
-								shortcut = production_lens
+								input_action = production_lens
 							}
 
 							blockoverride "highlight" {
@@ -85,7 +85,7 @@ types lens_toolbar_types {
 								tooltip = "[SelectLocalization(GetMetaPlayer.GetPlayedOrObservedCountry.IsValid, 'POLITICAL_LENS', '')]"
 								onclick = "[LensToolbar.Toggle('political_lens')]"
 								using = maplens_generic_sound
-								shortcut = political_lens
+								input_action = political_lens
 							}
 
 							blockoverride "highlight" {
@@ -105,7 +105,7 @@ types lens_toolbar_types {
 								tooltip = "[SelectLocalization(GetMetaPlayer.GetPlayedOrObservedCountry.IsValid, 'DIPLOMATIC_LENS', '')]"
 								onclick = "[LensToolbar.Toggle('diplomatic_lens')]"
 								using = maplens_generic_sound
-								shortcut = diplomatic_lens
+								input_action = diplomatic_lens
 							}
 
 							blockoverride "highlight" {
@@ -125,7 +125,7 @@ types lens_toolbar_types {
 								tooltip = "[SelectLocalization(GetMetaPlayer.GetPlayedOrObservedCountry.IsValid, 'MILITARY_LENS', '')]"
 								onclick = "[LensToolbar.Toggle('military_lens')]"
 								using = maplens_generic_sound
-								shortcut = military_lens
+								input_action = military_lens
 							}
 
 							blockoverride "highlight" {
@@ -147,7 +147,7 @@ types lens_toolbar_types {
 								tooltip = "[SelectLocalization(GetMetaPlayer.GetPlayedOrObservedCountry.IsValid, 'TRADE_LENS', '')]"
 								onclick = "[LensToolbar.Toggle('trade_lens')]"
 								using = maplens_generic_sound
-								shortcut = trade_lens
+								input_action = trade_lens
 							}
 
 							blockoverride "highlight" {
@@ -170,7 +170,7 @@ types lens_toolbar_types {
 					size = { 40 40 }
 					onclick = "[InformationPanelBar.ToggleLocationFinder]"
 					tooltip = "LOCATION_FINDER"
-					shortcut = location_finder
+					input_action = location_finder
 					using = tooltip_ws
 				}
 			}
@@ -523,7 +523,7 @@ types lens_toolbar_types {
 							datamodel = "[LensToolbar.GetTabs]"
 							item = {
 								lens_tab_button = {
-									datacontext = "[LensTabPtr.AccessPtr]"
+									datacontext = "[LensTab]"
 								}
 							}
 						}
@@ -564,7 +564,7 @@ types lens_toolbar_types {
 						scrollwidget = {
 							dynamicgridbox = {
 								parentanchor = hcenter
-								datamodel_wrap = 15 #set to fit for lowest res: 1600x900, how can we make this work for higher resolution?
+								datamodel_wrap = "[LensToolbar.GetMaxNumItemsPerRow]"
 								ignoreinvisible = yes
 								flipdirection = yes
 								datamodel = "[LensToolbar.GetOptions]"
@@ -572,7 +572,7 @@ types lens_toolbar_types {
 								item = {
 									lens_option_button = {
 										datacontext = "[LensToolbar.GetCurrentTab]"
-										datacontext = "[LensOptionPtr.AccessPtr]"
+										datacontext = "[LensOption]"
 									}
 								}
 							}
@@ -642,7 +642,8 @@ types lens_toolbar_types {
 	type lens_option_button = widget {
 		widgetid = "[LensOption.GetKey]"
 		enabled = "[LensOption.CanActivate]"
-		size = { 100 110 }
+		size = { -1 110 }
+		min_width = "[GetDefine('NGUI', 'LENS_TOOLBAR_ITEM_WIDTH')]"
 		tooltip = "LENS_OPTION_TOOLTIP"
 		using = tooltip_above
 		alwaystransparent = no
@@ -661,7 +662,8 @@ types lens_toolbar_types {
 			onclick = "[LensOption.Toggle]"
 
 			using = default_button_map_interaction
-			size = { 100 105 }
+			size = { -1 105 }
+			min_width = "[GetDefine('NGUI', 'LENS_TOOLBAR_ITEM_WIDTH')]"
 
 			modify_texture = {
 				texture = "gfx/interface/main_hud/lens_action_button_selected.dds"
@@ -710,7 +712,7 @@ types lens_toolbar_types {
 
 			textbox = {
 				name = "title"
-				text = "#BOLD [LensOption.GetText]#!"
+				raw_text = "#BOLD [LensOption.GetText]#!"
 				align = center|nobaseline
 				position = { 0 -3 }
 				size = { 100% 50 }
@@ -738,7 +740,7 @@ types lens_toolbar_types {
 
 			textbox = {
 				visible = "[LensOption.ShouldShowNumberOfSelections]"
-				text = "#BOLD [LensOption.GetNumberOfSelections|+]#!"
+				raw_text = "#BOLD [LensOption.GetNumberOfSelections|+]#!"
 				tooltip = "LENS_ACTION_NUMBER"
 				using = tooltip_above
 				#size = { 33 23 }

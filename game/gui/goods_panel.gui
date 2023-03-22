@@ -31,6 +31,24 @@ types goods_panel_types
 				tooltip = "GO_TO_BUTTON_MARKET"
 			}
 		}
+
+		blockoverride "pin_visibility" {
+			visible = "[And(GoodsPanel.AccessGoods.HasMarketContext, GoodsPanel.AccessGoods.GetMarket.GetOwner.IsLocalPlayer)]"
+		}
+
+		blockoverride "pin_properties" {
+			visible = "[GoodsPanel.AccessGoods.IsPinnedInOutliner]"
+			onclick = "[GoodsPanel.AccessGoods.TogglePinInOutliner]"
+			datacontext = "[GoodsPanel.AccessGoods]"
+			tooltip = "GOODS_RIGHT_CLICK_MENU_PIN_IN_OUTLINER"
+		}
+
+		blockoverride "unpin_properties" {
+			visible = "[Not(GoodsPanel.AccessGoods.IsPinnedInOutliner)]"
+			onclick = "[GoodsPanel.AccessGoods.TogglePinInOutliner]"
+			datacontext = "[GoodsPanel.AccessGoods]"
+			tooltip = "GOODS_RIGHT_CLICK_MENU_PIN_IN_OUTLINER"
+		}
 		
 		blockoverride "fixed_top"{
 
@@ -78,7 +96,7 @@ types goods_panel_types
 				spacing = 10
 				datacontext = "[GoodsPanel.AccessGoods]"
 				button = {
-					using = default_button
+					using = default_button_map_interaction
 					size = { 260 70 }
 					
 					icon = {
@@ -107,7 +125,7 @@ types goods_panel_types
 					visible = "[Goods.IsTradeable]"
 				}
 				button = {
-					using = default_button
+					using = default_button_map_interaction
 					size = { 260 70 }
 					
 					icon = {
@@ -389,7 +407,7 @@ types goods_panel_types
 						datamodel = "[MarketGoods.AccessPlayerTradeRoutes]"
 
 						item = {
-			            	traded_good_trade_route = {
+			            	trade_route_list_item = {
 			            		datacontext = "[MarketGoods.GetMarket]"
 
 			            		blockoverride "first_flag_or_icon" {
@@ -454,7 +472,7 @@ types goods_panel_types
 
 						datamodel = "[MarketGoods.AccessOthersTradeRoutes]"
 						item = {
-			               traded_good_trade_route = {
+			               trade_route_list_item = {
 			               		datacontext = "[MarketGoods.GetMarket]"
 
 			               		blockoverride "first_flag_or_icon" {
@@ -532,7 +550,7 @@ types goods_panel_types
 								}
 
 								textbox = {
-									text = "#variable @money![Goods.GetStatePrice|1]#! [Goods.GetCompareIconAgainstBasePrice( Goods.GetStatePrice )]"
+									raw_text = "#variable @money![Goods.GetStatePrice|1]#! [Goods.GetCompareIconAgainstBasePrice( Goods.GetStatePrice )]"
 									autoresize = yes
 									align = nobaseline
 									parentanchor = vcenter|right
@@ -716,7 +734,7 @@ types "production_method_items" {
 					parentanchor = right|vcenter
 					position = { -5 0 }
 					
-			icon = {
+					icon = {
 						size = { 100 100 }
 						parentanchor = center
 						using = rotate_glow_animation_02
@@ -738,54 +756,54 @@ types "production_method_items" {
 							using = Animation_Curve_Default
 						}
 					}
-					
+							
 					icon = {
-				size = { 35 35 }
+						size = { 35 35 }
+								parentanchor = center
+						block "first_button_icon" {}
+						block "first_button_selected" {}
+
+						state = {
+							name = _show
+							alpha = 1
+							size = { 35 35 }
+							duration = 0.2
+							using = Animation_Curve_Default
+						}
+
+						state = {
+							name = _hide
+							alpha = 0.7
+							size = { 30 30 }
+							duration = 0.2
+							using = Animation_Curve_Default
+						}
+					}
+
+					icon = {
+						size = { 30 30 }
+						alpha = 0.7
 						parentanchor = center
-				block "first_button_icon" {}
-				block "first_button_selected" {}
+						block "first_button_icon" {}
+						block "first_button_not_selected" {}
 
-				state = {
-					name = _show
-					alpha = 1
-					size = { 35 35 }
-					duration = 0.2
-					using = Animation_Curve_Default
+						state = {
+							name = _show
+							alpha = 0.7
+							size = { 30 30 }
+							duration = 0.2
+							using = Animation_Curve_Default
+						}
+
+						state = {
+							name = _hide
+							alpha = 1
+							size = { 35 35 }
+							duration = 0.2
+							using = Animation_Curve_Default
+						}
+					}
 				}
-
-				state = {
-					name = _hide
-					alpha = 0.7
-					size = { 30 30 }
-					duration = 0.2
-					using = Animation_Curve_Default
-				}
-			}
-
-			icon = {
-				size = { 30 30 }
-				alpha = 0.7
-						parentanchor = center
-				block "first_button_icon" {}
-				block "first_button_not_selected" {}
-
-				state = {
-					name = _show
-					alpha = 0.7
-					size = { 30 30 }
-					duration = 0.2
-					using = Animation_Curve_Default
-				}
-
-				state = {
-					name = _hide
-					alpha = 1
-					size = { 35 35 }
-					duration = 0.2
-					using = Animation_Curve_Default
-				}
-			}
-		}
 			}
 		}
 
@@ -844,7 +862,7 @@ types "production_method_items" {
 					parentanchor = right|vcenter
 					position = { -5 0 }
 					
-			icon = {
+					icon = {
 						size = { 100 100 }
 						parentanchor = center
 						using = rotate_glow_animation_02
@@ -868,52 +886,52 @@ types "production_method_items" {
 					}
 					
 					icon = {
-				size = { 35 35 }
-						parentanchor = center
-				block "second_button_icon" {}
-				block "second_button_selected" {}
+						size = { 35 35 }
+								parentanchor = center
+						block "second_button_icon" {}
+						block "second_button_selected" {}
 
-				state = {
-					name = _show
-					alpha = 1
-					size = { 35 35 }
-					duration = 0.2
-					using = Animation_Curve_Default
+						state = {
+							name = _show
+							alpha = 1
+							size = { 35 35 }
+							duration = 0.2
+							using = Animation_Curve_Default
+						}
+
+						state = {
+							name = _hide
+							alpha = 0.7
+							size = { 30 30 }
+							duration = 0.2
+							using = Animation_Curve_Default
+						}
+					}
+
+					icon = {
+						size = { 30 30 }
+						alpha = 0.7
+								parentanchor = center
+						block "second_button_icon" {}
+						block "second_button_not_selected" {}
+
+						state = {
+							name = _show
+							alpha = 0.7
+							size = { 30 30 }
+							duration = 0.2
+							using = Animation_Curve_Default
+						}
+
+						state = {
+							name = _hide
+							alpha = 1
+							size = { 35 35 }
+							duration = 0.2
+							using = Animation_Curve_Default
+						}
+					}
 				}
-
-				state = {
-					name = _hide
-					alpha = 0.7
-					size = { 30 30 }
-					duration = 0.2
-					using = Animation_Curve_Default
-				}
-			}
-
-			icon = {
-				size = { 30 30 }
-				alpha = 0.7
-						parentanchor = center
-				block "second_button_icon" {}
-				block "second_button_not_selected" {}
-
-				state = {
-					name = _show
-					alpha = 0.7
-					size = { 30 30 }
-					duration = 0.2
-					using = Animation_Curve_Default
-				}
-
-				state = {
-					name = _hide
-					alpha = 1
-					size = { 35 35 }
-					duration = 0.2
-					using = Animation_Curve_Default
-				}
-			}
-		}
 			}
 		}
 
@@ -973,7 +991,7 @@ types "production_method_items" {
 						parentanchor = right|vcenter
 						position = { -5 0 }
 						
-				icon = {
+						icon = {
 							size = { 100 100 }
 							parentanchor = center
 							using = rotate_glow_animation_02
@@ -997,54 +1015,54 @@ types "production_method_items" {
 						}
 						
 						icon = {
-					size = { 35 35 }
-							parentanchor = center
-					block "third_button_icon" {}
-					block "third_button_selected" {}
+							size = { 35 35 }
+									parentanchor = center
+							block "third_button_icon" {}
+							block "third_button_selected" {}
 
-					state = {
-						name = _show
-						alpha = 1
-						size = { 35 35 }
-						duration = 0.2
-						using = Animation_Curve_Default
-					}
+							state = {
+								name = _show
+								alpha = 1
+								size = { 35 35 }
+								duration = 0.2
+								using = Animation_Curve_Default
+							}
 
-					state = {
-						name = _hide
-						alpha = 0.7
-						size = { 30 30 }
-						duration = 0.2
-						using = Animation_Curve_Default
-					}
-				}
+							state = {
+								name = _hide
+								alpha = 0.7
+								size = { 30 30 }
+								duration = 0.2
+								using = Animation_Curve_Default
+							}
+						}
 
-				icon = {
-					size = { 30 30 }
-					alpha = 0.7
-							parentanchor = center
-					block "third_button_icon" {}
-					block "third_button_not_selected" {}
+						icon = {
+							size = { 30 30 }
+							alpha = 0.7
+									parentanchor = center
+							block "third_button_icon" {}
+							block "third_button_not_selected" {}
 
-					state = {
-						name = _show
-						alpha = 0.7
-						size = { 30 30 }
-						duration = 0.2
-						using = Animation_Curve_Default
-					}
+							state = {
+								name = _show
+								alpha = 0.7
+								size = { 30 30 }
+								duration = 0.2
+								using = Animation_Curve_Default
+							}
 
-					state = {
-						name = _hide
-						alpha = 1
-						size = { 35 35 }
-						duration = 0.2
-						using = Animation_Curve_Default
+							state = {
+								name = _hide
+								alpha = 1
+								size = { 35 35 }
+								duration = 0.2
+								using = Animation_Curve_Default
+							}
+						}
 					}
 				}
 			}
-		}
-	}
 		}
 	}
 	
@@ -1081,7 +1099,7 @@ types "production_method_items" {
 
 	### building button
 	type producing_building_button = container {
-		minimumsize = { 110 110 }
+		minimumsize = { 108 110 }
 		alpha = "[TransparentIfFalse(BuildingType.HasRequiredTechnologiesInCountry(GetPlayer.Self))]"
 		
 		tooltipwidget = {
@@ -1111,7 +1129,7 @@ types "production_method_items" {
 		}
 
 		textbox = {
-			text = "#BOLD [BuildingType.GetNameNoFormatting]#!"
+			raw_text = "#BOLD [BuildingType.GetNameNoFormatting]#!"
 			align = hcenter|vcenter
 			position = { 0 -6 }
 			size = { 100% 40 }
@@ -1141,7 +1159,7 @@ types "production_method_items" {
 			datacontext = "[BuildingType]"
 			visible = "[And(BuildingType.IsBuildable, BuildingType.HasRequiredTechnologiesInCountry(GetPlayer.Self))]"
 			tooltip = "BUILDING_ACTION_NUMBER"
-			text = "#BOLD [BuildingType.GetNumAvailableStatesForBuilding|+]#!"
+			raw_text = "#BOLD [BuildingType.GetNumAvailableStatesForBuilding|+]#!"
 			align = right|nobaseline
 			parentanchor = right
 			using = fontsize_large
@@ -1238,7 +1256,7 @@ types "production_method_items" {
 
 					textbox = {
 						position = { 10 5 }
-						text = "#bold [GoodsPanelValue.GetName]#!"
+						raw_text = "#bold [GoodsPanelValue.GetName]#!"
 						autoresize = yes
 						align = left|vcenter
 						maximumsize = { 200 -1 }

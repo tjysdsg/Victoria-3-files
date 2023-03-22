@@ -195,19 +195,19 @@ types ongoing_outliner_items {
 					}
 					textbox = {
 						autoresize = yes
-						text = "#variable [DiplomaticPlay.GetTotalNumMobilizedBattalionsForSide( Country.Self ) ]#!"
+						raw_text = "#variable [DiplomaticPlay.GetTotalNumMobilizedBattalionsForSide( Country.Self ) ]#!"
 						align = nobaseline
 						#using = fontsize_small
 					}
 					textbox = {
 						autoresize = yes
-						text = "/"
+						raw_text = "/"
 						align = nobaseline
 						#using = fontsize_small
 					}
 					textbox = {
 						autoresize = yes
-						text = "#variable [DiplomaticPlay.GetTotalNumBattalionsForSide( Country.Self ) ]#!"
+						raw_text = "#variable [DiplomaticPlay.GetTotalNumBattalionsForSide( Country.Self ) ]#!"
 						align = nobaseline
 						#using = fontsize_small
 						alpha = 0.5
@@ -215,7 +215,7 @@ types ongoing_outliner_items {
 				}
 				
 				flowcontainer = {
-					#tooltip = "DIPLO_PLAY_COUNTRY_WARSHIPS_BREAKDOWN"
+					#tooltip = "DIPLO_PLAY_COUNTRY_FLOTILLAS_BREAKDOWN"
 					parentanchor = left
 
 					icon = {
@@ -225,7 +225,7 @@ types ongoing_outliner_items {
 					}
 					textbox = {
 						autoresize = yes
-						text = "#variable [Country.GetWarships]#!"
+						raw_text = "#variable [Country.GetWarships]#!"
 						align = nobaseline
 						#using = fontsize_small
 					}
@@ -250,19 +250,19 @@ types ongoing_outliner_items {
 
 					textbox = {
 						autoresize = yes
-						text = "#variable [DiplomaticPlay.GetTotalNumMobilizedBattalionsForSide( Country.Self ) ]#!"
+						raw_text = "#variable [DiplomaticPlay.GetTotalNumMobilizedBattalionsForSide( Country.Self ) ]#!"
 						align = nobaseline
 						#using = fontsize_small
 					}
 					textbox = {
 						autoresize = yes
-						text = "/"
+						raw_text = "/"
 						align = nobaseline
 						#using = fontsize_small
 					}
 					textbox = {
 						autoresize = yes
-						text = "#variable [DiplomaticPlay.GetTotalNumBattalionsForSide( Country.Self ) ]#!"
+						raw_text = "#variable [DiplomaticPlay.GetTotalNumBattalionsForSide( Country.Self ) ]#!"
 						align = nobaseline
 						#using = fontsize_small
 						alpha = 0.5
@@ -275,12 +275,12 @@ types ongoing_outliner_items {
 				}
 				
 				flowcontainer = {
-					#tooltip = "DIPLO_PLAY_COUNTRY_WARSHIPS_BREAKDOWN"
+					#tooltip = "DIPLO_PLAY_COUNTRY_FLOTILLAS_BREAKDOWN"
 					parentanchor = right
 
 					textbox = {
 						autoresize = yes
-						text = "#variable [Country.GetWarships]#!"
+						raw_text = "#variable [Country.GetWarships]#!"
 						align = nobaseline
 						#using = fontsize_small
 					}
@@ -415,7 +415,7 @@ types ongoing_outliner_items {
 				textbox = {
 					layoutpolicy_horizontal = expanding
 					size = { 0 20 }
-					text = "#BOLD [Country.GetRelationsWithDesc( GetPlayer )]#! ([Country.GetRelationsWith(GetPlayer)|+])"
+					raw_text = "#BOLD [Country.GetRelationsWithDesc( GetPlayer )]#! ([Country.GetRelationsWith(GetPlayer)|+])"
 					elide = right
 					fontsize_min = 10
 					align = nobaseline
@@ -585,17 +585,45 @@ types ongoing_outliner_items {
 		# OBJECTIVES / TUTORIAL
 		textbox = {
 			visible = "[GetPlayer.HasObjective]"
-			text = "#title [AccessPlayer.GetObjective.GetName]#!"
+			raw_text = "#title [AccessPlayer.GetObjective.GetName]#!"
 			autoresize = yes
 			multiline = yes
-			align = hcenter|nobaseline
+			align = left|nobaseline
 			minimumsize = { 340 -1 }
 			maximumsize = { 340 -1 }
-			margin = { 10 4 }
+			margin = { 10 6 }
 			
 			background = {
 				using = default_header_bg
 				margin = { -2 0 }
+			}
+
+			flowcontainer = {
+				visible = "[Not(AccessPlayer.IsObjectiveIdle)]"
+				parentanchor = right|vcenter
+				position = { -3 0 }
+
+				flowcontainer = {
+					visible = "[And(GetPlayer.HasObjective, Not(IsDataModelEmpty(AccessPlayer.AccessActivePlayerObjectiveJournalEntries)))]"
+
+					flowcontainer = {
+						visible = "[NotEqualTo_int32(GetDataModelSize(AccessPlayer.AccessActivePlayerObjectiveJournalEntries), GetDataModelSize(AccessPlayer.AccessActivePinnedPlayerObjectiveJournalEntries))]"
+						spacing = 5
+
+						textbox = {
+							text = "NUMBER_OF_PLAYER_OBJECTIVE_JOURNAL_ENTRIES_SHORT"
+							autoresize = yes
+							align = left|nobaseline
+						}
+						
+						button_icon_goto = {
+							size = { 25 25 }
+							onclick = "[InformationPanelBar.OpenPanelTab('journal', 'default')]"
+							tooltip = "GO_TO_BUTTON_JOURNAL"
+						}
+					}
+				}
+
 			}
 		}
 
@@ -604,7 +632,7 @@ types ongoing_outliner_items {
 			text = "[AccessPlayer.GetObjective.GetObjectiveType.GetIdleHeader]"
 			autoresize = yes
 			multiline = yes
-			align = hcenter|nobaseline
+			align = nobaseline
 			minimumsize = { 340 -1 }
 			maximumsize = { 340 -1 }
 			margin = { 10 0 }
@@ -617,7 +645,7 @@ types ongoing_outliner_items {
 			text = "[AccessPlayer.GetObjective.GetObjectiveType.GetIdleHint]"
 			autoresize = yes
 			multiline = yes
-			align = hcenter|nobaseline
+			align = nobaseline
 			minimumsize = { 340 -1 }
 			maximumsize = { 340 -1 }
 			margin = { 10 0 }
@@ -634,41 +662,39 @@ types ongoing_outliner_items {
 				outliner_journal_entry = {}
 			}
 		}
-
-		flowcontainer = {
-			visible = "[And(And(Not(AccessPlayer.IsObjectiveIdle), And(GetPlayer.HasObjective, Not(IsDataModelEmpty(AccessPlayer.AccessActivePlayerObjectiveJournalEntries)) )), NotEqualTo_int32(GetDataModelSize(AccessPlayer.AccessActivePlayerObjectiveJournalEntries), GetDataModelSize(AccessPlayer.AccessActivePinnedPlayerObjectiveJournalEntries)))]"
-
-			textbox = {
-				text = "NUMBER_OF_PLAYER_OBJECTIVE_JOURNAL_ENTRIES"
-				autoresize = yes
-				multiline = yes
-				align = left|nobaseline
-				minimumsize = { 290 -1 }
-				maximumsize = { 290 -1 }
-				margin = { 10 5 }
-			}
-
-			button_icon_goto = {
-				parentanchor = vcenter
-				size = { 25 25 }
-				onclick = "[InformationPanelBar.OpenPanelTab('journal', 'journal')]"
-				tooltip = "GO_TO_BUTTON_JOURNAL"
-			}
-		}
 		
 		# OTHER JOURNAL ENTRIES
 		textbox = {
 			text = "ACTIVE_JOURNAL_ENTRIES"
 			autoresize = yes
 			multiline = yes
-			align = hcenter|nobaseline
+			align = left|nobaseline
 			minimumsize = { 340 -1 }
 			maximumsize = { 340 -1 }
-			margin = { 10 4 }
+			margin = { 10 6 }
 			
 			background = {
 				using = default_header_bg
 				margin = { -2 0 }
+			}
+
+			flowcontainer = {
+				visible = "[And( Not( IsDataModelEmpty(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries) ), NotEqualTo_int32( GetDataModelSize(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries), GetDataModelSize(AccessPlayer.AccessActivePinnedNonPlayerObjectiveJournalEntries)))]"
+				parentanchor = right|vcenter
+				position = { -3 0 }
+				spacing = 5
+
+				textbox = {
+					text = "NUMBER_OF_NON_PLAYER_OBJECTIVE_JOURNAL_ENTRIES_SHORT"
+					autoresize = yes
+					align = left|nobaseline
+				}
+				
+				button_icon_goto = {
+					size = { 25 25 }
+					onclick = "[InformationPanelBar.OpenPanelTab('journal', 'default')]"
+					tooltip = "GO_TO_BUTTON_JOURNAL"
+				}
 			}
 		}
 
@@ -677,32 +703,9 @@ types ongoing_outliner_items {
 			parentanchor = hcenter
 			visible = "[Not(IsDataModelEmpty(AccessPlayer.AccessActivePinnedNonPlayerObjectiveJournalEntries))]"
 			datamodel = "[AccessPlayer.AccessActivePinnedNonPlayerObjectiveJournalEntries]"
-			
+
 			item = {
 				outliner_journal_entry = {}
-			}
-		}
-
-		flowcontainer = {
-			visible = "[And( Not( IsDataModelEmpty(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries) ), NotEqualTo_int32( GetDataModelSize(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries), GetDataModelSize(AccessPlayer.AccessActivePinnedNonPlayerObjectiveJournalEntries)))]"
-
-			textbox = {
-				text = "NUMBER_OF_NON_PLAYER_OBJECTIVE_JOURNAL_ENTRIES"
-				autoresize = yes
-				multiline = yes
-				align = left|nobaseline
-				minimumsize = { 290 -1 }
-				maximumsize = { 290 -1 }
-				margin = { 10 0 }
-				margin_top = 5
-				margin_bottom = 7
-			}
-
-			button_icon_goto = {
-				parentanchor = vcenter
-				size = { 25 25 }
-				onclick = "[InformationPanelBar.OpenPanelTab('journal', 'journal')]"
-				tooltip = "GO_TO_BUTTON_JOURNAL"
 			}
 		}
 
@@ -777,8 +780,6 @@ types ongoing_outliner_items {
 							item = {
 								ig_button = {
 									size = { 25 25 }
-									
-									#PRCAL-7234
 									tooltip = "CLOUT_PIECHART"
 								}
 							}

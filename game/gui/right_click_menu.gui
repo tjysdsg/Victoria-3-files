@@ -10,7 +10,7 @@ types right_click_menu_types {
 		using = fontsize_large
 		name = "right_click_menu_item"
 		block "properties" {
-			tooltip = "Default Item Tooltip"
+			raw_tooltip = "Default Item Tooltip"
 			enabled = yes
 			#onclick = "[SomeCallback]"
 		}
@@ -33,7 +33,7 @@ types right_click_menu_types {
 				layoutpolicy_horizontal = expanding
 				layoutpolicy_vertical = expanding
 				block "text" {
-					text = "#TODO Default Item Text#!"
+					raw_text = "#TODO Default Item Text#!"
 				}
 				align = left|nobaseline
 				fontsize_min = 12
@@ -75,7 +75,6 @@ types right_click_menu_types {
 				button = {
 					using = expand_arrow
 					size = { 25 25 }
-					tooltip = "#header Expand#!"
 					alwaystransparent = yes
 
 					block "expanded_list_expand_visible" {}
@@ -84,7 +83,6 @@ types right_click_menu_types {
 				button = {
 					using = expand_arrow_expanded
 					size = { 25 25 }
-					tooltip = "#header Collapse#!"
 					alwaystransparent = yes
 
 					block "expanded_list_collapse_visible" {}
@@ -95,7 +93,7 @@ types right_click_menu_types {
 
 			textbox = {
 				block "number_of_items_text" {
-					text = "-1"
+					raw_text = "-1"
 				}
 				autoresize = yes
 				parentanchor = right|vcenter
@@ -134,8 +132,8 @@ types right_click_menu_types {
 						multiline = yes
 						align = nobaseline
 						block "list_item_text_properties" {
-							text = "Default Item Text"
-							tooltip = "Default Item Tooltip"
+							raw_text = "Default Item Text"
+							raw_tooltip = "Default Item Tooltip"
 						}						
 					}
 
@@ -217,19 +215,21 @@ types right_click_menu_types {
 								margin_bottom = 2
 
 								block "title_text" {
-									text = "Default Title"
+									raw_text = "Default Title"
 								}
 							}
 						}
 
-						flowcontainer = {
-							using = default_list_position
-							spacing = 2
+						block "list" {
+							flowcontainer = {
+								using = default_list_position
+								spacing = 2
 
-							direction = vertical
+								direction = vertical
 
-							block "items" {
-								right_click_menu_item = {}
+								block "items" {
+									right_click_menu_item = {}
+								}
 							}
 						}
 					}
@@ -241,6 +241,7 @@ types right_click_menu_types {
 
 right_click_menu = {
 	name = "building_right_click_menu"
+	datacontext = "[GetMetaPlayer.GetPlayedOrObservedCountry]"
 
 	blockoverride "title_text" {
 		text = "BUILDING_RIGHT_CLICK_MENU_TITLE"
@@ -431,6 +432,96 @@ right_click_menu = {
 			
 			blockoverride = "text" {
 				text = "BUILDING_RIGHT_CLICK_MENU_SUBSIDIZE_OFF"
+			}
+		}
+
+		# RESET PRODUCTION METHODS
+		right_click_menu_item = {
+			
+			blockoverride "margin" {
+				margin_left = 45
+			}
+			blockoverride "properties" {
+				onclick = "[Execute( Building.ResetProductionMethodsToStandard )]"
+				visible = "[IsValid( Building.ResetProductionMethodsToStandard )]"
+				tooltip = "[Building.GetResetProductionMethodsToStandardTooltip]"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/lens_toolbar_icons/reset_production_methods_lens_option.dds"
+			}
+			
+			blockoverride = "text" {
+				text = "RESET_PM_BUILDING"
+			}
+		}
+		right_click_menu_item = {
+			
+			blockoverride "margin" {
+				margin_left = 45
+			}
+			blockoverride "properties" {
+				onclick = "[Execute( Building.GetBuildingType.ResetProductionMethodsToStandard )]"
+				visible = "[IsValid( Building.GetBuildingType.ResetProductionMethodsToStandard )]"
+				tooltip = "[Building.GetBuildingType.GetResetProductionMethodsToStandardTooltip]"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/lens_toolbar_icons/reset_production_methods_lens_option.dds"
+			}
+			
+			blockoverride = "text" {
+				text = "RESET_PM_BUILDING_TYPE"
+			}
+		}	
+	}
+}
+
+right_click_menu = {
+	name = "building_type_right_click_menu"
+	datacontext = "[GetMetaPlayer.GetPlayedOrObservedCountry]"
+
+	blockoverride "title_text" {
+		text = "[BuildingType.GetName]"
+	}
+	blockoverride "items" {
+		right_click_menu_item = {
+			
+			blockoverride "margin" {
+				margin_left = 45
+			}
+			blockoverride "properties" {
+				visible = "[BuildingType.IsExpandable]"
+				onclick = "[BuildingType.ActivateExpansionLens]"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/buttons/button_icons/plus.dds"
+			}
+			
+			blockoverride = "text" {
+				text = "OPEN_EXPANSION_LENS"
+			}
+		}
+
+		# RESET PRODUCTION METHODS
+		right_click_menu_item = {
+			
+			blockoverride "margin" {
+				margin_left = 45
+			}
+			blockoverride "properties" {
+				onclick = "[Execute( BuildingType.ResetProductionMethodsToStandard )]"
+				visible = "[IsValid( BuildingType.ResetProductionMethodsToStandard )]"
+				tooltip = "[BuildingType.GetResetProductionMethodsToStandardTooltip]"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/lens_toolbar_icons/reset_production_methods_lens_option.dds"
+			}
+			
+			blockoverride = "text" {
+				text = "RESET_PM_BUILDING_TYPE"
 			}
 		}	
 	}
@@ -722,7 +813,7 @@ right_click_menu = {
 
 	blockoverride "items" {
 		dynamicgridbox = {
-			datamodel = "[MapInteractions.AccessMapInteractionCharacter.AccessLocationHQ.AccessNavalInvasionGenerals]"
+			datamodel = "[MapInteractions.AccessMapInteractionCharacter.AccessCountry.AccessNavalInvasionGenerals]"
 			item = {
 				flowcontainer = {
 					character_portrait_mini = {
@@ -747,7 +838,7 @@ right_click_menu = {
 						blockoverride "icon" {}
 						
 						blockoverride = "text" {
-							text = "[Character.GetFullNameNoFormatting]"
+							raw_text = "[Character.GetFullNameNoFormatting] ([GetUnitStrengthHeader( Character.GetNumCombatUnits, Character.GetMaxNumCombatUnits, Character.GetCombatUnitsTypeIcon )], [Character.GetMobilizationPercentageFormatted])"
 						}
 					}
 				}
@@ -786,7 +877,7 @@ right_click_menu = {
 
 		right_click_menu_item = {
 			blockoverride "properties" {
-				onclick = "[InformationPanelBar.OpenCountryPanelTab(Country.Self, 'information')]"
+				onclick = "[InformationPanelBar.OpenCountryPanelTab(Country.Self, 'default')]"
 			}
 
 			blockoverride "icon" {}
@@ -999,6 +1090,46 @@ right_click_menu = {
 				text = "ACTIVATE_CONSCRIPTION_CENTER"
 			}
 		}
+
+		right_click_menu_item = {
+            blockoverride "properties" {
+                tooltip = "DESIGNATE_STRATEGIC_OBJECTIVE_RIGHT_CLICK_ADD_TOOLTIP"
+                visible = "[And( Not( State.IsStrategicObjective( GetMetaPlayer.GetPlayedOrObservedCountry ) ), IsValid( State.DesignateStrategicObjective ) ) ]"
+                onclick = "[Execute( State.DesignateStrategicObjective )]"
+            }
+
+            blockoverride "margin" {
+				margin_left = 55
+			}
+			
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/lens_toolbar_icons/designate_strategic_objective_lens_option.dds"
+			}
+
+            blockoverride "text" {
+                text = "DESIGNATE_STRATEGIC_OBJECTIVE_RIGHT_CLICK_ADD"
+            }
+        }
+
+        right_click_menu_item = {
+            blockoverride "properties" {
+                tooltip = "DESIGNATE_STRATEGIC_OBJECTIVE_RIGHT_CLICK_REMOVE_TOOLTIP"
+                visible = "[And( State.IsStrategicObjective( GetMetaPlayer.GetPlayedOrObservedCountry ), IsValid( State.DesignateStrategicObjective ) ) ]"
+                onclick = "[Execute( State.DesignateStrategicObjective )]"
+            }
+
+            blockoverride "margin" {
+				margin_left = 55
+			}
+			
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/lens_toolbar_icons/designate_strategic_objective_lens_option.dds"
+			}
+
+            blockoverride "text" {
+                text = "DESIGNATE_STRATEGIC_OBJECTIVE_RIGHT_CLICK_REMOVE"
+            }
+        }
 		
 		right_click_menu_item = {
 			blockoverride "properties" {
@@ -1394,6 +1525,76 @@ right_click_menu = {
 		}
 
 		right_click_menu_item = {
+			visible = "[And(Goods.HasMarketContext, Goods.GetMarket.GetOwner.IsLocalPlayer)]"
+
+			blockoverride "properties" {
+				onclick = "[Goods.TogglePinInOutliner]"
+			}
+
+			blockoverride "icon" {}
+			
+			blockoverride = "text" {
+				text = "GOODS_RIGHT_CLICK_MENU_PIN_IN_OUTLINER"
+			}		
+		}
+
+		right_click_menu_item = {
+			blockoverride "properties" {
+				enabled = "[IsValid( GetPlayer.SetGoodsTariffNoPriority(Goods.Self) )]"
+				onclick = "[Execute( GetPlayer.SetGoodsTariffNoPriority(Goods.Self) )]"
+				tooltip = "[GetPlayer.GetGoodsTariffDescNoPriority(Goods.Self)]"
+				visible = "[And(Goods.IsTradeable, ObjectsEqual(Goods.GetMarket.GetOwner, GetPlayer.Self))]"
+			}
+
+			blockoverride "icon" {}
+			
+			blockoverride "text" {
+				text = "SET_GOODS_TARIFF_NO_PRIORITY"
+			}		
+		}
+		
+		right_click_menu_item = {
+			blockoverride "properties" {
+				enabled = "[IsValid( GetPlayer.SetGoodsTariffImportPriority(Goods.Self) )]"
+				onclick = "[Execute( GetPlayer.SetGoodsTariffImportPriority(Goods.Self) )]"
+				tooltip = "[GetPlayer.GetGoodsTariffDescImportPriority(Goods.Self)]"
+				visible = "[And(Goods.IsTradeable, ObjectsEqual(Goods.GetMarket.GetOwner, GetPlayer.Self))]"
+			}
+
+			blockoverride "icon" {}
+			
+			blockoverride "text" {
+				text = "SET_GOODS_TARIFF_IMPORT_PRIORITY"
+			}			
+		}
+
+		right_click_menu_item = {
+			blockoverride "properties" {
+				enabled = "[IsValid( GetPlayer.SetGoodsTariffExportPriority(Goods.Self) )]"
+				onclick = "[Execute( GetPlayer.SetGoodsTariffExportPriority(Goods.Self) )]"
+				tooltip = "[GetPlayer.GetGoodsTariffDescExportPriority(Goods.Self)]"
+				visible = "[And(Goods.IsTradeable, ObjectsEqual(Goods.GetMarket.GetOwner, GetPlayer.Self))]"
+			}
+
+			blockoverride "icon" {}
+			
+			blockoverride "text" {
+				text = "SET_GOODS_TARIFF_EXPORT_PRIORITY"
+			}	
+		}	
+
+		textbox = {
+			text = "GOODS_IN_COUNTRY"
+			autoresize = yes
+			align = left|nobaseline
+			margin_top = 15
+			margin_bottom = 2
+			margin_left = 10
+			default_format = "#title"
+			visible = "[IsValid( Goods.ToggleTaxation(GetPlayer) )]"
+		}
+
+		right_click_menu_item = {
 			blockoverride "properties" {
 				enabled = "[IsValid( Goods.ToggleTaxation(GetPlayer) )]"
 				onclick = "[Execute( Goods.ToggleTaxation(GetPlayer) )]"
@@ -1421,52 +1622,7 @@ right_click_menu = {
 			blockoverride "text" {
 				text = "UNTAX_GOODS"
 			}	
-		}		
-	
-		right_click_menu_item = {
-			blockoverride "properties" {
-				enabled = "[IsValid( GetPlayer.SetGoodsTariffNoPriority(Goods.Self) )]"
-				onclick = "[Execute( GetPlayer.SetGoodsTariffNoPriority(Goods.Self) )]"
-				tooltip = "[GetPlayer.GetGoodsTariffDescNoPriority(Goods.Self)]"
-				visible = "[Goods.IsTradeable]"
-			}
-
-			blockoverride "icon" {}
-			
-			blockoverride "text" {
-				text = "SET_GOODS_TARIFF_NO_PRIORITY"
-			}		
 		}
-		
-		right_click_menu_item = {
-			blockoverride "properties" {
-				enabled = "[IsValid( GetPlayer.SetGoodsTariffImportPriority(Goods.Self) )]"
-				onclick = "[Execute( GetPlayer.SetGoodsTariffImportPriority(Goods.Self) )]"
-				tooltip = "[GetPlayer.GetGoodsTariffDescImportPriority(Goods.Self)]"
-				visible = "[Goods.IsTradeable]"
-			}
-
-			blockoverride "icon" {}
-			
-			blockoverride "text" {
-				text = "SET_GOODS_TARIFF_IMPORT_PRIORITY"
-			}			
-		}
-
-		right_click_menu_item = {
-			blockoverride "properties" {
-				enabled = "[IsValid( GetPlayer.SetGoodsTariffExportPriority(Goods.Self) )]"
-				onclick = "[Execute( GetPlayer.SetGoodsTariffExportPriority(Goods.Self) )]"
-				tooltip = "[GetPlayer.GetGoodsTariffDescExportPriority(Goods.Self)]"
-				visible = "[Goods.IsTradeable]"
-			}
-
-			blockoverride "icon" {}
-			
-			blockoverride "text" {
-				text = "SET_GOODS_TARIFF_EXPORT_PRIORITY"
-			}	
-		}	
 
 		goods_interactions = {}
 	}

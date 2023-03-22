@@ -34,6 +34,7 @@ types country_panel_types
 			parentanchor = hcenter
 			direction = vertical
 			visible = "[Not(Country.IsLocalPlayer)]"
+			spacing = 10
 		
 			default_header = {
 				blockoverride "text" {
@@ -71,41 +72,119 @@ types country_panel_types
 					text = "DIPLOMATIC_PLAYS_TARGETING_COUNTRY"
 				}
 			}
-
-			empty_state = {
-				blockoverride "visible" {
-					visible = "[IsDataModelEmpty(Country.GetPotentialDiploPlays)]"
-				}
-				blockoverride "text" {
-					text = "NO_DIPLO_PLAYS"
-				}
-				blockoverride "margin" {
-					margin_top = 10
-					margin_bottom = 10
-				}				
-			}				
-
+			
 			flowcontainer = {
 				direction = vertical
-				datamodel = "[Country.GetPotentialDiploPlays]"
-				using = default_list_position					
+				using = default_list_position
 
-				item = {
-					diplomatic_play_button_country = {}
+				flowcontainer = {
+					direction = vertical
+					datamodel = "[Country.GetPotentialDiploPlays]"
+					using = default_list_position					
+
+					item = {
+						diplomatic_play_button_country = {}
+					}
 				}
-			}
 
-			flowcontainer = {
-				direction = vertical
-				datamodel = "[Country.AccessStates]"
-				using = default_list_position					
+				flowcontainer = {
+					direction = vertical
+					datamodel = "[Country.AccessStates]"
+					using = default_list_position					
 
-				item = {
-					dynamicgridbox = {
-						datamodel = "[State.GetPotentialDiploPlays]"
+					item = {
+						dynamicgridbox = {
+							datamodel = "[State.GetPotentialDiploPlays]"
 
-						item = {
-							diplomatic_play_button_state = {}
+							item = {
+								diplomatic_play_button_state = {}
+							}
+						}
+					}
+				}
+
+				widget = { size = { 10 10 }}
+
+				section_header_button = {
+					visible = "[Not(IsDataModelEmpty(Country.GetNonPotentialDiploPlays))]"
+
+					blockoverride "left_text" {
+						text = "UNAVAILABLE_DIPLOMATIC_PLAYS_TARGETING_COUNTRY"
+					}
+
+					blockoverride "onclick" {
+						onclick = "[GetVariableSystem.Toggle('unavailable_diplo_plays')]"
+					}
+					
+					blockoverride "onclick_showmore" {
+						visible = "[Not(GetVariableSystem.Exists('unavailable_diplo_plays'))]"
+					}
+
+					blockoverride "onclick_showless" {
+						visible = "[GetVariableSystem.Exists('unavailable_diplo_plays')]"
+					}
+				}
+
+				flowcontainer = {
+					direction = vertical
+					datamodel = "[Country.GetNonPotentialDiploPlays]"
+					using = default_list_position
+					visible = "[GetVariableSystem.Exists('unavailable_diplo_plays')]"
+					margin_bottom = 10					
+
+					item = {
+						diplomatic_play_button_country = {}
+					}
+				}
+
+				section_header_button = {
+					visible = "[Not(IsDataModelEmpty(Country.GetNonPotentialDiploPlays))]"
+
+					blockoverride "left_text" {
+						text = "UNAVAILABLE_DIPLOMATIC_PLAYS_TARGETING_STATE"
+					}
+
+					blockoverride "onclick" {
+						onclick = "[GetVariableSystem.Toggle('unavailable_diplo_plays_state')]"
+					}
+					
+					blockoverride "onclick_showmore" {
+						visible = "[Not(GetVariableSystem.Exists('unavailable_diplo_plays_state'))]"
+					}
+
+					blockoverride "onclick_showless" {
+						visible = "[GetVariableSystem.Exists('unavailable_diplo_plays_state')]"
+					}
+				}
+
+				flowcontainer = {
+					direction = vertical
+					datamodel = "[Country.AccessStates]"
+					using = default_list_position
+					visible = "[GetVariableSystem.Exists('unavailable_diplo_plays_state')]"					
+
+					item = {
+						flowcontainer = {
+							visible = "[Not(IsDataModelEmpty(State.GetNonPotentialDiploPlays))]"
+							direction = vertical
+							textbox = {
+								autoresize = yes
+								align = nobaseline
+								text = "[State.GetName]"
+								margin_left = 5
+								margin_top = 5
+							}
+							dynamicgridbox = {
+								datamodel = "[State.GetNonPotentialDiploPlays]"
+
+								item = {
+									diplomatic_play_button_state = {
+										blockoverride "text" {
+											text = "[DiplomaticPlayType.GetName]"
+										}
+									}
+								}
+							}
 						}
 					}
 				}

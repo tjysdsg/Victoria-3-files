@@ -22,6 +22,10 @@ law_outlawed_dissent = {
 	unlocking_technologies = {
 		political_agitation
 	}
+
+	pop_support = {
+		value = 0
+	}
 }
 
 law_censorship = {
@@ -45,6 +49,10 @@ law_censorship = {
 	unlocking_technologies = {
 		law_enforcement
 	}
+
+	pop_support = {
+		value = 0
+	}
 }
 
 law_right_of_assembly = {
@@ -62,6 +70,39 @@ law_right_of_assembly = {
 	possible_political_movements = {
 		law_censorship
 		law_protected_speech
+	}
+
+	pop_support = {
+		value = 0
+		add = {
+			desc = "POP_ACADEMICS"			
+			if = {
+				limit = {
+					owner = { 
+						NOT = { 
+							has_law = law_type:law_protected_speech
+						} 
+					}
+					is_pop_type = academics
+				}
+				value = 0.5
+			}
+		}
+		# People don't like censorship
+		add = {
+			desc = "ALL_POPS"
+			if = {
+				limit = {
+					owner = { 
+						NOT = { 
+							has_law = law_type:law_protected_speech
+						} 
+					}
+					is_pop_type = academics
+				}
+				value = 0.01
+			}
+		}
 	}
 }
 
@@ -81,6 +122,23 @@ law_protected_speech = {
 	
 	possible_political_movements = {
 		law_right_of_assembly
+	}
+
+	pop_support = {
+		value = 0
+		add = {
+			desc = "POP_ACADEMICS"			
+			if = {
+				limit = {
+					is_pop_type = academics
+				}
+				value = 0.33
+			}
+		}
+		add = {
+			desc = "ALL_POPS"			
+			value = 0.01
+		}
 	}
 
 	on_activate = {

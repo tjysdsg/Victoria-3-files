@@ -47,8 +47,8 @@ types "MapEditorCustomizationTypes"
             checked = "[IsDynamicsEnabled]"
             onclick = "[SetDynamicsEnabled(Not(IsDynamicsEnabled))]"
         }
-        blockoverride "label" { text = "Dynamics master" }
-        tooltip = "Master switch for terrain dynamics simulation. This includes modifications done to the terrain materials aswell as toggling 3d objects visibilities. Notice that disabling dynamics makes the map editor run a little bit more smooth."
+        blockoverride "label" { raw_text = "Dynamics master" }
+        raw_tooltip = "Master switch for terrain dynamics simulation. This includes modifications done to the terrain materials aswell as toggling 3d objects visibilities. Notice that disabling dynamics makes the map editor run a little bit more smooth."
 		tooltipwidget = { using = dockable_tooltip }
     }
 }
@@ -68,7 +68,7 @@ mask_painter_map_content_list_extension = {
 			editor_frame = {
     			layoutpolicy_horizontal = expanding
 
-				blockoverride "label" { text = "Dynamic Terrain:" }
+				blockoverride "label" { raw_text = "Dynamic Terrain:" }
 				blockoverride "content" {
 
 					name = "dynamic_terrain_frame"
@@ -91,8 +91,8 @@ mask_painter_map_content_list_extension = {
 						        {
 						            using = detail_data_dynamic_terrain_switch
 						        }
-						        blockoverride "label" { text = "Dynamic materials" }
-					            tooltip = "Disabling this feature will disable dynamic terrain materials only. Toggling 3d objects will still work as long as the dynamics master is enabled."
+						        blockoverride "label" { raw_text = "Dynamic materials" }
+					            raw_tooltip = "Disabling this feature will disable dynamic terrain materials only. Toggling 3d objects will still work as long as the dynamics master is enabled."
 								tooltipwidget = { using = dockable_tooltip }
 						    }
 					    }
@@ -110,9 +110,9 @@ mask_painter_map_content_list_extension = {
 							layoutpolicy_horizontal = preferred
 							fontsize = 12
 							align = center|nobaseline
-							text = "Edit Dynamic Terrain Definitions"
+							raw_text = "Edit Dynamic Terrain Definitions"
 							onclick = "[MaskPainterDynamicTerrain.OpenDatabase]"
-							tooltip = "Open database file with dynamic terrain definitions."
+							raw_tooltip = "Open database file with dynamic terrain definitions."
 							tooltipwidget = { using = dockable_tooltip }
 						}
 						hbox = {
@@ -125,7 +125,7 @@ mask_painter_map_content_list_extension = {
 								layoutpolicy_horizontal = fixed
 								layoutpolicy_vertical = preferred
 								size = { 80 0 }
-								text = "Terrain:"
+								raw_text = "Terrain:"
 								align = right|nobaseline
 							}
 
@@ -135,31 +135,31 @@ mask_painter_map_content_list_extension = {
 								layoutpolicy_vertical = fixed
 								elide = middle
 								enabled = "[GreaterThan_int32( MapContentSelector.GetSelectedCount,'(int32)0')]"
-								text = "[MaskPainterDynamicTerrain.GetTerrainType]"
+								raw_text = "[MaskPainterDynamicTerrain.GetTerrainType]"
 								onclick = "[ToolPropertySearchList.OpenSearchList]"
-								tooltip = "Click to select terrain type for preview. Assigning terrain type has no impact on the game. It only shows how selected terrain may look like."
+								raw_tooltip = "Click to select terrain type for preview. Assigning terrain type has no impact on the game. It only shows how selected terrain may look like."
 								tooltipwidget = { using = dockable_tooltip }
 							}
 
 							tooloptions_button = {
-								text = "X"
+								raw_text = "X"
 								fontsize = 18
 								size = { 24 24 }
-								tooltip = "Clear dynamic terrain."
+								raw_tooltip = "Clear dynamic terrain."
 								tooltipwidget = { using = dockable_tooltip }
 								onclick = "[MaskPainterDynamicTerrain.ClearSelected]"
 								enabled = "[MaskPainterDynamicTerrain.HasAnySelectedSetTerrainType]"
 							}
 						}
 						CustomSliderWithValue = {
-							blockoverride "editbox" { text = "Value:" }
+							blockoverride "editbox" { raw_text = "Value:" }
 							blockoverride "scrollbar" {
 								value = "[MaskPainterDynamicTerrain.GetTerrainValue]"
 								onchangefinish = "[MaskPainterDynamicTerrain.SetTerrainValue]"
-								tooltip = "Use slider to assign the preview value. It corresponds to the building construction progress in the game."
+								raw_tooltip = "Use slider to assign the preview value. It corresponds to the building construction progress in the game."
 							}
 							blockoverride "input" {
-								text = "[MaskPainterDynamicTerrain.GetTerrainValue]"
+								raw_text = "[MaskPainterDynamicTerrain.GetTerrainValue]"
 								oneditingfinished = "[MaskPainterDynamicTerrain.SetTerrainValueStr]"
 								enabled = "[MaskPainterDynamicTerrain.HasAnySelectedSetTerrainType]"
 							}
@@ -173,8 +173,8 @@ mask_painter_map_content_list_extension = {
 					        }
 					        blockoverride "label"
 					        {
-					            text = "Auto update dynamic terrain when painting"
-					            tooltip = "Disable real time auto update of the dynamic materials to save some performance when painting."
+					            raw_text = "Auto update dynamic terrain when painting"
+					            raw_tooltip = "Disable real time auto update of the dynamic materials to save some performance when painting."
 								tooltipwidget = { using = dockable_tooltip }
 					        }
 					    }
@@ -184,9 +184,9 @@ mask_painter_map_content_list_extension = {
 								layoutpolicy_horizontal = preferred
 								fontsize = 12
 								align = center|nobaseline
-								text = "Refresh all"
+								raw_text = "Refresh all"
 								onclick = "[UpdateDynamicTerrainInAllProvinces]"
-								tooltip = "Force refresh dynamic terrain being updated over the entire world. It may take a moment to complete..."
+								raw_tooltip = "Force refresh dynamic terrain being updated over the entire world. It may take a moment to complete..."
 								tooltipwidget = { using = dockable_tooltip }
 							}
 
@@ -195,9 +195,9 @@ mask_painter_map_content_list_extension = {
 								layoutpolicy_horizontal = preferred
 								fontsize = 12
 								align = center|nobaseline
-								text = "Clear all"
+								raw_text = "Clear all"
 								onclick = "[ClearDynamicTerrainOverrideForAllProvinces]"
-								tooltip = "Clear dynamic terrain from all territories."
+								raw_tooltip = "Clear dynamic terrain from all territories."
 								tooltipwidget = { using = dockable_tooltip }
 							}
 						}
@@ -210,8 +210,8 @@ mask_painter_map_content_list_extension = {
 					        }
 					        blockoverride "label"
 					        {
-					            text = "Preview Terrain Manipulator Provinces"
-					            tooltip = "Toggle visual debug that shows which provinces are affected by currently selected mask. These province lists are affecting the game play and are exported to the databases when you hit SAVE."
+					            raw_text = "Preview Terrain Manipulator Provinces"
+					            raw_tooltip = "Toggle visual debug that shows which provinces are affected by currently selected mask. These province lists are affecting the game play and are exported to the databases when you hit SAVE."
 								tooltipwidget = { using = dockable_tooltip }
 					        }
 					    }
@@ -222,7 +222,7 @@ mask_painter_map_content_list_extension = {
 			editor_frame = {
 			    layoutpolicy_horizontal = expanding
 
-				blockoverride "label" { text = "Cities:" }
+				blockoverride "label" { raw_text = "Cities:" }
 				blockoverride "content" {
 
 					name = "cities_frame"
@@ -236,9 +236,9 @@ mask_painter_map_content_list_extension = {
 							layoutpolicy_horizontal = preferred
 							fontsize = 12
 							align = center|nobaseline
-							text = "Clear all"
+							raw_text = "Clear all"
 							onclick = "[Cities.ClearAll]"
-							tooltip = "Clear all cities."
+							raw_tooltip = "Clear all cities."
 							tooltipwidget = { using = dockable_tooltip }
 						}
 
@@ -247,9 +247,9 @@ mask_painter_map_content_list_extension = {
 							layoutpolicy_horizontal = preferred
 							fontsize = 12
 							align = center|nobaseline
-							text = "Random"
+							raw_text = "Random"
 							onclick = "[Cities.Random]"
-							tooltip = "Make random cities."
+							raw_tooltip = "Make random cities."
 							tooltipwidget = { using = dockable_tooltip }
 						}
 					}
@@ -259,9 +259,9 @@ mask_painter_map_content_list_extension = {
 						layoutpolicy_horizontal = preferred
 						layoutpolicy_vertical = fixed
 						elide = middle
-						text = "[Cities.GetCurrentBuildingTypeName]"
+						raw_text = "[Cities.GetCurrentBuildingTypeName]"
 						onclick = "[ToolPropertySearchList.OpenSearchList]"
-						tooltip = "Click to select building type."
+						raw_tooltip = "Click to select building type."
 						tooltipwidget = { using = dockable_tooltip }
 					}
 
@@ -277,7 +277,7 @@ mask_painter_map_content_list_extension = {
 							layoutpolicy_horizontal = preferred
 							layoutpolicy_vertical = preferred
 							size = { 0 0 }
-							text = "[Cities.GetCurrentBuildingTypeName] Level: "
+							raw_text = "[Cities.GetCurrentBuildingTypeName] Level: "
 							align = right|nobaseline
 						}
 
@@ -286,7 +286,7 @@ mask_painter_map_content_list_extension = {
 							layoutpolicy_vertical = fixed
 							size = { 52 24 }
 							align = center
-							text = "[Cities.GetCurrentBuildingLevel]"
+							raw_text = "[Cities.GetCurrentBuildingLevel]"
 							oneditingfinished = "[Cities.SetCurrentBuildingLevelStr]"
 						}
 					}
@@ -302,45 +302,45 @@ mask_painter_map_content_list_extension = {
 				        }
 				        blockoverride "label"
 				        {
-				            text = "Under construction"
-				            tooltip = "Sets the currently selected building type as under construction."
+				            raw_text = "Under construction"
+				            raw_tooltip = "Sets the currently selected building type as under construction."
 							tooltipwidget = { using = dockable_tooltip }
 				        }
 				    }
 
 					CustomSliderWithValue = {
-						blockoverride "editbox" { text = "Poor Ratio:" }
+						blockoverride "editbox" { raw_text = "Poor Ratio:" }
 						blockoverride "scrollbar" {
 							value = "[Cities.GetPoorRatio]"
 							onchangefinish = "[Cities.SetPoorRatio]"
-							tooltip = "Use slider to assign the ratio of poor citizens."
+							raw_tooltip = "Use slider to assign the ratio of poor citizens."
 						}
 						blockoverride "input" {
-							text = "[Cities.GetPoorRatio]"
+							raw_text = "[Cities.GetPoorRatio]"
 							oneditingfinished = "[Cities.SetPoorRatioStr]"
 						}
 					}
 					CustomSliderWithValue = {
-						blockoverride "editbox" { text = "Mid Ratio:" }
+						blockoverride "editbox" { raw_text = "Mid Ratio:" }
 						blockoverride "scrollbar" {
 							value = "[Cities.GetMidRatio]"
 							onchangefinish = "[Cities.SetMidRatio]"
-							tooltip = "Use slider to assign the ratio of mid class citizens."
+							raw_tooltip = "Use slider to assign the ratio of mid class citizens."
 						}
 						blockoverride "input" {
-							text = "[Cities.GetMidRatio]"
+							raw_text = "[Cities.GetMidRatio]"
 							oneditingfinished = "[Cities.SetMidRatioStr]"
 						}
 					}
 					CustomSliderWithValue = {
-						blockoverride "editbox" { text = "Rich Ratio:" }
+						blockoverride "editbox" { raw_text = "Rich Ratio:" }
 						blockoverride "scrollbar" {
 							value = "[Cities.GetRichRatio]"
 							onchangefinish = "[Cities.SetRichRatio]"
-							tooltip = "Use slider to assign the ratio of rich citizens."
+							raw_tooltip = "Use slider to assign the ratio of rich citizens."
 						}
 						blockoverride "input" {
-							text = "[Cities.GetRichRatio]"
+							raw_text = "[Cities.GetRichRatio]"
 							oneditingfinished = "[Cities.SetRichRatioStr]"
 						}
 					}
@@ -358,8 +358,8 @@ mask_painter_map_content_list_extension = {
 					        }
 					        blockoverride "label"
 					        {
-					            text = "Auto refresh"
-					            tooltip = "Automatically refresh all cities when any data in the above form changes."
+					            raw_text = "Auto refresh"
+					            raw_tooltip = "Automatically refresh all cities when any data in the above form changes."
 								tooltipwidget = { using = dockable_tooltip }
 					        }
 					    }
@@ -373,8 +373,8 @@ mask_painter_map_content_list_extension = {
 					        }
 					        blockoverride "label"
 					        {
-					            text = "Draw city spheres"
-				            	tooltip = "Toggle visibility of city spheres."
+					            raw_text = "Draw city spheres"
+				            	raw_tooltip = "Toggle visibility of city spheres."
 								tooltipwidget = { using = dockable_tooltip }
 					        }
 					    }
@@ -388,8 +388,8 @@ mask_painter_map_content_list_extension = {
 					        }
 					        blockoverride "label"
 					        {
-					            text = "Draw city debug grid"
-				            	tooltip = "Toggle visibility of city debug grid, that shows up after moving city locator in the map object editor."
+					            raw_text = "Draw city debug grid"
+				            	raw_tooltip = "Toggle visibility of city debug grid, that shows up after moving city locator in the map object editor."
 								tooltipwidget = { using = dockable_tooltip }
 					        }
 					    }
@@ -398,7 +398,7 @@ mask_painter_map_content_list_extension = {
 					editor_frame = {
         			    layoutpolicy_horizontal = expanding
 
-						blockoverride "label" { text = "Monuments:" }
+						blockoverride "label" { raw_text = "Monuments:" }
 						blockoverride "content" {
 
 							name = "monuments_frame"
@@ -408,9 +408,9 @@ mask_painter_map_content_list_extension = {
 								layoutpolicy_horizontal = preferred
 								layoutpolicy_vertical = fixed
 								elide = middle
-								text = "[Cities.GetMonumentsMode]"
+								raw_text = "[Cities.GetMonumentsMode]"
 								onclick = "[ToolPropertySearchList.OpenSearchList]"
-								tooltip = "Click to select in which mode special buildings are shown."
+								raw_tooltip = "Click to select in which mode special buildings are shown."
 								tooltipwidget = { using = dockable_tooltip }
 							}
 						}
@@ -421,10 +421,10 @@ mask_painter_map_content_list_extension = {
 						layoutpolicy_horizontal = preferred
 						fontsize = 12
 						align = center|nobaseline
-						text = "Refresh"
+						raw_text = "Refresh"
 						onclick = "[Cities.Refresh]"
 						enabled = "[Not(Cities.IsAutoRefresh)]"
-						tooltip = "Apply changes using the above form."
+						raw_tooltip = "Apply changes using the above form."
 						tooltipwidget = { using = dockable_tooltip }
 					}
 				}
@@ -454,8 +454,8 @@ mapobjects_options = {
 	blockoverride "list_extension" {
 		editor_toolbar_button = {
 			visible = "[HasCitiesOutOfState]"
-			tooltip = "Find a city outside its state"
-			text = "City Outside State"
+			raw_tooltip = "Find a city outside its state"
+			raw_text = "City Outside State"
 			onclick = "[FocusCameraOnCityOutOfState]"
 			size = { 88 32 }
 		}

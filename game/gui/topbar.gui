@@ -62,7 +62,7 @@ types topbar_components
 				}
 				textbox = {
 					parentanchor = vcenter
-					text = "#variable [Country.GetGDP|1*]#!"
+					raw_text = "#variable [Country.GetGDP|1*]#!"
 					autoresize = yes
 					align = left|nobaseline
 				}
@@ -72,8 +72,11 @@ types topbar_components
 				minimumsize = { 90 30 }
 				maximumsize = { 90 30 }
 				spacing = 2
-				tooltip = "LITERACY_TOOLTIP"
+				using = literacy_tooltip_with_graph
 				using = tooltip_below
+				onmousehierarchyenter = "[SelectMapModeByKey('mm_literacy')]"
+				onmousehierarchyleave = "[UnforceMapMode]"
+				alwaystransparent = no
 		
 				icon = {
 					texture = "gfx/interface/icons/generic_icons/literacy.dds"
@@ -82,7 +85,7 @@ types topbar_components
 				}
 				textbox = {
 					parentanchor = vcenter
-					text = "#variable [Country.GetIncorporatedLiteracyRate|%1]#!"
+					raw_text = "#variable [Country.GetIncorporatedLiteracyRate|%1]#!"
 					autoresize = yes
 					align = left|nobaseline
 				}
@@ -119,6 +122,9 @@ types topbar_components
 				spacing = 2	
 				using = population_tooltip_with_graph
 				using = tooltip_below
+				onmousehierarchyenter = "[SelectMapModeByKey('mm_population')]"
+				onmousehierarchyleave = "[UnforceMapMode]"
+				alwaystransparent = no
 		
 				icon = {
 					texture = "gfx/interface/icons/generic_icons/population.dds"
@@ -127,7 +133,7 @@ types topbar_components
 				}
 				textbox = {
 					parentanchor = vcenter
-					text = "#variable [Country.GetTotalPopulation|D]#!"
+					raw_text = "#variable [Country.GetTotalPopulation|D]#!"
 					autoresize = yes
 					align = left|nobaseline
 				}
@@ -150,7 +156,7 @@ types topbar_components
 				}
 				textbox = {
 					parentanchor = vcenter
-					text = "#variable [Country.GetNumRadicals|D]#!"
+					raw_text = "#variable [Country.GetNumRadicals|D]#!"
 					autoresize = yes
 					align = left|nobaseline
 				}
@@ -173,7 +179,7 @@ types topbar_components
 				}
 				textbox = {
 					parentanchor = vcenter
-					text = "#variable [Country.GetNumLoyalists|D]#!"
+					raw_text = "#variable [Country.GetNumLoyalists|D]#!"
 					autoresize = yes
 					align = left|nobaseline
 				}
@@ -185,7 +191,7 @@ types topbar_components
 		widget = {
 			name = "topbar"
 			using = hud_visibility
-			datacontext = "[GetMetaPlayer.GetPlayedOrObservedCountry]"
+			datacontext = "[AccessMetaPlayer.AccessPlayedOrObservedCountry]"
 			using = clickthrough_blocker
 			size = { 705 80 }
 			allow_outside = yes
@@ -278,14 +284,19 @@ types topbar_components
 					container = {
 						### PRIMARY ICONS
 						flowcontainer = {
-							position = { 130 0 }
-							spacing = 37
+							position = { 130 -1 }
+
+							block "spacing" {
+								spacing = 12
+							}
 							margin_bottom = 5
 							
 							flowcontainer = {
 								# TODO Mikael / Aron: surely there is a better way to do this
 								name = "tutorial_highlight_all_capacities"
-								spacing = 37
+								block "spacing" {
+									spacing = 12
+								}
 								
 								### BUREAUCRACY
 								button = {
@@ -298,16 +309,17 @@ types topbar_components
 									enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
 							
 									icon = {
-										size = { 36 36 }
+										size = { 32 32 }
+										position = { 0 2 }
 										name = bureaucracy_icon
 										texture = "gfx/interface/icons/topbar/bureaucracy_icon.dds"
 										parentanchor = vcenter
 									}
 									
 									textbox = {
-										position = { 35 -2 }
+										position = { 35 -3 }
 										name = capital_value
-										text = "#bold [GetPlayer.GetPowerDelta('bureaucracy')|D=+]#!"
+										raw_text = "#bold [GetPlayer.GetPowerDelta('bureaucracy')|D=+]#!"
 										align = center|nobaseline
 										using = fontsize_large
 										autoresize = yes
@@ -335,20 +347,21 @@ types topbar_components
 									size = { 100 40 }
 									tooltip = "AUTHORITY_TOOLTIP"
 									using = tooltip_below
-									onclick = "[InformationPanelBar.OpenPanelTab('politics', 'overview')]"
+									onclick = "[InformationPanelBar.OpenPanelTab('politics', 'default')]"
 									enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
 							
 									icon = {
-										size = { 36 36 }
+										size = { 32 32 }
+										position = { 0 2 }
 										name = authority_icon
 										texture = "gfx/interface/icons/topbar/authority_icon.dds"
 										parentanchor = vcenter
 									}
 								
 									textbox = {
-										position = { 35 -2 }
+										position = { 35 -3 }
 										name = capital_value
-										text = "#bold [GetPlayer.GetPowerDelta('authority')|=+D]#!"
+										raw_text = "#bold [GetPlayer.GetPowerDelta('authority')|=+D]#!"
 										align = left|nobaseline
 										using = fontsize_large
 										autoresize = yes
@@ -376,20 +389,21 @@ types topbar_components
 									size = { 100 40 }
 									tooltip = "INFLUENCE_TOOLTIP"
 									using = tooltip_below
-									onclick = "[InformationPanelBar.OpenPanelTab('diplomatic_overview', 'diplomatic_overview')]"
+									onclick = "[InformationPanelBar.OpenPanelTab('diplomatic_overview', 'default')]"
 									enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
 									
 									icon = {
-										size = { 36 36 }
+										size = { 32 32 }
+										position = { 0 2 }
 										name = dip_power_icon
 										texture = "gfx/interface/icons/topbar/influence_icon.dds"
 										parentanchor = vcenter
 									}
 									
 									textbox = {
-										position = { 35 -2 }
+										position = { 35 -3 }
 										name = capital_value
-										text = "#bold [GetPlayer.GetPowerDelta('influence')|=+D]#!"
+										raw_text = "#bold [GetPlayer.GetPowerDelta('influence')|=+D]#!"
 										align = left|nobaseline
 										using = fontsize_large
 										autoresize = yes
@@ -410,6 +424,55 @@ types topbar_components
 									}
 								}
 							}
+
+							block "convoys_info" {
+								button = {
+									name = "tutorial_highlight_convoys"
+									using = glow_button
+									size = { 100 40 }
+									tooltip = "CONVOY_TOPBAR_TOOLTIP"
+									using = tooltip_below
+									onclick = "[InformationPanelBar.OpenMarketPanelTab(AccessPlayer.AccessFirstMarket, 'trade_routes')]"
+									enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
+									alpha = "[TransparentIfZero(GetPlayer.GetSupplyNetworkStrength)]"
+									
+									widget = {
+										size = { 32 32 }
+										name = convoys_icon
+										parentanchor = vcenter
+										position = { 0 2 }
+									
+										icon = {
+											parentanchor = center
+											size = { 28 28 }
+											texture = "gfx/interface/icons/generic_icons/convoys.dds"
+										}
+										
+									}
+									textbox = {
+										position = { 35 -3 }
+										name = capital_value
+										raw_text = "#bold [GetPlayer.GetNumAvailableConvoys|=+D]#!"
+										align = left|nobaseline
+										using = fontsize_large
+										autoresize = yes
+										parentanchor = vcenter
+									}
+									
+									double_direction_progressbar = {
+										size = { 60 6 }
+										position = { 40 -3 }
+										parentanchor = bottom
+										
+										blockoverride "value_left" {
+											value = "[Negate_float(FixedPointToFloat(GetPlayer.GetDeficitConvoyRatioForProgressBar))]"
+										}
+										blockoverride "value_right" {
+											value = "[FixedPointToFloat(GetPlayer.GetExcessConvoyRatioForProgressBar)]"
+										}
+									}
+								}	
+							}
 							
 							### MONEY
 							container = {
@@ -418,22 +481,23 @@ types topbar_components
 								
 								button = {
 									using = glow_button					
-									size = { 130 40 }
+									size = { 100 40 }
 									tooltip = "CAPITAL_MONEY"
 									using = tooltip_below
 									using = money_tooltip_with_graph
-									onclick = "[InformationPanelBar.OpenPanelTab('budget', 'overview')]"
+									onclick = "[InformationPanelBar.OpenPanelTab('budget', 'default')]"
 									enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
 								
 									icon = {
-										size = { 36 36 }
+										size = { 32 32 }
+										position = { 0 2 }
 										name = income_power_icon
 										texture = "gfx/interface/icons/topbar/income_power_icon.dds"
 										parentanchor = vcenter
 									}
 								
 									textbox = {
-										position = { 35 -2 }
+										position = { 35 -3 }
 										name = capital_value
 										text = "[AccessPlayer.PredictWeeklyBalanceWithEconomyHealthHint]"
 										align = left|nobaseline
@@ -478,6 +542,7 @@ types topbar_components
 									}
 								}
 							}
+						
 						}
 						
 						#shows only on hover

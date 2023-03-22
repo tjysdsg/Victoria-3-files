@@ -48,6 +48,7 @@ expedition_events.2 = { #Choose commander
 
 	trigger = {
 		any_scope_character = {
+			is_busy = no
 			OR = {
 				has_role = general
 				has_role = admiral
@@ -58,6 +59,7 @@ expedition_events.2 = { #Choose commander
 	immediate = {
 		random_scope_character = {
 			limit = {
+				is_busy = no
 				is_ruler = no
 				OR = {
 					has_role = general
@@ -68,6 +70,7 @@ expedition_events.2 = { #Choose commander
 		}
 		random_scope_character = {
 			limit = {
+				is_busy = no
 				is_ruler = no
 				OR = {
 					has_role = general
@@ -82,6 +85,7 @@ expedition_events.2 = { #Choose commander
 		}
 		random_scope_character = {
 			limit = {
+				is_busy = no
 				is_ruler = no
 				OR = {
 					has_role = general
@@ -1208,23 +1212,23 @@ expedition_events.120 = { #DR LIVINGSTONE EVENT
 			has_variable = failed_niger_river_var
 		}
 		NOT = { has_variable = found_explorer_var }
-		any_scope_character = {
-			is_in_void = yes
+		any_character_in_void = {
 			has_variable = failed_expedition_leader_var
+			owner = root
 		}
 	}
 	
 	immediate = {
-		random_scope_character = {
+		random_character_in_void = {
 			limit = {
 				has_variable = failed_expedition_leader_var
-				is_in_void = yes
+				owner = root
 			}
-			free_character_from_void = yes
 			save_scope_as = old_expedition_leader
 		}
 		random_list = {
 			75 = {
+				remove_variable = crazy_explorer_var
 			}
 			25 = {
 				set_variable = crazy_explorer_var
@@ -1260,6 +1264,14 @@ expedition_events.120 = { #DR LIVINGSTONE EVENT
 		add_modifier = {
 			name = found_old_explorer
 			months = normal_modifier_time
+		}
+		random_character_in_void = {
+			limit = {
+				has_variable = failed_expedition_leader_var
+				owner = root
+			}
+			free_character_from_void = yes
+			set_character_busy = no
 		}
 		custom_tooltip = expedition_event_delayed_tt
 		add_small_peril_effect = yes

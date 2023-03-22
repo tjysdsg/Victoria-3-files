@@ -70,6 +70,28 @@ types journal_entry_panel_types
 					}
 				}
 
+				flowcontainer = {
+					# TODO: this is mostly example UI code, shape into something fully correct
+					parentanchor = hcenter
+					visible = "[Not( IsDataModelEmpty( JournalEntry.GetScriptedButtons ) )]"
+					datamodel = "[JournalEntry.GetScriptedButtons]"
+
+					item = {
+						button = {
+							using = default_button
+
+							text = "[ScriptedButton.GetName]"
+							tooltip = "SCRIPTED_ACTION_TOOLTIP"
+
+							enabled = "[IsValid( ScriptedButton.ExecuteEffect )]"
+							onclick = "[Execute( ScriptedButton.ExecuteEffect )]"
+
+							size = { 200 50 }
+							margin = { 20 20 }
+						}
+					}
+				}
+
 				textbox = {
 					visible = "[Not(StringIsEmpty(JournalEntry.GetStatusDesc))]"
 					text = "[JournalEntry.GetStatusDesc]"
@@ -86,6 +108,40 @@ types journal_entry_panel_types
 					background = {
 						alpha = 0.5
 						using = entry_bg_fancy_dark
+					}
+				}
+
+				flowcontainer = {
+					parentanchor = hcenter
+					visible = "[And(JournalEntry.HasProgressBar, JournalEntry.IsActive)]"
+					margin = { 0 5 }
+					
+					default_progressbar_horizontal = {
+						block "progressbar_size" {
+							size = { @panel_width_minus_30 30 }
+						}
+						blockoverride "values" {
+							value = "[FixedPointToFloat(JournalEntry.GetGoalProgressPercent)]"
+							min = 0
+							max = 1
+						}
+
+						textbox = {
+							visible = "[EqualTo_CFixedPoint(JournalEntry.GetBaselineValue, '(CFixedPoint)0')]"
+							text = "JOURNAL_ENTRY_PROGRESSBAR_FROM_ZERO"
+							autoresize = yes
+							align = left|nobaseline
+							margin_left = 10
+							parentanchor = vcenter
+						}
+						textbox = {
+							visible = "[Not(EqualTo_CFixedPoint(JournalEntry.GetBaselineValue, '(CFixedPoint)0'))]"
+							text = "JOURNAL_ENTRY_PROGRESSBAR_FROM_BASE"
+							autoresize = yes
+							align = left|nobaseline
+							margin_left = 10
+							parentanchor = vcenter
+						}
 					}
 				}
 					
@@ -159,6 +215,33 @@ types journal_entry_panel_types
 						using = fontsize_large
 						parentanchor = vcenter
 					}
+				}
+
+				textbox = {
+					visible = "[Not(StringIsEmpty(JournalEntry.GetFailureTooltip))]"
+					text = "[JournalEntry.GetFailureTooltip]"
+					autoresize = yes
+					multiline = yes
+					minimumsize = { @panel_width_minus_30 -1 }
+					maximumsize = { @panel_width_minus_30 -1 }
+					using = default_list_position
+					align = left|nobaseline
+
+					margin = { 20 20 }
+					background = {
+						using = entry_bg_simple
+					}
+				}
+
+				textbox = {
+					text = "[JournalEntry.GetOnFailTooltip]"
+					visible = "[Not(StringIsEmpty(JournalEntry.GetOnFailTooltip))]"
+					autoresize = yes
+					multiline = yes
+					minimumsize = { @panel_width_minus_30 -1 }
+					maximumsize = { @panel_width_minus_30 -1 }
+					using = default_list_position
+					align = left|nobaseline
 				}
 
 				divider_clean = {

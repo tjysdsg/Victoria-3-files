@@ -148,6 +148,153 @@ types map_list_panel_types {
 		}
 	}
 
+	type map_list_panel_item_interaction = widget {
+		size = { @panel_width 40 }
+
+		block "itemvisibility" {}
+
+		block "background" {
+			icon = {
+				name = "map_list_status_bg"
+				texture = "gfx/interface/map_list/map_list_status_bg.dds"
+				framesize = { 600 80 }
+				size = { 600 40 }
+				alpha = 0.8
+				position = { -5 0 }
+				frame = "[MapListOption.GetBackgroundStatusFrame]"
+				parentanchor = vcenter
+
+				alwaystransparent = yes
+			}
+		}
+
+		state = {
+			name = _mouse_enter
+			on_start = "[PdxGuiWidget.FindChild('map_list_status_bg').TriggerAnimation('map_list_status_mouse_enter')]"
+		}
+
+		state = {
+			name = _mouse_release
+			on_start = "[PdxGuiWidget.FindChild('map_list_status_bg').TriggerAnimation('map_list_status_mouse_release')]"
+		}
+
+
+		flowcontainer = {
+			icon = {
+				using = highlighted_square_selection
+				visible = "[MapListOption.IsMapTargetHighlighted]"
+			}
+
+			button = {
+				block "name_button_visibility" {
+					visible = no
+				}
+
+				block "name_button_size" {
+					size = { 140 40 }
+				}
+
+				using = default_button
+				parentanchor = vcenter
+
+				block "name_button_properties" {}
+
+			}
+
+			block "values" {
+				textbox = {
+					margin = { 5 5 }
+					size = { 485 25 }
+					align = left|nobaseline
+					text = "[MapListOption.GetTitle]"
+					parentanchor = vcenter
+					elide = right
+				}
+			}
+
+			button = {
+				block "interaction_button_visibility" {}
+				size = { 55 40 }
+				using = default_button_action
+				tooltip = "[MapListOption.GetTooltip]"
+				using = tooltip_es
+				parentanchor = vcenter
+
+				block "interaction" {
+					enabled = "[MapListOption.CanClick]"
+					onclick = "[MapListOption.OnClick]"
+					onrightclick = "[MapListOption.OnRightClick]"
+					onmousehierarchyenter = "[MapListOption.OnMouseEnter]"
+					onmousehierarchyleave = "[MapListOption.OnMouseLeave]"
+				}
+
+				block "option_highlight" {}
+
+				state = {
+					name = _mouse_enter
+					on_start = "[PdxGuiWidget.FindChild('map_list_status').TriggerAnimation('map_list_status_mouse_enter')]"
+				}
+				state = {
+					name = _mouse_leave
+					on_start = "[PdxGuiWidget.FindChild('map_list_status').TriggerAnimation('map_list_status_mouse_leave')]"
+				}
+				state = {
+					name = _mouse_press
+					on_start = "[PdxGuiWidget.FindChild('map_list_status').TriggerAnimation('map_list_status_mouse_press')]"
+				}
+				state = {
+					name = _mouse_release
+					on_start = "[PdxGuiWidget.FindChild('map_list_status').TriggerAnimation('map_list_status_mouse_release')]"
+				}
+
+				block "button_color" {}
+
+				widget = {
+					parentanchor = center
+					size = { 35 35 }
+					visible = "[MapListOption.ShouldShowStatusIcon]"
+					icon = {
+						name = "map_list_status"
+						texture = "gfx/interface/map_list/map_list_status_icons.dds"
+						framesize = { 130 72 }
+						size = { 65 36 }
+						scale = 0.7
+						alpha = 0.8
+						parentanchor = center
+						frame = "[MapListOption.GetIconStatusFrame]"
+
+						alwaystransparent = yes
+
+						state = {
+							name = map_list_status_mouse_enter
+							scale = 0.9
+							alpha = 1
+							duration = 0.08
+						}
+						state = {
+							name = map_list_status_mouse_press
+							scale = 0.7
+							alpha = 0.8
+							duration = 0.08
+						}
+						state = {
+							name = map_list_status_mouse_release
+							scale = 0.9
+							alpha = 1
+							duration = 0.08
+						}
+						state = {
+							name = map_list_status_mouse_leave
+							scale = 0.7
+							alpha = 0.8
+							duration = 0.12
+						}
+					}
+				}
+			}
+		}
+	}
+
 	### MAP LIST WINDOW
 	type map_list_panel = widget {
 		using = sidepanel_plus_sidebar_size
@@ -212,7 +359,7 @@ types map_list_panel_types {
 					block "header_back_button" {
 						onclick = "[MapListPanelManager.CloseCurrentPanel]"
 						onclick = "[MapListPanelManager.ResetActiveMapInteraction]"
-						shortcut = "back"
+						input_action = "back"
 					}
 				}
 
@@ -228,7 +375,7 @@ types map_list_panel_types {
 			}
 
 			flowcontainer = {
-				margin = { 30 12 }
+				margin = { 10 12 }
 				visible = "[Not(StringIsEmpty(MapListPanel.GetTitle))]"
 
 				flowcontainer = {
@@ -237,22 +384,120 @@ types map_list_panel_types {
 					textbox = {
 						text = "[MapListPanel.GetTitle]"
 						parentanchor = hcenter
-						maximumsize = { 490 -1 }
+						maximumsize = { 540 -1 }
 						align = center|nobaseline
-						using = fontsize_xxl
+						using = fontsize_xl
 						multiline = yes
 						autoresize = yes
 					}
 
 					textbox = {
 						parentanchor = hcenter
-						maximumsize = { 490 -1 }
+						maximumsize = { 540 -1 }
 
 						text = "MAP_INTERACTION_ESC_TO_CANCEL"
 						align = hcenter|nobaseline
 						using = fontsize_medium
 						multiline = yes
 						autoresize = yes
+					}
+				}
+			}
+
+			flowcontainer = {
+				margin_top = 5
+	
+				### DROPDOWN
+				dropDown = {
+					visible = "[StringIsEmpty(MapListPanel.GetTitle)]"
+					datamodel = "[GetMapModeIndices]"
+					onselectionchanged = "[SelectMapMode]"
+					selectedindex = "[GetSelectedMapMode]"
+					size = { @panel_width 35 }
+					focuspolicy = all
+					alwaystransparent = no
+
+					active_item = {
+						button = {
+							using = expand_button_bg_right_fade
+							size = { 100% 100% }
+							button_trigger = none
+
+							hbox = {
+								margin_left = 10
+
+								button = {
+									size = { 15 15 }
+									using = expand_arrow_expanded
+									mirror = vertical
+									alwaystransparent = yes
+								}
+
+								textbox = {
+									margin_left = 5
+									layoutpolicy_horizontal = expanding
+									size = { 0 25 }
+									fontsize_min = 12
+									elide = right
+									text = "[GetMapModeName( int32.GetInt )]"
+									align = left|nobaseline
+								}
+							}
+						}
+					}
+
+					item = {
+						widget = {
+							button = {
+								size = { 95% 100% }
+								using = clean_button
+								parentanchor = hcenter
+
+								button_trigger = none
+
+								textbox = {
+									autoresize = yes
+									text = "[GetMapModeName( int32.GetInt )]"
+									align = left|nobaseline
+									parentanchor = left|vcenter
+									margin_left = 10
+								}
+							}
+						}
+					}
+
+					list = {
+						scrollarea = {
+							widgetanchor = top|left
+							parentanchor = top|left
+							position = { 0 35 }
+							maximumsize = { -1 800 }
+							autoresizescrollarea = yes
+							alwaystransparent = yes
+							scrollbarpolicy_horizontal = always_off
+
+							background = {
+								using = default_background
+								margin = { 6 8 }
+							}
+
+							scrollwidget = {
+								fixedgridbox = {
+									alwaystransparent = no
+									setitemsizefromcell = yes
+									addcolumn = 350
+									addrow = 30
+								}
+							}
+
+							scrollbar_vertical = {
+								using = vertical_scrollbar
+							}
+
+							scrollbar_horizontal = {
+								using = horizontal_scrollbar
+							}
+						}
 					}
 				}
 			}
@@ -265,8 +510,16 @@ types map_list_panel_types {
 				block "headers" {
 					sort_button = {
 						align = center|nobaseline
+						text = "DEFAULT_MAP_LIST_PANEL_TITLE_HEADER"
+						tooltip = "DEFAULT_MAP_LIST_PANEL_TITLE_HEADER_TOOLTIP"
+						size = { 485 20 }
+						onclick = "[MapListPanel.Sort('title')]"
+					}
+
+					sort_button = {
+						align = center|nobaseline
 						tooltip = "DEFAULT_MAP_LIST_PANEL_STATUS_HEADER_TOOLTIP"
-						size = { 45 20 }
+						size = { 55 20 }
 						onclick = "[MapListPanel.Sort('status')]"
 						button = {
 							texture = "gfx/interface/buttons/sort_button_icons/sort_icon_status.dds"
@@ -274,14 +527,6 @@ types map_list_panel_types {
 							parentanchor = center
 							alwaystransparent = yes
 						}
-					}
-
-					sort_button = {
-						align = center|nobaseline
-						text = "DEFAULT_MAP_LIST_PANEL_TITLE_HEADER"
-						tooltip = "DEFAULT_MAP_LIST_PANEL_TITLE_HEADER_TOOLTIP"
-						size = { 495 20 }
-						onclick = "[MapListPanel.Sort('title')]"
 					}
 				}
 			}
@@ -308,8 +553,13 @@ types map_list_panel_types {
 								parentanchor = hcenter
 								direction = vertical
 								datamodel = "[MapListPanel.AccessValidOptions]"
-								item = {
-									map_list_panel_item = {}
+
+								block "item" {
+									block "item" {
+										item = {
+											map_list_panel_item = {}
+										}
+									}
 								}
 
 								block "empty_state" {
@@ -353,8 +603,10 @@ types map_list_panel_types {
 									datamodel = "[MapListPanel.AccessFailedOptions]"
 									addcolumn = 540
 									addrow = 40
-									item = {
-										map_list_panel_item = {}
+									block "item" {
+										item = {
+											map_list_panel_item = {}
+										}
 									}
 								}
 							}
@@ -388,8 +640,10 @@ types map_list_panel_types {
 									datamodel = "[MapListPanel.AccessInvalidOptions]"
 									addcolumn = 540
 									addrow = 40
-									item = {
-										map_list_panel_item = {}
+									block "item" {
+										item = {
+											map_list_panel_item = {}
+										}
 									}
 								}
 							}
@@ -409,7 +663,7 @@ types map_list_panel_types {
 
 		blockoverride "headers" {
 			sort_button = {
-				size = { 40 30 }
+				size = { 55 40 }
 				onclick = "[MapListPanel.Sort('rank')]"
 
 				button = {
@@ -420,18 +674,22 @@ types map_list_panel_types {
 				}
 
 				tooltip = "SORT_BY_RANK"
+
+				blockoverride "selected_visibility" {
+					visible = no
+				}
 			}
 			sort_button = {
 				align = left|nobaseline
-				text = "NAME"
-				size = { 310 20 }
+				text = "COUNTRY"
+				size = { 295 20 }
 				onclick = "[MapListPanel.Sort('name')]"
 			}
 			sort_button = {
 				align = hcenter|nobaseline
 				size = { 190 20 }
 				block "shown_on_map_header" {
-					text = "[concept_prestige]"
+					text = "concept_prestige"
 					tooltip = "PRESTIGE"
 					onclick = "[MapListPanel.Sort('prestige')]"
 				}
@@ -439,18 +697,34 @@ types map_list_panel_types {
 		}
 
 		blockoverride "values" {
-			textbox = {
-				text = "##[Country.GetCountryScorePosition]"
-				size = { 40 23 }
-				margin_right = 8
-				align = right|nobaseline
+			widget = {
+				size = { 50 40 }
 				parentanchor = left|vcenter
 				alwaystransparent = no
 				tooltip = "[Country.GetRankTooltip]"
+
+				rank_badge = {
+					size = { 50 50 }
+					parentanchor = right|vcenter
+					position = { -2 0 }
+					
+					blockoverride "datacontext " {
+						datacontext = "[MapListOption.GetCountryData.GetCountry]" 
+					}
+
+					blockoverride "rank_text" {
+						raw_text = "#BOLD [Country.GetCountryScorePositionDesc]"
+					}
+					blockoverride "rank_text_2" {
+						raw_text = "#BOLD [Country.GetCountryScorePositionDesc]"
+						visible = no
+					}
+				}
 			}
+			
 			textbox = {
 				margin = { 5 0 }
-				size = { 310 25 }
+				size = { 295 25 }
 				align = left|nobaseline
 				text = "[MapListOption.GetCountryData.GetCountry.GetName]"
 				parentanchor = vcenter
@@ -493,7 +767,7 @@ types map_list_panel_types {
 
 		blockoverride "headers" {
 			sort_button = {
-				size = { 50 40 }
+				size = { 55 40 }
 				onclick = "[MapListPanel.Sort('rank')]"
 
 				button = {
@@ -512,8 +786,8 @@ types map_list_panel_types {
 
 			sort_button = {
 				align = left|nobaseline
-				text = "[concept_country]"
-				size = { 140 20 }
+				text = "concept_country"
+				size = { 150 20 }
 				onclick = "[MapListPanel.Sort('name')]"
 
 				blockoverride "selected_visibility" {
@@ -524,7 +798,7 @@ types map_list_panel_types {
 			sort_button = {
 				align = hcenter|nobaseline
 				size = { 80 20 }
-				text = "[concept_prestige]"
+				text = "concept_prestige"
 				onclick = "[MapListPanel.Sort('prestige')]"
 
 				blockoverride "selected_visibility" {
@@ -534,8 +808,8 @@ types map_list_panel_types {
 
 			sort_button = {
 				align = hcenter|nobaseline
-				size = { 100 20 }
-				text = "GDP_SHORT"
+				size = { 80 20 }
+				text = "concept_gdp_short"
 				onclick = "[MapListPanel.Sort('gdp')]"
 
 				blockoverride "selected_visibility" {
@@ -546,7 +820,7 @@ types map_list_panel_types {
 			sort_button = {
 				align = hcenter|nobaseline
 				size = { 70 20 }
-				text = "SOL_SHORT"
+				text = "SOL_SHORT_TEXT"
 				onclick = "[MapListPanel.Sort('sol')]"
 
 				blockoverride "selected_visibility" {
@@ -556,8 +830,8 @@ types map_list_panel_types {
 
 			sort_button = {
 				align = hcenter|nobaseline
-				size = { 100 20 }
-				text = "POPULATION_TOOLTIP"
+				size = { 105 20 }
+				text = "concept_population"
 				onclick = "[MapListPanel.Sort('population')]"
 
 				blockoverride "selected_visibility" {
@@ -584,17 +858,18 @@ types map_list_panel_types {
 					}
 
 					blockoverride "rank_text" {
-						text = "#BOLD [Country.GetCountryScorePositionDesc]"
+						raw_text = "#BOLD [Country.GetCountryScorePositionDesc]"
 					}
 					blockoverride "rank_text_2" {
-						text = "#BOLD [Country.GetCountryScorePositionDesc]"
+						raw_text = "#BOLD [Country.GetCountryScorePositionDesc]"
 						visible = no
 					}
 				}
 			}
+
 			textbox = {
 				margin = { 5 0 }
-				size = { 140 25 }
+				size = { 150 25 }
 				align = left|nobaseline
 				text = "[Country.GetName]"
 				parentanchor = vcenter
@@ -613,12 +888,12 @@ types map_list_panel_types {
 			}
 			textbox = {
 				margin = { 5 0 }
-				size = { 100 25 }
+				size = { 80 25 }
 				align = right|nobaseline
 				parentanchor = vcenter
 				elide = right
 				using = GDP_tooltip_with_graph
-				text = "#variable [Country.GetGDP|1*]#!"
+				raw_text = "#variable [Country.GetGDP|1*]#!"
 			}
 			textbox = {
 				margin = { 5 0 }
@@ -636,7 +911,7 @@ types map_list_panel_types {
 				parentanchor = vcenter
 				elide = right
 				using = population_tooltip_with_graph
-				text = "#variable [Country.GetTotalPopulation|D]#!"
+				raw_text = "#variable [Country.GetTotalPopulation|D]#!"
 			}
 		}
 
@@ -659,16 +934,16 @@ types map_list_panel_types {
 		blockoverride "headers" {
 			sort_button = {
 				align = left|nobaseline
-				text = "NAME"
-				size = { 360 20 }
+				text = "STATE"
+				size = { 355 20 }
 				onclick = "[MapListPanel.Sort('name')]"
 			}
 			sort_button = {
 				align = hcenter|nobaseline
-				size = { 190 20 }
+				size = { 185 20 }
 				block "shown_on_map_header" {
-					text = "A Value type"
-					tooltip = "A tooltip"
+					raw_text = "A Value type"
+					raw_tooltip = "A tooltip"
 					#onclick = "[MapListPanel.Sort('something')]"
 				}
 			}
@@ -677,7 +952,7 @@ types map_list_panel_types {
 		blockoverride "values" {
 			textbox = {
 				margin = { 5 0 }
-				size = { 360 25 }
+				size = { 350 25 }
 				align = left|nobaseline
 				text = "[MapListOption.GetStateData.GetState.GetOwner.GetFlagTextIcon]  [MapListOption.GetStateData.GetState.GetName]"
 				parentanchor = vcenter
@@ -692,8 +967,8 @@ types map_list_panel_types {
 				parentanchor = vcenter
 				elide = right
 				block "shown_on_map_value" {
-					text = "#todo A Value#!"
-					tooltip = "#todo A tooltip#!"
+					raw_text = "#todo A Value#!"
+					raw_tooltip = "#todo A tooltip#!"
 				}
 			}
 		}
@@ -723,6 +998,12 @@ types map_list_panel_types {
 
 	type default_map_list_panel = map_list_panel {
 		name = "default_map_list_panel"
+
+		blockoverride "item" {
+			item = {
+				map_list_panel_item_interaction = {}
+			}
+		}
 	}
 
 	### BUILD BUILDINGS
@@ -730,6 +1011,75 @@ types map_list_panel_types {
 		name = "build_building_map_list_panel"
 
 		blockoverride "headers" {
+
+			sort_button = {
+				align = center|nobaseline
+				text = "BUILDING_MAP_LIST_PANEL_STATE_HEADER"
+				tooltip = "BUILDING_MAP_LIST_PANEL_STATE_HEADER_TOOLTIP"
+				size = { 120 20 }
+				onclick = "[MapListPanel.Sort('state')]"
+			}
+
+			sort_button = {
+				align = center|nobaseline
+				tooltip = "BUILDING_LEVEL_HEADER_TOOLTIP"
+				size = { 70 20 }
+				onclick = "[MapListPanel.Sort('size')]"
+				button = {
+					texture = "gfx/interface/buttons/sort_button_icons/sort_icon_size.dds"
+					size = { 25 25 }
+					parentanchor = center
+					alwaystransparent = yes
+				}
+			}
+
+			sort_button = {
+				align = center|nobaseline
+				text = "BUILDING_MAP_LIST_PANEL_INFRASTRUCTURE_HEADER"
+				tooltip = "BUILDING_MAP_LIST_PANEL_INFRASTRUCTURE_HEADER_TOOLTIP"
+				size = { 60 20 }
+				onclick = "[MapListPanel.Sort('infrastructure_balance')]"
+			}
+
+			sort_button = {
+				align = center|nobaseline
+				text = "BUILDING_MAP_LIST_PANEL_AVAILABLE_LABOR_HEADER"
+				tooltip = "BUILDING_MAP_LIST_PANEL_AVAILABLE_LABOR_HEADER_TOOLTIP"
+				size = { 85 20 }
+				onclick = "[MapListPanel.Sort('potential_labor')]"
+			}
+
+			sort_button = {
+				align = center|nobaseline
+				tooltip = "BUILDING_PROFITABILITY_HEADER_TOOLTIP"
+				size = { 70 20 }
+				onclick = "[MapListPanel.Sort('profitability')]"
+				button = {
+					texture = "gfx/interface/buttons/sort_button_icons/sort_icon_profitability.dds"
+					size = { 25 25 }
+					parentanchor = center
+					alwaystransparent = yes
+				}
+				visible = "[Not(ObjectsEqual(MapListBuildingPanel.GetBuildingType, GetBuildingType('building_government_administration').Self))]"
+			}
+
+			sort_button = {
+				align = center|nobaseline
+				text = "concept_tax"
+				tooltip = "BUILDING_TAXATION_CAPACITY_HEADER_TOOLTIP"
+				size = { 70 20 }
+				onclick = "[MapListPanel.Sort('tax_capacity_balance')]"
+				visible = "[ObjectsEqual(MapListBuildingPanel.GetBuildingType, GetBuildingType('building_government_administration').Self)]"
+			}
+
+			sort_button = {
+				align = center|nobaseline
+				text = "BUILDING_MAP_LIST_PANEL_PROFIT_IMPACT_HEADER"
+				tooltip = "BUILDING_MAP_LIST_PANEL_PROFIT_IMPACT_TOOLTIP"
+				size = { 80 20 }
+				onclick = "[MapListPanel.Sort('profit_impact')]"
+			}
+
 			sort_button = {
 				align = center|nobaseline
 				tooltip = "BUILDING_MAP_LIST_PANEL_STATUS_HEADER_TOOLTIP"
@@ -742,115 +1092,146 @@ types map_list_panel_types {
 					alwaystransparent = yes
 				}
 			}
-
-			sort_button = {
-				align = center|nobaseline
-				text = "BUILDING_MAP_LIST_PANEL_STATE_HEADER"
-				tooltip = "BUILDING_MAP_LIST_PANEL_STATE_HEADER_TOOLTIP"
-				size = { 130 20 }
-				onclick = "[MapListPanel.Sort('state')]"
-			}
-
-			sort_button = {
-				align = center|nobaseline
-				tooltip = "BUILDING_LEVEL_HEADER_TOOLTIP"
-				size = { 80 20 }
-				onclick = "[MapListPanel.Sort('size')]"
-				button = {
-					texture = "gfx/interface/buttons/sort_button_icons/sort_icon_size.dds"
-					size = { 25 25 }
-					parentanchor = center
-					alwaystransparent = yes
-				}
-			}
-
-			sort_button = {
-				align = center|nobaseline
-				text = "BUILDING_MAP_LIST_PANEL_PEASANTS_HEADER"
-				tooltip = "BUILDING_MAP_LIST_PANEL_PEASANTS_HEADER_TOOLTIP"
-				size = { 85 20 }
-				onclick = "[MapListPanel.Sort('peasants')]"
-			}
-
-			sort_button = {
-				align = center|nobaseline
-				tooltip = "BUILDING_PROFITABILITY_HEADER_TOOLTIP"
-				size = { 90 20 }
-				onclick = "[MapListPanel.Sort('profitability')]"
-				button = {
-					texture = "gfx/interface/buttons/sort_button_icons/sort_icon_profitability.dds"
-					size = { 25 25 }
-					parentanchor = center
-					alwaystransparent = yes
-				}
-			}
-
-			sort_button = {
-				align = center|nobaseline
-				text = "BUILDING_MAP_LIST_PANEL_PROFIT_IMPACT_HEADER"
-				tooltip = "BUILDING_MAP_LIST_PANEL_PROFIT_IMPACT_TOOLTIP"
-				size = { 100 20 }
-				onclick = "[MapListPanel.Sort('profit_impact')]"
-			}
 		}
 
-		blockoverride "values" {
-			textbox = {
-				margin = { 5 0 }
-				size = { 130 25 }
-				align = left|nobaseline
-				text = "[MapListOption.GetBuildingData.GetState.GetNameNoFormatting]"
-				parentanchor = vcenter
-				elide = right
-				fontsize_min = 12
+		blockoverride "item" {
+			item = {
+				map_list_panel_item_interaction = {
+					blockoverride "name_button_visibility" {
+						visible = yes
+					}
+
+					blockoverride "name_button_size" {
+						size = { 120 40 }
+					}
+
+					blockoverride "name_button_properties" {
+
+						datacontext = "[MapListOption.GetBuildingData.GetState]"
+
+						onmousehierarchyenter = "[AccessHighlightManager.HighlightState(State.Self)]"
+						onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
+
+						datacontext = "[MapListOption.GetBuildingData.GetBuilding]"
+						onclick = "[InformationPanelBar.OpenBuildingDetailsPanel(Building.AccessSelf)]"
+						enabled = "[Building.IsValid]"
+						onrightclick = "[RightClickMenuManager.ShowForBuilding(Building.AccessSelf)]"
+						
+						tooltipwidget = {
+							FancyTooltip_Building = {}
+						}
+
+						textbox = {
+							visible = "[Not(And(State.IsUnincorporated, Not(State.IsIncorporating)))]"
+							margin = { 10 0 }
+							size = { 120 25 }
+							align = left|nobaseline
+							text = "[State.GetNameNoFormatting]"
+							parentanchor = vcenter
+							elide = right
+							fontsize_min = 12
+						}
+
+						textbox = {
+							visible = "[And(State.IsUnincorporated, Not(State.IsIncorporating))]"
+							margin = { 10 0 }
+							size = { 95 25 }
+							align = left|nobaseline
+							text = "[State.GetNameNoFormatting]"
+							parentanchor = vcenter
+							elide = right
+							fontsize_min = 12
+						}
+
+						icon = {
+							visible = "[And(State.IsUnincorporated, Not(State.IsIncorporating))]"
+							parentanchor = right|vcenter
+							position = { -5 0 }
+							size = { 25 25 }
+							texture = "gfx/interface/icons/state_status_icons/unincorporated_state.dds"
+						}
+					}
+
+					blockoverride "values" {
+
+						textbox = {
+							datacontext = "[MapListOption.GetBuildingData.GetBuilding]"
+							margin = { 5 0 }
+							size = { 70 25 }
+							align = right|nobaseline
+							text = "[Building.GetExpansionLevelDesc]"
+							parentanchor = vcenter
+							elide = right
+							using = tooltip_above
+							alpha = "[TransparentIfFalse( Or( GreaterThan_int32(Building.GetExpansionLevel, '(int32)0'), Building.HasConstructionQueued ))]"
+							fontsize_min = 12
+						}
+
+						textbox = {
+							margin = { 5 0 }
+							margin_right = 10
+							size = { 60 25 }
+							align = right|nobaseline
+							datacontext = "[MapListOption.GetBuildingData.GetState]"
+							raw_text = "#v [State.GetInfrastructureBalance|0+=]#!"
+							tooltip = "STATE_INFRASTRUCTURE_DESC"
+							parentanchor = vcenter
+							elide = right
+						}
+
+						textbox = {
+							datacontext = "[MapListOption.GetBuildingData.GetState]"
+							margin = { 5 0 }
+							size = { 85 25 }
+							align = right|nobaseline
+							text = "MAP_LIST_STATE_AVAILABLE_LABOR"
+							parentanchor = vcenter
+							elide = right
+							tooltip = "STATE_AVAILABLE_LABOR_TOOLTIP"
+						}
+
+						textbox = {
+							margin = { 5 0 }
+							margin_right = 10
+							size = { 70 25 }
+							align = right|nobaseline
+							datacontext = "[MapListOption.GetBuildingData.GetBuilding]"
+							raw_text = "#v @money![Building.GetBuildingType.GetExpansionProductivityImpact(Building.Self, Building.GetState)|1+]#!"
+							tooltip = "[Building.GetBuildingType.GetExpansionProductivityImpactDesc(Building.Self, Building.GetState)]"
+							parentanchor = vcenter
+							elide = right
+							visible = "[Not(ObjectsEqual(Building.GetBuildingType, GetBuildingType('building_government_administration').Self))]"
+						}
+
+						# Government Administration
+						textbox = {
+							margin = { 5 0 }
+							margin_right = 10
+							size = { 70 25 }
+							align = right|nobaseline
+							datacontext = "[MapListOption.GetBuildingData.GetBuilding]"
+							datacontext = "[Building.GetState]"
+							raw_text = "[State.CalcTaxCapacityBalance|0+=]"
+							tooltip = "STATE_TAX_CAPACITY_DESC"
+							parentanchor = vcenter
+							elide = right
+							visible = "[ObjectsEqual(Building.GetBuildingType, GetBuildingType('building_government_administration').Self)]"
+						}
+
+						textbox = {
+							margin = { 5 0 }
+							margin_right = 10
+							size = { 80 25 }
+							align = right|nobaseline
+							datacontext = "[MapListOption.GetBuildingData.GetBuilding]"
+							raw_text = "#v [Building.GetBuildingType.GetExpansionRevenueImpact(Building.Self, Building.GetState)|K+=]#!"
+							tooltip = "[Building.GetBuildingType.GetExpansionRevenueImpactDesc(Building.Self, Building.GetState)]"
+							parentanchor = vcenter
+							elide = right
+						}
+					}
+				}
 			}
-
-			textbox = {
-				datacontext = "[MapListOption.GetBuildingData.GetBuilding]"
-				margin = { 5 0 }
-				size = { 80 25 }
-				align = right|nobaseline
-				text = "[MapListOption.GetBuildingData.GetBuilding.GetExpansionLevelDesc]"
-				parentanchor = vcenter
-				elide = right
-				using = tooltip_above
-				alpha = "[TransparentIfFalse(GreaterThan_int32(MapListOption.GetBuildingData.GetBuilding.GetExpansionLevel, '(int32)0'))]"
-			}
-
-
-			textbox = {
-				margin = { 5 0 }
-				size = { 85 25 }
-				align = right|nobaseline
-				text = "[MapListOption.GetBuildingData.GetState.GetNumSubsistenceWorkingAdults|Dv]"
-				parentanchor = vcenter
-				elide = right
-			}
-
-			textbox = {
-				margin = { 5 0 }
-				margin_right = 10
-				size = { 90 25 }
-				align = right|nobaseline
-				datacontext = "[MapListOption.GetBuildingData.GetBuilding]"
-				text = "#v @money![Building.GetBuildingType.GetExpansionProductivityImpact(Building.Self, Building.GetState)|+]#!"
-				tooltip = "[Building.GetBuildingType.GetExpansionProductivityImpactDesc(Building.Self, Building.GetState)]"
-				parentanchor = vcenter
-				elide = right
-			}
-
-			textbox = {
-				margin = { 5 0 }
-				margin_right = 10
-				size = { 100 25 }
-				align = right|nobaseline
-				datacontext = "[MapListOption.GetBuildingData.GetBuilding]"
-				text = "#v [Building.GetBuildingType.GetExpansionRevenueImpact(Building.Self, Building.GetState)|K+=]#!"
-				tooltip = "[Building.GetBuildingType.GetExpansionRevenueImpactDesc(Building.Self, Building.GetState)]"
-				parentanchor = vcenter
-				elide = right
-			}
-
 		}
 	}
 
@@ -860,19 +1241,11 @@ types map_list_panel_types {
 
 		blockoverride "headers" {
 			sort_button = {
-				align = center|nobaseline
-				text = "COLONY_MAP_LIST_PANEL_STATUS_HEADER"
-				tooltip = "COLONY_MAP_LIST_PANEL_STATUS_HEADER_TOOLTIP"
-				size = { 65 20 }
-				onclick = "[MapListPanel.Sort('status')]"
-			}
-
-			sort_button = {
 				align = left|nobaseline
 				margin = { 20 0 }
 				text = "COLONY_MAP_LIST_PANEL_REGION_HEADER"
 				tooltip = "COLONY_MAP_LIST_PANEL_REGION_HEADER_TOOLTIP"
-				size = { 240 20 }
+				size = { 245 20 }
 				onclick = "[MapListPanel.Sort('region')]"
 			}
 
@@ -884,26 +1257,43 @@ types map_list_panel_types {
 				size = { 240 20 }
 				onclick = "[MapListPanel.Sort('state')]"
 			}
+
+			sort_button = {
+				align = center|nobaseline
+				tooltip = "COLONY_MAP_LIST_PANEL_STATUS_HEADER_TOOLTIP"
+				size = { 55 20 }
+				onclick = "[MapListPanel.Sort('status')]"
+				button = {
+					texture = "gfx/interface/buttons/sort_button_icons/sort_icon_status.dds"
+					size = { 25 25 }
+					parentanchor = center
+					alwaystransparent = yes
+				}
+			}
 		}
 
-		blockoverride "values" {
+		blockoverride "item" {
+			item = {
+				map_list_panel_item_interaction = {
+					blockoverride "values" {
 
-			textbox = {
-				margin = { 30 0 }
-				size = { 240 25 }
-				align = left|nobaseline
-				text = "[MapListOption.GetColonyData.GetRegion]"
-				parentanchor = vcenter
-				elide = right
-			}
+						textbox = {
+							size = { 245 25 }
+							align = left|nobaseline
+							text = "[MapListOption.GetColonyData.GetRegion]"
+							parentanchor = vcenter
+							elide = right
+						}
 
-			textbox = {
-				margin = { 30 0 }
-				size = { 240 25 }
-				align = left|nobaseline
-				text = "[MapListOption.GetColonyData.GetState]"
-				parentanchor = vcenter
-				elide = right
+						textbox = {
+							size = { 240 25 }
+							align = left|nobaseline
+							text = "[MapListOption.GetColonyData.GetState]"
+							parentanchor = vcenter
+							elide = right
+						}
+					}
+				}
 			}
 		}
 	}
@@ -915,17 +1305,213 @@ types map_list_panel_types {
 		blockoverride "headers" {
 			sort_button = {
 				align = center|nobaseline
-				text = "DEFAULT_MAP_LIST_PANEL_STATUS_HEADER"
-				tooltip = "DIPLO_ACTION_MAP_LIST_PANEL_STATUS_HEADER_TOOLTIP"
-				size = { 65 20 }
-				onclick = "[MapListPanel.Sort('status')]"
+				text = "DIPLO_ACTION_LIST_PANEL_STATUS_HEADER"
+				tooltip = "DIPLO_ACTION_LIST_PANEL_STATUS_HEADER_TOOLTIP"
+				size = { 260 20 }
+				onclick = "[MapListPanel.Sort('country')]"
 			}
 			sort_button = {
 				align = center|nobaseline
-				text = "DIPLO_ACTION_LIST_PANEL_STATUS_HEADER"
-				tooltip = "DIPLO_ACTION_LIST_PANEL_STATUS_HEADER_TOOLTIP"
-				size = { 475 20 }
-				onclick = "[MapListPanel.Sort('country')]"
+				text = "TRADE_ROUTES_SORT_COST"
+				size = { 105 20 }
+				onclick = "[MapListPanel.Sort('cost')]"
+			}
+
+			sort_button = {
+				align = center|nobaseline
+				text = "ACCEPTANCE"
+				size = { 120 20 }
+				onclick = "[MapListPanel.Sort('acceptance')]"
+			}
+
+			sort_button = {
+				align = center|nobaseline
+				tooltip = "DEFAULT_MAP_LIST_PANEL_STATUS_HEADER_TOOLTIP"
+				size = { 55 20 }
+				onclick = "[MapListPanel.Sort('status')]"
+				button = {
+					texture = "gfx/interface/buttons/sort_button_icons/sort_icon_status.dds"
+					size = { 25 25 }
+					parentanchor = center
+					alwaystransparent = yes
+				}
+			}
+		}
+
+		blockoverride "item" {
+			item = {
+				map_list_panel_item_interaction = {
+					blockoverride "name_button_visibility" {
+						visible = yes
+					}
+
+					blockoverride "name_button_size" {
+						size = { 255 40 }
+					}
+
+					blockoverride "name_button_properties" {
+						onclick = "[InformationPanelBar.OpenCountryPanel(MapListOption.GetDiploActionData.GetDiplomaticAction.GetSecondCountry)]"
+						onrightclick = "[RightClickMenuManager.ShowForCountry(MapListOption.GetDiploActionData.GetDiplomaticAction.GetSecondCountry)]"
+
+						tooltipwidget = {
+							FancyTooltip_Country = {
+								datacontext = "[MapListOption.GetDiploActionData.GetDiplomaticAction.GetSecondCountry]"
+							}
+						}
+						
+						textbox = {
+							margin = { 10 0 }
+							size = { 250 25 }
+							align = left|nobaseline
+							text = "[MapListOption.GetDiploActionData.GetDiplomaticAction.GetSecondCountry.GetName]"
+							parentanchor = vcenter
+							elide = right
+							fontsize_min = 12
+						}
+					}
+
+					blockoverride "values" {
+						datacontext = "[MapListOption.GetDiploActionData.GetDiplomaticAction]"
+						
+						textbox = {
+							raw_text = "@inf! [DiplomaticAction.GetMaintenanceCost|v0]"
+							tooltip = "[DiplomaticAction.GetMaintenanceCostDetailsDesc]"
+							parentanchor = vcenter
+							align = right|nobaseline
+							size = { 105 25 }
+							alpha = "[TransparentIfZero(DiplomaticAction.GetMaintenanceCost)]"
+						}
+
+						container = {
+							parentanchor = center
+							minimumsize = { 120 -1 }
+							diplomatic_action_acceptance_icon = {
+								blockoverride "parentanchor" {
+									parentanchor = center
+								}
+							}
+
+							textbox = {
+								visible = "[Not(DiplomaticAction.RequiresApproval)]"
+								text = "NOT_AVAILABLE"
+								autoresize = yes
+								align = nobaseline
+								parentanchor = center
+								alpha = 0.5
+							}
+						}
+
+						widget = { size = { 5 5 }}
+					}
+				}
+			}
+		}
+	}
+
+	### DECREES
+	type decree_map_list_panel = map_list_panel {
+		name = "decree_map_list_panel"
+
+		blockoverride "headers" {
+			sort_button = {
+				size = { 415 30 }
+				align = center|nobaseline
+				text = "DECREE_LIST_PANEL_STATE_HEADER"
+				tooltip = "DECREE_LIST_PANEL_STATE_HEADER_TOOLTIP"
+				onclick = "[MapListPanel.Sort('state')]"
+			}
+
+			sort_button = {
+				visible = yes
+				size = { 70 30 }
+				align = center|nobaseline
+				text = "DECREE_LIST_PANEL_COST_HEADER"
+				tooltip = "DECREE_LIST_PANEL_COST_HEADER_TOOLTIP"
+				onclick = "[MapListPanel.Sort('cost')]"
+			}
+
+			sort_button = {
+				size = { 55 20 }
+				tooltip = "DECREE_MAP_LIST_PANEL_STATUS_HEADER_TOOLTIP"
+				onclick = "[MapListPanel.Sort('status')]"
+				button = {
+					texture = "gfx/interface/buttons/sort_button_icons/sort_icon_status.dds"
+					size = { 25 25 }
+					parentanchor = center
+					alwaystransparent = yes
+				}
+			}
+		}
+
+		blockoverride "item" {
+			item = {
+				map_list_panel_item_interaction = {
+					blockoverride "name_button_visibility" {
+						visible = yes
+					}
+
+					blockoverride "name_button_size" {
+						size = { 415 40 }
+					}
+
+					blockoverride "name_button_properties" {
+
+						datacontext = "[MapListOption.GetDecreeData.GetState]"
+
+						onmousehierarchyenter = "[AccessHighlightManager.HighlightState(State.Self)]"
+						onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
+
+						onclick = "[InformationPanelBar.OpenStatePanel(State.AccessSelf)]"
+						onrightclick = "[RightClickMenuManager.ShowForState(State.AccessSelf)]"
+						
+						tooltipwidget = {
+							FancyTooltip_State = {}
+						}
+
+						textbox = {
+							visible = "[Not(And(State.IsUnincorporated, Not(State.IsIncorporating)))]"
+							margin = { 10 0 }
+							size = { 410 25 }
+							align = left|nobaseline
+							text = "[State.GetNameNoFormatting]"
+							parentanchor = vcenter
+							elide = right
+							fontsize_min = 12
+						}
+
+						textbox = {
+							visible = "[And(State.IsUnincorporated, Not(State.IsIncorporating))]"
+							margin = { 10 0 }
+							size = { 390 25 }
+							align = left|nobaseline
+							text = "[State.GetNameNoFormatting]"
+							parentanchor = vcenter
+							elide = right
+							fontsize_min = 12
+						}
+
+						icon = {
+							visible = "[And(State.IsUnincorporated, Not(State.IsIncorporating))]"
+							parentanchor = right|vcenter
+							position = { -10 0 }
+							size = { 25 25 }
+							texture = "gfx/interface/icons/state_status_icons/unincorporated_state.dds"
+						}
+					}
+
+					blockoverride "values" {
+						textbox = {
+							parentanchor = vcenter
+							#"[ObjectsEqual(MapListDecreePanel.GetDecreeType, GetDecreeType('decree_road_maintenance'))]"
+							text = "MAP_LIST_DECREE_COST"
+							size = { 70 30 }
+							align = left|nobaseline
+							margin_left = 10
+							elide = right
+							fontsize_min = 12
+						}
+					}
+				}
 			}
 		}
 	}
@@ -941,7 +1527,7 @@ types map_list_panel_types {
 		blockoverride "headers" {
 			sort_button = {
 				align = left|nobaseline
-				text = "NAME"
+				text = "MARKET"
 				size = { 430 20 }
 				onclick = "[MapListPanel.Sort('name')]"
 			}
@@ -969,7 +1555,7 @@ types map_list_panel_types {
 				margin = { 5 0 }
 				size = { 100 25 }
 				align = right|nobaseline
-				text = "@money![Market.GetMarketGDPValue|Dv]"
+				raw_text = "@money![Market.GetMarketGDPValue|Dv]"
 				parentanchor = vcenter
 				elide = right
 			}
@@ -998,7 +1584,7 @@ types map_list_panel_types {
 		blockoverride "headers" {
 			sort_button = {
 				align = left|nobaseline
-				text = "NAME"
+				text = "concept_strategic_region"
 				size = { 140 20 }
 				onclick = "[MapListPanel.Sort('name')]"
 			}
@@ -1010,7 +1596,7 @@ types map_list_panel_types {
 			sort_button = {
 				align = hcenter|nobaseline
 				text = "GDP_SHORT"
-				size = { 110 20 }
+				size = { 100 20 }
 				onclick = "[MapListPanel.Sort('gdp')]"
 			}
 		}
@@ -1088,11 +1674,12 @@ types map_list_panel_types {
 					}
 				}
 			}
+
 			textbox = {
 				margin = { 5 0 }
-				size = { 100 25 }
+				size = { 95 25 }
 				align = right|nobaseline
-				text = "@money![MapListOption.GetStrategicRegionData.GetStrategicRegion.GetTotalGDP|Dv]"
+				raw_text = "@money![MapListOption.GetStrategicRegionData.GetStrategicRegion.GetTotalGDP|Dv]"
 				parentanchor = vcenter
 				elide = right
 			}
@@ -1115,13 +1702,13 @@ types map_list_panel_types {
 		blockoverride "headers" {
 			sort_button = {
 				align = left|nobaseline
-				text = "NAME"
+				text = "concept_interest_group"
 				size = { 420 20 }
 				onclick = "[MapListPanel.Sort('name')]"
 			}
 			sort_button = {
 				align = hcenter|nobaseline
-				text = "[concept_clout]"
+				text = "concept_clout"
 				size = { 130 20 }
 				onclick = "[MapListPanel.Sort('clout')]"
 			}
@@ -1130,7 +1717,7 @@ types map_list_panel_types {
 		blockoverride "values" {
 			textbox = {
 				margin = { 5 0 }
-				size = { 420 25 }
+				size = { 400 25 }
 				align = left|nobaseline
 				text = "[MapListOption.GetInterestGroupData.GetInterestGroup.GetName]"
 				parentanchor = vcenter
@@ -1168,10 +1755,11 @@ types map_list_panel_types {
 		name = "country_attitude_map_list_panel"
 
 		blockoverride "shown_on_map_header" {
-			text = "[concept_attitude]"
+			text = "concept_attitude"
 			onclick = "[MapListPanel.Sort('attitude')]"
 		}
 		blockoverride "shown_on_map_value" {
+			visible = "[Not(ObjectsEqual(Country.Self, GetPlayer.Self))]"
 			text = "[Country.GetAttitudeTowards(GetPlayer).GetName]"
 			tooltip = "[Country.GetAttitudeTowards(GetPlayer).GetTooltip]"
 		}
@@ -1186,16 +1774,35 @@ types map_list_panel_types {
 		name = "country_relations_map_list_panel"
 
 		blockoverride "shown_on_map_header" {
-			text = "RELATIONS"
+			text = "concept_relations"
 			onclick = "[MapListPanel.Sort('relations')]"
 		}
 		blockoverride "shown_on_map_value" {
+			visible = "[Not(ObjectsEqual(Country.Self, GetPlayer.Self))]"
 			tooltip = "[GetPlayer.GetRelationsTooltip( Country.Self )]"
-			text = "[Country.GetRelationsWithDesc( GetPlayer )] ([Country.GetRelationsWith(GetPlayer)|+=])"
+			raw_text = "[Country.GetRelationsWithDesc( GetPlayer )] ([Country.GetRelationsWith(GetPlayer)|+=])"
 		}
 
 		blockoverride "button_color" {
 			color = "[Country.GetRelationsColor( GetPlayer.Self )]"
+		}
+	}
+
+	### COUNTRY INFAMY
+	type country_infamy_map_list_panel = country_map_list_one_value {
+		name = "country_infamy_map_list_panel"
+
+		blockoverride "itemvisibility" {
+			visible = "[Not(Country.IsColonizable)]"
+		}
+
+		blockoverride "shown_on_map_header" {
+			text = "concept_infamy"
+			onclick = "[MapListPanel.Sort('infamy')]"
+		}
+		blockoverride "shown_on_map_value" {
+			raw_text = "[Country.GetInfamyLabel] ([Country.GetInfamy|-1])"
+			tooltip = "[Country.GetInfamyDesc]"
 		}
 	}
 
@@ -1212,7 +1819,7 @@ types map_list_panel_types {
 
 		blockoverride "headers" {
 			sort_button = {
-				size = { 40 30 }
+				size = { 55 30 }
 				onclick = "[MapListPanel.Sort('rank')]"
 
 				button = {
@@ -1226,35 +1833,51 @@ types map_list_panel_types {
 			}
 			sort_button = {
 				align = left|nobaseline
-				text = "NAME"
-				size = { 250 20 }
+				text = "COUNTRY"
+				size = { 240 20 }
 				onclick = "[MapListPanel.Sort('name')]"
 			}
 			sort_button = {
 				align = hcenter|nobaseline
-				size = { 130 20 }
+				size = { 120 20 }
 				text = "BATTALIONS"
 				onclick = "[MapListPanel.Sort('army')]"
 			}
 			sort_button = {
 				align = hcenter|nobaseline
-				size = { 130 20 }
-				text = "WARSHIPS"
+				size = { 125 20 }
+				text = "FLOTILLAS"
 				onclick = "[MapListPanel.Sort('navy')]"
 			}
 		}
 
 		blockoverride "values" {
 			datacontext = "[MapListOption.GetCountryData.GetCountry]"
-			textbox = {
-				text = "##[Country.GetCountryScorePosition]"
-				size = { 40 23 }
-				margin_right = 8
-				align = right|nobaseline
+			widget = {
+				size = { 50 40 }
 				parentanchor = left|vcenter
 				alwaystransparent = no
 				tooltip = "[Country.GetRankTooltip]"
+
+				rank_badge = {
+					size = { 50 50 }
+					parentanchor = right|vcenter
+					position = { -2 0 }
+					
+					blockoverride "datacontext " {
+						datacontext = "[MapListOption.GetCountryData.GetCountry]" 
+					}
+
+					blockoverride "rank_text" {
+						raw_text = "#BOLD [Country.GetCountryScorePositionDesc]"
+					}
+					blockoverride "rank_text_2" {
+						raw_text = "#BOLD [Country.GetCountryScorePositionDesc]"
+						visible = no
+					}
+				}
 			}
+			
 			textbox = {
 				margin = { 5 0 }
 				size = { 240 25 }
@@ -1266,21 +1889,21 @@ types map_list_panel_types {
 
 			textbox = {
 				margin = { 5 0 }
-				size = { 130 25 }
+				size = { 120 25 }
 				align = right|nobaseline
 				parentanchor = vcenter
 				elide = right
-				text = "#variable @battalions! [Country.GetBattalions|0]#! "
+				raw_text = "#variable @battalions! [Country.GetBattalions|0]#! "
 				tooltip = PANEL_MILITARY_ARMY_CURRENT_BATTALIONS_TOOLTIP
 			}
 			textbox = {
 				margin = { 5 0 }
-				size = { 130 25 }
+				size = { 120 25 }
 				align = right|nobaseline
 				parentanchor = vcenter
 				elide = right
-				text = "#variable @flotillas! [Country.GetWarships|0]#!"
-				tooltip = PANEL_MILITARY_NAVY_CURRENT_WARSHIPS_TOOLTIP
+				raw_text = "#variable @flotillas! [Country.GetWarships|0]#!"
+				tooltip = PANEL_MILITARY_NAVY_CURRENT_FLOTILLAS_TOOLTIP
 			}
 		}
 
@@ -1300,16 +1923,9 @@ types map_list_panel_types {
 		blockoverride "headers" {
 			sort_button = {
 				align = center|nobaseline
-				text = "DEFAULT_MAP_LIST_PANEL_STATUS_HEADER"
-				tooltip = "TRADE_ROUTE_LIST_PANEL_STATUS_HEADER_TOOLTIP"
-				size = { 65 20 }
-				onclick = "[MapListPanel.Sort('status')]"
-			}
-			sort_button = {
-				align = center|nobaseline
 				text = "TRADE_ROUTE_LIST_PANEL_MARKET_HEADER"
 				tooltip = "TRADE_ROUTE_LIST_PANEL_MARKET_HEADER_TOOLTIP"
-				size = { 160 20 }
+				size = { 180 20 }
 				onclick = "[MapListPanel.Sort('market')]"
 			}
 			sort_button = {
@@ -1339,51 +1955,94 @@ types map_list_panel_types {
 				tooltip = "TRADE_ROUTE_LIST_PANEL_VALUE_HEADER_TOOLTIP"
 				size = { 110 20 }
 				onclick = "[MapListPanel.Sort('value')]"
-			}					
+			}
+			sort_button = {
+				align = center|nobaseline
+				tooltip = "TRADE_ROUTE_LIST_PANEL_STATUS_HEADER_TOOLTIP"
+				size = { 55 20 }
+				onclick = "[MapListPanel.Sort('status')]"
+				button = {
+					texture = "gfx/interface/buttons/sort_button_icons/sort_icon_status.dds"
+					size = { 25 25 }
+					parentanchor = center
+					alwaystransparent = yes
+				}
+			}
 		}
 
-		blockoverride "values" {
+		blockoverride "item" {
+			item = {
+				map_list_panel_item_interaction = {
+					blockoverride "name_button_visibility" {
+						visible = yes
+					}
 
-			textbox = {
-				margin = { 5 0 }
-				size = { 160 25 }
-				align = left|nobaseline
-				text = "[MapListOption.GetTradeRouteData.GetMarket.GetNameNoFormatting]"
-				parentanchor = vcenter
-				elide = right
+					blockoverride "name_button_size" {
+						size = { 180 40 }
+					}
+
+					blockoverride "name_button_properties" {
+						datacontext = "[MapListOption.AccessTradeRouteData.AccessMarket]"
+						onclick = "[InformationPanelBar.OpenMarketPanel(Market.AccessSelf)]"
+						onrightclick = "[RightClickMenuManager.ShowForMarket(Market.AccessSelf)]"
+
+						tooltipwidget = {
+							FancyTooltip_Market = {
+								datacontext = "[MapListOption.GetTradeRouteData.GetMarket]"
+							}
+						}
+						
+						textbox = {
+							margin = { 10 0 }
+							size = { 175 25 }
+							align = left|nobaseline
+							text = "[MapListOption.GetTradeRouteData.GetMarket.GetNameNoFormatting]"
+							parentanchor = vcenter
+							elide = right
+							fontsize_min = 12
+						}
+					}
+
+					blockoverride "values" {
+						textbox = {
+							margin = { 5 0 }
+							size = { 60 25 }
+							align = center|nobaseline
+							text = "[MapListOption.GetTradeRouteData.GetLevel|v]"
+							tooltip = "[MapListOption.GetTooltip]"
+							parentanchor = vcenter
+							elide = right
+						}
+						textbox = {
+							margin = { 5 0 }
+							size = { 85 25 }
+							align = center|nobaseline
+							text = "[MapListOption.GetTradeRouteData.GetTradedQuantity|0v]"
+							tooltip = "[MapListOption.GetTooltip]"
+							parentanchor = vcenter
+							elide = right
+						}	
+						textbox = {
+							margin = { 5 0 }
+							size = { 50 25 }
+							align = center|nobaseline
+							text = "[MapListOption.GetTradeRouteData.GetConvoyCost|v]"
+							tooltip = "[MapListOption.GetTooltip]"
+							parentanchor = vcenter
+							elide = right
+						}				
+						textbox = {
+							margin = { 10 0 }
+							size = { 110 25 }
+							align = center|nobaseline
+							raw_text = "@money![MapListOption.GetTradeRouteData.GetProductivity|D+]"
+							tooltip = "[MapListOption.GetTooltip]"
+							parentanchor = vcenter
+							elide = right
+						}		
+					}
+				}
 			}
-			textbox = {
-				margin = { 5 0 }
-				size = { 60 25 }
-				align = center|nobaseline
-				text = "[MapListOption.GetTradeRouteData.GetLevel|v]"
-				parentanchor = vcenter
-				elide = right
-			}
-			textbox = {
-				margin = { 5 0 }
-				size = { 85 25 }
-				align = center|nobaseline
-				text = "[MapListOption.GetTradeRouteData.GetTradedQuantity|0v]"
-				parentanchor = vcenter
-				elide = right
-			}	
-			textbox = {
-				margin = { 5 0 }
-				size = { 50 25 }
-				align = center|nobaseline
-				text = "[MapListOption.GetTradeRouteData.GetConvoyCost|v]"
-				parentanchor = vcenter
-				elide = right
-			}				
-			textbox = {
-				margin = { 10 0 }
-				size = { 110 25 }
-				align = center|nobaseline
-				text = "@money![MapListOption.GetTradeRouteData.GetProductivity|D+]"
-				parentanchor = vcenter
-				elide = right
-			}		
 		}
 	}
 
@@ -1398,7 +2057,7 @@ types map_list_panel_types {
 		blockoverride "headers" {
 			sort_button = {
 				align = left|nobaseline
-				text = "NAME"
+				text = "STATE"
 				size = { 240 20 }
 				onclick = "[MapListPanel.Sort('name')]"
 			}
@@ -1411,7 +2070,7 @@ types map_list_panel_types {
 			sort_button = {
 				align = hcenter|nobaseline
 				size = { 100 20 }
-				text = "SOL_SHORT"
+				text = "SOL_SHORT_TEXT"
 				onclick = "[MapListPanel.Sort('standard_of_living')]"
 			}
 			sort_button = {
@@ -1435,7 +2094,7 @@ types map_list_panel_types {
 			textbox = {
 				datacontext = "[MapListOption.GetStateData.GetState]"
 				margin = { 5 0 }
-				size = { 100 25 }
+				size = { 90 25 }
 				align = right|nobaseline
 				parentanchor = vcenter
 				elide = right
@@ -1461,7 +2120,7 @@ types map_list_panel_types {
 				align = right|nobaseline
 				parentanchor = vcenter
 				elide = right
-				text = "@money![State.GetGDPContribution|Dv]"
+				raw_text = "@money![State.GetGDPContribution|Dv]"
 			}
 		}
 
@@ -1474,6 +2133,34 @@ types map_list_panel_types {
 		}
 	}
 
+	# STATE POPULATION
+	type state_population_map_list_panel = state_map_list_one_value {
+		name = "state_population_map_list_panel"
+
+		blockoverride "shown_on_map_header" {
+			text = "POPULATION"
+			onclick = "[MapListPanel.Sort('population')]"
+		}
+		blockoverride "shown_on_map_value" {
+			text = "[State.GetPopulationSize|Kv]"
+			tooltip = "TOOLTIP_STATE_POPULATION"
+		}
+	}
+
+	# STATE LITERACY
+	type state_literacy_map_list_panel = state_map_list_one_value {
+		name = "state_literacy_map_list_panel"
+
+		blockoverride "shown_on_map_header" {
+			text = "concept_literacy"
+			onclick = "[MapListPanel.Sort('literacy')]"
+		}
+		blockoverride "shown_on_map_value" {
+			text = "[State.GetLiteracy|%1v]"
+			tooltip = "STATE_LITERACY"
+		}
+	}
+
 	# STATE PRODUCTION
 	type state_production_map_list_panel = state_map_list_one_value {
 		name = "state_production_map_list_panel"
@@ -1483,7 +2170,7 @@ types map_list_panel_types {
 			onclick = "[MapListPanel.Sort('gdp_contribution')]"
 		}
 		blockoverride "shown_on_map_value" {
-			text = "@money![State.GetGDPContribution|Dv]"
+			raw_text = "@money![State.GetGDPContribution|Dv]"
 			tooltip = "CURRENT_GDP_STATE"
 		}
 	}
@@ -1497,7 +2184,7 @@ types map_list_panel_types {
 			onclick = "[MapListPanel.Sort('gdp_contribution')]"
 		}
 		blockoverride "shown_on_map_value" {
-			text = "@money![State.GetGDPContribution|Dv]"
+			raw_text = "@money![State.GetGDPContribution|Dv]"
 			tooltip = "CURRENT_GDP_STATE"
 		}
 	}
@@ -1515,7 +2202,7 @@ types map_list_panel_types {
 			onclick = "[MapListPanel.Sort('gdp_contribution')]"
 		}
 		blockoverride "shown_on_map_value" {
-			text = "@money![State.GetGDPContribution|Dv]"
+			raw_text = "@money![State.GetGDPContribution|Dv]"
 			tooltip = "CURRENT_GDP_STATE"
 		}
 	}
@@ -1525,11 +2212,11 @@ types map_list_panel_types {
 		name = "state_standard_of_living_map_list_panel"
 
 		blockoverride "shown_on_map_header" {
-			text = "[concept_sol]"
+			text = "concept_sol"
 			onclick = "[MapListPanel.Sort('standard_of_living')]"
 		}
 		blockoverride "shown_on_map_value" {
-			text = "[LabelingHelper.GetLabelForStandardOfLivingCFixedPoint(State.GetAverageStandardOfLivingAll)|v] ([State.GetAverageStandardOfLivingAll|v1])"
+			raw_text = "[LabelingHelper.GetLabelForStandardOfLivingCFixedPoint(State.GetAverageStandardOfLivingAll)|v] ([State.GetAverageStandardOfLivingAll|v1])"
 			tooltip = "NUM_SOL"
 		}
 	}
@@ -1547,12 +2234,12 @@ types map_list_panel_types {
 		}
 		
 		blockoverride "shown_on_map_header" {
-			text = "[concept_radical]"
+			text = "concept_radicals"
 			onclick = "[MapListPanel.Sort('radicals')]"
 		}
 		
 		blockoverride "shown_on_map_value" {
-			text = "[State.GetNumRadicals|d]"
+			text = "[State.GetNumRadicals|-d]"
 		}
 	}
 
@@ -1569,12 +2256,12 @@ types map_list_panel_types {
 		}
 		
 		blockoverride "shown_on_map_header" {
-			text = "[concept_loyalist]"
+			text = "concept_loyalists"
 			onclick = "[MapListPanel.Sort('loyalists')]"
 		}
 		
 		blockoverride "shown_on_map_value" {
-			text = "[State.GetNumLoyalists|d]"
+			text = "[State.GetNumLoyalists|+d]"
 		}
 	}
 
@@ -1583,11 +2270,11 @@ types map_list_panel_types {
 		name = "state_migration_pull_list_panel"
 
 		blockoverride "shown_on_map_header" {
-			text = "[concept_migration_pull]"
+			text = "concept_migration_pull"
 			onclick = "[MapListPanel.Sort('migration_pull')]"
 		}
 		blockoverride "shown_on_map_value" {
-			text = "#v [State.GetMigrationPull|1]#!"
+			raw_text = "#v [State.GetMigrationLabel]#!"
 			tooltip = "MIGRATION_PULL_DESC"
 		}
 	}
@@ -1602,19 +2289,19 @@ types map_list_panel_types {
 		blockoverride "headers" {
 			sort_button = {
 				align = left|nobaseline
-				text = "NAME"
+				text = "CULTURE"
 				size = { 240 20 }
 				onclick = "[MapListPanel.Sort('name')]"
 			}
 			sort_button = {
 				align = hcenter|nobaseline
 				size = { 150 20 }
-				text = "##1 [concept_culture]"
+				raw_text = "##1 [concept_culture]"
 			}
 			sort_button = {
 				align = hcenter|nobaseline
 				size = { 150 20 }
-				text = "##2 [concept_culture]"
+				raw_text = "##2 [concept_culture]"
 			}
 		}
 
@@ -1631,7 +2318,7 @@ types map_list_panel_types {
 			textbox = {
 				datacontext = "[MapListOption.GetStateData.GetState]"
 				margin = { 5 0 }
-				size = { 150 25 }
+				size = { 140 25 }
 				align = right|nobaseline
 				parentanchor = vcenter
 				elide = right
@@ -1664,10 +2351,28 @@ types map_list_panel_types {
 		name = "activate_conscription_center_map_list_panel"
 
 		blockoverride "headers" {
+
+			sort_button = {
+				align = left|nobaseline
+				margin = { 20 0 }
+				text = "ACTIVATE_CONSCRIPTION_CENTER_MAP_LIST_PANEL_STATE_HEADER"
+				tooltip = "ACTIVATE_CONSCRIPTION_CENTER_MAP_LIST_PANEL_STATE_HEADER_TOOLTIP"
+				size = { 345 20 }
+				onclick = "[MapListPanel.Sort('state')]"
+			}
+
+			sort_button = {
+				align = center|nobaseline
+				text = "ACTIVATE_CONSCRIPTION_CENTER_MAP_LIST_PANEL_UNITS"
+				tooltip = "ACTIVATE_CONSCRIPTION_CENTER_MAP_LIST_PANEL_UNITS_TOOLTIP"
+				size = { 140 20 }
+				onclick = "[MapListPanel.Sort('units')]"
+			}
+
 			sort_button = {
 				align = center|nobaseline
 				tooltip = "ACTIVATE_CONSCRIPTION_CENTER_MAP_LIST_PANEL_STATUS_HEADER_TOOLTIP"
-				size = { 45 20 }
+				size = { 55 20 }
 				onclick = "[MapListPanel.Sort('status')]"
 				button = {
 					texture = "gfx/interface/buttons/sort_button_icons/sort_icon_status.dds"
@@ -1676,43 +2381,77 @@ types map_list_panel_types {
 					alwaystransparent = yes
 				}
 			}
-
-			sort_button = {
-				align = left|nobaseline
-				margin = { 20 0 }
-				text = "ACTIVATE_CONSCRIPTION_CENTER_MAP_LIST_PANEL_STATE_HEADER"
-				tooltip = "ACTIVATE_CONSCRIPTION_CENTER_MAP_LIST_PANEL_STATE_HEADER_TOOLTIP"
-				size = { 340 20 }
-				onclick = "[MapListPanel.Sort('state')]"
-			}
-
-
-			sort_button = {
-				align = center|nobaseline
-				text = "ACTIVATE_CONSCRIPTION_CENTER_MAP_LIST_PANEL_UNITS"
-				tooltip = "ACTIVATE_CONSCRIPTION_CENTER_MAP_LIST_PANEL_UNITS_TOOLTIP"
-				size = { 150 20 }
-				onclick = "[MapListPanel.Sort('units')]"
-			}
 		}
 
-		blockoverride "values" {
-			textbox = {
-				margin = { 20 0 }
-				size = { 340 25 }
-				align = left|nobaseline
-				text = "[MapListOption.GetActivateConscriptionCenterData.GetState.GetNameNoFormatting]"
-				parentanchor = vcenter
-				elide = right
-			}
+		blockoverride "item" {
+			item = {
+				map_list_panel_item_interaction = {
+					blockoverride "name_button_visibility" {
+						visible = yes
+					}
 
-			textbox = {
-				size = { 115 25 }
-				align = hcenter|vcenter
-				text = "ACTIVATE_CONSCRIPTION_CENTER_MAP_LIST_PANEL_UNITS_TEXT"
-				parentanchor = vcenter
-				elide = right
-				using = tooltip_above
+					blockoverride "name_button_size" {
+						size = { 345 40 }
+					}
+
+					blockoverride "name_button_properties" {
+
+						datacontext = "[MapListOption.GetActivateConscriptionCenterData.GetState]"
+
+						onmousehierarchyenter = "[AccessHighlightManager.HighlightState(State.Self)]"
+						onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
+
+						datacontext = "[MapListOption.GetActivateConscriptionCenterData.GetBuilding]"
+						onclick = "[InformationPanelBar.OpenBuildingDetailsPanel(Building.AccessSelf)]"
+						enabled = "[Building.IsValid]"
+						onrightclick = "[RightClickMenuManager.ShowForBuilding(Building.AccessSelf)]"
+						
+						tooltipwidget = {
+							FancyTooltip_Building = {}
+						}
+
+						textbox = {
+							visible = "[Not(And(State.IsUnincorporated, Not(State.IsIncorporating)))]"
+							margin = { 10 0 }
+							size = { 330 25 }
+							align = left|nobaseline
+							text = "[State.GetNameNoFormatting]"
+							parentanchor = vcenter
+							elide = right
+							fontsize_min = 12
+						}
+
+						textbox = {
+							visible = "[And(State.IsUnincorporated, Not(State.IsIncorporating))]"
+							margin = { 10 0 }
+							size = { 300 25 }
+							align = left|nobaseline
+							text = "[State.GetNameNoFormatting]"
+							parentanchor = vcenter
+							elide = right
+							fontsize_min = 12
+						}
+
+						icon = {
+							visible = "[And(State.IsUnincorporated, Not(State.IsIncorporating))]"
+							parentanchor = right|vcenter
+							position = { -10 0 }
+							size = { 25 25 }
+							texture = "gfx/interface/icons/state_status_icons/unincorporated_state.dds"
+						}
+					}
+
+					blockoverride "values" {
+						textbox = {
+							size = { 140 25 }
+							align = hcenter|vcenter
+							text = "ACTIVATE_CONSCRIPTION_CENTER_MAP_LIST_PANEL_UNITS_TEXT"
+							parentanchor = vcenter
+							elide = right
+							using = tooltip_above
+						}
+					}
+				}
 			}
 		}
 	}
@@ -1723,22 +2462,17 @@ types map_list_panel_types {
 		blockoverride "headers" {
 			sort_button = {
 				align = center|nobaseline
-				tooltip = "DEFAULT_MAP_LIST_PANEL_STATUS_HEADER_TOOLTIP"
-				size = { 45 20 }
-				onclick = "[MapListPanel.Sort('status')]"
-				button = {
-					texture = "gfx/interface/buttons/sort_button_icons/sort_icon_status.dds"
-					size = { 25 25 }
-					parentanchor = center
-					alwaystransparent = yes
-				}
+				text = "concept_front"
+				size = { 255 20 }
+				onclick = "[MapListPanel.Sort('front')]"
 			}
 
 			sort_button = {
 				align = center|nobaseline
-				text = "[concept_front]"
-				size = { 380 20 }
-				onclick = "[MapListPanel.Sort('front')]"
+				text = "FRONT_MAP_LIST_PANEL_ADVANTAGE"
+				tooltip = "FRONT_MAP_LIST_PANEL_ADVANTAGE_TOOLTIP"
+				size = { 115 20 }
+				onclick = "[MapListPanel.Sort('advantage')]"
 			}
 
 			sort_button = {
@@ -1748,26 +2482,83 @@ types map_list_panel_types {
 				size = { 115 20 }
 				onclick = "[MapListPanel.Sort('units')]"
 			}
+
+			sort_button = {
+				align = center|nobaseline
+				tooltip = "DEFAULT_MAP_LIST_PANEL_STATUS_HEADER_TOOLTIP"
+				size = { 55 20 }
+				onclick = "[MapListPanel.Sort('status')]"
+				button = {
+					texture = "gfx/interface/buttons/sort_button_icons/sort_icon_status.dds"
+					size = { 25 25 }
+					parentanchor = center
+					alwaystransparent = yes
+				}
+			}
 		}
 
-		blockoverride "values" {
-			textbox = {
-				margin = { 5 0 }
-				size = { 380 25 }
-				align = left|nobaseline
-				text = "[MapListOption.GetAdvanceFrontData.GetFront.GetName]"
-				parentanchor = left|vcenter
-				elide = right
-			}
+		blockoverride "item" {
+			item = {
+				map_list_panel_item_interaction = {
+					blockoverride "name_button_visibility" {
+						visible = yes
+					}
 
-			textbox = {
-				margin = { 5 0 }
-				size = { 100 25 }
-				align = right|nobaseline
-				text = "@battalions! [MapListOption.GetAdvanceFrontData.GetFront.GetNumUnits( GetPlayer.Self )|v]"
-				parentanchor = vcenter
-				elide = right
-				using = tooltip_above
+					blockoverride "name_button_size" {
+						size = { 255 40 }
+					}
+
+					blockoverride "name_button_properties" {
+						datacontext = "[MapListOption.GetAdvanceFrontData.GetFront]"
+
+						onmousehierarchyenter = "[AccessHighlightManager.HighlightFront(MapListOption.GetAdvanceFrontData.GetFront)]"
+						onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
+
+						onclick = "[InformationPanelBar.OpenFrontPanel(Front.AccessSelf)]"
+
+						textbox = {
+							margin = { 10 0 }
+							size = { 250 25 }
+							align = left|nobaseline
+							text = "[Front.GetName]"
+							parentanchor = vcenter
+							elide = right
+							fontsize_min = 14
+						}
+					}
+
+					blockoverride "values" {
+						datacontext = "[MapListOption.GetAdvanceFrontData.GetFront]"
+
+						textbox = {
+							visible = "[Not(StringIsEmpty( Front.GetPlayerAdvantageDesc ))]"
+							tooltip = "[Front.GetPlayerAdvantageDesc]"
+							raw_text = "#v [Front.GetPlayerAdvantageRaw|+]#!"
+							size = { 115 25 }
+							align = hcenter|nobaseline
+							elide = right
+							parentanchor = center
+						}
+
+						textbox = {
+							margin = { 5 0 }
+							size = { 115 25 }
+							align = hcenter|nobaseline
+							raw_text = "@battalions! [Front.GetNumUnits( GetPlayer.Self )|v]"
+							parentanchor = vcenter
+							elide = right
+							using = tooltip_above
+						}
+					}
+
+					blockoverride "interaction" {
+						datacontext = "[MapListOption.GetAdvanceFrontData.GetFront]"
+						enabled = "[MapListOption.CanClick]"
+						onclick = "[MapListOption.OnClick]"
+						onmousehierarchyenter = "[AccessHighlightManager.HighlightFront(MapListOption.GetAdvanceFrontData.GetFront)]"
+						onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
+					}
+				}
 			}
 		}
 	}
@@ -1777,9 +2568,33 @@ types map_list_panel_types {
 
 		blockoverride "headers" {
 			sort_button = {
+				align = left|nobaseline
+				margin = { 20 0 }
+				text = "concept_hq"
+				size = { 275 20 }
+				onclick = "[MapListPanel.Sort('hq')]"
+			}
+
+			sort_button = {
+				align = center|nobaseline
+				text = "RECRUIT_COMMANDERS_MAP_LIST_PANEL_CURRENT_NUM"
+				tooltip = "[MapListHQPanel.GetCurrentNumberTooltip]"
+				size = { 105 20 }
+				onclick = "[MapListPanel.Sort('num_commanders')]"
+			}
+
+			sort_button = {
+				align = center|nobaseline
+				text = "FRONT_MAP_LIST_PANEL_UNITS"
+				tooltip = "[MapListHQPanel.GetCurrentNumberOfUnitsTooltip]"
+				size = { 105 20 }
+				onclick = "[MapListPanel.Sort('num_units')]"
+			}
+
+			sort_button = {
 				align = center|nobaseline
 				tooltip = "RECRUIT_COMMANDERS_MAP_LIST_PANEL_STATUS_HEADER_TOOLTIP"
-				size = { 45 20 }
+				size = { 55 20 }
 				onclick = "[MapListPanel.Sort('status')]"
 				button = {
 					texture = "gfx/interface/buttons/sort_button_icons/sort_icon_status.dds"
@@ -1788,84 +2603,66 @@ types map_list_panel_types {
 					alwaystransparent = yes
 				}
 			}
-
-			sort_button = {
-				align = left|nobaseline
-				margin = { 20 0 }
-				text = "[concept_hq]"
-				size = { 260 20 }
-				onclick = "[MapListPanel.Sort('hq')]"
-			}
-
-			sort_button = {
-				align = center|nobaseline
-				text = "RECRUIT_COMMANDERS_MAP_LIST_PANEL_CURRENT_NUM"
-				tooltip = "[MapListHQPanel.GetCurrentNumberTooltip]"
-				size = { 115 20 }
-				onclick = "[MapListPanel.Sort('num_commanders')]"
-			}
-			sort_button = {
-				align = center|nobaseline
-				text = "FRONT_MAP_LIST_PANEL_UNITS"
-				tooltip = "[MapListHQPanel.GetCurrentNumberOfUnitsTooltip]"
-				size = { 115 20 }
-				onclick = "[MapListPanel.Sort('num_units')]"
-			}
-
 		}
 
-		blockoverride "values" {
-			textbox = {
-				margin = { 10 0 }
-				size = { 260 25 }
-				align = left|nobaseline
-				text = "[MapListOption.GetRecruitmentData.GetHQ.GetName]"
-				parentanchor = left|vcenter
-				elide = right
-			}
+		blockoverride "item" {
+			item = {
+				map_list_panel_item_interaction = {
+					blockoverride "values" {
+						textbox = {
+							margin = { 10 0 }
+							size = { 275 25 }
+							align = left|nobaseline
+							text = "[MapListOption.GetRecruitmentData.GetHQ.GetName]"
+							parentanchor = left|vcenter
+							elide = right
+						}
 
-			textbox = {
-				visible = "[Not(And(GreaterThan_int32(MapListOption.GetRecruitmentData.GetHQ.GetReserveUnitsRaw,'(int32)0'), EqualTo_int32(MapListOption.GetRecruitmentData.GetCurrentCount, '(int32)0')))]"
-				margin = { 5 0 }
-				size = { 95 25 }
-				align = center|nobaseline
-				text = "[MapListOption.GetRecruitmentData.GetCurrentCount]"
-				default_format = "bold;shadow"
-				parentanchor = vcenter
-				elide = right
-				using = tooltip_above
-			}
+						textbox = {
+							visible = "[Not(And(GreaterThan_int32(MapListOption.GetRecruitmentData.GetHQ.GetReserveUnitsRaw,'(int32)0'), EqualTo_int32(MapListOption.GetRecruitmentData.GetCurrentCount, '(int32)0')))]"
+							margin = { 5 0 }
+							size = { 105 25 }
+							align = center|nobaseline
+							text = "[MapListOption.GetRecruitmentData.GetCurrentCount]"
+							default_format = "bold;shadow"
+							parentanchor = vcenter
+							elide = right
+							using = tooltip_above
+						}
 
-			textbox = {
-				visible = "[And(GreaterThan_int32(MapListOption.GetRecruitmentData.GetHQ.GetReserveUnitsRaw,'(int32)0'), EqualTo_int32(MapListOption.GetRecruitmentData.GetCurrentCount, '(int32)0'))]"
-				margin = { 5 0 }
-				size = { 95 25 }
-				align = center|nobaseline
-				text = "[MapListOption.GetRecruitmentData.GetCurrentCount]"
-				default_format = "#red;bold;shadow"
-				parentanchor = vcenter
-				elide = right
-				using = tooltip_above
-			}
-			textbox = {
-				visible = "[MapListOption.GetRecruitmentData.GetHQ.IsLandHQ]"
-				margin = { 5 0 }
-				size = { 95 25 }
-				align = center|nobaseline
-				text = "@battalions! [MapListOption.GetRecruitmentData.GetHQ.GetReserveUnitsRaw]"
-				parentanchor = vcenter
-				elide = right
-				using = tooltip_above
-			}
-			textbox = {
-				visible = "[MapListOption.GetRecruitmentData.GetHQ.IsNavalHQ]"
-				margin = { 5 0 }
-				size = { 95 25 }
-				align = center|nobaseline
-				text = "@flotillas! [MapListOption.GetRecruitmentData.GetHQ.GetReserveUnitsRaw]"
-				parentanchor = vcenter
-				elide = right
-				using = tooltip_above
+						textbox = {
+							visible = "[And(GreaterThan_int32(MapListOption.GetRecruitmentData.GetHQ.GetReserveUnitsRaw,'(int32)0'), EqualTo_int32(MapListOption.GetRecruitmentData.GetCurrentCount, '(int32)0'))]"
+							margin = { 5 0 }
+							size = { 105 25 }
+							align = center|nobaseline
+							text = "[MapListOption.GetRecruitmentData.GetCurrentCount]"
+							default_format = "#red;bold;shadow"
+							parentanchor = vcenter
+							elide = right
+							using = tooltip_above
+						}
+						textbox = {
+							visible = "[MapListOption.GetRecruitmentData.GetHQ.IsLandHQ]"
+							margin = { 5 0 }
+							size = { 105 25 }
+							align = center|nobaseline
+							raw_text = "@battalions! [MapListOption.GetRecruitmentData.GetHQ.GetReserveUnitsRaw]"
+							parentanchor = vcenter
+							elide = right
+							using = tooltip_above
+						}
+						textbox = {
+							visible = "[MapListOption.GetRecruitmentData.GetHQ.IsNavalHQ]"
+							margin = { 5 0 }
+							size = { 105 25 }
+							align = center|nobaseline
+							raw_text = "@flotillas! [MapListOption.GetRecruitmentData.GetHQ.GetReserveUnitsRaw]"
+							parentanchor = vcenter
+							elide = right
+							using = tooltip_above
+						}
+					}
+				}
 			}
 		}
 	}
