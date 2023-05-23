@@ -28,11 +28,10 @@ discrimination_events.1 = {
 	duration = 3
 
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_rich_and_poor.bk2"
+		video = "europenorthamerica_rich_and_poor"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/rich_and_poor"
 
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
 
@@ -97,6 +96,10 @@ discrimination_events.1 = {
 			name = enforced_segregation
 			months = normal_modifier_time
 		}
+		add_radicals = {
+			value = small_radicals
+			culture = scope:discriminated_culture_pop
+		}
 	}
 
 	option = {
@@ -134,7 +137,10 @@ discrimination_events.1 = {
 				}
 			}
 		}
-
+		add_loyalists = {
+			value = small_radicals
+			culture = scope:discriminated_culture_pop
+		}
 	}
 }
 
@@ -166,11 +172,10 @@ discrimination_events.2 = {
 	duration = 3
 
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_political_extremism.bk2"
+		video = "europenorthamerica_political_extremism"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/political_extremism"
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
@@ -278,11 +283,10 @@ discrimination_events.3 = {
 	duration = 3
 
 	event_image = {
-		video = "gfx/event_pictures/africa_public_protest.bk2"
+		video = "africa_public_protest"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/africa/public_protest"
 
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
 
@@ -361,7 +365,7 @@ discrimination_events.3 = {
 # Discrimination in Industries
 discrimination_events.4 = {
 	type = country_event
-	placement = ROOT
+	placement = scope:discrimination_state
 
 	title = discrimination_events.4.t
 	desc = discrimination_events.4.d
@@ -370,16 +374,23 @@ discrimination_events.4 = {
 	duration = 3
 
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_rich_and_poor.bk2"
+		video = "europenorthamerica_rich_and_poor"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/rich_and_poor"
 
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
 
 	trigger = {
 		any_scope_state = {
+			any_scope_culture = {
+				culture_is_discriminated_in = root
+				save_temporary_scope_as = discrim_culture
+			}
+			culture_percent_state = {
+			    target = scope:discrim_culture
+			    value >= 0.1
+			}
 			any_scope_building = {
 				OR = {
 					is_building_group = bg_light_industry
@@ -388,7 +399,9 @@ discrimination_events.4 = {
 				occupancy >= 0.25
 			}
 			any_scope_pop = {
-				culture_accepted = no
+				culture = {
+					this = scope:discrim_culture
+				}
 				pop_employment_building_group = bg_manufacturing
 			}
 		}
@@ -407,6 +420,14 @@ discrimination_events.4 = {
 		}
 		ordered_scope_state = {
 			limit = {
+				any_scope_culture = {
+					culture_is_discriminated_in = root
+					save_temporary_scope_as = discrim_culture
+				}
+				culture_percent_state = {
+				    target = scope:discrim_culture
+				    value >= 0.1
+				}
 				any_scope_building = {
 					OR = {
 						is_building_group = bg_light_industry
@@ -415,7 +436,9 @@ discrimination_events.4 = {
 					occupancy >= 0.25
 				}
 				any_scope_pop = {
-					culture_accepted = no
+					culture = {
+						this = scope:discrim_culture
+					}
 					pop_employment_building_group = bg_manufacturing
 				}
 			}
@@ -495,7 +518,7 @@ discrimination_events.4 = {
 			}
 		}
 		scope:discrimination_state = {
-			add_radicals = {
+			add_radicals_in_state = {
 				value = medium_radicals
 				culture = scope:discriminated_culture_pop
 			}

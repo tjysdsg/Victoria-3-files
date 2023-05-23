@@ -23,15 +23,32 @@ types battle_panel_types
 		}
 		blockoverride "window_header_name_line_two"
 		{
-			text = "BATTLE_ON_FRONT_SUBTITLE"
+			text = "BATTLE_SUBTITLE"
 		}
 
 		blockoverride "goto_button" {
 			button_icon_goto = {
+				visible = "[And(Not(Battle.IsNavalBattle), Not(Battle.IsNavalInvasion))]"
 				datacontext = "[Battle.GetFront]"
 				size = { 30 30 }
 				onclick = "[InformationPanelBar.OpenFrontPanel(Front.AccessSelf)]"
 				tooltip = "GO_TO_BUTTON_FRONT"
+			}
+
+			button_icon_goto = {
+				visible = "[And(Not(Battle.IsNavalBattle), Battle.IsNavalInvasion)]"
+				datacontext = "[Battle.GetState]"
+				size = { 30 30 }
+				onclick = "[InformationPanelBar.OpenStatePanel(State.AccessSelf)]"
+				tooltip = "GO_TO_BUTTON_STATE"
+			}
+
+			button_icon_goto = {
+				visible = "[Battle.IsNavalBattle]"
+				datacontext = "[Battle.GetProvince.GetStateRegion]"
+				size = { 30 30 }
+				onclick = "[InformationPanelBar.OpenSeaRegionPanel(Battle.GetProvince)]"
+				tooltip = "GO_TO_BUTTON_SEA_REGION"
 			}
 		}
 		
@@ -234,10 +251,15 @@ types battle_panel_types
 				flowcontainer = {
 					parentanchor = bottom
 					position = { 0 -45 }
-					tooltip = "BATTLE_CONDITION_ATTACKER_TOOLTIP"
 					visible = "[And(Battle.GetAttackerCondition.IsValid,Not(Battle.HasEnded))]"
 					datacontext = "[Battle.GetAttackerCondition]"
 					margin_right = 10
+					
+					# Use both tooltip and tooltipwidget here to append the "time until next Battle Condition" in the Fancy Tooltip
+					tooltip = "BATTLE_CONDITION_ATTACKER_TOOLTIP"
+					tooltipwidget = {
+						FancyTooltip_BattleCondition = {}
+					}
 
 					background = {
 						using = fade_right_simple
@@ -253,7 +275,7 @@ types battle_panel_types
 					}
 
 					textbox = {
-						text = "[BattleCondition.GetName]"
+						text = "[BattleCondition.GetNameNoFormatting]"
 						minimumsize = { 120 -1 }
 						autoresize = yes
 						parentanchor = vcenter
@@ -267,8 +289,13 @@ types battle_panel_types
 					parentanchor = bottom|right
 					position = { 0 -45 }
 					datacontext = "[Battle.GetDefenderCondition]"
-					tooltip = "BATTLE_CONDITION_DEFENDER_TOOLTIP"
 					margin_left = 10
+
+					# Use both tooltip and tooltipwidget here to append the "time until next Battle Condition" in the Fancy Tooltip
+					tooltip = "BATTLE_CONDITION_DEFENDER_TOOLTIP"
+					tooltipwidget = {
+						FancyTooltip_BattleCondition = {}
+					}
 
 					background = {
 						using = fade_left_simple
@@ -279,7 +306,7 @@ types battle_panel_types
 					}
 					
 					textbox = {
-						text = "[BattleCondition.GetName]"
+						text = "[BattleCondition.GetNameNoFormatting]"
 						minimumsize = { 120 -1 }
 						autoresize = yes
 						parentanchor = vcenter
@@ -1607,7 +1634,7 @@ types battle_panel_types
 		minimumsize = { @battle_side_width -1 }
 		maximumsize = { @battle_side_width -1 }
 		direction = vertical
-		visible = "[Or( GreaterThan_int32( CultureCasualtyStatistics.GetWounded, '(int32)0' ), GreaterThan_int32( CultureCasualtyStatistics.GetDead, '(int32)0') )]"
+		visible = "[Or( GreaterThan_int64( CultureCasualtyStatistics.GetWounded, '(int64)0' ), GreaterThan_int64( CultureCasualtyStatistics.GetDead, '(int64)0') )]"
 		tooltip = "CASUALTY_ENTRY_TOOLTIP"
 
 		textbox = {

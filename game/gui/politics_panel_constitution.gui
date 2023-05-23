@@ -71,7 +71,6 @@ types politics_panel_types
 				
 				widget = {
 					layoutpolicy_horizontal = expanding
-					tooltip = "ACTIVE_LAWS_DESC"
 					size = { 0 65 }
 					
 					background = {
@@ -123,6 +122,51 @@ types politics_panel_types
 						size = { 140 140 }
 					}
 
+					### APPROVAL
+					vbox = {
+						layoutpolicy_horizontal = preferred
+						layoutpolicy_vertical = preferred
+						spacing = 10
+						
+						expand = {}
+						
+						hbox = {
+							visible = "[GreaterThan_CFixedPoint(Law.GetPercentPolStrApprove, '(CFixedPoint)0')]"
+							tooltip = "TOOLTIP_LAW_APPROVAL"
+							
+							icon = {
+								size = { 40 40 }
+								texture = "gfx/interface/icons/generic_icons/approval_icon.dds"
+							}
+
+							textbox = {
+								align = right|nobaseline
+								text = "LAW_APPROVAL"
+								size = { 70 40 }
+								using = fontsize_xl
+							}
+						}
+
+						hbox = {
+							visible = "[GreaterThan_CFixedPoint(Law.GetPercentPolStrDisapprove, '(CFixedPoint)0')]"
+							tooltip = "TOOLTIP_LAW_DISAPPROVAL"
+
+							icon = {
+								size = { 40 40 }
+								texture = "gfx/interface/icons/generic_icons/disapproval_icon.dds"
+							}
+
+							textbox = {
+								align = right|nobaseline
+								text = "LAW_DISAPPROVAL"
+								size = { 70 40 }
+								using = fontsize_xl
+							}
+						}
+
+						expand = {}
+					}
+
 					hbox = {
 						layoutpolicy_horizontal = expanding
 						layoutpolicy_vertical = preferred
@@ -131,7 +175,7 @@ types politics_panel_types
 						background = {
 							using = entry_bg_simple
 						}
-						
+
 						### INFO
 						vbox = {
 							layoutpolicy_horizontal = expanding
@@ -187,44 +231,151 @@ types politics_panel_types
 								}
 							}
 						}
-						
-						### APPROVAL
+
+						# Successes
 						vbox = {
-							layoutpolicy_horizontal = preferred
-							layoutpolicy_vertical = preferred
-							spacing = 10
-							
-							hbox = {
-								visible = "[GreaterThan_CFixedPoint(Law.GetPercentPolStrApprove, '(CFixedPoint)0')]"
-								tooltip = "TOOLTIP_LAW_APPROVAL"
-								
-								icon = {
-									size = { 40 40 }
-									texture = "gfx/interface/icons/generic_icons/approval_icon.dds"
+							layoutpolicy_horizontal = expanding
+							spacing = 3
+							tooltip = "[GetPlayer.GetLawEnactmentProgressDesc]"
+
+							#Phase 0
+							enactment_phase = {
+								blockoverride "max_width" {}
+
+								blockoverride "active_size" {
+									layoutpolicy_horizontal = expanding
+									size = { 0 35 }
 								}
 
-								textbox = {
-									align = right|nobaseline
-									text = "LAW_APPROVAL"
-									size = { 70 40 }
-									using = fontsize_xl
+								blockoverride "past_size" {
+									layoutpolicy_horizontal = expanding
+									size = { 0 25 }
+								}
+
+								blockoverride "not_reached_size" {
+									layoutpolicy_horizontal = expanding
+									size = { 0 25 }
 								}
 							}
 
-							hbox = {
-								visible = "[GreaterThan_CFixedPoint(Law.GetPercentPolStrDisapprove, '(CFixedPoint)0')]"
-								tooltip = "TOOLTIP_LAW_DISAPPROVAL"
+							#Phase 1
+							enactment_phase = {
+								blockoverride "max_width" {}
 
-								icon = {
-									size = { 40 40 }
-									texture = "gfx/interface/icons/generic_icons/disapproval_icon.dds"
+								blockoverride "current_phase_visibility" {
+									visible = "[EqualTo_int32(Law.GetEnactmentPhase, '(int32)1')]"
 								}
 
-								textbox = {
-									align = right|nobaseline
-									text = "LAW_DISAPPROVAL"
-									size = { 70 40 }
-									using = fontsize_xl
+								blockoverride "past_phase_visibility" {
+									visible = "[GreaterThan_int32(Law.GetEnactmentPhase, '(int32)1')]"
+								}
+
+								blockoverride "not_reached_phase_visibility" {
+									visible = "[LessThan_int32(Law.GetEnactmentPhase, '(int32)1')]"
+								}
+
+								blockoverride "phase_name" {
+									text = "[Law.GetCountry.GetCustom('enactment_phase_1')]"
+								}
+
+								blockoverride "active_size" {
+									layoutpolicy_horizontal = expanding
+									size = { 0 35 }
+								}
+
+								blockoverride "past_size" {
+									layoutpolicy_horizontal = expanding
+									size = { 0 25 }
+								}
+
+								blockoverride "not_reached_size" {
+									layoutpolicy_horizontal = expanding
+									size = { 0 25 }
+								}
+							}
+
+							#Phase 2
+							enactment_phase = {
+								blockoverride "max_width" {}
+
+								blockoverride "current_phase_visibility" {
+									visible = "[EqualTo_int32(Law.GetEnactmentPhase, '(int32)2')]"
+								}
+
+								blockoverride "past_phase_visibility" {
+									visible = "[GreaterThan_int32(Law.GetEnactmentPhase, '(int32)2')]"
+								}
+
+								blockoverride "not_reached_phase_visibility" {
+									visible = "[LessThan_int32(Law.GetEnactmentPhase, '(int32)2')]"
+								}
+
+								blockoverride "phase_name" {
+									text = "[Law.GetCountry.GetCustom('enactment_phase_2')]"
+								}
+
+								blockoverride "active_size" {
+									layoutpolicy_horizontal = expanding
+									size = { 0 35 }
+								}
+
+								blockoverride "past_size" {
+									layoutpolicy_horizontal = expanding
+									size = { 0 25 }
+								}
+
+								blockoverride "not_reached_size" {
+									layoutpolicy_horizontal = expanding
+									size = { 0 25 }
+								}
+							}
+						}
+
+						# Setbacks
+						vbox = {
+							visible = "[GreaterThan_int32(GetDefine('NPolitics', 'LAW_ENACTMENT_MAX_SETBACKS'), '(int32)0')]"
+							layoutpolicy_horizontal = preferred
+							spacing = 5
+							margin = { 20 10 }
+							margin_bottom = 20
+							tooltip = "[GetPlayer.GetLawEnactmentProgressDesc]"
+
+							textbox = {
+								autoresize = yes
+								align = center|nobaseline
+								text = "LAW_ENACTMENT_SETBACKS_LABEL"
+								fontsize_min = 14
+								elide = right
+							}
+
+							hbox = {
+								layoutpolicy_horizontal = preferred
+
+								#Setback 1
+								enactment_setback = {
+									visible = "[GreaterThanOrEqualTo_int32(GetDefine('NPolitics', 'LAW_ENACTMENT_MAX_SETBACKS'), '(int32)1')]"
+
+									blockoverride "has_setback_visibility" {
+										visible = "[GreaterThanOrEqualTo_int32(Law.GetEnactmentSetbackCount, '(int32)1')]"
+									}
+								}
+
+								#Setback 2
+								enactment_setback = {
+									visible = "[GreaterThanOrEqualTo_int32(GetDefine('NPolitics', 'LAW_ENACTMENT_MAX_SETBACKS'), '(int32)2')]"
+
+									blockoverride "has_setback_visibility" {
+										visible = "[GreaterThanOrEqualTo_int32(Law.GetEnactmentSetbackCount, '(int32)2')]"
+									}
+								}
+
+								#Setback 3
+								enactment_setback = {
+									visible = "[GreaterThanOrEqualTo_int32(GetDefine('NPolitics', 'LAW_ENACTMENT_MAX_SETBACKS'), '(int32)3')]"
+
+									blockoverride "has_setback_visibility" {
+										visible = "[GreaterThanOrEqualTo_int32(Law.GetEnactmentSetbackCount, '(int32)3')]"
+									}
 								}
 							}
 						}

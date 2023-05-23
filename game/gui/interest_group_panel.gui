@@ -234,6 +234,7 @@ types interest_group_panel_types
 						spacing = 5 
 						margin_top = 10
 						margin_bottom = 10
+						parentanchor = hcenter
 						
 						ig_icon = {
 							size = { 80 80 }
@@ -317,6 +318,7 @@ types interest_group_panel_types
 									icon = {
 										texture = "[Party.GetIcon]"
 										size = { 34 34 }
+										parentanchor = vcenter
 									}
 									textbox = {
 										autoresize = yes
@@ -325,9 +327,10 @@ types interest_group_panel_types
 										using = fontsize_large 
 										parentanchor = vcenter
 										minimumsize = { 135 -1 }
-										maximumsize = { 135 -1 }
+										maximumsize = { 135 44 }
 										elide = right
 										fontsize_min = 14
+										multiline = yes
 									}
 									button_icon_goto = {
 										visible = no # toggle back on when doing PRCAL-15542
@@ -338,6 +341,7 @@ types interest_group_panel_types
 								}
 							}
 						}
+
 					}
 
 					divider_clean = {
@@ -354,7 +358,7 @@ types interest_group_panel_types
 
 						number_of_pops = {
 							blockoverride "tooltip" {
-								tooltip = "IG_RADICALS_TOOLTIP"
+								using = ig_radicals_tooltip_with_graph
 							}
 							blockoverride "texture" {
 								texture = "gfx/interface/icons/generic_icons/population_radical.dds"
@@ -363,13 +367,13 @@ types interest_group_panel_types
 								text = "RADICALS_TITLE"
 							}
 							blockoverride "value" {
-								text = "[InterestGroup.CalcNumRadicals|Kv]"
+								text = "[InterestGroup.GetNumRadicals|-D]"
 							}
 						}
 
 						number_of_pops = {
 							blockoverride "tooltip" {
-								tooltip = "IG_LOYALISTS_TOOLTIP"
+								using = ig_loyalists_tooltip_with_graph
 							}
 							blockoverride "texture" {
 								texture = "gfx/interface/icons/generic_icons/population_loyalist.dds"
@@ -378,7 +382,7 @@ types interest_group_panel_types
 								text = "LOYALISTS_TITLE"
 							}
 							blockoverride "value" {
-								text = "[InterestGroup.CalcNumLoyalists|Kv]"
+								text = "[InterestGroup.GetNumLoyalists|+D]"
 							}
 						}
 						
@@ -423,7 +427,6 @@ types interest_group_panel_types
 					widget = { size = { 10 10 }}
 
 					flowcontainer = {
-						margin_bottom = 20
 						### IDEOLOGIES
 						flowcontainer = {
 							direction = vertical
@@ -524,31 +527,105 @@ types interest_group_panel_types
 							}
 						}
 					}
-					
-					flowcontainer = {
-						visible = "[InterestGroup.GetPoliticalMovement.IsValid]"
-						direction = horizontal 
-						
-						margin_top = 5
-						margin_bottom = 5
-						
-						textbox = {
-							autoresize = yes
-							raw_text = "[concept_political_movement]:"
-						}	
-						
-						widget = { size = { 5 5 } }
-						
-						textbox = {
-							autoresize = yes
-							text = "[InterestGroup.GetPoliticalMovement.GetName]"
-						}						
-						
-						icon = {
-							texture = "[InterestGroup.GetPoliticalMovement.GetTexture]"
-							size = { 32 32 }
+
+					widget = { size = { 10 10 }}
+					divider_clean = {
+						parentanchor = hcenter
+					}
+					widget = { size = { 10 10 }}
+
+					container = {
+						minimumsize = { @panel_width -1 }
+						parentanchor = hcenter
+
+						flowcontainer = {
+							visible = "[InterestGroup.GetPoliticalMovement.IsValid]"
+							parentanchor = vcenter
+							spacing = 5
+
+							icon = {
+								parentanchor = vcenter
+								texture = "[InterestGroup.GetPoliticalMovement.GetTexture]"
+								size = { 50 50 }
+							}
+
+							flowcontainer = {
+								parentanchor = vcenter
+								direction = vertical
+
+								textbox = {
+									autoresize = yes
+									align = left
+									text = "[concept_political_movement]"
+								}
+
+								textbox = {
+									max_width = 280
+									autoresize = yes
+									align = left|nobaseline
+									text = "[InterestGroup.GetPoliticalMovement.GetName]"
+									using = fontsize_xxl
+									elide = right
+									fontsize_min = 14
+								}
+							}
 						}
-					}				
+
+						textbox = {
+							visible = "[Not(InterestGroup.GetPoliticalMovement.IsValid)]"
+							parentanchor = left|vcenter
+							autoresize = yes
+							multiline = yes
+							max_width = 330
+							align = left|nobaseline
+							text = "IG_NO_POLITICAL_MOVEMENT"
+							using = empty_state_text_properties
+							using = fontsize_xl
+							elide = right
+							fontsize_min = 14
+						}
+
+						flowcontainer = {
+							visible = "[Not(IsDataModelEmpty(InterestGroup.GetAgitators))]"
+							parentanchor = right
+							direction = vertical
+							margin_right = 5
+
+							textbox = {
+								parentanchor = right
+								autoresize = yes
+								align = right|nobaseline
+								text = "IG_AGITATORS"
+							}
+
+							dynamicgridbox = {
+								datamodel = "[InterestGroup.GetAgitators]"
+								flipdirection = yes
+								parentanchor = right
+								datamodel_wrap = 4
+
+								item = {
+									character_portrait_small = {}
+								}
+							}
+						}
+
+						textbox = {
+							visible = "[IsDataModelEmpty(InterestGroup.GetAgitators)]"
+							parentanchor = right|vcenter
+							autoresize = yes
+							max_width = 200
+							align = right|nobaseline
+							text = "NO_AGITATORS"
+							using = empty_state_text_properties
+							using = fontsize_xl
+							margin_right = 5
+						}
+					}
+
+					widget = {
+						size = { 10 10 }
+					}
 
 					### LEADER
 					container = {

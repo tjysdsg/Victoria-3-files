@@ -7,12 +7,33 @@ right_click_menu = {
 	parentanchor = bottom|hcenter
 	widgetanchor = top|hcenter
 
+	visible = "[Not(IsDataModelEmpty(TopFrontend.AccessImportantActions))]"
+
 	blockoverride "title_text" {
 		text = "IMPORTANT_ACTIONS"
 	}
 
+	flowcontainer = {
+		position = { -20 12 }
+		parentanchor = right|top
+		visible = "[GreaterThan_int32(TopFrontend.GetNumHiddenImportantActions, '(int32)0')]"
+		spacing = 5
+
+		textbox = {
+			autoresize = yes
+			text = "[TopFrontend.GetNumHiddenImportantActions|v]"
+			parentanchor = vcenter
+			align = nobaseline
+		}
+		button_icon_reset = {
+			size = { 26 26 }	
+			onclick = "[TopFrontend.UnhideAllImportantActions]"
+			parentanchor = vcenter
+		}
+	}
+
 	blockoverride "items" {
-		datamodel = "[TopFrontend.AccessImportantActions]"
+		datamodel = "[TopFrontend.AccessImportantActions]"	
 
 		item = {
 			container = {
@@ -29,12 +50,12 @@ right_click_menu = {
 				} 
 				# expandable list item
 				important_actions_list_expandable_item = {
-					visible = "[ImportantAlert.HasGroup]"
+					visible = "[And(ImportantAlert.HasGroup, Not(ImportantAlert.GetAlert.IsAngryImportantAction))]"
 				}
 				# angry expandable list item
 				important_actions_list_expandable_item = {
 					visible = "[And(ImportantAlert.HasGroup,ImportantAlert.GetAlert.IsAngryImportantAction)]"
-					blockoverride "button" {
+					blockoverride "button_style" {
 						using = red_button
 					}
 				}
@@ -46,6 +67,15 @@ right_click_menu = {
 types important_actions_list
 {
 	type important_actions_list_item = right_click_menu_item {
+		state = {
+			name = _mouse_hierarchy_enter
+			on_start = "[PdxGuiWidget.FindChild('button_hide_single_alert').TriggerAnimation('hover_enter')]"
+		}
+
+		state = {
+			name = _mouse_hierarchy_leave
+			on_start = "[PdxGuiWidget.FindChild('button_hide_single_alert').TriggerAnimation('hover_leave')]"
+		}
 		blockoverride "properties" {
 
 			tooltip = "[ImportantAlert.GetToolTip]"
@@ -54,12 +84,41 @@ types important_actions_list
 			onmousehierarchyenter = "[ImportantAlert.MarkAsRead]"
 			size = { 400 44 }
 
-			icon = {
-				visible = "[Not( ImportantAlert.IsRead )]"
+			flowcontainer = {
 				parentanchor = right|vcenter
 				position = { -5 0 }
-				texture = "gfx/interface/current_situations/icon_situation_unread.dds"
-				size = { 25 25 }
+				
+				icon = {
+					visible = "[Not( ImportantAlert.IsRead )]"
+					texture = "gfx/interface/current_situations/icon_situation_unread.dds"
+					size = { 25 25 }
+					parentanchor = vcenter
+				}
+
+				button_cancel = {
+					name = "button_hide_single_alert"
+					onclick = "[ImportantAlert.MarkAsHidden]"
+					alpha = 0
+					size = { 0 0 }
+					using = tooltip_se
+					parentanchor = vcenter
+
+					state = {
+						name = hover_enter
+						alpha = 1
+						duration = 0.05
+						using = Animation_Curve_Default	
+						size = { 24 24 }													
+					}
+
+					state = {
+						name = hover_leave
+						alpha = 0
+						size = { 0 0 }
+						duration = 0.2
+						using = Animation_Curve_Default
+					}
+				}
 			}
 		}
 
@@ -77,8 +136,9 @@ types important_actions_list
 		}
 	}
 	
-	type important_actions_list_expandable_item = right_click_menu_expandable_item
-	{
+	type important_actions_list_expandable_item = flowcontainer {
+		direction = vertical
+
 		blockoverride "properties" {
 			text = "[ImportantAlert.GetName]"
 			tooltip = "[ImportantAlert.GetToolTip]"
@@ -92,59 +152,174 @@ types important_actions_list
 			using = expand_button_sound
 		}
 
-		blockoverride "expanded_list_properties" {
-			visible = "[ImportantAlert.IsAlertGroupExpanded]"
-			datamodel = "[ImportantAlert.GetAlerts]"
-		}
+		right_click_menu_item = {
+			distribute_visual_state = no
+			state = {
+				name = _mouse_hierarchy_enter
+				on_start = "[PdxGuiWidget.FindChild('button_hide_alert_group').TriggerAnimation('hover_enter')]"
+			}
 
-		blockoverride "expanded_list_expand_visible" {
-			visible = "[Not(ImportantAlert.IsAlertGroupExpanded)]"
-		}
+			state = {
+				name = _mouse_hierarchy_leave
+				on_start = "[PdxGuiWidget.FindChild('button_hide_alert_group').TriggerAnimation('hover_leave')]"
+			}
 
-		blockoverride "expanded_list_collapse_visible" {
-			visible = "[ImportantAlert.IsAlertGroupExpanded]"
-		}
+			blockoverride "button" {
+				using = expand_button_bg
+			}
+			blockoverride "margin" {
+				margin_left = 30
+			}
 
-		blockoverride "list_item_properties" {
-			onmousehierarchyenter = "[Alert.MarkAsRead]"
-			onrightclick = "[Alert.MarkAsHidden]"
-		}
+			blockoverride "icon" {}
+			blockoverride "text" {}
+			
+			container = {
+				parentanchor = vcenter
+				
+				button = {
+					using = expand_arrow
+					size = { 25 25 }
+					alwaystransparent = yes
+					visible = "[ImportantAlert.IsAlertGroupExpanded]"
+				}
 
+				button = {
+					using = expand_arrow_expanded
+					size = { 25 25 }
+					alwaystransparent = yes
+					visible = "[Not(ImportantAlert.IsAlertGroupExpanded)]"
+				}
+			}
 
-		blockoverride "list_item_text_properties" {
-			text = "[Alert.GetName]"
-			tooltip = "EXPANDABLE_IMPORTANT_ACTION_ITEM"
-		}
-
-		blockoverride "unread_icon" {
-			icon = {
-				visible = "[Not( Alert.IsRead )]"
+			flowcontainer = {
 				parentanchor = right|vcenter
-				texture = "gfx/interface/current_situations/icon_situation_unread.dds"
-				size = { 25 25 }
 				position = { -5 0 }
+
+				textbox = {
+					text = "[ImportantAlert.GetNumAlerts]"
+					autoresize = yes
+					parentanchor = vcenter
+					align = nobaseline
+					default_format = "#v"
+					margin_right = 5
+				}				
+				icon = {
+					parentanchor = vcenter
+					visible = "[And(ImportantAlert.IsAlertGroupExpanded, Not( ImportantAlert.IsRead ))]"
+					texture = "gfx/interface/current_situations/icon_situation_unread.dds"
+					size = { 25 25 }
+				}
+
+				button_cancel = {
+					name = "button_hide_alert_group"
+					onclick = "[ImportantAlert.MarkAsHidden]"
+					alpha = 0
+					size = { 0 0 }
+					using = tooltip_se
+					parentanchor = vcenter
+
+					state = {
+						name = hover_enter
+						alpha = 1
+						duration = 0.05
+						using = Animation_Curve_Default	
+						size = { 24 24 }													
+					}
+
+					state = {
+						name = hover_leave
+						alpha = 0
+						size = { 0 0 }
+						duration = 0.2
+						using = Animation_Curve_Default
+					}
+				}
 			}
 		}
-		blockoverride "expandable_onclick" {
-			onclick = "[PopupManager.OpenAlert( Alert.AccessSelf )]"
-			using = select_button_sound
-		}
 
-		blockoverride "number_of_items_text" {
-			text = "[ImportantAlert.GetNumAlerts]"
-		}
-		
-		blockoverride "position_number_of_items" {
-			position = { -25 0 }
-		}
+		flowcontainer = {
+			direction = vertical
+			visible = "[Not(ImportantAlert.IsAlertGroupExpanded)]"
+			datamodel = "[ImportantAlert.GetAlerts]"
+			margin_bottom = 15
+			margin_left = 20
+			
+			item = {
+				button = {
+					block "button_style" {
+						using = default_button
+					}
+					onmousehierarchyenter = "[Alert.MarkAsRead]"
+					onrightclick = "[Alert.MarkAsHidden]"
+					onclick = "[PopupManager.OpenAlert( Alert.AccessSelf )]"
+					using = select_button_sound
+					onclick = "[RightClickMenuManager.Close]"
+					distribute_visual_state = no
 
-		blockoverride "unread_icon_expandable_item" {
-			icon = {
-				visible = "[Not( ImportantAlert.IsRead )]"
-				parentanchor = right|vcenter
-				texture = "gfx/interface/current_situations/icon_situation_unread.dds"
-				size = { 25 25 }
-				position = { -5 0 }
+					state = {
+						name = _mouse_hierarchy_enter
+						on_start = "[PdxGuiWidget.FindChild('button_hide_alert').TriggerAnimation('hover_enter')]"
+					}
+
+					state = {
+						name = _mouse_hierarchy_leave
+						on_start = "[PdxGuiWidget.FindChild('button_hide_alert').TriggerAnimation('hover_leave')]"
+					}
+
+					textbox = {
+						resizeparent = yes
+						minimumsize = { 380 34 }
+						maximumsize = { 380 -1 }
+						margin = { 15 5 }
+						margin_right = 25
+						autoresize = yes
+						fontsize_min = 12
+						elide = right
+						multiline = yes
+						align = nobaseline
+						text = "[Alert.GetName]"
+						tooltip = "EXPANDABLE_IMPORTANT_ACTION_ITEM"						
+					}
+
+					flowcontainer = {
+						parentanchor = right|vcenter
+						position = { -5 0 }
+						spacing = 5
+
+						button_cancel = {
+							name = "button_hide_alert"
+							onclick = "[Alert.MarkAsHidden]"
+							alpha = 0
+							size = { 0 0 }
+							using = tooltip_se
+							parentanchor = vcenter
+
+							state = {
+								name = hover_enter
+								alpha = 1
+								duration = 0.05
+								using = Animation_Curve_Default	
+								size = { 24 24 }													
+							}
+
+							state = {
+								name = hover_leave
+								alpha = 0
+								duration = 0.2
+								using = Animation_Curve_Default
+								size = { 0 0 }
+							}
+						}
+
+						icon = {
+							parentanchor = vcenter
+							visible = "[Not( Alert.IsRead )]"
+							texture = "gfx/interface/current_situations/icon_situation_unread.dds"
+							size = { 25 25 }
+						}
+					}
+				}
 			}
 		}
 	}

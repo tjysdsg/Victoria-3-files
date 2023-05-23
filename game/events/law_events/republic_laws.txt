@@ -8,13 +8,14 @@ republic_laws.1 = { #King misses meeting
 	title = republic_laws.1.t
 	desc = republic_laws.1.d
 	flavor = republic_laws.1.f
+
+	category = enactment
 	
 	event_image = {
-		video = "gfx/event_pictures/unspecific_politicians_arguing.bk2"
+		video = "unspecific_politicians_arguing"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/asia/politician_parliament_motion"
 
 	icon = "gfx/interface/icons/event_icons/event_election.dds"
 	
@@ -91,13 +92,14 @@ republic_laws.2 = { #Fate of the King
 	title = republic_laws.2.t
 	desc = republic_laws.2.d
 	flavor = republic_laws.2.f
+
+	category = enactment
 	
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_london_center.bk2"
+		video = "europenorthamerica_london_center"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/london_center"
 
 	icon = "gfx/interface/icons/event_icons/event_election.dds"
 	
@@ -176,13 +178,14 @@ republic_laws.3 = { #The kings Speech
 	title = republic_laws.3.t
 	desc = republic_laws.3.d
 	flavor = republic_laws.3.f
+
+	category = enactment
 	
 	event_image = {
-		video = "gfx/event_pictures/unspecific_ruler_speaking_to_people.bk2"
+		video = "unspecific_ruler_speaking_to_people"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/unspecific/leader_speaking_to_a_group_of_people"
 
 	icon = "gfx/interface/icons/event_icons/event_election.dds"
 	
@@ -251,7 +254,11 @@ republic_laws.3 = { #The kings Speech
 
 	option = { #Kings speech unchallenged
 		name = republic_laws.3.a
-		default_option = yes
+		trigger = {
+			enactment_setback_count < 2
+		}
+		highlighted_option = yes
+		add_enactment_setback = 1
 		if = {
 			limit = {
 				any_interest_group = {
@@ -277,24 +284,11 @@ republic_laws.3 = { #The kings Speech
 				months = normal_modifier_time
 			}
 		}
-		random_list = {
-			1 = {
-				add_enactment_modifier = {
-					name =  the_kings_speech
-					multiplier = -3
-				}
-			}
-			3 = {
-				add_enactment_modifier = {
-					name =  the_kings_speech
-					multiplier = -2
-				}
-			}
-		}
 	}
 
 	option = { #Kings speech challenged
 		name = republic_laws.3.b
+		default_option = yes
 		scope:rulers_speech_supporters = {
 			add_modifier = {
 				name = speech_supporters

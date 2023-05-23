@@ -12,13 +12,12 @@
 	duration = 3
 
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_springtime_of_nations.bk2"
+		video = "europenorthamerica_springtime_of_nations"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/springtime_of_nation"
 
-	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
 
 	trigger = {
 		has_law = law_type:law_monarchy
@@ -29,7 +28,7 @@
 		any_interest_group = {
 			is_in_government = yes
 			leader = {
-				has_ideology = ideology_radical
+				has_ideology = ideology:ideology_radical
 			}
 		}
 		NOT = {
@@ -39,6 +38,35 @@
 
 	option = {
 		name = 1848.1.a
+		ai_chance = {
+			base = 25
+			modifier = {
+				trigger = {
+					is_enacting_law = law_type:law_presidential_republic
+					any_interest_group = {
+						law_stance = {
+							law = law_type:law_presidential_republic
+							value < neutral
+						}
+						is_powerful = yes
+					}
+				}
+				add = -15
+			}
+			modifier = {
+				trigger = {
+					is_enacting_law = law_type:law_parliamentary_republic
+					any_interest_group = {
+						law_stance = {
+							law = law_type:law_parliamentary_republic
+							value < neutral
+						}
+						is_powerful = yes
+					}
+				}
+				add = -15
+			}
+		}
 		if = {
 			limit = {
 				is_enacting_law = law_type:law_presidential_republic
@@ -67,9 +95,6 @@
 		ruler = {
 			kill_character = yes
 		}
-		ai_chance = {
-			base = 25
-		}
 	}
 	option = {
 		name = 1848.1.b
@@ -95,13 +120,12 @@
 	duration = 3
 
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_london_center.bk2"
+		video = "europenorthamerica_london_center"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/london_center"
 
-	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
 
 	trigger = {
 		# triggered by je_abolish_monarchy
@@ -124,11 +148,11 @@
 		every_interest_group = {
 			limit = {
 				leader = {
-					has_ideology = ideology_royalist	
+					has_monarchist_ideology = yes
 				}
 			}
 			leader = {
-				set_ideology = ideology_moderate
+				set_ideology = ideology:ideology_moderate
 			}
 		}
 	}
@@ -156,13 +180,12 @@
 	duration = 3
 
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_political_extremism.bk2"
+		video = "europenorthamerica_political_extremism"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/political_extremism"
 
-	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
 
 	trigger = {
 		OR = {
@@ -178,7 +201,7 @@
 		any_interest_group = {
 			is_in_government = yes
 			leader = {
-				has_ideology = ideology_radical
+				has_ideology = ideology:ideology_radical
 			}
 		}
 		NOT = {
@@ -194,7 +217,7 @@
 			limit = {
 				is_in_government = yes
 				leader = {
-					has_ideology = ideology_radical
+					has_ideology = ideology:ideology_radical
 				}
 			}
 			leader = {
@@ -265,6 +288,20 @@
 		}
 		ai_chance = {
 			base = 25
+			modifier = {
+				trigger = {
+					NOT = {
+						any_interest_group = {
+							law_stance = {
+								law = scope:current_voting_law_scope
+								value > neutral
+							}
+							is_powerful = yes
+						}
+					}
+				}
+				add = -15
+			}
 		}
 	}
 	option = {
@@ -291,13 +328,12 @@
 	duration = 3
 
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_political_extremism.bk2"
+		video = "europenorthamerica_political_extremism"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/political_extremism"
 
-	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
 
 	trigger = {
 		# triggered by journal entry start
@@ -311,7 +347,7 @@
 					is_insurrectionary = yes
 				}
 				leader = {
-					has_ideology = ideology_radical
+					has_ideology = ideology:ideology_radical
 				}
 			}
 			leader = {
@@ -359,38 +395,16 @@
 			limit = {
 				any_interest_group = {
 					is_marginal = no
-					leader = {
-						NOT = {
-							has_ideology = ideology_radical
-						}
-					}
-					OR = {
-						is_interest_group_type = ig_rural_folk
-						is_interest_group_type = ig_intelligentsia
-						is_interest_group_type = ig_trade_unions
-						is_interest_group_type = ig_petty_bourgeoisie
-						is_interest_group_type = ig_industrialists
-					}
+					can_have_radical_leader = yes
 				}
 			}
 			random_interest_group = {
 				limit = {
 					is_marginal = no
-					leader = {
-						NOT = {
-							has_ideology = ideology_radical
-						}
-					}
-					OR = {
-						is_interest_group_type = ig_rural_folk
-						is_interest_group_type = ig_intelligentsia
-						is_interest_group_type = ig_trade_unions
-						is_interest_group_type = ig_petty_bourgeoisie
-						is_interest_group_type = ig_industrialists
-					}
+					can_have_radical_leader = yes
 				}
 				leader = {
-					set_ideology = ideology_radical
+					set_ideology = ideology:ideology_radical
 					add_modifier = {
 						name = 1848_popular_radical
 					}
@@ -419,11 +433,10 @@
 	cooldown = { months = normal_modifier_time }
 
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_springtime_of_nations.bk2"
+		video = "europenorthamerica_springtime_of_nations"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/springtime_of_nation"
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
@@ -433,7 +446,7 @@
 			any_interest_group = {
 				is_in_government = yes
 				leader = {
-					has_ideology = ideology_radical
+					has_ideology = ideology:ideology_radical
 				}
 			}
 		}
@@ -443,7 +456,7 @@
 				is_insurrectionary = yes
 			}
 			leader = {
-				has_ideology = ideology_radical
+				has_ideology = ideology:ideology_radical
 			}
 		}
 		trigger_if = {
@@ -530,7 +543,7 @@
 		name = 1848.5.c
 		default_option = yes
 		capital = {
-			add_radicals = {
+			add_radicals_in_state = {
 				value = medium_radicals
 			}
 		}
@@ -551,11 +564,10 @@
 	duration = 3
 
 	event_image = {
-		video = "gfx/event_pictures/middleeast_police_breaking_door.bk2"
+		video = "votp_cops_march"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/middleeast/police_breaking_door"
 
 	icon = "gfx/interface/icons/event_icons/event_skull.dds"
 
@@ -586,7 +598,7 @@
 				is_in_government = no
 				is_marginal = no
 				leader = {
-					has_ideology = ideology_radical
+					has_ideology = ideology:ideology_radical
 				}
 			}
 		}
@@ -595,7 +607,7 @@
 				is_in_government = no
 				is_marginal = no
 				leader = {
-					has_ideology = ideology_radical
+					has_ideology = ideology:ideology_radical
 				}
 			}
 			leader = {
@@ -619,6 +631,385 @@
 		add_modifier = {
 			name = home_affairs_cost_mod
 			months = short_modifier_time
+		}
+	}
+}
+
+#########
+# Pre-Revolution Buildup
+#########
+
+# Growing frustration
+1848.10 = {
+	type = country_event
+	placement = root
+	title = 1848.10.t
+	desc = 1848.10.d
+	flavor = 1848.10.f
+
+	duration = 3
+
+	cooldown = { months = normal_modifier_time }
+
+	event_image = {
+		video = "europenorthamerica_springtime_of_nations"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	trigger = {
+		NOT = { has_global_variable = peoples_springtime_happening }
+		NOT = { has_global_variable = peoples_springtime_happened }
+		country_is_in_europe = yes
+		has_technology_researched = egalitarianism
+		has_law = law_type:law_autocracy
+
+		any_interest_group = {
+			can_have_radical_leader = yes
+			is_powerful = no
+			is_insurrectionary = no
+			ig_approval < 0	
+		}
+
+		NOT = { has_modifier = spreading_frustration }
+	}
+
+	immediate = {
+		random_interest_group = {
+			limit = {
+				can_have_radical_leader = yes
+				is_powerful = no
+				is_insurrectionary = no
+				ig_approval < 0	
+			}
+			save_scope_as = disgruntled_ig
+			leader = {
+				save_scope_as = disgruntled_ig_leader
+			}
+		}
+	}
+
+	option = {
+		name = 1848.10.a
+		default_option = yes
+
+		random_list = {
+			1 = {
+				scope:disgruntled_ig_leader = {
+					set_ideology = ideology:ideology_radical
+				}
+			}
+			1 = {
+				scope:disgruntled_ig = {
+					add_modifier = {
+						name = directionless_frustration
+						months = normal_modifier_time
+					}
+				}
+			}
+			1 = {
+				add_modifier = {
+					name = spreading_frustration
+					months = normal_modifier_time
+				}
+			}
+		}
+	}
+
+
+	option = {
+		name = 1848.10.b
+
+		scope:disgruntled_ig = {
+			add_modifier = {
+				name = we_are_listened_to
+				months = normal_modifier_time
+			}
+		}
+		random_list = {
+			1 = {
+				add_modifier = {
+					name = government_is_trying_to_listen			
+					months = normal_modifier_time
+				}
+			}
+			1 = {
+				# nothing happens
+			}
+		}
+		random_list = {
+			1 = {
+				add_modifier = {
+					name = out_of_the_spotlight			
+					months = normal_modifier_time
+				}
+			}
+			1 = {
+				# nothing happens
+			}
+		}
+	}
+}
+
+# Financial Squeeze
+1848.11 = {
+	type = country_event
+	placement = root
+	title = 1848.11.t
+	desc = 1848.11.d
+	flavor = 1848.11.f
+
+	duration = 3
+
+	cooldown = { months = normal_modifier_time }
+
+	event_image = {
+		video = "votp_realist_household"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_trade.dds"
+
+	trigger = {
+		NOT = { has_global_variable = peoples_springtime_happening }
+		NOT = { has_global_variable = peoples_springtime_happened }
+		country_is_in_europe = yes
+		has_technology_researched = egalitarianism
+
+		any_interest_group = {
+			can_have_radical_leader = yes
+			is_powerful = no
+			is_insurrectionary = no
+			ig_approval < 0	
+		}
+
+		taking_loans = yes
+		tax_level > medium
+	}
+
+	immediate = {
+		random_interest_group = {
+			limit = {
+				can_have_radical_leader = yes
+				is_powerful = no
+				is_insurrectionary = no
+				ig_approval < 0	
+			}
+			save_scope_as = squeezed_ig
+			leader = {
+				save_scope_as = squeezed_ig_leader
+			}
+		}
+	}
+
+	option = {
+		name = 1848.11.a
+		default_option = yes
+
+		random_list = {
+			1 = {
+				scope:squeezed_ig_leader = {
+					set_ideology = ideology:ideology_radical
+				}
+			}
+			1 = {
+				# nothing happens
+			}
+		}
+		random_list = {
+			1 = {
+				scope:squeezed_ig = {
+					add_modifier = {
+						name = empty_pocketbooks
+						months = normal_modifier_time
+					}
+				}
+			}
+			1 = {
+				scope:squeezed_ig = {
+					add_modifier = {
+						name = empty_stomachs
+						months = normal_modifier_time
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = 1848.11.b
+
+		add_modifier = {
+			name = government_support_to_financially_distressed
+			months = normal_modifier_time
+		}
+
+		random_list = {
+			1 = {
+				scope:squeezed_ig_leader = {
+					set_ideology = ideology:ideology_radical
+				}
+			}
+			3 = {
+				# nothing happens
+			}
+		}
+		random_list = {
+			1 = {
+				scope:squeezed_ig = {
+					add_modifier = {
+						name = empty_pocketbooks
+						months = normal_modifier_time
+						multiplier = 0.5
+					}
+				}
+			}
+			1 = {
+				scope:squeezed_ig = {
+					add_modifier = {
+						name = crisis_averted
+						months = normal_modifier_time
+					}
+				}
+			}
+		}
+	}
+}
+
+# The Crisis of Bread
+1848.12 = {
+	type = country_event
+	placement = scope:1848_famine_state
+	title = 1848.12.t
+	desc = 1848.12.d
+	flavor = 1848.12.f
+
+	duration = 3
+
+	cooldown = { months = normal_modifier_time }
+
+	event_image = {
+		video = "asia_dead_cattle_poor_harvest"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	trigger = {
+		NOT = { has_global_variable = peoples_springtime_happening }
+		NOT = { has_global_variable = peoples_springtime_happened }
+		country_is_in_europe = yes
+		has_technology_researched = egalitarianism
+
+		any_interest_group = {
+			can_have_radical_leader = yes
+			is_powerful = no
+			is_insurrectionary = no
+			ig_approval < 0	
+		}
+
+		has_journal_entry = je_famine
+	}
+
+	immediate = {
+		random_interest_group = {
+			limit = {
+				can_have_radical_leader = yes
+				is_powerful = no
+				is_insurrectionary = no
+				ig_approval < 0	
+			}
+			save_scope_as = famine_radicalized_ig
+			leader = {
+				save_scope_as = famine_radicalized_ig_leader
+			}
+		}	
+
+		random_scope_state = {
+			limit = {
+				has_variable = famine_var
+			}
+			save_scope_as = 1848_famine_state
+		}
+	}
+
+
+	option = {
+		name = 1848.12.a
+		default_option = yes
+
+		random_list = {
+			1 = {
+				scope:famine_radicalized_ig_leader = {
+					set_ideology = ideology:ideology_radical
+				}
+			}
+			1 = {
+				# nothing happens
+			}
+		}
+		random_list = {
+			1 = {
+				scope:1848_famine_state = {
+					add_modifier = {
+						name = agitated_food_riots
+						months = short_modifier_time
+					}
+				}
+			}
+			1 = {
+				scope:1848_famine_state = {
+					add_modifier = {
+						name = sullen_starvation
+						months = short_modifier_time
+					}
+				}
+			}
+		}
+	}
+
+
+	option = {
+		name = 1848.12.b
+
+		add_modifier = {
+			name = government_food_dole
+			multiplier = money_amount_multiplier_small
+			months = short_modifier_time
+		}
+
+		random_list = {
+			1 = {
+				scope:famine_radicalized_ig_leader = {
+					set_ideology = ideology:ideology_radical
+				}
+			}
+			3 = {
+				# nothing happens
+			}
+		}
+		random_list = {
+			1 = {
+				scope:1848_famine_state = {
+					add_modifier = {
+						name = agitated_food_riots
+						months = short_modifier_time
+						multiplier = 0.5
+					}
+				}
+			}
+			1 = {
+				scope:1848_famine_state = {
+					add_modifier = {
+						name = a_mild_but_lean_year
+						months = short_modifier_time
+					}
+				}
+			}
 		}
 	}
 }

@@ -122,6 +122,13 @@ radical_party = {
 				}
 			}
 			triggered_desc = {
+				desc = party_republican_union
+				trigger = {
+					exists = c:FRA
+					THIS = c:FRA
+				}
+			}
+			triggered_desc = {
 				desc = party_the_far_left
 				trigger = {
 					OR = {
@@ -247,22 +254,35 @@ radical_party = {
 			any_interest_group = {
 				is_marginal = no
 				leader = {
-					has_ideology = ideology_radical
+					has_ideology = ideology:ideology_radical
 				}
 			}
 		}
+		OR = {
+	     	NOT = {
+	         	owner = {
+	         		has_variable = only_valid_party
+	         	}
+	        }
+	        owner.var:only_valid_party = {
+	        	is_party_type = radical_party
+	        }
+	    }
 		NOR = {
 			is_interest_group_type = ig_landowners
 			is_interest_group_type = ig_devout
 		}
 		leader = { # fascists and conservatives hate radicals
 			NOT = {
-				has_ideology = ideology_fascist
-				has_ideology = ideology_ethno_nationalist
-				has_ideology = ideology_traditionalist
-				has_ideology = ideology_royalist
-				has_ideology = ideology_theocrat
-				has_ideology = ideology_slaver
+				has_ideology = ideology:ideology_fascist
+				has_ideology = ideology:ideology_ethno_nationalist
+				has_ideology = ideology:ideology_traditionalist
+				has_ideology = ideology:ideology_royalist
+				has_ideology = ideology:ideology_orleanist
+				has_ideology = ideology:ideology_bonapartist
+				has_ideology = ideology:ideology_legitimist
+				has_ideology = ideology:ideology_theocrat
+				has_ideology = ideology:ideology_slaver
 			}
 		}
 	}
@@ -277,7 +297,7 @@ radical_party = {
 		if = { # radicals love radicalism
 			limit = {
 				leader = {
-					has_ideology = ideology_radical
+					has_ideology = ideology:ideology_radical
 				}
 			}
 			add = {
@@ -289,7 +309,7 @@ radical_party = {
 			limit = {
 				is_powerful = yes
 				leader = {
-					has_ideology = ideology_radical
+					has_ideology = ideology:ideology_radical
 				}
 			}
 			add = {
@@ -300,13 +320,13 @@ radical_party = {
 		if = { # radicals will fall in line behind stronger liberals
 			limit = {
 				leader = {
-					has_ideology = ideology_radical
+					has_ideology = ideology:ideology_radical
 				}
 				is_powerful = no
 				owner = {
 					any_interest_group = {
 						is_powerful = yes
-						has_ideology = ideology_liberal
+						has_ideology = ideology:ideology_liberal
 					}
 				}
 			}
@@ -318,12 +338,12 @@ radical_party = {
 		if = { # weak liberals will fall in line behind strong radicals
 			limit = {
 				is_powerful = no
-				has_ideology = ideology_liberal
+				has_ideology = ideology:ideology_liberal
 				owner = {
 					any_interest_group = {
 						is_powerful = yes
 						leader = {
-							has_ideology = ideology_radical
+							has_ideology = ideology:ideology_radical
 						}
 					}
 				}
@@ -338,9 +358,9 @@ radical_party = {
 				is_powerful = no
 				leader = {
 					OR = {
-						has_ideology = ideology_communist
-						has_ideology = ideology_vanguardist
-						has_ideology = ideology_anarchist
+						has_ideology = ideology:ideology_communist
+						has_ideology = ideology:ideology_vanguardist
+						has_ideology = ideology:ideology_anarchist
 					}
 				}
 				owner = {
@@ -348,7 +368,7 @@ radical_party = {
 					any_interest_group = {
 						is_powerful = yes
 						leader = {
-							has_ideology = ideology_radical
+							has_ideology = ideology:ideology_radical
 						}
 					}
 				}
@@ -362,13 +382,14 @@ radical_party = {
 			limit = {
 				leader = {
 					OR = {
-						has_ideology = ideology_feminist
-						has_ideology = ideology_abolitionist
-						has_ideology = ideology_pacifist
-						has_ideology = ideology_social_democrat
-						has_ideology = ideology_reformer
-						has_ideology = ideology_republican_leader
-						has_ideology = ideology_atheist
+						has_ideology = ideology:ideology_feminist
+						has_ideology = ideology:ideology_abolitionist
+						has_ideology = ideology:ideology_pacifist
+						has_ideology = ideology:ideology_social_democrat
+						has_ideology = ideology:ideology_reformer
+						has_ideology = ideology:ideology_republican_leader
+						has_ideology = ideology:ideology_atheist
+						has_ideology = ideology:ideology_humanitarian
 					}
 				}
 			}
@@ -380,13 +401,13 @@ radical_party = {
 		if = { # republican
 			limit = {
 				OR = {
-					has_ideology = ideology_republican
-					has_ideology = ideology_populist
+					has_ideology = ideology:ideology_republican
+					has_ideology = ideology:ideology_populist
 					leader = {
 						OR = {
-							has_ideology = ideology_atheist
-							has_ideology = ideology_republican_leader
-							has_ideology = ideology_radical
+							has_ideology = ideology:ideology_atheist
+							has_ideology = ideology:ideology_republican_leader
+							has_ideology = ideology:ideology_radical
 						}
 					}
 				}
@@ -404,7 +425,7 @@ radical_party = {
 		}
 		if = {
 			limit = { # particularists will join in when their issues are relevant
-				has_ideology = ideology_particularist
+				has_ideology = ideology:ideology_particularist
 				owner = {
 					OR = {
 						has_law = law_type:law_serfdom
@@ -420,7 +441,7 @@ radical_party = {
 		if = { # moderates are scared of radical politics
 			limit = {
 				leader = {
-					has_ideology = ideology_moderate
+					has_ideology = ideology:ideology_moderate
 				}
 			}
 			add = {
@@ -434,12 +455,13 @@ radical_party = {
 					NOT = { has_law = law_type:law_universal_suffrage }
 				}
 				OR = {
-					has_ideology = ideology_republican
-					has_ideology = ideology_populist
+					has_ideology = ideology:ideology_republican
+					has_ideology = ideology:ideology_populist
 					leader = {
 						OR = {
-							has_ideology = ideology_radical
-							has_ideology = ideology_social_democrat
+							has_ideology = ideology:ideology_radical
+							has_ideology = ideology:ideology_social_democrat
+							has_ideology = ideology:ideology_humanitarian
 						}
 					}
 				}
@@ -453,8 +475,9 @@ radical_party = {
 			limit = {
 				leader = {
 					OR = {
-						has_ideology = ideology_radical
-						has_ideology = ideology_anarchist
+						has_ideology = ideology:ideology_radical
+						has_ideology = ideology:ideology_anarchist
+						has_ideology = ideology:ideology_humanitarian
 					}
 				}
 				owner = {
@@ -472,8 +495,11 @@ radical_party = {
 		if = { # anti-censorship
 			limit = {
 				OR = {
-					has_ideology = ideology_liberal
-					has_ideology = ideology_egalitarian
+					has_ideology = ideology:ideology_liberal
+					has_ideology = ideology:ideology_egalitarian
+					leader = {
+						has_ideology = ideology:ideology_humanitarian
+					}
 				}
 				owner = {
 					has_law = law_type:law_outlawed_dissent
@@ -487,9 +513,12 @@ radical_party = {
 		if = { # opposition to secret police or national guard
 			limit = {
 				OR = {
-					has_ideology = ideology_liberal
+					has_ideology = ideology:ideology_liberal
 					leader = {
-						has_ideology = ideology_radical
+						OR = {	
+							has_ideology = ideology:ideology_humanitarian
+							has_ideology = ideology:ideology_radical
+						}
 					}
 				}
 				owner = {
@@ -513,9 +542,9 @@ radical_party = {
 					}
 				}
 				OR = {
-					has_ideology = ideology_anti_slavery
+					has_ideology = ideology:ideology_anti_slavery
 					leader = {
-						has_ideology = ideology_abolitionist
+						has_ideology = ideology:ideology_abolitionist
 					}
 				}
 			}
@@ -530,20 +559,34 @@ radical_party = {
 					has_law = law_type:law_serfdom
 				}
 				OR = {
-					has_ideology = ideology_egalitarian
-					has_ideology = ideology_anti_slavery
-					has_ideology = ideology_laissez_faire
-					has_ideology = ideology_particularist
+					has_ideology = ideology:ideology_egalitarian
+					has_ideology = ideology:ideology_anti_slavery
+					has_ideology = ideology:ideology_laissez_faire
+					has_ideology = ideology:ideology_particularist
 					leader = {
-						has_ideology = ideology_abolitionist
-						has_ideology = ideology_social_democrat
-						has_ideology = ideology_communist
+						has_ideology = ideology:ideology_abolitionist
+						has_ideology = ideology:ideology_social_democrat
+						has_ideology = ideology:ideology_communist
 					}
 				}
 			}
 			add = {
 				value = 3
 				desc = "from_serfdom"
+			}
+		}
+		if = {
+			limit = {
+				owner = {
+	         		has_variable = only_valid_party
+	         	}
+	         	 owner.var:only_valid_party = {
+		        	is_party_type = radical_party
+		        }
+			}
+			add = {
+				value = 3
+				desc = "from_only_legal_party"
 			}
 		}
 		if = {
@@ -582,6 +625,21 @@ radical_party = {
 			multiply = {
 				value = 0.1
 				desc = "from_more_than_three_prior_members"
+			}
+		}
+		if = {
+			limit = {
+				owner = {
+	         		has_variable = only_valid_party
+	         	}
+	         	NOT = {
+			        owner.var:only_valid_party = {
+			        	is_party_type = radical_party
+			        }
+			    }
+			}
+			multiply = {
+				value = 0
 			}
 		}
 	}

@@ -6,7 +6,6 @@ agrarian_party = {
 	color = { 64 173 59 }
 	name = {
 		first_valid = {
-
 			triggered_desc = {
 				desc = party_irish_national_land_league
 				trigger = {
@@ -47,6 +46,13 @@ agrarian_party = {
 				trigger = {
 					exists = c:FIN
 					THIS = c:FIN
+				}
+			}
+			triggered_desc = {
+				desc = party_agrarian_and_farmer_party
+				trigger = {
+					exists = c:FRA
+					THIS = c:FRA
 				}
 			}
 			triggered_desc = {
@@ -134,6 +140,16 @@ agrarian_party = {
 				is_marginal = no
 			}
 		}
+		OR = {
+	     	NOT = {
+	         	owner = {
+	         		has_variable = only_valid_party
+	         	}
+	        }
+	        owner.var:only_valid_party = {
+	        	is_party_type = agrarian_party
+	        }
+	    }
 	}
 	
 	# Root - IG considering joining
@@ -145,7 +161,7 @@ agrarian_party = {
 		}
 		if = { # a party for powerful farmers
 			limit = {
-				has_ideology = ideology_agrarian
+				has_ideology = ideology:ideology_agrarian
 				is_powerful = yes
 			}
 			add = {
@@ -189,7 +205,7 @@ agrarian_party = {
 		if = { # pacifist anti-colonial alliance
 			limit = {
 				leader = {
-					has_ideology = ideology_pacifist
+					has_ideology = ideology:ideology_pacifist
 				}
 				owner = {
 					NOT = { has_law = law_type:law_no_colonial_affairs }
@@ -203,9 +219,9 @@ agrarian_party = {
 		if = { # anti-immigration alliance
 			limit = {
 				OR = {
-					has_ideology = ideology_isolationist
-					has_ideology = ideology_populist
-					has_ideology = ideology_reactionary
+					has_ideology = ideology:ideology_isolationist
+					has_ideology = ideology:ideology_populist
+					has_ideology = ideology:ideology_reactionary
 				}
 				owner = {
 					has_law = law_type:law_no_migration_controls
@@ -219,8 +235,8 @@ agrarian_party = {
 		if = { # against arbitrary or militarized policing
 			limit = {
 				OR = {
-					has_ideology = ideology_liberal
-					has_ideology = ideology_particularist
+					has_ideology = ideology:ideology_liberal
+					has_ideology = ideology:ideology_particularist
 				}
 				owner = {
 					OR = {	
@@ -237,10 +253,10 @@ agrarian_party = {
 		if = { # against land-based taxation
 			limit = {
 				OR = {
-					has_ideology = ideology_meritocratic
-					has_ideology = ideology_agrarian
+					has_ideology = ideology:ideology_meritocratic
+					has_ideology = ideology:ideology_agrarian
 					leader = {
-						has_ideology = ideology_social_democrat
+						has_ideology = ideology:ideology_social_democrat
 					}
 				}
 				owner = {
@@ -255,16 +271,16 @@ agrarian_party = {
 		if = { # against free trade - peasant/socialist alliance
 			limit = {
 				OR = {
-					has_ideology = ideology_proletarian
-					has_ideology = ideology_agrarian
-					has_ideology = ideology_paternalistic
+					has_ideology = ideology:ideology_proletarian
+					has_ideology = ideology:ideology_agrarian
+					has_ideology = ideology:ideology_paternalistic
 				}
 				owner = {
 					has_law = law_type:law_free_trade
 				}
 				NOT = {
 					leader = {
-						has_ideology = ideology_market_liberal
+						has_ideology = ideology:ideology_market_liberal
 					}
 				}
 			}
@@ -276,15 +292,18 @@ agrarian_party = {
 		if = { # against laissez-faire - peasant/socialist alliance
 			limit = {
 				OR = {
-					has_ideology = ideology_proletarian
-					has_ideology = ideology_agrarian
+					has_ideology = ideology:ideology_proletarian
+					has_ideology = ideology:ideology_agrarian
+					leader = {
+						has_ideology = ideology:ideology_protectionist
+					}
 				}
 				owner = {
 					has_law = law_type:law_laissez_faire
 				}
 				NOT = {
 					leader = {
-						has_ideology = ideology_market_liberal
+						has_ideology = ideology:ideology_market_liberal
 					}
 				}
 			}
@@ -296,15 +315,15 @@ agrarian_party = {
 		if = { # opposition to peasant levies
 			limit = {
 				OR = {
-					has_ideology = ideology_jingoist
-					has_ideology = ideology_particularist
-					has_ideology = ideology_sikh_moralist
+					has_ideology = ideology:ideology_jingoist
+					has_ideology = ideology:ideology_particularist
+					has_ideology = ideology:ideology_sikh_moralist
 					leader = {
 						OR = {
-							has_ideology = ideology_fascist
-							has_ideology = ideology_anarchist
-							has_ideology = ideology_pacifist
-							has_ideology = ideology_jingoist_leader
+							has_ideology = ideology:ideology_fascist
+							has_ideology = ideology:ideology_anarchist
+							has_ideology = ideology:ideology_pacifist
+							has_ideology = ideology:ideology_jingoist_leader
 						}
 					}
 				}
@@ -323,14 +342,14 @@ agrarian_party = {
 					has_law = law_type:law_serfdom
 				}
 				OR = {
-					has_ideology = ideology_egalitarian
-					has_ideology = ideology_anti_slavery
-					has_ideology = ideology_laissez_faire
-					has_ideology = ideology_particularist
+					has_ideology = ideology:ideology_egalitarian
+					has_ideology = ideology:ideology_anti_slavery
+					has_ideology = ideology:ideology_laissez_faire
+					has_ideology = ideology:ideology_particularist
 					leader = {
-						has_ideology = ideology_abolitionist
-						has_ideology = ideology_social_democrat
-						has_ideology = ideology_communist
+						has_ideology = ideology:ideology_abolitionist
+						has_ideology = ideology:ideology_social_democrat
+						has_ideology = ideology:ideology_communist
 					}
 				}
 			}
@@ -345,9 +364,9 @@ agrarian_party = {
 					has_law = law_type:law_debt_slavery
 				}
 				OR = {
-					has_ideology = ideology_anti_slavery
+					has_ideology = ideology:ideology_anti_slavery
 					leader = {
-						has_ideology = ideology_abolitionist
+						has_ideology = ideology:ideology_abolitionist
 					}
 				}
 			}
@@ -374,6 +393,20 @@ agrarian_party = {
 			add = {
 				value = -20
 				desc = "from_no_rural_folk_in_party" # this should probably never actually display in game because the party won't exist
+			}
+		}
+		if = {
+			limit = {
+				owner = {
+	         		has_variable = only_valid_party
+	         	}
+	         	 owner.var:only_valid_party = {
+		        	is_party_type = agrarian_party
+		        }
+			}
+			add = {
+				value = 3
+				desc = "from_only_legal_party"
 			}
 		}
 		if = {
@@ -422,6 +455,21 @@ agrarian_party = {
 			multiply = {
 				value = 0.1
 				desc = "from_more_than_three_prior_members"
+			}
+		}
+		if = {
+			limit = {
+				owner = {
+	         		has_variable = only_valid_party
+	         	}
+	         	NOT = {
+			        owner.var:only_valid_party = {
+			        	is_party_type = agrarian_party
+			        }
+			    }
+			}
+			multiply = {
+				value = 0
 			}
 		}
 	}

@@ -19,6 +19,7 @@
  TARGET_IS_OUR_SUBJECT:1 "[TARGET_COUNTRY.GetName|v] is a [concept_subject] of [COUNTRY.GetName]"
  MUST_SUPPORT_OVERLORD:1 "We are a $SUBJECT_TYPE|v$ of [COUNTRY.GetName] and must support them"
  MUST_SUPPORT_OBLIGATION:0 "We must support [COUNTRY.GetName] because they called in the [concept_obligation] we owed them"
+ MUST_SUPPORT_UNIFICATION: "[TARGET_COUNTRY.GetName] initially supported [COUNTRY.GetName] as a [concept_unification_candidate]"
  COUNTRY_IS_TARGETING_YOU:1 "[COUNTRY.GetName|v] is already targeting you in a [concept_diplomatic_play]"
  DIPLO_PLAY_SWITCH_COUNTRY_NOT_TARGET:1 "Only the Target of the [concept_diplomatic_play] can switch country"
  DIPLO_PLAY_SWITCH_COUNTRY_ESCALATION:1 "Can only switch country while escalation is lower than #variable $VALUE$#!"
@@ -68,6 +69,10 @@
 
  DIPLO_PLAY_SWAY_OFFER_OBLIGATION_DESC:1 "Try to convince [COUNTRY.GetName] to join your side by offering them an [concept_obligation].[ConcatIfNeitherEmpty( '\n$TOOLTIP_DELIMITER$\n', '$ERRORS$' )]"
  DIPLO_PLAY_SWAY_OFFER_WAR_GOAL_DESC:0 "[WAR_GOAL.GetSwayDesc][ConcatIfNeitherEmpty( '\n$TOOLTIP_DELIMITER$\n', '$ERRORS$' )]"
+ 
+ DIPLO_PLAY_OBLIGATION_TO_EXPIRATION: "#header Owes [concept_obligation] to $COUNTRY_NAME$#!\nLasts until #v $EXPIRATION_DATE$#! ($TIME_LEFT_FORMATTED$ left)" 
+ DIPLO_PLAY_OBLIGATION_FROM_EXPIRATION: "#header Owes [concept_obligation] from $COUNTRY_NAME$#!\nLasts until #v $EXPIRATION_DATE$#! ($TIME_LEFT_FORMATTED$ left)" 
+ DIPLO_PLAY_TRUCE_EXPIRATION: "#header Active Truce with $COUNTRY_NAME$#!\nLasts until #v $EXPIRATION_DATE$#! ($TIME_LEFT_FORMATTED$ left)"
 
  texan_war_of_independence:0 "Texan War of Independence"
   
@@ -105,6 +110,7 @@
  WARGOAL_COUNTRY_CREATION_INVALID:1 " #variable $TARGET_NAME$#! does not own the States needed to release #variable $COUNTRY_NAME$#!"
  WARGOAL_TARGET_HAS_NOTHING_TO_RELEASE:1 " #variable $TARGET_NAME$#! has no recently acquired States or Subjects to release"
  WARGOAL_RECENT_REGIME_CHANGE:0 "[TARGET_COUNTRY.GetName] was recently the target of a Regime Change"
+ WARGOAL_REGIME_CHANGE_COULD_NOT_INSTALL_ANY_IG: "At least one of our [Concept('concept_government','$concept_governments$')] [Concept('concept_interest_group', '$concept_interest_groups$')] must not be [concept_marginalized] in [TARGET_COUNTRY.GetName]"
  WARGOAL_COUNTRY_IDEOLOGICAL_DIFFERENCE_TOO_SMALL:0 "The [Concept('concept_government','$concept_governments$')] of [COUNTRY.GetName] and [TARGET_COUNTRY.GetName] are too ideologically similar"
  WARGOAL_COUNTRY_IS_NOT_COLONIZABLE:0 "[COUNTRY.GetName] is not a [concept_decentralized_nation]"
  WARGOAL_TARGET_IS_COLONIZABLE:0 "[COUNTRY.GetName] is a [concept_decentralized_nation]"
@@ -183,7 +189,7 @@
     
  dp_regime_change:0 "$war_goal_regime_change_type_name$"
  dp_regime_change_tooltip:1 "#header Start a $dp_regime_change$ [concept_diplomatic_play]#!\n$TOOLTIP_DELIMITER$\n$dp_regime_change_desc$"
- dp_regime_change_desc:0 "Sets the initiating [concept_war_goal] to force the targeted [concept_country] to change their [concept_government] and [Concept('concept_law', '$concept_laws$')] to one that aligns with that of the your $concept_country$."
+ dp_regime_change_desc:1 "Sets the initiating [concept_war_goal] to force the target to change their [concept_government] to one similar to your own and enact up to #v [GetDefine('NPolitics','NUM_REVOLUTIONARY_LAW_CHANGES')]#! [Concept('concept_law', '$concept_laws$')] favored by the new regime."
  
  dp_ban_slavery:0 "$war_goal_ban_slavery_type_name$"
  dp_ban_slavery_tooltip:1 "#header Start a $dp_ban_slavery$ [concept_diplomatic_play]#!\n$TOOLTIP_DELIMITER$\n$dp_ban_slavery_desc$"
@@ -379,10 +385,10 @@
  war_goal_open_market_sway_desc:0 "Try to convince [WAR_GOAL.GetHolder.GetName] to join your side by forcing [WAR_GOAL.GetTarget.GetName] to adopt Free Trade laws and opening up their market to foreign trade."
 
  war_goal_regime_change_type_name:0 "Regime Change"
- war_goal_regime_change_type_desc:2 "Force another country to change their [concept_government] and [Concept('concept_law', '$concept_laws$')] to better align with your own [concept_government]."
+ war_goal_regime_change_type_desc:3 "Force another country to change their [concept_government] one similar to your own and enact up to #v [GetDefine('NPolitics','NUM_REVOLUTIONARY_LAW_CHANGES')]#! [Concept('concept_law', '$concept_laws$')] favored by the new regime."
  war_goal_regime_change:1 "Regime Change in [WAR_GOAL.GetTarget.GetName]"
- war_goal_regime_change_desc:2 "[WAR_GOAL.GetHolder.GetName] forces [WAR_GOAL.GetTarget.GetName] to change their [concept_government] and [Concept('concept_law', '$concept_laws$')] to better align with their own [concept_government]."
- war_goal_regime_change_sway_desc:1 "Try to convince [WAR_GOAL.GetHolder.GetName] to join your side by forcing [WAR_GOAL.GetTarget.GetName] to change their [concept_government] and [Concept('concept_law', '$concept_laws$')] to better align with their own [concept_government]."
+ war_goal_regime_change_desc:3 "[WAR_GOAL.GetHolder.GetName] forces [WAR_GOAL.GetTarget.GetName] to change their [concept_government] to one similar to their own and enact up to #v [GetDefine('NPolitics','NUM_REVOLUTIONARY_LAW_CHANGES')]#! [Concept('concept_law', '$concept_laws$')] favored by the new regime."
+ war_goal_regime_change_sway_desc:2 "Try to convince [WAR_GOAL.GetHolder.GetName] to join your side by forcing [WAR_GOAL.GetTarget.GetName] to change their [concept_government] to one similar to the [WAR_GOAL.GetHolder.GetAdjectiveNoFormatting] and enact up to #v [GetDefine('NPolitics','NUM_REVOLUTIONARY_LAW_CHANGES')]#! [Concept('concept_law', '$concept_laws$')] favored by the new regime."
   
  war_goal_ban_slavery_type_name:0 "Ban Slavery"
  war_goal_ban_slavery_type_desc:0 "Force another country to abolish the backwards and inhumane practice of slavery."
@@ -411,7 +417,7 @@
  war_goal_liberate_country_type_name:0 "Liberate Country"
  war_goal_liberate_country_type_desc:0 "Force a country to grant independence to another nation."
  war_goal_liberate_country:0 "Liberate [WAR_GOAL.GetCountryCreation.GetName]"
- war_goal_liberate_country_desc:0 "[WAR_GOAL.GetHolder.GetName] forces [WAR_GOAL.GetTarget.GetName] to release the country of [WAR_GOAL.GetCountryCreation.GetName]."
+ war_goal_liberate_country_desc:1 "[WAR_GOAL.GetHolder.GetName] forces [WAR_GOAL.GetTarget.GetName] to release the country of [WAR_GOAL.GetCountryCreation.GetName].\n\nThe following [Concept('concept_state', '$concept_states$')] will be liberated:\n[WAR_GOAL.GetCountryCreation.ListReleasableStates( WAR_GOAL.GetTarget )]"
  war_goal_liberate_country_sway_desc:0 "Try to convince [WAR_GOAL.GetHolder.GetName] to join your side by forcing [WAR_GOAL.GetWarGoalStakeholder.GetName] to release the country of [WAR_GOAL.GetCountryCreation.GetName]."
   
  war_goal_force_recognition_type_name:0 "Force Recognition"

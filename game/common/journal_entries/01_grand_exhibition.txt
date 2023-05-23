@@ -26,6 +26,14 @@
 				}
 			}
 		}
+		set_variable = {
+			name = grand_exhibition_points_var
+			value = 0
+		}
+		set_variable = {
+			name = grand_exhibition_points_change
+			value = 0
+		}
 	}
 	
 	status_desc = {
@@ -33,7 +41,7 @@
 			triggered_desc = {
 				desc = je_grand_exhibition_bad_points
 				trigger = {
-					root.var:grand_exhibition_points_var >= 20
+					root.var:grand_exhibition_points_var <= 20
 				}
 			}
 			triggered_desc = {
@@ -65,6 +73,10 @@
 				name = grand_exhibition_points_var
 				value = grand_exhibition_points
 			}
+			change_variable = {
+				name = grand_exhibition_points_var
+				add = var:grand_exhibition_points_change
+			}
 		}
 	}
 	
@@ -82,17 +94,8 @@
 	complete = {
 		custom_tooltip = {
 			text = grand_exhibition_complete_tt
-			OR = {
-				has_variable = held_grand_exhibition_var
-				scope:journal_entry = {
-					is_goal_complete = yes
-				}
-			}
+			always = no
 		}
-	}
-
-	on_complete = {
-		trigger_event = { id = exhibition_events.3 }
 	}
 
 	current_value = {
@@ -106,8 +109,11 @@
 	progressbar = yes
 	
 	invalid = {
-		capital = {
-			devastation >= 0.5
+		scope:grand_exhibition_state = {
+			devastation >= 0.1
+			NOT = {
+				owner = root
+			}
 		}
 	}
 	
@@ -123,18 +129,18 @@
 	on_timeout = {
 		if = {
 			limit = {
-				root.var:grand_exhibition_points_var < 50 
+				root.var:grand_exhibition_points_var >= 100 
 			}
-			trigger_event = { id = exhibition_events.1 }
+			trigger_event = { id = exhibition_events.3 }
 		} 
 		else_if = {
 			limit = {
-				root.var:grand_exhibition_points_var < 100
+				root.var:grand_exhibition_points_var >= 50
 			}
 			trigger_event = { id = exhibition_events.2 }
 		} 
 		else = {
-			trigger_event = { id = exhibition_events.3 }
+			trigger_event = { id = exhibition_events.1 }
 		}
 	}
 
@@ -142,5 +148,5 @@
 
 	should_be_pinned_by_default = yes
 	
-	inheritable = no
+	transferable = no
 }

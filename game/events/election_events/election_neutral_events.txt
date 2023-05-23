@@ -10,11 +10,10 @@ election_neutral.1 = {
 	flavor = election_neutral.1.f
 	
 	event_image = {
-		video = "gfx/event_pictures/southamerica_election.bk2"
+		video = "southamerica_election"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/southamerica/election"
 
 	icon = "gfx/interface/icons/event_icons/event_election.dds"
 
@@ -23,32 +22,8 @@ election_neutral.1 = {
 	trigger = {
 		in_election_campaign = yes
 		NOT = { has_variable = election_event_cooldown }
-		any_interest_group = {
-			has_party = yes
-			leader = {
-				NOT = { has_modifier = tarred_by_mulligan_letters }
-				OR = {
-					has_trait = reckless
-					has_trait = ambitious
-					has_trait = hedonist
-					has_trait = alcoholic
-					has_trait = opium_addiction
-					has_trait = expensive_tastes
-					has_trait = cocaine_addiction
-					has_trait = grifter
-				}
-			}
-		}
-	}
-	
-	immediate = {
-		set_variable = {
-			name = election_event_cooldown
-			months = election_event_cooldown_months
-		}
-		random_interest_group = {
-			limit = {
-				has_party = yes
+		any_active_party = {
+			any_member = {
 				leader = {
 					NOT = { has_modifier = tarred_by_mulligan_letters }
 					OR = {
@@ -63,13 +38,54 @@ election_neutral.1 = {
 					}
 				}
 			}
-			save_scope_as = mulligan_letters_ig
-			leader = {
-				save_scope_as = mulligan_letters_leader
+		}
+	}
+	
+	immediate = {
+		set_variable = {
+			name = election_event_cooldown
+			months = election_event_cooldown_months
+		}
+		random_active_party = {
+			limit = {
+				any_member = {
+					leader = {
+						NOT = { has_modifier = tarred_by_mulligan_letters }
+						OR = {
+							has_trait = reckless
+							has_trait = ambitious
+							has_trait = hedonist
+							has_trait = alcoholic
+							has_trait = opium_addiction
+							has_trait = expensive_tastes
+							has_trait = cocaine_addiction
+							has_trait = grifter
+						}
+					}
+				}
 			}
-			party = {
-				save_scope_as = mulligan_letters_party
+			random_member = {
+				limit = {
+					leader = {
+						NOT = { has_modifier = tarred_by_mulligan_letters }
+						OR = {
+							has_trait = reckless
+							has_trait = ambitious
+							has_trait = hedonist
+							has_trait = alcoholic
+							has_trait = opium_addiction
+							has_trait = expensive_tastes
+							has_trait = cocaine_addiction
+							has_trait = grifter
+						}
+					}
+				}
+				save_scope_as = mulligan_letters_ig
+				leader = {
+					save_scope_as = mulligan_letters_leader
+				}
 			}
+			save_scope_as = mulligan_letters_party
 		}
 	}
 
@@ -101,11 +117,15 @@ election_neutral.1 = {
 		highlighted_option = yes
 		trigger = {
 			custom_tooltip = election_neutral.1.c.tt
-			any_interest_group = {
-				is_member_of_party = scope:mulligan_letters_party
-				NOT = { scope:mulligan_letters_ig = THIS }
-				leader = { 
-					has_trait = charismatic 
+			scope:mulligan_letters_party = {
+				any_member = {
+					any_scope_character = {
+						OR = {
+							has_role = agitator
+							has_role = politician
+						}
+						has_trait = charismatic
+					}
 				}
 			}
 		}
@@ -126,17 +146,17 @@ election_neutral.2 = {
 	flavor = election_neutral.2.f
 	
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_before_the_battle.bk2"
+		video = "europenorthamerica_before_the_battle"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/before_the_battle"
 
 	icon = "gfx/interface/icons/event_icons/event_election.dds"
 
 	duration = 3
 
 	trigger = {
+		NOT = { has_law = law_type:law_single_party_state }
 		in_election_campaign = yes
 		NOT = { has_variable = election_event_cooldown }
 		any_scope_character = {
@@ -224,17 +244,17 @@ election_neutral.3 = {
 	flavor = election_neutral.3.f
 	
 	event_image = {
-		video = "gfx/event_pictures/unspecific_trains.bk2"
+		video = "unspecific_trains"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/unspecific/trains"
 
 	icon = "gfx/interface/icons/event_icons/event_election.dds"
 
 	duration = 3
 
 	trigger = {
+		NOT = { has_law = law_type:law_single_party_state }
 		in_election_campaign = yes
 		NOT = { has_variable = election_event_cooldown }
 		has_technology_researched  = railways
@@ -348,17 +368,17 @@ election_neutral.4 = {
 	flavor = election_neutral.4.f
 	
 	event_image = {
-		video = "gfx/event_pictures/southamerica_election.bk2"
+		video = "southamerica_election"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/southamerica/election"
 
 	icon = "gfx/interface/icons/event_icons/event_election.dds"
 
 	duration = 3
 
 	trigger = {
+		NOT = { has_law = law_type:law_single_party_state }
 		in_election_campaign = yes
 		NOT = { has_variable = election_event_cooldown }
 		any_interest_group = {
@@ -440,17 +460,17 @@ election_neutral.5 = {
 	flavor = election_neutral.5.f
 	
 	event_image = {
-		video = "gfx/event_pictures/unspecific_vandalized_storefront.bk2"
+		video = "unspecific_vandalized_storefront"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/unspecific/vandalized_storefront"
 
 	icon = "gfx/interface/icons/event_icons/event_election.dds"
 
 	duration = 3
 
 	trigger = {
+		NOT = { has_law = law_type:law_single_party_state }
 		in_election_campaign = yes
 		NOT = { has_variable = election_event_cooldown }
 		any_active_party = { count >= 2 }
@@ -553,17 +573,17 @@ election_neutral.6 = {
 	flavor = election_neutral.6.f
 	
 	event_image = {
-		video = "gfx/event_pictures/southamerica_election.bk2"
+		video = "southamerica_election"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/southamerica/election"
 
 	icon = "gfx/interface/icons/event_icons/event_election.dds"
 
 	duration = 3
 
 	trigger = {
+		NOT = { has_law = law_type:law_single_party_state }
 		in_election_campaign = yes
 		NOT = { has_variable = election_event_cooldown }
 		NOT = { has_law = law_type:law_outlawed_dissent }
@@ -614,7 +634,6 @@ election_neutral.6 = {
 		highlighted_option = yes
 		
 		trigger = {
-			custom_tooltip = election_neutral.6.c1.tt
 			has_law = law_type:law_censorship
 			scope:newspaper_party = {
 				any_member = {
@@ -633,7 +652,6 @@ election_neutral.6 = {
 		highlighted_option = yes
 		
 		trigger = {
-			custom_tooltip = election_neutral.6.c2.tt
 			has_law = law_type:law_censorship
 			scope:newspaper_party = {
 				NOT = {
@@ -660,17 +678,17 @@ election_neutral.7 = {
 	flavor = election_neutral.7.f
 	
 	event_image = {
-		video = "gfx/event_pictures/unspecific_signed_contract.bk2"
+		video = "unspecific_signed_contract"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/unspecific/signed_contract"
 
 	icon = "gfx/interface/icons/event_icons/event_election.dds"
 
 	duration = 3
 
 	trigger = {
+		NOT = { has_law = law_type:law_single_party_state }
 		in_election_campaign = yes
 		NOT = { has_variable = election_event_cooldown }
 		any_interest_group = {
@@ -742,17 +760,17 @@ election_neutral.8 = {
 	flavor = election_neutral.8.f
 	
 	event_image = {
-		video = "gfx/event_pictures/southamerica_election.bk2"
+		video = "southamerica_election"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/southamerica/election"
 
 	icon = "gfx/interface/icons/event_icons/event_election.dds"
 
 	duration = 3
 
 	trigger = {
+		NOT = { has_law = law_type:law_single_party_state }
 		in_election_campaign = yes
 		NOT = { has_variable = election_event_cooldown }
 		enacting_any_law = yes

@@ -9,23 +9,28 @@ pm_events.1 = {
 	flavor = pm_events.1.f
 
 	event_image = {
-		video = "gfx/event_pictures/unspecific_gears_pistons.bk2"
+		video = "unspecific_gears_pistons"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/unspecific/gears_pistons"
 
 	icon = "gfx/interface/icons/event_icons/event_industry.dds"
 
 	duration = 3
 
+	cooldown = { months = normal_modifier_time }
+
 	trigger = {
 		OR = {
-			has_law = law_type:law_serfdom_banned
+			has_law = law_type:law_no_workers_rights
 			has_law = law_type:law_serfdom
 		}
 		any_scope_state = {
 			has_industrialized_pm = yes
+			NOR = {
+				has_modifier = industrial_safety_slowdowns
+				has_modifier = lacking_industrial_safety_regulations
+			}
 		}
 	}
 
@@ -88,15 +93,16 @@ pm_events.2 = {
 	flavor = pm_events.2.f
 
 	event_image = {
-		video = "gfx/event_pictures/southamerica_child_labor.bk2"
+		video = "southamerica_child_labor"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/southamerica/child_labor"
 
 	icon = "gfx/interface/icons/event_icons/event_industry.dds"
 
 	duration = 3
+
+	cooldown = { months = normal_modifier_time }
 
 	trigger = {
 		has_law = law_type:law_child_labor_allowed
@@ -157,11 +163,10 @@ pm_events.3 = {
 	flavor = pm_events.3.f
 
 	event_image = {
-		video = "gfx/event_pictures/unspecific_temperance_movement.bk2"
+		video = "unspecific_temperance_movement"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/unspecific/temperance_movement"
 
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
 
@@ -293,11 +298,10 @@ pm_events.4 = {
 	flavor = pm_events.4.f
 
 	event_image = {
-		video = "gfx/event_pictures/africa_public_protest.bk2"
+		video = "africa_public_protest"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/africa/public_protest"
 
 	icon = "gfx/interface/icons/event_icons/event_trade.dds"
 
@@ -306,12 +310,14 @@ pm_events.4 = {
 	trigger = {
 		is_at_war = no
 		any_interest_group = {
-			leader = { has_ideology = ideology_pacifist }
+			leader = { has_ideology = ideology:ideology_pacifist }
 		}
 		any_scope_state = {
 			has_building = building_arms_industry
 		}
 	}
+
+	cooldown = { months = normal_modifier_time }
 
 	immediate = {
 		random_scope_state = {
@@ -323,7 +329,7 @@ pm_events.4 = {
 		random_scope_character = {
 			limit = {
 				has_role = politician
-				has_ideology = ideology_pacifist
+				has_ideology = ideology:ideology_pacifist
 			}
 			save_scope_as = pacifist_leader
 		}
@@ -349,7 +355,7 @@ pm_events.4 = {
 		}
 		every_interest_group = {
 			limit = {
-				leader = { has_ideology = ideology_pacifist }
+				leader = { has_ideology = ideology:ideology_pacifist }
 			}
 			add_modifier = {
 				name = permitted_limited_arms_manufacturing
@@ -362,7 +368,7 @@ pm_events.4 = {
 		name = pm_events.4.c
 		every_interest_group = {
 			limit = {
-				leader = { has_ideology = ideology_pacifist }
+				leader = { has_ideology = ideology:ideology_pacifist }
 			}
 			add_modifier = {
 				name = permitted_unrestricted_arms_manufacturing
@@ -382,11 +388,10 @@ pm_events.5 = {
 	flavor = pm_events.5.f
 
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_capitalists_meeting.bk2"
+		video = "europenorthamerica_capitalists_meeting"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/capitalists_meeting"
 
 	icon = "gfx/interface/icons/event_icons/event_trade.dds"
 
@@ -406,6 +411,8 @@ pm_events.5 = {
 			}
 		}
 	}
+
+	cooldown = { months = normal_modifier_time }
 
 	immediate = {
 		random_scope_state = {

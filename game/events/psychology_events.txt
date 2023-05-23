@@ -72,8 +72,8 @@ psychology_events.1 = {
 		name = psychology_events.1.b 
 		custom_tooltip = psychology_events.1.tt
 		scope:mentally_ill_leader = {
-			hidden_effect = {
-				kill_character = yes
+			kill_character = {
+				hidden = yes
 			}
 		}
 		scope:mentally_ill_ig = {
@@ -250,6 +250,7 @@ psychology_events.3 = {
 				has_role = general
 				has_role = admiral
 			}
+			is_busy = no
 		}
 		has_technology_researched = psychiatry
 	}
@@ -262,6 +263,7 @@ psychology_events.3 = {
 					has_role = general
 					has_role = admiral
 				}
+				is_busy = no
 			}
 			save_scope_as = mentally_ill_character
 			interest_group = {
@@ -288,8 +290,8 @@ psychology_events.3 = {
 		name = psychology_events.3.b 
 		custom_tooltip = psychology_events.1.tt
 		scope:mentally_ill_character = {
-			hidden_effect = {
-				kill_character = yes
+			kill_character = {
+				hidden = yes
 			}
 		}
 		scope:mentally_ill_ig = {
@@ -331,11 +333,10 @@ psychology_events.4 = {
 	duration = 3
 
 	event_image = {
-		video = "gfx/event_pictures/africa_leader_arguing.bk2"
+		video = "africa_leader_arguing"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/africa/leader_arguing"
 
 	icon = "gfx/interface/icons/event_icons/event_skull.dds"
 
@@ -418,11 +419,10 @@ psychology_events.5 = {
 	duration = 3
 
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_capitalists_meeting.bk2"
+		video = "europenorthamerica_capitalists_meeting"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/capitalists_meeting"
 
 	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
 
@@ -437,6 +437,7 @@ psychology_events.5 = {
 				has_active_production_method = pm_analytical_philosophy_department
 			}
 		}
+		empty_agitator_slots >= 1
 	}
 
 	immediate = {
@@ -475,6 +476,56 @@ psychology_events.5 = {
 			name = freud_building_modifier
 			months = normal_modifier_time
 		}
+		if = {
+			limit = {
+				country_is_in_europe = yes
+			}
+			custom_tooltip = sigmun_freud_tt
+			create_character = {
+				first_name = Sigismund_Schlomo
+				last_name = Freud
+				historical = yes
+				is_agitator = yes
+				interest_group = ig_intelligentsia
+				female = no
+				dna = dna_sigmund_freud
+				religion = rel:jewish
+				ideology = ideology_atheist
+				traits = {
+					ambitious
+					charismatic
+					cocaine_addiction
+				}
+				on_created = {
+					add_modifier = {
+						name = freud_modifier
+						months = short_modifier_time
+						multiplier = 1
+					}
+				}
+			}
+		}
+		else = {
+			custom_tooltip = sigmun_freud_else_tt
+			create_character = {
+				is_agitator = yes
+				interest_group = ig_intelligentsia
+				religion = rel:jewish
+				ideology = ideology_atheist
+				traits = {
+					ambitious
+					charismatic
+					cocaine_addiction
+				}
+				on_created = {
+					add_modifier = {
+						name = freud_modifier
+						months = short_modifier_time
+						multiplier = 1
+					}
+				}
+			}
+		}
 		ig:ig_devout = {
 			add_modifier = {
 				name = freud_ig_modifier
@@ -500,6 +551,7 @@ psychology_events.5 = {
 			create_character = {
 				first_name = Sigismund_Schlomo
 				last_name = Freud
+				historical = yes
 				ig_leader = yes
 				interest_group = ig_intelligentsia
 				female = no
@@ -580,11 +632,10 @@ psychology_events.6 = {
 	duration = 3
 
 	event_image = {
-		video = "gfx/event_pictures/middleeast_engineer_blueprint.bk2"
+		video = "middleeast_engineer_blueprint"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/middleeast/engineer_blueprint"
 	
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
 
@@ -627,7 +678,7 @@ psychology_events.6 = {
 		default_option = yes
 		#strike at uni!
 		scope:university_state = {
-			add_radicals = {
+			add_radicals_in_state = {
 				pop_type = academics
 				value = medium_radicals
 			}

@@ -248,10 +248,10 @@ types pops_overview
 								margin = { 5 10 }
 								spacing = 5
 								parentanchor = center
-								tooltip = "POLITICALLY_INACTIVE_POPULATION_TOOLTIP"
+								tooltip = "POLITICALLY_UNALIGNED_POPULATION_TOOLTIP"
 								
 								textbox = {
-									text = "concept_politically_inactive"
+									text = "concept_politically_unaligned"
 									autoresize = yes
 									using = fontsize_large
 									align = nobaseline
@@ -1309,8 +1309,6 @@ types pops_overview
 				widget = {
 					size = { @panel_width_plus_10 110 }
 					datacontext = "[PopListItem.GetPopType]"
-					# Only show slaves drawer if country has slavery. `IsValid` check just for safety, should be always valid in the context of buildings.
-					visible = "[Or(Or( Not( PopListItem.GetPopType.IsSlave ), Not(IsDataModelEmpty(PopListItem.GetPops))), Or( Not( PopListItem.GetCountry.IsValid ), PopListItem.GetCountry.HasAnySlavery ) )]"
 
 					flowcontainer = {
 						datacontext = "[PopListItem.GetFirstPop]"
@@ -1399,9 +1397,10 @@ types pops_overview
 							block "largest_IGs" {
 								flowcontainer = {
 									parentanchor = vcenter
-									visible = "[Not(PopListItem.HasBuildingContext)]"
+									visible = "[Not(PopList.HasBuildingContext)]"
 									datamodel = "[PopListItem.AccessTwoLargestIGs]"
 									spacing = 5
+									minimumsize = { 95 45 }
 
 									item = {
 										ig_button = {}
@@ -1412,19 +1411,20 @@ types pops_overview
 							### INFO FOR WORKFORCE IN BUILDINGS
 							flowcontainer = {
 								direction = vertical
-								visible = "[PopListItem.HasBuildingContext]"
+								visible = "[PopList.HasBuildingContext]"
+								datacontext = "[PopList.GetBuildingContext]"
 								margin_right = 10
 
 								### POP TYPE REPLACEMENT
 								textbox = {
-									text = "[PopListItem.GetPopTypeReplacementDesc()]"
+									text = "[Building.GetPopTypeReplacementDesc(PopListItem.GetPopType)]"
 									align = left|nobaseline
 									autoresize = yes
 								} 
 
 								### WAGE
 								textbox = {
-									visible = "[Not(PopListItem.IsRoleFullyReplacedByAnotherPopType)]"
+									visible = "[Not(Building.IsRoleFullyReplacedByAnotherPopType(PopListItem.GetPopType))]"
 									text = "AVG_WAGE_POP_LIST"
 									align = left|nobaseline
 									autoresize = yes
@@ -1435,23 +1435,23 @@ types pops_overview
 								### WORKERS
 								flowcontainer = {
 									direction = vertical
-									tooltip = "[PopListItem.GetPopTypeEmploymentDesc]"
+									tooltip = "[PopListItem.GetEmploymentDesc()]"
 									spacing = 4
 									margin_top = 4
 									margin_bottom = 10
 
 									textbox = {
-										text = "[PopListItem.GetPopTypeFullyReplacedDesc]"
+										text = "[Building.GetPopTypeFullyReplacedDesc(PopListItem.GetPopType)]"
 										align = left|nobaseline
 										autoresize = yes
 									}
 
 									default_progressbar_horizontal = {
 										size = { 200 23 }
-										visible = "[Not(PopListItem.IsRoleFullyReplacedByAnotherPopType)]"
+										visible = "[Not(Building.IsRoleFullyReplacedByAnotherPopType(PopListItem.GetPopType))]"
 										blockoverride "values" {
 											min = -1    # Set to -1, otherwise zero slaves bar (before starts hiring) will be constantly filling up
-											max = "[IntToFloat(PopListItem.GetMaxPopSize)]"
+											max = "[IntToFloat(Building.GetMaxPopSize(PopListItem.GetPopType))]"
 											value = "[IntToFloat(PopListItem.GetWorkingAdultsPopSize)]"
 										}
 										
@@ -1466,9 +1466,9 @@ types pops_overview
 											}
 
 											textbox = {
-												visible = "[LessThan_int32(PopListItem.GetWorkingAdultsPopSize, PopListItem.GetMaxPopSize)]"
+												visible = "[LessThan_int64(PopListItem.GetWorkingAdultsPopSize, Building.GetMaxPopSize(PopListItem.GetPopType))]"
 												margin_left = 7
-												raw_text = "/ #maximum [PopListItem.GetMaxPopSize|D]#!"
+												raw_text = "/ #maximum [Building.GetMaxPopSize(PopListItem.GetPopType)|D]#!"
 												autoresize = yes
 												align = center|nobaseline
 												parentanchor = vcenter
@@ -1496,7 +1496,7 @@ types pops_overview
 										autoresize = yes
 										align = left|nobaseline
 										tooltip = "RADICALS_TOOLTIP_POP_LIST"
-										alpha = "[TransparentIfZero_int32(PopListItem.GetNumRadicals)]"
+										alpha = "[TransparentIfZero_int64(PopListItem.GetNumRadicals)]"
 									}
 								}
 
@@ -1513,7 +1513,7 @@ types pops_overview
 										autoresize = yes
 										align = left|nobaseline
 										tooltip = "LOYALISTS_TOOLTIP_POP_LIST"
-										alpha = "[TransparentIfZero_int32(PopListItem.GetNumLoyalists)]"
+										alpha = "[TransparentIfZero_int64(PopListItem.GetNumLoyalists)]"
 									}
 								}
 							}
@@ -1525,7 +1525,7 @@ types pops_overview
 							direction = vertical
 							
 							textbox = {
-								visible = "[GreaterThan_int32( PopListItem.GetWorkingAdultsPopSize, '(int32)0' )]"
+								visible = "[GreaterThan_int64( PopListItem.GetWorkingAdultsPopSize, '(int64)0' )]"
 								text = "POPS_LIST_SOL"
 								autoresize = yes
 								align = right|nobaseline
@@ -1575,7 +1575,6 @@ types pops_overview
 							
 							widget = {
 								size = { @panel_width 125 }
-								datacontext = "[PopListPopEntry.AccessPop]"
 								visible = "[Pop.IsValid]"
 								
 								background = {
@@ -1763,7 +1762,7 @@ types pops_overview
 
 											# IG icon
 											ig_button = {
-												visible = "[Not(PopListPopEntry.HasContextIGSet)]"
+												visible = "[Not(PopList.HasInterestGroupContext)]"
 												size = { 40 40 }
 												datacontext = "[Pop.GetLargestInterestGroup]"
 
@@ -1785,7 +1784,7 @@ types pops_overview
 											# Spacing to align Radicals and Loyalists
 											widget = {
 												size = { 108 10 }
-												visible = "[PopListItem.HasBuildingContext]"
+												visible = "[PopList.HasBuildingContext]"
 											}
 
 											flowcontainer = {
@@ -1795,7 +1794,7 @@ types pops_overview
 
 												flowcontainer = {
 													spacing = 2
-													visible = "[GreaterThan_int32(Pop.GetNumRadicals, '(int32)0')]"
+													visible = "[GreaterThan_int64(Pop.GetNumRadicals, '(int64)0')]"
 													tooltip = "RADICALS_TOOLTIP_POP"
 													
 													icon = {
@@ -1813,7 +1812,7 @@ types pops_overview
 
 												flowcontainer = {
 													spacing = 2
-													visible = "[GreaterThan_int32(Pop.GetNumLoyalists, '(int32)0')]"
+													visible = "[GreaterThan_int64(Pop.GetNumLoyalists, '(int64)0')]"
 													tooltip = "LOYALISTS_TOOLTIP_POP"
 													
 													icon = {

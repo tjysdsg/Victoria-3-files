@@ -85,16 +85,49 @@ types politics_panel_types
 			}
 			
 			widget = { size = { 10 10 }}
-			
+
 			button = {
 				visible = "[GetVariableSystem.Exists('reform_government')]"
 				using = default_button_action
-				size = { 180 45 }
-				text = "RESET"
-				using = fontsize_large
+				size = { 300 45 }
 				onclick = "[ReformGovernment.Reset]"
 				enabled = "[ReformGovernment.HasMadeAnyChanges]"
+				tooltip = "RESET_GOVERNMENT_TOOLTIP"
+
+				flowcontainer = {
+					parentanchor = center
+					spacing = 5
+
+					textbox = {
+						parentanchor = vcenter
+						autoresize = yes
+						align = nobaseline
+						using = fontsize_large
+						text = "RESET_TO"
+					}
+
+					textbox = {
+						parentanchor = vcenter
+						autoresize = yes
+						align = nobaseline
+						using = fontsize_large
+						raw_text = "#v [GetPlayer.GetGovernmentLegitimacy]#!:"
+					}
+
+					flowcontainer = {
+						parentanchor = vcenter
+						datamodel = "[AccessPlayer.AccessInterestGroupsInGovernment]"
+
+						item = {
+							icon = {
+								size = { 30 30 }
+								texture = "[InterestGroup.GetTexture]"
+							}
+						}
+					}
+				}
 			}
+			
 			container = {
 				visible = "[GetVariableSystem.Exists('reform_government')]"
 			
@@ -475,7 +508,7 @@ types politics_panel_types
 							widget = {
 								layoutpolicy_horizontal = expanding
 								size = { 0 20 }
-								visible = "[And(NotEqualTo_int32(ReformGovernment.GetPredictedRadicalsDelta, '(int32)0'),GetVariableSystem.Exists('reform_government'))]"
+								visible = "[And(NotEqualTo_int64(ReformGovernment.GetPredictedRadicalsDelta, '(int64)0'),GetVariableSystem.Exists('reform_government'))]"
 								
 								background = {
 									using = dark_area_rounded
@@ -527,7 +560,7 @@ types politics_panel_types
 							widget = {
 								layoutpolicy_horizontal = expanding
 								size = { 0 20 }
-								visible = "[And(NotEqualTo_int32(ReformGovernment.GetPredictedLoyalistsDelta, '(int32)0'),GetVariableSystem.Exists('reform_government'))]"
+								visible = "[And(NotEqualTo_int64(ReformGovernment.GetPredictedLoyalistsDelta, '(int64)0'),GetVariableSystem.Exists('reform_government'))]"
 								
 								background = {
 									using = dark_area_rounded
@@ -552,62 +585,122 @@ types politics_panel_types
 			### BUTTONS
 			hbox = {
 				visible = "[GetVariableSystem.Exists('reform_government')]"
-				margin = { 40 10 }
-				spacing = 25
+				margin = { 0 10 }
+				spacing = 10
 				layoutpolicy_horizontal = expanding
 				layoutpolicy_vertical = preferred
-				
-				button = {
-					size = { 300 45 }
-					using = default_button_primary
+
+				# Option 0
+				reform_government_option = {
+					visible = "[Not(ReformGovernment.OptionIndexIsSelected('(int32)0'))]"
 					tooltip = "[ReformGovernment.GetOptionIndexTooltip('(int32)0')]"
-					enabled = "[ReformGovernment.OptionIndexIsValid('(int32)0')]"
-					onclick = "[ReformGovernment.SelectOptionIndex('(int32)0')]"
-					using = back_button_sound
 
-					textbox = {
-						size = { 100% 100% }
-						text = "[ReformGovernment.GetOptionIndexText('(int32)0')]"
-						using = fontsize_large
-						align = center|nobaseline
+					blockoverride "highlight_visibility" {
+						visible = no
 					}
 				}
 
-				button = {
-					size = { 300 45 }
-					using = default_button_primary
+				# Option 0 - Selected
+				reform_government_option = {
+					visible = "[ReformGovernment.OptionIndexIsSelected('(int32)0')]"
+					tooltip = "[ReformGovernment.GetOptionIndexTooltip('(int32)0')]"
+
+					blockoverride "highlight_visibility" {
+						visible = "[ReformGovernment.OptionIndexIsSelected('(int32)0')]"
+					}
+
+					blockoverride "button" {
+						background = {
+							using = paper_bg
+						}
+					}
+
+				}
+
+				# Option 1
+				reform_government_option = {
+					visible = "[Not(ReformGovernment.OptionIndexIsSelected('(int32)1'))]"
 					tooltip = "[ReformGovernment.GetOptionIndexTooltip('(int32)1')]"
-					enabled = "[ReformGovernment.OptionIndexIsValid('(int32)1')]"
-					onclick = "[ReformGovernment.SelectOptionIndex('(int32)1')]"
-					using = back_button_sound
 
-					textbox = {
-						size = { 100% 100% }
+					blockoverride "highlight_visibility" {
+						visible = no
+					}
+
+					blockoverride "button_properties" {
+						tooltip = "[ReformGovernment.GetOptionIndexTooltip('(int32)1')]"
+						enabled = "[ReformGovernment.OptionIndexIsValid('(int32)1')]"
+						onclick = "[ReformGovernment.SelectOptionIndex('(int32)1')]"
+					}
+
+					blockoverride "text" {
 						text = "[ReformGovernment.GetOptionIndexText('(int32)1')]"
-						using = fontsize_large
-						align = center|nobaseline
 					}
 				}
-				
-				button = {
-					size = { 300 45 }
-					using = default_button_primary
-					tooltip = "[ReformGovernment.GetOptionIndexTooltip('(int32)2')]"
-					enabled = "[ReformGovernment.OptionIndexIsValid('(int32)2')]"
-					onclick = "[ReformGovernment.SelectOptionIndex('(int32)2')]"
-					using = back_button_sound
 
-					textbox = {
-						size = { 100% 100% }
+				# Option 1 - Selected
+				reform_government_option = {
+					visible = "[ReformGovernment.OptionIndexIsSelected('(int32)1')]"
+					tooltip = "[ReformGovernment.GetOptionIndexTooltip('(int32)1')]"
+
+					blockoverride "highlight_visibility" {
+						visible = "[ReformGovernment.OptionIndexIsSelected('(int32)1')]"
+					}
+
+					blockoverride "button" {
+						background = {
+							using = paper_bg
+						}
+					}
+
+					blockoverride "text" {
+						text = "[ReformGovernment.GetOptionIndexText('(int32)1')]"
+					}
+				}
+
+				# Option 2
+				reform_government_option = {
+					visible = "[Not(ReformGovernment.OptionIndexIsSelected('(int32)2'))]"
+					tooltip = "[ReformGovernment.GetOptionIndexTooltip('(int32)2')]"
+
+					blockoverride "highlight_visibility" {
+						visible = no
+					}
+
+					blockoverride "button_properties" {
+						tooltip = "[ReformGovernment.GetOptionIndexTooltip('(int32)2')]"
+						enabled = "[ReformGovernment.OptionIndexIsValid('(int32)2')]"
+						onclick = "[ReformGovernment.SelectOptionIndex('(int32)2')]"
+					}
+
+					blockoverride "text" {
 						text = "[ReformGovernment.GetOptionIndexText('(int32)2')]"
-						using = fontsize_large
-						align = center|nobaseline
+					}
+				}
+
+				# Option 2 - Selected
+				reform_government_option = {
+					visible = "[ReformGovernment.OptionIndexIsSelected('(int32)2')]"
+					tooltip = "[ReformGovernment.GetOptionIndexTooltip('(int32)2')]"
+
+					blockoverride "highlight_visibility" {
+						visible = "[ReformGovernment.OptionIndexIsSelected('(int32)2')]"
+					}
+
+					blockoverride "button" {
+						background = {
+							using = paper_bg
+						}
+					}
+
+					blockoverride "text" {
+						text = "[ReformGovernment.GetOptionIndexText('(int32)2')]"
 					}
 				}
 			}
 						
 			### IG LIST
 			parties_and_ig_list_details = {
+				name = "tutorial_highlight_all_government_interest_groups"
 
 				blockoverride "datamodel" {
 					block "datamodel_government_parties" {
@@ -760,6 +853,44 @@ types politics_panel_types
 			widget = {
 				layoutpolicy_horizontal = preferred
 				layoutpolicy_vertical = expanding
+			}
+		}
+	}
+
+	type reform_government_option = button {
+		layoutpolicy_horizontal = expanding
+
+		minimumsize = { 230 45 }
+
+		block "button" {
+			using = default_button
+			using = back_button_sound
+
+			block "button_properties" {
+				tooltip = "[ReformGovernment.GetOptionIndexTooltip('(int32)0')]"
+				enabled = "[ReformGovernment.OptionIndexIsValid('(int32)0')]"
+				onclick = "[ReformGovernment.SelectOptionIndex('(int32)0')]"
+			}
+		}
+
+		textbox = {
+			size = { 100% 100% }
+			using = fontsize_large
+			align = center|nobaseline
+			elide = right
+			fontsize_min = 14
+
+			block "text" {
+				text = "[ReformGovernment.GetOptionIndexText('(int32)0')]"
+			}
+		}
+
+		icon = {
+			using = highlighted_square_selection
+			size = { 100% 100% }
+
+			block "highlight_visibility" {
+				visible = "[ReformGovernment.OptionIndexIsSelected('(int32)0')]"
 			}
 		}
 	}

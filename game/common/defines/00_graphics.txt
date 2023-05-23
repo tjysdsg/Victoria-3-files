@@ -171,6 +171,15 @@ NGraphics = {
 	SHORELINE_ALPHA = 0.3			# Recommended Range [0.0 - 5.0]				| Simple alpha tweaking
 	SHORELINE_UV_SCALE = 50			# Recommended Range [10 - 100] (integer)	| Larger UV scale gives tighter lines
 
+	# Overlay details
+	FLATMAP_FOLDS_COLOR = { 1.0 1.0 1.0 0.12 }		# Color and Alpha of Folds [ Red channel ]
+	FLATMAP_LINES_COLOR = { 0.0 0.0 0.0 0.4 }		# Color and Alpha of Lines [ Green channel ]
+	FLATMAP_DETAILS_COLOR = { 0.0 0.0 0.0 1.0 }		# Opacity of flatmap details on land
+
+	FLATMAP_OVERLAY_LAND_OPACITY = 0.45
+	FLATMAP_EQUATOR_POSITION = 0.58 				# Position offset from top [ 0.0 - 1.0 ]
+	FLATMAP_EQUATOR_TILING = 24.0					# Tiling scale of equator texture (Effectively size)
+
 	# Bottom mesh tint gradient					(Applied globally to all meshes)
 	MESHTINT_HEIGHT_MIN = 0.0					# Tint begin (from bottom)
 	MESHTINT_HEIGHT_MAX = 0.07					# Tint end
@@ -202,7 +211,7 @@ NGraphics = {
 	# Error adjustment
 	MINIMUM_PROVINCE_SIZE_IN_PIXELS = 0			# Provinces that are smaller than that are just making the game unplayable. It doesn't affect the game, just informs in the error.log
 
-	# Flat map specific
+	# Flatmap specific
 	FLAT_MAP_HEIGHT = 3.92
 	FLAT_MAP_FADE_SPEED = 5.0		# How fast to fade to/from flat map state
 	#FLAT_MAP_ZOOM_STEP = 8			# At which zoom step to fade to flat map
@@ -222,30 +231,30 @@ NGraphics = {
 	MORALE_MEDIUM = { 0.7 0.5 0.1 1 }
 	MORALE_LOW = { 0.65 0.1 0.1 1 }
 
+	# Loyalty colors
+	LOYALTY_LOYALIST = {0.39 0.67 0.33 1}
+	LOYALTY_RADICAL = {0.88 0.34 0.34 1}
+	LOYALTY_NEUTRAL = {0.7 0.7 0.7 1 }
+
 	UNIMPORTANT_ELEMENT_ALPHA = 0.3
 
 	# Devastation texture
 	DEVASTATION_MATERIAL_NAME = "DYNAMIC-Devastation_Mud_01"			# Material name from materials.settings
 	POLLUTION_MATERIAL_NAME = "DYNAMIC-Pollution_01"					# Material name from materials.settings
 
-	# Map layers
-	HIDDEN_MAP_OBJECT_LAYERS = { "mines_dynamic" "farms_dynamic" "forestry_dynamic" }					# These layers are hidden by default when the game starts
+	# Revolution layer
+	REVOLUTION_MAP_OBJECT_LAYER = "revolution_dynamic"
+	REVOLUTION_MAP_OBJECT_UPDATE_PROVINCES_PER_FRAME = 16			# Max number of provinces that may be updated per frame.
+	REVOLUTION_MAP_OBJECT_UPDATE_MAX_TIME_PER_FRAME = 0.002			# Max time per frame to spend on dynamic terrain updates in seconds.
+
+	# Dynamic map objects
+	HIDDEN_MAP_OBJECT_LAYERS = { "mines_dynamic" "farms_dynamic" "forestry_dynamic" }	# These layers are hidden by default when the game starts
 	DYNAMIC_MAP_OBJECT_LAYERS = { "semidynamic" "semidynamic_medium" "semidynamic_high" "mines_dynamic" "farms_dynamic" "forestry_dynamic" }	# These layers are cut by city growth and roads
 	DYNAMIC_MAP_OBJECT_MASK_THRESHOLD_SHOW = 0.1					# When dynamic objects are being shown/hidden they use the material mask. This value determines the point at which the mask will make the objects to show/hide.
 	DYNAMIC_MAP_OBJECT_MASK_THRESHOLD_HIDE = 0.05
 	DYNAMIC_TERRAIN_ROAD_WIDTH = 2.5								# Controls how wide roads are considered to be when clearing map objects
 	DYNAMIC_TERRAIN_LAZY_UPDATE_PROVINCES_PER_FRAME = 16			# Max number of provinces that may be updated per frame.
-    DYNAMIC_TERRAIN_LAZY_UPDATE_MAX_TIME_PER_FRAME = 0.002          # Max time per frame to spend on dynamic terrain updates in seconds.
-	COLLECT_VISIBLE_PROVINCE_DATA = yes
-	VISIBLE_PROVINCE_DATA_FOV_FACTOR = .8							# Tweak this to cover an area larger or smaller than the area actually visible on screen
-	VISIBLE_PROVINCE_DATA_CAMERA_HEIGHT_FACTOR = 0.5				# Decreasing this value increases the weights of the provinces that are at the center of the screen
-	VISIBLE_PROVINCE_DATA_MAX_PROVINCE_SIZE = 50000
-	VISIBLE_PROVINCE_DATA_USE_SQRT_SIZE = no
-	VISIBLE_PROVINCE_DATA_DEBUG = no								# Highlight provinces by their visibility and show terrain weights on the right side of the screen
-	VISIBLE_PROVINCE_DATA_TERRAIN_COLORED_HIGHLIGTS = no			# Use terrain colors for visibility highlights
-	VISIBLE_PROVINCE_DATA_SCALE_TERRAIN_COLOR_WITH_WEIGHT = no		# Try to show both terrain color and visibility weight in debug highlight
-	VISIBLE_PROVINCE_DATA_RIVER_WEIGHT_FACTOR = 1.0					# Tweak this to scale river weights
-	VISIBLE_PROVINCE_DATA_UPDATE_FREQUENCY = 2.0					# Update the visible province data only every X seconds
+	DYNAMIC_TERRAIN_LAZY_UPDATE_MAX_TIME_PER_FRAME = 0.002			# Max time per frame to spend on dynamic terrain updates in seconds.
 
 	# Route Spline fix
 	ROUTE_GENERATION_NAV_MESH_DENSITY = 0.375						# Controls the density of vertexes in the navmesh used to generate the road system
@@ -280,14 +289,14 @@ NFrontend = {
 }
 
 NCamera = {
-    FOV	= 55 	# Field-of-View
-    ZNEAR = 1
-    ZFAR = 50000
+	FOV	= 55 	# Field-of-View
+	ZNEAR = 1
+	ZFAR = 50000
 
 	EDGE_SCROLLING_PIXELS = 10 # how many pixels from window edge that will trigger edge scrolling
 
-    SCROLL_SPEED = 0.045 	# higher values = faster camera. NOTE that this is tweakables from settings as well
-    ZOOM_RATE = 0.2 		# Zoom when right-mouse down
+	SCROLL_SPEED = 0.045 	# higher values = faster camera. NOTE that this is tweakables from settings as well
+	ZOOM_RATE = 0.2 		# Zoom when right-mouse down
 	#						0	1	2	3		4		5		6		7		8		9		10		11		12		13		14		15
 	ZOOM_STEPS 			= { 24	32	40	50		75		100		200		300		400		600		800		1000	1200	1500	2500	4500	}
 	ZOOM_STEPS_TILT 	= { 35	40	45	48.5	50		52.5	55 		60		65		70		75		80		80		85		85		85		}
@@ -339,6 +348,9 @@ NCities = {
 
 	CITY_VFX_ZOOM_CUTOFF = 250				# zoom at which we hide all city VFXes
 	CITY_PARTICLES_ZOOM_CUTOFF = 200		# zoom at which we hide all city particle effects (for example chimney smoke)
+
+	CITY_REVOLUTION_ENTITY_DEFAULT = { "revolution_barricade_small_mesh" "revolution_barricade_mid_mesh" "revolution_barricade_large_mesh" }	# Randomly pick mesh
+	CITY_REVOLUTION_ENTITY_AMOUNT = 0.45	# Multiplier of revolution entities spawning
 }
 
 NRoutes = {
@@ -372,13 +384,17 @@ NProvinceHighlight = {
 NMapCoa = {
 	ANGLE = 0.0							# Rotation of the coat of arms on the map. In radians
 	SIZE = 25.0							# Size of one CoA on the map. In world-units
-	SIZE_FLATMAP = 60.0					# Same as SIZE but used in the flat map
+	SIZE_FLATMAP = 60.0					#
 	BLEND = 0.80f						# Minimum blend value. Final blend value will be the minimum of this and whatever the gradient borders use
-	BLEND_FLATMAP = 0.65f				# Same as BLEND but used in the flat map
+	BLEND_FLATMAP = 0.65f				#
+	BLEND_OCCUPATION = 1.0f				# Blend/Opacity of occupation stripes
+	BLEND_OCCUPATION_FLATMAP = 1.0f		#
 	BLEND_CLOSE_FADE_START = 100.0f		# Height at which to start fading out
 	BLEND_CLOSE_FADE_END = 60.0f		# Height at which to complete fading out
-	ROW_HORIZONTAL_OFFSET = 0.25			# Each row of coat of arms can be offset horizontally. This controls by how much in percentages
+	ROW_HORIZONTAL_OFFSET = 0.25		# Each row of coat of arms can be offset horizontally. This controls by how much in percentages
 	ROW_COUNT = 4						# How many rows to offset before starting over with an offset of 0s
+	STRIPE_SCALE = 1.0					# Scale of occupation stripes
+	STRIPE_SCALE_FLATMAP = 1.0
 }
 
 NEdgeOfWorld = {

@@ -3,14 +3,28 @@
 character_events.100 = {
 	type = country_event
 	hidden = yes
+
+	trigger = {
+		any_interest_group = {
+			NOT = { has_variable = memento_mori }
+			leader = {
+				is_ruler = no
+				is_busy = no
+				is_historical = no
+			}
+		}
+	}
+
 	immediate = {
+		# Kill IG leaders occasionally, but not too often per IG
 		random_interest_group = {
 			limit = {
 				NOT = { has_variable = memento_mori }
-				NOT = {
-					any_scope_character = {
-						is_ruler = yes
-					}
+				leader = {
+					is_ruler = no
+					is_busy = no
+					is_historical = no
+					NOT = { has_variable = memento_mori_immunity }
 				}
 			}
 			save_scope_as = memento_mori_ig
@@ -19,13 +33,41 @@ character_events.100 = {
 			}
 			set_variable = {
 				name = memento_mori
-				years = 5
+				years = 10
 			}
 		}
 		post_notification = ig_leader_memento_mori
 		scope:memento_mori_leader = {
 			kill_character = {
 				hidden = yes
+			}
+		}
+		# Kill an Agitator occasionally, but not too often
+		if = {
+			limit = {
+				any_scope_character = {
+					has_role = agitator
+					is_historical = no
+					NOT = { has_variable = memento_mori_immunity }
+				}
+				NOT = { has_variable = agitator_kill_var }
+			}
+			random_list = {
+				1 = {
+					random_scope_character = {
+						limit = {
+							has_role = agitator
+							is_historical = no
+							NOT = { has_variable = memento_mori_immunity }
+						}
+						kill_character = yes
+					}
+					set_variable = {
+						name = agitator_kill_var
+						years = 5
+					}
+				}
+				4 = { }
 			}
 		}
 	}
@@ -143,6 +185,7 @@ character_events.3 = { #The duel
 	trigger = {
 		NOT = { has_variable = duels_banned }
 		any_scope_character = {
+			is_busy = no
 			is_ruler = no
 			NOT = {
 				has_trait = cautious
@@ -155,6 +198,7 @@ character_events.3 = { #The duel
 	immediate = {
 		random_scope_character = {
 			limit = {
+				is_busy = no
 				is_ruler = no
 				NOT = {
 					has_trait = cautious
@@ -166,6 +210,7 @@ character_events.3 = { #The duel
 
 		random_scope_character = {
 			limit = {
+				is_busy = no
 				is_ruler = no
 				NOT = { this = scope:duel_participant_1 }
 				NOT = {
@@ -467,6 +512,7 @@ character_events.4 = { #Devout leader sleeping with a nun
 		any_scope_character = {
 			has_role = politician
 			age > 18
+			is_busy = no
 			interest_group = {
 				is_marginal = no
 				is_interest_group_type = ig_devout
@@ -479,6 +525,7 @@ character_events.4 = { #Devout leader sleeping with a nun
 			limit = {
 				has_role = politician
 				age > 18
+				is_busy = no
 				interest_group = {
 					is_marginal = no
 					is_interest_group_type = ig_devout
@@ -592,7 +639,7 @@ character_events.5 = { #A statue made of the king
 				name = ruler_statue_var
 				months = normal_modifier_time
 			}
-			add_radicals = {
+			add_radicals_in_state = {
   				value = small_radicals
   			}
   			set_variable = {
@@ -633,11 +680,10 @@ character_events.6 = { #Statue torn down
 	duration = 3
 
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_political_extremism.bk2"
+		video = "europenorthamerica_political_extremism"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/political_extremism"
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
@@ -705,7 +751,7 @@ character_events.6 = { #Statue torn down
 		}
 		scope:statue_state = {
 			remove_variable = ruler_statue_var
-			add_loyalists = {
+			add_loyalists_in_state = {
 				value = small_radicals
 			}
 		}
@@ -714,7 +760,7 @@ character_events.6 = { #Statue torn down
 				name = ruler_statue_var
 				months = normal_modifier_time
 			}
-			add_radicals = {
+			add_radicals_in_state = {
 				value = small_radicals
 			}
 		}

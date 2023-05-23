@@ -9,11 +9,10 @@ africa_colonial_events.40 = {
 	flavor = africa_colonial_events.40.f
 
 	event_image = {
-		video = "gfx/event_pictures/africa_construction_colony.bk2"
+		video = "africa_construction_colony"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/africa/construction_colony"
 
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
 
@@ -52,23 +51,16 @@ africa_colonial_events.40 = {
 	option = {
 		name = africa_colonial_events.40.a
 		default_option = yes
-
-		create_diplomatic_play = {
-			target_country = scope:jingoist_officer_victim
-			war = yes
-			type = dp_native_uprising
-
-			add_war_goal = {
-				holder = ROOT
-				type = colonization_rights
-				target_country = scope:jingoist_officer_victim
+		scope:jingoist_officer_victim = {
+			change_tension = {
+				country = ROOT
+				value = 75
 			}
 		}
 	}
 
 	option = {
 		name = africa_colonial_events.40.b
-
 		add_modifier = {
 			name = government_admits_failure
 			months = normal_modifier_time
@@ -83,9 +75,9 @@ africa_colonial_events.40 = {
 			limit = {
 				NOT = { is_interest_group_type = ig_armed_forces }
 				OR = {
-					has_ideology = ideology_jingoist
+					has_ideology = ideology:ideology_jingoist
 					leader = {
-						has_ideology = ideology_jingoist_leader
+						has_ideology = ideology:ideology_jingoist_leader
 					}
 				}
 			}
@@ -100,7 +92,7 @@ africa_colonial_events.40 = {
 		name = africa_colonial_events.40.c
 
 		trigger = {
-			ruler = { has_ideology = ideology_jingoist_leader }
+			ruler = { has_ideology = ideology:ideology_jingoist_leader }
 		}
 		create_character = {
 			is_general = yes
@@ -111,15 +103,10 @@ africa_colonial_events.40 = {
 				reckless
 			}
 		}
-		create_diplomatic_play = {
-			target_country = scope:jingoist_officer_victim
-			war = yes
-			type = dp_native_uprising
-
-			add_war_goal = {
-				holder = ROOT
-				type = colonization_rights
-				target_country = scope:jingoist_officer_victim
+		scope:jingoist_officer_victim = {
+			change_tension = {
+				country = ROOT
+				value = 75
 			}
 		}
 		if = {
@@ -136,9 +123,9 @@ africa_colonial_events.40 = {
 		every_interest_group = {
 			limit = {
 				OR = {
-					has_ideology = ideology_jingoist
+					has_ideology = ideology:ideology_jingoist
 					leader = {
-						has_ideology = ideology_jingoist_leader
+						has_ideology = ideology:ideology_jingoist_leader
 					}
 				}
 			}
@@ -160,17 +147,17 @@ africa_colonial_events.41 = {
 	flavor = africa_colonial_events.41.f
 
 	event_image = {
-		video = "gfx/event_pictures/africa_construction_colony.bk2"
+		video = "africa_construction_colony"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/africa/construction_colony"
 
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
 
 	duration = 3
 
 	trigger = {
+		NOT = { has_variable = rogue_imperialist_var }
 		any_scope_state = {
 			is_incorporated = no
 			state_in_africa = yes
@@ -180,19 +167,22 @@ africa_colonial_events.41 = {
 						state_in_africa = no
 					}
 				}
+				state_region = {
+					any_scope_state = {
+						NOT = { has_claim_by = root }
+						owner = {
+							is_country_type = decentralized
+						}
+					}
+				}
 				NOT = {
 					owner = root
-				}
-			}
-			any_neighbouring_state = {
-				owner = {
-					is_country_type = decentralized
 				}
 			}
 		}
 		any_interest_group = {
 			leader = {
-				NOT = { has_ideology = ideology_pacifist } # unlikely this will never not be the case but best to be sure
+				NOT = { has_ideology = ideology:ideology_pacifist } # unlikely this will never not be the case but best to be sure
 			}
 		}
 		NOT = {
@@ -203,6 +193,7 @@ africa_colonial_events.41 = {
 	}
 
 	immediate = {
+		set_variable = rogue_imperialist_var
 		random_scope_state = {
 			limit = {
 				is_incorporated = no
@@ -213,13 +204,16 @@ africa_colonial_events.41 = {
 							state_in_africa = no
 						}
 					}
+					state_region = {
+						any_scope_state = {
+							NOT = { has_claim_by = root }
+							owner = {
+								is_country_type = decentralized
+							}
+						}
+					}
 					NOT = {
 						owner = root
-					}
-				}
-				any_neighbouring_state = {
-					owner = {
-						is_country_type = decentralized
 					}
 				}
 			}
@@ -228,6 +222,14 @@ africa_colonial_events.41 = {
 					owner = {
 						capital = {
 							state_in_africa = no
+						}
+					}
+					state_region = {
+						any_scope_state = {
+							NOT = { has_claim_by = root }
+							owner = {
+								is_country_type = decentralized
+							}
 						}
 					}
 					NOT = {
@@ -241,7 +243,7 @@ africa_colonial_events.41 = {
 		random_interest_group = {
 			limit = {
 				leader = {
-					NOT = { has_ideology = ideology_pacifist }
+					NOT = { has_ideology = ideology:ideology_pacifist }
 				}
 			}
 			save_scope_as = rogue_imperialist_ig
@@ -262,9 +264,9 @@ africa_colonial_events.41 = {
 			limit = {
 				OR = {
 					scope:rogue_imperialist_ig = THIS
-					has_ideology = ideology_jingoist
+					has_ideology = ideology:ideology_jingoist
 					leader = {
-						has_ideology = ideology_jingoist_leader
+						has_ideology = ideology:ideology_jingoist_leader
 					}
 				}
 			}
@@ -274,11 +276,9 @@ africa_colonial_events.41 = {
 			}
 		}
 
-		scope:rogue_imperialist_target = {
-			create_incident = {
-				country = root
-				value = 10
-			}
+		create_incident = {
+			country = scope:rogue_imperialist_target
+			value = 10
 		}
 	}
 
@@ -290,9 +290,9 @@ africa_colonial_events.41 = {
 			limit = {
 				OR = {
 					scope:rogue_imperialist_ig = THIS
-					has_ideology = ideology_jingoist
+					has_ideology = ideology:ideology_jingoist
 					leader = {
-						has_ideology = ideology_jingoist_leader
+						has_ideology = ideology:ideology_jingoist_leader
 					}
 				}
 			}
@@ -314,7 +314,7 @@ africa_colonial_events.41 = {
 		name = africa_colonial_events.41.c
 
 		trigger = {
-			ruler = { has_ideology = ideology_jingoist_leader }
+			ruler = { has_ideology = ideology:ideology_jingoist_leader }
 		}
 
 		scope:rogue_imperialist_state = {

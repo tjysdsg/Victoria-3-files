@@ -643,55 +643,27 @@ right_click_menu = {
 	}
 
 	blockoverride "items" {
-		right_click_menu_item = {
+		right_click_menu_item = {		# GO TO PANEL
+			visible = "[Not(InformationPanelBar.IsPanelOpen('commander'))]"
+			
 			blockoverride "properties" {
-				visible = "[And( Not( Character.IsMaxRank ), Character.IsCommander ) ]"
-				tooltip = "MILITARY_PANEL_PROMOTE_CHARACTER_TOOLTIP"			
-				enabled = "[IsValid(Character.GetPromoteCommand)]"
-				onclick = "[PopupManager.AskConfirmationWithSound(Character.GetPromoteCommand, 'event:/SFX/UI/Military/commander_promote')]"
+				onclick = "[InformationPanelBar.OpenCommanderPanel(Character.AccessSelf)]"
+				tooltip = "GO_TO_BUTTON_CHARACTER"
+			}
+			blockoverride "icon" {}
+
+			blockoverride = "text" {
+				text = "CHARACTER_RIGHT_CLICK_MENU_INFORMATION"
 			}
 
-			blockoverride "icon" {}
-			
-			blockoverride = "text" {
-				text = "CHARACTER_RIGHT_CLICK_MENU_PROMOTE_COMMANDER"
+			blockoverride "size" {
+				size = { 260 44 }
 			}
 		}
 
-		right_click_menu_item = {
+		right_click_menu_item = {		# TOGGLE PIN
 			blockoverride "properties" {
-				visible = "[And( Character.IsMaxRank, Character.IsCommander ) ]"
-				tooltip = "MILITARY_PANEL_PROMOTE_CHARACTER_TOOLTIP_MAX_RANK"			
-				enabled = "[IsValid(Character.GetPromoteCommand)]"
-				onclick = "[PopupManager.AskConfirmationWithSound(Character.GetPromoteCommand, 'event:/SFX/UI/Military/commander_promote')]"
-			}
-
-			blockoverride "icon" {}
-			
-			blockoverride = "text" {
-				text = "CHARACTER_RIGHT_CLICK_MENU_PROMOTE_COMMANDER"
-			}			
-		}
-
-		right_click_menu_item = {
-			blockoverride "properties" {
-				visible = "[Or(Character.IsGeneral, Character.IsAdmiral)]"
-				tooltip = "MILITARY_PANEL_KILL_CHARACTER_TOOLTIP"
-				enabled = "[IsValid(Character.GetRetireCommand)]"
-				onclick = "[PopupManager.AskConfirmationWithSound(Character.GetRetireCommand, 'event:/SFX/UI/Military/commander_retire')]"
-			}
-
-			blockoverride "icon" {}
-			
-			blockoverride = "text" {
-				text = "CHARACTER_RIGHT_CLICK_MENU_RETIRE_COMMANDER"
-			}		
-		}
-
-		right_click_menu_item = {
-			visible = "[Character.GetCountry.IsLocalPlayer]"
-
-			blockoverride "properties" {
+				visible = "[Character.GetCountry.IsLocalPlayer]"
 				onclick = "[Character.TogglePinInOutliner]"
 			}
 			blockoverride "icon" {}
@@ -699,108 +671,227 @@ right_click_menu = {
 			blockoverride = "text" {
 				text = "CHARACTER_RIGHT_CLICK_MENU_PIN_IN_OUTLINER"
 			}
-		}
 
-		textbox = {
-			margin_top = 10
-			margin_left = 5
-			autoresize = yes
-			align = left|nobaseline
-			text = "COMMANDER_PANEL_CURRENT_ORDER"
-		}
-
-		right_click_menu_item = {
-            blockoverride "properties" {
-                tooltip = "MOBILIZE_GENERAL_TOOLTIP"
-                visible = "[IsValid( Character.Mobilize )]"
-                enabled = "[IsValid( Character.Mobilize )]"
-                onclick = "[PopupManager.AskConfirmation( Character.Mobilize )]"
-            }
-
-			blockoverride "icon" {}
-			
-			blockoverride = "text" {
-                text = "MOBILIZE_GENERAL"
-			}
-        }
-
-        right_click_menu_item = {
-			blockoverride "properties" {
-				tooltip = "COMMANDER_PANEL_ORDER_TOGGLE_DEFEND_TOOLTIP"
-				enabled = "[IsValid( Character.DefendCurrentFront )]"
-				onclick = "[Execute(Character.DefendCurrentFront)]"
-				visible = "[Character.GetCommanderOrder.GetType.IsAdvanceFront]"
-			}
-			clicksound = "[Character.GetCommanderOrder.GetType.GetClickSound]"
-
-			blockoverride "texture" {
-				texture = "gfx/interface/icons/commander_order_icons/defend.dds"
-			}
-			
-			blockoverride = "text" {
-				text = "COMMANDER_PANEL_ORDER_TOGGLE_DEFEND"
+			blockoverride "size" {
+				size = { 260 44 }
 			}
 		}
 
-		right_click_menu_item = {
-			blockoverride "properties" {
-				tooltip = "COMMANDER_PANEL_ORDER_TOGGLE_ADVANCE_TOOLTIP"
-				enabled = "[IsValid( Character.AdvanceCurrentFront )]"
-				onclick = "[Execute(Character.AdvanceCurrentFront)]"
-				visible = "[Character.GetCommanderOrder.GetType.IsDefendFront]"
-			}
-			clicksound = "[Character.GetCommanderOrder.GetType.GetClickSound]"
+		flowcontainer = {
+			direction = vertical
 
-			blockoverride "texture" {
-				texture = "gfx/interface/icons/commander_order_icons/advance.dds"
+			textbox = {					# CHARACTER INTERACTIONS HEADER
+				visible = "[Not(IsDataModelEmpty(Character.GetInteractions))]"
+				margin_top = 5
+				margin_left = 5
+				autoresize = yes
+				align = left|nobaseline
+				text = "CHARACTER_INTERACTIONS_HEADER"
 			}
-			
-			blockoverride = "text" {
-				text = "COMMANDER_PANEL_ORDER_TOGGLE_ADVANCE"
-			}
-		}
 
-        dynamicgridbox = {
-            datamodel = "[Character.AccessOrders]"
-            item = {
-				container = {
+			right_click_menu_item = {	# PROMOTE COMMANDER
+				blockoverride "properties" {
+					visible = "[And( Character.GetCountry.IsLocalPlayer, Character.IsCommander )]"
+					tooltip = "MILITARY_PANEL_PROMOTE_CHARACTER_TOOLTIP"
+					enabled = "[IsValid(Character.GetPromoteCommand)]"
+					onclick = "[PopupManager.AskConfirmationWithSound(Character.GetPromoteCommand, 'event:/SFX/UI/Military/commander_promote')]"			}
+				blockoverride "icon" {}
+
+				blockoverride = "text" {
+					text = "CHARACTER_RIGHT_CLICK_MENU_PROMOTE_COMMANDER"
+				}
+
+				blockoverride "size" {
+					size = { 260 44 }
+				}
+			}
+
+			dynamicgridbox = {			# INTERACTIONS
+				datamodel = "[Character.GetInteractions]"
+				item = {
 					right_click_menu_item = {
 						blockoverride "properties" {
-							tooltip = "COMMANDER_PANEL_ORDER_TOOLTIP"
-							enabled = "[Character.CanSelectOrder( CommanderOrderType.Self )]"
-							onclick = "[Character.SelectOrder( CommanderOrderType.Self )]"
-							visible = "[Not( CommanderOrderType.HasMapInteraction )]"
+							tooltip = "CHARACTER_INTERACTION_TOOLTIP"
+							enabled = "[CharacterInteraction.IsCommandValid(Character.Self)]"
+							onclick = "[CharacterInteraction.ExecuteCommand(Character.Self)]"
 						}
-						clicksound = "[CommanderOrderType.GetClickSound]"
+						clicksound = "[CharacterInteraction.GetClickSound]"
 
 						blockoverride "texture" {
-							texture = "[CommanderOrderType.GetTexture]"
-						}
-						
-						blockoverride = "text" {
-							text = "[CommanderOrderType.GetName]"
-						}
-					}
-
-					right_click_menu_item = {
-						blockoverride "properties" {
-							tooltip = "COMMANDER_PANEL_ORDER_TOOLTIP"
-							enabled = "[Character.CanSelectOrder( CommanderOrderType.Self )]"
-							onclick = "[Character.SelectOrder( CommanderOrderType.Self )]"
-							visible = "[CommanderOrderType.HasMapInteraction]"
+							visible = "[CharacterInteraction.HasIcon]"
+							texture = "[CharacterInteraction.GetIcon]"
 						}
 
-						blockoverride "texture" {
-							texture = "[CommanderOrderType.GetTexture]"
+						blockoverride "text" {
+							text = "[CharacterInteraction.GetName]"
 						}
-						
-						blockoverride = "text" {
-							text = "[CommanderOrderType.GetName]"
+
+						blockoverride "size" {
+							size = { 260 44 }
 						}
 					}
 				}
-            }
-        }
+			}
+		}
+
+		flowcontainer = {
+			direction = vertical
+			visible = "[Character.GetCountry.IsLocalPlayer]"
+
+			textbox = {					# CURRENT ORDER (TEXT)
+				visible = "[Character.IsCommander]"
+				margin_top = 5
+				margin_left = 5
+				autoresize = yes
+				align = left|nobaseline
+				text = "COMMANDER_PANEL_CURRENT_ORDER"
+			}
+
+			right_click_menu_item = {	# MOBILIZE
+				blockoverride "properties" {
+					tooltip = "MOBILIZE_GENERAL_TOOLTIP"
+					visible = "[IsValid( Character.Mobilize )]"
+					enabled = "[IsValid( Character.Mobilize )]"
+					onclick = "[PopupManager.AskConfirmation( Character.Mobilize )]"
+				}
+
+				blockoverride "icon" {}
+				
+				blockoverride = "text" {
+					text = "MOBILIZE_GENERAL"
+				}
+
+				blockoverride "size" {
+					size = { 260 44 }
+				}
+			}
+
+			right_click_menu_item = {	# TOGGLE DEFEND
+				blockoverride "properties" {
+					tooltip = "COMMANDER_PANEL_ORDER_TOGGLE_DEFEND_TOOLTIP"
+					enabled = "[IsValid( Character.DefendCurrentFront )]"
+					onclick = "[Execute(Character.DefendCurrentFront)]"
+					visible = "[Character.GetCommanderOrder.GetType.IsAdvanceFront]"
+				}
+				clicksound = "[Character.GetCommanderOrder.GetType.GetClickSound]"
+
+				blockoverride "texture" {
+					texture = "gfx/interface/icons/commander_order_icons/defend.dds"
+				}
+				
+				blockoverride = "text" {
+					text = "COMMANDER_PANEL_ORDER_TOGGLE_DEFEND"
+				}
+
+				blockoverride "size" {
+					size = { 260 44 }
+				}
+			}
+
+			right_click_menu_item = {	# TOGGLE ADVANCE
+				blockoverride "properties" {
+					tooltip = "COMMANDER_PANEL_ORDER_TOGGLE_ADVANCE_TOOLTIP"
+					enabled = "[IsValid( Character.AdvanceCurrentFront )]"
+					onclick = "[Execute(Character.AdvanceCurrentFront)]"
+					visible = "[Character.GetCommanderOrder.GetType.IsDefendFront]"
+				}
+				clicksound = "[Character.GetCommanderOrder.GetType.GetClickSound]"
+
+				blockoverride "texture" {
+					texture = "gfx/interface/icons/commander_order_icons/advance.dds"
+				}
+				
+				blockoverride = "text" {
+					text = "COMMANDER_PANEL_ORDER_TOGGLE_ADVANCE"
+				}
+
+				blockoverride "size" {
+					size = { 260 44 }
+				}
+			}
+
+			dynamicgridbox = {			# ORDERS
+				datamodel = "[Character.AccessOrders]"
+				item = {
+					container = {
+						right_click_menu_item = {	# SELECT ORDER (WITHOUT MAP INTERACTION)
+							blockoverride "properties" {
+								tooltip = "COMMANDER_PANEL_ORDER_TOOLTIP"
+								enabled = "[Character.CanSelectOrder( CommanderOrderType.Self )]"
+								onclick = "[Character.SelectOrder( CommanderOrderType.Self )]"
+								visible = "[Not( CommanderOrderType.HasMapInteraction )]"
+							}
+							clicksound = "[CommanderOrderType.GetClickSound]"
+
+							blockoverride "texture" {
+								texture = "[CommanderOrderType.GetTexture]"
+							}
+							
+							blockoverride = "text" {
+								text = "[CommanderOrderType.GetName]"
+							}
+
+							blockoverride "size" {
+								size = { 260 44 }
+							}
+						}
+
+						right_click_menu_item = {	# SELECT ORDER (WITH MAP INTERACTION)
+							blockoverride "properties" {
+								tooltip = "COMMANDER_PANEL_ORDER_TOOLTIP"
+								enabled = "[Character.CanSelectOrder( CommanderOrderType.Self )]"
+								onclick = "[Character.SelectOrder( CommanderOrderType.Self )]"
+								visible = "[CommanderOrderType.HasMapInteraction]"
+							}
+
+							blockoverride "texture" {
+								texture = "[CommanderOrderType.GetTexture]"
+							}
+							
+							blockoverride = "text" {
+								text = "[CommanderOrderType.GetName]"
+							}
+
+							blockoverride "size" {
+								size = { 260 44 }
+							}
+						}
+					}
+				}
+			}
+		}
+
+		flowcontainer = {				# HISTORICAL CHARACTER
+			visible = "[And( Character.IsHistorical, Not( StringIsEmpty( Character.GetHistoricalUrl )))]"
+			direction = vertical
+
+			textbox = {
+				margin_top = 5
+				margin_left = 5
+				autoresize = yes
+				align = left|nobaseline
+				text = "CHARACTER_HISTORICAL_HEADER"
+			}
+
+			right_click_menu_item = {	# OPEN HISTORICAL CHARACTER URL
+				blockoverride "properties" {
+					onclick = "[Character.OpenHistoricalUrl]"
+					tooltip = "CHARACTER_HISTORICAL_OPEN_URL_TOOLTIP"
+				}
+
+				blockoverride "texture" {
+					texture = "gfx/interface/icons/generic_icons/historical_character_icon.dds"
+				}
+
+				blockoverride = "text" {
+					text = "CHARACTER_HISTORICAL_OPEN_URL"
+				}
+
+				blockoverride "size" {
+					size = { 260 44 }
+				}
+			}
+		}
 	}
 }
 

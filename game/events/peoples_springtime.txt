@@ -5,11 +5,10 @@
 peoples_springtime.1 = {
 	type = country_event
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_springtime_of_nations.bk2"
+		video = "europenorthamerica_springtime_of_nations"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/springtime_of_nation"
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
@@ -23,8 +22,17 @@ peoples_springtime.1 = {
 		country_is_in_europe = yes
 		has_technology_researched = egalitarianism
 		any_interest_group = {
-			is_insurrectionary = yes
-			leader = { has_ideology = ideology_radical }
+			OR = {
+				ig_approval < -10 # ANGERY
+				is_insurrectionary = yes
+			}
+			OR = {
+				leader = { has_ideology = ideology:ideology_radical }
+				any_scope_character = {
+					has_role = agitator
+					has_ideology = ideology:ideology_radical
+				}
+			}
 		}
 	}
 
@@ -38,8 +46,17 @@ peoples_springtime.1 = {
 		}
 		random_interest_group = {
 			limit = {
-				is_insurrectionary = yes
-				leader = { has_ideology = ideology_radical }
+				OR = {
+					is_insurrectionary = yes
+					ig_approval < -10 # ANGERY
+				}
+				OR = {
+					leader = { has_ideology = ideology:ideology_radical }
+					any_scope_character = {
+						has_role = agitator
+						has_ideology = ideology:ideology_radical
+					}
+				}
 			}
 			leader = { save_scope_as = radical_ig_leader }
 		}
@@ -74,11 +91,10 @@ peoples_springtime.1 = {
 peoples_springtime.2 = {
 	type = country_event
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_political_extremism.bk2"
+		video = "europenorthamerica_political_extremism"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/political_extremism"
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
@@ -104,7 +120,12 @@ peoples_springtime.2 = {
 					is_interest_group_type = ig_industrialists
 				}
 				leader = {
-					NOT = { has_ideology = ideology_radical }
+					NOR = { 
+						has_ideology = ideology:ideology_radical
+						has_ideology = ideology:ideology_communist
+						has_ideology = ideology:ideology_anarchist
+						has_ideology = ideology:ideology_vanguardist
+					}
 				}
 			}
 			save_scope_as = radical_ig
@@ -114,12 +135,13 @@ peoples_springtime.2 = {
 	option = {
 		name = peoples_springtime.2.a
 		scope:radical_ig = {
-			leader = { set_ideology = ideology_radical }
-			add_modifier = {
-				name = revolutionary_hero
-				months = normal_modifier_time
+			leader = { 
+				set_ideology = ideology:ideology_radical 
+				add_modifier = {
+					name = revolutionary_hero
+					months = normal_modifier_time
+				}
 			}
-
 		}
 	}
 
@@ -127,11 +149,13 @@ peoples_springtime.2 = {
 		name = peoples_springtime.2.b
         default_option = yes
         scope:radical_ig = {
-        	leader = { set_ideology = ideology_radical }
-        	add_modifier = {
-        		name = treasonous_traitor
-        		months = normal_modifier_time
-        	}
+        	leader = { 
+				set_ideology = ideology:ideology_radical
+				add_modifier = {
+					name = treasonous_traitor
+					months = normal_modifier_time
+				}
+		 	}
         }
 	}
 }
@@ -141,11 +165,10 @@ peoples_springtime.2 = {
 peoples_springtime.3 = {
 	type = country_event
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_political_extremism.bk2"
+		video = "votp_agitator_speaking"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/political_extremism"
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
@@ -166,9 +189,10 @@ peoples_springtime.3 = {
 				is_interest_group_type = ig_industrialists
 			}
 			leader = {
-				NOT = { has_ideology = ideology_radical }
+				NOT = { has_ideology = ideology:ideology_radical }
 			}
 		}
+		empty_agitator_slots >= 1
 	}
 
 	immediate = {
@@ -182,7 +206,7 @@ peoples_springtime.3 = {
 					is_interest_group_type = ig_industrialists
 				}
 				leader = {
-					NOT = { has_ideology = ideology_radical }
+					NOT = { has_ideology = ideology:ideology_radical }
 				}
 			}
 			save_scope_as = radical_ig
@@ -193,6 +217,9 @@ peoples_springtime.3 = {
 
 	option = {
 		name = peoples_springtime.3.a
+		ai_chance = {
+			base = 25
+		}
 		custom_tooltip = {
 			text = peoples_springtime.3.a.tt
 			create_character = {
@@ -205,11 +232,27 @@ peoples_springtime.3 = {
 
 	option = {
 		name = peoples_springtime.3.b
+		ai_chance = {
+			base = 75
+			modifier = {
+				trigger = {
+					scope:radical_ig = {
+						ig_approval < -5
+					}
+				}
+				add = -50
+			}
+		}
 		scope:radical_ig = {
 			add_modifier = {
 				name = dissident_radical_faction
 				months = short_modifier_time
 			}
+		}
+		create_character = {
+			is_agitator = yes
+			ideology = ideology_radical
+			interest_group = scope:radical_ig
 		}
 		default_option = yes
 	}
@@ -220,11 +263,10 @@ peoples_springtime.3 = {
 peoples_springtime.4 = {
 	type = country_event
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_political_extremism.bk2"
+		video = "europenorthamerica_political_extremism"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/political_extremism"
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
@@ -247,13 +289,18 @@ peoples_springtime.4 = {
 						is_interest_group_type = ig_industrialists
 					}
 					leader = {
-						NOT = { has_ideology = ideology_radical }
+						NOR = { 
+							has_ideology = ideology:ideology_radical
+							has_ideology = ideology:ideology_communist
+							has_ideology = ideology:ideology_anarchist
+							has_ideology = ideology:ideology_vanguardist
+						}
 					}
 				}
 			}
 		}
 		any_interest_group = {
-			leader = { has_ideology = ideology_radical }
+			leader = { has_ideology = ideology:ideology_radical }
 		}
 	}
 
@@ -277,7 +324,12 @@ peoples_springtime.4 = {
 							is_interest_group_type = ig_industrialists
 						}
 						leader = {
-							NOT = { has_ideology = ideology_radical }
+							NOR = { 
+								has_ideology = ideology:ideology_radical
+								has_ideology = ideology:ideology_communist
+								has_ideology = ideology:ideology_anarchist
+								has_ideology = ideology:ideology_vanguardist
+							}
 						}
 					}
 				}
@@ -291,7 +343,7 @@ peoples_springtime.4 = {
 		}
 		every_interest_group = {
 			limit = {
-				leader = { has_ideology = ideology_radical }
+				leader = { has_ideology = ideology:ideology_radical }
 			}
 			add_modifier = {
 				name = spread_the_revolution
@@ -304,7 +356,7 @@ peoples_springtime.4 = {
 		name = peoples_springtime.4.b
 		every_interest_group = {
 			limit = {
-				leader = { has_ideology = ideology_radical }
+				leader = { has_ideology = ideology:ideology_radical }
 			}
 			add_modifier = {
 				name = constrained_the_revolution
@@ -319,11 +371,10 @@ peoples_springtime.4 = {
 peoples_springtime.5 = {
 	type = country_event
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_springtime_of_nations.bk2"
+		video = "votp_agitators_sneaking"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/springtime_of_nation"
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
@@ -334,7 +385,7 @@ peoples_springtime.5 = {
 	trigger = {
 		has_journal_entry = je_springtime_of_the_peoples
 		any_interest_group = {
-			leader = { has_ideology = ideology_radical }
+			leader = { has_ideology = ideology:ideology_radical }
 			ig_approval <= unhappy
 		}
 	}
@@ -343,8 +394,18 @@ peoples_springtime.5 = {
 
 	option = {
 		name = peoples_springtime.5.a
+		trigger = {
+			any_scope_state = {
+				is_incorporated = yes
+				is_capital = no
+			}
+		}
 		random_scope_state = {
-			add_radicals = {
+			limit = {
+				is_incorporated = yes
+				is_capital = no
+			}
+			add_radicals_in_state = {
 				value = very_large_radicals
 			}
 		}
@@ -353,7 +414,7 @@ peoples_springtime.5 = {
 	option = {
 		name = peoples_springtime.5.b
 		capital = {
-			add_radicals = {
+			add_radicals_in_state = {
 				value = very_large_radicals
 			}
 		}
@@ -365,11 +426,10 @@ peoples_springtime.5 = {
 peoples_springtime.6 = {
 	type = country_event
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_political_extremism.bk2"
+		video = "europenorthamerica_political_extremism"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/political_extremism"
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
@@ -430,11 +490,10 @@ peoples_springtime.7 = {
 	type = country_event
 
 	event_image = {
-		video = "gfx/event_pictures/europenorthamerica_political_extremism.bk2"
+		video = "votp_barricade"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/europenorthamerica/political_extremism"
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
@@ -448,7 +507,7 @@ peoples_springtime.7 = {
 		random_interest_group = {
 			limit = {
 				is_in_government = yes
-				leader = { has_ideology = ideology_radical }
+				leader = { has_ideology = ideology:ideology_radical }
 			}
 			save_scope_as = radical_ig
 		}
@@ -476,11 +535,10 @@ peoples_springtime.8 = {
 	type = country_event
 
 	event_image = {
-		video = "gfx/event_pictures/middleeast_police_breaking_door.bk2"
+		video = "middleeast_police_breaking_door"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	on_opened_soundeffect = "event:/SFX/Events/middleeast/police_breaking_door"
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 

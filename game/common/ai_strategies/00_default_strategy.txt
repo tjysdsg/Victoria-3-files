@@ -99,6 +99,17 @@ ai_strategy_default = {
 			}
 			add = 1000
 		}
+		
+		if = { #Likewise for Mughals.
+			limit = {
+				exists = c:MUG
+				THIS = c:MUG
+				c:BIC = {
+					is_diplomatic_play_initiator = yes
+				}
+			}
+			add = 1000
+		}
 	} 
 		
 	# How many maneuvers are we OK with using up in the initial phase to add more wargoals
@@ -112,20 +123,67 @@ ai_strategy_default = {
 			}
 			
 			add = -0.1
-		}	
+		}
+
+		# Ottomans should want Syria back
+		if = {
+			limit = {
+				has_journal_entry = je_sick_man_syria
+				scope:enemy_country = {
+					OR = {
+						owns_entire_state_region = STATE_ALEPPO
+						owns_entire_state_region = STATE_SYRIA
+						owns_entire_state_region = STATE_LEBANON
+						owns_entire_state_region = STATE_PALESTINE
+						owns_entire_state_region = STATE_TRANSJORDAN
+						owns_entire_state_region = STATE_ADANA
+					}
+				}
+			}
+			add = 0.25
+		}
+
+		# USA should Manifest a lot of Destiny
+		if = {
+			limit = {
+				has_journal_entry = je_manifest_destiny_mexico
+				scope:enemy_country = {
+					any_scope_state = {
+						OR = {
+							state_region = s:STATE_CALIFORNIA
+							state_region = s:STATE_NEVADA
+							state_region = s:STATE_UTAH
+							state_region = s:STATE_ARIZONA
+							state_region = s:STATE_NEW_MEXICO
+							state_region = s:STATE_TEXAS
+						}
+					}
+				}
+			}
+			add = 0.25
+		}		
+		
+		# French Natural Borders
+		if = {
+			limit = {
+				has_journal_entry = je_french_natural_borders
+				scope:enemy_country = {
+					any_scope_state = {
+						OR = {
+							state_region = {
+								is_homeland = cu:french
+							}
+							state_region = s:STATE_WALLONIA
+							state_region = s:STATE_FLANDERS
+							state_region = s:STATE_RHINELAND
+							state_region = s:STATE_NORTH_RHINE
+						}
+					}
+				}
+			}
+			add = 0.15
+		}			
 	}
-	
-	# How many barracks relative to incorporated population should the AI have
-	# Using a different value in a strategy will override this value
-	wanted_army_ratio = {
-		value = 200000 # 1 barrack per 200k incorporated population
-	}
-	
-	# How many naval bases relative to incorporated coastal population should the AI have
-	# Using a different value in a strategy will override this value
-	wanted_navy_ratio = {
-		value = 400000 # 1 naval base per 400k coastal incorporated population
-	}	
 	
 	# Chance each update that the AI is willing to start changing a law (1 = 1%)
 	# Using this value in other strategies will function additively
@@ -415,6 +473,17 @@ ai_strategy_default = {
 			}
 			add = 0.5
 		}
+		
+		# Schleswig-Holstein question
+		if = {
+			limit = { 
+				wants_to_solve_schleswig_holstein = yes
+				scope:target_country = { 
+					is_oppressor_of_schleswig_holstein = yes
+				}
+			}
+			add = 0.5
+		}			
 
 		#Italian Nightmare
 		if = {
@@ -434,6 +503,27 @@ ai_strategy_default = {
 				has_variable = warlord_state
 				scope:target_country = {
 					has_variable = warlord_state
+				}
+			}
+			add = 0.5
+		}
+
+		# French Natural Borders
+		if = {
+			limit = {
+				has_journal_entry = je_french_natural_borders
+				scope:target_country = {
+					any_scope_state = {
+						OR = {
+							state_region = {
+								is_homeland = cu:french
+							}
+							state_region = s:STATE_WALLONIA
+							state_region = s:STATE_FLANDERS
+							state_region = s:STATE_RHINELAND
+							state_region = s:STATE_NORTH_RHINE
+						}
+					}
 				}
 			}
 			add = 0.5
@@ -522,6 +612,17 @@ ai_strategy_default = {
 			}
 			add = 100
 		}
+		
+		# Schleswig-Holstein question
+		if = {
+			limit = { 
+				wants_to_solve_schleswig_holstein = yes	
+				scope:target_country = { 
+					is_oppressor_of_schleswig_holstein = yes
+				}
+			}
+			add = 10
+		}		
 
 		if = { #Carving up China
 			limit = {
@@ -540,7 +641,7 @@ ai_strategy_default = {
 					}
 				}
 				scope:target_country = {
-					this ?= c:CHI
+					c:CHI ?= this
 				}
 			}
 			add = 10
@@ -562,7 +663,7 @@ ai_strategy_default = {
 					}
 				}
 				scope:target_country = {
-					this ?= c:CHI
+					c:CHI ?= this
 				}
 			}
 			add = 25
@@ -820,6 +921,91 @@ ai_strategy_default = {
 			}
 			add = 5
 		}
+
+		# French Natural Borders
+		if = {
+			limit = {
+				has_journal_entry = je_french_natural_borders
+				scope:target_country = {
+					any_scope_state = {
+						OR = {
+							state_region = {
+								is_homeland = cu:french
+							}
+							state_region = s:STATE_WALLONIA
+							state_region = s:STATE_FLANDERS
+							state_region = s:STATE_RHINELAND
+							state_region = s:STATE_NORTH_RHINE
+						}
+					}
+				}
+			}
+			add = 25
+		}
+		
+        # Neutral Switzerland
+        if = {
+            limit = {
+                exists = c:SWI
+                THIS = c:SWI
+            }
+            add = -25
+        }
+        # France should very aggressively go for Algeria.
+		if = {
+			limit = {
+				has_journal_entry = je_conquest_of_algeria
+				scope:target_country = {
+					any_scope_state = {
+						OR = {
+							state_region = s:STATE_ALGIERS
+							state_region = s:STATE_CONSTANTINE
+							state_region = s:STATE_ORAN
+							state_region = s:STATE_SAHARA
+							state_region = s:STATE_EAST_SAHARA
+						}
+					}
+				}
+			}
+			add = 100
+		}
+		# Russia should very aggressively go for the Caucasus if it's still a great power.
+		if = {
+			limit = {
+                exists = c:RUS
+                THIS = c:RUS
+                c:RUS = {
+                	country_rank = rank_value:great_power
+                }
+                OR = {
+                	exists = c:CIR
+                	exists = c:CHC
+                }
+				scope:target_country = {
+					any_scope_state = {
+						OR = {
+							state_region = s:STATE_KUBAN
+							state_region = s:STATE_DAGESTAN
+						}
+					}
+				}
+			}
+			add = 100
+		}
+
+		if = {
+			limit = {
+				has_journal_entry = je_the_krakow_uprising
+				country_rank >= rank_value:major_power
+				scope:target_country = {
+					this = c:KRA
+					NOT = {
+						is_subject_of = root
+					}
+				}
+			}
+			add = 50
+		}
 	}
 	
 	# How many levels of construction sector should the AI aim to have
@@ -875,6 +1061,164 @@ ai_strategy_default = {
 		min = 1
 		max = 100
 	}
+	
+	# How many levels of barracks should the AI have
+	# Using this value in other strategies will function additively
+	wanted_army_size = {
+		value = 0
+		
+		# To increase base army size for small countries, capped at 1 million population
+		add = {
+			value = cached_ai_incorporated_population
+			divide = 100000 # 1 level of barracks per 100k incorporated population	
+			
+			max = 10
+		}			
+	
+		add = {
+			value = cached_ai_incorporated_population
+			divide = 250000 # 1 level of barracks per 250k incorporated population	
+		}		
+		
+		add = {
+			value = cached_ai_unincorporated_population
+			divide = 1000000 # 1 level of barracks per 1 million unincorporated population	
+		}
+		
+		max = 250 # No more than 250 from population
+
+		add = {
+			value = gdp
+			divide = 500000 # 1 level of barracks per 500k gdp
+		}				
+		
+		# More advanced standing armies are expensive and should be smaller relative to population
+		if = {
+			limit = { has_technology_researched = line_infantry }
+			multiply = 0.9
+		}
+
+		if = {
+			limit = { has_technology_researched = general_staff }
+			multiply = 0.9
+		}
+
+		if = {
+			limit = { has_technology_researched = trench_works }
+			multiply = 0.9
+		}
+
+		if = {
+			limit = { has_technology_researched = nco_training }
+			multiply = 0.9
+		}
+		
+		if = {
+			limit = { has_technology_researched = mobile_armor }
+			multiply = 0.9
+		}	
+
+		# Factor in strategies
+		if = {
+			limit = { 
+				OR = {
+					has_strategy = ai_strategy_territorial_expansion 
+					has_strategy = ai_strategy_unify_germany
+					has_strategy = ai_strategy_unify_italy
+					has_strategy = ai_strategy_unify_ethiopia
+					has_strategy = ai_strategy_unify_china
+				}
+			}
+			multiply = 1.25
+		}		
+
+		max = 500
+		min = 1
+	}
+	
+	# How many levels of naval base should the AI have
+	# Using this value in other strategies will function additively
+	wanted_navy_size = {
+		value = 0
+	
+		# 1 level of naval base per 350k coastal incorporated population							
+		add = {
+			value = cached_ai_incorporated_coastal_population
+			divide = 350000 
+		}
+
+		# 1 level of naval base per 1 million coastal unincorporated population					
+		add = {
+			value = cached_ai_unincorporated_coastal_population
+			divide = 1000000 
+		}
+
+		# 1 level of naval base per 1 million population in direct overseas subjects	
+		add = {
+			value = cached_ai_overseas_subject_population
+			divide = 1000000 
+		}	
+
+		max = 250 # No more than 250 from population		
+
+		# 1 level of naval base per 1 million gdp, multiplied by relative incorporated coastal population to total incorporated population
+		add = {
+			value = gdp
+			divide = cached_ai_incorporated_population
+			multiply = cached_ai_incorporated_coastal_population
+			divide = 1000000 
+		}			
+		
+		# More advanced navies are expensive and should be smaller relative to population
+		if = {
+			limit = { has_technology_researched = ironclad_tech }
+			multiply = 0.8
+		}
+
+		if = {
+			limit = { has_technology_researched = dreadnought }
+			multiply = 0.8
+		}
+
+		if = {
+			limit = { has_technology_researched = battleship_tech }
+			multiply = 0.8
+		}
+
+		# Factor in strategies
+		if = {
+			limit = { 
+				OR = {
+					has_strategy = ai_strategy_colonial_expansion 
+					has_strategy = ai_strategy_economic_imperialism
+				}
+			}
+			multiply = 1.25
+		}
+
+		if = {
+			limit = { has_strategy = ai_strategy_armed_isolationism }
+			multiply = 0.75
+		}
+		
+		if = {
+			limit = { country_rank < rank_value:major_power }
+			multiply = 0.75
+		}						
+		
+		if = {
+			limit = { is_country_type = unrecognized }
+			multiply = 0.5
+		}	
+		
+		if = {
+			limit = { has_strategy = ai_strategy_maintain_mandate_of_heaven }
+			multiply = 0.25
+		}		
+
+		max = 500
+		min = 0		
+	}		
 	
 	# Add a multiplier to the score AI assigns to particular building groups (default 1)
 	# Using this value in other strategies will result in several multiplications
@@ -1227,6 +1571,14 @@ ai_strategy_default = {
 					country_is_in_europe = yes
 					country_rank >= rank_value:great_power
 				}
+				add = 100
+			}
+		}
+		region_baltic = {
+			if = {
+				limit = { 
+					wants_to_solve_schleswig_holstein = yes			
+				}			
 				add = 100
 			}
 		}
@@ -1648,6 +2000,16 @@ ai_strategy_default = {
 			
 			if = {
 				limit = {
+					scope:target_country = {
+						is_revolutionary = yes
+						scope:target_country.civil_war_origin_country = root
+					}
+				}
+				multiply = 0.10
+			}
+			
+			if = {
+				limit = {
 					lenient_ai_behavior_trigger = yes
 				}
 				multiply = 1.5
@@ -1847,6 +2209,16 @@ ai_strategy_default = {
 					is_subject_of = scope:target_country	
 				}
 				add = 100			
+			}
+
+			if = {
+				limit = {
+					scope:target_country = {
+						is_revolutionary = yes
+						scope:target_country.civil_war_origin_country = root
+					}
+				}
+				add = 500
 			}
 			
 			multiply = {
@@ -2217,6 +2589,16 @@ ai_strategy_default = {
 				add = 50
 			}
 			
+			if = {
+				limit = { 
+					wants_to_solve_schleswig_holstein = yes
+					scope:target_country = { 
+						is_oppressor_of_schleswig_holstein = yes
+					}
+				}
+				add = 500
+			}		
+		
 			multiply = {
 				value = "ai_ideological_opinion(scope:target_country)"
 				multiply = -0.05
@@ -2946,6 +3328,26 @@ ai_strategy_default = {
 			}
 			
 			if = {
+				limit = { 
+					wants_to_solve_schleswig_holstein = yes
+					scope:target_country = {
+						is_oppressor_of_schleswig_holstein = yes
+					}
+					can_reach_target_country = yes
+				}
+				
+				if = {
+					limit = {
+						scope:target_state = { state_region = s:STATE_SCHLESWIG_HOLSTEIN }				
+					}				
+					add = 50
+				}
+				else = {
+					multiply = 0.0
+				}
+			}			
+			
+			if = {
 				limit = {
 					lenient_ai_behavior_trigger = yes
 					scope:target_state = { is_homeland_of_country_cultures = scope:target_country }
@@ -3000,6 +3402,17 @@ ai_strategy_default = {
 					}
 				}
 				multiply = 0
+			}
+			
+			if = {
+				limit = {
+					has_journal_entry = je_the_krakow_uprising
+					country_rank >= rank_value:major_power
+					scope:target_state = {
+						owner = { this = c:KRA }
+					}
+				}
+				add = 50
 			}				
 			
 			min = 0
@@ -3040,6 +3453,32 @@ ai_strategy_default = {
 					add = 30
 				}
 			}
+			
+			if = {
+				limit = { 
+					wants_to_solve_schleswig_holstein = yes			
+					scope:target_state = { state_region = s:STATE_SCHLESWIG_HOLSTEIN }				
+					can_reach_target_state = yes
+				}
+				add = 100
+			}
+
+			if = {
+				limit = {
+					has_journal_entry = je_sick_man_syria
+					scope:target_state = {
+						OR = {
+							state_region = s:STATE_ALEPPO
+							state_region = s:STATE_SYRIA
+							state_region = s:STATE_LEBANON
+							state_region = s:STATE_PALESTINE
+							state_region = s:STATE_TRANSJORDAN
+							state_region = s:STATE_ADANA
+						}
+					}
+				}
+				add = 100
+			}			
 
 			if = {
 				limit = { 
@@ -3113,26 +3552,32 @@ ai_strategy_default = {
 
 			if = {
 				limit = {
-					scope:target_country = {
-						has_diplomatic_pact = {
-							who = root
-							type = embargo
-						}
-					}
-				}
-				add = 25
-			}
-
-			if = {
-				limit = {
-					"num_mutual_trade_route_levels_with_country(root)" >= 10
 					OR = {
-						has_strategy = ai_strategy_economic_imperialism
+						scope:target_country = {
+							has_diplomatic_pact = {
+								who = root
+								type = embargo
+							}
+						}	
 						AND = {
-							NOT = { is_country_type = unrecognized }
-							scope:target_country = { is_country_type = unrecognized }
+							has_strategy = ai_strategy_economic_imperialism
+							"num_mutual_trade_route_levels_with_country(root)" >= 10
+							OR = {
+								has_attitude = {
+									who = scope:target_country
+									attitude = belligerent
+								}
+								has_attitude = {
+									who = scope:target_country
+									attitude = domineering
+								}	
+								has_attitude = {
+									who = scope:target_country
+									attitude = antagonistic
+								}								
+							}							
 						}
-					}
+					}				
 				}
 
 				add = {
@@ -3158,6 +3603,16 @@ ai_strategy_default = {
 							}						
 						}
 						add = 5
+					}
+					
+					if = {
+						limit = {
+							OR = {
+								is_country_type = unrecognized
+								scope:target_country = { NOT = { is_country_type = unrecognized } }
+							}						
+						}
+						multiply = 0.5
 					}
 						
 					if = {
@@ -3293,7 +3748,52 @@ ai_strategy_default = {
 			min = 0
 			max = 100			
 		}
+		
+		transfer_subject = {
+			if = {
+				limit = {
+					OR = {
+						has_secret_goal = {
+							who = scope:target_country
+							secret_goal = protect
+						}
+						has_secret_goal = {
+							who = scope:target_country
+							secret_goal = dominate
+						}						
+					}
+				}
+			
+				add = {
+					value = 50
+				
+					add = {
+						value = scope:target_country.gdp
+						divide = 200000
+						max = 50						
+					}
 
+					if = {
+						limit = {
+							has_strategic_adjacency = scope:target_country
+						}
+						multiply = 1.25
+					}						
+				}			
+			}				
+		
+			if = {
+				limit = { 
+					wants_to_solve_schleswig_holstein = yes
+					scope:target_country = { this = c:HOL }
+					can_reach_target_country = yes
+				}
+				add = 100
+			}			
+			
+			min = 0
+			max = 100			
+		}		
 		
 		make_puppet = {
 			if = {
@@ -3338,7 +3838,7 @@ ai_strategy_default = {
 					scope:target_country = c:EGY
 				}
 				add = 100
-			}
+			}			
 
 			# Russian expansion into Central Asia
 			if = {
@@ -4107,6 +4607,15 @@ ai_strategy_default = {
 					max = 2.0
 				}				
 			}
+			
+			if = {
+				limit = { 
+					wants_to_solve_schleswig_holstein = yes
+					scope:target_country = { this = c:HOL }
+					can_reach_target_country = no
+				}
+				add = 100
+			}
 
 			min = 0
 			max = 100				
@@ -4137,6 +4646,14 @@ ai_strategy_default = {
 				limit = { # The EIC/Raj should never seek independence as it will lead to its demise via bic_breakup.1.
 					exists = c:BIC
 					this = c:BIC
+				}
+				multiply = 0.0
+			}
+
+			if = {
+				limit = { # Likewise for the Dutch East Indies.
+					exists = c:DEI
+					this = c:DEI
 				}
 				multiply = 0.0
 			}

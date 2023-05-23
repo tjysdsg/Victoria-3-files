@@ -3,11 +3,11 @@
  SET_CHARACTER_NONE_EFFECT:0 "The character of #V $COMMAND$ is unassigned"
 
  ADD_TREASURY_EFFECT_POSITIVE:1 "The country gets @money!$VALUE|+=$"
- ADD_TREASURY_EFFECT_NEGATIVE:1 "The country loses @money!$VALUE|+=$"
- ADD_TREASURY_EFFECT_FIRST_POSITIVE:0 "[COUNTRY.GetNameNoFlag] gets @money!$VALUE|+=$"
- ADD_TREASURY_EFFECT_FIRST_NEGATIVE:0 "[COUNTRY.GetNameNoFlag] loses @money!$VALUE|+=$"
+ ADD_TREASURY_EFFECT_NEGATIVE:1 "The country loses @money![Negate_CFixedPoint('(CFixedPoint)$VALUE$')|+]"
+ ADD_TREASURY_EFFECT_FIRST_POSITIVE:0 "[COUNTRY.GetNameNoFlag] gets a @money!$VALUE|+=$"
+ ADD_TREASURY_EFFECT_FIRST_NEGATIVE:0 "[COUNTRY.GetNameNoFlag] loses @money![Negate_CFixedPoint('(CFixedPoint)$VALUE$')|+]"
  ADD_TREASURY_EFFECT_THIRD_POSITIVE:0 "[COUNTRY.GetName] gets @money!$VALUE|+=$"
- ADD_TREASURY_EFFECT_THIRD_NEGATIVE:0 "[COUNTRY.GetName] loses @money!$VALUE|+=$"
+ ADD_TREASURY_EFFECT_THIRD_NEGATIVE:0 "[COUNTRY.GetName] loses @money![Negate_CFixedPoint('(CFixedPoint)$VALUE$')|+]"
 
  SET_COUNTRY_ARMY_SP_TARGET:1 "#variable [COUNTRY.GetAdjectiveNoFormatting]#! army Strength Point(@army_SP!) target set to #variable $VALUE$#!"
  SET_COUNTRY_NAVY_SP_TARGET:1 "#variable [COUNTRY.GetAdjectiveNoFormatting]#! navy Strength Point(@navy_SP!) target set to #variable $VALUE$#!"
@@ -41,12 +41,13 @@
  SET_AS_INTEREST_GROUP_LEADER:0 "[Character.GetFullName|v] becomes the leader of [Character.GetInterestGroup.GetName|v]"
  REMOVE_AS_INTEREST_GROUP_LEADER:0 "[Character.GetFullName|v] stops being of the leader of [Character.GetInterestGroup.GetName|v]"
  DO_REVOLUTION_CLEANUP:0 "The Civil War ends"
+ CANCEL_ENACTMENT: "[COUNTRY.GetName] cancels [Concept('concept_enactment_of_laws','$concept_enactment_of_laws_enactment$')] of law [Law.GetFullNameWithStatus]"
  
  ADD_IDEOLOGY:0 "[InterestGroup.GetName] gains the [Ideology.GetName] ideology"
  REMOVE_IDEOLOGY:0 "[InterestGroup.GetName] loses the [Ideology.GetName] ideology"
- SET_IDEOLOGY:0 "[Character.GetFullName|v] will change Ideology to [Ideology.GetName]"
- SET_IDEOLOGY_FIRST:0 "[Character.GetFullName|v] will change Ideology to [Ideology.GetName]"
- SET_IDEOLOGY_THIRD:0 "[Character.GetFullName|v] will change Ideology to [Ideology.GetName]"
+ SET_IDEOLOGY:0 "[Character.GetFullName|v] will change Ideology to [TARGET_IDEOLOGY.GetName]"
+ SET_IDEOLOGY_FIRST:0 "[Character.GetFullName|v] will change Ideology to [TARGET_IDEOLOGY.GetName]"
+ SET_IDEOLOGY_THIRD:0 "[Character.GetFullName|v] will change Ideology to [TARGET_IDEOLOGY.GetName]"
  
  CHANGE_RELATIONS:2 "#variable [COUNTRY.GetAdjectiveNoFormatting]#! [concept_relations] towards #variable [TARGET_COUNTRY.GetName]#! improves by $VALUE|0+$"
  CHANGE_RELATIONS_NEG:2 "#variable [COUNTRY.GetAdjectiveNoFormatting]#! [concept_relations] towards #variable [TARGET_COUNTRY.GetName]#! deteriorates by $VALUE|0-$"
@@ -65,12 +66,12 @@
  SET_OWES_OBLIGATION_TO_THIRD:0 "[COUNTRY.GetName] owes an [concept_obligation] to [TARGET_COUNTRY.GetName]"
  SET_OWES_OBLIGATION_TO_THIRD_NEG:0 "[COUNTRY.GetName] no longer owes an [concept_obligation] to [TARGET_COUNTRY.GetName]"
  
- RECALCULATE_LAWS:0 "[COUNTRY.GetName] will recalculate its [Concept('concept_law', '$concept_laws$')]"
- RECALCULATE_LAWS_NEG:0 "[COUNTRY.GetName] will NOT recalculate its [Concept('concept_law', '$concept_laws$')]"
  VALIDATE_SUBSIDIES:0 "[COUNTRY.GetName] will ensure its industrial subsidies are valid"
  VALIDATE_SUBSIDIES_NEG:0 "[COUNTRY.GetName] will NOT ensure its industrial subsidies are valid"
- RECALCULATE_POP_IG_SUPPORT:0 "[Concept('concept_pop', '$concept_pops$')] in [COUNTRY.GetName] will recalculate their [concept_interest_group] support"
- RECALCULATE_POP_IG_SUPPORT_NEG:0 "[Concept('concept_pop', '$concept_pops$')] in [COUNTRY.GetName] will NOT recalculate [concept_interest_group] support"
+ 
+ RECALCULATE_POP_IG_SUPPORT:1 "All [Concept('concept_pop', '$concept_pops$')] will immediately reconsider their [concept_interest_group] support"
+ RECALCULATE_POP_IG_SUPPORT_FIRST: "All [Concept('concept_pop', '$concept_pops$')] in [COUNTRY.GetNameNoFlag] will immediately reconsider their [concept_interest_group] support"
+ RECALCULATE_POP_IG_SUPPORT_THIRD: "All [Concept('concept_pop', '$concept_pops$')] in [COUNTRY.GetName] will immediately reconsider their [concept_interest_group] support"
  
  SET_COUNTRY_TYPE:0 "[COUNTRY.GetName] becomes #variable $COUNTRY_TYPE$#!"
  SET_COUNTRY_TYPE_FIRST:0 "[COUNTRY.GetNameNoFlag] becomes #variable $COUNTRY_TYPE$#!"
@@ -111,11 +112,7 @@
  SET_STATE_RELIGION_THIRD:0 "[TARGET_RELIGION.GetName] becomes the [concept_state_religion] in [COUNTRY.GetName]"
  
  ADD_CULTURAL_OBSESSION:0 "[CULTURE.GetName] becomes obsessed with [GOODS.GetName]"
- ADD_CULTURAL_OBSESSION_FIRST:0 "[CULTURE.GetName] becomes [Concept('concept_obsession', '$concept_obsessed$')] with [GOODS.GetName] in [COUNTRY.GetNameNoFlag]"
- ADD_CULTURAL_OBSESSION_THIRD:0 "[CULTURE.GetName] becomes [Concept('concept_obsession', '$concept_obsessed$')] with [GOODS.GetName] in [COUNTRY.GetName]"
  REMOVE_CULTURAL_OBSESSION:0 "[CULTURE.GetName] stops being obsessed with [GOODS.GetName]"
- REMOVE_CULTURAL_OBSESSION_FIRST:0 "[CULTURE.GetName] stops being [Concept('concept_obsession', '$concept_obsessed$')] with [GOODS.GetName] in [COUNTRY.GetNameNoFlag]"
- REMOVE_CULTURAL_OBSESSION_THIRD:0 "[CULTURE.GetName] stops being [Concept('concept_obsession', '$concept_obsessed$')] with [GOODS.GetName] in [COUNTRY.GetName]"
  
  CREATE_RANDOM_CHARACTER_NAME:0 "A Character"
  
@@ -170,8 +167,8 @@
  ADD_DIPLOMATIC_PLAY_WAR_SUPPORT_NEG:1 "[Country.GetAdjectiveNoFormatting] [concept_war_support] in [TARGET_DIPLOMATIC_PLAY.GetName] decreases by $VALUE|+$"
  ADD_WAR_WAR_SUPPORT:1 "[Country.GetAdjectiveNoFormatting] [concept_war_support] in [War.GetName] increases by $VALUE|+$"
  ADD_WAR_WAR_SUPPORT_NEG:1 "[Country.GetAdjectiveNoFormatting] [concept_war_support] in [War.GetName] decreases by $VALUE|+$"
- ADD_WAR_EXHAUSTION:1 "[Country.GetAdjectiveNoFormatting] [concept_war_exhaustion] gain in [TARGET_WAR.GetName] increases by $VALUE|+$"
- ADD_WAR_EXHAUSTION_NEG:1 "[Country.GetAdjectiveNoFormatting] [concept_war_exhaustion] gain in [TARGET_WAR.GetName] decreases by $VALUE|+$"
+ ADD_WAR_EXHAUSTION:2 "[Country.GetAdjectiveNoFormatting] [concept_war_exhaustion] gain in [War.GetName] increases by $VALUE|+$"
+ ADD_WAR_EXHAUSTION_NEG:2 "[Country.GetAdjectiveNoFormatting] [concept_war_exhaustion] gain in [War.GetName] decreases by $VALUE|+$"
  
  ADD_WAR_GOAL:1 "[COUNTRY.GetName] adds wargoal [WAR_GOAL.GetName] to [DIPLOMATIC_PLAY_TYPE.GetName] [concept_diplomatic_play]"
  ADD_WAR_GOAL_FIRST:1 "[COUNTRY.GetNameNoFlag] adds wargoal [WAR_GOAL.GetName] to [DIPLOMATIC_PLAY_TYPE.GetName] [concept_diplomatic_play]"
@@ -211,6 +208,7 @@
  REMOVE_TRAIT_GLOBAL:0 "[CHARACTER.GetFullName] removes trait [CHARACTER_TRAIT.GetName]"
  REMOVE_TRAIT_FIRST:0 "[CHARACTER.GetFullName] removes trait [CHARACTER_TRAIT.GetName]"
  TRANSFER_CHARACTER:0 "[CHARACTER.GetFullName] becomes employed by [TARGET_COUNTRY.GetName]"
+ TRANSFER_CHARACTER_GLOBAL: "Becomes employed by [TARGET_COUNTRY.GetName]"
  SET_CHARACTER_BUSY:0 "[CHARACTER.GetFullName] drops all assignments and becomes busy"
  SET_CHARACTER_BUSY_NEG:0 "[CHARACTER.GetFullName] is no longer busy"
  SET_CHARACTER_BUSY_GLOBAL:0 "[CHARACTER.GetFullName] drops all assignments and becomes busy"
@@ -289,17 +287,14 @@
  ADD_JOURNAL_ENTRY_THIRD:0 "Adds #variable $JOURNAL_ENTRY_NAME$#! to the Journal of [COUNTRY.GetName|v]"
  START_TUTORIAL_LESSON:0 "Starts the #variable $TUTORIAL_NAME$#! tutorial"
   
- ADD_RULING_INTEREST_GROUP:0 "[INTEREST_GROUP.GetName] becomes part of the government"
- REMOVE_RULING_INTEREST_GROUP:0 "[INTEREST_GROUP.GetName] is removed from the government"
- SET_RULING_PARTY:0 "[PARTY.GetName] is added to the government while everyone else are removed"
- SET_RULING_INTEREST_GROUPS:0 "The specified set of Interest Groups are added to the government while everyone else are removed"
+ ADD_RULING_INTEREST_GROUP:0 "[INTEREST_GROUP.GetName] becomes part of the [concept_government]"
+ REMOVE_RULING_INTEREST_GROUP:0 "[INTEREST_GROUP.GetName] is removed from the [concept_government]"
+ SET_RULING_PARTY: "[PARTY.GetName] is added to the [concept_government] while everyone else are removed"
+ SET_RULING_INTEREST_GROUPS:0 "The specified set of Interest Groups are added to the [concept_government] while everyone else are removed"
  
  ADD_MODIFIER:1 "$SUBJECT_NAME$ gets #tooltippable #tooltip:[GetRawTextTooltipTag('$ADD_MODIFIER_BREAKDOWN$')] $MODIFIER_NAME$#!#! $MAYBE_DECAYING_WITH_SPACE_AFTER$$DURATION$\n$TAB$#indent_newline:3 $MODIFIER_DESC$#!"
- ADD_MODIFIER_NEG:0 "$ADD_MODIFIER$"
  ADD_MODIFIER_FIRST:0 "$SUBJECT_NAME$ gets #tooltippable #tooltip:[GetRawTextTooltipTag('$ADD_MODIFIER_BREAKDOWN$')] $MODIFIER_NAME$#!#! $MAYBE_DECAYING_WITH_SPACE_AFTER$$DURATION$\n$TAB$#indent_newline:3 $MODIFIER_DESC$#!"
- ADD_MODIFIER_FIRST_NEG:0 "$ADD_MODIFIER_FIRST$"
  ADD_MODIFIER_THIRD:0 "$SUBJECT_NAME$ gets #tooltippable #tooltip:[GetRawTextTooltipTag('$ADD_MODIFIER_BREAKDOWN$')] $MODIFIER_NAME$#!#! $MAYBE_DECAYING_WITH_SPACE_AFTER$$DURATION$\n$TAB$#indent_newline:3 $MODIFIER_DESC$#!"
- ADD_MODIFIER_THIRD_NEG:0 "$ADD_MODIFIER_THIRD$"
  
  ADD_MODIFIER_BREAKDOWN:0 "#header $MODIFIER_NAME$#!\n$MODIFIER_DESC$"
  
@@ -318,8 +313,13 @@
 
  ACTIVATE_PRODUCTION_METHOD:0 "Activate [PRODUCTION_METHOD.GetName] for [BUILDING_TYPE.GetName] buildings in $TARGET|v$"
  ADD_COMMANDER_RANK:1 "[Character.GetFullName] $DESC_STR$ #variable [COMMANDER_RANK.GetName(Character.Self)]#!"
+ ADD_COMMANDER_RANK_GLOBAL: "$DESC_STR|U$ #variable [COMMANDER_RANK.GetName(Character.Self)]#!"
  SET_COMMANDER_RANK:1 "[Character.GetFullName] $DESC_STR$ #variable [COMMANDER_RANK.GetName(Character.Self)]#!"
+ SET_COMMANDER_RANK_GLOBAL: "$DESC_STR|U$ #variable [COMMANDER_RANK.GetName(Character.Self)]#!"
+ ADD_CHARACTER_ROLE_GLOBAL: "Becomes a #v $ROLE$#!"
  ADD_CHARACTER_ROLE:0 "[CHARACTER.GetFullName] becomes a #v $ROLE$#!"
+ REMOVE_CHARACTER_ROLE_GLOBAL: "Will no longer be a #v $ROLE$#!"
+ REMOVE_CHARACTER_ROLE: "[CHARACTER.GetFullName] will no longer be a #v $ROLE$#!"
  ADD_EXPERIENCE:0 "[CHARACTER.GetFullName] Gains [concept_life_experience]"
 
  CREATE_COUNTRY:0 "A new country is created"
@@ -394,14 +394,28 @@
  SET_TARIFFS_EXPORT_PRIORITY:0 "[COUNTRY.GetName] starts to collect #v Export Prioritized#! [concept_tariffs] on [TARGET_GOODS.GetName]"
  SET_TARIFFS_EXPORT_PRIORITY_FIRST:0 "[COUNTRY.GetNameNoFlag] starts to collect #v Export Prioritized#! [concept_tariffs] on [TARGET_GOODS.GetName]"
  SET_TARIFFS_EXPORT_PRIORITY_THIRD:0 "[COUNTRY.GetName] starts to collect #v Export Prioritized#! [concept_tariffs] on [TARGET_GOODS.GetName]"
-  
- ADD_RADICALS:2 "#variable $NUM|-=1%$#! of$FILTER$ [Concept('concept_pop', '$concept_pops$')] in $SUBJECT_NAME$ become more [concept_radical]"
- ADD_RADICALS_FIRST:2 "#variable $NUM|-=1%$#! of$FILTER$ [Concept('concept_pop', '$concept_pops$')] in $SUBJECT_NAME$ become more [concept_radical]"
- ADD_RADICALS_THIRD:2 "#variable $NUM|-=1%$#! of$FILTER$ [Concept('concept_pop', '$concept_pops$')] in $SUBJECT_NAME$ become more [concept_radical]"
- 
- ADD_LOYALISTS:3 "#variable $NUM|+=1%$#! of$FILTER$ [Concept('concept_pop', '$concept_pops$')] in $SUBJECT_NAME$ become more [Concept('concept_loyalist', '$concept_loyal$')]"
- ADD_LOYALISTS_FIRST:3 "#variable $NUM|+=1%$#! of$FILTER$ [Concept('concept_pop', '$concept_pops$')] in $SUBJECT_NAME$ become more [Concept('concept_loyalist', '$concept_loyal$')]"
- ADD_LOYALISTS_THIRD:3 "#variable $NUM|+=1%$#! of$FILTER$ [Concept('concept_pop', '$concept_pops$')] in $SUBJECT_NAME$ become more [Concept('concept_loyalist', '$concept_loyal$')]"
+
+ POP_EFFECT_FILTER: "[AddLocalizationIf(InterestGroup.IsValid, 'POP_EFFECT_FILTER_INTEREST_GROUP')][AddLocalizationIf(Culture.IsValid, 'POP_EFFECT_FILTER_CULTURE')][AddLocalizationIf(Religion.IsValid, 'POP_EFFECT_FILTER_RELIGION')][AddLocalizationIf(PopType.IsValid, 'POP_EFFECT_FILTER_POP_TYPE')][AddTextIf(Not(EqualTo_string('none', '$STRATA$')), Concatenate(Localize('$STRATA$'), ' '))][Concept('concept_pop', '$concept_pops$')]"
+ POP_EFFECT_FILTER_INTEREST_GROUP: "[InterestGroup.GetName] members of "
+ POP_EFFECT_FILTER_CULTURE: "[Culture.GetName] "
+ POP_EFFECT_FILTER_RELIGION: "[Religion.GetName] "
+ POP_EFFECT_FILTER_POP_TYPE: "[PopType.GetName] "
+ POP_EFFECT_FILTER_STRATA: "[Localize('$STRATA$')] "
+
+ ADD_RADICALS:3 "$VALUE|-=1%$ of $FILTER_DESC$ become more [concept_radical]"
+ ADD_RADICALS_FIRST:3 "$VALUE|-=1%$ of $FILTER_DESC$ in [COUNTRY.GetNameNoFlag] become more [concept_radical]"
+ ADD_RADICALS_THIRD:3 "$VALUE|-=1%$ of $FILTER_DESC$ in [COUNTRY.GetName] become more [concept_radical]"
+
+ ADD_LOYALISTS:3 "$VALUE|+=1%$ of $FILTER_DESC$ become more [concept_loyalist]"
+ ADD_LOYALISTS_FIRST:3 "$VALUE|+=1%$ of $FILTER_DESC$ in [COUNTRY.GetNameNoFlag] become more [concept_loyalist]"
+ ADD_LOYALISTS_THIRD:3 "$VALUE|+=1%$ of $FILTER_DESC$ in [COUNTRY.GetName] become more [concept_loyalist]"
+
+ ADD_RADICALS_IN_STATE_THIRD: "$VALUE|-=1%$ of $FILTER_DESC$ in [STATE.GetName] become more [concept_radical]"
+ ADD_LOYALISTS_IN_STATE_THIRD: "$VALUE|+=1%$ of $FILTER_DESC$ in [STATE.GetName] become more [concept_loyalist]"
+
+ KILL_POPULATION_PERCENT: "$VALUE|%v$ of $FILTER_DESC$ lose their lives"
+ KILL_POPULATION_PERCENT_THIRD: "$VALUE|1%v$ of $FILTER_DESC$ in [COUNTRY.GetName] lose their lives"
+ KILL_POPULATION_PERCENT_IN_STATE_THIRD: "$VALUE|1%v$ of $FILTER_DESC$ in [STATE.GetName] lose their lives"
 
  ADD_CIVIL_WAR_PROGRESS:0 "Change progress of civil war by $VALUE|%$"
  ADD_LAW_PROGRESS:0 "Change progress of law [Law.GetName] by $VALUE|0%$"
@@ -432,8 +446,55 @@
 
  PARTIES_EMERGENCE:0 "This will cause parties to emerge."
  PARTIES_DISAPPEARENCE:0 "This will cause parties to disappear."
- UPDATE_PARTY_SUPPORT_EFFECT:0 "Interest Groups will re-evaluate their party support."
+ UPDATE_PARTY_SUPPORT_EFFECT:1 "[Concept('concept_interest_group', '$concept_interest_groups$')] will re-evaluate their [concept_party] support."
+ UPDATE_PARTY_SUPPORT_EFFECT_NEG: "[Concept('concept_interest_group', '$concept_interest_groups$')] [concept_party] support will remain the same."
+ UPDATE_PARTY_SUPPORT_EFFECT_FIRST: "[Concept('concept_interest_group', '$concept_interest_groups$')] will re-evaluate their [concept_party] support in [COUNTRY.GetNameNoFlag]."
+ UPDATE_PARTY_SUPPORT_EFFECT_FIRST_NEG: "[Concept('concept_interest_group', '$concept_interest_groups$')] [concept_party] support will remain the same in [COUNTRY.GetNameNoFlag]."
+ UPDATE_PARTY_SUPPORT_EFFECT_THIRD: "[Concept('concept_interest_group', '$concept_interest_groups$')] will re-evaluate their [concept_party] support in [COUNTRY.GetName]."
+ UPDATE_PARTY_SUPPORT_EFFECT_THIRD_NEG: "[Concept('concept_interest_group', '$concept_interest_groups$')] [concept_party] support will remain the same in [COUNTRY.GetName]."
+ ADD_IG_TO_PARTY_EFFECT_GLOBAL: "[InterestGroup.GetName] joins"
+ ADD_IG_TO_PARTY_EFFECT_THIRD: "[InterestGroup.GetName] joins [PARTY.GetName]"
+ REMOVE_IG_FROM_PARTY_EFFECT_GLOBAL: "[InterestGroup.GetName] leaves"
+ REMOVE_IG_FROM_PARTY_EFFECT_THIRD: "[InterestGroup.GetName] leaves [PARTY.GetName]"
+ DISBAND_PARTY_EFFECT_GLOBAL: "Party is disbanded"
+ DISBAND_PARTY_EFFECT_GLOBAL_NEG: "Party is NOT disbanded"
+ DISBAND_PARTY_EFFECT_THIRD: "[PARTY.GetName] is disbanded"
+ DISBAND_PARTY_EFFECT_THIRD_NEG: "[PARTY.GetName] is NOT disbanded"
  
  ADD_CULTURE_STANDARD_OF_LIVING_MODIFIER:0 "Add $MODIFIER_DESC$ to [State.GetName]"
 
- ADD_RELIGION_STANDARD_OF_LIVING_MODIFIER:0 "Add $MODIFIER_DESC$ [Concept('concept_pop', '$concept_pops$')] in [State.GetName]"
+ EXILE_CHARACTER_THIRD: "[CHARACTER.GetFullName] is [Concept('concept_exile', '$concept_exiled$')]"
+ EXILE_CHARACTER_THIRD_NEG: "[CHARACTER.GetFullName] is NOT [Concept('concept_exile', '$concept_exiled$')]"
+ EXILE_CHARACTER_GLOBAL: "Is [Concept('concept_exile', '$concept_exiled$')]"
+ EXILE_CHARACTER_GLOBAL_NEG: "Is NOT [Concept('concept_exile', '$concept_exiled$')]"
+
+ SET_HOME_COUNTRY_THIRD: "[TARGET_COUNTRY.GetName] becomes [CHARACTER.GetFullNamePossessive] home country"
+ SET_HOME_COUNTRY_DEFINITION_THIRD: "[TARGET_COUNTRY_DEFINITION.GetName] becomes [CHARACTER.GetFullNamePossessive] home country"
+ SET_HOME_COUNTRY_GLOBAL: "[TARGET_COUNTRY.GetName] becomes their home country"
+ SET_HOME_COUNTRY_DEFINITION_GLOBAL: "[TARGET_COUNTRY_DEFINITION.GetName] becomes their home country"
+
+ DISINHERIT_CHARACTER: "Loses their heir status."
+ DISINHERIT_CHARACTER_NEG: "Does NOT lose their heir status."
+ DISINHERIT_CHARACTER_THIRD: "[CHARACTER.GetFullName] loses their heir status."
+ DISINHERIT_CHARACTER_THIRD_NEG: "[CHARACTER.GetFullName] does NOT lose their heir status."
+
+ SET_CHARACTER_AS_RULER: "Becomes ruler."
+ SET_CHARACTER_AS_RULER_NEG: "Does NOT become ruler."
+ SET_CHARACTER_AS_RULER_THIRD: "[CHARACTER.GetFullName] becomes ruler in [COUNTRY.GetName]."
+ SET_CHARACTER_AS_RULER_THIRD_NEG: "[CHARACTER.GetFullName] does NOT become ruler in [COUNTRY.GetName]."
+
+ ADD_ENACTMENT_PHASE_FIRST: "[Concept('concept_enactment_of_laws','$concept_enactment_of_laws_enactment$')] of [COUNTRY.GetLawBeingEnacted.GetName] in [COUNTRY.GetNameNoFlag] progresses by $VALUE|v0$ [Select_CString( EqualTo_CFixedPoint( '(CFixedPoint)$VALUE$', '(CFixedPoint)1' ), Concept('concept_enactment_phase','$concept_enactment_phase_short$'), Concept('concept_enactment_phase','$concept_enactment_phases_short$') )]"
+ ADD_ENACTMENT_PHASE_THIRD: "[Concept('concept_enactment_of_laws','$concept_enactment_of_laws_enactment$')] of [COUNTRY.GetLawBeingEnacted.GetName] in [COUNTRY.GetName] moves ahead $VALUE|v0$ [Select_CString( EqualTo_CFixedPoint( '(CFixedPoint)$VALUE$', '(CFixedPoint)1' ), Concept('concept_enactment_phase','$concept_enactment_phase_short$'), Concept('concept_enactment_phase','$concept_enactment_phases_short$') )]"
+ ADD_ENACTMENT_PHASE_GLOBAL: "[Concept('concept_enactment_of_laws','$concept_enactment_of_laws_enactment$')] moves ahead $VALUE|v0$ [Select_CString( EqualTo_CFixedPoint( '(CFixedPoint)$VALUE$', '(CFixedPoint)1' ), Concept('concept_enactment_phase','$concept_enactment_phase_short$'), Concept('concept_enactment_phase','$concept_enactment_phases_short$') )]"
+ ADD_ENACTMENT_SETBACK_FIRST: "[Concept('concept_enactment_of_laws','$concept_enactment_of_laws_enactment$')] of [COUNTRY.GetLawBeingEnacted.GetName] in [COUNTRY.GetNameNoFlag] gains $VALUE|v0$ [Select_CString( EqualTo_CFixedPoint( '(CFixedPoint)$VALUE$', '(CFixedPoint)1' ), Concept('concept_enactment_setback', '$concept_enactment_setback_short$'), Concept('concept_enactment_setback', '$concept_enactment_setbacks_short$') )]"
+ ADD_ENACTMENT_SETBACK_THIRD: "[Concept('concept_enactment_of_laws','$concept_enactment_of_laws_enactment$')] of [COUNTRY.GetLawBeingEnacted.GetName] in [COUNTRY.GetName] gains $VALUE|v0$ [Select_CString( EqualTo_CFixedPoint( '(CFixedPoint)$VALUE$', '(CFixedPoint)1' ), Concept('concept_enactment_setback', '$concept_enactment_setback_short$'), Concept('concept_enactment_setback', '$concept_enactment_setbacks_short$') )]"
+ ADD_ENACTMENT_SETBACK_GLOBAL: "[Concept('concept_enactment_of_laws','$concept_enactment_of_laws_enactment$')] gains $VALUE|v0$ [Select_CString( EqualTo_CFixedPoint( '(CFixedPoint)$VALUE$', '(CFixedPoint)1' ), Concept('concept_enactment_setback', '$concept_enactment_setback_short$'), Concept('concept_enactment_setback', '$concept_enactment_setbacks_short$') )]"
+ CLEAR_ENACTMENT_MODIFIER_FIRST: "Previous outcomes will be removed in [COUNTRY.GetNameNoFlag]:\n$MODIFIER_BREAKDOWN$"
+ CLEAR_ENACTMENT_MODIFIER_THIRD: "Previous outcomes will be removed in [COUNTRY.GetName]:\n$MODIFIER_BREAKDOWN$"
+ CLEAR_ENACTMENT_MODIFIER_FIRST_NEG: "Previous outcomes will NOT be removed in [COUNTRY.GetNameNoFlag]:\n$MODIFIER_BREAKDOWN$"
+ CLEAR_ENACTMENT_MODIFIER_THIRD_NEG: "Previous outcomes will NOT be removed in [COUNTRY.GetName]:\n$MODIFIER_BREAKDOWN$"
+ CLEAR_ENACTMENT_MODIFIER_EMPTY_BREAKDOWN: "#italic No previous outcomes#!"
+ CLEAR_ENACTMENT_MODIFIER_GLOBAL: "Previous outcomes will be removed"
+ CLEAR_ENACTMENT_MODIFIER_GLOBAL_NEG: "Previous outcomes will NOT be removed"
+
+ ADD_RELIGION_STANDARD_OF_LIVING_MODIFIER:1 "Add $MODIFIER_DESC$ [Concept('concept_pop', '$concept_pops$')] in [State.GetName] $DURATION$"
