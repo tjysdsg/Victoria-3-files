@@ -60,6 +60,19 @@ nihilism.1 = {
 						game_date >= 1844.1.1
 						game_date <= 1866.1.1
 					}
+					OR = { #So that the player always has first dibs on Stirner if they're playing a German country.
+						is_player = yes
+						NOT = {
+							any_country = {
+								OR = {
+									country_has_primary_culture = cu:north_german
+									country_has_primary_culture = cu:south_german
+								}
+								is_player = yes
+							}
+						}
+					}
+					NOT = { has_global_variable = stirner_spawn }
 				}
 				create_character = {
 					first_name = Max
@@ -77,6 +90,7 @@ nihilism.1 = {
 					}
 					on_created = {
 						set_variable = is_stirner_var
+						set_global_variable = stirner_spawn
 					}
 				}
 			}
