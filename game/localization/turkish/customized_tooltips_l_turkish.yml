@@ -1,5 +1,5 @@
 ﻿l_turkish:
-#Wiring to make things tooltippable in tooltips
+ #Wiring to make things tooltippable in tooltips
  DATA_BUILDING_NAME_FORMAT: "#tooltippable_name #tooltip:$TAG$,DATA_BUILDING_NAME_TOOLTIP,BuildingTooltip $NAME$#!#!"
  DATA_BUILDING_TYPE_NAME_FORMAT: "#tooltippable_name #tooltip:$TAG$,DATA_BUILDING_TYPE_NAME_TOOLTIP,BuildingTypeTooltip $NAME$#!#!"
  DATA_CHARACTER_NAME_FORMAT: "#tooltippable_name #tooltip:$TAG$,DATA_CHARACTER_NAME_TOOLTIP,CharacterTooltip $NAME$#!#!"
@@ -36,17 +36,17 @@
  DATA_BATTLE_CONDITION_NAME_FORMAT: "#tooltippable_name #tooltip:$TAG$,DATA_BATTLE_CONDITION_NAME_TOOLTIP,BattleConditionTooltip $NAME$#!#!"
  DATA_GOODS_STATE_PRICE_WITH_TOOLTIP_FORMAT: "#tooltippable #tooltip:$TAG$,DATA_GOODS_STATE_PRICE_BREAKDOWN,GraphTooltipGoodsPrice @money![Goods.GetStatePrice|1]#!#! [Goods.GetCompareIconAgainstBasePrice( Goods.GetStatePrice )]"
  DATA_GOODS_MARKET_PRICE_WITH_TOOLTIP_FORMAT: "#tooltippable #tooltip:$TAG$,DATA_GOODS_MARKET_PRICE_BREAKDOWN,GraphTooltipGoodsPrice @money![Goods.GetMarketPrice|1]#!#! [Goods.GetCompareIconAgainstBasePrice( Goods.GetMarketPrice )]"
-#THEATER
-#MODIFIERS
+ #THEATER
+ #MODIFIERS
  DATA_PRODUCTION_METHOD_NAME_FORMAT: "#tooltippable_name #tooltip:$TAG$,DATA_PRODUCTION_METHOD_NAME_TOOLTIP,ProductionMethodTooltip $NAME$#!#!"
-#POP
-#BUY PACKAGE
+ #POP
+ #BUY PACKAGE
  DATA_TECHNOLOGY_NAME_FORMAT: "#tooltippable_name #tooltip:$TAG$,DATA_TECHNOLOGY_NAME_TOOLTIP,TechnologyTooltip $NAME$#!#!"
  DATA_WAR_NAME_FORMAT: "#tooltippable_name #tooltip:$TAG$,DATA_WAR_NAME_TOOLTIP,WarTooltip $NAME$#!#!"
  DATA_OBJECTIVE_TYPE_NAME_FORMAT: "#tooltippable_name #tooltip:$TAG$,DATA_OBJECTIVE_TYPE_TOOLTIP,ObjectiveTypeTooltip $NAME$#!#!"
  DATA_OBJECTIVE_NAME_FORMAT: "#tooltippable_name #tooltip:$TAG$,DATA_OBJECTIVE_TOOLTIP,ObjectiveTooltip $NAME$#!#!"
  DATA_LEGITIMACY_LEVEL_NAME_FORMAT: "#tooltippable_name #tooltip:$TAG$,DATA_LEGITIMACY_LEVEL_TOOLTIP,LegitimacyLevelTooltip $NAME$#!#!"
-#"Regular" info used in fancier tooltips
+ #"Regular" info used in fancier tooltips
  COMMANDER_LOCATION_UNKNOWN: "#v Bilinmiyor#!"
  COMMANDER_CURRENT_ORDERS: "Konum: [Character.GetLocationFormatted]"
  DATA_CHARACTER_COMMANDER_LOCATION_TOOLTIP: "Ana Karargâh: [Character.GetHomeHQ.GetNameNoFlag|v][AddTextIf(And( Character.GetHomeHQ.IsValid, Not(Character.IsOffer)), '\nKonum:' )] [AddTextIf( And( Character.GetHomeHQ.IsValid, Not(Character.IsOffer)), Character.GetLocationFormatted )]"
@@ -56,12 +56,18 @@
  DATA_CHARACTER_NAME_TOOLTIP: "[AddTextIf( Character.IsHistorical, Concatenate( Localize( 'DATA_CHARACTER_TOOLTIP_HISTORICAL' ), '\n\n' ) )][Concept('concept_character_role', '$concept_character_roles$')]: [Character.GetAllRoleNames|v]$DATA_CHARACTER_NAME_TOOLTIP_COMMANDER_DETAILS$[ConcatIfNeitherEmpty('\n', AddLocalizationIf( Character.IsAgitator, 'AGITATOR_POLITICAL_MOVEMENT'))]\n\n[Concept('concept_character_trait', '$concept_character_traits$')]: [Character.GetTraitsDesc]\n[concept_interest_group]: [Character.GetInterestGroup.GetName]\n[concept_ideology]: [Character.GetIdeology.GetName]\n\n[SelectLocalization(Character.IsInExilePool, 'DATA_CHARACTER_NAME_TOOLTIP_LOCATION_EXILE', 'DATA_CHARACTER_NAME_TOOLTIP_LOCATION_COUNTRY')]\n[concept_culture]: [Character.GetCulture.GetName]\n[concept_religion]: [Character.GetReligion.GetName]\n[concept_popularity]: #tooltippable_name #tooltip:[Character.GetTooltipTag],POPULARITY_BREAKDOWN [LabelingHelper.GetLabelForPopularityCFixedPoint(Character.GetPopularity)]#!#! (#tooltippable #tooltip:[Character.GetTooltipTag],POPULARITY_BREAKDOWN [Character.GetPopularity|0]#!#!)\nYaş: [Character.GetAge|v][ConcatIfNeitherEmpty('\n\n', Character.GetDebugDesc)]"
  DATA_CHARACTER_TOOLTIP_HISTORICAL: "#b Bu bir tarihsel karakter#!"
  CHARACTER_TOOLTIP_HEADER_NAME: "[Character.GetFullNameWithTitleNoFormatting] [AddLocalizationIf( Character.IsInExilePool, 'CHARACTER_IS_IN_EXILE')]"
- AGITATOR_POLITICAL_MOVEMENT: "[SelectLocalization(Character.GetPoliticalMovement.IsValid, 'AGITATOR_POLITICAL_MOVEMENT_IMPL', 'AGITATOR_POLITICAL_MOVEMENT_PREDICTION')]"
- AGITATOR_POLITICAL_MOVEMENT_IMPL: "[Character.GetPoliticalMovement.GetFullName] hareketini destekliyor"
- AGITATOR_POLITICAL_MOVEMENT_PREDICTION: "[SelectLocalization(Character.PredictLawToAgitate(GetPlayer.Self).GetPoliticalMovement.IsValid, 'AGITATOR_POLITICAL_MOVEMENT_PREDICTION_JOIN', SelectLocalization(Character.PredictLawToAgitate(GetPlayer.Self).IsValid, 'AGITATOR_POLITICAL_MOVEMENT_PREDICTION_START', 'AGITATOR_POLITICAL_MOVEMENT_PREDICTION_NONE'))]"
- AGITATOR_POLITICAL_MOVEMENT_PREDICTION_START: "Davet edilirse bir [Character.PredictLawToAgitate(GetPlayer.Self).GetPotentialPoliticalMovementFullName] hareketi başlatır"
- AGITATOR_POLITICAL_MOVEMENT_PREDICTION_JOIN: "Davet edilirse [Character.PredictLawToAgitate(GetPlayer.Self).GetPoliticalMovement.GetFullName] hareketine katılır"
- AGITATOR_POLITICAL_MOVEMENT_PREDICTION_NONE: "Davet edilirse bir [concept_political_movement] #b başlatmaz#! veya bu türden bir harekete #b katılmaz#!"
+ AGITATOR_POLITICAL_MOVEMENT_NOTIFICATION: "[Character.GetFullName], [Character.GetCountry.GetNameNoFlag] ülkesinde ortaya çıktı!\n$AGITATOR_POLITICAL_MOVEMENT$"
+ AGITATOR_POLITICAL_MOVEMENT: "[SelectLocalization(Character.IsInExilePool, 'AGITATOR_POLITICAL_MOVEMENT_PREDICTION_INVITE', 'AGITATOR_POLITICAL_MOVEMENT_IN_COUNTRY')]"
+ AGITATOR_POLITICAL_MOVEMENT_PREDICTION_INVITE: "[SelectLocalization(Character.PredictLawToAgitate(GetPlayer.Self).GetPoliticalMovement.IsValid, 'AGITATOR_POLITICAL_MOVEMENT_PREDICTION_INVITE_JOIN', SelectLocalization(Character.PredictLawToAgitate(GetPlayer.Self).IsValid, 'AGITATOR_POLITICAL_MOVEMENT_PREDICTION_INVITE_START', 'AGITATOR_POLITICAL_MOVEMENT_PREDICTION_INVITE_NONE'))]"
+ AGITATOR_POLITICAL_MOVEMENT_PREDICTION_INVITE_START: "Davet edilirse bir [Character.PredictLawToAgitate(GetPlayer.Self).GetPotentialPoliticalMovementFullName] hareketi başlatır"
+ AGITATOR_POLITICAL_MOVEMENT_PREDICTION_INVITE_JOIN: "Davet edilirse [Character.PredictLawToAgitate(GetPlayer.Self).GetPoliticalMovement.GetFullName] hareketine katılır"
+ AGITATOR_POLITICAL_MOVEMENT_PREDICTION_INVITE_NONE: "Davet edilirse bir [concept_political_movement] #b başlatmaz#! veya bu türden bir harekete #b katılmaz#!"
+ AGITATOR_POLITICAL_MOVEMENT_IN_COUNTRY: "[SelectLocalization(Character.GetPoliticalMovement.IsValid, 'AGITATOR_POLITICAL_MOVEMENT_SUPPORTS', 'AGITATOR_POLITICAL_MOVEMENT_PREDICTION_IN_COUNTRY')]"
+ AGITATOR_POLITICAL_MOVEMENT_SUPPORTS: "[Character.GetPoliticalMovement.GetFullName] hareketini destekliyor"
+ AGITATOR_POLITICAL_MOVEMENT_PREDICTION_IN_COUNTRY: "[SelectLocalization(Character.PredictLawToAgitate(GetPlayer.Self).GetPoliticalMovement.IsValid, 'AGITATOR_POLITICAL_MOVEMENT_PREDICTION_IN_COUNTRY_JOIN', SelectLocalization(Character.PredictLawToAgitate(GetPlayer.Self).IsValid, 'AGITATOR_POLITICAL_MOVEMENT_PREDICTION_IN_COUNTRY_START', 'AGITATOR_POLITICAL_MOVEMENT_PREDICTION_IN_COUNTRY_NONE'))]"
+ AGITATOR_POLITICAL_MOVEMENT_PREDICTION_IN_COUNTRY_START: "Bir [Character.PredictLawToAgitate(GetPlayer.Self).GetPotentialPoliticalMovementFullName] hareketi başlatır"
+ AGITATOR_POLITICAL_MOVEMENT_PREDICTION_IN_COUNTRY_JOIN: "[Character.PredictLawToAgitate(GetPlayer.Self).GetPoliticalMovement.GetFullName] hareketine katılır"
+ AGITATOR_POLITICAL_MOVEMENT_PREDICTION_IN_COUNTRY_NONE: "Bir [concept_political_movement] #b başlatmaz#! veya bu türden bir harekete #b katılmaz#!"
  DATA_POLITICAL_MOVEMENT_NAME_TOOLTIP: "[ConcatIfNeitherEmpty(AddLocalizationIf(PoliticalMovement.IsPlacated, 'POLITICAL_MOVEMENT_PLACATED'), '\n\n')][AddLocalizationIf(PoliticalMovement.IsRevolutionary, 'POLITICAL_MOVEMENT_IS_REVOLUTIONARY')][ConcatIfNeitherEmpty('\n', AddLocalizationIf(PoliticalMovement.IsRevolutionary, 'POLITICAL_MOVEMENT_REVOLUTION_PROGRESS'))][ConcatIfNeitherEmpty('\n', AddLocalizationIf(PoliticalMovement.IsRevolutionary, 'POLITICAL_MOVEMENT_REVOLUTION_CLOCK_CHECKPOINT'))][ConcatIfNeitherEmpty(ConcatIfNeitherEmpty('\n', AddLocalizationIf(PoliticalMovement.IsRevolutionary, 'POLITICAL_MOVEMENT_REVOLUTION_PROGRESS_AT_CHECKPOINT')), '\n\n')]$POLITICAL_MOVEMENT_SUPPORT_WITH_LABEL$\n$POLITICAL_MOVEMENT_RADICALISM_WITH_LABEL$\n$POLITICAL_MOVEMENT_LOYALTY_PREDICTIONS$"
  DATA_POLITICAL_MOVEMENT_STATES_SECEDED: "\n[PoliticalMovement.GetRevolution.GetUprisingStatesString]"
  DATA_CHARACTER_NAME_TOOLTIP_LOCATION_COUNTRY: "[concept_country]: [Character.GetCountry.GetName]"
@@ -209,7 +215,7 @@
  DATA_GOODS_STATE_CONTEXT_CONSUMPTION_LABEL: "[State.GetName] Tüketimi"
  DATA_GOODS_STATE_CONTEXT_BALANCE_LABEL: "[State.GetName] Bilançosu"
  DATA_GOODS_STATE_CONTEXT_PRICE_LABEL: "[State.GetName] Fiyatı"
-#BREAKDOWNS
+ #BREAKDOWNS
  COUNTRY_RANK_BREAKDOWN: "[Country.GetRankTooltip]"
  IG_CLOUT_BREAKDOWN: "#BOLD #V [concept_clout]#!#!\n$POL_STR_RATIO$\n$TOOLTIP_DELIMITER$\n$RAW_POL_STR$\n\nNüfus: #variable [InterestGroup.GetPopulation|D*]#!"
  IG_APPROVAL_BREAKDOWN: "#header [concept_approval]#!\n[InterestGroup.GetName] grubunun [Concept('concept_approval', 'Onayı')] [InterestGroup.GetApprovalRating|v] (#bold [InterestGroup.GetApprovalValue|+=]#!)\n$TOOLTIP_DELIMITER$\n[InterestGroup.GetApprovalValueDesc]"

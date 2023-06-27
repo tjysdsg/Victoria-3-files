@@ -391,7 +391,11 @@ types commander_panel_types
 	type commander_panel = default_block_window_two_lines {
 		name = "commander_panel"
 
+		datacontext = "[CommanderPanel.AccessCharacter]"
+
 		blockoverride "animation_state_block" {
+			datacontext = "[CommanderPanel.AccessCharacter]"
+
 			state = {
 				name = _show
 
@@ -435,8 +439,6 @@ types commander_panel_types
 				}
 			}
 		}
-
-		datacontext = "[CommanderPanel.AccessCharacter]"
 
 		blockoverride "window_header_name" {
 			text = "[Character.GetFullName]"
@@ -880,7 +882,113 @@ types commander_panel_types
 								}
 								blockoverride "single_text_entry" {}
 
+								blockoverride "divider" {
+									divider_clean = {
+										visible = "[Character.IsAgitator]"
+										parentanchor = bottom|hcenter
+										position = { 0 -2 }
+									}
+								}
+							}
+
+							### POLITICAL MOVEMENT PREDICTION - WHEN IN EXILE POOL
+							character_stats_entry = {
+
+								datacontext = "[Character.PredictLawToAgitate(GetPlayer.Self)]"
+								datacontext = "[Law.GetPoliticalMovement]"
+
+								tooltip = "AGITATOR_POLITICAL_MOVEMENT_PREDICTION_INVITE"
+
+								blockoverride "visibility" {
+									visible = "[Character.IsInExilePool]"
+								}
+
+								blockoverride "icon" {
+									icon = {
+										visible = "[Law.IsValid]"
+										size = { 35 35 }
+										texture = "[Law.GetTexture]"
+										parentanchor = left|vcenter
+										position = { 10 0 }
+									}
+
+									icon = {
+										visible = "[Not(Law.IsValid)]"
+										size = { 35 35 }
+										texture = "gfx/interface/icons/generic_icons/red_cross.dds"
+										parentanchor = left|vcenter
+										position = { 10 0 }
+									}
+								}
+
+								blockoverride "double_entry_label" {}
+								blockoverride "double_entry_value" {}
+								blockoverride "single_text_entry" {}
+
 								blockoverride "divider" {}
+
+								blockoverride "additional_items" {
+									textbox = {
+										size = { 170 40 }
+										position = { 55 0 }
+										parentanchor = vcenter
+										elide = right
+										fontsize_min = 14
+										multiline = yes
+										align = left|nobaseline
+										text = "AGITATOR_START_JOIN_POLITICAL_MOVEMENT"
+									}
+								}
+							}
+
+							### POLITICAL MOVEMENT - WHEN IN A COUNTRY
+							character_stats_entry = {
+
+								datacontext = "[Character.PredictLawToAgitate(GetPlayer.Self)]"
+								datacontext = "[Law.GetPoliticalMovement]"
+
+								tooltip = "AGITATOR_POLITICAL_MOVEMENT"
+
+								blockoverride "visibility" {
+									visible = "[And(Not(Character.IsInExilePool), Character.IsAgitator)]"
+								}
+
+								blockoverride "icon" {
+									icon = {
+										visible = "[Law.IsValid]"
+										size = { 35 35 }
+										texture = "[Law.GetTexture]"
+										parentanchor = left|vcenter
+										position = { 10 0 }
+									}
+
+									icon = {
+										visible = "[Not(Law.IsValid)]"
+										size = { 35 35 }
+										texture = "gfx/interface/icons/generic_icons/red_cross.dds"
+										parentanchor = left|vcenter
+										position = { 10 0 }
+									}
+								}
+
+								blockoverride "double_entry_label" {}
+								blockoverride "double_entry_value" {}
+								blockoverride "single_text_entry" {}
+
+								blockoverride "divider" {}
+
+								blockoverride "additional_items" {
+									textbox = {
+										size = { 170 40 }
+										position = { 55 0 }
+										parentanchor = vcenter
+										elide = right
+										fontsize_min = 14
+										multiline = yes
+										align = left|nobaseline
+										text = "AGITATOR_POLITICAL_MOVEMENT"
+									}
+								}
 							}
 						}
 					}
