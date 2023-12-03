@@ -44,6 +44,21 @@ DEFAULT = {
 			}			
 		}
 	}
+	# San Marco
+	dynamic_country_name = {
+		name = rsm_revolt_name
+		adjective = rsm_revolt_name_adj
+		
+		is_revolutionary = yes
+		priority = 100
+		
+		trigger = {
+			scope:actor = {
+				c:RSM ?= this
+			}
+		}
+	}
+
 	# Important ideologies
 	dynamic_country_name = {
 		name = generic_revolt_communist
@@ -88,6 +103,7 @@ DEFAULT = {
 					is_strongest_ig_in_government = yes
 					leader = {
 						OR = {
+							has_ideology = ideology:ideology_integralist
 							has_ideology = ideology:ideology_fascist
 							has_ideology = ideology:ideology_ethno_nationalist
 						}
@@ -392,6 +408,96 @@ DEFAULT = {
 			}
 		}
 	}
+	dynamic_country_name = {
+		name = colonial_admin_zanj
+		adjective = colonial_admin_zanj_adj
+		use_overlord_prefix = yes
+		
+		priority = 100
+		
+		trigger = {
+			exists = scope:actor
+			scope:actor = {
+				has_variable = zanj_subject_var
+			}
+		}
+	}
+	dynamic_country_name = {
+		name = colonial_admin_ethiopia
+		adjective = colonial_admin_ethiopia_adj
+		use_overlord_prefix = yes
+		
+		priority = 100
+		
+		trigger = {
+			exists = scope:actor
+			scope:actor = {
+				has_variable = ethiopia_subject_var
+			}
+		}
+	}
+	dynamic_country_name = {
+		name = colonial_admin_southern_africa
+		adjective = colonial_admin_southern_africa_adj
+		use_overlord_prefix = yes
+		
+		priority = 100
+		
+		trigger = {
+			exists = scope:actor
+			scope:actor = {
+				has_variable = southern_africa_subject_var
+			}
+			NOT = {
+				scope:actor = {
+					c:SAF ?= this
+					c:GBR ?= this.overlord
+				}
+			}
+		}
+	}
+	dynamic_country_name = {
+		name = colonial_admin_congo
+		adjective = colonial_admin_congo_adj
+		use_overlord_prefix = yes
+		
+		priority = 100
+		
+		trigger = {
+			exists = scope:actor
+			scope:actor = {
+				has_variable = congo_subject_var
+			}
+		}
+	}
+	dynamic_country_name = {
+		name = colonial_admin_niger
+		adjective = colonial_admin_niger_adj
+		use_overlord_prefix = yes
+		
+		priority = 100
+		
+		trigger = {
+			exists = scope:actor
+			scope:actor = {
+				has_variable = niger_subject_var
+			}
+		}
+	}
+	dynamic_country_name = {
+		name = colonial_admin_senegal
+		adjective = colonial_admin_senegal_adj
+		use_overlord_prefix = yes
+		
+		priority = 100
+		
+		trigger = {
+			exists = scope:actor
+			scope:actor = {
+				has_variable = senegal_subject_var
+			}
+		}
+	}
 }
 
 SWE = {
@@ -563,6 +669,7 @@ AZB = { # Azerbaijan
 BAV = { # Bavaria
 	dynamic_country_name = {
 		name = dyn_c_bavarian_raterepublic
+		adjective = BAV_ADJ
 		
 		is_main_tag_only = no # good name for a communist revolution
 		priority = 0
@@ -576,6 +683,7 @@ BAV = { # Bavaria
 BEL = { # Belgium
 	dynamic_country_name = {
 		name = dyn_c_united_belgian_states
+		adjective = BEL_ADJ
 		
 		is_main_tag_only = yes
 		priority = 0
@@ -587,10 +695,11 @@ BEL = { # Belgium
 	}	
 }
 
-BIC = { # British East India Company
+BIC = { # East India Company
 	dynamic_country_name = {
 		name = dyn_c_british_raj
 		adjective = dyn_c_british_raj_adj
+		use_overlord_prefix = yes
 
 		is_main_tag_only = yes
 		priority = 0
@@ -607,14 +716,30 @@ BIC = { # British East India Company
 		}
 	}
 	dynamic_country_name = {
-		name = dyn_c_east_india
-		adjective = dyn_c_east_india_adj
+		name = dyn_c_east_india_company
+		adjective = dyn_c_east_india_company_adj
+		use_overlord_prefix = yes
 
 		is_main_tag_only = yes
 		priority = 0
 		
 		trigger = {
-			coa_def_independent_trigger = yes
+			coa_def_subject_trigger = yes
+		}
+	}
+}
+
+DEI = { # East Indies
+	dynamic_country_name = {
+		name = dyn_c_east_indies
+		adjective = dyn_c_east_indies_adj
+		use_overlord_prefix = yes
+
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			coa_def_subject_trigger = yes
 		}
 	}
 }
@@ -657,26 +782,10 @@ BNJ = { # Banjar
 	}
 }
 
-BOL = {
-	dynamic_country_name = {
-		name = dyn_c_peru_bolivia
-		adjective = dyn_c_peru_bolivia_adj
-		
-		is_main_tag_only = yes
-		priority = 1
-		
-		trigger = {
-			scope:actor = {
-				owns_entire_state_region = STATE_LA_PAZ
-				owns_entire_state_region = STATE_LIMA
-			}
-		}
-	}
-}
-
 BRE = { # Bremen
 	dynamic_country_name = {
 		name = dyn_c_bremener_raterepublic
+		adjective = BRE_ADJ
 		
 		is_main_tag_only = no # good name for a communist revolution
 		priority = 0
@@ -795,6 +904,7 @@ CHI = { # China
 	}
 	dynamic_country_name = {
 		name = dyn_c_peoples_republic_of_china
+		adjective = CHI_ADJ
 		
 		is_main_tag_only = yes
 		priority = 0
@@ -814,11 +924,21 @@ CLM = { # Colombia
 		priority = 0
 		
 		trigger = {
-			coa_def_republic_flag_trigger = yes
-			scope:actor = {
-				OR = {
-					has_law = law_type:law_legacy_slavery
-					has_law = law_type:law_slave_trade
+			OR = {
+				AND = {
+					coa_def_republic_flag_trigger = yes
+					scope:actor = {
+						OR = {
+							has_law = law_type:law_legacy_slavery
+							has_law = law_type:law_slave_trade
+						}
+					}
+				}
+				AND = {
+					exists = c:SPA
+					scope:actor = {
+						is_subject_of = c:SPA
+					}
 				}
 			}
 		}
@@ -845,6 +965,8 @@ COM = { # Comanche
 CSA = { # Confederate States of America
 	dynamic_country_name = {
 		name = dyn_c_confederate_state_of_america
+		adjective = CSA_ADJ
+
 		priority = 0
 		
 		trigger = {
@@ -883,6 +1005,7 @@ CSA = { # Confederate States of America
 
 	dynamic_country_name = {
 		name = dyn_c_confederate_synods_of_america
+		adjective = CSA_ADJ
 		
 		is_main_tag_only = yes
 		priority = 0
@@ -893,9 +1016,28 @@ CSA = { # Confederate States of America
 	}
 }
 
+RSM = { # Republic of San Marco
+	dynamic_country_name = {
+		name = dyn_c_republic_of_san_marco
+		adjective = RSM_ADJ
+		
+		is_main_tag_only = yes
+		priority = 5
+		
+		trigger = {
+			OR = {
+				has_law = law_type:law_parliamentary_republic
+				has_law = law_type:law_presidential_republic
+				has_law = law_type:law_council_republic
+			}
+		}
+	}
+}
+
 FIN = { # Finland
 	dynamic_country_name = {
 		name = dyn_c_grand_duchy_of_finland
+		adjective = FIN_ADJ
 		
 		is_main_tag_only = yes
 		priority = 0
@@ -916,6 +1058,7 @@ FIN = { # Finland
 GBR = { # Great Britain of United Kingdom
 	dynamic_country_name = {
 		name = dyn_c_british_republic
+		adjective = GBR_ADJ
 		
 		is_main_tag_only = yes
 		priority = 1
@@ -971,6 +1114,7 @@ GBR = { # Great Britain of United Kingdom
 GER = { # Germany
 	dynamic_country_name = {
 		name = dyn_c_german_empire
+		adjective = GER_ADJ
 		
 		is_main_tag_only = yes
 		priority = 0
@@ -1130,8 +1274,10 @@ ITA = { # Italy
 		
 		trigger = {
 			exists = scope:actor
-			scope:actor = { has_law = law_type:law_theocracy }
-			NOT = { exists = c:PAP }
+			scope:actor = { 
+				has_law = law_type:law_theocracy 
+				was_formed_from = PAP
+			}
 		}
 	}
 }
@@ -1149,6 +1295,21 @@ JAP = { # Japan
 			scope:actor = { 
 				has_law = law_type:law_monarchy
 				NOT = { has_variable = meiji_var }
+			}
+		}
+	}
+	dynamic_country_name = {
+		name = dyn_c_empire_of_japan
+		adjective = dyn_c_empire_of_japan_adj
+
+		is_main_tag_only = yes
+		priority = 20
+
+		trigger = {
+			exists = scope:actor
+			scope:actor = { 
+				has_law = law_type:law_monarchy
+				has_variable = meiji_var
 			}
 		}
 	}
@@ -1205,6 +1366,21 @@ KOR = { # Korea
 			scope:actor = { has_law = law_type:law_monarchy }
 		}
 	}
+	dynamic_country_name = { # Korean Empire
+		name = dyn_c_empire_of_korea
+		adjective = dyn_c_empire_of_korea_adj
+		
+		is_main_tag_only = yes
+		priority = 25
+		
+		trigger = {
+			exists = scope:actor
+			scope:actor = { 
+				has_variable = KOR_korean_empire_declared
+				has_law = law_type:law_monarchy 
+			}
+		}
+	}
 }
 
 LAN = { # Lanfang
@@ -1244,6 +1420,7 @@ LAT = { # Latvia
 MEX = { # Mexico
 	dynamic_country_name = {
 		name = dyn_c_mexican_empire
+		adjective = MEX_ADJ
 		
 		is_main_tag_only = yes
 		priority = 0
@@ -1269,6 +1446,7 @@ MEX = { # Mexico
 MKT = { # Miskito
 	dynamic_country_name = {
 		name = dyn_c_miskito_kingdom
+		adjective = MKT_ADJ
 		
 		is_main_tag_only = yes
 		priority = 0
@@ -1330,6 +1508,39 @@ MOL = { # Moldavia
 			coa_def_monarchy_flag_trigger = no
 		}
 	}
+
+	dynamic_country_name = {
+		name = dyn_c_united_principalities
+		adjective = dyn_c_united_principalities_adj
+		
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			coa_def_monarchy_flag_trigger = yes
+			scope:actor = {
+				has_variable = ROM_united_principality
+			}
+		}
+	}
+
+	dynamic_country_name = {
+		name = dyn_c_moldavia_and_wallachia
+		adjective = dyn_c_moldavia_and_wallachia_adj
+		
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			coa_def_monarchy_flag_trigger = no
+			scope:actor = {
+				has_variable = ROM_united_principality
+			}
+			c:WAL ?= {
+				is_subject_of = scope:actor
+			}
+		}
+	}
 }
 
 NEJ = { # Nejd
@@ -1349,19 +1560,16 @@ NEJ = { # Nejd
 	}
 }
 
-NET = { # Netherlands
+UNL = { # United Netherlands
 	dynamic_country_name = {
-		name = dyn_c_united_netherlands
-		
+		name = dyn_c_burgundy
+		adjective = dyn_c_burgundy_adj
+
 		is_main_tag_only = yes
 		priority = 0
 		
 		trigger = {
-			exists = scope:actor
-			scope:actor = { 
-				owns_entire_state_region = STATE_FLANDERS
-				owns_entire_state_region = STATE_WALLONIA
-			}
+			coa_def_absolute_monarchy_flag_trigger = yes
 		}
 	}
 }
@@ -1489,50 +1697,13 @@ PAP = { # Papal State, but the base name is technically Rome
 
 	dynamic_country_name = {
 		name = dyn_c_roman_republic
+		adjective = PAP_ADJ
 
 		is_main_tag_only = yes
 		priority = 0
 		
 		trigger = {
 			coa_def_republic_flag_trigger = yes
-		}
-	}
-}
-
-PEU = {
-	dynamic_country_name = {
-		name = dyn_c_peru_bolivia
-		adjective = dyn_c_peru_bolivia_adj
-		
-		is_main_tag_only = yes
-		priority = 1
-		
-		trigger = {
-			scope:actor = {
-				owns_entire_state_region = STATE_LA_PAZ
-				owns_entire_state_region = STATE_LIMA
-			}
-		}
-	}
-}
-
-PHI = {
-	dynamic_country_name = {
-		name = dyn_c_spanish_philippines
-		adjective = dyn_c_spanish_philippines_adj
-		
-		is_main_tag_only = yes
-		priority = 0
-		
-		trigger = {
-			exists = c:SPA
-			c:SPA = {
-				has_diplomatic_pact = {
-					who = c:PHI
-					type = puppet
-					is_initiator = yes
-				}
-			}
 		}
 	}
 }
@@ -1806,6 +1977,7 @@ TAS = { # Tasmania
 TRN = { # Transvaal
 	dynamic_country_name = {
 		name = dyn_c_transvaal_colony
+		adjective = TRN_ADJ
 		
 		is_main_tag_only = yes
 		priority = 0
@@ -1848,6 +2020,7 @@ TSW = { # Tswana
 TUN = { # Tunis
 	dynamic_country_name = {
 		name = dyn_c_tunisia
+		adjective = TUN_ADJ
 		
 		is_main_tag_only = yes
 		priority = 0
@@ -1908,6 +2081,7 @@ UKR = { # Ukraine
 USA = { # United States of America
 	dynamic_country_name = {
 		name = dyn_c_united_states
+		adjective = USA_ADJ
 
 		is_main_tag_only = yes
 		priority = 0
@@ -1925,6 +2099,8 @@ USA = { # United States of America
 	
 	dynamic_country_name = {
 		name = dyn_c_united_senators
+		adjective = USA_ADJ
+
 		priority = 1
 		
 		trigger = {
@@ -1944,6 +2120,8 @@ USA = { # United States of America
 
 	dynamic_country_name = {
 		name = dyn_c_united_state
+		adjective = USA_ADJ
+
 		priority = 1
 		
 		trigger = {
@@ -1971,6 +2149,7 @@ USA = { # United States of America
 
 	dynamic_country_name = {
 		name = dyn_c_united_syndicates_of_america
+		adjective = USA_ADJ
 		
 		is_main_tag_only = yes
 		priority = 0
@@ -1982,6 +2161,7 @@ USA = { # United States of America
 
 	dynamic_country_name = {
 		name = dyn_c_united_synods_of_america
+		adjective = USA_ADJ
 		
 		is_main_tag_only = yes
 		priority = 0
@@ -1993,6 +2173,7 @@ USA = { # United States of America
 	
 	dynamic_country_name = {
 		name = dyn_c_north_american_technate
+		adjective = USA_ADJ
 		
 		is_main_tag_only = yes
 		priority = 0
@@ -2054,6 +2235,7 @@ LKT = { # Lakota
 SCA = { # Scandinavia
 	dynamic_country_name = { # Danish Scandinavia
 		name = dyn_c_scandinavia_kalmar_union
+		adjective = SCA_ADJ
 		
 		is_main_tag_only = yes
 		priority = 0
@@ -2069,6 +2251,7 @@ SCA = { # Scandinavia
 
 	dynamic_country_name = { # Finnish Scandinavia, somehow
 		name = dyn_c_scandinavia_fennoscandia
+		adjective = FIN_ADJ
 		
 		is_main_tag_only = yes
 		priority = 0
@@ -2125,6 +2308,7 @@ ZAI = { # Azal (Zaidi State)
 LOU = { # Louisiana
 	dynamic_country_name = {
 		name = dyn_c_louisiana
+		adjective = LOU_ADJ
 
 		is_main_tag_only = yes
 		priority = 0
@@ -2149,6 +2333,7 @@ LOU = { # Louisiana
 
 	dynamic_country_name = {
 		name = dyn_c_louisiana_commune
+		adjective = LOU_ADJ
 		
 		is_main_tag_only = yes
 		priority = 10
@@ -2160,6 +2345,7 @@ LOU = { # Louisiana
 
 	dynamic_country_name = {
 		name = dyn_c_archbishopric_of_st_louis
+		adjective = LOU_ADJ
 		
 		is_main_tag_only = yes
 		priority = 10
@@ -2276,6 +2462,7 @@ KAZ = {
 SAV = {
 	dynamic_country_name = {
 		name = dyn_c_lyon
+		adjective = SAV_ADJ
 		
 		is_main_tag_only = no
 		priority = 1
@@ -2290,6 +2477,7 @@ SAV = {
 	}
 	dynamic_country_name = {
 		name = dyn_c_romandy
+		adjective = SAV_ADJ
 		
 		is_main_tag_only = no
 		priority = 1
@@ -2414,6 +2602,507 @@ FRA = {
 			exists = scope:actor
 			scope:actor = {
 				has_law = law_type:law_council_republic
+			}
+		}
+	}
+}
+
+HRE = {
+	dynamic_country_name = {
+		name = dyn_c_hre_monarchy
+		adjective = dyn_c_hre_monarchy_adj
+
+		is_main_tag_only = yes
+		priority = 10
+		
+		trigger = {
+			exists = scope:actor
+			scope:actor = {
+				OR = {
+					has_law = law_type:law_monarchy
+					has_law = law_type:law_theocracy
+				}
+			}
+		}
+	}
+	dynamic_country_name = {
+		name = dyn_c_hre_republic
+		adjective = dyn_c_hre_republic_adj
+
+		is_main_tag_only = yes
+		priority = 10
+		
+		trigger = {
+			exists = scope:actor
+			scope:actor = {
+				OR = {
+					has_law = law_type:law_parliamentary_republic
+					has_law = law_type:law_presidential_republic
+				}
+			}
+		}
+	}
+	dynamic_country_name = {
+		name = dyn_c_hre_communist
+		adjective = dyn_c_hre_communist_adj
+
+		is_main_tag_only = yes
+		priority = 10
+		
+		trigger = {
+			exists = scope:actor
+			scope:actor = {
+				has_law = law_type:law_council_republic
+			}
+		}
+	}
+	
+	dynamic_country_name = {
+		name = dyn_c_hre_technate
+		adjective = dyn_c_hre_technate_adj
+		
+		is_main_tag_only = yes
+		priority = 20
+		
+		trigger = {
+			scope:actor = {
+				OR = {
+					has_law = law_type:law_parliamentary_republic
+					has_law = law_type:law_presidential_republic
+				}
+				has_law = law_type:law_technocracy
+			}
+		}
+	}
+	
+	dynamic_country_name = {
+		name = dyn_c_hre_fascist
+		adjective = dyn_c_hre_fascist_adj
+		
+		is_main_tag_only = yes
+		priority = 30
+		
+		trigger = {
+			scope:actor = {
+				coa_fascist_trigger = yes
+				NOT = {
+					has_law = law_type:law_council_republic
+				}
+			}
+		}
+	}
+}
+CTR = { # Santa Catarina
+	dynamic_country_name = {
+		name = dyn_c_catharinense_republic
+		adjective = CTR_ADJ
+		
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			coa_def_republic_flag_trigger = yes
+		}
+	}	
+}
+
+PNI = { # Piratini
+	dynamic_country_name = {
+		name = dyn_c_riograndense_republic
+		adjective = dyn_c_riograndense_republic_adj
+		
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			coa_def_republic_flag_trigger = yes
+		}
+	}	
+}
+
+FND = { # Federation
+	dynamic_country_name = {
+		name = dyn_c_american_federation
+		adjective = dyn_c_american_federation_adj
+		
+		is_main_tag_only = yes
+		priority = 5
+		
+		trigger = {
+			scope:actor = {
+				OR = {
+					any_scope_state = {
+						NOT = { has_state_trait = state_trait_andes }
+						percent > 0.4
+					}
+					any_scope_state = {
+						is_incorporated = yes
+						OR = {
+							state_is_in_north_america = yes
+							state_is_in_central_america = yes
+						}
+						count > 1
+					}
+				}
+			}
+		}
+	}
+
+	dynamic_country_name = {
+		name = dyn_c_united_provinces_of_south_america
+		adjective = dyn_c_united_provinces_of_south_america_adj
+		
+		is_main_tag_only = yes
+		priority = 15
+		
+		trigger = {
+			scope:actor = {
+				OR = {
+					was_formed_from = PLT
+					was_formed_from = ARG
+					was_formed_from = URU
+					was_formed_from = PRG
+				}
+			}
+		}
+	}
+	
+	dynamic_country_name = {
+		name = dyn_c_united_provinces_of_america
+		adjective = dyn_c_united_provinces_of_america_adj
+		
+		is_main_tag_only = yes
+		priority = 25
+		
+		trigger = {
+			scope:actor = {
+				OR = {
+					was_formed_from = PLT
+					was_formed_from = ARG
+					was_formed_from = URU
+					was_formed_from = PRG
+				}
+				any_scope_state = {
+					is_incorporated = yes
+					OR = {
+						state_is_in_north_america = yes
+						state_is_in_central_america = yes
+					}
+					count > 1
+				}
+			}
+		}
+	}
+}
+
+WAL = { # Wallachia
+	dynamic_country_name = {
+		name = dyn_c_united_principalities
+		adjective = dyn_c_united_principalities_adj
+		
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			coa_def_monarchy_flag_trigger = yes
+			scope:actor = {
+				has_variable = ROM_united_principality
+			}
+		}
+	}
+
+	dynamic_country_name = {
+		name = dyn_c_wallachia_and_moldavia
+		adjective = dyn_c_wallachia_and_moldavia_adj
+		
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			coa_def_monarchy_flag_trigger = no
+			scope:actor = {
+				has_variable = ROM_united_principality
+			}
+			c:MOL ?= {
+				is_subject_of = scope:actor
+			}
+		}
+	}
+}
+
+PLC = {
+	dynamic_country_name = {
+		name = dyn_c_commonwealth
+		adjective = dyn_c_commonwealth_adj
+		
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			scope:actor = { has_variable = greater_commonwealth_var }
+		}
+	}
+}
+
+TIS = { # Turtle Island
+	dynamic_country_name = {
+		name = dyn_c_great_turtle
+		adjective = dyn_c_great_turtle_adj
+		
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			scope:actor = {
+				was_formed_from = IRO
+			}
+		}
+	}
+}
+
+ARG = { # Argentina
+	dynamic_country_name = {
+		name = dyn_c_argentine_confederation
+		adjective = ARG_ADJ
+		
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			coa_def_dictatorship_flag_trigger = yes
+
+			scope:actor = {
+				any_scope_character = {
+					is_ruler = yes
+					has_template = ARG_Juan_Manuel_de_Rosas
+				}
+			}
+		}
+	}
+
+	dynamic_country_name = { # Rio de la Plata also has this dynamic name
+		name = dyn_c_river_plate
+		adjective = dyn_c_river_plate_adj
+
+		is_main_tag_only = yes
+		priority = 1
+		
+		trigger = {
+			exists = c:GBR
+			scope:actor = {
+				is_subject_of = c:GBR
+			}
+		}
+	}
+
+	dynamic_country_name = {
+		name = dyn_c_argentina_legionaria
+		adjective = ARG_ADJ
+		
+		is_main_tag_only = yes
+		priority = 30
+		
+		trigger = {
+			scope:actor = {
+				coa_fascist_trigger = yes
+				NOT = {
+					has_law = law_type:law_council_republic
+				}
+			}
+		}
+	}
+}
+
+ECU = {
+	dynamic_country_name = {
+		name = dyn_c_quito
+		adjective = dyn_c_quito_adj
+
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			exists = c:SPA
+			scope:actor = {
+				is_subject_of = c:SPA
+			}
+		}
+	}
+}
+
+URU = {
+	dynamic_country_name = {
+		name = dyn_c_cisplatina
+		adjective = dyn_c_cisplatina_adj
+
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			OR = {
+				AND = {
+					exists = c:BRZ
+					scope:actor = {
+						is_subject_of = c:BRZ
+					}
+				}
+				AND = {
+					exists = c:POR
+					scope:actor = {
+						is_subject_of = c:POR
+					}
+				}
+			}
+		}
+	}
+
+
+	dynamic_country_name = {
+		name = dyn_c_banda_oriental
+		adjective = dyn_c_banda_oriental_adj
+
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			exists = c:SPA
+			scope:actor = {
+				is_subject_of = c:SPA
+			}
+		}
+	}
+}
+
+BOL = {
+	dynamic_country_name = {
+		name = dyn_c_charcas
+		adjective = dyn_c_charcas_adj
+
+		is_main_tag_only = yes
+		priority = 1
+		
+		trigger = {
+			exists = c:SPA
+			scope:actor = {
+				is_subject_of = c:SPA
+			}
+		}
+	}
+	dynamic_country_name = {
+		name = dyn_c_upper_peru
+		adjective = dyn_c_upper_peru_adj
+
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			exists = c:SPA
+			exists = c:PEU
+			c:PEU = {
+				is_subject_of = c:SPA
+			}
+			scope:actor = {
+				is_subject_of = c:PEU
+			}
+		}
+	}
+	dynamic_country_name = {
+		name = dyn_c_plurinational_bolivia
+		adjective = BOL_ADJ
+
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			exists = scope:actor
+			scope:actor = {
+				has_law = law_type:law_multicultural
+			}
+			coa_def_republic_flag_trigger = yes
+			NOT = { coa_def_communist_flag_trigger = yes }
+		}
+	}
+}
+
+VNZ = {
+	dynamic_country_name = {
+		name = dyn_c_klein_venedig
+		adjective = dyn_c_klein_venedig_adj
+
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			OR = {
+				AND = {
+					exists = c:HRE
+					scope:actor = {
+						is_subject_of = c:HRE
+					}
+				}
+				AND = {
+					exists = c:GER
+					scope:actor = {
+						is_subject_of = c:GER
+					}
+				}
+				AND = {
+					exists = c:AUS
+					scope:actor = {
+						is_subject_of = c:AUS
+					}
+				}
+			}
+		}
+	}
+}
+
+PLT = {
+	dynamic_country_name = { # Argentina also has this dynamic name
+		name = dyn_c_river_plate
+		adjective = dyn_c_river_plate_adj
+
+		is_main_tag_only = yes
+		priority = 1
+		
+		trigger = {
+			exists = c:GBR
+			scope:actor = {
+				is_subject_of = c:GBR
+			}
+		}
+	}
+
+	dynamic_country_name = {
+		name = dyn_c_sudamerica_legionaria
+		adjective = dyn_c_sudamerica_legionaria_adj
+
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			exists = scope:actor
+			scope:actor = {
+				was_formed_from = ARG
+				coa_fascist_trigger = yes
+				NOT = {
+					has_law = law_type:law_council_republic
+				}
+			}
+		}
+	}	
+	dynamic_country_name = {
+		name = dyn_c_confederacion_sudamericana
+		adjective = dyn_c_confederacion_sudamericana_adj
+		
+		is_main_tag_only = yes
+		priority = 0
+		
+		trigger = {
+			coa_def_dictatorship_flag_trigger = yes
+			exists = scope:actor
+			scope:actor = {
+				was_formed_from = ARG
 			}
 		}
 	}

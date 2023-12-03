@@ -1,0 +1,814 @@
+# COPY-PASTED FOR NOW
+@panel_width_minus_10 = 530			# used to be 450
+@panel_width_minus_20 = 520
+@panel_width = 540  				# used to be 460
+@panel_width_half = 270				# used to be 230
+@panel_width_plus_10 = 550  		# used to be 470
+@panel_width_plus_14 = 554			# used to be 474
+@panel_width_plus_14_half = 277		# used to be 237
+@panel_width_plus_20 = 560			# used to be 480
+@panel_width_plus_30 = 570			# used to be 490
+@panel_width_plus_70 = 610			# used to be 530
+
+company_change_name_popup_type = {
+	name = company_change_name_popup
+}
+
+types company_change_name
+{
+	type company_change_name_popup_type = default_popup
+	{
+		datacontext = "[CompanyChangeNamePopup.GetCompany]"
+
+		blockoverride "window_header_name"
+		{
+			text = "CHANGE_NAME"
+		}
+
+		blockoverride "header_close_button_visibility"
+		{
+			visible = yes
+		}
+
+		blockoverride "header_close_button"
+		{
+			visible = yes
+			onclick = "[PopupManager.HideCompanyChangeName]"
+		}
+
+		blockoverride "entire_scrollarea"
+		{
+			flowcontainer = {
+				direction = vertical
+
+				#background = {
+				#	using = default_background
+				#}
+
+				# "Choose Name" section
+				flowcontainer = {
+					direction = vertical	
+					spacing = 10
+
+					# Set a custom name
+					editbox = {
+						visible = yes
+						background = {
+							using = text_edit_bg
+						}
+
+						# The name is referenced in code. If you change it, it will no longer get properly reset
+						name = "company_name_edit"
+						ontextedited = "[CompanyChangeNamePopup.OnEditName]"
+						maxcharacters = 30
+						size = { 420 40 }
+						margin_left = 10
+						alwaystransparent = no
+						focuspolicy = all
+						focus_on_visible = yes
+						align = left|nobaseline
+					}
+					
+					flowcontainer = {
+						direction = horizontal
+						using = default_list_position
+						spacing = 20
+					
+						button = {
+							using = default_button
+							using = close_button_sound
+							size = { 140 40 }
+							text = "CANCEL"
+							shortcut = "close_window"
+							onclick = "[PopupManager.HideCompanyChangeName]"
+						}
+						button = {
+							using = default_button_primary_action
+							using = confirm_button_sound
+							name = "confirmation_button"
+							size = { 140 40 }
+							text = "CONFIRM"
+							enabled = "[IsValid(CompanyChangeNamePopup.Confirm)]"
+							onclick = "[Execute(CompanyChangeNamePopup.Confirm)]"
+							tooltip = "[GetDesc(CompanyChangeNamePopup.Confirm)]"
+							onclick = "[PopupManager.HideCompanyChangeName]"
+						}
+					}
+					
+					widget = {
+						size = { 420 10 }
+					}
+				}
+
+
+			}
+		}
+		
+		blockoverride "bottom_margin"
+		{
+			margin_bottom = 50
+		}
+	}
+}
+
+types companies_panel
+{
+	type companies_panel = default_block_window {
+		name = "companies_panel"
+		
+		blockoverride "animation_state_block" {
+			state = {
+				name = _show
+				on_start = "[GetVariableSystem.Clear('hide_current_companies')]"
+				start_sound = {
+					soundeffect = "event:/SFX/UI/SideBar/companies"
+				}
+			}
+		
+			state = {
+				name = _hide
+				start_sound = {
+					soundeffect = "event:/SFX/UI/SideBar/companies_stop"
+				}
+			}
+		}
+
+		blockoverride "header_close_button" {
+			onclick = "[InformationPanelBar.ClosePanel]"
+			onclick = "[GetVariableSystem.Clear('hide_current_companies')]"
+		}
+
+		blockoverride "entire_back_button" {
+			back_button_large = {
+				position = { 8 30 }
+				onclick = "[GetVariableSystem.Toggle('hide_current_companies')]"
+				visible = "[GetVariableSystem.Exists('hide_current_companies')]"
+				input_action = "back"
+			}
+
+			back_button_large = {
+				position = { 8 30 }
+				onclick = "[InformationPanelBar.OpenPreviousPanel]"
+				visible = "[Not(GetVariableSystem.Exists('hide_current_companies'))]"
+				input_action = "back"
+			}
+		}
+		
+		blockoverride "window_header_name"
+		{
+			text = "COMPANIES_HEADER"
+		}
+
+		#TOP
+		blockoverride "fixed_top" {
+			top_illu = {
+				datacontext = "[AccessPlayer]"
+				blockoverride "illu" {
+					texture = "gfx/interface/illustrations/top_illus/top_illu_companies.dds"
+				}
+
+				flowcontainer = {
+					direction = vertical
+					margin_top = 15
+					margin_bottom = 15
+
+					textbox = {	
+						margin_top = 2			
+						text = "BONUS_FOR_ESTABLISHED_COMPANIES"
+						using = fontsize_xl
+						using = companies_header_texts
+					}
+
+					textbox = {				
+						text = "COMPANY_THROUGHPUT_BONUS_HEADER"
+						using = companies_header_texts
+					}
+
+
+					textbox = {				
+						text = "COMPANY_CONSTRUCTION_BONUS_HEADER"
+						using = companies_header_texts
+					}
+				}
+			}
+		}
+		
+		blockoverride "scrollarea_content"
+		{
+			flowcontainer = {
+				using = default_list_position
+				direction = vertical
+				minimumsize = { @panel_width_plus_14 -1 }
+				maximumsize = { @panel_width_plus_14 -1 }
+				datacontext = "[AccessPlayer]"
+
+				flowcontainer = {
+					visible = "[Not(GetVariableSystem.Exists('hide_current_companies'))]"
+					parentanchor = hcenter
+					direction = vertical
+					default_header_2texts = {
+						blockoverride "text1" {
+							text = "ESTABLISHED_COMPANIES"
+						}
+						blockoverride "text2" {
+							text = "COMPANIES_AMOUNT_HEADER"
+						}
+					}
+
+					flowcontainer = {
+						direction = vertical
+						parentanchor = hcenter
+						margin = { 0 10 }
+						spacing = 10
+
+						### COMPANIES
+						flowcontainer = {
+							parentanchor = hcenter
+							visible = "[Not(IsDataModelEmpty(AccessPlayer.GetCompanies))]"
+							minimumsize = { @panel_width -1 }
+							maximumsize = { @panel_width -1 }
+							datamodel = "[AccessPlayer.GetCompanies]"
+							direction = vertical
+							spacing = 10
+
+							item = {
+								company_item = {}
+							}
+						}
+
+						flowcontainer = {
+							parentanchor = hcenter
+							visible = "[GreaterThan_int32(AccessPlayer.GetNumAvailableCompanies, '(int32)0')]"
+							minimumsize = { @panel_width -1 }
+							maximumsize = { @panel_width -1 }
+							datamodel = "[DataModelRepeatedItem(AccessPlayer.GetNumAvailableCompanies)]"
+							direction = vertical
+							spacing = 10
+
+							item = {
+								button_icon_plus_square = {
+									size = { @panel_width 100 }
+									onclick = "[GetVariableSystem.Toggle('hide_current_companies')]"
+									onclick = "[GetVariableSystem.Clear('available_companies')]"
+									onclick = "[ScrollPanelToTop('companies_panel')]"
+									
+									blockoverride "icon_size" {
+										size = { 80 80 }
+									}
+								}
+							}
+						}
+					}
+				}
+
+				### sort buttons
+				widget = {
+					size = { @panel_width_plus_14 30 }
+					
+					hbox = {
+
+						sort_button = {
+							layoutpolicy_horizontal = expanding
+							size = { 0 30 }
+							onclick = "[AccessPlayer.SortCompanies('name')]"
+							
+							text = "NAME"
+						}
+
+						sort_button = {
+							layoutpolicy_horizontal = expanding
+							size = { 0 30 }
+							onclick = "[AccessPlayer.SortCompanies('productivity')]"
+							
+							text = "concept_productivity"
+						}
+
+						sort_button = {
+							layoutpolicy_horizontal = expanding
+							size = { 0 30 }
+							onclick = "[AccessPlayer.SortCompanies('levels')]"
+							
+							text = "concept_building_levels"
+						}
+					}
+				}
+				
+				section_header_button = {
+					visible = "[Not(IsDataModelEmpty(AccessPlayer.GetAvailableCompanies))]"
+						
+					blockoverride "left_text" {
+						text = "AVAILABLE_COMPANIES"
+					}
+
+					blockoverride "right_text" {
+						section_header_right_text = {
+							text = "[GetDataModelSize(AccessPlayer.GetAvailableCompanies)]"
+						}
+					}
+
+					blockoverride "onclick" {
+						onclick = "[GetVariableSystem.Toggle('available_companies')]"
+					}
+					
+					blockoverride "onclick_showmore" {
+						visible = "[GetVariableSystem.Exists('available_companies')]"
+					}
+
+					blockoverride "onclick_showless" {
+						visible = "[Not(GetVariableSystem.Exists('available_companies'))]"
+					}
+				}
+
+				### AVAILABLE COMPANIES
+				flowcontainer = {
+					parentanchor = hcenter
+					direction = vertical
+					visible = "[Not(GetVariableSystem.Exists('available_companies'))]"
+
+					flowcontainer = {
+						parentanchor = hcenter
+						visible = "[Not(IsDataModelEmpty(AccessPlayer.GetAvailableCompanies))]"
+						datamodel = "[AccessPlayer.GetAvailableCompanies]"
+						direction = vertical
+						spacing = 5
+
+						item = {
+							potential_company_item = {}
+						}
+					}
+				}
+
+				# ATTAINABLE COMPANIES
+				section_header_button = {
+					blockoverride "left_text" {
+						text = "ATTAINABLE_COMPANIES"
+					}
+
+					blockoverride "right_text" {
+						section_header_right_text = {
+							text = "[GetDataModelSize(AccessPlayer.GetAttainableCompanies)]"
+						}
+					}
+					blockoverride "onclick" {
+						onclick = "[GetVariableSystem.Toggle('potential_companies')]"
+					}
+					
+					blockoverride "onclick_showmore" {
+						visible = "[Not(GetVariableSystem.Exists('potential_companies'))]"
+					}
+
+					blockoverride "onclick_showless" {
+						visible = "[GetVariableSystem.Exists('potential_companies')]"
+					}
+				}
+
+				### ATTAINABLE COMPANIES
+				flowcontainer = {
+					parentanchor = hcenter
+					direction = vertical
+					visible = "[GetVariableSystem.Exists('potential_companies')]"
+
+					flowcontainer = {
+						parentanchor = hcenter
+						visible = "[Not(IsDataModelEmpty(AccessPlayer.GetAttainableCompanies))]"
+						datamodel = "[AccessPlayer.GetAttainableCompanies]"
+						direction = vertical
+						spacing = 5
+
+						item = {
+							potential_company_item = {}
+						}
+					}
+				}		
+
+				# POTENTIAL COMPANIES
+				section_header_button = {
+					blockoverride "left_text" {
+						text = "POTENTIAL_COMPANIES"
+					}
+
+					blockoverride "right_text" {
+						section_header_right_text = {
+							text = "[GetDataModelSize(AccessPlayer.GetPotentialCompanies)]"
+						}
+					}
+					blockoverride "onclick" {
+						onclick = "[GetVariableSystem.Toggle('unavailable_companies')]"
+					}
+					
+					blockoverride "onclick_showmore" {
+						visible = "[Not(GetVariableSystem.Exists('unavailable_companies'))]"
+					}
+
+					blockoverride "onclick_showless" {
+						visible = "[GetVariableSystem.Exists('unavailable_companies')]"
+					}
+				}
+
+				### POTENTIAL COMPANIES
+				flowcontainer = {
+					parentanchor = hcenter
+					direction = vertical
+					visible = "[GetVariableSystem.Exists('unavailable_companies')]"
+
+					flowcontainer = {
+						parentanchor = hcenter
+						visible = "[Not(IsDataModelEmpty(AccessPlayer.GetPotentialCompanies))]"
+						datamodel = "[AccessPlayer.GetPotentialCompanies]"
+						direction = vertical
+						spacing = 5
+
+						item = {
+							potential_company_item = {}
+						}
+					}
+				}			
+			}
+		}
+	}
+
+	type company_item = container {
+
+		flowcontainer = {
+			direction = vertical
+			minimumsize = { @panel_width -1 }		
+			maximumsize = { @panel_width -1 }
+			margin = { 10 10 }
+			spacing = 5		
+			margin_top = 3
+			
+			background = {
+					using = simple_frame
+			}
+
+			tooltipwidget = {
+				FancyTooltip_Company = {}
+			}
+
+			container = {
+				minimumsize = { 536 -1 }
+				parentanchor = hcenter
+
+				flowcontainer = {
+					minimumsize = { @panel_width_minus_10 -1 }
+					parentanchor = vcenter
+					spacing = 5
+					margin_left = 10
+
+					background = {
+						using = fade_right_simple
+					}
+
+					flowcontainer = {
+						direction = vertical
+						margin_top = 2
+						margin_bottom = 2
+
+						textbox = {
+							minimumsize = { 450 -1 }
+							maximumsize = { 450 -1 }
+							autoresize = yes
+							multiline = no
+							fontsize_min = 12
+							elide = right
+							text = "[Company.GetName]"
+							default_format = "#header"
+							using = fontsize_large
+							using = company_item_text
+						}
+
+						textbox = {
+							minimumsize = { 450 -1 }
+							maximumsize = { 450 -1 }
+							autoresize = yes
+							multiline = no
+							fontsize_min = 12
+							elide = right
+							text = "COMPANY_ESTABLISHED"
+							using = company_item_text
+						}
+					}
+				}	
+
+				flowcontainer = {
+					parentanchor = right|vcenter
+					spacing = 5
+					margin_right = 10
+					button_icon_pin = {
+						size = { 26 26 }
+						visible = "[Company.IsPinnedInOutliner]"
+						onclick = "[Company.TogglePinInOutliner]"
+						tooltip = "UNPIN_COMPANY"
+					}
+
+					button_icon_unpin = {
+						size = { 26 26 }
+						visible = "[Not(Company.IsPinnedInOutliner)]"
+						onclick = "[Company.TogglePinInOutliner]"
+						tooltip = "PIN_COMPANY"
+					}
+					
+					button_icon_edit = {
+						size = { 26 26 }
+						onclick = "[PopupManager.ShowCompanyChangeName(Company.Self)]"
+						tooltip = "CHANGE_NAME"
+					}
+				}
+			}
+
+			flowcontainer = {
+				spacing = 10
+
+				flowcontainer = {
+					direction = vertical
+					parentanchor = vcenter
+					spacing = 5
+
+					datacontext = "[Company.GetCompanyType]"
+
+					icon = {
+						size = { 130 130 }
+						texture = "[CompanyType.GetIcon]"
+					}
+
+					button = {
+						using = default_button
+						size = { 130 40 }
+						text = "DISBAND_COMPANY"
+						onclick = "[Execute(GetPlayer.RemoveCompany(CompanyType.Self))]"
+						enabled = "[IsValid(GetPlayer.RemoveCompany(CompanyType.Self))]"
+						tooltip = "REMOVE_COMPANY_DESC"
+					}
+				}
+
+				flowcontainer = {
+					direction = vertical
+					parentanchor = vcenter
+					minimumsize = { 380 -1 }
+					maximumsize = { 380 -1 }
+					margin = { 10 10 }
+					spacing = 8
+
+					background = {
+						texture = "[Company.AccessCompanyType.GetBackground]"
+					}	
+
+					background = {
+						using = entry_bg_simple
+					}
+				
+					flowcontainer = {
+						direction = horizontal
+						spacing = 5						
+						datamodel = "[Company.AccessCompanyType.AccessBuildingTypes]"
+						
+						item = {
+							company_building_item = { 
+								blockoverride "icon_size" {
+									size = { 40 40 }
+								}
+							}
+						}
+					}		
+
+					textbox = {
+						text = "COMPANY_PROSPERITY_MODIFIER_HEADER"
+						using = company_item_text
+					}
+
+					widget = {		
+						size = { 190 28 }
+						tooltip = "COMPANY_PROSPERITY_TOOLTIP"
+						
+						changed_value_increased_progressbar_horizontal = {
+							size = { 100% 100% }
+							visible = "[And(GreaterThan_CFixedPoint(Company.CalcProsperityChange,'(CFixedPoint)0'), LessThan_CFixedPoint(Company.GetProsperity, GetDefine('NEconomy', 'COMPANY_PROSPERITY_MAX')))]"
+							blockoverride "values" {
+								min = 0
+								max = "[GetDefine('NEconomy','COMPANY_PROSPERITY_MAX')]"
+								value = "[Company.GetProsperity]"
+							}
+							blockoverride "animate_negative_change" {
+								animate_negative_changes = no
+							}
+							blockoverride "arrow_texture_density" {
+								texture_density = 4 #use to match height of progressbar
+							}
+						}
+
+						changed_value_decreased_progressbar_horizontal = {
+							size = { 100% 100% }
+							visible = "[And(LessThan_CFixedPoint(Company.CalcProsperityChange,'(CFixedPoint)0'), LessThan_CFixedPoint(Company.GetProsperity, GetDefine('NEconomy', 'COMPANY_PROSPERITY_MAX')))]"
+
+							blockoverride "values" {
+								min = 0
+								max = "[GetDefine('NEconomy','COMPANY_PROSPERITY_MAX')]"
+								value = "[Company.GetProsperity]"
+							}
+							blockoverride "arrow_texture_density" {
+								texture_density = 4 #use to match height of progressbar
+							}
+						}
+
+						default_progressbar_horizontal = {
+							size = { 100% 100% }
+							visible = "[Or(EqualTo_CFixedPoint(Company.CalcProsperityChange,'(CFixedPoint)0'), GreaterThanOrEqualTo_CFixedPoint(Company.GetProsperity, GetDefine('NEconomy', 'COMPANY_PROSPERITY_MAX')))]"
+
+							blockoverride "values" {
+								min = 0
+								max = "[GetDefine('NEconomy','COMPANY_PROSPERITY_MAX')]"
+								value = "[Company.GetProsperity]"
+							}
+						}
+
+						textbox = {				
+							text = "COMPANY_PROSPERITY"
+							using = company_item_text
+							parentanchor = vcenter
+							margin_left = 10
+						}
+					}
+
+
+					textbox = {				
+						text = "COMPANY_PRODUCTIVITY"
+						using = company_item_text
+					}			
+			
+					
+					textbox = {
+						text = "COMPANY_PROSPERITY_MODIFIER"
+						alpha = "[TransparentIfFalse(Company.ProvidesProsperityBonus)]"
+						using = company_item_text
+					}
+				}
+			}
+			
+		}		
+	}
+	
+	type potential_company_item = flowcontainer {
+		direction = vertical
+		minimumsize = { @panel_width -1 }		
+		maximumsize = { @panel_width -1 }
+		margin = { 10 10 }
+		margin_top = 3
+		spacing = 5		
+			
+		background = {
+			using = simple_frame
+		}
+
+		tooltipwidget = {
+			FancyTooltip_CompanyType = {
+				datacontext = "[GetPlayer]"
+			}
+		}
+
+		container = {
+			minimumsize = { 536 -1 }
+			parentanchor = hcenter
+
+			flowcontainer = {
+				minimumsize = { 536 -1 }
+				parentanchor = vcenter
+				spacing = 5
+				margin_left = 10
+				margin_top = 2
+				margin_bottom = 2
+
+				background = {
+					using = fade_right_simple
+				}
+
+				textbox = {
+					text = "[CompanyType.GetName]"
+					default_format = "#header"
+					autoresize = yes
+					multiline = no
+					using = fontsize_large
+					using = company_item_text
+					margin_bottom = 5
+				}	
+			}	
+		}
+
+		flowcontainer = {
+			spacing = 10
+
+			# COMPANY LOGO
+			flowcontainer = {
+				direction = vertical
+				parentanchor = vcenter
+				icon = {
+					size = { 130 130 }
+					texture = "[CompanyType.GetIcon]"
+				}
+
+				button = {
+					using = default_button
+					size = { 130 40 }
+					text = "ESTABLISH_COMPANY"
+					onclick = "[Execute(GetPlayer.CreateCompany(CompanyType.Self))]"
+					onclick = "[GetVariableSystem.Clear('hide_current_companies')]"
+					onclick = "[ScrollPanelToTop('companies_panel')]"
+					enabled = "[IsValid(GetPlayer.CreateCompany(CompanyType.Self))]"
+					tooltip = "CREATE_COMPANY_DESC"
+				}
+			}
+
+			# COMPANY DETAILS
+			flowcontainer = {
+				direction = vertical
+				parentanchor = vcenter
+				minimumsize = { 380 -1 }
+				maximumsize = { 380 -1 }
+				margin = { 10 10 }
+				spacing = 4
+
+				background = {
+					texture = "[CompanyType.GetBackground]"
+				}
+			
+				background = {
+					using = entry_bg_simple
+				}
+
+				flowcontainer = {
+					direction = horizontal
+					spacing = 5							
+					datamodel = "[CompanyType.AccessBuildingTypes]"
+					
+					item = {
+						company_building_item = {}
+					}
+				}	
+
+				textbox = {				
+					text = "COMPANY_TYPE_PRODUCTIVITY"
+					tooltip = "COMPANY_TYPE_PRODUCTIVITY_TOOLTIP"
+					using = company_item_text
+					margin_top = 5
+				}	
+
+				widget = { size = { 5 5 } }
+
+				textbox = {
+					text = "COMPANY_PROSPERITY_MODIFIER_HEADER"
+					using = company_item_text
+				}			
+				
+				textbox = {
+					fontsize_min = 12
+					autoresize = yes
+					multiline = no
+					elide = right
+					text = "COMPANY_TYPE_PROSPERITY_MODIFIER"
+					using = company_item_text
+				}	
+			}		
+		}		
+	}
+
+	type company_building_item = button {
+		texture = "[BuildingType.GetTexture]"
+		onrightclick = "[RightClickMenuManager.ShowForBuildingType(BuildingType.AccessSelf)]"
+		effectname = "NoHighlight"
+		distribute_visual_state = no
+		inherit_visual_state = no
+		alpha = "[TransparentIfZero_int32(BuildingType.GetLevelCountInCountry(GetPlayer.Self))]"
+
+		block "icon_size" {
+			size = { 50 50 }	
+		}
+
+		textbox = {
+			text = "BUILDING_TYPE_COUNT"
+			autoresize = yes
+			position = { 5 -2 }
+			parentanchor = bottom
+			align = right|nobaseline
+			visible = "[NotEqualTo_int32( BuildingType.GetLevelCountInCountry(GetPlayer.Self), '(int32)0')]"
+		}
+
+		tooltipwidget = {
+			FancyTooltip_BuildingType = {}
+		}
+	}	
+}
+
+template company_item_text {
+	align = nobaseline
+	autoresize = yes
+	maximumsize = { 350 -1 }
+	multiline = yes
+}
+
+template companies_header_texts {
+	minimumsize = { @panel_width_plus_14 -1 }
+	maximumsize = { @panel_width_plus_14 -1 }
+	autoresize = yes
+	multiline = yes
+	align = hcenter|nobaseline
+	parentanchor = hcenter
+}

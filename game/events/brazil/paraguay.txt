@@ -1,0 +1,1084 @@
+﻿namespace = paraguay
+
+# The Demise of El Supremo
+paraguay.1 = {
+	type = country_event
+	placement = root
+	
+	title = paraguay.1.t
+	desc = paraguay.1.d
+	flavor = paraguay.1.f
+	
+	event_image = {
+		video = "southamerica_aristocrats"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+	}
+
+	immediate = {
+		ig:ig_intelligentsia = {
+			leader = {
+				save_scope_as = go_policarp_go_scope
+			}
+		}
+		if = {
+			limit = {
+				any_scope_character = {
+					has_template = PRG_carlos_antonio_lopez
+				}
+			}
+			random_scope_character = {
+				limit = {
+					has_template = PRG_carlos_antonio_lopez
+				}
+				save_scope_as = carlos_antonio_lopez_scope
+			}
+		}
+		else = {
+			ig:ig_armed_forces = {
+				leader = {
+					save_scope_as = carlos_antonio_lopez_scope
+				}
+			}
+		}
+	}
+	option = { # Open up a liddle-widdle bit
+		name = paraguay.1.a
+		default_option = yes
+		custom_tooltip = paraguay.1.tt_1
+		remove_variable = francocracia_paraguay_var
+		remove_primary_culture = cu:guarani
+		if = {
+			limit = {
+				any_scope_character = {
+					has_template = PRG_carlos_antonio_lopez
+				}
+			}
+			random_character = {
+				limit = {
+					has_template = PRG_carlos_antonio_lopez
+				}
+				set_character_as_ruler = yes
+				remove_as_interest_group_leader = yes
+				add_modifier = {
+					name = el_excelentisimo_modifier
+				}
+			}
+		}
+		else = {
+			ig:ig_armed_forces = {
+				leader = {
+					set_character_as_ruler = yes
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_interest_group = {
+					is_in_government = yes
+					NOT = {
+						is_interest_group_type = ig_armed_forces
+					}
+				}
+			}
+			every_interest_group = {
+				limit = {
+					is_in_government = yes
+					NOT = {
+						is_interest_group_type = ig_armed_forces
+					}
+				}
+				remove_ruling_interest_group = yes
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					any_interest_group = {
+						is_in_government = yes
+						is_interest_group_type = ig_armed_forces
+					}
+				}
+			}
+			ig:ig_armed_forces = {
+				add_ruling_interest_group = yes
+			}
+		}
+		if = {
+			limit = {
+				has_law = law_type:law_isolationism
+			}
+			activate_law = law_type:law_protectionism
+		}
+		if = {
+			limit = {
+				has_law = law_type:law_secret_police
+			}
+			activate_law = law_type:law_national_guard
+		}
+		if = {
+			limit = {
+				any_scope_character = {
+					has_template = PRG_policarpo_patino
+				}
+			}
+			random_character = {
+				limit = {
+					has_template = PRG_policarpo_patino
+				}
+				kill_character = yes
+			}
+		}
+		add_journal_entry = { 
+			type = je_modernizing_paraguay 
+		}
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = { # Continue Francia's legacy
+		name = paraguay.1.b
+		custom_tooltip = paraguay.1.tt_2
+		remove_variable = francocracia_paraguay_var
+		set_variable = patino_paraguay_var
+		hidden_effect = {
+			random_character = {
+				limit = {
+					has_template = PRG_policarpo_patino
+				}
+				set_character_immortal = no
+			}
+		}
+		add_radicals = {
+			value = large_radicals
+		}
+		ig:ig_armed_forces = {
+			leader = {
+				kill_character = yes
+			}
+		}
+		add_modifier = {
+			name = reinstated_hairy_feet_modifier
+			months = long_modifier_time
+		}
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+# Napoleon of the Americas
+paraguay.2 = {
+	type = country_event
+	placement = root
+	
+	title = paraguay.2.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = paraguay.2.d_1
+				trigger = {
+					any_scope_character = {
+						has_template = PRG_carlos_antonio_lopez
+					}
+				}
+			}
+			triggered_desc = {
+				desc = paraguay.2.d_2
+				trigger = {
+					any_scope_character = {
+						NOT = {
+							has_template = PRG_carlos_antonio_lopez
+						}
+					}
+				}
+			}
+		}
+	}
+	flavor = {
+		first_valid = {
+			triggered_desc = {
+				desc = paraguay.2.f_1
+				trigger = {
+					any_scope_character = {
+						has_template = PRG_carlos_antonio_lopez
+					}
+				}
+			}
+			triggered_desc = {
+				desc = paraguay.2.f_2
+				trigger = {
+					any_scope_character = {
+						NOT = {
+							has_template = PRG_carlos_antonio_lopez
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	gui_window = event_window_1char_tabloid
+	left_icon = scope:francisco_solano_lopez_scope
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		game_date >= 1850.1.1
+		NOT = {
+			has_variable = napoleon_of_south_america_var
+		}
+	}
+
+	immediate = {
+		create_character = {
+			template = PRG_francisco_solano_lopez
+			save_scope_as = francisco_solano_lopez_scope
+		}
+		if = {
+			limit = {
+				any_scope_character = {
+					has_template = PRG_carlos_antonio_lopez
+				}
+			}
+			random_character = {
+				limit = {
+					has_template = PRG_carlos_antonio_lopez
+				}
+				save_scope_as = carlos_antonio_lopez_scope
+			}
+		}
+		set_variable = napoleon_of_south_america_var
+	}
+	option = { 
+		name = paraguay.2.a
+		default_option = yes
+		scope:francisco_solano_lopez_scope = {
+			set_as_interest_group_leader = yes
+			show_as_tooltip = {
+				add_character_role = general 
+			}
+			add_modifier = {
+				name = napoleon_of_the_americas_modifier
+			}
+			custom_tooltip = paraguay.2.tt_1
+		}
+	}
+	option = { 
+		name = paraguay.2.b
+		scope:francisco_solano_lopez_scope = {
+			add_modifier = {
+				name = napoleon_of_the_americas_modifier
+			}
+			show_as_tooltip = {
+				add_character_role = general 
+			}
+			custom_tooltip = paraguay.2.tt_1
+		}
+	}
+	option = { 
+		name = paraguay.2.c
+		custom_tooltip = {
+			text = paraguay.2.tt_2
+			scope:francisco_solano_lopez_scope = {
+				kill_character = {
+					hidden = yes
+				}
+			}
+		}
+	}
+}
+
+# Iron Works of Ybyqui
+paraguay.3 = {
+	type = country_event
+	placement = root
+	
+	title = paraguay.3.t
+	desc = paraguay.3.d
+	flavor = paraguay.3.f
+
+	event_image = {
+		video = "southamerica_factory_opening"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+	}
+
+	immediate = {
+		g:iron = {
+			save_scope_as = iron_scope
+		}
+		g:steel = {
+			save_scope_as = steel_scope
+		}
+	}
+	option = { 
+		name = paraguay.3.a
+		default_option = yes
+		s:STATE_BAJO_PARAGUAY.region_state:PRG = {
+			add_modifier = {
+				name = ybycui_iron_works_modifier
+				months = very_long_modifier_time
+			}
+		}
+	}
+	option = { 
+		name = paraguay.3.b
+		s:STATE_BAJO_PARAGUAY.region_state:PRG = {
+			if = {
+				limit = {
+					NOT = {
+						any_scope_building = {
+							is_building_type = building_steel_mills
+						}
+					}
+				}
+				create_building = {
+					building = building_steel_mills
+					level = 2
+				}
+				add_modifier = {
+					name = ybycui_steelworks
+					months = very_long_modifier_time
+				}
+			}
+			else = {
+				add_modifier = {
+					name = ybycui_steelworks
+					months = very_long_modifier_time
+					multiplier = 1.5
+				}
+			}
+		}
+	}
+	option = { 
+		name = paraguay.3.c
+		highlighted_option = yes
+		trigger = {
+			has_law = law_type:law_no_workers_rights
+		}
+		s:STATE_BAJO_PARAGUAY.region_state:PRG = {
+			add_modifier = {
+				name = ybycui_prisoner_workforce_modifier
+				months = very_long_modifier_time
+			}
+			add_radicals_in_state = {
+				value = small_radicals
+			}
+		}
+	}
+}
+
+# Gibraltar of South America
+paraguay.4 = {
+	type = country_event
+	placement = root
+	
+	title = paraguay.4.t
+	desc = paraguay.4.d
+	flavor = paraguay.4.f
+
+	event_image = {
+		video = "votp_gunboat_diplomacy"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+	}
+
+	immediate = {
+	}
+	option = { 
+		name = paraguay.4.a
+		default_option = yes
+		s:STATE_BAJO_PARAGUAY.region_state:PRG = {
+			add_modifier = {
+				name = humanita_fortress_modifier
+				months = very_long_modifier_time
+			}
+		}
+	}
+}
+
+# Good Health
+paraguay.5 = {
+	type = country_event
+	placement = root
+	
+	title = paraguay.5.t
+	desc = paraguay.5.d
+	flavor = paraguay.5.f
+
+	event_image = {
+		video = "unspecific_sick_in_hospital"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		# triggered by good_health_prg_button
+	}
+
+	immediate = {
+	}
+	option = { 
+		name = paraguay.5.a
+		default_option = yes
+		s:STATE_BAJO_PARAGUAY.region_state:PRG = {
+			add_modifier = {
+				name = vaccinations_prg_modifier
+				months = very_long_modifier_time
+			}
+		}
+	}
+}
+
+
+# Good Army
+paraguay.6 = {
+	type = country_event
+	placement = root
+	
+	title = paraguay.6.t
+	desc = paraguay.6.d
+	flavor = paraguay.6.f
+
+	event_image = {
+		video = "unspecific_military_parade"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		# triggered by army_git_good_button
+	}
+
+	immediate = {
+	}
+	option = { 
+		name = paraguay.6.a
+		default_option = yes
+		add_modifier = {
+			name = barracks_boost_paraguay_quantity_modifier
+			months = very_long_modifier_time
+		}
+	}
+	option = { 
+		name = paraguay.6.b
+		default_option = yes
+		add_modifier = {
+			name = barracks_boost_paraguay_quality_modifier
+			months = very_long_modifier_time
+		}
+	}
+}
+
+
+
+# Paraguay War Victory Event
+paraguay.7 = {
+	type = country_event
+	placement = root
+	
+	title = paraguay.7.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = paraguay.7.d_1
+				trigger = {
+					exists = c:PRG
+				}
+			}
+			triggered_desc = {
+				desc = paraguay.7.d_2
+				trigger = {
+					NOT = {
+						exists = c:PRG
+					}
+				}
+			}
+		}
+	}
+	flavor = {
+		first_valid = {
+			triggered_desc = {
+				desc = paraguay.7.f_1
+				trigger = {
+					c:ARG ?= this
+				}
+			}
+			triggered_desc = {
+				desc = paraguay.7.f_2
+				trigger = {
+					c:BRZ ?= this
+				}
+			}
+			triggered_desc = {
+				desc = paraguay.7.f_3
+				trigger = {
+					c:URU ?= this
+				}
+			}
+			triggered_desc = {
+				desc = paraguay.7.f_4
+				trigger = {
+					NOR = {
+						c:BRZ ?= this
+						c:URU ?= this
+						c:ARG ?= this
+					}
+				}
+			}
+		}
+	}
+
+	event_image = {
+		video = "unspecific_military_parade"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		# triggered by JE
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				exists = c:PRG
+			}
+			c:PRG = {
+				save_scope_as = paraguay_scope
+			}
+		}
+	}
+	option = { 
+		name = paraguay.7.a
+		default_option = yes
+		add_modifier = {
+			name = sack_of_paraguay_modifier
+			months = normal_modifier_time
+		}
+		add_modifier = {
+			name = victor_against_paraguay_modifier
+			months = long_modifier_time
+		}
+		if = {
+			limit = {
+				exists = c:PRG
+			}
+			show_as_tooltip = {
+				c:PRG = {
+			        add_modifier = {
+			            name = a_broken_land_modifier
+			            months = long_modifier_time
+			        }
+			    }
+			}
+		}
+        if = {
+            limit = {
+            	NOT = {
+		            any_scope_state = {
+		                state_region = s:STATE_BAJO_PARAGUAY
+		            }
+		        }
+            }
+            show_as_tooltip = {
+	            s:STATE_BAJO_PARAGUAY = {
+	            	random_scope_state = {
+			            add_modifier = {
+			                name = thus_unto_tyrants_capture_modifier
+			                months = long_modifier_time
+			            }
+			        }
+	            }
+	        }
+        }
+        else_if = {
+            limit = {
+		        any_scope_state = {
+		            state_region = s:STATE_BAJO_PARAGUAY
+		        }
+            }
+            s:STATE_BAJO_PARAGUAY = {
+            	random_scope_state = {
+	                add_modifier = {
+	                    name = thus_unto_tyrants_capture_modifier
+	                    months = long_modifier_time
+	                }
+	           	}
+            }
+        }
+	}
+}
+
+
+# Battle of Cerro Cora
+paraguay.8 = {
+	type = country_event
+	placement = root
+	
+	title = paraguay.8.t
+	desc = paraguay.8.d
+	flavor = paraguay.8.f
+
+	gui_window = event_window_1char_tabloid
+	left_icon = scope:ruler_scope
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		# triggered by JE
+	}
+
+	immediate = {
+		ruler = {
+			save_scope_as = ruler_scope
+		}
+	}
+	option = { 
+		name = paraguay.8.a
+		default_option = yes
+        if = {
+            limit = {
+            	any_scope_state = {
+                	has_modifier = ybycui_iron_works_modifier
+                }
+            }
+            random_scope_state = {
+            	limit = {
+            		has_modifier = ybycui_iron_works_modifier
+            	}
+            	remove_modifier = ybycui_iron_works_modifier
+            }
+        }
+        if = {
+            limit = {
+            	any_scope_state = {
+                	has_modifier = ybycui_prisoner_workforce_modifier
+                }
+            }
+            random_scope_state = {
+            	limit = {
+            		has_modifier = ybycui_prisoner_workforce_modifier
+            	}
+            	remove_modifier = ybycui_prisoner_workforce_modifier
+            }
+        }
+        if = {
+            limit = {
+            	any_scope_state = {
+                	has_modifier = ybycui_steelworks
+                }
+            }
+            random_scope_state = {
+            	limit = {
+            		has_modifier = ybycui_steelworks
+            	}
+            	remove_modifier = ybycui_steelworks
+            }
+        }
+        if = {
+            limit = {
+            	any_scope_state = {
+                	has_modifier = humanita_fortress_modifier
+                }
+            }
+            random_scope_state = {
+            	limit = {
+            		has_modifier = humanita_fortress_modifier
+            	}
+            	remove_modifier = humanita_fortress_modifier
+            }
+        }
+        if = {
+            limit = {
+            	any_scope_state = {
+                	has_modifier = vaccinations_prg_modifier
+                }
+            }
+            random_scope_state = {
+            	limit = {
+            		has_modifier = vaccinations_prg_modifier
+            	}
+            	remove_modifier = vaccinations_prg_modifier
+            }
+        }
+        if = {
+            limit = {
+            	any_scope_state = {
+                	has_modifier = barracks_boost_paraguay_quantity_modifier
+                }
+            }
+            random_scope_state = {
+            	limit = {
+            		has_modifier = barracks_boost_paraguay_quantity_modifier
+            	}
+            	remove_modifier = barracks_boost_paraguay_quantity_modifier
+            }
+        }
+        if = {
+            limit = {
+                has_modifier = barracks_boost_paraguay_quality_modifier
+            }
+            remove_modifier = barracks_boost_paraguay_quality_modifier
+        }
+        if = {
+            limit = {
+                any_scope_character = {
+                    has_modifier = napoleon_of_the_americas_modifier
+                }
+            }
+            random_character = {
+                limit = {
+                    has_modifier = napoleon_of_the_americas_modifier
+                }
+                kill_character = yes
+            }
+        }
+        if = {
+            limit = {
+                any_scope_character = {
+                    has_modifier = el_excelentisimo_modifier
+                }
+            }
+            random_character = {
+                limit = {
+                    has_modifier = el_excelentisimo_modifier
+                }
+                kill_character = yes
+            }
+        }
+        if = {
+            limit = {
+                ruler = {
+                    NOR = {
+                        has_modifier = el_excelentisimo_modifier
+                        has_modifier = napoleon_of_the_americas_modifier
+                    }
+                }
+            }
+            ruler = {
+                kill_character = yes
+            }
+        }
+        if = {
+            limit = {
+                any_scope_state = {
+                    state_region = s:STATE_BAJO_PARAGUAY
+                }
+            }
+            s:STATE_BAJO_PARAGUAY.region_state:PRG = {
+                add_modifier = {
+                    name = thus_unto_tyrants_modifier
+                    months = long_modifier_time
+                }
+            }
+        }
+        add_modifier = {
+            name = a_broken_land_modifier
+            months = long_modifier_time
+        }
+	}
+}
+
+# Peace and Justice
+paraguay.9 = {
+	type = country_event
+	placement = root
+	
+	title = paraguay.9.t
+	desc = paraguay.9.d
+	flavor = paraguay.9.f
+
+	event_image = {
+		video = "unspecific_military_parade"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		# triggered by JE
+	}
+
+	immediate = {
+	}
+	option = { 
+		name = paraguay.9.a
+		default_option = yes
+		add_modifier = {
+			name = paraguay_victory_mil_modifier
+			months = long_modifier_time
+		}
+	}
+	option = { 
+		name = paraguay.9.b
+		default_option = yes
+		add_modifier = {
+			name = paraguay_victory_civ_modifier
+			months = long_modifier_time
+		}
+		add_loyalists = {
+			value = large_radicals
+		}
+	}
+}
+
+
+# Paraguay War Defeat Event
+paraguay.10 = {
+	type = country_event
+	placement = root
+	
+	title = paraguay.10.t
+	desc = paraguay.10.d
+	flavor = paraguay.10.f
+
+	event_image = {
+		video = "middleeast_battlefield_trenches"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		# triggered by JE
+	}
+
+	immediate = {
+		c:PRG = {
+			save_scope_as = paraguay_scope
+		}
+	}
+	option = { 
+		name = paraguay.10.a
+		default_option = yes
+		add_modifier = {
+			name = army_shaken_modifier
+			months = long_modifier_time
+		}
+		add_radicals = {
+			value = large_radicals
+		}
+	}
+}
+
+# Paraguay War Start Event
+paraguay.11 = {
+	type = country_event
+	placement = scope:paraguay_scope.capital
+	
+	title = paraguay.11.t
+	desc = paraguay.11.d
+	flavor = paraguay.11.f
+
+	event_image = {
+		video = "europenorthamerica_before_the_battle"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		NOR = {
+			is_diplomatic_play_ally_of = c:PRG
+			has_variable = paraguay_war_var
+			c:PRG ?= this
+		}
+		country_is_in_south_america = yes
+		c:PRG ?= {
+			has_journal_entry = je_expanding_paraguay
+			NOT = {
+				has_war_with = root
+			}
+			any_diplomatic_play = {
+				is_war = no
+				any_scope_play_involved = {
+					this = root
+				}
+				initiator = prev
+				target = {
+					any_scope_state = {
+						OR = {
+							state_region = s:STATE_CORRIENTES
+				            state_region = s:STATE_URUGUAY
+				            state_region = s:STATE_SANTA_FE
+				            state_region = s:STATE_PARANA
+				            state_region = s:STATE_RIO_GRANDE_DO_SUL
+						}
+					}
+				}
+				OR = {
+					has_play_goal = conquer_state
+					has_play_goal = return_state
+					has_play_goal = make_tributary
+					has_play_goal = make_protectorate
+				}
+			}
+		}
+	}
+
+	immediate = {
+		set_variable = paraguay_war_var
+		c:PRG ?= {
+			random_diplomatic_play = {
+				limit = {
+					is_war = no
+					any_scope_play_involved = {
+						this = root
+					}
+					initiator = prev
+					target = {
+						any_scope_state = {
+							OR = {
+								state_region = s:STATE_CORRIENTES
+					            state_region = s:STATE_URUGUAY
+					            state_region = s:STATE_SANTA_FE
+					            state_region = s:STATE_PARANA
+					            state_region = s:STATE_RIO_GRANDE_DO_SUL
+							}
+						}
+					}
+					OR = {
+						has_play_goal = conquer_state
+						has_play_goal = return_state
+						has_play_goal = make_tributary
+						has_play_goal = make_protectorate
+					}
+				}
+				target = {
+					save_scope_as = paraguay_target_scope
+				}
+			}
+			save_scope_as = paraguay_scope
+			ruler = {
+				save_scope_as = paraguay_leader_scope
+			}
+		}
+	}
+	option = { 
+		name = paraguay.11.a
+		default_option = yes
+		add_journal_entry = { type = je_paraguayan_war }
+	}
+}
+
+# The President's Dream
+paraguay.12 = {
+	type = country_event
+	placement = root
+	
+	title = paraguay.12.t
+	desc = paraguay.12.d
+	flavor = paraguay.12.f
+
+	event_image = {
+		video = "unspecific_military_parade"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+	}
+
+	immediate = {
+	}
+	option = { 
+		name = paraguay.12.a
+		default_option = yes
+		add_journal_entry = { type = je_expanding_paraguay }
+		s:STATE_CORRIENTES = { 
+			if = {
+				limit = {
+					any_scope_state = {
+						 NOT = {
+							owner = ROOT
+						}
+					}
+				}
+				add_claim = ROOT 
+			}
+		}
+		add_modifier = {
+			name = war_fervor_modifier
+			months = long_modifier_time
+		}
+	}
+}

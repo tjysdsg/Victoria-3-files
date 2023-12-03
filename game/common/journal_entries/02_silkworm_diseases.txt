@@ -1,0 +1,159 @@
+﻿je_silkworm_diseases = {
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	group = je_group_crises
+
+	#Activated by event
+
+	complete = {
+		OR = {
+			custom_tooltip = {
+				text = pebrine_cure_tt
+				has_variable = pebrine_cure
+			}
+		}
+		scope:journal_entry = {
+			is_goal_complete = yes
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = silkworm_diseases.9 }
+	}
+
+	fail = {
+		NOT = {
+			any_scope_state = {
+				is_incorporated = yes
+				has_building = building_silk_plantation
+			}
+		}
+	}
+
+	on_fail = {
+		custom_tooltip = {
+			text = pebrine_je_fail_tt
+		}
+	}
+
+	on_monthly_pulse = {
+		effect = {
+			if = {
+				limit = {
+					has_variable = pebrine_cure
+					any_scope_state = {
+						filter = {
+							has_modifier = modifier_pebrine_state_modifier
+							owner = ROOT
+						}
+						has_decree = decree_encourage_agricultural_industry
+						percent > 0.75
+					}
+				}
+				change_variable = {
+					name = pebrine_progress_var
+					add = 1
+				}
+			}
+			random_list = {
+				80 = {
+
+				}
+				20 = {
+					random_country = {
+						limit = {
+							any_scope_state = {
+								is_incorporated = yes
+								any_scope_building = { 
+						            is_building_type = building_silk_plantation
+						            level >= 2
+						        }
+							}
+							OR = {
+								any_country = {
+									NOT = { THIS = PREV }
+									market = ROOT.market
+									any_scope_state = {
+										has_modifier = modifier_pebrine_state_modifier
+									}
+								}
+								any_neighbouring_state = { #Why? Africa.
+									is_incorporated = yes
+									owner = {
+										any_scope_state = {
+											is_incorporated = yes
+											has_modifier = modifier_pebrine_state_modifier
+										}
+									}
+								}
+							}
+							OR = {	
+								country_is_in_europe = yes
+								country_is_in_north_america = yes
+							}
+							NOT = {
+								has_variable = pebrine_outbreak_event
+							}
+						}
+						trigger_event = { id = silkworm_diseases.3 weeks = 1 }
+					}
+				}
+			}
+		}
+		random_events = {
+			150 = 0
+			40 = silkworm_diseases.2
+			20 = silkworm_diseases.4
+			20 = silkworm_diseases.5
+			20 = silkworm_diseases.6
+			150 = silkworm_diseases.7
+		}
+	}
+
+	invalid = {
+		NOT = {
+			any_scope_state = {
+				is_incorporated = yes
+				has_modifier = modifier_pebrine_state_modifier
+			}
+		}
+	}
+
+	immediate = {
+		set_variable = {
+			name = pebrine_progress_var
+			value = 0
+		}
+		ROOT = {
+			save_scope_as = pebrine_country_scope
+		}
+		every_country = {
+			limit = {
+				OR = {
+					any_scope_state = {
+						any_neighbouring_state = {
+							owner = ROOT
+						}
+					}
+					any_scope_state = {
+						has_modifier = modifier_pebrine_state_modifier
+					}
+					market = ROOT.market	
+				}			
+			}
+			post_notification = pebrine_spread_notification
+		}
+	}
+
+	current_value = {
+		value = root.var:pebrine_progress_var
+	}
+
+	goal_add_value = {
+		add = 12
+	}
+
+	weight = 100
+
+	should_be_pinned_by_default = yes
+}

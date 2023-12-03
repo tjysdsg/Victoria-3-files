@@ -1,6 +1,8 @@
 ﻿je_belle_epoque = {
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
 
+	group = je_group_crises
+
 	is_shown_when_inactive = {
 		has_technology_researched = shift_work
 		has_technology_researched = camera
@@ -12,15 +14,12 @@
 		is_at_war = no
 		custom_tooltip = {
 			text = belle_epoque_sol_trigger
-			OR = {
-				any_state = {
-					filter = {
-						is_incorporated = yes
-						owner = ROOT
-					}
-					average_sol >= 15
-					percent > 0.5
+			any_scope_state = {
+				filter = {
+					is_incorporated = yes
 				}
+				average_sol >= 15
+				percent > 0.5
 			}
 		}
 		capital = {
@@ -63,7 +62,7 @@
 				c:USA ?= this
 				owns_entire_state_region = STATE_NEW_YORK
 				s:STATE_NEW_YORK = {
-					average_sol >= 15
+					any_scope_state = { average_sol >= 15 }
 				}
 			}
 			s:STATE_NEW_YORK = {
@@ -75,7 +74,7 @@
 				c:USA ?= this
 				owns_entire_state_region = STATE_CALIFORNIA
 				s:CALIFORNIA = {
-					average_sol >= 15
+					any_scope_state = { average_sol >= 15 }
 				}
 			}
 			s:STATE_CALIFORNIA = {
@@ -87,7 +86,7 @@
 				c:USA ?= this
 				owns_entire_state_region = STATE_PENNSYLVANIA
 				s:STATE_PENNSLYVANIA = {
-					average_sol >= 15
+					any_scope_state = { average_sol >= 15 }
 				}
 			}
 			s:STATE_PENNSLYVANIA = {
@@ -103,7 +102,7 @@
 				}
 				owns_entire_state_region = STATE_GUANGDONG
 				s:STATE_GUANGDONG = {
-					average_sol >= 15
+					any_scope_state = { average_sol >= 15 }
 				}
 			}
 			s:STATE_GUANGDONG = {
@@ -118,7 +117,7 @@
 				}
 				owns_entire_state_region = STATE_SUZHOU
 				s:STATE_SUZHOU = {
-					average_sol >= 15
+					any_scope_state = { average_sol >= 15 }
 				}
 			}
 			s:STATE_SUZHOU = {
@@ -133,7 +132,7 @@
 				}
 				owns_entire_state_region = STATE_NANJING
 				s:STATE_NANJING = {
-					average_sol >= 15
+					any_scope_state = { average_sol >= 15 }
 				}
 			}
 			s:STATE_NANJING = {
@@ -162,16 +161,31 @@
 	}
 
 	fail = {
-		trigger_if = {
-			limit = {
-				has_variable = belle_epoque_var
+		OR = {
+			trigger_if = {
+				limit = {
+					has_variable = belle_epoque_var
+				}
+				custom_tooltip = {
+					text = belle_epoque_fail_tt
+					any_scope_war = {
+						any_scope_front = {
+							any_scope_state = {
+								this = scope:belle_epoque_state
+							}
+						}
+					}
+				}
 			}
-			custom_tooltip = {
-				text = belle_epoque_fail_tt
-				any_scope_war = {
-					any_scope_front = {
-						any_scope_state = {
-							this = scope:belle_epoque_state
+			trigger_if = {
+				limit = {
+					has_variable = belle_epoque_var
+				}
+				custom_tooltip = {
+					text = belle_epoque_invalid_tt
+					scope:belle_epoque_state = {
+						NOT = {
+							owner = root
 						}
 					}
 				}
@@ -237,24 +251,17 @@
 		}
 	}
 
+	current_value = {
+		value = var:belle_epoque_var
+	}
+
 	invalid = {
 		trigger_if = {
 			limit = {
 				has_variable = belle_epoque_var
 			}
-			custom_tooltip = {
-				text = belle_epoque_invalid_tt
-				NOT = {
-					any_scope_state = {
-						this = scope:belle_epoque_state
-					}
-				}
-			}
+			NOT = { exists = scope:belle_epoque_state }
 		}
-	}
-
-	current_value = {
-		value = var:belle_epoque_var
 	}
 	
 	progressbar = yes

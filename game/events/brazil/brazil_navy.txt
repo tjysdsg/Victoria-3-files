@@ -1,0 +1,402 @@
+﻿namespace = brazil_navy
+
+# Brazil navy start
+brazil_navy.1 = {
+	type = country_event
+	placement = ROOT
+	
+	title = brazil_navy.1.t
+	desc = brazil_navy.1.d
+	flavor = brazil_navy.1.f
+	
+	event_image = {
+		video = "unspecific_naval_battle"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/bicorne_hat.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		# triggered by je_brazil_navy
+	}
+
+	immediate = {
+		ruler = {
+			save_scope_as = ruler_scope
+		}
+		if = {
+			limit = {
+				any_scope_character = {
+					has_role = admiral
+					commander_rank >= 5
+				}
+			}
+			random_scope_character = {
+				limit = {
+					has_role = admiral
+					commander_rank >= 5
+				}
+				save_scope_as = admiral_scope
+			}
+		}
+		else_if = {
+			limit = {
+				any_scope_character = {
+					has_role = admiral
+					commander_rank >= 4
+				}
+			}
+			random_scope_character = {
+				limit = {
+					has_role = admiral
+					commander_rank >= 4
+				}
+				save_scope_as = admiral_scope
+			}
+		}
+		else_if = {
+			limit = {
+				any_scope_character = {
+					has_role = admiral
+					commander_rank >= 3
+				}
+			}
+			random_scope_character = {
+				limit = {
+					has_role = admiral
+					commander_rank >= 3
+				}
+				save_scope_as = admiral_scope
+			}
+		}
+		else_if = {
+			limit = {
+				any_scope_character = {
+					has_role = admiral
+					commander_rank >= 2
+				}
+			}
+			random_scope_character = {
+				limit = {
+					has_role = admiral
+					commander_rank >= 2
+				}
+				save_scope_as = admiral_scope
+			}
+		}
+		else = {
+			random_scope_character = {
+				limit = {
+					has_role = admiral
+				}
+				save_scope_as = admiral_scope
+			}
+		}
+	}
+
+	option = { # Brazil needs a strong navy
+		name = brazil_navy.1.a
+		default_option = yes
+		show_as_tooltip = {
+			add_journal_entry = {
+				type = je_brazil_navy
+			}
+		}
+		scope:admiral_scope = {
+			add_modifier = {
+				name = brz_navy_advocate
+			}
+		}
+	}
+}
+
+# Navy complains that other countries are too relatively powerful
+brazil_navy.2 = {
+	type = country_event
+	placement = ROOT
+	
+	title = brazil_navy.2.t
+	desc = brazil_navy.2.d
+	flavor = brazil_navy.2.f
+	
+	event_image = {
+		video = "unspecific_naval_battle"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/bicorne_hat.dds"
+
+	cooldown = { months = long_modifier_time }
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		# triggered by je_brazil_navy
+		OR = {
+			any_country = {
+				naval_power_projection > root.naval_power_projection
+				count > 10
+			}
+			any_country = {
+				naval_power_projection > root.naval_power_projection
+				country_is_in_south_america = yes
+			}
+		}
+		any_scope_character = {
+			has_role = admiral
+		}
+	}
+
+	immediate = {
+		ruler = {
+			save_scope_as = ruler_scope
+		}
+		if = {
+			limit = {
+				any_scope_character = {
+					has_role = admiral
+					NOT = { has_modifier = brz_navy_advocate }
+				}
+			}
+			random_scope_character = {
+				limit = {
+					has_role = admiral
+					NOT = { has_modifier = brz_navy_advocate }
+				}
+				save_scope_as = admiral_scope
+			}
+		}
+		else = {
+			random_scope_character = {
+				limit = {
+					has_role = admiral
+				}
+				save_scope_as = admiral_scope
+			}
+		}
+		ig:ig_armed_forces = {
+			save_scope_as = navy_scope
+		}
+		if = {
+			limit = {
+				any_country = {
+					navy_size > root.navy_size
+					country_is_in_south_america = yes
+				}
+			}
+			random_country = {
+				limit = {
+					navy_size > root.navy_size
+					country_is_in_south_america = yes
+				}
+				save_scope_as = naval_rival
+			}
+		}
+		else = {
+			random_country = {
+				limit = {
+					navy_size > root.navy_size
+				}
+				save_scope_as = naval_rival
+			}
+		}
+	}
+
+	option = { # We will have to do better
+		name = brazil_navy.2.a
+		default_option = yes
+		scope:navy_scope = {
+			add_modifier = {
+				name = brz_eclipsed_navy
+				months = normal_modifier_time
+			}
+		}
+		scope:admiral_scope = {
+			if = {
+				limit = {
+					NOT = { has_modifier = brz_navy_advocate }
+				}
+				add_modifier = {
+					name = brz_navy_advocate
+				}
+			}
+		}
+	}
+}
+
+# Admirality is happy that the navy is strong
+brazil_navy.3 = {
+	type = country_event
+	placement = ROOT
+	
+	title = brazil_navy.3.t
+	desc = brazil_navy.3.d
+	flavor = brazil_navy.3.f
+	
+	event_image = {
+		video = "unspecific_naval_battle"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/bicorne_hat.dds"
+
+	cooldown = { months = long_modifier_time }
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		# triggered by je_brazil_navy
+		# TODO replace with naval power projection
+		NOR = {
+			any_country = {
+				navy_size > root.navy_size
+				count > 6
+			}
+			any_country = {
+				navy_size > root.navy_size
+				country_is_in_south_america = yes
+			}
+		}
+		any_scope_character = {
+			has_role = admiral
+		}
+	}
+
+	immediate = {
+		random_scope_character = {
+			limit = {
+				has_role = admiral
+			}
+			save_scope_as = admiral_scope
+		}
+		ig:ig_armed_forces = {
+			save_scope_as = navy_scope
+		}
+	}
+
+	option = { # Good to hear
+		name = brazil_navy.3.a
+		default_option = yes
+		scope:navy_scope = {
+			add_modifier = {
+				name = brz_strong_navy
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+# Completion event
+brazil_navy.4 = {
+	type = country_event
+	placement = ROOT
+	
+	title = brazil_navy.4.t
+	desc = brazil_navy.4.d
+	flavor = brazil_navy.4.f
+	
+	event_image = {
+		video = "unspecific_naval_battle"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/bicorne_hat.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		# triggered by je_brazil_navy
+	}
+
+	immediate = {
+		ig:ig_armed_forces = {
+			save_scope_as = navy_scope
+		}
+		random_scope_character = {
+			limit = {
+				has_role = admiral
+			}
+			save_scope_as = admiral_scope
+		}
+		ruler = {
+			save_scope_as = ruler_scope
+		}
+		ROOT = {
+			save_scope_as = brazil_scope
+		}
+	}
+
+	option = { # Good to hear
+		name = brazil_navy.4.a
+		default_option = yes
+		if = {
+			limit = {
+				has_journal_entry = je_pedro_brazil
+			}
+			add_pedropoint_effect = yes
+		}
+		custom_tooltip = {
+			text = brz_navy_loyalists
+		}
+		show_as_tooltip = {
+			random_scope_state = {
+				limit = {
+					any_scope_building = {
+						is_building_type = building_naval_base
+						level >= 5
+					}
+				}
+				add_loyalists_in_state = {
+					pop_type = officers
+					value = 0.5
+				}
+				add_loyalists_in_state = {
+					pop_type = soldiers
+					value = 0.25
+				}
+			}
+		}
+		hidden_effect = {
+			every_scope_state = {
+				limit = {
+					any_scope_building = {
+						is_building_type = building_naval_base
+						level >= 5
+					}
+				}
+				add_loyalists_in_state = {
+					pop_type = officers
+					value = 0.5
+				}
+				add_loyalists_in_state = {
+					pop_type = soldiers
+					value = 0.25
+				}
+			}
+		}
+		
+		every_country = {
+			limit = {
+				NOT = {
+					THIS = ROOT
+				}
+				has_interest_marker_in_region = region_brazil
+			}
+			post_notification = brz_navy_completed
+		}
+	}
+}

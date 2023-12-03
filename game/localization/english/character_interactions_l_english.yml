@@ -1,0 +1,53 @@
+﻿l_english:
+ CHARACTER_INTERACTION_HEADER: "#header [CharacterInteraction.GetName]#!\n$TOOLTIP_DELIMITER$\n"
+ CHARACTER_INTERACTION_ERRORS: "[AddTextIf(And(Not(CharacterInteraction.ShouldShowRequirements), Not(StringIsEmpty(CharacterInteraction.GetCommandDesc(Character.Self)))), Concatenate(Localize('CHARACTER_INTERACTION_ERRORS_IMPL'), '\n\n'))]"
+ CHARACTER_INTERACTION_ERRORS_IMPL: "#title Requirements:#!\n[CharacterInteraction.GetCommandDesc(Character.Self)]"
+ CHARACTER_INTERACTION_REQUIREMENTS: "[AddTextIf(And(CharacterInteraction.ShouldShowRequirements, Not(StringIsEmpty(CharacterInteraction.GetRequirements(Character.Self)))), Concatenate(Localize('CHARACTER_INTERACTION_REQUIREMENTS_IMPL'), '\n\n'))]"
+ CHARACTER_INTERACTION_REQUIREMENTS_IMPL: "#title Requirements:#!\n[CharacterInteraction.GetRequirements(Character.Self)][AddTextIf(CharacterInteraction.IsOnCooldown(Character.Self), Concatenate('\n\n@red_cross! ', CharacterInteraction.GetCooldownDesc(Character.Self)))]"
+ CHARACTER_INTERACTION_INFO: "[ConcatIfNeitherEmpty(CharacterInteraction.GetInfo, '\n\n')]"
+ CHARACTER_INTERACTION_EFFECTS: "#title Effects:#!\n[Select_CString(Not(StringIsEmpty(CharacterInteraction.GetEffects(Character.Self))), CharacterInteraction.GetEffects(Character.Self), Localize('CHARACTER_INTERACTION_NO_EFFECT'))]"
+ CHARACTER_INTERACTION_NO_EFFECT: "#italic No effect#!"
+ CHARACTER_INTERACTION_DESC: "[AddTextIf(Not(StringIsEmpty(CharacterInteraction.GetDesc)), Concatenate('\n\n', CharacterInteraction.GetDesc))]"
+ CHARACTER_INTERACTION_TOOLTIP: "$CHARACTER_INTERACTION_HEADER$$CHARACTER_INTERACTION_ERRORS$$CHARACTER_INTERACTION_REQUIREMENTS$$CHARACTER_INTERACTION_INFO$$CHARACTER_INTERACTION_EFFECTS$$CHARACTER_INTERACTION_DESC$"
+ CHARACTER_INTERACTION_CONFIRMATION: "$CHARACTER_INTERACTION_TOOLTIP$\n\nAre you sure?"
+ CHARACTER_INTERACTION_ON_COOLDOWN: "[CharacterInteraction.GetName|v] is on cooldown until [Date.GetString|v]"
+ CHARACTER_INTERACTION_NAME: "[CharacterInteraction.GetName][AddLocalizationIf(CharacterInteraction.IsOnCooldown(Character.Self), 'INTERACTION_COOLDOWN')]"
+ INTERACTION_COOLDOWN: " ([CharacterInteraction.GetCooldown(Character.Self)])"
+
+ grant_command_to_ruler: "Grant Command"
+ remove_command_from_ruler: "Retire from Command"
+ retire_commander: "Retire Commander"
+ retire_commander_info: "If relieved of command, [Character.GetFullName] will lose their role as [concept_general] and cease to affect the [concept_clout] of the [Character.GetInterestGroup.GetName] through their [concept_commander_rank]"
+
+# Exile Interactions
+ exile_character: "Exile Dissident"
+ exile_character_info: "If [Concept( 'concept_exile', 'exiled' )], [Character.GetFullName] will leave [Character.GetCountry.GetName], and be recruitable by other [Concept('concept_country', '$concept_countries$')] as an [concept_agitator]"
+ exile_dissident_tt: "[Character.GetFullName] will be sent into $concept_exile$"
+ invite_exile: "Invite Exile"
+ invite_exile_start_join_movement_effect: "[SelectLocalization(Character.PredictLawToAgitate(GetPlayer.Self).GetPoliticalMovement.IsValid, 'invite_exile_join_movement', SelectLocalization(Character.PredictLawToAgitate(GetPlayer.Self).IsValid, 'invite_exile_start_movement', 'invite_exile_no_movement'))]"
+ invite_exile_start_movement: "Will start [Character.PredictLawToAgitate(GetPlayer.Self).GetPotentialPoliticalMovementFullName]"
+ invite_exile_join_movement: "Will join [Character.PredictLawToAgitate(GetPlayer.Self).GetPoliticalMovement.GetFullName]"
+ invite_exile_no_movement: "Will #b not#! start or join a [concept_political_movement]"
+ invite_exile_info: "[Concept( 'concept_character_role', '$concept_character_roles$' )]: #v [Character.GetAllRoleNames]#!\n[concept_interest_group]: [Character.GetInterestGroup.GetName]\n[concept_ideology]: [Character.GetIdeology.GetName]\n[concept_popularity]: #v #tooltip:[Character.GetTooltipTag],POPULARITY_BREAKDOWN [LabelingHelper.GetLabelForPopularityCFixedPoint(Character.GetPopularity)]#!#! (#v #tooltippable #tooltip:[Character.GetTooltipTag],POPULARITY_BREAKDOWN [Character.GetPopularity|0]#!#!#!)\n\nThe $concept_popularity$ of the [concept_agitator] will affect how much support is given to the $concept_political_movement$ that the $concept_agitator$ starts or joins"
+ invite_exile_devout_tt: "Devout [Concept('concept_character', '$concept_characters$')] must have our [concept_state_religion]"
+ invite_exile_state_religion_tt: "While we have the State Religion [concept_law], characters must have our [concept_state_religion]"
+ adopt_random_antigovernment_ideology_tt: "This [concept_character] will adopt an [concept_ideology] opposed to our government."
+
+ notification_exile_notification_name: "[SCOPE.sCharacter('exile_scope').GetFullName] exiled from [SCOPE.sCountry('exiling_country_scope').GetName]."
+ notification_exile_notification_desc: "[SCOPE.sCharacter('exile_scope').GetFullName] has been sent into [concept_exile] by [SCOPE.sCountry('exiling_country_scope').GetName]."
+ notification_exile_notification_tooltip: "#header $notification_exile_notification_name$#!\n$TOOLTIP_DELIMITER$\n$notification_exile_notification_desc$"
+
+# Agitator Interactions
+ grant_leadership_to_agitator: "Grant Leadership"
+ grant_leadership_to_agitator_info: "[concept_ideology]: [Character.GetIdeology.GetName]\n[concept_popularity]: #v #tooltip:[Character.GetTooltipTag],POPULARITY_BREAKDOWN [LabelingHelper.GetLabelForPopularityCFixedPoint(Character.GetPopularity)]#!#! (#v #tooltippable #tooltip:[Character.GetTooltipTag],POPULARITY_BREAKDOWN [Character.GetPopularity|0]#!#!#!)\n\nIf granted leadership, the $concept_ideology$ of [Character.GetFullName] will be added to the [Character.GetInterestGroup.GetName] and [Character.GetHerHis] $concept_popularity$ will affect their [concept_interest_group_attraction]"
+ make_agitator_ig_leader_tt: "Becomes the [concept_leader] of the [Character.GetInterestGroup.GetName]"
+ grant_command_to_agitator: "Grant Command"
+ grant_command_to_agitator_info: "If granted command, [Character.GetFullName] will remain an [concept_agitator], but will also gain the ability to lead armies as a [concept_general], with their [concept_commander_rank] affecting the [concept_clout] of the [Character.GetInterestGroup.GetName]"
+
+# Monarch interactions
+ marry_ruler_or_heir: "Seek Royal Marriage"
+ marry_ruler_or_heir_info: "A royal marriage will serve to increase [concept_relations] between [Character.GetCountry.GetName] and the home [concept_country] of [Character.GetPrimaryRoleTitle] [Character.GetFullName]'s new spouse, as well as potentially increasing [Character.GetHerHis] [concept_popularity]"
+ marry_ruler_or_heir_desc: "#lore [Character.GetFullName] will seek a spouse from the noble houses of a friendly nation.#!"
+ abdicate_monarch: "Abdicate the Throne"
+ abdicate_monarch_info: "The [concept_ruler] will abdicate the throne of [Character.GetCountry.GetName], passing the role of [Character.GetPrimaryRoleTitle] to [Character.GetHerHis] [concept_heir]"
+

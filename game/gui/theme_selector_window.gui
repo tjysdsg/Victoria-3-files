@@ -1,0 +1,859 @@
+﻿window = {
+	name = "theme_selector_window"
+
+	size = { 100% 100% }
+	movable = no
+	layer = confirmation
+
+	using = Animation_ShowHide_Quick
+	using = Background_Full_Dim
+
+	button_normal = {
+		size = { 100% 100% }
+
+        onclick = "[ThemeWindow.SaveAndHide]"
+		using = close_button_sound
+	}
+
+	widget = {
+		parentanchor = center
+		size = { 970 700 }
+		alwaystransparent = no
+		
+		using = Window_Background
+		using = Window_Decoration_Spike
+
+		vbox = {
+			using = Window_Margins
+
+			header_pattern = {
+				layoutpolicy_horizontal = expanding
+
+				blockoverride "header_text" {
+					text = "THEME_SELECTOR"
+				}
+
+				blockoverride "button_close"
+				{
+					onclick = "[ThemeWindow.SaveAndHide]" # same as the regular settings button (we always save them on close)
+				}
+			}
+
+			## CONTENT WINDOW ##
+				hbox = {
+					layoutpolicy_vertical = expanding
+					layoutpolicy_horizontal = expanding
+
+					vbox = {
+						layoutpolicy_vertical = expanding
+
+						vbox = {
+							margin_left = 65
+
+							widget = {
+								size = { 200 48 }
+								visible = "[ThemeWindow.IsDawnOfWonderEnabled]"
+
+								button = {
+									size = { 200 48 }
+									visible = "[GetVariableSystem.Exists('theme_selector_theme_tab')]"
+									text = "THEME"
+									default_format = "#low"
+									frame = 4
+									alwaystransparent = yes
+									texture = "gfx/interface/tabs/tab_button_vertical.dds"
+									spriteType = Corneredtiled
+									spriteborder = { 10 10 }
+									framesize = { 202 48 }										
+								}
+
+								button_tab_vertical = {
+									visible = "[Not(GetVariableSystem.Exists('theme_selector_theme_tab'))]"
+									size = { 200 48 }
+									text = "THEME"
+									onclick = "[GetVariableSystem.Toggle('theme_selector_theme_tab')]"
+									onclick = "[GetVariableSystem.Toggle('theme_selector_settings_tab')]"
+									using = tab_button_sound
+								}
+							}
+
+							widget = {
+								size = { 200 48 }
+								visible = "[ThemeWindow.IsDawnOfWonderEnabled]"
+
+								button = {
+									size = { 200 48 }
+									visible = "[GetVariableSystem.Exists('theme_selector_settings_tab')]"
+									text = "DAY_AND_NIGHT_SETTINGS"
+									default_format = "#low"
+									frame = 4
+									alwaystransparent = yes
+									texture = "gfx/interface/tabs/tab_button_vertical.dds"
+									spriteType = Corneredtiled
+									spriteborder = { 10 10 }
+									framesize = { 202 48 }										
+								}
+
+								button_tab_vertical = {
+									visible = "[Not(GetVariableSystem.Exists('theme_selector_settings_tab'))]"
+									size = { 200 48 }
+									text = "DAY_AND_NIGHT_SETTINGS"
+									onclick = "[GetVariableSystem.Toggle('theme_selector_settings_tab')]"
+									onclick = "[GetVariableSystem.Toggle('theme_selector_theme_tab')]"
+									using = tab_button_sound
+								}
+							}
+						}
+
+						vbox = {
+							margin = { 20 0 }
+							margin_top = 25
+
+							textbox = {
+								layoutpolicy_horizontal = expanding
+								size = { 0 20 }
+								align = center|nobaseline
+								elide = right
+								fontsize_min = 14
+								
+								text = "RELEVANT_DLC_HEADER"
+								
+								background = {
+									using = default_header_bg
+									alpha = 1
+									margin_bottom = 10
+									margin_top = 10
+									
+									modify_texture = {
+										texture = "gfx/interface/masks/fade_horizontal_center.dds"
+										blend_mode = alphamultiply
+									}
+								}
+							}
+
+							widget = {
+								size = { 10 10 }
+							}
+
+							datamodel = "[GetDlcCollection]"
+
+							item = {
+								relevant_dlc = {
+									visible = "[Dlc.IsThemeProvider]"
+								}
+							}
+						}
+
+						expand = {}
+					}
+
+					scrollbox = {
+						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = expanding
+
+						blockoverride "scrollbox_margins"
+						{
+							margin = { 10 10 }
+							margin_bottom = 15
+						}
+
+						blockoverride "scrollbox_content"
+						{
+							theme_tab_content = {
+								visible = "[GetVariableSystem.Exists('theme_selector_theme_tab')]"
+							}
+
+							settings_tab_content = {
+								visible = "[GetVariableSystem.Exists('theme_selector_settings_tab')]"
+							}
+						}
+					}
+				}
+
+				hbox = {
+					layoutpolicy_horizontal = expanding
+					margin = { 15 10 }
+					spacing = 5
+
+					expand = {}
+
+					### v3 action button
+					button = {
+						using = default_button_primary_action
+						size = { 170 33 }
+						text = "SAVE_AND_CLOSE"
+						onclick = "[ThemeWindow.SaveAndHide]"
+						using = confirm_button_sound
+					}
+				}
+		}
+	}
+}
+
+types theme_selector 
+{
+	type theme_tab_content = vbox {
+		layoutpolicy_horizontal = expanding
+		spacing = 5
+		margin_top = 5
+		margin_right = 5
+
+		datamodel = "[ThemeWindow.GetSingleChoiceThemeCategories]"
+
+		item = {
+			theme_category = {}
+		}
+	}
+
+	# Day and Night Cycle settings:
+	type settings_tab_content = flowcontainer {
+		direction = vertical
+		spacing = 5
+		margin_top = 5
+
+		flowcontainer = {
+		    datacontext = "[ThemeWindow.GetDayNightEnabled]"
+			text_single = {
+				parentanchor = vcenter
+				name = "setting_title"
+				text = "[PdxSetting.GetTitle]"
+				align = nobaseline
+				min_width = 250
+				max_width = 250
+				tooltip = "[PdxSetting.GetTooltip]"
+				using = tooltip_ws
+				margin = { 20 6 }
+				block "setting_title" {}
+			}
+
+            button_checkbox = {
+            	parentanchor = vcenter
+				size = { 24 24 }
+				name = "setting_bool_cb"
+				checked = "[GetIsChecked(PdxSetting.GetSetting)]"
+				onclick = "[ThemeWindow.ToggleDayNightEnabled]"
+				using = check_button_sound
+				block "setting_bool_cb" {}
+			}
+		}
+
+		flowcontainer = {
+		    datacontext = "[ThemeWindow.GetDayNightSpeed]"
+            text_single = {
+                name = "setting_title"
+                text = "[PdxSetting.GetTitle]"
+                align = nobaseline
+                min_width = 250
+                max_width = 250
+                tooltip = "[PdxSetting.GetTooltip]"
+                using = tooltip_ws
+                margin = { 20 6 }
+                block "setting_title" {}
+            }
+
+            container = {
+                name = "setting_value"
+                minimumsize = { 350 30 }
+
+                scrollbar = {
+                    name = "setting_value_scrollbar"
+                    direction = horizontal
+                    parentanchor = left|vcenter
+                    size = { 280 20 }
+                    minimumsize = { -1 14 }
+
+                    min = "[ThemeWindow.GetScrollbarMin('daynight_speed')]"
+                    max = "[ThemeWindow.GetScrollbarMax('daynight_speed')]"
+                    step = "[ThemeWindow.GetScrollbarStep('daynight_speed')]"
+
+                    value = "[ThemeWindow.GetScrollbarValue('daynight_speed')]"
+                    onvaluechanged = "[ThemeWindow.ScrollbarOnValueChanged('daynight_speed')]"
+
+                    track = {
+                        using = SettingsValueTrack
+                    }
+
+                    slider = {
+                        using = SettingsValueSlider
+                    }
+
+                    dec_button = {
+                        using = SettingsValueDecButton
+                    }
+
+                    inc_button = {
+                        using = SettingsValueIncButton
+                    }
+                }
+
+                text_single = {
+                    position = { 285 3 }
+                    autoresize = yes
+                    text = "[ThemeWindow.GetFormattedValue('daynight_speed')]"
+                    default_format = "#low"
+                    alwaystransparent = no
+                    max_width = 80
+                    fontsize_min = 12
+                    block "setting_value_eb" {}
+                }
+            }
+        }
+
+        flowcontainer = {
+            datacontext = "[ThemeWindow.GetDayNightSunHours]"
+            text_single = {
+                name = "setting_title"
+                text = "[PdxSetting.GetTitle]"
+                align = nobaseline
+                min_width = 250
+                max_width = 250
+                tooltip = "[PdxSetting.GetTooltip]"
+                using = tooltip_ws
+                margin = { 20 6 }
+                block "setting_title" {}
+            }
+
+            container = {
+                name = "setting_value"
+                minimumsize = { 350 30 }
+
+                scrollbar = {
+                    name = "setting_value_scrollbar"
+                    direction = horizontal
+                    parentanchor = left|vcenter
+                    size = { 280 20 }
+                    minimumsize = { -1 14 }
+
+                    min = "[ThemeWindow.GetScrollbarMin('sun_duration')]"
+                    max = "[ThemeWindow.GetScrollbarMax('sun_duration')]"
+                    step = "[ThemeWindow.GetScrollbarStep('sun_duration')]"
+
+                    value = "[ThemeWindow.GetScrollbarValue('sun_duration')]"
+                    onvaluechanged = "[ThemeWindow.ScrollbarOnValueChanged('sun_duration')]"
+
+                    track = {
+                        using = SettingsValueTrack
+                    }
+
+                    slider = {
+                        using = SettingsValueSlider
+                    }
+
+                    dec_button = {
+                        using = SettingsValueDecButton
+                    }
+
+                    inc_button = {
+                        using = SettingsValueIncButton
+                    }
+                }
+
+                text_single = {
+                    position = { 285 3 }
+                    autoresize = yes
+                    text = "[ThemeWindow.GetFormattedValue('sun_duration')]"
+                    default_format = "#low"
+                    alwaystransparent = no
+                    max_width = 80
+                    fontsize_min = 12
+                    block "setting_value_eb" {}
+                }
+            }
+        }
+
+        flowcontainer = {
+            datacontext = "[ThemeWindow.GetDayNightEnableSyncLocalTime]"
+            text_single = {
+                name = "setting_title"
+                text = "[PdxSetting.GetTitle]"
+                align = nobaseline
+                parentanchor = vcenter
+                min_width = 250
+                max_width = 250
+                tooltip = "[PdxSetting.GetTooltip]"
+                using = tooltip_ws
+                margin = { 20 6 }
+                block "setting_title" {}
+            }
+
+            button_checkbox = {
+                size = { 24 24 }
+                parentanchor = vcenter
+                name = "setting_bool_cb"
+                checked = "[GetIsChecked(PdxSetting.GetSetting)]"
+                onclick = "[ThemeWindow.ToggleDayNightEnableSyncLocalTime]"
+                using = check_button_sound
+                block "setting_bool_cb" {}
+            }
+        }
+
+        flowcontainer = {
+            datacontext = "[ThemeWindow.GetDayNightTimeOfSunrise]"
+            text_single = {
+                name = "setting_title"
+                text = "[PdxSetting.GetTitle]"
+                align = nobaseline
+                min_width = 250
+                max_width = 250
+                tooltip = "[PdxSetting.GetTooltip]"
+                using = tooltip_ws
+                margin = { 20 6 }
+                block "setting_title" {}
+            }
+
+            container = {
+                name = "setting_value"
+                minimumsize = { 350 30 }
+
+                scrollbar = {
+                    name = "setting_value_scrollbar"
+                    direction = horizontal
+                    parentanchor = left|vcenter
+                    size = { 280 20 }
+                    minimumsize = { -1 14 }
+
+                    min = "[ThemeWindow.GetScrollbarMin('sunrise')]"
+                    max = "[ThemeWindow.GetScrollbarMax('sunrise')]"
+                    step = "[ThemeWindow.GetScrollbarStep('sunrise')]"
+
+                    value = "[ThemeWindow.GetScrollbarValue('sunrise')]"
+                    onvaluechanged = "[ThemeWindow.ScrollbarOnValueChanged('sunrise')]"
+
+                    track = {
+                        using = SettingsValueTrack
+                    }
+
+                    slider = {
+                        using = SettingsValueSlider
+                    }
+
+                    dec_button = {
+                        using = SettingsValueDecButton
+                    }
+
+                    inc_button = {
+                        using = SettingsValueIncButton
+                    }
+                }
+
+                text_single = {
+                    position = { 285 3 }
+                    autoresize = yes
+                    text = "[ThemeWindow.GetFormattedValue('sunrise')]"
+                    default_format = "#low"
+                    alwaystransparent = no
+                    max_width = 80
+                    fontsize_min = 12
+                    block "setting_value_eb" {}
+                }
+            }
+        }
+
+        flowcontainer = {
+            datacontext = "[ThemeWindow.GetDayNightEnableManualTime]"
+            text_single = {
+                name = "setting_title"
+                text = "[PdxSetting.GetTitle]"
+                align = nobaseline
+                parentanchor = vcenter
+                min_width = 250
+                max_width = 250
+                tooltip = "[PdxSetting.GetTooltip]"
+                using = tooltip_ws
+                margin = { 20 6 }
+                block "setting_title" {}
+            }
+
+            button_checkbox = {
+                size = { 24 24 }
+                parentanchor = vcenter
+                name = "setting_bool_cb"
+                checked = "[GetIsChecked(PdxSetting.GetSetting)]"
+                onclick = "[ThemeWindow.ToggleDayNightEnableManualTime]"
+                using = check_button_sound
+                block "setting_bool_cb" {}
+            }
+        }
+
+        flowcontainer = {
+            datacontext = "[ThemeWindow.GetDayNightManualTimeHour]"
+            text_single = {
+                name = "setting_title"
+                text = "[PdxSetting.GetTitle]"
+                align = nobaseline
+                min_width = 250
+                max_width = 250
+                tooltip = "[PdxSetting.GetTooltip]"
+                using = tooltip_ws
+                margin = { 20 6 }
+                block "setting_title" {}
+            }
+
+            container = {
+                name = "setting_value"
+                minimumsize = { 350 30 }
+
+                scrollbar = {
+                    name = "setting_value_scrollbar"
+                    direction = horizontal
+                    parentanchor = left|vcenter
+                    size = { 280 20 }
+                    minimumsize = { -1 14 }
+
+                    min = "[ThemeWindow.GetScrollbarMin('daynight_set_time_hour')]"
+                    max = "[ThemeWindow.GetScrollbarMax('daynight_set_time_hour')]"
+                    step = "[ThemeWindow.GetScrollbarStep('daynight_set_time_hour')]"
+
+                    value = "[ThemeWindow.GetScrollbarValue('daynight_set_time_hour')]"
+                    onvaluechanged = "[ThemeWindow.ScrollbarOnValueChanged('daynight_set_time_hour')]"
+
+                    track = {
+                        using = SettingsValueTrack
+                    }
+
+                    slider = {
+                        using = SettingsValueSlider
+                    }
+
+                    dec_button = {
+                        using = SettingsValueDecButton
+                    }
+
+                    inc_button = {
+                        using = SettingsValueIncButton
+                    }
+                }
+
+                text_single = {
+                    position = { 285 3 }
+                    autoresize = yes
+                    text = "[ThemeWindow.GetFormattedValue('daynight_set_time_hour')]"
+                    default_format = "#low"
+                    alwaystransparent = no
+                    max_width = 80
+                    fontsize_min = 12
+                    block "setting_value_eb" {}
+                }
+            }
+        }
+	}
+
+	type relevant_dlc = widget {
+		size = { 220 70 }
+		tooltip = "RELEVANT_DLC_TOOLTIP"
+		
+		icon = {
+			texture = "[Dlc.GetBanner]"
+			size = { 256 64 }
+			position = { 0 0 }
+			parentanchor = center
+		}
+
+		icon = {
+			block "alpha" {}
+
+			parentanchor = vcenter
+			#position = { 10 0 }
+			size = { 60 60 }
+
+			texture = "gfx/interface/backgrounds/round_frame_dec.dds"
+
+			icon = {
+				texture = "[Dlc.GetIcon]"
+				size = { 100% 100% }
+				position = { 3 -3 }
+				parentanchor = center
+			}
+
+		}
+
+		icon = {
+			block "checkmark_visibility" {
+				visible = "[And(Dlc.IsVerified, Dlc.IsEnabled)]"
+			}
+			
+			parentanchor = right|bottom
+			position = { 15 -5 }
+			size = { 30 30 }
+			texture = "gfx/interface/icons/generic_icons/checkmark.dds"
+		}
+
+		icon = {
+			block "intactive_visibility" {
+				visible = "[And(Dlc.IsVerified, Not(Dlc.IsEnabled))]"
+			}
+			
+			parentanchor = right|bottom
+			position = { 15 5 }
+			size = { 40 40 }
+			texture = "gfx/interface/buttons/button_icons/close.dds"
+		}
+
+		store_button = {
+			visible = "[Not(Dlc.IsVerified)]"
+		}
+	}
+
+	type asset_category = vbox {
+		layoutpolicy_horizontal = preferred
+		layoutpolicy_vertical = preferred
+		spacing = 5
+
+		textbox = {
+			layoutpolicy_horizontal = expanding
+			align = nobaseline
+			size = { 0 20 }
+			text = "[ThemeCategory.GetName]"
+			tooltip = "ASSET_CATEGORY_TOOLTIP"
+		}
+
+		vbox = {
+			layoutpolicy_horizontal = preferred
+
+			datamodel = "[ThemeCategory.GetThemes]"
+
+			item = {
+				theme_selector_asset = {}
+			}
+		}
+	}
+
+	type theme_selector_asset = hbox {
+		spacing = 5
+		tooltip = "ASSET_TOOLTIP"
+		alpha = "[TransparentIfTrue(And(Theme.HasDlcRequirement, Not(Theme.GetRequiredDlc.IsEnabled)))]"
+		onmousehierarchyenter = "[Theme.MarkAsSeen]"
+
+		checkbutton = {
+			using = check_button
+			size = { 30 30 }
+			onclick = "[Theme.ToggleMultipleChoiceTheme]"
+			checked = "[Theme.IsSelected]"
+			enabled = "[Theme.CanBeSelected]"
+		}
+
+		icon = {
+			size = { 30 30 }
+			visible = "[Theme.HasDlcRequirement]"
+			texture = "[Theme.GetRequiredDlc.GetIcon]"
+		}
+
+		textbox = {
+			layoutpolicy_horizontal = expanding
+			align = nobaseline
+			autoresize = yes
+			text = "[Theme.GetName]"
+		}
+
+		icon = {
+			visible = "[And( Theme.IsNew, Theme.CanBeSelected )]"
+			texture = "gfx/interface/current_situations/icon_situation_unread.dds"
+			size = { 25 25 }
+		}
+	}
+
+	type theme_category = widget {
+		size = { 620 58 }
+
+		background = { 
+			using = entry_bg_simple
+		}
+
+		hbox = {
+			textbox = {
+				text = "[ThemeCategory.GetName]"
+				autoresize = yes
+				fontsize_min = 14
+				minimumsize = { 250 -1 }
+				maximumsize = { 250 -1 }
+				elide = right
+				align = nobaseline
+				layoutpolicy_vertical = preferred
+				layoutpolicy_horizontal = preferred
+				margin = { 10 0 }
+				using = tooltip_ws
+				tooltip = "THEME_CATEGORY_TOOLTIP"
+			}
+
+			widget = {
+				size = { 350 58 }
+
+				dropdown_menu_standard = {
+					parentanchor = vcenter
+
+					blockoverride "dropdown_properties"
+					{
+						datamodel = "[ThemeCategory.GetThemes]"
+						onselectionchanged = "[ThemeCategory.OnSelectSingleChoiceTheme]"
+					}
+
+					blockoverride "dropdown_size"
+					{
+						size = { 350 38 }
+					}
+
+					blockoverride "dropdown_list_maxsize"
+					{
+						size = { 350 600 }
+					}
+
+					blockoverride "dropdown_active_item_properties"
+					{
+						datacontext = "[ThemeCategory.GetSelectedSingleChoiceTheme]"
+
+						icon = {
+							parentanchor = vcenter
+							size = { 30 30 }
+							position = { 5 0 }
+							visible = "[Theme.HasDlcRequirement]"
+							texture = "[Theme.GetRequiredDlc.GetIcon]"
+						}
+
+						icon = {
+							parentanchor = vcenter
+							size = { 30 30 }
+							position = { 5 0 }
+							visible = "[Not(Theme.HasDlcRequirement)]"
+							texture = "gfx/interface/icons/generic_icons/generic_concept_icon.dds"
+						}
+
+						text_single = {
+							visible = "[Theme.CanBeSelected]"
+							parentanchor = vcenter
+							position = { 40 0 }
+							autoresize = yes
+							fontsize_min = 14
+							minimumsize = { 260 -1 }
+							maximumsize = { 260 -1 }
+							elide = right
+							align = nobaseline
+							default_format = "#clickable"
+
+							text = "[Theme.GetName]"
+						}
+
+						text_single = {
+							visible = "[Not(Theme.CanBeSelected)]"
+							parentanchor = vcenter
+							position = { 40 0 }
+							autoresize = yes
+							fontsize_min = 14
+							minimumsize = { 260 -1 }
+							maximumsize = { 260 -1 }
+							elide = right
+							align = nobaseline
+							default_format = "#clickable;strikethrough"
+
+							text = "[Theme.GetName]"
+						}
+
+						icon = {
+							visible = "[ThemeCategory.HasAnyAvailableNewThemes]"
+							texture = "gfx/interface/current_situations/icon_situation_unread.dds"
+							size = { 25 25 }
+							position = { -27 0 }
+							parentanchor = vcenter|right
+						}
+
+						icon = {
+							visible = "[And(Theme.IsSelected, Not(Theme.CanBeSelected))]"
+							texture = "gfx/interface/icons/generic_icons/warning.dds"
+							size = { 25 25 }
+							position = { -27 0 }
+							parentanchor = vcenter|right
+						}
+
+						tooltip = "THEME_TOOLTIP"
+					}
+
+					blockoverride "dropdown_item_properties"
+					{
+						onmousehierarchyenter = "[Theme.MarkAsSeen]"
+						enabled = "[Theme.CanBeSelected]"
+
+						widget = {
+							size = { 100% 100% }
+							tooltip = "THEME_TOOLTIP"
+
+							background = {
+								visible = "[Theme.IsSelected]"
+								using = paper_bg
+							}
+
+							hbox = {
+								layoutpolicy_horizontal = expanding
+
+								widget = {
+									size = { 5 5 }
+								}
+
+								icon = {
+									size = { 30 30 }
+									visible = "[Theme.HasDlcRequirement]"
+									texture = "[Theme.GetRequiredDlc.GetIcon]"
+								}
+
+								icon = {
+									size = { 30 30 }
+									visible = "[Not(Theme.HasDlcRequirement)]"
+									texture = "gfx/interface/icons/generic_icons/generic_concept_icon.dds"
+								}
+
+								widget = {
+									size = { 5 5 }
+								}
+
+								text_single = {
+									visible = "[Not(And(Theme.IsSelected, Not(Theme.CanBeSelected)))]"
+									layoutpolicy_horizontal = expanding
+									autoresize = yes
+									fontsize_min = 14
+									minimumsize = { 260 -1 }
+									maximumsize = { 260 -1 }
+									elide = right
+									align = nobaseline
+									default_format = "#clickable"
+									text = "[Theme.GetName]"
+								}
+
+								text_single = {
+									visible = "[And(Theme.IsSelected, Not(Theme.CanBeSelected))]"
+									layoutpolicy_horizontal = expanding
+									autoresize = yes
+									fontsize_min = 14
+									minimumsize = { 260 -1 }
+									maximumsize = { 260 -1 }
+									elide = right
+									align = nobaseline
+									default_format = "#clickable;strikethrough"
+									raw_text = "[Theme.GetName]"
+								}
+
+								expand = {}
+							}
+
+							icon = {
+								visible = "[And( Theme.IsNew, Theme.CanBeSelected )]"
+								texture = "gfx/interface/current_situations/icon_situation_unread.dds"
+								size = { 25 25 }
+								position = { -5 0 }
+								parentanchor = vcenter|right
+								widgetanchor = vcenter|right
+							}
+						}
+
+						icon = {
+							visible = "[Theme.IsSelected]"
+							size = { 100% 100% }
+							using = highlighted_square_selection
+						}
+					}
+				}
+			}
+
+			widget = {
+				size = { 10 10 }
+			}
+		}
+	}
+}

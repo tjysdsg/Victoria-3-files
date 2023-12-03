@@ -1,0 +1,149 @@
+﻿namespace = krakow
+
+#Manifesto for the Polish Nation
+krakow.1 = {
+	type = country_event
+	placement = scope:krakow_state
+
+	title = krakow.1.t
+	desc = krakow.1.d
+	flavor = krakow.1.f
+
+	event_image = {
+		video = "europenorthamerica_springtime_of_nations"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	duration = 3
+
+	dlc = dlc004
+
+	trigger = {
+		#Fired by on_action
+	}
+
+	immediate = {
+		c:KRA = {
+			capital = {
+				save_scope_as = krakow_state
+			}
+			save_scope_as = krakow_scope
+		}
+	}
+
+	option = {
+		name = krakow.1.a
+		default_option = yes
+		ai_chance = {
+			base = 75
+			modifier = {
+				trigger = {
+					OR = {
+						any_country = {
+							country_definition = cd:KRA
+							is_player = yes
+						}
+					}
+				}
+				add = -100
+			}
+		}
+		set_variable = { name = krakow_uprising_happened months = 120 }
+		add_journal_entry = {
+			type = je_the_krakow_uprising
+		}
+		every_scope_state = {
+			limit = {
+				state_region = {
+					is_homeland = cu:polish
+				}
+			}
+			add_radicals_in_state = {
+				value = small_radicals
+				culture = cu:polish
+			}
+		}
+	}
+	
+	option = {
+		name = krakow.1.b
+		ai_chance = {
+			base = 5
+		}
+		every_scope_state = {
+			limit = {
+				state_region = {
+					is_homeland = cu:polish
+				}
+			}
+			add_radicals_in_state = {
+				value = large_radicals
+				culture = cu:polish
+			}
+		}
+		set_variable = dismissed_krakow
+	}
+}
+
+#Grand Duchy of Kraków
+krakow.2 = {
+	type = country_event
+	placement = scope:krakow_state
+
+	title = krakow.2.t
+	desc = krakow.2.d
+	flavor = krakow.2.f
+
+	event_image = {
+		video = "europenorthamerica_london_center"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	duration = 3
+
+	dlc = dlc004
+
+	trigger = {
+		#Fired by on_action
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_WEST_GALICIA
+			}
+			save_scope_as = krakow_state
+		}
+	}
+
+	option = {
+		name = krakow.2.a
+		default_option = yes
+		create_incident = {
+			value = 3
+			country = root
+		}
+		add_modifier = {
+			name = modifier_mitigating_diplomatic_consequences
+			months = normal_modifier_time
+		}	
+	}
+	
+	option = {
+		name = krakow.2.b
+		create_incident = {
+			value = 10
+			country = root
+		}
+		add_modifier = {
+			name = modifier_repressing_polish_nationalism
+			months = normal_modifier_time
+		}
+	}
+}

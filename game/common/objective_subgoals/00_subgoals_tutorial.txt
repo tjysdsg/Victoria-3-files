@@ -91,8 +91,6 @@
 			}	
 		}
 
-		set_variable = tut_customs_union_block
-		
 		add_journal_entry = {
 			type = je_tutorial_expand_basic_building
 			objective_subgoal = sg_expand_basic_building
@@ -149,7 +147,7 @@ sg_change_production_method = {
 				AND = {	
 					can_activate_production_method = {
 						building_type = building_rice_farm	
-						production_method = pm_fig_orchards
+						production_method = pm_fig_orchards_building_rice_farm
 					}
 				}
 				AND = {
@@ -250,7 +248,7 @@ sg_change_production_method = {
 				scope:tutorial_state_target = {
 					can_activate_production_method = {
 						building_type = building_rice_farm	
-						production_method = pm_fig_orchards
+						production_method = pm_fig_orchards_building_rice_farm
 					}					
 				}
 			}
@@ -371,7 +369,7 @@ sg_change_production_method = {
 				any_scope_state = {
 					can_activate_production_method = {
 						building_type = building_rice_farm	
-						production_method = pm_fig_orchards 
+						production_method = pm_fig_orchards_building_rice_farm 
 					}					
 				}
 			}
@@ -380,7 +378,7 @@ sg_change_production_method = {
 				limit = {
 					can_activate_production_method = {
 						building_type = building_rice_farm	
-						production_method = pm_fig_orchards 
+						production_method = pm_fig_orchards_building_rice_farm 
 					}						
 				}
 				
@@ -687,7 +685,6 @@ sg_promote_ig = {
 	}
 
 	on_start = {
-		remove_variable = tut_customs_union_block
 		add_journal_entry = {
 			type = je_tutorial_promote_ig
 			objective_subgoal = sg_promote_ig
@@ -915,47 +912,152 @@ sg_improve_consumer_goods_access = {
 	}
 
 	trigger = {
-		market_capital.market = {	
+ 		any_scope_state = {	
 			OR = {
-				mg:grain = { 
-					market_goods_pricier > 0.25 
+				sg:grain = { 
+					state_goods_pricier > 0.25 
 				}
-				mg:fish = { 
-					market_goods_pricier > 0.25 
+				sg:fish = { 
+					state_goods_pricier > 0.25 
 				}
-				mg:fabric = { 
-					market_goods_pricier > 0.25 
+				sg:fabric = { 
+					state_goods_pricier > 0.25 
+				}
+				sg:meat = { 
+					state_goods_pricier > 0.25 
+				}
+				sg:clothes = { 
+					state_goods_pricier > 0.25 
+				}
+				sg:furniture = { 
+					state_goods_pricier > 0.25 
+				}
+				sg:groceries = { 
+					state_goods_pricier > 0.25 
 				}
 			}
 		}
 	}
 	
 	on_start = {
-		market_capital.market = {
-			if = {
+		if = {
+			limit = {
+				any_scope_state = {
+					sg:grain = { 
+						state_goods_pricier > 0.25 
+					}
+				}
+			}
+			random_scope_state = {
 				limit = {
-					mg:grain = { 
-						market_goods_pricier > 0.25 
+					sg:grain = { 
+						state_goods_pricier > 0.25 
+					}
+				}
+				sg:grain = { save_scope_as = tut_consumer_good_expensive }
+			}				
+		}
+		else_if = {
+			limit = {
+				any_scope_state = {
+					sg:fish = { 
+						state_goods_pricier > 0.25
 					}
 				}		
-				mg:grain = { save_scope_as = tut_consumer_good_expensive }
 			}
-			else_if = {
+			random_scope_state = {
 				limit = {
-					mg:fish = { 
-						market_goods_pricier > 0.25
+					sg:fish = { 
+						state_goods_pricier > 0.25 
 					}
-				}		
-				mg:fish = { save_scope_as = tut_consumer_good_expensive }
-			}
-			else_if = {
-				limit = {
-					mg:fabric = { 
-						market_goods_pricier > 0.25
+				}
+				sg:fish = { save_scope_as = tut_consumer_good_expensive }
+			}				
+		}
+		else_if = {
+			limit = {
+				any_scope_state = {
+					sg:fabric = { 
+						state_goods_pricier > 0.25
 					}
 				}	
-				mg:fabric = { save_scope_as = tut_consumer_good_expensive }
 			}
+			random_scope_state = {
+				limit = {
+					sg:fabric = { 
+						state_goods_pricier > 0.25 
+					}
+				}
+				sg:fabric = { save_scope_as = tut_consumer_good_expensive }
+			}				
+		}
+		else_if = {
+			limit = {
+				any_scope_state = {
+					sg:meat = { 
+						state_goods_pricier > 0.25
+					}
+				}		
+			}
+			random_scope_state = {
+				limit = {
+					sg:meat = { 
+						state_goods_pricier > 0.25 
+					}
+				}
+				sg:meat = { save_scope_as = tut_consumer_good_expensive }
+			}				
+		}
+		else_if = {
+			limit = {
+				any_scope_state = {
+					sg:clothes = { 
+						state_goods_pricier > 0.25
+					}
+				}	
+			}
+			random_scope_state = {
+				limit = {
+					sg:clothes = { 
+						state_goods_pricier > 0.25 
+					}
+				}
+				sg:clothes = { save_scope_as = tut_consumer_good_expensive }
+			}				
+		}
+		else_if = {
+			limit = {
+				any_scope_state = {
+					sg:furniture = { 
+						state_goods_pricier > 0.25
+					}
+				}		
+			}
+			random_scope_state = {
+				limit = {
+					sg:furniture = { 
+						state_goods_pricier > 0.25 
+					}
+				}
+				sg:furniture = { save_scope_as = tut_consumer_good_expensive }
+			}				
+		}
+		else_if = {
+			limit = {
+				any_scope_state = {
+					sg:groceries = { 
+						state_goods_pricier > 0.25
+					}
+				}	
+			}
+			random_scope_state = {
+				limit = {
+					sg:groceries = { 
+						state_goods_pricier > 0.25 
+					}
+				}
+				sg:groceries = { save_scope_as = tut_consumer_good_expensive }
+			}				
 		}
 		add_journal_entry = {
 			type = je_tutorial_improve_consumer_goods_access
@@ -1120,7 +1222,7 @@ sg_increase_relations = {
 	}
 
 	trigger = {
-		trigger_if = {
+		OR = {
 			any_country = {
 				capital.region = {
 					any_scope_interest_marker = {
@@ -1131,9 +1233,6 @@ sg_increase_relations = {
 				country_rank >= rank_value:major_power
 				relations:root < relations_threshold:amicable
 			}
-		}
-
-		trigger_else_if = {
 			any_country = {
 				has_attitude = {
 					who = ROOT
@@ -1142,9 +1241,6 @@ sg_increase_relations = {
 				country_rank >= rank_value:major_power
 				relations:root < relations_threshold:amicable
 			}
-		}
-
-		trigger_else_if = {
 			any_country = {
 				country_rank >= rank_value:major_power
 				relations:root < relations_threshold:amicable
@@ -1154,6 +1250,18 @@ sg_increase_relations = {
 	
 	on_start = {
 		if = {
+			limit = {
+				any_country = {
+					capital.region = {
+						any_scope_interest_marker = {
+							owner = root
+						}
+					}
+					NOT = { this = ROOT }
+					country_rank >= rank_value:major_power
+					relations:root < relations_threshold:amicable
+				}
+			}
 			random_country = {
 				limit = {
 					capital.region = {
@@ -1170,6 +1278,16 @@ sg_increase_relations = {
 		}
 
 		else_if = {
+			limit = {
+				any_country = {
+					has_attitude = { 
+						who = ROOT
+						attitude >= cautious
+					}
+					country_rank >= rank_value:major_power
+					relations:root < relations_threshold:amicable
+				}
+			}
 			random_country = {
 				limit = {
 					has_attitude = { 
@@ -1184,6 +1302,12 @@ sg_increase_relations = {
 		}
 
 		else_if = {
+			limit = {
+				any_country = {
+					country_rank >= rank_value:major_power
+					relations:root < relations_threshold:amicable
+				}
+			}
 			random_country = {
 				limit = {
 					country_rank >= rank_value:major_power
@@ -1206,7 +1330,7 @@ sg_improve_rank = {
 	category = sgcat_tutorial
 	
 	unlocking_subgoals_all = {
-		sg_increase_relations
+		sg_make_peace
 	}
 
 	trigger = {
@@ -1273,7 +1397,7 @@ sg_expand_military = {
 	category = sgcat_tutorial
 	
 	unlocking_subgoals_any = {
-		sg_declare_an_interest
+		sg_create_formation
 	}
 	
 	on_start = {
@@ -1304,18 +1428,17 @@ sg_recruit_promote_commander = {
 	}
 }
 
-# Mobilize General
+# Mobilize Army
 sg_mobilize_army = {
 	category = sgcat_tutorial
 	
 	unlocking_subgoals_any = {
-		sg_recruit_promote_commander
+		sg_start_diplomatic_play
 	}
 
 	trigger = {
-		is_at_war = yes
-		any_scope_character = {
-			has_role = general
+		any_military_formation = {
+			is_army = yes
 			is_mobilized = no
 		}
 	}
@@ -1336,19 +1459,18 @@ sg_send_general_to_front = {
 		sg_mobilize_army
 	}
 
-	trigger = {	
-		is_at_war = yes
-		any_scope_character = {
-			has_role = general
+	trigger = {
+		any_military_formation = {
+			is_army = yes
 			is_mobilized = yes
-			is_on_front = NO
+			is_on_front = no
 		}
 	}
 	
 	on_start = {
-		random_scope_character = { 
+		random_military_formation = {
 			limit = {
-				has_role = general
+				is_army = yes
 				is_mobilized = yes
 				is_on_front = no
 			}
@@ -1371,19 +1493,18 @@ sg_convoy_raiding = {
 		sg_recruit_promote_commander
 	}
 
-	trigger = {	
-		is_at_war = yes
+	trigger = {
 		any_scope_character = {
-			has_role = admiral
-			NOT = { has_commander_order = raid_convoys }
+			has_role = general
+			NOT = { has_commander_order = defend }
 		}
 	}
 	
 	on_start = {
 		random_scope_character = { 
 			limit = {
-				has_role = admiral
-				NOT = { has_commander_order = raid_convoys }
+				has_role = general
+				NOT = { has_commander_order = defend }
 			}
 			save_scope_as = tut_convoy_raiding
 		}
@@ -1654,22 +1775,6 @@ sg_make_peace = {
 	}
 }
 
-# Reach end date
-sg_reach_end_date = {
-	category = sgcat_tutorial
-	
-	unlocking_subgoals_all = {
-		sg_make_peace
-	}
-
-	on_start = {
-		add_journal_entry = {
-			type = je_tutorial_reach_end_date
-			objective_subgoal = sg_reach_end_date
-		}
-	}
-}
-
 # Research Technology
 sg_research_technology = {
 	category = sgcat_tutorial
@@ -1698,16 +1803,164 @@ sg_declare_an_interest = {
 		sg_increase_relations
 	}
 
-	trigger = {	
-		has_decreasing_interests = NO
-		num_declared_interests < max_num_declared_interests
+	on_start = {
+		if = {
+			limit = {
+				any_rival_country = {
+					ROOT = {
+						NOT = { has_interest_marker_in_region = prev.capital.region }
+					}
+					capital.region = {
+						can_have_declared_interest_here = ROOT
+					}
+				}
+			}
+			random_rival_country = {
+				limit = {
+					ROOT = {
+						NOT = { has_interest_marker_in_region = prev.capital.region }
+					}
+					capital.region = {
+						can_have_declared_interest_here = ROOT
+					}
+				}
+				save_scope_as = tut_declare_interest_country
+			}
+		}
+
+		else_if = {
+			limit = {
+				any_country = {
+					NOT = { this = ROOT }
+					ROOT = {
+						NOT = { has_interest_marker_in_region = prev.capital.region }
+					}
+					country_rank >= rank_value:major_power
+					relations:root < relations_threshold:amicable
+					capital.region = {
+						can_have_declared_interest_here = ROOT
+					}
+				}
+			}
+			random_country = {
+				limit = {
+					NOT = { this = ROOT }
+					ROOT = {
+						NOT = { has_interest_marker_in_region = prev.capital.region }
+					}
+					country_rank >= rank_value:major_power
+					relations:root < relations_threshold:amicable
+					capital.region = {
+						can_have_declared_interest_here = ROOT
+					}
+				}
+				save_scope_as = tut_declare_interest_country
+			}
+		}
+
+		else_if = {
+			limit = {
+				any_country = {
+					NOT = { this = ROOT }
+					ROOT = {
+						NOT = { has_interest_marker_in_region = prev.capital.region }
+					}
+					relations:root < relations_threshold:amicable
+					capital.region = {
+						can_have_declared_interest_here = ROOT
+					}
+				}
+			}
+			random_country = {
+				limit = {
+					NOT = { this = ROOT }
+					ROOT = {
+						NOT = { has_interest_marker_in_region = prev.capital.region }
+					}
+					country_rank >= rank_value:major_power
+					capital.region = {
+						can_have_declared_interest_here = ROOT
+					}
+				}
+				save_scope_as = tut_declare_interest_country
+			}
+		}
+
+		else_if = {
+			limit = {
+				any_country = {
+					NOT = { this = ROOT }
+					ROOT = {
+						NOT = { has_interest_marker_in_region = prev.capital.region }
+					}
+					capital.region = {
+						can_have_declared_interest_here = ROOT
+					}
+				}
+			}
+			random_country = {
+				limit = {
+					NOT = { this = ROOT }
+					ROOT = {
+						NOT = { has_interest_marker_in_region = prev.capital.region }
+					}
+					capital.region = {
+						can_have_declared_interest_here = ROOT
+					}
+				}
+				save_scope_as = tut_declare_interest_country
+			}
+		}
+
+		add_journal_entry = {
+			type = je_tutorial_declare_an_interest
+			objective_subgoal = sg_declare_an_interest
+			target = scope:tut_declare_interest_country
+		}
+	}
+}
+
+# Create Formation
+sg_create_formation = {
+	category = sgcat_tutorial
+	is_repeatable = no
+
+	unlocking_subgoals_all = {
+		sg_declare_an_interest
+	}
+
+	trigger = {
 	}
 	
 	on_start = {
 		add_journal_entry = {
-			type = je_tutorial_declare_an_interest
-			objective_subgoal = sg_declare_an_interest
-			target = scope:tut_declare_interest
+			type = je_tutorial_create_formation
+			objective_subgoal = sg_create_formation
 		}
+		set_variable = {
+				name = formation_tutorial_ongoing
+		}
+	}
+}
+
+
+# Establish Company
+sg_establish_company = {
+	category = sgcat_tutorial
+	is_repeatable = no
+
+	unlocking_subgoals_all = {
+		sg_expand_productive_building
+	}
+
+	trigger = {
+		can_establish_company = YES
+	}
+	
+	on_start = {
+		add_journal_entry = {
+			type = je_tutorial_establish_company
+			objective_subgoal = sg_establish_company
+		}	
 	}
 }

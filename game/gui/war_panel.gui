@@ -625,7 +625,7 @@ types war_panel
 										direction = vertical
 
 										button = {
-											tooltip = "MOBILIZED_REGULARS_WITH_GENERAL_TOOLTIP_LEFT"
+											tooltip = "PANEL_MILITARY_ARMY_OVERVIEW_TOOLTIP"
 											using = default_button
 											parentanchor = left
 											visible = "[WarPanel.GetLeftLeader.IsLocalPlayer]"
@@ -639,11 +639,12 @@ types war_panel
 												align = center|nobaseline
 												autoresize = yes
 												parentanchor = left
+												alpha = "[TransparentIfFalse(WarPanel.GetLeftLeader.IsMobilized)]"
 											}
 										}
 
 										button = {
-											tooltip = "PANEL_MILITARY_NAVY_CURRENT_FLOTILLAS_TOOLTIP_LEFT"
+											tooltip = "PANEL_MILITARY_NAVY_CURRENT_FLOTILLAS_TOOLTIP"
 											using = default_button
 											parentanchor = left
 											visible = "[WarPanel.GetLeftLeader.IsLocalPlayer]"
@@ -662,18 +663,19 @@ types war_panel
 
 										textbox = {
 											visible = "[Not(WarPanel.GetLeftLeader.IsLocalPlayer)]"
-											tooltip = "MOBILIZED_REGULARS_WITH_GENERAL_TOOLTIP_LEFT"
+											tooltip = "PANEL_MILITARY_ARMY_OVERVIEW_TOOLTIP"
 											datacontext = "[WarPanel.GetWar]"
 											margin_left = 10
 											parentanchor = left
 											text = "WAR_LEADER_LEFT_NUM_BATTALIONS"
 											align = center|nobaseline
 											autoresize = yes
+											alpha = "[TransparentIfFalse(WarPanel.GetLeftLeader.IsMobilized)]"
 										}
 
 										textbox = {
 											visible = "[Not(WarPanel.GetLeftLeader.IsLocalPlayer)]"
-											tooltip = "PANEL_MILITARY_NAVY_CURRENT_FLOTILLAS_TOOLTIP_LEFT"
+											tooltip = "PANEL_MILITARY_NAVY_CURRENT_FLOTILLAS_TOOLTIP"
 											datacontext = "[WarPanel.GetWar]"
 											margin_left = 10
 											parentanchor = left
@@ -760,22 +762,21 @@ types war_panel
 									}
 
 									flowcontainer = {
-										parentanchor = right|vcenter
+										parentanchor = vcenter
 										direction = vertical
 
 										textbox = {
-											tooltip = "MOBILIZED_REGULARS_WITH_GENERAL_TOOLTIP_RIGHT"
-											margin_right = 10
-											parentanchor = right
+											tooltip = "PANEL_MILITARY_ARMY_OVERVIEW_TOOLTIP"
+											margin_left = 10
 											text = "WAR_LEADER_RIGHT_NUM_BATTALIONS"
 											align = center|nobaseline
 											autoresize = yes
+											alpha = "[TransparentIfFalse(WarPanel.GetRightLeader.IsMobilized)]"
 										}
 
 										textbox = {
-											tooltip = "PANEL_MILITARY_NAVY_CURRENT_FLOTILLAS_TOOLTIP_RIGHT"
-											margin_right = 10
-											parentanchor = right
+											tooltip = "PANEL_MILITARY_NAVY_CURRENT_FLOTILLAS_TOOLTIP"
+											margin_left = 10
 											text = "WAR_LEADER_RIGHT_NUM_FLOTILLAS"
 											align = center|nobaseline
 											autoresize = yes
@@ -852,6 +853,21 @@ types war_panel
 					}
 				}
 
+				### NAVAL INVASIONS
+				flowcontainer = {
+					visible = "[Not(IsDataModelEmpty(WarPanel.AccessWar.GetActiveNavalInvasions))]"
+					spacing = 10
+					direction = vertical
+					parentanchor = hcenter
+					margin = { 0 10 }
+
+					datamodel = "[WarPanel.AccessWar.GetActiveNavalInvasions]"
+
+					item = {
+						naval_invasion_list_item = {}
+					}
+				}
+
 				### BATTLES
 				default_header = {
 					blockoverride "text" {
@@ -874,20 +890,56 @@ types war_panel
 					}
 				}
 
-				### FRONTS
-				default_header = {
-					parentanchor = hcenter
-					blockoverride "text" {
+				section_header_button = {
+					blockoverride "left_text" {
 						text = "ACTIVE_FRONTS"
+					}
+
+					blockoverride "right_text" {
+						expand = {}
+						textbox = {
+							margin_right = 10
+							align = right|nobaseline
+							autoresize = yes
+							text = "[GetDataModelSize(WarPanel.AccessFronts)]"
+							using = fontsize_large
+						}
+					}
+
+					blockoverride "onclick" {
+						onclick = "[GetVariableSystem.Toggle('war_fronts_list')]"
+					}
+					
+					blockoverride "onclick_showmore" {
+						visible = "[GetVariableSystem.Exists('war_fronts_list')]"
+					}
+
+					blockoverride "onclick_showless" {
+						visible = "[Not(GetVariableSystem.Exists('war_fronts_list'))]"
 					}
 				}
 
-				widget = { size = { 10 10 }}
+				flowcontainer = {
+					visible = "[Not(GetVariableSystem.Exists('war_fronts_list'))]"
+					parentanchor = hcenter
+					sort_button = {
+						size = { @panel_width_half 30 }
+						text = "concept_battalions"
+						onclick = "[WarPanel.SortFronts('total_number_of_units')]"
+					}
+					sort_button = {
+						size = { @panel_width_half 30 }
+						text = "FRONT_MAP_LIST_PANEL_ADVANTAGE"
+						onclick = "[WarPanel.SortFronts('advantage')]"
+					}
+				}
 
 				flowcontainer = {
+					visible = "[Not(GetVariableSystem.Exists('war_fronts_list'))]"
 					spacing = 10
 					direction = vertical
 					parentanchor = hcenter
+					margin_bottom = 10
 
 					datamodel = "[WarPanel.AccessFronts]"
 
@@ -905,21 +957,42 @@ types war_panel
 					}
 				}
 
-				widget = { size = { 10 10 }}
-
-				### ENDED BATTLES
-				default_header = {
-					blockoverride "text" {
+				section_header_button = {
+					visible = "[Not(IsDataModelEmpty(WarPanel.AccessWar.GetEndedBattles))]"
+					blockoverride "left_text" {
 						text = "ENDED_BATTLES"
 					}
-					parentanchor = hcenter
-					visible = "[Not(IsDataModelEmpty(WarPanel.AccessWar.GetEndedBattles))]"
+
+					blockoverride "right_text" {
+						expand = {}
+						textbox = {
+							margin_right = 10
+							align = right|nobaseline
+							autoresize = yes
+							text = "[GetDataModelSize(WarPanel.AccessWar.GetEndedBattles)]"
+							using = fontsize_large
+						}
+					}
+
+					blockoverride "onclick" {
+						onclick = "[GetVariableSystem.Toggle('war_ended_battles_list')]"
+					}
+					
+					blockoverride "onclick_showmore" {
+						visible = "[GetVariableSystem.Exists('war_ended_battles_list')]"
+					}
+
+					blockoverride "onclick_showless" {
+						visible = "[Not(GetVariableSystem.Exists('war_ended_battles_list'))]"
+					}
 				}
 
 				flowcontainer = {
+					visible = "[Not(GetVariableSystem.Exists('war_ended_battles_list'))]"
 					direction = vertical
 					parentanchor = hcenter
-					margin = { 0 10 }
+					margin_bottom = 10
+					spacing = 10
 
 					datamodel = "[WarPanel.AccessWar.GetEndedBattles]"
 
@@ -1321,13 +1394,13 @@ types war_panel
 		### FIXED BOTTOM AREA
 		blockoverride "fixed_bottom"
 		{
-			fixed_bottom_spacer = {}
-			
-			### MOBILIZATION
-			mobilization_controls = {
-				datacontext = "[GetPlayer]"
-				visible = "[And(WarPanel.GetWar.IsParticipant( GetPlayer.Self ), InformationPanel.IsTabSelected('default'))]"
+			divider_decorative = {
+				blockoverride "size" {
+					size =  { @panel_width_plus_20 6 }
+				}
 			}
+
+			fixed_bottom_spacer = {}
 			
 			flowcontainer = {
 				direction = vertical
@@ -1551,7 +1624,7 @@ types war_panel
 					default_format = "#title"
 					margin_left = 7
 				}
-			}			
+			}
 
 			widget = {
 				size = { 32 32 }
@@ -1566,6 +1639,29 @@ types war_panel
 				autoresize = yes
 				align = right|nobaseline
 				tooltip = "WAR_PANEL_PARTICIPANT_TOOLTIP"
+				parentanchor = right
+				margin_right = 10
+			}
+
+			### capitulation desire
+			textbox = {
+				visible = "[Not(Country.IsPlayer)]"
+				margin_top = 5
+				raw_text = "[concept_capitulation_desire]: #variable [War.GetCapitulationDesire(Country.Self)|+=0]#!"
+				autoresize = yes
+				align = right|nobaseline
+				tooltip = "[War.GetCapitulationDesireDesc(Country.Self)]"
+				parentanchor = right
+				margin_right = 10
+			}
+
+			### capitulation desire - human
+			textbox = {
+				visible = "[Country.IsPlayer]"
+				margin_top = 5
+				raw_text = "[concept_capitulation_desire]: Player"
+				autoresize = yes
+				align = right|nobaseline
 				parentanchor = right
 				margin_right = 10
 			}
@@ -1837,7 +1933,7 @@ types war_panel
 						using = tooltip_ne
 
 						block "visibility_icon" {
-							visible = "[Front.IsUndefendedBy(GetPlayer.Self)]"
+							visible = "[Front.IsVulnerable(GetPlayer.Self)]"
 						}
 						size = { 25 25 }
 						texture = "gfx/interface/icons/generic_icons/warning.dds"
@@ -1873,47 +1969,92 @@ types war_panel
 					direction = vertical
 					parentanchor = left
 					spacing = 5
-					margin_left = 10
+					margin_left = 5
 
 					flowcontainer = {
+						visible = "[Not(IsDataModelEmpty(Front.GetLeftTopFiveArmies))]"
 						spacing = 10
 						parentanchor = left
 
 						overlappingitembox = {
-							visible = "[Not(IsDataModelEmpty(Front.AccessLeftTopFiveGenerals))]"
+							visible = "[Not(IsDataModelEmpty(Front.GetLeftTopFiveArmies))]"
 							parentanchor = vcenter
 							autoresize = yes
 							maximumsize = { 180 40 }
-							datamodel = "[Front.AccessLeftTopFiveGenerals]"
+
+							datamodel = "[Front.GetLeftTopFiveArmies]"
 
 							item ={
-								war_character_portrait = {}
+								button_icon_round = {
+									datacontext = "[FrontParticipant.AccessArmy]"
+									using = tooltip_above
+
+									tooltipwidget = {
+										FancyTooltip_MilitaryFormation = {}
+									}
+
+									blockoverride "size" {
+										size = { 40 40 }
+									}
+									blockoverride "icon_size" {
+										size = { 75% 75% }
+									}
+
+									block "onclick" {
+										onclick = "[InformationPanelBar.OpenMilitaryFormationPanelTab( FrontParticipant.AccessArmy.AccessSelf, 'default' )]"
+										onrightclick = "[RightClickMenuManager.ShowForMilitaryFormation(FrontParticipant.AccessArmy.AccessSelf)]"
+									}
+
+									blockoverride "icon" {
+										texture = "[MilitaryFormation.GetFlag]"
+										color = "[MilitaryFormation.GetFlagColor]"
+									}
+								}
 							}
 						}
 
 						textbox = {
-							visible = "[GreaterThan_int32(Front.GetLeftNumGeneralsBeyondTopFiveGenerals, '(int32)0')]"
+							visible = "[GreaterThan_int32(Front.GetLeftNumArmiesBeyondTopFiveArmies, '(int32)0')]"
 							align = left|nobaseline
 							parentanchor = vcenter
 							autoresize = yes
-							text = "[Front.GetLeftNumGeneralsBeyondTopFiveGenerals|v=]"
-							tooltip = "[Front.GetLeftNumGeneralsBeyondTopFiveGeneralsTooltip]"
+
+							raw_text = "#v [Front.GetLeftNumArmiesBeyondTopFiveArmies|=]#!"
+							tooltip = "[Front.GetLeftNumArmiesBeyondTopFiveArmiesTooltip]"
 						}
 					}
 
 					textbox = {
-						visible = "[IsDataModelEmpty(Front.AccessLeftTopFiveGenerals)]"
+						visible = "[IsDataModelEmpty(Front.GetLeftTopFiveArmies)]"
 						align = nobaseline
 						autoresize = yes
 						minimumsize = { -1 40 } #same height as war_character_portrait
 						maximumsize = { -1 40 } #same height as war_character_portrait
-						text = "NO_GENERALS"
+						text = "FRONT_SIDE_NO_ARMIES"
 					}
 
-					textbox = {
-						align = left|nobaseline
-						autoresize = yes
-						text = "FRONT_SIDE_LEFT_NUM_UNITS"
+					flowcontainer = {
+						spacing = 8
+						alpha = "[TransparentIfZero_int32(Front.GetNumLeftCombatUnitsRaw)]"
+
+						# Morale
+						morale_bar = {
+							parentanchor = vcenter
+							tooltip = "[Front.GetLeftCombatUnitsMoraleDesc]"
+
+							blockoverride "morale_value" {
+								value = "[FixedPointToFloat( Front.GetLeftCombatUnitsMoraleRaw )]"
+							}
+							blockoverride "morale_color" {
+								color = "[GetMoraleColorVec( Front.GetLeftCombatUnitsMoraleRaw )]"
+							}
+						}
+
+						textbox = {
+							align = left|nobaseline
+							autoresize = yes
+							text = "FRONT_SIDE_LEFT_NUM_UNITS"
+						}
 					}
 				}
 
@@ -1922,48 +2063,96 @@ types war_panel
 					parentanchor = right
 					direction = vertical
 					spacing = 5
-					margin_left = 10
+					margin_left = 5
 
 					flowcontainer = {
+						visible = "[Not(IsDataModelEmpty(Front.GetRightTopFiveArmies))]"
 						spacing = 10
 						parentanchor = right
 
 						textbox = {
-							visible = "[GreaterThan_int32(Front.GetRightNumGeneralsBeyondTopFiveGenerals, '(int32)0')]"
+							visible = "[GreaterThan_int32(Front.GetRightNumArmiesBeyondTopFiveArmies, '(int32)0')]"
 							align = right|nobaseline
 							parentanchor = vcenter
 							autoresize = yes
-							text = "[Front.GetRightNumGeneralsBeyondTopFiveGenerals|v=]"
-							tooltip = "[Front.GetRightNumGeneralsBeyondTopFiveGeneralsTooltip]"
+
+							raw_text = "#v [Front.GetRightNumArmiesBeyondTopFiveArmies|=]#!"
+							tooltip = "[Front.GetRightNumArmiesBeyondTopFiveArmiesTooltip]"
 						}
 
 						overlappingitembox = {
+							visible = "[Not(IsDataModelEmpty(Front.GetRightTopFiveArmies))]"
 							righttoleft = yes
-							autoresize = yes
 							parentanchor = vcenter
-							visible = "[Not(IsDataModelEmpty(Front.AccessRightTopFiveGenerals))]"
+							autoresize = yes
 							maximumsize = { 180 40 }
-							datamodel = "[Front.AccessRightTopFiveGenerals]"
+
+							datamodel = "[Front.GetRightTopFiveArmies]"
 
 							item ={
-								war_character_portrait = { }
+								button_icon_round = {
+									datacontext = "[FrontParticipant.AccessArmy]"
+									using = tooltip_above
+
+									tooltipwidget = {
+										FancyTooltip_MilitaryFormation = {}
+									}
+
+									blockoverride "size" {
+										size = { 40 40 }
+									}
+									blockoverride "icon_size" {
+										size = { 75% 75% }
+									}
+
+									block "onclick" {
+										onclick = "[InformationPanelBar.OpenMilitaryFormationPanelTab( FrontParticipant.AccessArmy.AccessSelf, 'default' )]"
+										onrightclick = "[RightClickMenuManager.ShowForMilitaryFormation(FrontParticipant.AccessArmy.AccessSelf)]"
+									}
+
+									blockoverride "icon" {
+										texture = "[MilitaryFormation.GetFlag]"
+										color = "[MilitaryFormation.GetFlagColor]"									}
+								}
 							}
 						}
 					}
+
 					textbox = {
-						visible = "[IsDataModelEmpty(Front.AccessRightTopFiveGenerals)]"
+						visible = "[IsDataModelEmpty(Front.GetRightTopFiveArmies)]"
 						parentanchor = right
 						align = nobaseline
 						autoresize = yes
 						minimumsize = { -1 40 }
 						maximumsize = { -1 40 }
-						text = "NO_GENERALS"
+						text = "FRONT_SIDE_NO_ARMIES"
 					}
-					textbox = {
+
+					flowcontainer = {
+						alpha = "[TransparentIfZero_int32(Front.GetNumRightCombatUnitsRaw)]"
+
 						parentanchor = right
-						align = right|nobaseline
-						autoresize = yes
-						text = "FRONT_SIDE_RIGHT_NUM_UNITS"
+						spacing = 8
+
+						textbox = {
+							parentanchor = vcenter
+							align = right|nobaseline
+							autoresize = yes
+							text = "FRONT_SIDE_RIGHT_NUM_UNITS"
+						}
+
+						# Morale
+						morale_bar = {
+							parentanchor = vcenter
+							tooltip = "[Front.GetRightCombatUnitsMoraleDesc]"
+
+							blockoverride "morale_value" {
+								value = "[FixedPointToFloat( Front.GetRightCombatUnitsMoraleRaw )]"
+							}
+							blockoverride "morale_color" {
+								color = "[GetMoraleColorVec( Front.GetRightCombatUnitsMoraleRaw )]"
+							}
+						}
 					}
 				}
 

@@ -1,0 +1,574 @@
+﻿namespace = culture_south_america
+
+# Birth of a National Identity
+culture_south_america.1 = {
+	type = country_event
+	placement = ROOT
+	
+	title = culture_south_america.1.t
+	desc = culture_south_america.1.d
+	flavor = culture_south_america.1.f
+	
+	event_image = {
+		video = "unspecific_ruler_speaking_to_people"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+	
+	duration = 3
+	
+	trigger = {
+	}
+
+	immediate = {
+		random_primary_culture = { # should only be one possible primary culture in all cases
+			save_scope_as = old_south_american_culture
+		}
+		root = { save_scope_as = south_america_nation_scope }
+	}
+
+	option = {
+		name = culture_south_america.1.a
+		default_option = yes
+		ai_chance = {
+			base = 90
+		}
+
+		if = {
+			limit = {
+				c:ARG ?= this
+			}
+			add_primary_culture = cu:argentine
+			remove_primary_culture = cu:platinean
+			capital.state_region = {
+				add_homeland = cu:argentine
+				remove_homeland = cu:platinean
+			}
+		}
+		if = {
+			limit = {
+				c:PEU ?= this
+			}
+			add_primary_culture = cu:peruvian
+			remove_primary_culture = cu:south_andean
+			capital.state_region = {
+				add_homeland = cu:peruvian
+				remove_homeland = cu:south_andean
+			}
+		}
+		if = {
+			limit = {
+				c:NPU ?= this
+			}
+			add_primary_culture = cu:peruvian
+			remove_primary_culture = cu:south_andean
+			capital.state_region = {
+				add_homeland = cu:peruvian
+				remove_homeland = cu:south_andean
+			}
+		}
+		if = {
+			limit = {
+				c:SPU ?= this
+			}
+			add_primary_culture = cu:peruvian
+			remove_primary_culture = cu:south_andean
+			capital.state_region = {
+				add_homeland = cu:peruvian
+				remove_homeland = cu:south_andean
+			}
+		}
+		if = {
+			limit = {
+				c:BOL ?= this
+			}
+			add_primary_culture = cu:bolivian
+			remove_primary_culture = cu:south_andean
+			capital.state_region = {
+				add_homeland = cu:bolivian
+				remove_homeland = cu:south_andean
+			}
+		}
+		if = {
+			limit = {
+				c:ECU ?= this
+			}
+			add_primary_culture = cu:ecuadorian
+			remove_primary_culture = cu:north_andean
+			capital.state_region = {
+				add_homeland = cu:ecuadorian
+				remove_homeland = cu:north_andean
+			}
+		}
+		if = {
+			limit = {
+				c:CHL ?= this
+			}
+			add_primary_culture = cu:chilean
+			remove_primary_culture = cu:south_andean
+			capital.state_region = {
+				add_homeland = cu:chilean
+				remove_homeland = cu:south_andean
+			}
+		}
+		if = {
+			limit = {
+				c:VNZ ?= this
+			}
+			add_primary_culture = cu:venezuelan
+			remove_primary_culture = cu:north_andean
+			capital.state_region = {
+				add_homeland = cu:venezuelan
+				remove_homeland = cu:north_andean
+			}
+		}
+		if = {
+			limit = {
+				c:URU ?= this
+			}
+			add_primary_culture = cu:uruguayan
+			remove_primary_culture = cu:platinean
+			capital.state_region = {
+				add_homeland = cu:uruguayan
+				remove_homeland = cu:platinean
+			}
+		}
+		if = {
+			limit = {
+				c:PRG ?= this
+			}
+			add_primary_culture = cu:paraguayan
+			remove_primary_culture = cu:platinean
+			capital.state_region = {
+				add_homeland = cu:paraguayan
+				remove_homeland = cu:platinean
+			}
+		}
+		if = {
+			limit = {
+				c:CLM ?= this
+			}
+			add_primary_culture = cu:colombian
+			remove_primary_culture = cu:north_andean
+			capital.state_region = {
+				add_homeland = cu:colombian
+				remove_homeland = cu:north_andean
+			}
+		}
+		add_journal_entry = {
+			type = je_south_american_national_identity
+		}
+		every_country = {
+			limit = {
+				NOT = {
+					THIS = ROOT
+				}
+				has_interest_marker_in_region = root.capital.region
+			}
+			post_notification = sa_culture_genesis
+		}
+	}
+}
+
+culture_south_america.2 = {
+	type = country_event
+	placement = scope:south_american_culture_state
+	
+	title = culture_south_america.2.t
+	desc = culture_south_america.2.d
+	flavor = culture_south_america.2.f
+	
+	event_image = {
+		video = "unspecific_ruler_speaking_to_people"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+	
+	duration = 3
+	
+	trigger = {
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				is_incorporated = yes
+				state_region = {
+					is_homeland = scope:old_national_culture
+				}
+				any_neighbouring_state = {
+					state_region = {
+						is_homeland = scope:new_national_culture
+					}
+					OR = {
+						is_capital = yes
+						custom_tooltip = {
+							text = new_culture_has_25_percent_tt
+							culture_percent_state = {
+								target = scope:new_national_culture
+								value >= 0.25
+							}
+						}
+					}
+				}
+				OR = {
+					any_scope_building = {
+						OR = {
+							is_building_type = building_naval_base
+							is_building_type = building_barracks
+						}
+						level >= 15
+					}
+					any_scope_building = {
+						is_building_type = building_university
+						level >= 5
+					}
+					any_scope_building = {
+						is_building_type = building_government_administration
+						level >= 5
+					}
+					any_scope_building = {
+						is_building_type = building_urban_center
+						level >= 5
+					}
+				}
+			}
+			random_neighbouring_state = {
+				limit = {
+					state_region = {
+						is_homeland = scope:new_national_culture
+					}
+					OR = {
+						is_capital = yes
+						custom_tooltip = {
+							text = new_culture_has_25_percent_tt
+							culture_percent_state = {
+								target = scope:new_national_culture
+								value >= 0.25
+							}
+						}
+					}
+					any_neighbouring_state = {
+						state_region = {
+							is_homeland = scope:old_national_culture
+						}
+					}
+				}
+				save_scope_as = south_american_culture_state
+			}
+		}
+	}
+
+	option = {
+		name = culture_south_america.2.a
+		default_option = yes
+		scope:south_american_culture_state = {
+			if = {
+				limit = {
+					any_neighbouring_state = {
+						owner = root
+						state_region = {
+							is_homeland = scope:old_national_culture
+							NOT = {
+								is_homeland = scope:new_national_culture
+							}
+						}
+					}
+				}
+				every_neighbouring_state = {
+					limit = {
+						owner = root
+						state_region = {
+							is_homeland = scope:old_national_culture
+							NOT = {
+								is_homeland = scope:new_national_culture
+							}
+						}
+						is_incorporated = yes
+						OR = {
+							any_scope_building = {
+								OR = {
+									is_building_type = building_naval_base
+									is_building_type = building_barracks
+								}
+								level >= 15
+							}
+							any_scope_building = {
+								is_building_type = building_university
+								level >= 5
+							}
+							any_scope_building = {
+								is_building_type = building_government_administration
+								level >= 5
+							}
+							any_scope_building = {
+								is_building_type = building_urban_center
+								level >= 5
+							}
+						}
+					}
+					state_region = {
+						if = {
+							limit = {
+								c:ARG ?= root
+							}
+							remove_homeland = cu:platinean
+							add_homeland = cu:argentine
+						}
+						if = {
+							limit = {
+								c:PRG ?= root
+							}
+							remove_homeland = cu:platinean
+							add_homeland = cu:paraguayan
+						}
+						if = {
+							limit = {
+								c:URU ?= root
+							}
+							remove_homeland = cu:platinean
+							add_homeland = cu:uruguayan
+						}
+						if = {
+							limit = {
+								c:VNZ ?= root
+							}
+							remove_homeland = cu:north_andean
+							add_homeland = cu:venezuelan
+						}
+						if = {
+							limit = {
+								c:CLM ?= root
+							}
+							remove_homeland = cu:north_andean
+							add_homeland = cu:colombian
+						}
+						if = {
+							limit = {
+								c:VNZ ?= root
+							}
+							remove_homeland = cu:north_andean
+							add_homeland = cu:ecuadorian
+						}
+						if = {
+							limit = {
+								c:BOL ?= root
+							}
+							remove_homeland = cu:south_andean
+							add_homeland = cu:bolivian
+						}
+						if = {
+							limit = {
+								c:CHL ?= root
+							}
+							remove_homeland = cu:south_andean
+							add_homeland = cu:chilean
+						}
+						if = {
+							limit = {
+								c:PEU ?= root
+							}
+							remove_homeland = cu:south_andean
+							add_homeland = cu:peruvian
+						}
+					}
+				}
+			}
+			else = { #For islands and such
+				random_scope_state = {
+					limit = {
+						owner = root
+						state_region = {
+							is_homeland = scope:old_national_culture
+							NOT = {
+								is_homeland = scope:new_national_culture
+							}
+						}
+						is_incorporated = yes
+						OR = {
+							any_scope_building = {
+								OR = {
+									is_building_type = building_naval_base
+									is_building_type = building_barracks
+								}
+								level >= 15
+							}
+							any_scope_building = {
+								is_building_type = building_university
+								level >= 5
+							}
+							any_scope_building = {
+								is_building_type = building_government_administration
+								level >= 5
+							}
+							any_scope_building = {
+								is_building_type = building_urban_center
+								level >= 5
+							}
+						}
+					}
+					state_region = {
+						if = {
+							limit = {
+								c:ARG ?= root
+							}
+							remove_homeland = cu:platinean
+							add_homeland = cu:argentine
+						}
+						if = {
+							limit = {
+								c:PRG ?= root
+							}
+							remove_homeland = cu:platinean
+							add_homeland = cu:paraguayan
+						}
+						if = {
+							limit = {
+								c:URU ?= root
+							}
+							remove_homeland = cu:platinean
+							add_homeland = cu:uruguayan
+						}
+						if = {
+							limit = {
+								c:VNZ ?= root
+							}
+							remove_homeland = cu:north_andean
+							add_homeland = cu:venezuelan
+						}
+						if = {
+							limit = {
+								c:CLM ?= root
+							}
+							remove_homeland = cu:north_andean
+							add_homeland = cu:colombian
+						}
+						if = {
+							limit = {
+								c:VNZ ?= root
+							}
+							remove_homeland = cu:north_andean
+							add_homeland = cu:ecuadorian
+						}
+						if = {
+							limit = {
+								c:BOL ?= root
+							}
+							remove_homeland = cu:south_andean
+							add_homeland = cu:bolivian
+						}
+						if = {
+							limit = {
+								c:CHL ?= root
+							}
+							remove_homeland = cu:south_andean
+							add_homeland = cu:chilean
+						}
+						if = {
+							limit = {
+								c:PEU ?= root
+							}
+							remove_homeland = cu:south_andean
+							add_homeland = cu:peruvian
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+culture_south_america.3 = {
+	type = country_event
+	placement = ROOT
+	
+	title = culture_south_america.3.t
+	desc = culture_south_america.3.d
+	flavor = culture_south_america.3.f
+	
+	event_image = {
+		video = "unspecific_ruler_speaking_to_people"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+	
+	duration = 3
+	
+	trigger = {
+	}
+
+	immediate = {
+
+	}
+
+	option = {
+		name = culture_south_america.3.a
+		default_option = yes
+		custom_tooltip = {
+			text = every_pop_converts_tt
+			every_scope_pop = {
+				limit = {
+					culture = scope:old_national_culture
+				}
+				change_pop_culture = {
+					target = scope:new_national_culture
+					value = 1
+				}
+			}
+		}
+	}
+}
+
+culture_south_america.4 = { # Startup for the new phase 1
+	type = country_event
+	placement = ROOT
+	
+	title = culture_south_america.4.t
+	desc = culture_south_america.4.d
+	flavor = culture_south_america.4.f
+	
+	event_image = {
+		video = "rp1_brazilian_city"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+	
+	duration = 3
+	
+	trigger = {
+		# Triggered by JE
+	}
+
+	immediate = {
+	}
+
+	option = {
+		name = culture_south_america.4.a
+		default_option = yes
+		add_loyalists = {
+			value = large_radicals
+			culture = scope:old_national_culture
+		}
+	}
+
+	option = {
+		name = culture_south_america.4.b
+		custom_tooltip = {
+			text = slow_cultural_development_progress_tt
+			set_variable = { name = national_identity_progress_var_add value = -0.25 }
+		}
+		add_radicals = {
+			value = medium_radicals
+			culture = scope:old_national_culture
+			strata = middle
+		}
+	}
+}

@@ -633,4 +633,128 @@ types Buttons
             }
         }
     }
+
+    type button_text = button
+    {
+        # A texture is needed if used on an icon instead of a button
+        #texture = "gfx/interface/interface/transparent.dds"
+        effectname = "NoHighlight"
+        size = { 100 40 }
+
+        ### show
+        state = {
+            name = _show
+            on_start = "[PdxGuiWidget.AccessChild('button_text').TriggerAnimation('show')]"
+            on_start = "[PdxGuiWidget.AccessChild('button_text_hover').TriggerAnimation('show')]"
+        }
+        
+        ### mouse enter
+        state = {
+            name = _mouse_enter
+            on_start = "[PdxGuiWidget.AccessChild('button_text').InterruptThenTriggerAnimation('mouse_release','mouse_enter')]"
+            on_start = "[PdxGuiWidget.AccessChild('button_text_hover').InterruptThenTriggerAnimation('mouse_release','mouse_enter')]"
+        }
+        
+        ### mouse leave
+        state = {
+            name = _mouse_leave
+            on_start = "[PdxGuiWidget.AccessChild('button_text').InterruptThenTriggerAnimation('mouse_enter','mouse_leave')]"
+            on_start = "[PdxGuiWidget.AccessChild('button_text_hover').InterruptThenTriggerAnimation('mouse_enter','mouse_leave')]"
+        }
+        
+        ### mouse press
+        state = {
+            name = _mouse_press
+            on_start = "[PdxGuiWidget.AccessChild('button_text').InterruptThenTriggerAnimation('mouse_enter','mouse_press')]"
+            on_start = "[PdxGuiWidget.AccessChild('button_text_hover').InterruptThenTriggerAnimation('mouse_enter','mouse_press')]"
+        }
+        
+        ### mouse release
+        state = {
+            name = _mouse_release
+            on_start = "[PdxGuiWidget.AccessChild('button_text').TriggerAnimation('mouse_release')]"
+            on_start = "[PdxGuiWidget.AccessChild('button_text_hover').TriggerAnimation('mouse_release')]"
+        }
+        
+        ### button text
+        text_single = {
+            name = "button_text"
+            size = { 100% 100% }
+            align = center|nobaseline
+            default_format = "#clickable_link"
+            block "text" {}
+            
+            state = {
+                name = show
+                using = Animation_Curve_Default
+                using = button_animation_duration
+                alpha = 1
+            }
+            state = {
+                name = mouse_enter
+                using = Animation_Curve_Default
+                using = button_animation_duration
+                alpha = 0
+            }
+            state = {
+                name = mouse_leave
+                using = Animation_Curve_Default
+                using = button_animation_duration
+                alpha = 1
+            }
+            state = {
+                name = mouse_press
+                using = Animation_Curve_Default
+                using = button_animation_duration
+                alpha = 0
+            }
+            state = {
+                name = mouse_release
+                using = Animation_Curve_Default
+                using = button_animation_duration
+                alpha = 1
+            }
+        }
+        
+        ### button text hover
+        text_single = {
+            name = "button_text_hover"
+            size = { 100% 100% }
+            align = center|nobaseline
+            default_format = "#clickable_link_hover"
+            block "text" {}
+            alpha = 0
+            
+            state = {
+                name = show
+                using = Animation_Curve_Default
+                using = button_animation_duration
+                alpha = 0
+            }
+            state = {
+                name = mouse_enter
+                using = Animation_Curve_Default
+                using = button_animation_duration
+                alpha = 1
+            }
+            state = {
+                name = mouse_leave
+                using = Animation_Curve_Default
+                using = button_animation_duration
+                alpha = 0
+            }
+            state = {
+                name = mouse_press
+                using = Animation_Curve_Default
+                using = button_animation_duration
+                alpha = 0.5
+            }
+            state = {
+                name = mouse_release
+                using = Animation_Curve_Default
+                using = button_animation_duration
+                alpha = 0
+            }
+        }
+    }
 }

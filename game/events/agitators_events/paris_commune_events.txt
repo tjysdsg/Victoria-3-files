@@ -1,0 +1,813 @@
+﻿namespace = paris_commune
+
+paris_commune.1 = {
+	type = country_event
+	placement = root
+	event_image = {
+		video = "europenorthamerica_springtime_of_nations"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_fire.dds"
+
+	title = paris_commune.1.t
+	desc = paris_commune.1.d
+	flavor = paris_commune.1.f
+
+	duration = 3
+
+	dlc = dlc004
+
+	trigger = {
+		#Triggered by JE
+	}
+
+	cooldown = { months = very_long_modifier_time }
+
+	immediate = {
+		set_global_variable = paris_commune_happened
+		set_variable = paris_commune_spawn
+		create_country = {
+			tag = PRC
+			origin = this
+			province = p:x71DA2E
+			on_created = {
+				s:STATE_ILE_DE_FRANCE = {
+					set_owner_of_provinces = {
+						country = c:PRC
+						provinces = { x906000 }
+					}
+				}
+				change_relations = {
+					country = c:FRA
+					value = -50
+				}
+				set_immune_to_revolutions = yes
+				set_ruling_interest_groups = { ig_intelligentsia ig_trade_unions ig_armed_forces }
+				ig:ig_armed_forces = {
+					set_interest_group_name = ig_national_guard
+					remove_ideology = ideology_loyalist
+					add_ideology = ideology_proletarian
+					remove_ideology = ideology_patriotic
+					add_ideology = ideology_republican
+				}
+				if = {
+					limit = {
+						NOT = {
+							has_law = law_type:law_parliamentary_republic
+						}
+					}
+					activate_law = law_type:law_parliamentary_republic
+				}
+				if = {
+					limit = {
+						NOT = {
+							has_law = law_type:law_elected_bureaucrats
+						}
+					}
+					activate_law = law_type:law_elected_bureaucrats
+				}
+				if = {
+					limit = {
+						NOT = {
+							has_law = law_type:law_universal_suffrage
+						}
+					}
+					activate_law = law_type:law_universal_suffrage
+				}
+				if = {
+					limit = {
+						NOT = {
+							has_law = law_type:law_women_in_the_workplace
+						}
+					}
+					activate_law = law_type:law_women_in_the_workplace
+				}
+				if = {
+					limit = {
+						NOT = {
+							has_law = law_type:law_commercialized_agriculture
+						}
+					}
+					activate_law = law_type:law_commercialized_agriculture
+				}
+				if = {
+					limit = {
+						NOT = {
+							has_law = law_type:law_total_separation
+						}
+					}
+					activate_law = law_type:law_total_separation
+				}
+				if = {
+					limit = {
+						NOT = {
+							has_law = law_type:law_mass_conscription
+						}
+					}
+					activate_law = law_type:law_mass_conscription
+				}
+				if = {
+					limit = {
+						NOT = {
+							has_law = law_type:law_compulsory_primary_school
+						}
+					}
+					activate_law = law_type:law_compulsory_primary_school
+				}
+				if = {
+					limit = {
+						NOT = {
+							has_law = law_type:law_public_schools
+						}
+					}
+					activate_law = law_type:law_public_schools
+				}
+				if = {
+					limit = {
+						NOT = {
+							has_law = law_type:law_interventionism
+						}
+					}
+					activate_law = law_type:law_interventionism
+				}
+				if = {
+					limit = {
+						NOT = {
+							has_law = law_type:law_regulatory_bodies
+						}
+					}
+					activate_law = law_type:law_regulatory_bodies
+				}
+				if = {
+					limit = {
+						NOT = {
+							has_law = law_type:law_national_guard
+						}
+					}
+					activate_law = law_type:law_national_guard
+				}
+				if = {
+					limit = {
+						NOT = {
+							has_law = law_type:law_right_of_assembly
+						}
+					}
+					activate_law = law_type:law_right_of_assembly
+				}
+				if = {
+					limit = {
+						NOT = {
+							has_law = law_type:law_closed_borders
+						}
+					}
+					activate_law = law_type:law_closed_borders
+				}
+				add_modifier = {
+					name = modifier_paris_commune_politics
+					months = normal_modifier_time
+					is_decaying = yes
+				}
+				add_modifier = {
+					name = modifier_paris_commune_not_dying_economy
+					months = normal_modifier_time
+				}
+				create_paris_commune_characters = yes
+				call_election = {
+					months = 1
+				}
+			}
+		}
+		c:PRC = {
+			save_scope_as = paris_commune_scope
+			ig:ig_armed_forces = {
+				save_scope_as = national_guard_scope
+			}
+			create_truce = {
+				country = c:FRA
+				months = 24
+			}
+		}
+		set_variable = { name = PRC_recognition_level value = 0 }
+		random_state = {
+			limit = {
+				owner = {
+					this = c:PRC
+				}
+			}
+			save_scope_as = paris_scope
+		}
+		if = {
+			limit = {
+				socialist_revolution_ongoing = yes
+			}
+			c:PRC = {
+				activate_law = law_type:law_council_republic
+			}
+		}
+		ruler = {
+			save_scope_as = ruler_scope
+		}
+		every_country = {
+			limit = {
+				has_diplomatic_relevance = ROOT
+				country_rank >= rank_value:major_power
+				NOT = { ROOT = THIS }
+			}
+			trigger_event = { id = paris_commune.5 days = 14 }
+		}
+		ROOT = {
+			save_scope_as = france_scope
+		}
+	}
+
+	option = {
+		name = paris_commune.1.a
+		default_option = yes
+		add_journal_entry = {
+			type = je_the_paris_commune_france
+		}
+		c:PRC = {
+			hidden_effect = {
+				add_journal_entry = {
+					type = je_the_paris_commune_communards
+				}
+				add_loyalists = {
+					value = 0.9
+				}
+				c:FRA = {
+					add_treasury = -100000
+				}
+				add_treasury = 100000	
+			}
+		}
+		hidden_effect = {
+			set_global_variable = { name = paris_commune_progress_var value = 40 } 
+			set_global_variable = { name = paris_commune_progress_drift value = -1 } 
+		}
+		custom_tooltip = commune_progress_start_at_40
+		set_variable = paris_commune_fra_perspective
+	}
+	option = {
+		name = paris_commune.1.b
+		add_journal_entry = {
+			type = je_the_paris_commune_france
+		}
+		c:PRC = {
+			hidden_effect = {
+				add_journal_entry = {
+					type = je_the_paris_commune_communards
+				}
+				add_loyalists = {
+					value = 0.9
+				}
+				c:FRA = {
+					add_treasury = -100000
+				}
+				add_treasury = 100000	
+			}
+		}
+		hidden_effect = {
+			set_global_variable = { name = paris_commune_progress_var value = 60 }
+			set_global_variable = { name = paris_commune_progress_drift value = 1 } 
+		}
+		custom_tooltip = commune_progress_start_at_60
+		set_variable = paris_commune_prc_perspective
+	}
+}
+
+paris_commune.2 = {
+	type = country_event
+	placement = root
+	event_image = {
+		video = "votp_cops_march"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	title = paris_commune.2.t
+	desc = paris_commune.2.d
+	flavor = paris_commune.2.f
+
+	duration = 3
+
+	dlc = dlc004
+
+	trigger = {
+		
+	}
+
+	immediate = {
+		set_variable = paris_commune_crushed_var
+		c:PRC = {
+			save_scope_as = paris_commune_scope
+		}
+		random_state = {
+			limit = {
+				owner = {
+					this = c:PRC
+				}
+			}
+			save_scope_as = paris_scope
+		}
+		random_military_formation = {
+			limit = {
+				any_combat_unit = {
+					building.state.region = {	
+						this = sr:region_france
+					}
+				}
+				any_scope_general = {
+					has_role = general
+				}
+			}
+			random_scope_general = {
+				save_scope_as = commune_destroyer_general
+			}
+		}
+	}
+
+	option = {
+		name = paris_commune.2.a
+		default_option = yes
+		c:FRA = {
+			annex_as_civil_war = c:PRC
+		}
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_ILE_DE_FRANCE
+			}
+			add_radicals_in_state = {
+				value = medium_radicals
+				pop_type = laborers
+			}
+			kill_population_percent_in_state = {
+				percent = 0.02
+				pop_type = soldiers
+			}
+			kill_population_percent_in_state = {
+				percent = 0.02
+				pop_type = academics
+			}
+			kill_population_percent_in_state = {
+				percent = 0.02
+				pop_type = laborers
+			}
+			state_region = {
+				add_devastation = 30 
+			}
+		}
+		add_modifier = {
+			name = modifier_repression_of_commune
+			months = long_modifier_time
+			is_decaying = yes
+		}
+		if = {
+			limit = {
+				any_character_in_void = {
+					has_variable = imprisoned_general_var
+				}
+			}
+			random_list = {
+				1 = {
+					random_character_in_void = {
+						limit = {
+							has_variable = imprisoned_general_var
+						}
+						free_character_from_void = yes
+					}
+				}
+				4 = {
+					random_character_in_void = {
+						limit = {
+							has_variable = imprisoned_general_var
+						}
+						kill_character = yes
+					}
+				}
+			}
+		}
+	}
+	option = {
+		name = paris_commune.2.b
+		c:FRA = {
+			annex_as_civil_war = c:PRC
+		}
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_ILE_DE_FRANCE
+			}
+			kill_population_percent_in_state = {
+				percent = 0.01
+				pop_type = soldiers
+			}
+			kill_population_percent_in_state = {
+				percent = 0.01
+				pop_type = academics
+			}
+			kill_population_percent_in_state = {
+				percent = 0.01
+				pop_type = laborers
+			}
+			state_region = {
+				add_devastation = 15
+			}
+		}
+		if = {
+			limit = {
+				any_character_in_void = {
+					has_variable = imprisoned_general_var
+				}
+			}
+			random_list = {
+				1 = {
+					random_character_in_void = {
+						limit = {
+							has_variable = imprisoned_general_var
+						}
+						free_character_from_void = yes
+					}
+				}
+				2 = {
+					random_character_in_void = {
+						limit = {
+							has_variable = imprisoned_general_var
+						}
+						kill_character = yes
+					}
+				}
+			}
+		}
+	}
+}
+
+paris_commune.3 = {
+	type = country_event
+	placement = root
+	event_image = {
+		video = "unspecific_military_parade"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	title = paris_commune.3.t
+	desc = paris_commune.3.d
+	flavor = paris_commune.3.f
+
+	duration = 3
+
+	dlc = dlc004
+
+	trigger = {
+		NOT = { has_variable = march_on_versailles }
+	}
+
+	immediate = {
+		set_variable = march_on_versailles
+		c:PRC = {
+			save_scope_as = paris_commune_scope
+		}
+		random_state = {
+			limit = {
+				owner = {
+					this = c:PRC
+				}
+			}
+			save_scope_as = paris_scope
+		}
+	}
+
+	option = {
+		name = paris_commune.3.a
+		default_option = yes
+		custom_tooltip = {
+			text = communards_seize_power_tt
+			every_scope_character = {
+				limit = {
+					this.interest_group = {
+						is_in_government = yes
+					}
+				}
+				kill_character = {
+					hidden = yes
+				}
+			}
+			c:PRC = {
+				every_scope_character = {
+					transfer_character = c:FRA
+					if = {
+						limit = {
+							has_role = politician
+						}
+						set_as_interest_group_leader = yes
+					}
+				}
+			}
+			hidden_effect = {
+				ig:ig_armed_forces = {
+					set_interest_group_name = ig_national_guard
+					remove_ideology = ideology_loyalist
+					add_ideology = ideology_proletarian
+					remove_ideology = ideology_patriotic
+					add_ideology = ideology_republican
+				}
+			}
+			every_interest_group = {
+				limit = {
+					is_in_government = yes
+				}
+				remove_ruling_interest_group = yes
+			}
+			ig:ig_intelligentsia = {
+				add_ruling_interest_group = yes
+			}
+			ig:ig_trade_unions = {
+				add_ruling_interest_group = yes
+			}
+			copy_laws = c:PRC
+			annex = c:PRC
+		}
+		add_loyalists = {
+			value = small_radicals
+			strata = poor
+		}
+	}
+	option = {
+		name = paris_commune.3.b
+		custom_tooltip = {
+			text = communards_seize_power_tt
+			every_scope_character = {
+				limit = {
+					this.interest_group = {
+						is_in_government = yes
+					}
+				}
+				kill_character = {
+					hidden = yes
+				}
+			}
+			c:PRC = {
+				every_scope_character = {
+					transfer_character = c:FRA
+					if = {
+						limit = {
+							has_role = politician
+						}
+						set_as_interest_group_leader = yes
+					}
+				}
+			}
+			hidden_effect = {
+				ig:ig_armed_forces = {
+					set_interest_group_name = ig_national_guard
+					remove_ideology = ideology_loyalist
+					add_ideology = ideology_proletarian
+					remove_ideology = ideology_patriotic
+					add_ideology = ideology_republican
+				}
+			}
+			every_interest_group = {
+				limit = {
+					is_in_government = yes
+				}
+				remove_ruling_interest_group = yes
+			}
+			ig:ig_intelligentsia = {
+				add_ruling_interest_group = yes
+			}
+			ig:ig_trade_unions = {
+				add_ruling_interest_group = yes
+			}
+			copy_laws = c:PRC
+			annex = c:PRC
+			add_loyalists = {
+				value = small_radicals
+				strata = poor
+			}
+		}
+		add_loyalists = {
+			value = large_radicals
+			pop_type = academics
+		}
+		add_loyalists = {
+			value = large_radicals
+			pop_type = laborers
+		}
+	}
+}
+
+paris_commune.4 = {
+	type = country_event
+	placement = root
+	event_image = {
+		video = "europenorthamerica_springtime_of_nations"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	title = paris_commune.4.t
+	desc = paris_commune.4.d
+	flavor = paris_commune.4.f
+
+	duration = 3
+
+	dlc = dlc004
+
+	trigger = {
+		
+	}
+
+	immediate = {
+		c:PRC = {
+			save_scope_as = paris_commune_scope
+			end_truce = {
+				country = c:FRA
+				months = 0
+			}
+			remove_modifier = fra_paris_commune_drain_proceeds
+		}
+		random_state = {
+			limit = {
+				owner = {
+					this = c:PRC
+				}
+			}
+			save_scope_as = paris_scope
+		}
+		capital = {
+			save_scope_as = capital_scope
+		}
+		set_global_variable = paris_commune_invalid
+	}
+
+	option = {
+		name = paris_commune.4.a
+		default_option = yes
+		ai_chance = {
+			base = 100
+		}
+		set_immune_to_revolutions = yes
+		c:PRC = {
+			add_loyalists = {
+				value = 0.10
+			}
+			hidden_effect = {
+				every_scope_state = {
+					set_state_type = incorporated
+				}
+			}
+		}
+	}
+	option = {
+		name = paris_commune.4.b
+		play_as = c:PRC
+		ai_chance = {
+			base = 0
+		}
+		set_immune_to_revolutions = yes
+		add_loyalists = {
+			value = 0.10
+		}
+		c:PRC = {
+			hidden_effect = {
+				every_scope_state = {
+					set_state_type = incorporated
+				}
+			}
+		}
+	}
+}
+
+paris_commune.5 = {
+	type = country_event
+	placement = root
+	event_image = {
+		video = "europenorthamerica_springtime_of_nations"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	title = paris_commune.5.t
+	desc = paris_commune.5.d
+	flavor = paris_commune.5.f
+
+	duration = 3
+
+	dlc = dlc004
+
+	trigger = {
+		#Triggered by JE
+	}
+
+	immediate = {
+		c:FRA = {
+			save_scope_as = france_scope
+		}
+		ROOT = {
+			save_scope_as = recogniser_scope
+		}
+	}
+
+	option = {
+		name = paris_commune.5.a
+		default_option = yes
+		ai_chance = {
+			base = 100
+			modifier = {
+				trigger = {
+					scope:france_scope.relations:root >= relations_threshold:cordial
+				}
+				add = 50
+			}
+		}
+		change_relations = {
+			country = scope:france_scope
+			value = 10
+		}
+	}
+	option = {
+		name = paris_commune.5.b
+		ai_chance = {
+			base = 15
+			modifier = {
+				trigger = {
+					scope:france_scope.relations:root <= relations_threshold:poor
+				}
+				add = 30
+			}
+			modifier = {
+				trigger = {
+					has_law = law_type:law_council_republic
+				}
+				add = 250
+			}
+			modifier = {
+				trigger = {
+					scope:france_scope = {
+						has_law = law_type:law_monarchy
+						NOR = {
+							has_law = law_type:law_universal_suffrage
+							has_law = law_type:law_census_suffrage
+						}
+					}
+					NOR = {
+						has_law = law_type:law_monarchy
+						has_law = law_type:law_theocracy
+					}
+					OR = {
+						has_law = law_type:law_universal_suffrage
+						has_law = law_type:law_census_suffrage
+					}
+				}
+				add = 10
+			}
+		}
+		change_relations = {
+			country = scope:france_scope
+			value = -25
+		}
+		if = {
+			limit = {
+				ROOT = {
+					country_rank >= rank_value:great_power
+				}
+			}
+			c:FRA = {
+				change_variable = { name = PRC_recognition_level add = 1 }  # Variable exists only for display purposes
+			}
+		}
+		else_if = {
+			limit = {
+				ROOT = {
+					country_rank >= rank_value:major_power
+				}
+			}
+			c:FRA = {
+				change_variable = { name = PRC_recognition_level add = 0.5 } # Variable exists only for display purposes
+			}
+		}
+		scope:france_scope = {
+			post_notification = foreign_country_supports_commune
+		}
+		custom_tooltip = will_improve_commune_progress_tt
+	}
+	option = {
+		name = paris_commune.5.c
+		ai_chance = {
+			base = 75
+		}
+		change_relations = {
+			country = scope:france_scope
+			value = -5
+		}
+	}
+}

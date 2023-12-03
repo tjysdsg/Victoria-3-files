@@ -1,4 +1,4 @@
-#positions for sidepanel buttons 
+#positions for sidepanel buttons
 #(they cant be in flowcontainer because of the way the label buttons is set up to scale with the longest localized text)
 @budget_position = 50
 @buildings_position = 100
@@ -13,11 +13,12 @@
 @culture_position = 350
 @population_position = 390
 @journal_position = 430
-@outliner_position = 470
+@outliner_position = 530
+@companies_position = 470
 
 @spacing_widget_2_position = 510
 
-@maplist_position = 530
+@maplist_position = 600
 
 types information_panel_bar_types {
 	type information_panel_bar = widget {
@@ -27,7 +28,7 @@ types information_panel_bar_types {
 		focuspolicy = all
 
 		position = { 0 200 }
-		
+
 		state = {
 			name = _show
 			using = default_show_properties
@@ -37,13 +38,13 @@ types information_panel_bar_types {
 			using = default_hide_properties
 			on_start = "[InformationPanelBar.ClosePanel]"
 		}
-		
+
 		### BACKGROUND FOR LABEL BUTTONS
 		widget = {
 			size = { 100% 100% }
 			using = clickthrough_blocker
 			alpha = 0
-			
+
 			background = {
 				using = dark_area
 				alpha = 1
@@ -51,7 +52,7 @@ types information_panel_bar_types {
 				margin_top = -5
 				margin_left = -25
 				margin_bottom = -5
-				
+
 				modify_texture = {
 					texture = "gfx/interface/masks/fade_horizontal_right.dds"
 					spriteType = Corneredstretched
@@ -59,7 +60,7 @@ types information_panel_bar_types {
 					blend_mode = alphamultiply
 				}
 			}
-			
+
 			state = {
 				name = show_sidebar_labels
 				alpha = 0.7
@@ -85,7 +86,7 @@ types information_panel_bar_types {
 			texture = "gfx/interface/main_hud/sidebar_bg.dds"
 			size = { 50 620 }
 			position = { 0 -17 }
-			
+
 			using = hud_shiny_effect
 		}
 
@@ -97,8 +98,9 @@ types information_panel_bar_types {
 			margin_right = -8 #margin to trim the hover area for the labels
 			onmousehierarchyenter = "[PdxGuiInterruptThenTriggerAllAnimations('hide_sidebar_labels','show_sidebar_labels')]"
 			onmousehierarchyleave = "[PdxGuiInterruptThenTriggerAllAnimations('show_sidebar_labels','hide_sidebar_labels')]"
-			
+
 			container = {
+			    name = "ingame_sidebar_buttons_container" # Do not rename otherwise `UiValidityCheck`s will just pretend to work
 				### POLITICS
 				sidebar_label_button = {
 					position = { -100 0 }
@@ -129,7 +131,7 @@ types information_panel_bar_types {
 						}
 						onclick = "[InformationPanelBar.OpenPanelCycleTabs('politics', 'default|interest_groups|laws|institutions')]"
 						onclick = "[GetVariableSystem.Clear('politics_overview_exile_pool')]"
-						
+
 						animated_progresspie = {
 							parentanchor = center
 							texture = "gfx/interface/main_hud/sidebar_progress.dds"
@@ -147,7 +149,7 @@ types information_panel_bar_types {
 					tooltip = "BUTTON_POLITICS"
 					input_action = "open_politics"
 				}
-				
+
 				### BUDGET
 				sidebar_label_button = {
 					position = { -100 @budget_position }
@@ -184,7 +186,7 @@ types information_panel_bar_types {
 					tooltip = "BUTTON_BUDGET"
 					input_action = "open_budget"
 				}
-				
+
 				### BUILDINGS
 				sidebar_label_button = {
 					position = { -100 @buildings_position }
@@ -221,7 +223,7 @@ types information_panel_bar_types {
 					tooltip = "BUTTON_BUILDINGS"
 					input_action = "open_buildings"
 				}
-				
+
 				### TRADE OVERVIEW
 				sidebar_label_button = {
 					position = { -100 @trade_position }
@@ -258,12 +260,12 @@ types information_panel_bar_types {
 					tooltip = "BUTTON_TRADE_OVERVIEW"
 					input_action = "open_market"
 				}
-				
+
 				### MILITARY
 				sidebar_label_button = {
 					position = { -100 @military_position }
 					blockoverride "onclick" {
-						onclick = "[InformationPanelBar.OpenPanelCycleTabs('military', 'army|garrison|navy')]"
+						onclick = "[InformationPanelBar.OpenPanelCycleTabs('military', 'army|mobilization|navy')]"
 						input_action = "open_military"
 					}
 				}
@@ -287,7 +289,7 @@ types information_panel_bar_types {
 						blockoverride "button_selected" {
 							visible = "[InformationPanelBar.IsPanelOpen('military')]"
 						}
-						onclick = "[InformationPanelBar.OpenPanelCycleTabs('military', 'army|garrison|navy')]"
+						onclick = "[InformationPanelBar.OpenPanelCycleTabs('military', 'army|mobilization|navy')]"
 					}
 				}
 				sidebar_tooltip_area = {
@@ -295,16 +297,16 @@ types information_panel_bar_types {
 					tooltip = "BUTTON_MILITARY"
 					input_action = "open_military"
 				}
-				
+
 				### SECONDARY BUTTONS
-				
+
 				#widget needed to prevent you from clicking on the map
 				widget = {
 					using = clickthrough_blocker
 					position = { 0 @spacing_widget_1_position }
 					size = { 100% @spacing_widget_size }
 				}
-				
+
 				### DIPLOMATIC
 				sidebar_label_button_small = {
 					enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
@@ -343,7 +345,7 @@ types information_panel_bar_types {
 					tooltip = "BUTTON_DIPLOMATIC_OVERVIEW"
 					input_action = "open_diplomatic"
 				}
-				
+
 				### TECHNOLOGY
 				sidebar_label_button_small = {
 					enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
@@ -375,7 +377,7 @@ types information_panel_bar_types {
 							visible = "[InformationPanelBar.IsPanelOpen('tech_tree')]"
 						}
 						onclick = "[InformationPanelBar.OpenPanelCycleTabs('tech_tree', 'production|military|society')]"
-						
+
 						animated_progresspie = {
 							visible = "[Technology.IsValid]"
 							parentanchor = center
@@ -409,6 +411,45 @@ types information_panel_bar_types {
 					input_action = "open_technology"
 				}
 				
+				### COMPANIES
+				sidebar_label_button_small = {
+					enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
+					position = { -100 @companies_position }
+					blockoverride "onclick" {
+						onclick = "[InformationPanelBar.OpenPanelCycleTabs('companies', 'default|potential_companies')]"
+						input_action = "open_companies"
+					}
+				}
+				sidebar_label_text_small = {
+					position = { -100 @companies_position }
+					text = "COMPANIES_OVERVIEW"
+				}
+				widget = {
+					name = "tutorial_highlight_companies"
+					enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
+					position = { 0 @companies_position }
+					using = clickthrough_blocker
+					using = sidebar_button_size_small
+					using = selected_sidepanel_animation_small
+					blockoverride "selected_visibility" {
+						visible = "[InformationPanelBar.IsPanelOpen('companies')]"
+					}
+					sidepanel_button_small = {
+						blockoverride "icon" {
+							texture = "gfx/interface/main_hud/companies_btn.dds"
+						}
+						blockoverride "button_selected" {
+							visible = "[InformationPanelBar.IsPanelOpen('companies')]"
+						}
+						onclick = "[InformationPanelBar.OpenPanel('companies')]"
+					}
+				}
+				sidebar_tooltip_area_small = {
+					position = { 0 @companies_position }
+					tooltip = "BUTTON_COMPANIES_OVERVIEW"
+					input_action = "open_companies"
+				}				
+
 				### CULTURE
 				sidebar_label_button_small = {
 					enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
@@ -447,7 +488,7 @@ types information_panel_bar_types {
 					tooltip = "BUTTON_CULTURE_OVERVIEW"
 					input_action = "open_culture"
 				}
-				
+
 				### POPULATION
 				sidebar_label_button_small = {
 					enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
@@ -486,7 +527,7 @@ types information_panel_bar_types {
 					tooltip = "BUTTON_POPULATION"
 					input_action = "open_population"
 				}
-				
+
 				### JOURNAL
 				sidebar_label_button_small = {
 					enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
@@ -584,7 +625,7 @@ types information_panel_bar_types {
 					tooltip = "OUTLINER_TOOLTIP"
 					input_action = "open_outliner"
 				}
-				
+
 				#widget needed to prevent you from clicking on the map
 				widget = {
 					using = clickthrough_blocker
@@ -601,12 +642,12 @@ types information_panel_bar_types {
 						input_action = map_list
 					}
 				}
-				
+
 				sidebar_label_text_small = {
 					position = { -100 @maplist_position }
 					text = "MAP_LIST"
 				}
-				
+
 				widget = {
 					position = { 0 @maplist_position }
 					using = clickthrough_blocker
@@ -632,13 +673,13 @@ types information_panel_bar_types {
 					input_action = map_list
 				}
 			}
-		}	
+		}
 	}
 }
 
-template sidebar_button_size { 
-	size = { 48 50 } 
+template sidebar_button_size {
+	size = { 48 50 }
 }
-template sidebar_button_size_small { 
+template sidebar_button_size_small {
 	size = { 42 40 }
 }

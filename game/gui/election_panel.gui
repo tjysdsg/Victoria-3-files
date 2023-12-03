@@ -76,7 +76,7 @@ types election_panel_types
 						textbox = {
 							layoutpolicy_horizontal = expanding
 							layoutpolicy_vertical = expanding
-							text = "[InterestGroup.GetAffiliationRaw]"
+							text = "[InterestGroup.GetAffiliationRaw|+=0]"
 							tooltip = "[InterestGroup.GetAffiliationBreakdown]"
 							margin_left = 20
 							margin_bottom = 10
@@ -104,8 +104,9 @@ types election_panel_types
                             layoutstretchfactor_horizontal = 3
                             layoutpolicy_horizontal = expanding
                             layoutpolicy_vertical = expanding
-                            raw_text = "[InterestGroup.GetPoliticallyActiveRaw|K] ([InterestGroup.GetPoliticallyActivePercentage|%0])"
-                            align = right|nobaseline
+                            using = clout_tooltip_with_graph
+							raw_text = "#BOLD [InterestGroup.GetClout|1%] #!"
+							align = right|nobaseline
                             elide = right
                             using = fontsize_large
                         }
@@ -151,7 +152,7 @@ types election_panel_types
 				### ELECTION DATE
 				widget = {
 					visible = "[Election.IsInCampaignPeriod]"
-					size = { 450 80 }
+					size = { @panel_width_minus_10 80 }
 					parentanchor = hcenter
 					using = entry_bg_fancy
 
@@ -171,6 +172,7 @@ types election_panel_types
 							parentanchor = hcenter
 							using = fontsize_large
 							align = nobaseline
+							default_format = "#v"
 						}
 					}
 				}
@@ -180,7 +182,7 @@ types election_panel_types
 					visible = "[Election.IsInCampaignPeriod]"
 					parentanchor = hcenter
 					blockoverride "size" {
-						size = { 360 150 }
+						size = { 440 150 }
 					}
 					blockoverride "header" {
 						text = "VOTES_GRAPH_TITLE"
@@ -225,48 +227,60 @@ types election_panel_types
 				### INFO
 				flowcontainer = {
 					visible = "[Election.IsInCampaignPeriod]"
-					direction = vertical
 					parentanchor = hcenter
-					
-					widget = {
-						size = { 440 40 }
-						
-						hbox = {
-							textbox = {
-								layoutpolicy_horizontal = expanding
-								size = { 0 30 }
-								text = "TOTAL_VOTERS"
-								elide = right
-							}
-							textbox = {
-								text = "[Election.GetTotalVotersRaw|K]"
-								autoresize = yes
-								default_format = "#variable"
-							}
-						}
-						divider_clean = {
-							parentanchor = bottom|hcenter
-						}
+					spacing = 20
+					margin_top = 10
+					margin_bottom = 10
+
+					law_item_small = {
+						datacontext = "[AccessPlayer.AccessActiveLawFromGroup('lawgroup_distribution_of_power')]"
 					}
-					widget = {
-						size = { 440 40 }
+
+					flowcontainer = {
+						direction = vertical
+						parentanchor = hcenter
 						
-						hbox = {
-							textbox = {
-								layoutpolicy_horizontal = expanding
-								size = { 0 30 }
-								text = "POLITICALLY_UNALIGNED"
-								elide = right
+						widget = {
+							size = { 240 40 }
+							
+							hbox = {
+								textbox = {
+									layoutpolicy_horizontal = expanding
+									size = { 0 30 }
+									text = "TOTAL_VOTERS"
+									elide = right
+									fontsize_min = 14
+								}
+								textbox = {
+									text = "[Election.GetTotalVotersRaw|K]"
+									autoresize = yes
+									default_format = "#variable"
+								}
 							}
-							textbox = {
-								text = "[Election.GetCountry.GetInactivePopulation|kv]"
-								tooltip = "POLITICALLY_UNALIGNED_POPULATION_TOOLTIP"
-								autoresize = yes
-								default_format = "#variable"
+							divider_clean = {
+								parentanchor = bottom|hcenter
 							}
 						}
-						divider_clean = {
-							parentanchor = bottom|hcenter
+						widget = {
+							size = { 240 40 }
+							
+							hbox = {
+								textbox = {
+									layoutpolicy_horizontal = expanding
+									size = { 0 30 }
+									text = "POLITICALLY_UNALIGNED"
+									elide = right
+								}
+								textbox = {
+									text = "[Election.GetCountry.GetInactivePopulation|kv]"
+									tooltip = "POLITICALLY_UNALIGNED_POPULATION_TOOLTIP"
+									autoresize = yes
+									default_format = "#variable"
+								}
+							}
+							divider_clean = {
+								parentanchor = bottom|hcenter
+							}
 						}
 					}
 				}
@@ -367,12 +381,22 @@ types election_panel_types
 										align = nobaseline
 									}
 									
-									textbox = {
+									flowcontainer = {
 										parentanchor = right
-										text = "[Party.GetProjectedVotesDesc]"
-										autoresize = yes
-										align = nobaseline
-										using = fontsize_xl
+										tooltip = "PROJECTED_VOTES_TOOLTIP"
+										spacing = 7
+										textbox = {
+											raw_text = "[Party.GetProjectedVotesDesc]"
+											autoresize = yes
+											align = nobaseline
+											using = fontsize_xl
+										}
+										textbox = {
+											parentanchor = vcenter
+											raw_text = "([Party.GetCurrentPollVotingPowerDifference|K+=])"
+											autoresize = yes
+											align = nobaseline
+										}
 									}
 								}
 							}
@@ -485,7 +509,7 @@ types election_panel_types
 									textbox = {
 										layoutpolicy_horizontal = expanding
 										layoutpolicy_vertical = expanding
-										raw_text = "[Party.GetCurrentVotingPower|Kv] ([Party.GetCurrentVotingPowerShare|%1])"
+										raw_text = "[Party.GetCurrentVotingPowerShare|%1]"
 										tooltip = "PARTY_ELECTION_TOOLTIP"
 										align = center|nobaseline
 									}

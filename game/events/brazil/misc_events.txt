@@ -1,0 +1,277 @@
+﻿namespace = bp1_misc
+
+# Carnaval
+bp1_misc.1 = {
+	type = country_event
+	placement = ROOT
+	
+	title = bp1_misc.1.t
+	desc = bp1_misc.1.d
+	flavor = bp1_misc.1.f
+	placement = scope:carnaval_state
+	
+	event_image = {
+		video = "unspecific_world_fair"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_fire.dds"
+
+	cooldown = { months = normal_modifier_time }
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		# triggered on generic yearly pulse
+		 country_has_primary_culture = cu:brazilian
+		 is_at_war = no
+		 any_scope_state = {
+		 	is_incorporated = yes
+		 	state_region = { is_homeland = cu:brazilian }
+		 	average_sol >= 12
+		 	is_in_revolt = no
+		 }
+
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				is_incorporated = yes
+			 	state_region = { is_homeland = cu:brazilian }
+			 	average_sol >= 12
+			 	is_in_revolt = no
+			}
+			save_scope_as = carnaval_state
+		}
+	}
+
+	option = { # a fine distraction
+		name = bp1_misc.1.a
+		default_option = yes
+		scope:carnaval_state = {
+			add_loyalists_in_state = {
+				value = medium_radicals
+				strata = poor
+			}
+			add_loyalists_in_state = {
+				value = small_radicals
+				strata = middle
+			}
+		}
+	}
+
+	option = { # organize something special this year
+		name = bp1_misc.1.b
+		add_modifier = {
+			name = carnaval_celebrations
+			months = short_modifier_time
+			multiplier = money_amount_multiplier_small
+		}
+		scope:carnaval_state = {
+			add_loyalists_in_state = {
+				value = very_large_radicals
+				strata = poor
+			}
+			add_loyalists_in_state = {
+				value = medium_radicals
+				strata = middle
+			}
+		}
+	}
+}
+
+# Medium Roast
+bp1_misc.2 = {
+	type = country_event
+	placement = ROOT
+	
+	title = bp1_misc.2.t
+	desc = bp1_misc.2.d
+	flavor = bp1_misc.2.f
+	placement = scope:coffee_state
+	
+	event_image = {
+		video = "southamerica_factory_opening"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = long_modifier_time }
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		 # triggered on generic yearly pulse
+		OR = {
+			has_law = law_type:law_tenant_farmers
+			has_law = law_type:law_commercialized_agriculture
+			has_law = law_type:law_homesteading
+		}
+		any_scope_state = {
+			any_scope_building = {
+				is_building_type = building_coffee_plantation
+				level >= 10
+			}
+		}
+		market = {
+			mg:coffee = {
+				market_goods_cheaper >= 0.5
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				any_scope_building = {
+					is_building_type = building_coffee_plantation
+		 			level >= 10
+				}
+			}
+			save_scope_as = coffee_state
+			random_scope_building = {
+				limit = {
+					is_building_type = building_coffee_plantation
+				}
+				save_scope_as = coffee_building
+			}
+		}
+		g:coffee = {
+			save_scope_as = coffee_scope
+		}
+		if = {
+			limit = {
+				has_law = law_type:law_tenant_farmers
+			}
+			ig:ig_landowners = {
+				save_scope_as = plantation_owners
+			}
+		}
+		else_if = {
+			limit = {
+				has_law = law_type:law_commercialized_agriculture
+			}
+			ig:ig_industrialists = {
+				save_scope_as = plantation_owners
+			}
+		}
+		else_if = {
+			limit = {
+				has_law = law_type:law_homesteading
+			}
+			ig:ig_rural_folk = {
+				save_scope_as = plantation_owners
+			}
+		}
+	}
+
+	option = { # burn the coffee!
+		name = bp1_misc.2.a
+		default_option = yes
+		scope:coffee_state = {
+			add_modifier = {
+				name = burning_coffee
+				months = short_modifier_time
+			}
+		}
+		scope:plantation_owners = {
+			add_modifier = {
+				name = burnng_coffee_ig
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = { # use it as a fuel source
+		name = bp1_misc.2.b
+		highlighted_option = yes
+		trigger = {
+			ig:ig_intelligentsia = {
+				is_in_government = yes
+			}
+		}
+		scope:coffee_state = {
+			add_modifier = {
+				name = coffee_fuel
+				months = short_modifier_time
+			}
+			add_modifier = {
+				name = burning_coffee
+				months = short_modifier_time
+			}
+		}
+	}
+
+	option = { # the free market will solve this
+		name = bp1_misc.2.c
+		scope:plantation_owners = {
+			add_modifier = {
+				name = not_burning_coffee_ig
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+#Landowners become Oligarchic
+bp1_misc.3 = {
+	type = country_event
+	placement = ROOT
+	
+	title = bp1_misc.3.t
+	desc = bp1_misc.3.d
+	flavor = bp1_misc.3.f
+	
+	event_image = {
+		video = "southamerica_factory_opening"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = long_modifier_time }
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		c:BRZ ?= this
+		OR = {
+			AND = {
+				has_variable = positivism_progress_var
+				trigger_if = {
+					limit = {
+						has_variable = positivism_progress_var
+					}
+					var:positivism_progress_var >= 50
+				}
+			}
+			has_variable = positivism_done
+		}
+	}
+
+	immediate = {
+		ig:ig_landowners = {
+			save_scope_as = landowners_ig
+		}
+	}
+
+	option = {
+		name = bp1_misc.3.a
+		default_option = yes
+		scope:landowners_ig = {
+			remove_ideology = ideology_stratocratic
+			add_ideology = ideology_oligarchic
+		}
+	}
+}

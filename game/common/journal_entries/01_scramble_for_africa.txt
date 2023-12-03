@@ -1,6 +1,8 @@
-﻿scramble_for_africa = {
+﻿je_scramble_for_africa = {
 
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	group = je_group_foreign_affairs
 
 	is_shown_when_inactive = {
 		has_technology_researched = quinine
@@ -29,6 +31,7 @@
 			days = 0
 			popup = yes
 		}
+		save_scope_as = scramble_for_africa_self
 	}
 
 	complete = {
@@ -38,6 +41,36 @@
 				is_incorporated = no
 				state_in_africa = yes
 				count >= 7
+			}
+		}
+		custom_tooltip = {
+			text = scramble_for_africa_complete_2_tt
+			any_state_region = {
+				filter = {
+					OR = {
+						region = sr:region_nile_basin
+						region = sr:region_ethiopia
+						region = sr:region_north_africa
+						region = sr:region_senegal
+						region = sr:region_niger
+						region = sr:region_congo
+						region = sr:region_southern_africa
+						region = sr:region_zanj		
+					}
+				}
+				NOT = {
+					any_scope_state = {
+						owner = {
+							country_is_in_africa = yes
+							OR = {
+								is_country_type = decentralized
+								is_country_type = unrecognized
+							}
+							is_subject = no
+						}
+					}
+				}
+				percent >= 0.95
 			}
 		}
 	}
@@ -51,10 +84,13 @@
 	}
 
 	fail = {
-		NOT = {
-			any_scope_state = {
-				is_incorporated = no
-				state_in_africa = yes
+		custom_tooltip = {
+			text = scramble_for_africa_fail_tt
+			NOT = {
+				any_scope_state = {
+					is_incorporated = no
+					state_in_africa = yes
+				}
 			}
 		}
 	}
@@ -105,8 +141,8 @@
 		}
 	}
 
-	# 20 years
-	timeout = 7300
+	# No timeout. Imperialism never ends.
+	# timeout = 7300
 
 	on_timeout = {
 

@@ -21,14 +21,14 @@ types goods_usage_panel_tyes
 
 		blockoverride "window_header_name_line_two"
 		{
-			text = "[concept_good]"
+			text = "GOODS_USAGE_PANEL_LINE_TWO"
 		}
 		
 		blockoverride "fixed_top"
 		{
 			tab_buttons = {
 				
-				# OBS! these 3 tabs are copied to goods_panel.gui / goods_usage_panel.gui / goods_state_panel.gui
+				# OBS! these 4 tabs are copied to goods_panel.gui / goods_usage_panel.gui / goods_state_panel.gui / goods_local_prices_panel.gui
 				# consider merging these panels into the same panel
 				
 				# market
@@ -39,34 +39,48 @@ types goods_usage_panel_tyes
 					tooltip = "[GoodsUsagePanel.GetGoods.GetMarket.GetNameNoFormatting]"
 				} 
 				blockoverride "first_button_visibility_checked" {
-					visible = "[GoodsUsagePanel.GetGoods.HasMarketContext]"
+					visible = "[And(GoodsUsagePanel.GetGoods.HasMarketContext,Not(GoodsUsagePanel.GetGoods.IsLocal))]"
 				}
 				blockoverride "first_button_click" {
 					onclick = "[InformationPanelBar.OpenGoodsPanel( GoodsUsagePanel.GetGoods.GetMarket, GoodsUsagePanel.GetGoods )]"
 				}
-
-				# usage / application (SELECTED)
-				blockoverride "second_button_selected" {
-					text = USAGE
-				}
-				blockoverride "second_button_visibility" {
-					visible = yes
-				}
-				blockoverride "second_button_tooltip" {}
 				
-				# states
-				blockoverride "third_button" {
+				# selected state
+				blockoverride "second_button" {
 					text = "[GoodsUsagePanel.GetGoods.GetState.GetNameNoFormatting]"
 				}
-				blockoverride "third_button_tooltip" {
+				blockoverride "second_button_tooltip" {
 					tooltip = "[GoodsUsagePanel.GetGoods.GetState.GetNameNoFormatting]"
 				} 
-				blockoverride "third_button_visibility_checked" {
+				blockoverride "second_button_visibility_checked" {
 					visible = "[GoodsUsagePanel.GetGoods.HasStateContext]"
 				}
-				blockoverride "third_button_click" {
+				blockoverride "second_button_click" {
 					onclick = "[InformationPanelBar.OpenGoodsStatePanel( GoodsUsagePanel.GetGoods.GetState, GoodsUsagePanel.GetGoods )]"
+				}			
+				
+				# states in market
+				blockoverride "third_button" {
+					text = "LOCAL_PRICES"
 				}
+				blockoverride "third_button_tooltip" {
+					tooltip = "LOCAL_PRICES"
+				} 					
+				blockoverride "third_button_visibility_checked" {
+					visible = yes
+				}			
+				blockoverride "third_button_click" {
+					onclick = "[InformationPanelBar.OpenGoodsLocalPricesPanel(GoodsUsagePanel.GetGoods)]"
+				}					
+				
+				# usage / application (SELECTED)
+				blockoverride "fourth_button_selected" {
+					text = USAGE
+				}
+				blockoverride "fourth_button_visibility" {
+					visible = yes
+				}
+				blockoverride "fourth_button_tooltip" {}				
 			}
 		}
 

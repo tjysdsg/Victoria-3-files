@@ -686,7 +686,7 @@
 #		}
 #
 #		scope:random_character = {
-#			set_character_busy = yes
+#			set_character_busy_and_immortal = yes
 #		}
 #	}
 #
@@ -701,7 +701,7 @@
 #		}
 #
 #		scope:random_character = {
-#			set_character_busy = no
+#			set_character_busy_and_immortal = no
 #		}
 #	}
 #
@@ -3338,7 +3338,7 @@
 #		scope:cur_play = {
 #		    remove_war_goal = {
 #		        who = initiator
-#                war_goal = make_puppet
+#                war_goal = make_protectorate
 #            }
 #		}
 #	}
@@ -4252,6 +4252,7 @@
 #test.112 = {
 #	title = "MakeScope Test"
 #	is_popup = yes
+#	
 #
 #	immediate = {
 #		if = {
@@ -4312,3 +4313,79 @@
 #		default_option = yes
 #	}
 #}
+
+#test.113 = {
+#	title = "Dynamic Country Test"
+#	is_popup = yes	
+#
+#	immediate = {
+#		random_scope_state = {
+#			limit = { 
+#				is_capital = no
+#				is_incorporated = yes
+#				NOT = { has_variable = state_to_cede }
+#			}
+#
+#			save_scope_as = capital_state
+#		}
+#		random_scope_state = {
+#			limit = { 
+#				is_capital = no
+#				NOT = { has_variable = state_to_cede }
+#				exists = scope:capital_state
+#				NOT = { this = scope:capital_state }
+#				any_neighbouring_state = {
+#					this = scope:capital_state	
+#				}
+#			}
+#
+#			set_variable = state_to_cede
+#		}	
+#		random_scope_state = {
+#			limit = { 
+#				is_capital = no
+#				NOT = { has_variable = state_to_cede }
+#				exists = scope:capital_state
+#				NOT = { this = scope:capital_state }
+#				any_neighbouring_state = {
+#					this = scope:capital_state
+#				}
+#				any_neighbouring_state = {
+#					has_variable = state_to_cede
+#				}				
+#			}
+#
+#			set_variable = state_to_cede
+#		}				
+#	}
+#
+#	option = {
+#		name = "Release them!"
+#
+#		create_dynamic_country = {
+#			origin = ROOT
+#			country_type = unrecognized
+#			culture = cu:french
+#			religion = rel:catholic
+#			tier = principality
+#			
+#			color = { 175 125 50 }
+#			primary_unit_color = { 125 125 25 }
+#			secondary_unit_color = { 25 125 125 }
+#			tertiary_unit_color = { 25 125 25 }
+#			
+#			capital = scope:capital_state
+#			cede_state_trigger = {
+#				has_variable = state_to_cede
+#			}
+#			
+#			on_created = { 
+#				set_variable = is_french_rabble 
+#				every_state = {
+#					remove_variable = state_to_cede
+#				}
+#			}
+#		}
+#	}
+#}
+

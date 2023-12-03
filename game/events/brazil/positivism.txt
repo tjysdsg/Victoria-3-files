@@ -1,0 +1,872 @@
+﻿namespace = positivism
+
+positivism.1 = {
+	type = country_event
+	placement = root
+
+	gui_window = event_window_1char_tabloid
+	left_icon = scope:comte_scope
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/misc/1Character_Banner"
+
+	duration = 3
+
+	# Intentionally not DLC locked
+
+	title = positivism.1.t
+	desc = positivism.1.d
+	flavor = positivism.1.f
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		NOT = {
+			has_global_variable = positivism_invented
+		}
+		game_date >= 1842.6.1
+		any_scope_state = {
+			state_region = s:STATE_ILE_DE_FRANCE
+		}
+	}
+	
+	immediate = {
+		create_character = {
+			template = fra_auguste_comte_character_template
+			on_created = {
+				set_variable = auguste_comte_var
+				place_character_in_void = 9
+			}
+		}
+		random_character_in_void = {
+			limit = {
+				has_variable = auguste_comte_var
+			}
+			save_scope_as = comte_scope
+		}
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_ILE_DE_FRANCE
+			}
+			save_scope_as = paris_scope
+		}
+		set_global_variable = positivism_invented
+	}
+	
+	option = {
+		name = positivism.1.a 
+		default_option = yes
+		scope:comte_scope.interest_group = {
+			add_modifier = {
+				name = modifier_positivist_teaching
+				months = short_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = positivism.1.b
+		trigger = {
+			can_research = philosophical_pragmatism
+			NOT = {
+				has_technology_researched = philosophical_pragmatism
+			}
+		}
+		if = {
+			limit = {
+				can_research = philosophical_pragmatism
+				NOT = {
+					has_technology_researched = philosophical_pragmatism
+				}
+			}
+			add_technology_progress = { progress = 4150 technology = philosophical_pragmatism }
+		}
+	}
+
+	option = {
+		name = positivism.1.c
+		custom_tooltip = {
+			text = comte_recruited_tt
+			scope:comte_scope = {
+				free_character_from_void = yes
+			}
+		}
+	}
+}
+
+positivism.2 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = positivism.2.t
+	desc = positivism.2.d
+	flavor = positivism.2.f
+
+	event_image = {
+		video = "europenorthamerica_capitalists_meeting"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by JE
+	}
+	
+	immediate = {
+		random_interest_group = {
+			limit = {
+				OR = {
+					is_interest_group_type = ig_industrialists
+					is_interest_group_type = ig_petty_bourgeoisie
+					is_interest_group_type = ig_intelligentsia
+					is_interest_group_type = ig_armed_forces
+				}
+			}
+			save_scope_as = positivist_ig
+		}
+		create_character = {
+			is_agitator = yes
+			religion = rel:atheist
+			ideology = ideology:ideology_positivist
+			interest_group = scope:positivist_ig
+			on_created = {
+				add_modifier = {
+					name = modifier_positivist_doctrinaire
+				}
+				set_variable = positivist_agitator_var
+			}
+		}
+		random_scope_character = {
+			limit = {
+				has_variable = positivist_agitator_var
+			}
+			save_scope_as = positivist_agitator
+		}
+		capital = {
+			save_scope_as = positivist_church_state
+		}
+	}
+	
+	option = {
+		name = positivism.2.a 
+		default_option = yes
+		scope:positivist_agitator.interest_group = {
+			add_modifier = {
+				name = modifier_positivist_influence
+				months = normal_modifier_time
+			}
+		}
+		scope:positivist_church_state = {
+			add_modifier = {
+				name = modifier_positivist_church
+				months = long_modifier_time
+			}
+		}
+		custom_tooltip = {
+			text = positivists_advance_20
+			change_variable = { name = positivism_progress_var add = 20 }
+		}
+	}
+
+	option = {
+		name = positivism.2.b
+		scope:positivist_agitator.interest_group = {
+			add_modifier = {
+				name = modifier_positivist_influence_against
+				months = normal_modifier_time
+			}
+		}
+		scope:positivist_church_state = {
+			add_modifier = {
+				name = modifier_positivist_church
+				months = long_modifier_time
+				multiplier = 0.5
+			}
+		}
+		custom_tooltip = {
+			text = positivists_advance_5
+			change_variable = { name = positivism_progress_var add = 5 }
+		}
+	}
+}
+
+positivism.3 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = positivism.3.t
+	desc = positivism.3.d
+	flavor = positivism.3.f
+
+	event_image = {
+		video = "votp_agitator_speaking"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		#Triggered by JE
+	}
+	
+	immediate = {
+		root = {
+			save_scope_as = home_country_scope
+		}
+		set_variable = positivism_done
+	}
+	
+	option = {
+		name = positivism.3.a 
+		default_option = yes
+		if = {
+			limit = {
+				var:positivism_progress_var >= 85
+			}	
+			add_modifier = {
+				name = modifier_positivist_society_reward
+				months = normal_modifier_time
+				multiplier = 1.5
+			}
+		}
+		else_if = {
+			limit = {
+				var:positivism_progress_var >= 65
+			}	
+			add_modifier = {
+				name = modifier_positivist_society_reward
+				months = normal_modifier_time
+				multiplier = 1
+			}
+		}
+		else = {
+			add_modifier = {
+				name = modifier_positivist_society_reward
+				months = normal_modifier_time
+				multiplier = 0.5
+			}
+		}
+	}
+
+	option = {
+		name = positivism.3.b
+		if = {
+			limit = {
+				var:positivism_progress_var >= 85
+			}
+			every_interest_group = {
+				limit = {
+					any_scope_character = {
+						has_ideology = ideology:ideology_positivist
+					}
+				}
+				add_modifier = {
+					name = modifier_positivist_leaders_reward
+					months = normal_modifier_time
+					multiplier = 2
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				var:positivism_progress_var >= 65
+			}	
+			every_interest_group = {
+				limit = {
+					any_scope_character = {
+						has_ideology = ideology:ideology_positivist
+					}
+				}
+				add_modifier = {
+					name = modifier_positivist_leaders_reward
+					months = normal_modifier_time
+					multiplier = 1
+				}
+			}
+		}
+		else = {
+			every_interest_group = {
+				limit = {
+					any_scope_character = {
+						has_ideology = ideology:ideology_positivist
+					}
+				}
+				add_modifier = {
+					name = modifier_positivist_leaders_reward
+					months = normal_modifier_time
+					multiplier = 0.5
+				}
+			}
+		}
+		custom_tooltip = {
+			text = positivist_leaders_spawn_tt
+			set_variable = positivist_leaders_reward_var
+		}
+	}
+}
+
+positivism.4 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = positivism.4.t
+	desc = positivism.4.d
+	flavor = positivism.4.f
+
+	event_image = {
+		video = "unspecific_factory_closed"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		#Triggered by JE
+	}
+	
+	immediate = {
+		capital = {
+			save_scope_as = capital_scope
+		}
+	}
+	
+	option = {
+		name = positivism.4.a 
+		default_option = yes
+		custom_tooltip = {
+			text = remove_positivism_vars_tt
+			remove_variable = positivist_leaders_je_var
+			remove_variable = positivist_leaders_less_je_var
+			every_interest_group = {
+				limit = {
+					has_variable = positivist_leaders_increase_var
+				}
+				remove_variable = positivist_leaders_increase_var
+			}
+			every_interest_group = {
+				limit = {
+					has_variable = positivist_leaders_large_increase_var
+				}
+				remove_variable = positivist_leaders_large_increase_var
+			}
+		}
+		if = {
+			limit = {
+				var:positivism_progress_var >= 35
+			}	
+			every_interest_group = {
+				limit = {
+					any_scope_character = {
+						has_ideology = ideology:ideology_positivist
+					}
+				}
+				add_modifier = {
+					name = modifier_positivism_fading
+					months = normal_modifier_time
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				var:positivism_progress_var >= 15
+			}	
+			every_interest_group = {
+				limit = {
+					any_scope_character = {
+						has_ideology = ideology:ideology_positivist
+					}
+				}
+				add_modifier = {
+					name = modifier_positivism_fading
+					months = normal_modifier_time
+					multiplier = 1.5
+				}
+			}
+		}
+		else = {
+			every_interest_group = {
+				limit = {
+					any_scope_character = {
+						has_ideology = ideology:ideology_positivist
+					}
+				}
+				add_modifier = {
+					name = modifier_positivism_fading
+					months = normal_modifier_time
+					multiplier = 2
+				}
+			}
+		}
+	}
+
+	option = {
+		name = positivism.4.b
+		if = {
+			limit = {
+				var:positivism_progress_var >= 35
+			}	
+			every_interest_group = {
+				limit = {
+					any_scope_character = {
+						has_ideology = ideology:ideology_positivist
+					}
+				}
+				add_modifier = {
+					name = modifier_positivism_fading
+					months = normal_modifier_time
+					multiplier = 0.5
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				var:positivism_progress_var >= 15
+			}	
+			every_interest_group = {
+				limit = {
+					any_scope_character = {
+						has_ideology = ideology:ideology_positivist
+					}
+				}
+				add_modifier = {
+					name = modifier_positivism_fading
+					months = normal_modifier_time
+				}
+			}
+		}
+		else = {
+			every_interest_group = {
+				limit = {
+					any_scope_character = {
+						has_ideology = ideology:ideology_positivist
+					}
+				}
+				add_modifier = {
+					name = modifier_positivism_fading
+					months = normal_modifier_time
+					multiplier = 0.75
+				}
+			}
+		}
+	}
+}
+
+namespace = positivism_pulse
+
+positivism_pulse.1 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = positivism_pulse.1.t
+	desc = positivism_pulse.1.d
+	flavor = positivism_pulse.1.f
+
+	event_image = {
+		video = "europenorthamerica_capitalists_meeting"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = long_modifier_time }
+
+	trigger = {
+		
+	}
+	
+	immediate = {
+		root = {
+			save_scope_as = home_country_scope
+		}
+	}
+	
+	option = {
+		name = positivism_pulse.1.a 
+		default_option = yes
+		custom_tooltip = {
+			text = positivist_leaders_spawn_increase_tt
+			set_variable = {
+				name = positivist_leaders_je_var
+				months = long_modifier_time
+			}
+		}
+		custom_tooltip = {
+			text = positivists_advance_10
+			change_variable = { name = positivism_progress_var add = 10 }
+		}
+	}
+
+	option = {
+		name = positivism_pulse.1.b
+		custom_tooltip = {
+			text = positivist_leaders_spawn_increase_small_tt
+			set_variable = {
+				name = positivist_leaders_less_je_var
+				months = long_modifier_time
+			}
+		}
+		custom_tooltip = {
+			text = positivists_retreat_10
+			change_variable = { name = positivism_progress_var subtract = 10 }
+		}
+	}
+}
+
+positivism_pulse.2 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = positivism_pulse.2.t
+	desc = positivism_pulse.2.d
+	flavor = positivism_pulse.2.f
+
+	event_image = {
+		video = "europenorthamerica_before_the_battle"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = long_modifier_time }
+
+	trigger = {
+		ig:ig_armed_forces = {
+			is_marginal = no
+		}
+	}
+	
+	immediate = {
+		ig:ig_armed_forces = {
+			save_scope_as = armed_forces_ig
+			leader = {
+				save_scope_as = armed_forces_leader
+			}
+		}
+	}
+	
+	option = {
+		name = positivism_pulse.2.a 
+		default_option = yes
+		custom_tooltip = {
+			text = positivists_advance_5
+			change_variable = { name = positivism_progress_var add = 5 }
+		}
+		add_modifier = {
+			name = modifier_positivism_mil_reformism
+			months = normal_modifier_time
+		}
+	}
+
+	option = {
+		name = positivism_pulse.2.b
+		custom_tooltip = {
+			text = military_academy_positivist_tt
+			set_variable = military_academy_positivists
+		}
+		add_modifier = {
+			name = modifier_positivism_mil_influence
+			months = normal_modifier_time
+		}
+		custom_tooltip = {
+			text = positivists_advance_10
+			change_variable = { name = positivism_progress_var add = 10 }
+		}
+	}
+	
+	option = {
+		name = positivism_pulse.2.c
+		trigger = {
+			scope:armed_forces_leader = {
+				NOR = {
+					has_ideology = ideology:ideology_communist
+					has_ideology = ideology:ideology_vanguardist
+					has_ideology = ideology:ideology_fascist
+					has_ideology = ideology:ideology_ethno_nationalist
+					has_ideology = ideology:ideology_traditionalist
+					has_ideology = ideology:ideology_theocrat
+					has_ideology = ideology:ideology_royalist
+					has_ideology = ideology:ideology_radical
+					has_ideology = ideology:ideology_luddite
+				}
+			}
+		}
+		scope:armed_forces_leader = {
+			set_ideology = ideology:ideology_positivist
+		}
+		add_modifier = {
+			name = modifier_positivism_mil_influence
+			months = normal_modifier_time
+		}
+		custom_tooltip = {
+			text = military_academy_positivist_tt
+			set_variable = military_academy_positivists
+		}
+		custom_tooltip = {
+			text = positivists_advance_20
+			change_variable = { name = positivism_progress_var add = 20 }
+		}
+	}
+}
+
+positivism_pulse.3 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = positivism_pulse.3.t
+	desc = positivism_pulse.3.d
+	flavor = positivism_pulse.3.f
+
+	event_image = {
+		video = "europenorthamerica_before_the_battle"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = long_modifier_time }
+
+	trigger = {
+		has_variable = military_academy_positivists
+		ig:ig_armed_forces = {
+			is_marginal = no
+		}
+	}
+	
+	immediate = {
+		ig:ig_armed_forces = {
+			save_scope_as = armed_forces_ig
+		}
+	}
+	
+	option = {
+		name = positivism_pulse.3.a 
+		default_option = yes
+		custom_tooltip = {
+			text = armed_forces_positivists_tt
+			scope:armed_forces_ig = {
+				set_variable = positivist_leaders_increase_var
+			}
+		}
+		scope:armed_forces_ig = {	
+			add_modifier = {
+				name = modifier_upset_army_positivists
+				months = normal_modifier_time
+			}
+		}
+		custom_tooltip = {
+			text = positivists_retreat_10
+			change_variable = { name = positivism_progress_var subtract = 10 }
+		}
+	}
+
+	option = {
+		name = positivism_pulse.3.b
+		custom_tooltip = {
+			text = armed_forces_positivists_large_tt
+			scope:armed_forces_ig = {
+				set_variable = positivist_leaders_large_increase_var
+			}
+		}
+		add_modifier = {
+			name = modifier_positivist_cadet_influence
+			months = normal_modifier_time
+		}
+		custom_tooltip = {
+			text = positivists_advance_20
+			change_variable = { name = positivism_progress_var add = 20 }
+		}
+	}
+}
+
+positivism_pulse.4 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = positivism_pulse.4.t
+	desc = positivism_pulse.4.d
+	flavor = positivism_pulse.4.f
+
+	event_image = {
+		video = "unspecific_politicians_arguing"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = long_modifier_time }
+
+	trigger = {
+		any_interest_group = {
+			any_scope_character = {
+				has_ideology = ideology:ideology_positivist
+			}
+		}
+	}
+	
+	immediate = {
+		random_interest_group = {
+			limit = {
+				any_scope_character = {
+					has_ideology = ideology:ideology_positivist
+				}
+			}
+			save_scope_as = positivist_ig
+		}
+	}
+	
+	option = {
+		name = positivism_pulse.4.a 
+		default_option = yes
+		add_modifier = {
+			name = modifier_practicing_positivists_embraced
+			months = normal_modifier_time
+		}
+	}
+
+	option = {
+		name = positivism_pulse.4.b
+		scope:positivist_ig = {
+			add_modifier = {
+				name = modifier_stifling_positivist_orthodoxy
+				months = normal_modifier_time
+			}
+		}
+		custom_tooltip = {
+			text = positivists_retreat_10
+			change_variable = { name = positivism_progress_var subtract = 10 }
+		}
+	}
+}
+
+positivism_pulse.5 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = positivism_pulse.5.t
+	desc = positivism_pulse.5.d
+	flavor = positivism_pulse.5.f
+
+	event_image = {
+		video = "southamerica_christianity"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = {
+				is_building_type = building_urban_center
+				level >= 3
+			}
+			NOT = {
+				has_modifier = modifier_positivist_church
+			}
+		}
+	}
+	
+	immediate = {
+		random_scope_state = {
+			limit = {
+				is_incorporated = yes
+				any_scope_building = {
+					is_building_type = building_urban_center
+					level >= 3
+				}
+				NOT = {
+					has_modifier = modifier_positivist_church
+				}
+			}
+			save_scope_as = temple_of_humanity_state
+		}
+		capital = {
+			save_scope_as = capital_scope
+		}
+	}
+	
+	option = {
+		name = positivism_pulse.5.a 
+		default_option = yes
+		scope:temple_of_humanity_state = {
+			add_modifier = {
+				name = modifier_positivist_church
+				months = long_modifier_time
+			}
+		}
+		custom_tooltip = {
+			text = positivists_advance_10
+			change_variable = { name = positivism_progress_var add = 10 }
+		}
+	}
+
+	option = {
+		name = positivism_pulse.5.b
+		random_interest_group = {
+			limit = {
+				any_scope_character = {
+					has_ideology = ideology:ideology_positivist
+				}
+			}
+			add_modifier = {
+				name = modifier_stopped_positivists
+				months = short_modifier_time
+			}
+		}
+		custom_tooltip = {
+			text = positivists_retreat_10
+			change_variable = { name = positivism_progress_var subtract = 10 }
+		}
+	}
+}

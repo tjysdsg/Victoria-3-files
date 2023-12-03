@@ -1,0 +1,46 @@
+﻿france_retour_des_cendres = {
+	is_shown = {
+		has_dlc_feature = voice_of_the_people_content
+		has_journal_entry = je_divided_monarchists
+		exists = c:FRA
+		c:FRA = ROOT
+		NOT = { has_global_variable = fra_return_of_napoleon_ashes }
+	}
+
+	possible = {
+		has_law = law_type:law_monarchy
+		has_journal_entry = je_divided_monarchists
+	}
+
+	when_taken = {
+		set_global_variable = fra_return_of_napoleon_ashes
+		custom_tooltip = retour_des_cendres_tt
+		trigger_event = { id = french_pretenders_pulse.19 popup = yes }
+	}
+
+	ai_chance = {
+		base = 0
+		modifier = {
+			trigger = { 
+				any_interest_group = {
+					leader = {
+						has_ideology = ideology:ideology_bonapartist
+					}
+					ig_approval <= 0
+				}
+			}
+			add = 10
+		}
+		modifier = {
+			trigger = { 
+				any_interest_group = {
+					leader = {
+						has_ideology = ideology:ideology_bonapartist
+					}
+					is_in_government = yes
+				}
+			}
+			add = 5
+		}
+	}
+}

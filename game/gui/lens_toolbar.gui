@@ -28,17 +28,17 @@ types lens_toolbar_types {
 			using = fullscreen_hide
 
 			lensbar_mobilized_animation = {
-				visible = "[GreaterThan_int32( GetPlayer.GetNumberOfMobilizedGenerals, '(int32)0' )]"
+				visible = "[GetPlayer.IsInvolvedInActiveConflict]"
 			}
 
 			icon = {
 				texture = "gfx/interface/main_hud/lens_toolbar_bg.dds"
 				size = { 524 80 }
 				parentanchor = bottom|hcenter
-				
+
 				using = hud_shiny_effect
 			}
-			
+
 			# blocker for the leaf decorations on the side so you cant click on the map
 			widget = {
 				size = { 500 40 }
@@ -53,7 +53,7 @@ types lens_toolbar_types {
 
 				flowcontainer = {
 					spacing = 3
-					
+
 					container = {
 						name = "tutorial_highlight_production_lens"
 
@@ -294,7 +294,7 @@ types lens_toolbar_types {
 									size = { 0 25 }
 									fontsize_min = 12
 									elide = right
-									text = "[GetMapModeName( int32.GetInt )]"
+									text = "[GetSelectedMapModeName]"
 									align = left|nobaseline
 								}
 							}
@@ -460,12 +460,12 @@ types lens_toolbar_types {
 			layoutpolicy_horizontal = expanding
 			layoutpolicy_vertical = preferred
 			using = fullscreen_hide
-			
+
 			widget = {
 				layoutpolicy_horizontal = expanding
 				size = { 0 0 }
 				visible = [LensToolbar.IsAnyLensOpen]
-				
+
 				state = {
 					name = _show
 					duration = 0.2
@@ -478,18 +478,18 @@ types lens_toolbar_types {
 					using = Animation_Curve_Default
 					size = { 0 0 }
 				}
-		
+
 				vbox = {
 					layoutpolicy_horizontal = expanding
 					layoutpolicy_vertical = preferred
 					margin_bottom = 5
-					
+
 					background = {
 						using = default_background
 						margin = { 100 0 }
 						margin_top = 4
 						margin_bottom = 10
-						
+
 						modify_texture = {
 							texture = "gfx/interface/backgrounds/dark_sides_shading.dds"
 							spriteType = Corneredstretched
@@ -503,7 +503,7 @@ types lens_toolbar_types {
 						layoutpolicy_horizontal = expanding
 						layoutpolicy_vertical = preferred
 						margin_right = 10
-						
+
 						icon = {
 							texture = "gfx/interface/tabs/tab_divider.dds"
 							layoutpolicy_horizontal = expanding
@@ -511,7 +511,7 @@ types lens_toolbar_types {
 							size = { 0 30 }
 							spriteType = Corneredstretched
 							spriteborder = { 0 20 }
-							
+
 							modify_texture = {
 								texture = "gfx/interface/masks/fade_horizontal_less_left.dds"
 								spriteType = Corneredstretched
@@ -534,7 +534,7 @@ types lens_toolbar_types {
 							size = { 0 30 }
 							spriteType = Corneredstretched
 							spriteborder = { 0 20 }
-							
+
 							modify_texture = {
 								texture = "gfx/interface/masks/fade_horizontal_less_right.dds"
 								spriteType = Corneredstretched
@@ -554,25 +554,28 @@ types lens_toolbar_types {
 					scrollarea = {
 						layoutpolicy_horizontal = expanding
 						size = { 0 165 }
-						
+
 						scrollbar_vertical = {
 							using = vertical_scrollbar
 						}
 
 						scrollbarpolicy_horizontal = always_off
-						
+
 						scrollwidget = {
-							dynamicgridbox = {
+							flowcontainer = {
 								parentanchor = hcenter
-								datamodel_wrap = "[LensToolbar.GetMaxNumItemsPerRow]"
-								ignoreinvisible = yes
-								flipdirection = yes
-								datamodel = "[LensToolbar.GetOptions]"
-								
-								item = {
-									lens_option_button = {
-										datacontext = "[LensToolbar.GetCurrentTab]"
-										datacontext = "[LensOption]"
+								margin_right = "[GetDefine('NGUI', 'LENS_TOOLBAR_MARGIN_RIGHT')]"
+								dynamicgridbox = {
+									datamodel_wrap = "[LensToolbar.GetMaxNumItemsPerRow]"
+									ignoreinvisible = yes
+									flipdirection = yes
+									datamodel = "[LensToolbar.GetOptions]"
+
+									item = {
+										lens_option_button = {
+											datacontext = "[LensToolbar.GetCurrentTab]"
+											datacontext = "[LensOption]"
+										}
 									}
 								}
 							}
@@ -642,7 +645,7 @@ types lens_toolbar_types {
 	type lens_option_button = widget {
 		widgetid = "[LensOption.GetKey]"
 		enabled = "[LensOption.CanActivate]"
-		size = { -1 110 }
+		size = { -1 120 }
 		min_width = "[GetDefine('NGUI', 'LENS_TOOLBAR_ITEM_WIDTH')]"
 		tooltip = "LENS_OPTION_TOOLTIP"
 		using = tooltip_above
@@ -662,7 +665,7 @@ types lens_toolbar_types {
 			onclick = "[LensOption.Toggle]"
 
 			using = default_button_map_interaction
-			size = { -1 105 }
+			size = { -1 115 }
 			min_width = "[GetDefine('NGUI', 'LENS_TOOLBAR_ITEM_WIDTH')]"
 
 			modify_texture = {
@@ -686,6 +689,7 @@ types lens_toolbar_types {
 				position = { 0 -5 }
 				using = Animation_Curve_Default
 				on_start = "[PdxGuiWidget.FindChild('title').TriggerAnimation('show')]"
+				on_start = "[PdxGuiWidget.FindChild('cost').TriggerAnimation('show')]"
 			}
 			state = {
 				name = option_button_mouse_leave
@@ -693,6 +697,7 @@ types lens_toolbar_types {
 				position = { 0 0 }
 				using = Animation_Curve_Default
 				on_start = "[PdxGuiWidget.FindChild('title').TriggerAnimation('hide')]"
+				on_start = "[PdxGuiWidget.FindChild('cost').TriggerAnimation('hide')]"
 			}
 
 			button = {
@@ -714,7 +719,7 @@ types lens_toolbar_types {
 				name = "title"
 				raw_text = "#BOLD [LensOption.GetText]#!"
 				align = center|nobaseline
-				position = { 0 -3 }
+				position = { 0 -13 }
 				size = { 100% 50 }
 				parentanchor = hcenter|bottom
 				using = fontsize_small
@@ -737,6 +742,34 @@ types lens_toolbar_types {
 					using = Animation_Curve_Default
 				}
 			}
+			
+			textbox = {
+				name = "cost"
+				raw_text = "#v [LensOption.GetCostText]#!"
+				align = center|nobaseline
+				position = { 0 -3 }
+				size = { 100% 20 }
+				parentanchor = hcenter|bottom
+				using = fontsize_small
+				elide = right
+				multiline = no
+				margin_left = 5
+				margin_right = 5
+				alpha = 0.75
+
+				state = {
+					name = show
+					alpha = 1
+					duration = 0.15
+					using = Animation_Curve_Default
+				}
+				state = {
+					name = hide
+					alpha = 0.75
+					duration = 0.3
+					using = Animation_Curve_Default
+				}
+			}			
 
 			textbox = {
 				visible = "[LensOption.ShouldShowNumberOfSelections]"

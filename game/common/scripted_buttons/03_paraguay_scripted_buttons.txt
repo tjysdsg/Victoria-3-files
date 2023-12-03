@@ -1,0 +1,237 @@
+﻿humanita_fortress_button = {
+	name = "humanita_fortress_button"
+	desc = "humanita_fortress_button_desc"
+
+	visible = {
+		owns_entire_state_region = STATE_BAJO_PARAGUAY
+		NOT = { 
+			has_global_variable = humanita_fortress_global_var
+		}
+	}
+
+	possible = {
+		s:STATE_BAJO_PARAGUAY.region_state:PRG = {
+			any_scope_building = { 
+				is_building_type = building_construction_sector
+				level >= 2
+			}
+		}
+	}
+
+	effect = {
+		trigger_event = { id = paraguay.4 popup = yes }
+		add_modifier = {
+			name = establishing_humanity_modifier
+			multiplier = money_amount_multiplier_medium
+			months = long_modifier_time
+		}
+		set_global_variable = humanita_fortress_global_var
+		show_as_tooltip = {
+			s:STATE_BAJO_PARAGUAY.region_state:PRG = {
+				add_modifier = {
+					name = humanita_fortress_modifier
+					months = very_long_modifier_time
+				}
+			}
+		}
+	}
+}
+
+ybycui_iron_works_button = {
+	name = "ybycui_iron_works_button"
+	desc = "ybycui_iron_works_button_desc"
+
+	visible = {
+		owns_entire_state_region = STATE_BAJO_PARAGUAY
+		NOT = { 
+			has_global_variable = ybycui_iron_works_global_var
+		}
+	}
+
+	possible = {
+        s:STATE_BAJO_PARAGUAY.region_state:PRG = {
+            any_scope_building = {
+                is_building_type = building_iron_mine
+                level >= 3
+                occupancy >= 0.5
+            }
+            any_scope_building = {
+                is_building_type = building_logging_camp
+                level >= 2
+                occupancy >= 0.5
+            }
+            any_scope_building = {
+            	is_building_type = building_arms_industry
+                level >= 2
+                occupancy >= 0.5
+            }
+        }
+	}
+
+	effect = {
+		trigger_event = { id = paraguay.3 popup = yes }
+		set_global_variable = ybycui_iron_works_global_var
+		custom_tooltip = choose_one_of_tt
+		show_as_tooltip = {
+			s:STATE_BAJO_PARAGUAY.region_state:PRG = {
+				add_modifier = {
+					name = ybycui_iron_works_modifier
+					months = very_long_modifier_time
+				}
+			}
+			s:STATE_BAJO_PARAGUAY.region_state:PRG = {
+				if = {
+					limit = {
+						NOT = {
+							any_scope_building = {
+								is_building_type = building_steel_mills
+							}
+						}
+					}
+					create_building = {
+						building = building_steel_mills
+						level = 2
+					}
+					add_modifier = {
+						name = ybycui_steelworks
+						months = very_long_modifier_time
+					}
+				}
+				else = {
+					add_modifier = {
+						name = ybycui_steelworks
+						months = very_long_modifier_time
+						multiplier = 1.5
+					}
+				}
+			}
+			s:STATE_BAJO_PARAGUAY.region_state:PRG = {
+				add_modifier = {
+					name = ybycui_prisoner_workforce_modifier
+					months = very_long_modifier_time
+				}
+				add_radicals_in_state = {
+					value = small_radicals
+				}
+			}
+		}
+	}
+}
+
+good_health_prg_button = {
+	name = "good_health_prg_button"
+	desc = "good_health_prg_button_desc"
+
+	visible = {
+		owns_entire_state_region = STATE_BAJO_PARAGUAY
+		NOT = { 
+			has_global_variable = improve_living_conditions_global_var
+		}
+	}
+
+	possible = {
+		s:STATE_BAJO_PARAGUAY.region_state:PRG = {
+			any_scope_building = {
+				is_building_type = building_urban_center
+				level >= 2
+			}
+		}
+		OR = {
+			has_law = law_type:law_charitable_health_system
+			has_law = law_type:law_private_health_insurance
+			has_law = law_type:law_public_health_insurance
+			any_country = {
+				country_rank = rank_value:great_power
+				relations:root >= relations_threshold:amicable
+			}
+		}
+	}
+
+	effect = {
+		trigger_event = { id = paraguay.5 popup = yes }
+		set_global_variable = improve_living_conditions_global_var
+		if = {
+			limit = {
+				any_country = {
+					OR = {
+						country_is_in_europe = yes
+						country_is_in_north_america = yes
+					}
+					has_technology_researched = medical_degrees
+					relations:root >= relations_threshold:amicable				
+				}
+			}
+			random_country = {
+				limit = {
+					OR = {
+						country_is_in_europe = yes
+						country_is_in_north_america = yes
+					}
+					has_technology_researched = medical_degrees
+					relations:root >= relations_threshold:amicable
+				}
+				save_scope_as = paraguay_doctors_country_scope
+			}
+		}
+		else = {
+			save_scope_as = paraguay_doctors_country_scope
+		}
+		show_as_tooltip = {
+			s:STATE_BAJO_PARAGUAY.region_state:PRG = {
+				add_modifier = {
+					name = vaccinations_prg_modifier
+					months = very_long_modifier_time
+				}
+			}
+		}
+	}
+}
+
+army_git_good_button = {
+	name = "army_git_good_button"
+	desc = "army_git_good_button_desc"
+
+	visible = {
+		owns_entire_state_region = STATE_BAJO_PARAGUAY
+		NOT = { 
+			has_global_variable = paraguay_army_reform_global_var
+		}
+	}
+
+	possible = {
+		OR = {
+			has_law = law_type:law_professional_army
+			has_law = law_type:law_mass_conscription
+		}
+        s:STATE_BAJO_PARAGUAY.region_state:PRG = {
+            any_scope_building = {
+                is_building_type = building_barracks
+                level >= 20
+                occupancy >= 0.5
+            }
+        }
+	}
+
+	effect = {
+		trigger_event = { id = paraguay.6 popup = yes }
+		set_global_variable = paraguay_army_reform_global_var
+		custom_tooltip = choose_one_of_tt
+		show_as_tooltip = {
+			s:STATE_BAJO_PARAGUAY.region_state:PRG = {
+				random_scope_building = {
+					limit = {
+						is_building_type = building_barracks
+					}
+					add_modifier = {
+						name = barracks_boost_paraguay_quantity_modifier
+						months = very_long_modifier_time
+					}
+				}
+			}
+			add_modifier = {
+				name = barracks_boost_paraguay_quality_modifier
+				months = very_long_modifier_time
+			}
+		}
+	}
+}

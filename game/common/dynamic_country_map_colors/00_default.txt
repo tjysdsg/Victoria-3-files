@@ -21,25 +21,6 @@
 #	}
 #}
 
-peru_bolivia = {
-	color = "peru_bolivia"
-
-	possible = {
-		OR = {
-			AND = {
-				exists = c:PEU
-				THIS = c:PEU
-			}
-			AND = {
-				exists = c:BOL
-				THIS = c:BOL
-			}
-		}
-		owns_entire_state_region = STATE_LA_PAZ
-		owns_entire_state_region = STATE_LIMA
-	}
-}
-
 kalmar_union = {
 	color = "kalmar_orange"
 
@@ -76,12 +57,26 @@ yellow_prussia = {
 	}
 }
 
+imperial_korea = {
+	color = "korean_empire_purple"
+
+	possible = {
+		exists = c:KOR
+		THIS = c:KOR
+		has_law = law_type:law_monarchy
+		has_variable = KOR_korean_empire_declared
+	}
+}
+
 korea_monarchy_blue = {
 	color = "joseon_blue"
 	possible = {
 		exists = c:KOR
 		THIS = c:KOR
 		has_law = law_type:law_monarchy 
+		NOT = {
+			has_variable = KOR_korean_empire_declared
+		}
 	}
 }
 
@@ -179,12 +174,22 @@ dark_khmer = {
 }
 
 austria_hungary = {
-	color = "yellow_light"
+	color = "austria_hungary_color"
 
 	possible = {
 		exists = c:AUS
 		THIS = c:AUS
 		country_has_primary_culture = cu:hungarian
+	}
+}
+
+communist_austria = {
+	color = "communist_austria_red"
+
+	possible = {
+		exists = c:AUS
+		THIS = c:AUS
+		has_law = law_type:law_council_republic
 	}
 }
 
@@ -300,6 +305,33 @@ unpleasant_germany = {
 		exists = c:GER
 		THIS = c:GER
 		coa_dictatorship_trigger = yes
+		NOT = {
+			OR = {
+				py:communist_party = {
+					any_member = {
+						is_in_government = yes
+					}
+				}
+				any_scope_character = {
+					is_ruler = yes
+					OR = {
+						has_ideology = ideology:ideology_communist
+						has_ideology = ideology:ideology_vanguardist
+						has_ideology = ideology:ideology_anarchist
+					}
+				}
+			}
+		}
+	}
+}
+
+communist_germany = {
+    color = "communist_germany_red"
+
+	possible = {
+		exists = c:GER
+		THIS = c:GER
+		has_law = law_type:law_council_republic
 	}
 }
 
@@ -309,7 +341,41 @@ ddr_germany = {
 	possible = {
 		exists = c:GER
 		THIS = c:GER
-		has_law = law_type:law_council_republic
+		OR = {
+			AND = {
+				has_law = law_type:law_single_party_state
+				py:communist_party = {
+					any_member = {
+						is_in_government = yes
+					}
+				}
+			}
+			AND = {
+				OR = {
+					has_law = law_type:law_autocracy
+					has_law = law_type:law_technocracy
+					has_law = law_type:law_oligarchy
+				}
+				any_scope_character = {
+					is_ruler = yes
+					OR = {
+						has_ideology = ideology:ideology_communist
+						has_ideology = ideology:ideology_vanguardist
+						has_ideology = ideology:ideology_anarchist
+					}
+				}
+			}
+			AND = {
+				is_subject = yes
+				overlord = {
+					has_law = law_type:law_council_republic
+				}
+			}
+		}
+		OR = {
+			has_law = law_type:law_parliamentary_republic
+			has_law = law_type:law_presidential_republic
+		}
 	}
 }
 
@@ -460,5 +526,152 @@ algeria_ait_abbas = {
 		exists = c:ALD
 		THIS = c:ALD
 		has_variable = algeria_ait_abbas_var
+	}
+}
+
+hre_republic = {
+	color = "european_blue"
+
+	possible = {
+		exists = c:HRE
+		THIS = c:HRE
+		OR = {
+			has_law = law_type:law_parliamentary_republic
+			has_law = law_type:law_presidential_republic
+		}
+		NOT = {
+			has_law = law_type:law_technocracy
+		}
+		NOT = {
+			coa_fascist_trigger = yes
+		}
+	}
+}
+
+hre_technate = {
+	color = "technate_grey"
+
+	possible = {
+		exists = c:HRE
+		THIS = c:HRE
+		OR = {
+			has_law = law_type:law_parliamentary_republic
+			has_law = law_type:law_presidential_republic
+		}
+		has_law = law_type:law_technocracy
+	}
+}
+
+hre_communist = {
+	color = "communist_hre_red"
+
+	possible = {
+		exists = c:HRE
+		THIS = c:HRE
+		has_law = law_type:law_council_republic
+	}
+}
+
+hre_fascist = {
+	color = "paneuropa_grey"
+
+	possible = {
+		exists = c:HRE
+		THIS = c:HRE
+		coa_fascist_trigger = yes
+		NOT = {
+			has_law = law_type:law_council_republic
+		}
+	}
+}
+
+burgundy = {
+	color = "burgundy_burgundy"
+	
+	possible = {
+		exists = c:UNL
+		THIS = c:UNL
+		coa_absolute_monarchy_trigger = yes
+	}
+}
+
+plc_pink = {
+	color = "plc_pink"
+	possible = {
+		exists = c:PLC
+		THIS = c:PLC
+		has_variable = greater_commonwealth_var
+	}
+}
+spain_republican = {
+	color = "republican_spain_purple"
+
+	possible = {
+		exists = c:SPA
+		THIS = c:SPA
+		OR = {
+			has_law = law_type:law_parliamentary_republic
+			has_law = law_type:law_presidential_republic
+		}
+	}
+}
+
+brazil_integralist = {
+	color = "integralist_brazil_blue"
+
+	possible = {
+		exists = c:BRZ
+		THIS = c:BRZ
+		coa_fascist_trigger = yes
+	}
+}
+
+brazil_republican = {
+	color = "republican_brazil_green"
+
+	possible = {
+		exists = c:BRZ
+		THIS = c:BRZ
+		OR = {
+			has_law = law_type:law_parliamentary_republic
+			has_law = law_type:law_presidential_republic
+			has_law = law_type:law_council_republic
+		}
+		NOT = {
+			coa_fascist_trigger = yes
+		}
+	}
+}
+
+spain_communist = {
+	color = "communist_spain_pink"
+
+	possible = {
+		exists = c:SPA
+		THIS = c:SPA
+		has_law = law_type:law_council_republic
+	}
+}
+
+federation_of_the_americas = {
+	color = "federation_periwinkle"
+
+	possible = {
+		exists = c:FND
+		THIS = c:FND
+		OR = {
+			any_scope_state = {
+				NOT = { has_state_trait = state_trait_andes }
+				percent > 0.4
+			}
+			any_scope_state = {
+				is_incorporated = yes
+				OR = {
+					state_is_in_north_america = yes
+					state_is_in_central_america = yes
+				}
+				count > 1
+			}
+		}
 	}
 }

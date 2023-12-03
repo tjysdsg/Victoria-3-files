@@ -1,0 +1,486 @@
+﻿namespace = indochina
+
+# Anti-Catholic Edict Enforcement
+indochina.1 = {
+	type = country_event
+	#placement = ROOT
+	
+	title = indochina.1.t
+	desc = indochina.1.d
+	flavor = indochina.1.f
+
+	cooldown = { months = normal_modifier_time }
+	
+	event_image = {
+		video = "votp_hostile_court"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+	
+	duration = 3
+
+	dlc = dlc004
+	
+	trigger = {
+		has_dlc_feature = voice_of_the_people_content
+		capital = {
+			region = sr:region_indochina
+		}
+		NOT = {
+			country_has_state_religion = rel:catholic
+			has_variable = indochina_campaign_target
+		}
+		has_law = law_type:law_state_religion
+		any_scope_pop = {
+			religion = rel:catholic
+		}
+		any_country = { # there must be a Catholic Great Power who can react to all this
+			country_has_state_religion = rel:catholic
+			country_rank = rank_value:great_power
+			capital = {
+				NOT = { region = sr:region_indochina }
+			}
+		}
+	}
+
+	immediate = {
+		random_country = {
+			limit = {
+				country_has_state_religion = rel:catholic
+				country_rank = rank_value:great_power
+				capital = {
+					NOT = { region = sr:region_indochina }
+				}
+			}
+			save_scope_as = potential_imperial_power
+		}
+		random_scope_state = {
+			limit = {
+				any_scope_pop = {
+					religion = rel:catholic
+				}
+			}
+			save_scope_as = catholic_activity_in_state
+		}
+		save_scope_as = persecuting_indochinese_state
+	}
+
+	option = {
+		name = indochina.1.a
+		default_option = yes
+
+		scope:catholic_activity_in_state ={
+			add_religion_standard_of_living_modifier = {
+				religion = rel:catholic
+				multiplier = -3
+				months = normal_modifier_time
+			}
+		}
+		hidden_effect = {
+			set_variable = indochina_campaign_target
+		}
+		custom_tooltip = {
+			text = you_will_regret_this
+			scope:potential_imperial_power = {
+				trigger_event = { id = indochina.3 days = 30 }
+			}
+		}
+
+		every_country = {
+			limit = {
+				OR = {
+					ROOT = {
+						is_player = yes
+					}
+					has_diplomatic_relevance = ROOT
+					scope:potential_imperial_power = this
+				}
+			}
+			post_notification = indochina_catholic_persecutions_begins
+		}
+	}
+
+
+	option = {
+		name = indochina.1.b
+
+		every_interest_group = {
+			limit = {
+				OR = {
+					is_interest_group_type = ig_devout
+					leader = {
+						has_ideology = ideology:ideology_pious
+					}
+					leader = {
+						has_ideology = ideology:ideology_ethno_nationalist
+					}
+				}
+			}
+			add_modifier = {
+				name = too_gentle_on_missionaries
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+# Intervention in Indochina?
+indochina.2 = {
+	type = country_event
+	#placement = ROOT
+	
+	title = indochina.2.t
+	desc = indochina.2.d
+	flavor = indochina.2.f
+
+	cooldown = { months = normal_modifier_time }
+	
+	event_image = {
+		video = "votp_gunboat_diplomacy"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/bicorne_hat.dds"
+	
+	duration = 3
+
+	dlc = dlc004
+	
+	trigger = {
+		has_dlc_feature = voice_of_the_people_content
+		has_interest_marker_in_region = region_indochina
+		country_has_state_religion = rel:catholic
+		country_rank = rank_value:great_power
+		capital = {
+			NOT = { region = sr:region_indochina }
+		}
+		OR = {
+			ig:ig_devout = { is_powerful = yes }
+			ig:ig_armed_forces = { is_powerful = yes }
+		}
+		any_country = {
+			capital = {
+				region = sr:region_indochina
+			}
+			NOT = {
+				country_has_state_religion = rel:catholic
+			}
+			has_law = law_type:law_state_religion
+			any_scope_pop = {
+				religion = rel:catholic
+			}
+		}
+		NOT = {
+			has_global_variable = indochina_intervention_happened
+		}
+	}
+
+	immediate = {
+		random_country = {
+			limit = {
+				capital = {
+					region = sr:region_indochina
+				}
+				NOT = {
+					country_has_state_religion = rel:catholic
+				}
+				has_law = law_type:law_state_religion
+				any_scope_pop = {
+					religion = rel:catholic
+				}
+			}
+			save_scope_as = potential_imperialism_target
+
+			set_variable = {
+				name = indochina_campaign_target
+				value = yes
+			}
+		}
+
+		save_scope_as = potential_imperialism_initiator
+	}
+
+
+	option = {
+		name = indochina.2.a
+		default_option = yes
+
+		add_journal_entry = {
+			type = je_indochina
+		}
+
+		hidden_effect = {
+			set_secret_goal = {
+				country = scope:potential_imperialism_target
+				secret_goal = conquer
+			}
+		}
+
+		create_incident = {
+			country = scope:potential_imperialism_target
+			value = 20
+		}
+
+		every_country = {
+			limit = {
+				OR = {
+					ROOT = {
+						is_player = yes
+					}
+					has_diplomatic_relevance = ROOT
+					has_diplomatic_relevance = scope:potential_imperialism_target
+					scope:potential_imperialism_target = this
+				}
+			}
+			post_notification = indochina_great_power_interested
+		}
+	}
+
+	option = {
+		name = indochina.2.b
+
+		change_relations = {
+			country = scope:potential_imperialism_target
+			value = 30
+		}
+		every_interest_group = {
+			limit = {
+				OR = {
+					is_interest_group_type = ig_devout
+					is_interest_group_type = ig_armed_forces
+					leader = {
+						has_ideology = ideology:ideology_jingoist_leader
+					}
+				}
+			}
+			add_modifier = {
+				name = inaction_in_indochina
+				months = normal_modifier_time
+			}
+		}
+		remove_variable = indochina_campaign_target
+	}
+}
+
+# Retaliation in Indochina?
+indochina.3 = {
+	type = country_event
+	#placement = ROOT
+
+	title = indochina.3.t
+	desc = indochina.3.d
+	flavor = indochina.3.f
+	
+	event_image = {
+		video = "votp_gunboat_diplomacy"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/bicorne_hat.dds"
+	
+	duration = 3
+
+	dlc = dlc004
+	
+	trigger = {
+		# triggered by indochina.1
+	}
+
+	immediate = {
+		random_country = {
+			limit = {
+				has_variable = indochina_campaign_target
+			}
+			save_scope_as = indochina_target
+		}
+
+		save_scope_as = potential_imperialism_initiator
+	}
+
+	option = {
+		name = indochina.3.a
+		default_option = yes
+
+		add_journal_entry = {
+			type = je_indochina
+		}
+
+		if = {
+			limit = {
+				num_declared_interests < max_num_declared_interests
+			}
+			add_declared_interest = region_indochina
+		}
+
+		hidden_effect = {
+			set_secret_goal = {
+				country = scope:indochina_target
+				secret_goal = conquer
+			}
+		}
+
+		create_incident = {
+			country = scope:indochina_target
+			value = 20
+		}
+
+		every_country = {
+			limit = {
+				OR = {
+					ROOT = {
+						is_player = yes
+					}
+					has_diplomatic_relevance = ROOT
+					has_diplomatic_relevance = scope:indochina_target
+					scope:indochina_target = this
+				}
+			}
+			post_notification = indochina_great_power_interested2
+		}
+	}
+
+
+	option = {
+		name = indochina.2.b # Same localization as the second option in event indochina.2
+
+		change_relations = {
+			country = scope:indochina_target
+			value = 30
+		}
+		every_interest_group = {
+			limit = {
+				OR = {
+					is_interest_group_type = ig_devout
+					is_interest_group_type = ig_armed_forces
+					leader = {
+						has_ideology = ideology:ideology_jingoist_leader
+					}
+				}
+			}
+			add_modifier = {
+				name = inaction_in_indochina
+				months = normal_modifier_time
+			}
+		}
+		hidden_effect = {
+			scope:indochina_target = {
+				remove_variable = indochina_campaign_target
+			}
+		}
+	}
+}
+
+# The Indochinese Union
+indochina.4 = {
+	type = country_event
+	#placement = ROOT
+	
+	title = indochina.4.t
+	desc = indochina.4.d
+	flavor = indochina.4.f
+	
+	event_image = {
+		video = "europenorthamerica_london_center"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+	
+	duration = 3
+
+	dlc = dlc004
+	
+	trigger = {
+		# triggered by completing je_indochina
+	}
+
+	immediate = {
+	}
+
+	option = {
+		name = indochina.4.a
+		trigger = {
+			any_scope_state = {
+				region = sr:region_indochina
+			}
+		}
+
+		every_scope_state = {
+			limit = {
+				region = sr:region_indochina
+			}
+			add_modifier = {
+				name = indochinese_assimilation_modifier
+				months = long_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = indochina.4.b
+		trigger = {
+			has_technology_researched = rubber_mastication
+			any_scope_state = {
+				has_potential_resource = bg_rubber
+				region = sr:region_indochina
+			}
+		}
+
+		every_scope_state = {
+			limit = {
+				has_potential_resource = bg_rubber
+				region = sr:region_indochina
+			}
+
+			add_modifier = {
+				name = indochinese_rubber
+				months = long_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = indochina.4.c
+		trigger = {
+			any_subject_or_below = {
+				capital = {
+					region = sr:region_indochina
+				}
+			}
+		}
+
+		every_subject_or_below = {
+			limit = {
+				capital = {
+					region = sr:region_indochina
+				}
+			}
+			custom_tooltip = {
+				text = indochina_subjects_loyal
+				set_secret_goal = {
+					country = ROOT
+					secret_goal = befriend
+				}
+			}
+			add_modifier = {
+				name = maintained_by_the_metropole
+				months = long_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = indochina.4.dd
+		default_option = yes
+
+		add_modifier = {
+			name = indochinese_union_glory
+			months = long_modifier_time
+		}
+	}
+}

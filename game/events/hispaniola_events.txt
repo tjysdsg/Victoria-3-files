@@ -1,0 +1,352 @@
+﻿namespace = hispaniola_events
+
+# Decolonizing the Treasury - JE completion event - HAI
+hispaniola_events.1 = {
+	type = country_event
+	placement = root
+	
+	title = hispaniola_events.1.t
+	desc = hispaniola_events.1.d
+	flavor = hispaniola_events.1.f
+	
+	event_image = {
+		video = "europenorthamerica_london_center"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+	
+	duration = 3
+	
+	trigger = {
+		# JE completion event (Haiti)
+	}
+
+	immediate = {
+		c:FRA = {
+			save_scope_as = france_scope
+		}
+	}
+
+	option = {
+		name = hispaniola_events.1.b
+		default_option = yes
+		add_modifier = {
+			name = pearl_of_the_antilles_modifier
+			months = very_long_modifier_time
+		}
+		change_relations = {
+			country = c:FRA
+			value = 20
+		}
+	}
+
+	option = {
+		name = hispaniola_events.1.a
+		add_modifier = {
+			name = the_country_of_our_ancestors_modifier
+			months = very_long_modifier_time
+		}
+		change_relations = {
+			country = c:FRA
+			value = 20
+		}
+	}
+}
+
+# The Miracle of Saint Domingue - JE completion event - FRA
+hispaniola_events.2 = {
+	type = country_event
+	placement = root
+	
+	title = hispaniola_events.2.t
+	desc = hispaniola_events.2.d
+	flavor = hispaniola_events.2.f
+	
+	event_image = {
+		video = "europenorthamerica_capitalists_meeting"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+	
+	duration = 3
+	
+	trigger = {
+		# JE completion event (France)
+	}
+
+	immediate = {
+		c:HAI = {
+			save_scope_as = haiti_scope
+		}
+		ig:ig_industrialists = {
+			save_scope_as = industrialists_scope
+		}
+	}
+
+	option = {
+		name = hispaniola_events.2.a
+		default_option = yes
+		if = {
+			limit = {
+				has_modifier = modifier_haitian_independence_payments_1
+			}
+			remove_modifier = modifier_haitian_independence_payments_1
+		}
+		change_relations = {
+			country = c:HAI
+			value = 20
+		}
+		ig:ig_industrialists = {
+			add_modifier = {
+				name = end_of_haitian_payments_modifier
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+# Haiti Requests Debt Renegotiation
+hispaniola_events.3 = {
+	type = country_event
+	placement = root
+	
+	title = hispaniola_events.3.t
+	desc = hispaniola_events.3.d
+	flavor = hispaniola_events.3.f
+	
+	event_image = {
+		video = "africa_diplomats_negotiating"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+	
+	duration = 3
+	
+	trigger = {
+	}
+
+	immediate = {
+		c:HAI = {
+			save_scope_as = haiti_scope
+			set_variable = haiti_debt_renegotiated_var
+		}
+	}
+
+	option = {
+		name = hispaniola_events.3.a
+		default_option = yes
+		c:HAI = { 
+			trigger_event = { id = hispaniola_events.4 popup = yes }
+		}
+		show_as_tooltip = {
+			if = {
+				limit = {
+					c:FRA = {
+						owes_obligation_to = c:HAI
+					}
+				}
+				c:FRA = {
+					set_owes_obligation_to = {
+						country = c:HAI
+						setting = no
+					}
+				}
+			}
+			else = {
+				c:HAI = {
+					set_owes_obligation_to = {
+						country = c:FRA
+						setting = yes
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_modifier = modifier_haitian_independence_payments_4
+			}
+			remove_modifier = modifier_haitian_independence_payments_4
+			add_modifier = {
+				name = modifier_haitian_independence_payments_3
+				months = -1
+			}
+		}
+		else_if = {
+			limit = {
+				has_modifier = modifier_haitian_independence_payments_3
+			}
+			remove_modifier = modifier_haitian_independence_payments_3
+			add_modifier = {
+				name = modifier_haitian_independence_payments_2
+				months = -1
+			}
+		}
+		else_if = {
+			limit = {
+				has_modifier = modifier_haitian_independence_payments_2
+			}
+			remove_modifier = modifier_haitian_independence_payments_2
+			add_modifier = {
+				name = modifier_haitian_independence_payments_1
+				months = -1
+			}
+		}
+		change_relations = {
+			country = c:HAI
+			value = 20
+		}
+		ai_chance = {
+			base = 75
+		}
+	}
+	option = {
+		name = hispaniola_events.3.b
+		c:HAI = { trigger_event = { id = hispaniola_events.5 popup = yes } }
+		change_relations = {
+			country = c:HAI
+			value = -20
+		}
+		ai_chance = {
+			base = 25
+		}
+	}
+}
+# France Accepts Event
+hispaniola_events.4 = {
+	type = country_event
+	placement = root
+	
+	title = hispaniola_events.4.t
+	desc = hispaniola_events.4.d
+	flavor = hispaniola_events.4.f
+	
+	event_image = {
+		video = "africa_diplomats_negotiating"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+	
+	duration = 3
+	
+	trigger = {
+		# triggered by hispaniola_events.3
+	}
+
+	immediate = {
+		c:FRA = {
+			save_scope_as = france_scope
+		}
+	}
+
+	option = {
+		name = hispaniola_events.4.a
+		default_option = yes
+		if = {
+			limit = {
+				c:FRA = {
+					owes_obligation_to = c:HAI
+				}
+			}
+			c:FRA = {
+				set_owes_obligation_to = {
+					country = c:HAI
+					setting = no
+				}
+			}
+		}
+		else = {
+			c:HAI = {
+				set_owes_obligation_to = {
+					country = c:FRA
+					setting = yes
+				}
+			}
+		}
+		change_relations = {
+			country = c:FRA
+			value = 20
+		}
+		if = {
+			limit = {
+				has_modifier = modifier_french_independence_payments_4
+			}
+			remove_modifier = modifier_french_independence_payments_4
+			add_modifier = {
+				name = modifier_french_independence_payments_3
+				months = -1
+			}
+		}
+		else_if = {
+			limit = {
+				has_modifier = modifier_french_independence_payments_3
+			}
+			remove_modifier = modifier_french_independence_payments_3
+			add_modifier = { 
+				name = modifier_french_independence_payments_2
+				months = -1
+			}
+		}
+		else_if = {
+			limit = {
+				has_modifier = modifier_french_independence_payments_2
+			}
+			remove_modifier = modifier_french_independence_payments_2
+			add_modifier = { 
+				name = modifier_french_independence_payments_1
+				months = -1
+			}
+		}
+		else_if = {
+			limit = {
+				has_modifier = modifier_french_independence_payments_1
+			}
+			remove_modifier = modifier_french_independence_payments_1
+		}
+	}
+}
+
+# France Declines Event
+hispaniola_events.5 = {
+	type = country_event
+	placement = root
+	
+	title = hispaniola_events.5.t
+	desc = hispaniola_events.5.d
+	flavor = hispaniola_events.5.f
+	
+	event_image = {
+		video = "africa_diplomats_negotiating"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+	
+	duration = 3
+	
+	trigger = {
+		# triggered by hispaniola_events.3
+	}
+
+	immediate = {
+		c:FRA = {
+			save_scope_as = france_scope
+		}
+	}
+
+	option = {
+		name = hispaniola_events.5.a
+		default_option = yes
+		change_relations = {
+			country = c:FRA
+			value = -20
+		}
+	}
+}

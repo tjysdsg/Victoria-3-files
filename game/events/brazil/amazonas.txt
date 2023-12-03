@@ -1,0 +1,759 @@
+﻿namespace = amazonas
+
+# JE initiation event
+amazonas.1 = {
+	type = country_event
+	placement = scope:amazon_rainforest_state_scope
+
+	duration = 3
+
+	title = amazonas.1.t
+	desc = amazonas.1.d
+	flavor = amazonas.1.f
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_jungle_expedition.bk2"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		is_at_war = no
+		in_default = no
+		any_scope_state = {
+			has_state_trait = state_trait_amazon_rainforest
+			has_potential_resource = bg_rubber
+			state_region = {
+				remaining_undepleted = {
+					type = bg_rubber
+					amount >= 15
+				}
+			}
+		}
+		has_technology_researched = rubber_mastication
+		NOT = { has_journal_entry = je_amazonas }
+	}
+	
+	immediate = {
+		g:rubber = {
+			save_scope_as = rubber_scope
+		}
+		if = {
+			limit = {
+				any_scope_state = { 
+					state_region = s:STATE_AMAZONAS 
+				}
+			}
+			random_scope_state = {
+				limit = {
+					state_region = s:STATE_AMAZONAS
+				}
+				save_scope_as = amazon_rainforest_state_scope
+			}
+		}
+		else = {
+			random_scope_state = {
+				limit = {
+					has_state_trait = state_trait_amazon_rainforest
+					has_potential_resource = bg_rubber
+					state_region = {
+						remaining_undepleted = {
+							type = bg_rubber
+							amount >= 15
+						}
+					}	
+				}
+				save_scope_as = amazon_rainforest_state_scope
+			}
+		}
+	}
+	
+	option = {
+		name = amazonas.1.a
+		default_option = yes
+		custom_tooltip = amazonas.1.tt
+		add_journal_entry = { type = je_amazonas }
+	}
+}
+
+# Treaty of Ayacucho Event / Bolivian Amazonas
+amazonas.2 = {
+	type = country_event
+	placement = scope:amazonas_state_scope
+
+	duration = 3
+
+	title = amazonas.2.t
+	desc = amazonas.2.d
+	flavor = amazonas.2.f
+
+	event_image = {
+		video = "gfx/event_pictures/southamerica_aristocrats.bk2"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# triggered by amazon_border_treaty_button_1
+	}
+	
+	immediate = {
+		random_country = {
+			limit = {
+				is_player = no
+				capital = { region = sr:region_andes }
+				any_scope_state = { state_region = s:STATE_AMAZONAS }
+				OR = {
+					relations:root >= relations_threshold:amicable
+					army_size < { # your army is four times as large
+    					value = root.army_size
+    					multiply = 0.25
+					}
+					is_subject_of = root
+				}
+			}
+			save_scope_as = bolivia_border_treaty_country_scope
+		}
+		ROOT = {
+			save_scope_as = brazil_scope
+		}
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_AMAZONAS
+			}
+			save_scope_as = amazonas_state_scope
+		}
+	}
+	
+	option = {
+		name = amazonas.2.a 
+		default_option = yes
+		add_modifier = {
+			name = amazonic_indemnities_brazil_1
+			months = normal_modifier_time
+		}
+		random_country = {
+			limit = {
+				is_player = no
+				capital = { region = sr:region_andes }
+				any_scope_state = { state_region = s:STATE_AMAZONAS }
+				OR = {
+					relations:root >= relations_threshold:amicable
+					army_size < { # your army is four times as large
+    					value = root.army_size
+    					multiply = 0.25
+					}
+					is_subject_of = root
+					c:BRZ ?= root
+				}
+			}
+			random_scope_state = {
+				limit = {
+					state_region = s:STATE_AMAZONAS
+				}
+				set_state_owner = root
+			}
+			if = {
+				limit = {
+					any_scope_state = {
+						state_region = s:STATE_MATO_GROSSO
+					}
+				}
+				random_scope_state = {
+					limit = {
+						state_region = s:STATE_MATO_GROSSO
+					}
+					set_state_owner = root
+				}
+			}
+			add_modifier = {
+				name = amazonic_indemnities_recipient_1
+				months = normal_modifier_time
+			}
+		}
+		
+		every_country = {
+			limit = {
+				NOT = {
+					THIS = ROOT
+				}
+				OR = {
+					has_interest_marker_in_region = region_andes
+					has_interest_marker_in_region = region_brazil
+				}
+			}
+			post_notification = brz_amazon_border_treaty_bolivia
+		}
+	}
+}
+
+# Treaty of Bogotá / Colombian Amazonas
+amazonas.3 = {
+	type = country_event
+	placement = scope:amazonas_state_scope
+
+	duration = 3
+
+	title = amazonas.3.t
+	desc = amazonas.3.d
+	flavor = amazonas.3.f
+
+	event_image = {
+		video = "gfx/event_pictures/southamerica_aristocrats.bk2"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# triggered by amazon_border_treaty_button_2
+	}
+	
+	immediate = {
+		random_country = {
+			limit = {
+				is_player = no
+				capital = { region = sr:region_gran_colombia }
+				any_scope_state = { state_region = s:STATE_AMAZONAS }
+				OR = {
+					relations:root >= relations_threshold:amicable
+					army_size < { # your army is four times as large
+    					value = root.army_size
+    					multiply = 0.25
+					}
+					is_subject_of = root
+				}			
+			}
+			save_scope_as = colombia_border_treaty_country_scope
+		}
+		ROOT = {
+			save_scope_as = brazil_scope
+		}
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_AMAZONAS
+			}
+			save_scope_as = amazonas_state_scope
+		}
+	}
+	
+	option = {
+		name = amazonas.3.a 
+		default_option = yes
+		add_modifier = {
+			name = amazonic_indemnities_brazil_2
+			months = normal_modifier_time
+		}
+		random_country = {
+			limit = {
+				is_player = no
+				capital = { region = sr:region_gran_colombia }
+				any_scope_state = { state_region = s:STATE_AMAZONAS }
+				OR = {
+					relations:root >= relations_threshold:amicable
+					root.army_size < { # your army is four times as large
+    					value = army_size
+    					multiply = 0.25
+					}
+					is_subject_of = root
+				}
+			}
+			random_scope_state = {
+				limit = {
+					state_region = s:STATE_AMAZONAS
+				}
+				set_state_owner = root
+			}
+			add_modifier = {
+				name = amazonic_indemnities_recipient_2
+				months = normal_modifier_time
+			}
+		}
+		every_country = {
+			limit = {
+				NOT = {
+					THIS = ROOT
+				}
+				OR = {
+					has_interest_marker_in_region = region_gran_colombia
+					has_interest_marker_in_region = region_brazil
+				}
+			}
+			post_notification = brz_amazon_border_treaty_colombia
+		}
+	}
+}
+
+# Manaus, the Heart of the Amazon / Amazonas lvl.1 event
+amazonas.4 = {
+	type = country_event
+	placement = scope:amazonas_state_scope
+
+	duration = 3
+
+	title = amazonas.4.t
+	desc = amazonas.4.d
+	flavor = amazonas.4.f
+
+	event_image = {
+		video = "rp1_brazilian_city"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# triggered by upgrade_amazon_button_1
+	}
+	
+	immediate = {
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_AMAZONAS
+			}
+			save_scope_as = amazonas_state_scope
+		}
+		g:rubber = {
+			save_scope_as = rubber_scope
+		}
+	}
+	
+	option = {
+		name = amazonas.4.a 
+		default_option = yes
+		scope:amazonas_state_scope = {
+			add_modifier = {
+				name = amazon_development_cooldown_modifier
+				months = short_modifier_time
+			}
+			add_modifier = {
+				name = rubber_hub_modifier
+				months = long_modifier_time
+			}
+			add_modifier = {
+				name = rubber_baron_palaces_modifier
+				months = -1
+			}
+		}
+		scope:amazonas_state_scope.state_region = {
+			remove_state_trait = state_trait_amazon_rainforest
+			add_state_trait = state_trait_amazon_rainforest_level_1
+		}
+	}
+
+	option = {
+		name = amazonas.4.b
+		scope:amazonas_state_scope = {
+			add_modifier = {
+				name = amazon_development_cooldown_modifier
+				months = short_modifier_time
+			}
+			add_modifier = {
+				name = amazon_migration
+				months = long_modifier_time
+			}
+			add_modifier = {
+				name = mercado_adolpho_lisboa_modifier
+				months = -1
+			}
+		}
+		scope:amazonas_state_scope.state_region = {
+			remove_state_trait = state_trait_amazon_rainforest
+			add_state_trait = state_trait_amazon_rainforest_level_1
+		}
+	}
+}
+
+# Manaus, Paris of the Tropics / Amazonas lvl.2 event
+amazonas.5 = {
+	type = country_event
+	placement = scope:amazonas_state_scope
+
+	duration = 3
+
+	title = amazonas.5.t
+	desc = amazonas.5.d
+	flavor = amazonas.5.f
+
+	event_image = {
+		video = "rp1_brazilian_city"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# triggered by upgrade_amazon_button_2
+	}
+	
+	immediate = {
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_AMAZONAS
+			}
+			save_scope_as = amazonas_state_scope
+		}
+		g:rubber = {
+			save_scope_as = rubber_scope
+		}
+	}
+	
+	option = {
+		name = amazonas.5.a 
+		default_option = yes
+		scope:amazonas_state_scope = {
+			add_modifier = {
+				name = amazon_development_cooldown_modifier
+				months = short_modifier_time
+			}
+			if = {
+				limit = {
+					NOT = {
+						any_scope_building = {
+							is_building_type = building_arts_academy
+						}
+					}
+				}
+				create_building = {
+					building = building_arts_academy
+					level = 2
+				}
+				add_modifier = {
+					name = amazon_theatre
+					months = long_modifier_time
+				}
+			}
+			else = {
+				add_modifier = {
+					name = amazon_theatre
+					months = -1
+					multiplier = 1.5
+				}
+			}
+			add_modifier = {
+				name = amazon_migration
+				months = normal_modifier_time
+				multiplier = 0.5
+			}
+		}
+		scope:amazonas_state_scope.state_region = {
+			remove_state_trait = state_trait_amazon_rainforest_level_1
+			add_state_trait = state_trait_amazon_rainforest_level_2
+		}
+	}
+
+	option = {
+		name = amazonas.5.b
+		highlighted_option = yes
+		trigger = {
+			has_technology_researched = electrical_generation
+		}
+		add_modifier = {
+			name = amazonic_city_of_lights_modifier
+			months = -1
+		}
+		scope:amazonas_state_scope = {
+			add_modifier = {
+				name = amazon_development_cooldown_modifier
+				months = short_modifier_time
+			}
+			add_modifier = {
+				name = amazon_migration
+				months = normal_modifier_time
+				multiplier = 0.5
+			}
+		}
+		scope:amazonas_state_scope.state_region = {
+			remove_state_trait = state_trait_amazon_rainforest_level_1
+			add_state_trait = state_trait_amazon_rainforest_level_2
+		}
+	}
+}
+
+# An Outpost of Progress
+amazonas.6 = {
+	type = country_event
+	placement = scope:amazon_development_level_one_state_scope
+
+	duration = 3
+
+	title = amazonas.6.t
+	desc = amazonas.6.d
+	flavor = amazonas.6.f
+
+	event_image = {
+		video = "rp1_brazilian_city"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		# triggered by upgrade_amazon_button_1
+	}
+	
+	immediate = {
+		random_scope_state = {
+			limit = {
+				has_state_trait = state_trait_amazon_rainforest
+				NOT = { has_modifier = amazon_development_cooldown_modifier }
+				any_scope_building = {
+					is_building_type = building_urban_center
+					level >= 2
+				}
+				any_scope_building = {
+					is_building_type = building_rubber_plantation
+					level >= 10
+				}
+			}
+			save_scope_as = amazon_development_level_one_state_scope
+		}
+		g:rubber = {
+			save_scope_as = rubber_scope
+		}
+	}
+	
+	option = {
+		name = amazonas.6.a 
+		default_option = yes
+		scope:amazon_development_level_one_state_scope = {
+			add_modifier = {
+				name = amazon_development_cooldown_modifier
+				months = short_modifier_time
+			}
+			add_modifier = {
+				name = amazon_migration
+				months = normal_modifier_time
+				multiplier = 0.5
+			}
+		}
+		scope:amazon_development_level_one_state_scope.state_region = {
+			remove_state_trait = state_trait_amazon_rainforest
+			add_state_trait = state_trait_amazon_rainforest_level_1
+		}
+		ig:ig_landowners = {
+			add_modifier = {
+				name = rubber_barons_modifier
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = amazonas.6.b
+		scope:amazon_development_level_one_state_scope = {
+			add_modifier = {
+				name = amazon_development_cooldown_modifier
+				months = short_modifier_time
+			}
+			add_modifier = {
+				name = rubber_entrepot_modifier
+				months = normal_modifier_time
+			}
+		}
+		scope:amazon_development_level_one_state_scope.state_region = {
+			remove_state_trait = state_trait_amazon_rainforest
+			add_state_trait = state_trait_amazon_rainforest_level_1
+		}
+		ig:ig_landowners = {
+			add_modifier = {
+				name = rubber_barons_modifier
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+# Jewels in the Rough
+amazonas.7 = {
+	type = country_event
+	placement = scope:amazon_development_level_two_state_scope
+
+	duration = 3
+
+	title = amazonas.7.t
+	desc = amazonas.7.d
+	flavor = amazonas.7.f
+
+	event_image = {
+		video = "rp1_brazilian_city"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	cooldown = { years = 1 }
+
+	trigger = {
+		# triggered by upgrade_amazon_button_2
+	}
+	
+	immediate = {
+		random_scope_state = {
+			limit = {
+				has_state_trait = state_trait_amazon_rainforest_level_1
+				NOT = { has_modifier = amazon_development_cooldown_modifier }
+				any_scope_building = {
+					is_building_type = building_urban_center
+					level >= 4
+				}
+				any_scope_building = {
+					is_building_type = building_rubber_plantation
+					level >= 15
+				}
+				any_scope_building = {
+					is_building_type = building_railway
+				}
+			}
+			save_scope_as = amazon_development_level_two_state_scope
+		}
+		g:rubber = {
+			save_scope_as = rubber_scope
+		}
+	}
+	
+	option = {
+		name = amazonas.7.a 
+		default_option = yes
+		scope:amazon_development_level_two_state_scope = {
+			add_modifier = {
+				name = amazon_development_cooldown_modifier
+				months = short_modifier_time
+			}
+			add_modifier = {
+				name = amazon_migration
+				months = normal_modifier_time
+			}
+			add_modifier = {
+				name = harbingers_of_order_modifier
+				months = normal_modifier_time
+			}
+		}
+		scope:amazon_development_level_two_state_scope.state_region = {
+			remove_state_trait = state_trait_amazon_rainforest_level_1
+			add_state_trait = state_trait_amazon_rainforest_level_2
+		}
+	}
+
+	option = {
+		name = amazonas.7.b
+		default_option = yes
+		scope:amazon_development_level_two_state_scope = {
+			add_modifier = {
+				name = amazon_development_cooldown_modifier
+				months = short_modifier_time
+			}
+			add_modifier = {
+				name = amazon_migration
+				months = normal_modifier_time
+				multiplier = 0.5
+			}
+			add_modifier = {
+				name = heralds_of_progress_modifier
+				months = normal_modifier_time
+			}
+		}
+		scope:amazon_development_level_two_state_scope.state_region = {
+			remove_state_trait = state_trait_amazon_rainforest_level_1
+			add_state_trait = state_trait_amazon_rainforest_level_2
+		}
+	}
+}
+
+# Indian Exploitation
+amazonas.8 = {
+	type = country_event
+	placement = scope:amazon_indian_exploitation_state
+
+	duration = 3
+
+	title = amazonas.8.t
+	desc = amazonas.8.d
+	flavor = amazonas.8.f
+
+	event_image = {
+		video = "gfx/event_pictures/asia_poor_people_moving.bk2"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		any_scope_state = {
+			has_state_trait = state_trait_amazon_rainforest
+			any_scope_building = {
+				is_building_type = building_rubber_plantation
+			}
+			any_scope_pop = {
+				culture = cu:amazonian
+			}
+		}
+	}
+	
+	immediate = {
+		random_scope_state = {
+			limit = {
+				has_state_trait = state_trait_amazon_rainforest
+				any_scope_building = {
+					is_building_type = building_rubber_plantation
+				}
+				any_scope_pop = {
+					culture = cu:amazonian
+				}
+			}
+			save_scope_as = amazon_indian_exploitation_state
+		}
+		g:rubber = {
+			save_scope_as = rubber_scope
+		}
+		cu:amazonian = {
+			save_scope_as = amazonian_culture_scope
+		}
+		ig:ig_devout = {
+			save_scope_as = devout_scope
+		}
+	}
+	
+	option = {
+		name = amazonas.8.a 
+		default_option = yes
+		scope:amazon_indian_exploitation_state = {
+			add_modifier = {
+				name = indians_exploitation_modifier
+				months = normal_modifier_time
+			}
+		}
+		ig:ig_devout = {
+			add_modifier = {
+				name = amazon_exploitation_devout_upset
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = amazonas.8.b
+		default_option = yes
+		scope:amazon_indian_exploitation_state = {
+			add_modifier = {
+				name = indians_assimilation_modifier
+				months = normal_modifier_time
+				multiplier = 0.5
+			}
+		}
+		ig:ig_landowners = {
+			add_modifier = {
+				name = amazon_exploitation_landowners_upset
+				months = normal_modifier_time
+			}
+		}
+	}
+}

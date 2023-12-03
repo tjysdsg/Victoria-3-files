@@ -1,0 +1,619 @@
+﻿namespace = culture_brazil
+
+# A New National Hero
+culture_brazil.1 = {
+	type = country_event
+	placement = scope:state
+	
+	title = culture_brazil.1.t
+	desc = culture_brazil.1.d
+	flavor = culture_brazil.1.f
+	
+	gui_window = event_window_1char_tabloid
+
+	left_icon = scope:brazilian_national_hero
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/misc/1Character_Banner"
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+
+	cooldown = { months = normal_modifier_time }
+	
+	trigger = {
+		# triggered by on_action on_battle_won pulse
+		has_journal_entry = je_brazilian_nation_building
+		OR = { 
+			AND = {
+				NOT = { has_variable = brazilian_sulista_hero_var }
+				NOT = { has_variable = sulistas_integrated }
+			}
+			AND = {
+				NOT = { has_variable = brazilian_nordestino_hero_var }
+				NOT = { has_variable = nordestinos_integrated }
+			}
+			AND = {
+				NOT = { has_variable = brazilian_amazonic_hero_var }
+				NOT = { has_variable = amazonics_integrated }
+			}
+			AND = {
+				NOT = { has_variable = brazilian_paulista_hero_var }
+				NOT = { has_variable = paulistas_integrated }
+			}
+		}
+		# there exists a commander on the root side to be the national hero
+		OR = {
+			scope:attacker = {
+				owner = ROOT
+			}
+			scope:defender ?= {
+				owner = ROOT
+			}
+		}
+		scope:enemy_country = {
+			NOR = {
+				country_has_primary_culture = cu:brazilian
+				country_has_primary_culture = cu:sulista
+				country_has_primary_culture = cu:nordestino
+				country_has_primary_culture = cu:amazonic
+				country_has_primary_culture = cu:paulista
+			}
+		}
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				scope:attacker = {
+					owner = ROOT
+				}
+			}
+			scope:attacker = {
+				save_scope_as = brazilian_national_hero
+			}
+		}
+		else = {
+			scope:defender = {
+				save_scope_as = brazilian_national_hero
+			}
+		}
+		random_list = {
+			1 = {
+				trigger = { 
+				 	AND = {
+				 		NOT = { has_variable = brazilian_sulista_hero_var }
+				 		NOT = { has_variable = sulistas_integrated }
+				 	}
+				}
+				create_character = {
+					ig_leader = no
+					female = no
+					is_general = yes
+					culture = cu:sulista
+					on_created = {
+						set_variable = {
+							name = brazilian_hero_scope
+						}
+					}
+				}
+			}
+			1 = {
+				trigger = {  
+				 	AND = {
+				 		NOT = { has_variable = brazilian_paulista_hero_var }
+				 		NOT = { has_variable = paulistas_integrated }
+				 	}
+				}
+				create_character = {
+					ig_leader = no
+					female = no
+					is_general = yes
+					culture = cu:paulista
+					on_created = {
+						set_variable = {
+							name = brazilian_hero_scope
+						}
+					}
+				}
+			}
+			1 = {
+				trigger = {  
+				 	AND = {
+				 		NOT = { has_variable = brazilian_nordestino_hero_var }
+				 		NOT = { has_variable = nordestinos_integrated }
+				 	}
+				}
+				create_character = {
+					ig_leader = no
+					female = no
+					is_general = yes
+					culture = cu:nordestino
+					on_created = {
+						set_variable = {
+							name = brazilian_hero_scope
+						}
+					}
+				}
+			}
+			1 = {
+				trigger = { 
+				 	AND = {
+				 		NOT = { has_variable = brazilian_amazonic_hero_var }
+				 		NOT = { has_variable = amazonics_integrated }
+				 	}
+		 		}
+				create_character = {
+					ig_leader = no
+					female = no
+					is_general = yes
+					culture = cu:amazonic
+					on_created = {
+						set_variable = {
+							name = brazilian_hero_scope
+						}
+					}
+				}
+			}
+		}
+
+		random_scope_character = { 
+			limit = { has_variable = brazilian_hero_scope }
+			save_scope_as = brazilian_national_hero
+			culture = {
+				save_scope_as = brazilian_national_hero_culture
+			}
+		}
+	}
+
+	option = {
+		name = culture_brazil.1.a
+		default_option = yes
+
+		custom_tooltip = culture_brazil.1.hero_clarification
+
+		if = {
+			limit = {
+				scope:brazilian_national_hero = {
+					culture = {
+						cu:sulista = this
+					}
+				}
+			}
+			set_variable = brazilian_sulista_hero_var
+		}
+		else_if = {
+			limit = {
+				scope:brazilian_national_hero = {
+					culture = {
+						cu:nordestino = this
+					}
+				}
+			}
+			set_variable = brazilian_nordestino_hero_var
+		}
+		else_if = {
+			limit = {
+				scope:brazilian_national_hero = {
+					culture = {
+						cu:amazonic = this
+					}
+				}
+			}
+			set_variable = brazilian_amazonic_hero_var
+		}
+		else_if = {
+			limit = {
+				scope:brazilian_national_hero = {
+					culture = {
+						cu:paulista = this
+					}
+				}
+			}
+			set_variable = brazilian_paulista_hero_var
+		}	
+
+		scope:brazilian_national_hero = {
+			if = {
+				limit = {
+					NOR = {
+						has_trait = traditionalist_commander
+						has_trait = popular_commander
+						has_trait = celebrity_commander
+					}
+				}
+				add_trait = traditionalist_commander
+			}
+			else_if = {
+				limit = {
+					has_trait = traditionalist_commander
+				}
+				remove_trait = traditionalist_commander
+				add_trait = popular_commander
+			}
+			else_if = {
+				limit = {
+					has_trait = popular_commander
+				}
+				remove_trait = popular_commander
+				add_trait = celebrity_commander
+			}
+		}
+	}
+
+
+	option = {
+		name = culture_brazil.1.b
+
+		scope:brazilian_national_hero = {
+			kill_character = yes
+		}
+	}
+}
+
+# Brasilidade
+culture_brazil.2 = {
+	type = country_event
+	placement = ROOT
+	
+	title = culture_brazil.2.t
+	desc = culture_brazil.2.d
+	flavor = culture_brazil.2.f
+	
+	event_image = {
+		video = "rp1_brazilian_city"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		 # triggered by completing JE
+	}
+
+	immediate = {
+		ROOT = {
+			save_scope_as = brazil_scope
+		}
+		cu:brazilian = {
+			save_scope_as = brazilian_culture_scope
+		}
+	}
+
+	option = {
+		name = culture_brazil.2.a
+		default_option = yes
+
+		add_modifier = {
+			name = brz_brasil_brasileiro
+			months = long_modifier_time
+		}
+		
+		every_country = {
+			limit = {
+				NOT = {
+					THIS = ROOT
+				}
+				has_interest_marker_in_region = region_brazil
+			}
+			post_notification = brz_cultural_unification
+		}
+	}
+}
+
+# The Integration of the Paulistas
+culture_brazil.3 = {
+	type = country_event
+	placement = ROOT
+	
+	title = culture_brazil.3.t
+	desc = culture_brazil.3.d
+	flavor = culture_brazil.3.f
+	
+	event_image = {
+		video = "southamerica_factory_opening"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		 # triggered by clicking JE button
+	}
+
+	option = {
+		name = culture_brazil.3.a
+		default_option = yes
+
+		custom_tooltip = {
+			text = je_brazilian_nation_building_integrate_paulista_tt
+			every_country = {
+				every_scope_pop = {
+					limit = { culture = cu:paulista }
+					change_pop_culture = { target = cu:brazilian value = 1 }
+				}
+			}
+		}
+	}
+}
+
+# The Integration of the Sulistas
+culture_brazil.4 = {
+	type = country_event
+	placement = ROOT
+	
+	title = culture_brazil.4.t
+	desc = culture_brazil.4.d
+	flavor = culture_brazil.4.f
+	
+	event_image = {
+		video = "southamerica_aristocrats"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		 # triggered by clicking JE button
+	}
+
+	option = {
+		name = culture_brazil.4.a
+		default_option = yes
+
+		custom_tooltip = {
+			text = je_brazilian_nation_building_integrate_sulista_tt
+			every_country = {
+				every_scope_pop = {
+					limit = { culture = cu:sulista }
+					change_pop_culture = { target = cu:brazilian value = 1 }
+				}
+			}
+		}
+	}
+}
+
+# The Integration of the Amazonics
+culture_brazil.5 = {
+	type = country_event
+	placement = ROOT
+	
+	title = culture_brazil.5.t
+	desc = culture_brazil.5.d
+	flavor = culture_brazil.5.f
+	
+	event_image = {
+		video = "unspecific_ruler_speaking_to_people"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		 # triggered by clicking JE button
+	}
+
+	option = {
+		name = culture_brazil.4.a
+		default_option = yes
+
+		custom_tooltip = {
+			text = je_brazilian_nation_building_integrate_amazonic_tt
+			every_country = {
+				every_scope_pop = {
+					limit = { culture = cu:amazonic }
+					change_pop_culture = { target = cu:brazilian value = 1 }
+				}
+			}
+		}
+	}
+}
+
+# The Integration of the Nordestinos
+culture_brazil.6 = {
+	type = country_event
+	placement = ROOT
+	
+	title = culture_brazil.6.t
+	desc = culture_brazil.6.d
+	flavor = culture_brazil.6.f
+	
+	event_image = {
+		video = "unspecific_signed_contract"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+	
+	trigger = {
+		 # triggered by clicking JE button
+	}
+
+	option = {
+		name = culture_brazil.6.a
+		default_option = yes
+
+		custom_tooltip = {
+			text = je_brazilian_nation_building_integrate_nordestino_tt
+			every_country = {
+				every_scope_pop = {
+					limit = { culture = cu:nordestino }
+					change_pop_culture = { target = cu:brazilian value = 1 }
+				}
+			}
+		}
+	}
+}
+
+# Failure event
+culture_brazil.7 = {
+	type = country_event
+	placement = ROOT
+	
+	title = culture_brazil.7.t
+	desc = culture_brazil.7.d
+	flavor = culture_brazil.7.f
+	
+	event_image = {
+		video = "votp_agitator_speaking"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+	
+	duration = 3
+
+	#dlc = dlc008
+
+	immediate = {
+		cu:paulista = {
+			save_scope_as = paulista_scope
+		}
+		cu:sulista = {
+			save_scope_as = sulista_scope
+		}
+		cu:nordestino = {
+			save_scope_as = nordestino_scope
+		}
+		cu:amazonic = {
+			save_scope_as = amazonic_scope
+		}
+	}
+	
+	trigger = {
+		 # triggered by je_brazilian_nation_building timeout
+	}
+
+	option = {
+		name = culture_brazil.7.a
+		default_option = yes
+		if = {
+			limit = {
+				has_journal_entry = je_pedro_brazil
+			}
+			remove_pedropoint_effect = yes
+		}
+		if = {
+			limit = {
+				any_scope_state = {
+					state_region = {
+						is_homeland = paulista
+					}
+				}
+			}
+			custom_tooltip = {
+				text = radicalise_paulistas_tt
+				every_scope_state = {
+					limit = {
+						state_region = {
+							is_homeland = paulista
+						}
+					}
+					add_radicals_in_state = {
+						value = 0.6
+						culture = cu:paulista
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_scope_state = {
+					state_region = {
+						is_homeland = sulista
+					}
+				}
+			}
+			custom_tooltip = {
+				text = radicalise_sulistas_tt
+				every_scope_state = {
+					limit = {
+						state_region = {
+							is_homeland = sulista
+						}
+					}
+					add_radicals_in_state = {
+						value = 0.6
+						culture = cu:sulista
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_scope_state = {
+					state_region = {
+						is_homeland = nordestino
+					}
+				}
+			}
+			custom_tooltip = {
+				text = radicalise_nordestinos_tt
+				every_scope_state = {
+					limit = {
+						state_region = {
+							is_homeland = nordestino
+						}
+					}
+					add_radicals_in_state = {
+						value = 0.6
+						culture = cu:nordestino
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_scope_state = {
+					state_region = {
+						is_homeland = amazonic
+					}
+				}
+			}
+			
+			custom_tooltip = {
+				text = radicalise_amazonics_tt
+				every_scope_state = {
+					limit = {
+						state_region = {
+							is_homeland = amazonic
+						}
+					}
+					add_radicals_in_state = {
+						value = 0.6
+						culture = cu:amazonic
+					}
+				}
+			}
+		}
+	}
+}

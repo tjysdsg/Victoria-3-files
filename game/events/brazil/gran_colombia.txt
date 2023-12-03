@@ -1,0 +1,765 @@
+﻿namespace = gran_colombia
+
+#Gran Colombia start event
+gran_colombia.1 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = gran_colombia.1.t
+	desc = gran_colombia.1.d
+	flavor = gran_colombia.1.f
+
+	event_image = {
+		video = "unspecific_ruler_speaking_to_people"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by JE
+	}
+	
+	immediate = {
+		root = {
+			save_scope_as = colombia_seeker_scope
+		}
+	}
+	
+	option = {
+		name = gran_colombia.1.a 
+		default_option = yes
+		random_country = {
+			limit = {
+				NOT = { THIS = ROOT }
+				OR = {
+					country_has_primary_culture = cu:north_andean
+					country_has_primary_culture = cu:venezuelan
+					country_has_primary_culture = cu:colombian
+					country_has_primary_culture = cu:ecuadorian
+				}
+			}
+			ROOT = {
+				create_incident = {
+					country = PREV
+					value = 10
+				}
+			}
+		}
+		every_state = {
+			limit = {
+				NOT = {
+					owner = ROOT
+				}
+				state_region = {
+					is_homeland = cu:north_andean
+				}
+			}
+			state_region = {
+				add_claim = ROOT
+			}
+		}
+		s:STATE_PASTAZA = {
+			add_claim = ROOT
+		}
+		add_modifier = {
+			name = modifier_seeking_gran_colombia
+			months = long_modifier_time
+		}
+		if = {
+			limit = {
+				has_journal_entry = je_caudillo
+			}
+			custom_tooltip = {
+				text = gain_large_caudillo_points
+				change_variable = {
+					name = caudillo_var
+					add = 200
+				}
+			}
+		}
+		hidden_effect = {
+			every_country = {
+				limit = {
+					NOT = { THIS = ROOT }
+					OR = {
+						country_has_primary_culture = cu:north_andean
+						country_has_primary_culture = cu:venezuelan
+						country_has_primary_culture = cu:colombian
+						country_has_primary_culture = cu:ecuadorian
+					}
+				}
+				post_notification = gran_colombia_seeking_warning
+			}
+		}
+	}
+
+	option = {
+		name = gran_colombia.1.b
+		every_country = {
+			limit = {
+				NOT = { THIS = ROOT }
+				OR = {
+					country_has_primary_culture = cu:north_andean
+					country_has_primary_culture = cu:venezuelan
+					country_has_primary_culture = cu:colombian
+					country_has_primary_culture = cu:ecuadorian
+				}
+			}
+			change_relations = { country = ROOT value = 10 }
+		}
+		if = {
+			limit = {
+				has_journal_entry = je_caudillo
+			}
+			custom_tooltip = {
+				text = lose_caudillo_points
+				change_variable = {
+					name = caudillo_var
+					add = -100
+				}
+			}
+		}
+		custom_tooltip = {
+			text = gran_colombia_b_tt
+			set_variable = rejected_gran_colombia 
+		}
+	}
+}
+
+#Gran Colombia formation event
+gran_colombia.2 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = gran_colombia.2.t
+	desc = gran_colombia.2.d
+	flavor = gran_colombia.2.f
+
+	event_image = {
+		video = "rp1_brazilian_city"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by JE
+	}
+	
+	immediate = {
+		root = {
+			save_scope_as = gco_scope
+		}
+		cu:caribeno = {
+			save_scope_as = caribeno_scope
+		}
+	}
+	
+	option = {
+		name = gran_colombia.2.a 
+		default_option = yes
+		add_modifier = {
+			name = modifier_founded_gran_colombia
+			months = normal_modifier_time
+		}
+		every_country = {
+			limit = {
+				NOT = {
+					THIS = ROOT
+				}
+				has_interest_marker_in_region = region_gran_colombia
+			}
+			post_notification = gco_unification
+		}
+	}
+
+	option = {
+		name = gran_colombia.2.b
+		every_country = {
+			limit = {
+				NOT = { THIS = ROOT }
+				country_has_primary_culture = cu:caribeno
+			}
+			change_relations = { country = ROOT value = 10 }
+		}
+		if = {
+			limit = {
+				exists = c:HAI
+			}
+			set_variable = haiti_friend
+			c:HAI ?= {
+				post_notification = gran_colombia_meddling_haiti
+				custom_tooltip = {
+					text = radicalise_haitian_caribenos_tt
+					add_radicals = {
+						value = very_large_radicals
+						culture = cu:caribeno
+					}
+				}
+			}
+		}
+		add_modifier = {
+			name = modifier_founded_gran_colombia
+			months = normal_modifier_time
+			multiplier = 0.5
+		}
+		every_country = {
+			limit = {
+				NOT = {
+					THIS = ROOT
+				}
+				has_interest_marker_in_region = region_gran_colombia
+			}
+			post_notification = gco_unification
+		}
+	}
+}
+
+namespace = andean_federation
+
+#Andean Federation start event
+andean_federation.1 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = andean_federation.1.t
+	desc = andean_federation.1.d
+	flavor = andean_federation.1.f
+
+	event_image = {
+		video = "southamerica_aristocrats"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by JE
+	}
+	
+	immediate = {
+		root = {
+			save_scope_as = andes_seeker_scope
+		}
+	}
+	
+	option = {
+		name = andean_federation.1.a 
+		default_option = yes
+		custom_tooltip = andean_major_formation_available_tt
+		if = {
+			limit = {
+				any_country = {
+					NOT = { THIS = ROOT }
+					OR = {
+						country_has_primary_culture = cu:north_andean
+						country_has_primary_culture = cu:venezuelan
+						country_has_primary_culture = cu:colombian
+						country_has_primary_culture = cu:ecuadorian
+					}
+				}
+			}
+			random_country = {
+				limit = {
+					NOT = { THIS = ROOT }
+					OR = {
+						country_has_primary_culture = cu:north_andean
+						country_has_primary_culture = cu:venezuelan
+						country_has_primary_culture = cu:colombian
+						country_has_primary_culture = cu:ecuadorian
+					}
+				}
+				create_incident = {
+					country = ROOT
+					value = 15
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_journal_entry = je_caudillo
+			}
+			custom_tooltip = {
+				text = gain_large_caudillo_points
+				change_variable = {
+					name = caudillo_var
+					add = 200
+				}
+			}
+		}
+		hidden_effect = {
+			every_country = {
+				limit = {
+					NOT = { THIS = ROOT }
+					OR = {
+						country_has_primary_culture = cu:north_andean
+						country_has_primary_culture = cu:south_andean
+						country_has_primary_culture = cu:venezuelan
+						country_has_primary_culture = cu:colombian
+						country_has_primary_culture = cu:ecuadorian
+						country_has_primary_culture = cu:chilean
+						country_has_primary_culture = cu:peruvian
+						country_has_primary_culture = cu:bolivian
+					}
+				}
+				post_notification = andean_federation_seeking_warning
+			}
+		}
+	}
+
+	option = {
+		name = andean_federation.1.b 
+		every_country = {
+			limit = {
+				NOT = { THIS = ROOT }
+				OR = {
+					country_has_primary_culture = cu:north_andean
+					country_has_primary_culture = cu:south_andean
+					country_has_primary_culture = cu:venezuelan
+					country_has_primary_culture = cu:colombian
+					country_has_primary_culture = cu:ecuadorian
+					country_has_primary_culture = cu:chilean
+					country_has_primary_culture = cu:peruvian
+					country_has_primary_culture = cu:bolivian
+				}
+			}
+			change_relations = { country = ROOT value = 10 }
+		}
+		custom_tooltip = {
+			text = andean_federation_b_tt
+			set_variable = rejected_andean_federation 
+		}
+	}
+}
+
+#Andean Federation completion event
+andean_federation.2 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = andean_federation.2.t
+	desc = andean_federation.2.d
+	flavor = andean_federation.2.f
+
+	event_image = {
+		video = "rp1_brazilian_city"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by JE
+	}
+
+	immediate = {
+		ROOT = {
+			save_scope_as = federation_scope
+		}
+	}
+	
+	option = {
+		name = andean_federation.2.a 
+		default_option = yes
+		if = {
+			limit = {
+				NOT = {
+					country_has_primary_culture = cu:south_andean
+				}
+			}
+			add_primary_culture = cu:south_andean
+		}
+		if = {
+			limit = {
+				NOT = {
+					country_has_primary_culture = cu:north_andean
+				}
+			}
+			add_primary_culture = cu:north_andean
+		}
+		add_modifier = {
+			name = modifier_andean_federation_prestige
+			months = normal_modifier_time
+		}
+		every_country = {
+			limit = {
+				NOT = {
+					THIS = ROOT
+				}
+				OR = {
+					has_interest_marker_in_region = region_gran_colombia
+					has_interest_marker_in_region = region_andes
+					has_interest_marker_in_region = region_la_plata
+					has_interest_marker_in_region = region_brazil
+				}
+			}
+			post_notification = fnd_unification
+		}
+	}
+
+	option = {
+		name = andean_federation.2.b
+		if = {
+			limit = {
+				NOT = {
+					country_has_primary_culture = cu:south_andean
+				}
+			}
+			add_primary_culture = cu:south_andean
+		}
+		if = {
+			limit = {
+				NOT = {
+					country_has_primary_culture = cu:north_andean
+				}
+			}
+			add_primary_culture = cu:north_andean
+		}
+		add_modifier = {
+			name = modifier_andean_federation_military
+			months = normal_modifier_time
+		}
+		every_country = {
+			limit = {
+				NOT = {
+					THIS = ROOT
+				}
+				OR = {
+					has_interest_marker_in_region = region_gran_colombia
+					has_interest_marker_in_region = region_andes
+					has_interest_marker_in_region = region_la_plata
+					has_interest_marker_in_region = region_brazil
+				}
+			}
+			post_notification = fnd_unification
+		}
+	}
+}
+
+namespace = la_plata
+
+la_plata.1 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = la_plata.1.t
+	desc = la_plata.1.d
+	flavor = la_plata.1.f
+
+	event_image = {
+		video = "unspecific_ruler_speaking_to_people"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/middleclass_cafe"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by JE
+	}
+	
+	immediate = {
+		root = {
+			save_scope_as = la_plata_seeker_scope
+		}
+	}
+	
+	option = {
+		name = la_plata.1.a 
+		default_option = yes
+		random_country = {
+			limit = {
+				NOT = { THIS = ROOT }
+				OR = {
+					country_has_primary_culture = cu:platinean
+					country_has_primary_culture = cu:argentine
+					country_has_primary_culture = cu:uruguayan
+					country_has_primary_culture = cu:paraguayan
+				}
+			}
+			ROOT = {
+				create_incident = {
+					country = PREV
+					value = 10
+				}
+			}
+		}
+		every_state = {
+			limit = {
+				NOR = {
+					owner = ROOT
+					owner = {
+						is_country_type = decentralized
+					}
+					any_neighbouring_state = {
+						state_region = prev.state_region
+						owner = {
+							is_country_type = decentralized
+						}
+					}
+				}
+				state_region = {
+					is_homeland = cu:platinean
+				}
+			}
+			state_region = {
+				add_claim = ROOT
+			}
+		}
+		add_modifier = {
+			name = modifier_seeking_la_plata
+			months = long_modifier_time
+		}
+		if = {
+			limit = {
+				has_journal_entry = je_caudillo
+			}
+			custom_tooltip = {
+				text = gain_large_caudillo_points
+				change_variable = {
+					name = caudillo_var
+					add = 200
+				}
+			}
+		}
+		hidden_effect = {
+			every_country = {
+				limit = {
+					NOT = { THIS = ROOT }
+					OR = {
+						country_has_primary_culture = cu:platinean
+						country_has_primary_culture = cu:argentine
+						country_has_primary_culture = cu:uruguayan
+						country_has_primary_culture = cu:paraguayan
+					}
+				}
+				post_notification = la_plata_seeking_warning
+			}
+		}
+	}
+
+	option = {
+		name = la_plata.1.b
+		every_country = {
+			limit = {
+				NOT = { THIS = ROOT }
+				OR = {
+					country_has_primary_culture = cu:platinean
+					country_has_primary_culture = cu:argentine
+					country_has_primary_culture = cu:uruguayan
+					country_has_primary_culture = cu:paraguayan
+				}
+			}
+			change_relations = { country = ROOT value = 10 }
+		}
+		if = {
+			limit = {
+				has_journal_entry = je_caudillo
+			}
+			custom_tooltip = {
+				text = lose_caudillo_points
+				change_variable = {
+					name = caudillo_var
+					add = -100
+				}
+			}
+		}
+		custom_tooltip = {
+			text = la_plata_b_tt
+			set_variable = rejected_la_plata 
+		}
+	}
+}
+
+la_plata.2 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = la_plata.2.t
+	desc = la_plata.2.d
+	flavor = la_plata.2.f
+
+	event_image = {
+		video = "rp1_brazilian_city"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/middleclass_cafe"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by JE
+	}
+	
+	immediate = {
+		root = {
+			save_scope_as = plt_scope
+		}
+	}
+	
+	option = {
+		name = la_plata.2.a 
+		default_option = yes
+		add_modifier = {
+			name = modifier_founded_la_plata
+			months = normal_modifier_time
+		}
+		every_country = {
+			limit = {
+				NOT = {
+					THIS = ROOT
+				}
+				has_interest_marker_in_region = region_la_plata
+			}
+			post_notification = plt_unification
+		}
+	}
+
+	option = {
+		name = la_plata.2.b
+		trigger = {
+			OR = {
+				s:STATE_ANTOFAGASTA = {
+					is_homeland = cu:south_andean
+				}
+				s:STATE_SANTIAGO = {
+					is_homeland = cu:south_andean
+				}
+				s:STATE_LOS_RIOS = {
+					is_homeland = cu:south_andean
+				}
+				s:STATE_ARAUCANIA = {
+					is_homeland = cu:south_andean
+				}
+			}
+		}
+		add_primary_culture = cu:south_andean
+		if = {
+			limit = {
+				NOT = {
+					any_scope_state = {
+						state_region = s:STATE_ANTOFAGASTA
+					}
+				}
+			}
+			s:STATE_ANTOFAGASTA = {
+				add_claim = ROOT
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					any_scope_state = {
+						state_region = s:STATE_SANTIAGO
+					}
+				}
+			}
+			s:STATE_SANTIAGO = {
+				add_claim = ROOT
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					any_scope_state = {
+						state_region = s:STATE_LOS_RIOS
+					}
+				}
+			}
+			s:STATE_LOS_RIOS = {
+				add_claim = ROOT
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					any_scope_state = {
+						state_region = s:STATE_ARAUCANIA
+					}
+				}
+			}
+			s:STATE_ARAUCANIA = {
+				add_claim = ROOT
+			}
+		}
+		add_radicals = {
+			value = medium_radicals
+			culture = cu:platinean
+		}
+		every_country = {
+			limit = {
+				any_scope_state = {
+					state_region = {
+						OR = {
+							this = s:STATE_ANTOFAGASTA
+							this = s:STATE_SANTIAGO
+							this = s:STATE_LOS_RIOS
+							this = s:STATE_ARAUCANIA
+						}
+					}
+				}
+				NOT = {
+					is_country_type = decentralized
+				}
+			}
+			ROOT = {
+				create_incident = {
+					country = PREV
+					value = 10
+				}
+			}
+		}
+		every_country = {
+			limit = {
+				NOT = {
+					THIS = ROOT
+				}
+				has_interest_marker_in_region = region_la_plata
+			}
+			post_notification = plt_unification
+		}
+	}
+}

@@ -1,0 +1,280 @@
+﻿je_haitian_debt_negotiation_button = {
+	name = "je_haitian_debt_negotiation_button"
+	desc = "je_haitian_debt_negotiation_button_desc"
+
+	visible = { NOT = { has_variable = haiti_debt_renegotiated_var } }
+
+	ai_chance = {
+		base = 10
+	}
+
+	possible = {
+		NOT = { 
+			has_war_with = c:FRA
+			owes_obligation_to = c:FRA 
+		}
+		OR = {
+			c:FRA = {
+				relations:root >= relations_threshold:friendly
+			}
+			is_subject_of = c:FRA
+			has_diplomatic_pact = {
+				type = alliance
+				who = c:FRA
+			}
+		}
+		OR = {
+			has_modifier = modifier_french_independence_payments_1
+			has_modifier = modifier_french_independence_payments_2
+			has_modifier = modifier_french_independence_payments_3
+			has_modifier = modifier_french_independence_payments_4
+		}
+	}
+
+	effect = {
+		c:FRA = { trigger_event = { id = hispaniola_events.3 popup = yes } }
+	}
+}
+
+je_haitian_debt_payment_button = {
+	name = "je_haitian_debt_payment_button"
+	desc = "je_haitian_debt_payment_button_desc"
+
+	visible = { always = yes }
+
+	possible = {
+		NOT = { has_war_with = c:FRA }
+		gold_reserves >= 80000
+		OR = {
+			has_modifier = modifier_french_independence_payments_1
+			has_modifier = modifier_french_independence_payments_2
+			has_modifier = modifier_french_independence_payments_3
+			has_modifier = modifier_french_independence_payments_4
+		}
+	}
+
+	ai_chance = {
+		base = 50
+	}
+
+	effect = {
+		add_treasury = -80000
+		if = {
+			limit = {
+				has_modifier = modifier_french_independence_payments_4
+			}
+			remove_modifier = modifier_french_independence_payments_4
+			add_modifier = { 
+				name = modifier_french_independence_payments_3
+				months = -1
+			}
+		}
+		else_if = {
+			limit = {
+				has_modifier = modifier_french_independence_payments_3
+			}
+			remove_modifier = modifier_french_independence_payments_3
+			add_modifier = { 
+				name = modifier_french_independence_payments_2
+				months = -1
+			}
+		}
+		else_if = {
+			limit = {
+				has_modifier = modifier_french_independence_payments_2
+			}
+			remove_modifier = modifier_french_independence_payments_2
+			add_modifier = { 
+				name = modifier_french_independence_payments_1
+				months = -1
+			}
+		}
+		else_if = {
+			limit = {
+				has_modifier = modifier_french_independence_payments_1
+			}
+			remove_modifier = modifier_french_independence_payments_1
+		}
+		c:FRA = {
+			post_notification = haiti_pays_off_debt
+			if = {
+				limit = {
+					has_modifier = modifier_haitian_independence_payments_4
+				}
+				remove_modifier = modifier_haitian_independence_payments_4
+				add_modifier = {
+					name = modifier_haitian_independence_payments_3
+					months = -1
+				}
+			}
+			else_if = {
+				limit = {
+					has_modifier = modifier_haitian_independence_payments_3
+				}
+				remove_modifier = modifier_haitian_independence_payments_3
+				add_modifier = {
+					name = modifier_haitian_independence_payments_2
+					months = -1
+				}
+			}
+			else_if = {
+				limit = {
+					has_modifier = modifier_haitian_independence_payments_2
+				}
+				remove_modifier = modifier_haitian_independence_payments_2
+				add_modifier = {
+					name = modifier_haitian_independence_payments_1
+					months = -1
+				}
+			}
+		}
+	}
+}
+
+je_haitian_cancel_debt_button = {
+	name = "je_haitian_cancel_debt_button"
+	desc = "je_haitian_cancel_debt_button_desc"
+
+	visible = { always = yes }
+
+	possible = {
+		OR = {
+			has_modifier = modifier_french_independence_payments_1
+			has_modifier = modifier_french_independence_payments_2
+			has_modifier = modifier_french_independence_payments_3
+			has_modifier = modifier_french_independence_payments_4
+		}
+	}
+
+	effect = {
+		custom_tooltip = je_haitian_cancel_debt_button_tt
+		add_modifier = {
+			name = modifier_cancelled_haiti_debt
+			months = very_long_modifier_time
+		}
+		if = {
+			limit = {
+				has_modifier = modifier_french_independence_payments_1
+			}
+			remove_modifier = modifier_french_independence_payments_1
+		}
+		if = {
+			limit = {
+				has_modifier = modifier_french_independence_payments_2
+			}
+			remove_modifier = modifier_french_independence_payments_2
+		}
+		if = {
+			limit = {
+				has_modifier = modifier_french_independence_payments_3
+			}
+			remove_modifier = modifier_french_independence_payments_3
+		}
+		if = {
+			limit = {
+				has_modifier = modifier_french_independence_payments_4
+			}
+			remove_modifier = modifier_french_independence_payments_4
+		}
+		c:FRA = {
+			post_notification = haiti_stops_paying_france
+			if = {
+				limit = {
+					has_modifier = modifier_haitian_independence_payments_1
+				}
+				remove_modifier = modifier_haitian_independence_payments_1
+			}
+			if = {
+				limit = {
+					has_modifier = modifier_haitian_independence_payments_2
+				}
+				remove_modifier = modifier_haitian_independence_payments_2
+			}
+			if = {
+				limit = {
+					has_modifier = modifier_haitian_independence_payments_3
+				}
+				remove_modifier = modifier_haitian_independence_payments_3
+			}
+			if = {
+				limit = {
+					has_modifier = modifier_haitian_independence_payments_4
+				}
+				remove_modifier = modifier_haitian_independence_payments_4
+			}
+			change_relations = { 
+				country = c:HAI 
+				value = -70 
+			}
+			hidden_effect = {
+				set_secret_goal = {
+					country = c:HAI
+					secret_goal = conquer
+				}
+				set_variable = haiti_stops_paying_france_aggressor
+				c:HAI = { set_variable = haiti_stops_paying_france_target }
+			}
+		}
+		change_infamy = 10
+		s:STATE_HAITI = {
+			add_claim = c:FRA
+		}
+		if = {
+			limit = {
+				c:HAI = {
+					any_scope_state = {
+						state_region = s:STATE_SANTO_DOMINGO
+					}
+				}
+			}
+			s:STATE_SANTO_DOMINGO = {
+				add_claim = c:FRA
+			}
+		}
+	}
+
+	ai_chance = {
+		base = 0
+		modifier = {
+			trigger = {
+				c:FRA = {
+					OR = {
+						in_default = yes
+						has_revolution = yes
+					}
+				}
+			}
+			add = 10
+		}
+		modifier = {
+			trigger = {
+				OR = {
+					AND = {
+						army_size > c:FRA.army_size
+						navy_size > c:FRA.navy_size
+					}
+					any_scope_ally = {
+						army_size > c:FRA.army_size
+						navy_size > c:FRA.navy_size
+					}
+				}
+			}
+			add = 10
+		}
+		
+		modifier = {
+			trigger = {
+				country_rank >= rank_value:major_power
+			}
+			add = 2
+		}
+		
+		modifier = {
+			OR = {
+				is_diplomatic_play_committed_participant = yes
+				is_at_war = yes
+			}
+			add = -1000
+		}	
+	}
+}

@@ -16,19 +16,30 @@ right_click_menu = {
 	flowcontainer = {
 		position = { -20 12 }
 		parentanchor = right|top
-		visible = "[GreaterThan_int32(TopFrontend.GetNumHiddenImportantActions, '(int32)0')]"
 		spacing = 5
 
 		textbox = {
+			visible = "[GreaterThan_int32(TopFrontend.GetNumHiddenImportantActions, '(int32)0')]"
 			autoresize = yes
 			text = "[TopFrontend.GetNumHiddenImportantActions|v]"
 			parentanchor = vcenter
 			align = nobaseline
 		}
 		button_icon_reset = {
+			visible = "[GreaterThan_int32(TopFrontend.GetNumHiddenImportantActions, '(int32)0')]"
 			size = { 26 26 }	
 			onclick = "[TopFrontend.UnhideAllImportantActions]"
 			parentanchor = vcenter
+		}
+		button_icon_settings = {
+			size = { 26 26 }
+			onclick = "[ToggleMessageSettings]"
+			onclick = "[GetVariableSystem.Set('message_settings_notification_types', 'false')]"
+            onclick = "[GetVariableSystem.Set('message_settings_alerts', 'true')]"
+            onclick = "[GetVariableSystem.Set('message_settings_interesting_countries', 'false')]"
+			onclick = "[RightClickMenuManager.ToggleImportantActionsList(TopFrontend.AccessSelf, PdxGuiWidget.AccessSelf)]"
+			parentanchor = vcenter
+			tooltip = "MESSAGE_SETTINGS"
 		}
 	}
 
@@ -122,7 +133,16 @@ types important_actions_list
 			}
 		}
 
-		blockoverride = "icon" {}
+		blockoverride "margin" {
+			margin_left = 30
+		}
+
+		blockoverride "icon" {
+			icon = {
+				texture = "[ImportantAlert.GetTexture]"
+				size = { 28 28 }
+			}
+		}
 
 		blockoverride = "text" {
 			text = "[ImportantAlert.GetName]"
@@ -139,20 +159,18 @@ types important_actions_list
 	type important_actions_list_expandable_item = flowcontainer {
 		direction = vertical
 
-		blockoverride "properties" {
-			text = "[ImportantAlert.GetName]"
-			tooltip = "[ImportantAlert.GetToolTip]"
-			size = { 400 44 }
-
-			onrightclick = "[ImportantAlert.MarkAsHidden]"
-		}
-
-		blockoverride "onclick" {
-			onclick = "[ImportantAlert.ToggleAlertGroupExpanded]"
-			using = expand_button_sound
-		}
-
 		right_click_menu_item = {
+			blockoverride "properties" {
+				tooltip = "[ImportantAlert.GetToolTip]"
+				size = { 400 44 }
+
+				onrightclick = "[ImportantAlert.MarkAsHidden]"
+			}
+
+			blockoverride "onclick" {
+				onclick = "[ImportantAlert.ToggleAlertGroupExpanded]"
+				using = expand_button_sound
+			}
 			distribute_visual_state = no
 			state = {
 				name = _mouse_hierarchy_enter
@@ -168,11 +186,23 @@ types important_actions_list
 				using = expand_button_bg
 			}
 			blockoverride "margin" {
-				margin_left = 30
+				margin_left = 65
 			}
 
-			blockoverride "icon" {}
-			blockoverride "text" {}
+			blockoverride "icon" {
+				flowcontainer = {
+					margin_left = 20
+
+					icon = {
+						texture = "[ImportantAlert.GetTexture]"
+						size = { 28 28 }
+					}
+				}
+			}
+
+			blockoverride "text" {
+				text = "[ImportantAlert.GetName]"
+			}
 			
 			container = {
 				parentanchor = vcenter
@@ -192,47 +222,48 @@ types important_actions_list
 				}
 			}
 
-			flowcontainer = {
-				parentanchor = right|vcenter
-				position = { -5 0 }
-
-				textbox = {
-					text = "[ImportantAlert.GetNumAlerts]"
-					autoresize = yes
-					parentanchor = vcenter
-					align = nobaseline
-					default_format = "#v"
-					margin_right = 5
-				}				
-				icon = {
-					parentanchor = vcenter
-					visible = "[And(ImportantAlert.IsAlertGroupExpanded, Not( ImportantAlert.IsRead ))]"
-					texture = "gfx/interface/current_situations/icon_situation_unread.dds"
-					size = { 25 25 }
-				}
-
-				button_cancel = {
-					name = "button_hide_alert_group"
-					onclick = "[ImportantAlert.MarkAsHidden]"
-					alpha = 0
-					size = { 0 0 }
-					using = tooltip_se
-					parentanchor = vcenter
-
-					state = {
-						name = hover_enter
-						alpha = 1
-						duration = 0.05
-						using = Animation_Curve_Default	
-						size = { 24 24 }													
+			blockoverride "right_text" {
+				flowcontainer = {
+					layoutpolicy_horizontal = preferred
+					layoutpolicy_vertical = preferred
+					textbox = {
+						text = "[ImportantAlert.GetNumAlerts]"
+						autoresize = yes
+						parentanchor = vcenter
+						align = nobaseline
+						default_format = "#v"
+						margin_right = 5
+					}				
+					icon = {
+						parentanchor = vcenter
+						visible = "[And(ImportantAlert.IsAlertGroupExpanded, Not( ImportantAlert.IsRead ))]"
+						texture = "gfx/interface/current_situations/icon_situation_unread.dds"
+						size = { 25 25 }
 					}
 
-					state = {
-						name = hover_leave
+					button_cancel = {
+						name = "button_hide_alert_group"
+						onclick = "[ImportantAlert.MarkAsHidden]"
 						alpha = 0
 						size = { 0 0 }
-						duration = 0.2
-						using = Animation_Curve_Default
+						using = tooltip_se
+						parentanchor = vcenter
+
+						state = {
+							name = hover_enter
+							alpha = 1
+							duration = 0.05
+							using = Animation_Curve_Default	
+							size = { 24 24 }													
+						}
+
+						state = {
+							name = hover_leave
+							alpha = 0
+							size = { 0 0 }
+							duration = 0.2
+							using = Animation_Curve_Default
+						}
 					}
 				}
 			}
@@ -256,6 +287,7 @@ types important_actions_list
 					using = select_button_sound
 					onclick = "[RightClickMenuManager.Close]"
 					distribute_visual_state = no
+					tooltip = "EXPANDABLE_IMPORTANT_ACTION_ITEM"
 
 					state = {
 						name = _mouse_hierarchy_enter
@@ -278,8 +310,7 @@ types important_actions_list
 						elide = right
 						multiline = yes
 						align = nobaseline
-						text = "[Alert.GetName]"
-						tooltip = "EXPANDABLE_IMPORTANT_ACTION_ITEM"						
+						text = "[Alert.GetName]"						
 					}
 
 					flowcontainer = {

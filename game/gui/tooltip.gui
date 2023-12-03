@@ -173,6 +173,18 @@ types TooltipTypes
 				
 				block "tooltip_content" {
 					DefaultTooltipTextBox = {
+						name = "BeforeTooltipText"
+						margin_bottom = 0
+						block "text_before"
+						{
+						}
+						autoresize = yes
+						multiline = yes
+						maximumsize = { 550 -1 }
+						fonttintcolor = "[TooltipInfo.GetTintColor]"
+					}
+
+					DefaultTooltipTextBox = {
 						name = "TooltipText"
 						block "text"
 						{
@@ -206,6 +218,15 @@ types TooltipTypes
 						fonttintcolor = "[TooltipInfo.GetTintColor]"
 					}
 
+					block "tooltip_content_after" {}
+					
+					container = {
+						parentanchor = top|hcenter
+						widgetanchor = top|hcenter
+						visible = "[IsInGame]"
+						block "buttons" {}
+					}
+
 					DefaultTooltipTextBox = {
 						name = "TooltipTextShortcut"
 						autoresize = yes
@@ -218,19 +239,11 @@ types TooltipTypes
 						fonttintcolor = "[TooltipInfo.GetTintColor]"
 					}
 
+					
 					DefaultTooltipTextBox = {
 						margin_top = 10
 						text = "RIGHT_CLICK_TO_OPEN_CONTEXT_MENU"
 						visible = "[CanOpenRightClickContextMenu]"
-					}
-
-					block "tooltip_content_after" {}
-					
-					container = {
-						parentanchor = top|hcenter
-						widgetanchor = top|hcenter
-						visible = "[IsInGame]"
-						block "buttons" {}
 					}
 				}
 			}
@@ -328,7 +341,8 @@ types TooltipTypes
 					
 					layoutpolicy_horizontal = expanding
 					layoutpolicy_vertical = expanding
-					
+
+
 					textbox = {
 						layoutpolicy_horizontal = expanding
 						layoutpolicy_vertical = expanding
@@ -344,21 +358,48 @@ types TooltipTypes
 						default_format = "#tooltip_header"
 					}
 					
-					textbox = {
+					hbox = {
 						layoutpolicy_horizontal = growing
 						layoutpolicy_vertical = growing
-						autoresize = yes
-						
-						block "type" {
-							raw_text = "Name"
+						spacing = 5
+
+						textbox = {
+							layoutpolicy_horizontal = growing
+							layoutpolicy_vertical = growing
+							autoresize = yes
+							
+							block "type" {
+								raw_text = "Name"
+							}
+							align = right|nobaseline
+							alpha = 0.75
+							elide = right
+							using = fontsize_small
+							default_format = "#title"
 						}
-						align = right|nobaseline
-						alpha = 0.75
-						elide = right
-						using = fontsize_small
-						default_format = "#title"
+
+						block "go_to_button" {
+							button_icon_goto = {
+								size = { 30 30 }
+								input_action = "go_to_details"
+								using = tooltip_above
+
+								block "go_to_button_tooltip" {
+									tooltip = "GO_TO_DETAILS"
+								}
+
+								block "go_to_button_visibility" {
+									visible = no
+								}
+
+								block "go_to_button_properties" {
+									onclick = "[InformationPanelBar.OpenCountryPanel(AccessPlayer.AccessSelf)]"
+								}
+							}
+						}
 					}
 				}
+
 				icon = {
 					texture = "gfx/interface/dividers/divider_clean.dds"
 					texture_density = 2

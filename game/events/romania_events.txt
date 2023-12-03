@@ -1,0 +1,405 @@
+﻿namespace = romania
+
+# Romania declares union - overlord
+romania.1 = {
+	type = country_event
+	placement = scope:romania_unifier_capital
+
+	title = romania.1.t
+	desc = romania.1.d
+	flavor = romania.1.f
+
+	event_image = {
+		video = "europenorthamerica_political_extremism"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	duration = 3
+
+	trigger = {
+		#Fired by on_action
+	}
+
+	immediate = {
+		random_subject_or_below = {
+			limit = {
+				has_variable = romania_subject
+			}
+			save_scope_as = romania_unifier
+
+			capital = {
+				save_scope_as = romania_unifier_capital
+			}
+		}
+	}
+
+	option = {
+		name = romania.1.a
+		default_option = yes
+		ai_chance = {
+			base = 75
+		}
+		set_secret_goal = {
+			country = scope:romania_unifier
+			secret_goal = protect
+		}
+		change_relations = {
+			country = scope:romania_unifier
+			value = 20
+		}
+		scope:romania_unifier = {
+			change_relations = {
+				country = ROOT
+				value = 20
+			}
+		}
+	}
+	
+	option = {
+		name = romania.1.b
+		ai_chance = {
+			base = 25
+		}
+		set_secret_goal = {
+			country = scope:romania_unifier
+			secret_goal = antagonize
+		}
+		change_relations = {
+			country = scope:romania_unifier
+			value = -30
+		}
+		scope:romania_unifier = {
+			change_relations = {
+				country = ROOT
+				value = -30
+			}
+		}
+		every_scope_state = {
+			add_radicals_in_state = {
+				value = large_radicals
+				culture = cu:romanian
+			}
+		}
+	}
+}
+
+romania.2 = {
+	type = country_event
+
+	title = romania.2.t
+	desc = romania.2.d
+	flavor = romania.2.f
+
+	event_image = {
+		video = "unspecific_ruler_speaking_to_people"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	duration = 3
+
+	trigger = {
+		#Fired by on_action
+	}
+
+	immediate = {
+        random_country = {
+        	limit = {
+	        	NOT = { this = ROOT }
+	        	country_has_primary_culture = cu:romanian
+	            relations:root >= 25
+	            OR = {
+	            	AND = {
+	            		exists = top_overlord
+						is_subject = yes
+						top_overlord = {
+							THIS = root.top_overlord
+						}
+					}
+					is_subject = no
+	            }
+        	}
+        	save_scope_as = romania_lesser_partner
+        	set_variable = {
+        		name = romania_union_partner
+        	}
+        }
+        set_variable = romania_unification_in_motion
+    }
+
+	option = {
+		name = romania.2.a
+		default_option = yes
+
+		#scope:romania_lesser_partner = {
+		#	if = {
+		#		limit = {
+		#			is_subject = yes
+		#		}
+		#		make_independent = yes
+		#	}
+		#}
+
+		set_variable = {
+			name = ROM_united_principality
+		}
+
+		if = {
+			limit = {
+				has_law = law_type:law_monarchy
+				scope:romania_lesser_partner = {
+					has_law = law_type:law_monarchy
+				}
+			}
+			custom_tooltip = {
+				text = romania.2.a.tta
+				create_diplomatic_pact = {
+					country = scope:romania_lesser_partner
+					type = personal_union
+				}
+			}
+		}
+		else = {
+			custom_tooltip = {
+				text = romania.2.a.ttb
+				create_diplomatic_pact = {
+					country = scope:romania_lesser_partner
+					type = puppet
+				}
+			}
+		}
+		set_variable = {
+			name = romanian_union_var
+			value = 0
+		}
+		add_journal_entry = { type = je_all_for_one }
+
+		hidden_effect = {
+			remove_variable = romania_unification_in_motion
+		}
+	}
+}
+
+# United Principalities success
+romania.3 = {
+	type = country_event
+	placement = ROOT
+	title = romania.3.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = romania.3.d2
+				trigger = {
+					exists = c:TRS
+					any_subject_or_below = {
+						c:TRS = this
+					}
+				}
+			}
+			triggered_desc = {
+				desc = romania.3.d
+				trigger = {
+					NOT = {
+						any_subject_or_below = {
+							c:TRS = this
+						}
+					}
+				}
+			}
+		}
+	}
+	flavor =  romania.3.f
+
+	duration = 3
+
+	event_image = {
+		video = "unspecific_military_parade"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	trigger = {
+		# triggered by JE
+	}
+
+	immediate = {
+        random_neighbouring_state = {
+            limit = {
+                owner = {
+                    has_variable = romania_union_partner
+                }
+            }
+            owner = {
+                save_scope_as = romania_lesser_union_partner
+            }
+        }
+        if = {
+        	limit = {
+	        	exists = c:TRS
+	        	c:TRS = {
+	        		is_subject_of = ROOT
+	        	}
+	        }
+	        c:TRS = {
+	        	save_scope_as = transylvania_union_partner
+	        }
+        }
+	}
+
+	option = { # Unite Romania
+		name = romania.3.a
+		default_option = yes
+		if = {
+			limit = {
+				scope:romania_lesser_union_partner = {
+					is_subject_of = ROOT
+					is_player = no
+				}
+			}
+			annex = scope:romania_lesser_union_partner
+		}
+		if = {
+			limit = {
+				exists = c:TRS
+				c:TRS = {
+					is_subject_of = ROOT
+					is_player = no
+				}
+			}
+			annex = c:TRS
+		}
+		change_tag = ROM
+		ai_chance = {
+			base = 1
+		}
+	}
+
+#	option = { #No
+#		name = romania.3.b
+#
+#		capital = {
+#			add_radicals_in_state = { # "Are you out of your MIND?", the crowds scream
+#				value = 0.5
+#			}
+#		}
+#
+#		change_relations = {
+#			country = scope:romania_lesser_union_partner
+#			value = 20
+#		}
+#		ai_chance = {
+#			base = 0
+#		}
+#	}
+}
+
+# South Bessarabia Cession
+romania.4 = {
+	type = country_event
+	placement = ROOT
+	title = romania.4.t
+	desc = romania.4.d
+	flavor =  romania.4.f
+
+	duration = 3
+
+	event_image = {
+		video = "southamerica_aristocrats"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	trigger = {
+		# triggered by JE
+	}
+
+	immediate = {
+        random_scope_state = {
+        	limit = {
+				state_region = s:STATE_BESSARABIA
+        	}
+        	save_scope_as = south_bessarabia_cession
+        }
+        random_country = {
+        	limit = {
+				OR = {
+    				has_variable = ROM_united_principality
+    				AND = {
+    					is_subject = yes
+    					top_overlord ?= {
+    						has_variable = ROM_united_principality
+    					}
+    				}
+    			}
+        	}
+        	save_scope_as = romanian_bessarabia_receiver
+        }
+	}
+
+	option = { 
+		name = romania.4.a
+		default_option = yes
+
+		ai_chance = {
+			base = 100
+		}
+
+		s:STATE_BESSARABIA = {
+			set_owner_of_provinces = {
+				country = scope:romanian_bessarabia_receiver
+				provinces = { xB0E0A0 x6BF7B8 x712161 }
+			}
+		}
+		if = {
+			limit = {
+				p:x50F5CB = {
+					owner = ROOT
+				}
+			}
+			s:STATE_DOBRUDJA = {
+				set_owner_of_provinces = {
+					country = scope:romanian_bessarabia_receiver
+					provinces = { x50F5CB }
+				}
+			}
+		}
+
+		change_relations = {
+			country = scope:romanian_bessarabia_receiver
+			value = 25
+		}
+		scope:romanian_bessarabia_receiver = {
+			change_relations = {
+				country = ROOT
+				value = 25
+			}
+		}
+	}
+	option = { 
+		name = romania.4.b
+
+		ai_chance = {
+			base = 0
+		}
+		change_relations = {
+			country = scope:romanian_bessarabia_receiver
+			value = -25
+		}
+		scope:romanian_bessarabia_receiver = {
+			change_relations = {
+				country = ROOT
+				value = -25
+			}
+			remove_variable = south_bessarabia_cession_in_progress
+		}
+	}
+}

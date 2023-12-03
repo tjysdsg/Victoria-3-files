@@ -1,0 +1,57 @@
+﻿acre_dispute_button = {
+	name = "acre_dispute_button"
+	desc = "acre_dispute_button_desc"
+
+	visible = {
+		has_dlc_feature = rp1_content
+		s:STATE_AMAZONAS = {
+			any_scope_state = {
+				owner = ROOT
+			}
+		}
+		NOR = {
+			country_or_subject_owns_entire_state_region = STATE_ACRE
+			has_global_variable = acre_dispute_button_global_var
+		}
+	}
+
+	possible = {
+		country_or_subject_owns_entire_state_region = STATE_AMAZONAS
+		any_country = {
+			owns_entire_state_region = STATE_ACRE
+		}
+	}
+
+	effect = {
+		trigger_event = { id = acre_dispute.1 popup = yes }
+		show_as_tooltip = {
+			s:STATE_AMAZONAS = {
+				add_claim = ROOT
+			}
+			random_country = {
+				limit = {
+					owns_entire_state_region = STATE_ACRE
+				}
+				change_relations = {
+					country = ROOT
+					value = -50
+				}
+			}
+			add_journal_entry = { type = je_acre_dispute }
+		}
+		set_global_variable = acre_dispute_button_global_var
+	}
+
+	ai_chance = {
+		base = 20
+		modifier = {
+			trigger = {
+				OR = {
+					is_at_war = yes
+					in_default = yes
+				}
+			}
+			add = -100
+		}
+	}
+}

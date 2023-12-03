@@ -2,6 +2,8 @@
 	should_be_pinned_by_default = yes
 	icon = "gfx/interface/icons/objectives/hegemon.dds"
 
+	group = je_group_objectives
+
 	complete = {
 		NOT = { has_law = law_type:law_no_colonial_affairs }
 	}
@@ -24,6 +26,8 @@
 je_african_colonies = {
 	should_be_pinned_by_default = yes
 	icon = "gfx/interface/icons/objectives/hegemon.dds"
+
+	group = je_group_objectives
 
 	complete = {
 		any_scope_state = {
@@ -50,6 +54,8 @@ je_expand_navy_and_army = {
 	should_be_pinned_by_default = yes
 	icon = "gfx/interface/icons/objectives/hegemon.dds"
 
+	group = je_group_objectives
+
 	complete = {
 		ROOT = {
 			army_size >= 150
@@ -67,6 +73,8 @@ je_expand_navy_and_army = {
 je_form_alliance = {
 	should_be_pinned_by_default = yes
 	icon = "gfx/interface/icons/objectives/hegemon.dds"
+
+	group = je_group_objectives
 
 	complete = {
 		any_country = {
@@ -91,6 +99,8 @@ je_take_subject = {
 	should_be_pinned_by_default = yes
 	icon = "gfx/interface/icons/objectives/hegemon.dds"
 
+	group = je_group_objectives
+
 	complete = {
 		any_country = {
 			hidden_trigger = { NOT = { THIS = ROOT } }
@@ -111,6 +121,14 @@ je_take_subject = {
 					who = root
 					type = personal_union
 				}
+				has_diplomatic_pact = {
+					who = root
+					type = vassal
+				}
+				has_diplomatic_pact = {
+					who = root
+					type = tributary
+				}
 			}
 			count >= 5
 		}
@@ -126,6 +144,8 @@ je_take_subject = {
 je_increase_technology = {
 	should_be_pinned_by_default = yes
 	icon = "gfx/interface/icons/objectives/hegemon.dds"
+
+	group = je_group_objectives
 
 	complete = {
 		has_technology_researched = bolt_action_rifles
@@ -144,6 +164,8 @@ je_greatest_power = {
 	should_be_pinned_by_default = yes
 	icon = "gfx/interface/icons/objectives/hegemon.dds"
 
+	group = je_group_objectives
+
 	complete = {
 		global_country_ranking = 1
 	}
@@ -158,6 +180,8 @@ je_greatest_power = {
 je_greater_power = {
 	should_be_pinned_by_default = yes
 	icon = "gfx/interface/icons/objectives/hegemon.dds"
+
+	group = je_group_objectives
 
 	complete = {
 		country_rank = rank_value:great_power
@@ -174,6 +198,8 @@ je_great_power = {
 	should_be_pinned_by_default = yes
 	icon = "gfx/interface/icons/objectives/hegemon.dds"
 
+	group = je_group_objectives
+
 	complete = {
 		country_rank >= rank_value:major_power
 	}
@@ -189,11 +215,19 @@ je_unrecognized_power = {
 	should_be_pinned_by_default = yes
 	icon = "gfx/interface/icons/objectives/hegemon.dds"
 
+	group = je_group_objectives
+
 	complete = {
 		NOT = { is_country_type = unrecognized }
 	}
 	
 	on_complete = {
+		hidden_effect = {
+			add_journal_entry = {
+				type = je_the_hegemon
+				objective_subgoal = sg_the_hegemon
+			}
+		}
 	}
 		
 	weight = 1009
@@ -203,14 +237,12 @@ je_unrecognized_power = {
 je_the_hegemon = {
 	should_be_pinned_by_default = yes
 	icon = "gfx/interface/icons/objectives/hegemon.dds"
+
+	group = je_group_objectives
 	active_update_frequency = 1
 
 	complete = {
-		game_date > 1935.12.30
-		custom_tooltip = {
-			text = je_the_hegemon_final_tt
-			country_and_subjects_population_global_share > 0.5
-		}
+		total_population_including_subjects_share >= 0.4
 	}
 
 	on_complete = {

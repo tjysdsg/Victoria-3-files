@@ -1,0 +1,1522 @@
+﻿namespace = brazilian_slavery
+
+# Aberdeen Act Completion Event - GBR
+brazilian_slavery.1 = {
+	type = country_event
+	placement = root
+
+	title = brazilian_slavery.1.t
+	desc = brazilian_slavery.1.d
+	flavor = brazilian_slavery.1.f
+
+	event_image = {
+		video = "unspecific_naval_battle"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	duration = 3
+
+	#dlc = dlc008
+
+	trigger = {
+		# triggered by journal entry
+	}
+
+	immediate = {
+		c:BRZ ?= { save_scope_as = brazil_scope }
+		c:GBR ?= { save_scope_as = britain_scope }	
+	}
+
+	option = {
+		name = brazilian_slavery.1.a
+		default_option = yes
+        if = {
+            limit = {
+                has_modifier = brazilian_slave_trade_modifier
+            }
+            remove_modifier = brazilian_slave_trade_modifier
+        }
+		add_modifier = {
+			name = the_west_african_squadron_modifier
+			months = very_long_modifier_time
+		}
+		change_relations = { 
+			country = c:BRZ 
+			value = 80
+		}
+		scope:brazil_scope = {
+			trigger_event = { id = brazilian_slavery.6 days = 0 popup = yes }
+		}
+	}
+	
+	option = {
+		name = brazilian_slavery.1.b
+        if = {
+            limit = {
+                has_modifier = brazilian_slave_trade_modifier
+            }
+            remove_modifier = brazilian_slave_trade_modifier
+        }
+		if = {
+			limit = {
+				any_interest_group = {
+					is_marginal = no
+					law_stance = {
+						law = law_type:law_slave_trade
+						value <= disapprove
+					}
+				}
+			}
+			every_interest_group = {
+				limit = {
+					is_marginal = no
+					law_stance = {
+						law = law_type:law_slave_trade
+						value <= disapprove
+					}
+				}
+				add_modifier = {
+					name = champions_of_abolition_modifier
+					months = long_modifier_time
+				}
+			}
+		}
+		change_relations = { 
+			country = c:BRZ 
+			value = 80
+		}
+		scope:brazil_scope = {
+			trigger_event = { id = brazilian_slavery.6 days = 0 popup = yes }
+		}
+	}
+}
+
+# Brazilian Slaver Seized off [Coast] - GBR
+brazilian_slavery.2 = {
+	type = country_event
+	placement = scope:slaver_coastal_state_scope
+
+	title = brazilian_slavery.2.t
+	desc = brazilian_slavery.2.d
+	flavor = brazilian_slavery.2.f
+
+	event_image = {
+		video = "unspecific_naval_battle"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	duration = 3
+
+	#dlc = dlc008
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		has_modifier = aberdeen_act_enforced_gbr
+	}
+
+	immediate = {
+		c:BRZ ?= { save_scope_as = brazil_scope }
+		c:GBR ?= { save_scope_as = britain_scope }
+		c:BRZ ?= {
+			random_scope_state = {
+				limit = {
+					any_scope_pop = {
+						is_pop_type = slaves 
+					}
+				}
+				save_scope_as = enslaved_destination_state_scope
+			}
+		}
+		random_state = {
+			limit = {
+				OR = {
+					region = sr:region_congo
+					region = sr:region_niger
+					state_region = s:STATE_SOUTH_ATLANTIC_ISLANDS
+				}
+				is_coastal = yes
+			}
+			save_scope_as = slaver_coastal_state_scope
+			set_variable = { 
+				name = slaver_coastal_state_var
+				months = 2
+			}
+		}
+	}
+
+	option = {
+		name = brazilian_slavery.2.a
+		default_option = yes
+		change_infamy = 1
+		change_relations = { 
+			country = c:BRZ 
+			value = -10 
+		}
+		if = {
+			limit = {
+				any_interest_group = {
+					is_marginal = no
+					law_stance = {
+						law = law_type:law_slave_trade
+						value = strongly_disapprove
+					}
+				}
+			}
+			every_interest_group = {
+				limit = {
+					is_marginal = no
+					law_stance = {
+						law = law_type:law_slave_trade
+						value = strongly_disapprove
+					}
+				}
+				add_modifier = {
+					name = approves_of_slave_hunting_modifier
+					months = normal_modifier_time
+					multiplier = 2
+				}
+			}
+		}
+		scope:brazil_scope = {
+			trigger_event = { id = brazilian_slavery.3 days = 0 popup = yes }
+			set_variable = {
+				name = arrested_slavers_var
+				months = 2
+			}
+		}
+	}
+	
+	option = {
+		name = brazilian_slavery.2.b
+		change_relations = { 
+			country = c:BRZ 
+			value = -5 
+		}
+		if = {
+			limit = {
+				any_interest_group = {
+					is_marginal = no
+					law_stance = {
+						law = law_type:law_slave_trade
+						value = strongly_disapprove
+					}
+				}
+			}
+			every_interest_group = {
+				limit = {
+					is_marginal = no
+					law_stance = {
+						law = law_type:law_slave_trade
+						value = strongly_disapprove
+					}
+				}
+				add_modifier = {
+					name = approves_of_slave_hunting_modifier
+					months = normal_modifier_time
+				}
+			}
+		}
+		scope:brazil_scope = {
+			trigger_event = { id = brazilian_slavery.3 days = 0 popup = yes }
+		}
+	}
+}
+
+# Britain Seizes Brazilian Slaver off [Coast] - BRZ
+brazilian_slavery.3 = {
+	type = country_event
+	placement = root
+
+	title = brazilian_slavery.3.t
+	desc = {
+		first_valid = {
+			triggered_desc = { # Slavers Arrested
+				desc = brazilian_slavery.3.d_1
+				trigger = {
+					has_variable = arrested_slavers_var
+				}
+			}
+			triggered_desc = { # Slavers Not Arrested
+				desc = brazilian_slavery.3.d_2
+				trigger = {
+					NOT = { has_variable = arrested_slavers_var }
+				}
+			}
+		}
+	}
+	flavor = {
+		first_valid = {
+			triggered_desc = { # Slavers Arrested
+				desc = brazilian_slavery.3.f_1
+				trigger = {
+					has_variable = arrested_slavers_var
+				}
+			}
+			triggered_desc = { # Slavers Not Arrested
+				desc = brazilian_slavery.3.f_2
+				trigger = {
+					NOT = { has_variable = arrested_slavers_var }
+				}
+			}
+		}
+	}
+
+	event_image = {
+		video = "unspecific_naval_battle"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	duration = 3
+
+	#dlc = dlc008
+
+	trigger = {
+		# triggered by brazilian_slavery.2
+	}
+
+	immediate = {
+		c:BRZ ?= { save_scope_as = brazil_scope }
+		c:GBR ?= { save_scope_as = britain_scope }
+		random_state = {
+			limit = {
+				has_variable = slaver_coastal_state_var
+			}
+			save_scope_as = slaver_coastal_state_scope
+		}
+	}
+
+	option = {
+		name = brazilian_slavery.3.a
+		default_option = yes
+		ig:ig_landowners = {
+			add_modifier = {
+				name = slave_flow_disrupted_modifier
+				months = short_modifier_time
+			}
+		}
+		random_list = {
+			75 = {
+				add_modifier = {
+					name = slave_shipments_intercepted_small
+					months = short_modifier_time
+				}
+			}
+			25 = {
+				add_modifier = {
+					name = slave_shipments_intercepted_large
+					months = short_modifier_time
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = brazilian_slavery.3.b
+		add_radicals = {
+			pop_type = aristocrats
+			value = medium_radicals
+		}
+		random_list = {
+			75 = {
+				add_modifier = {
+					name = slave_shipments_intercepted_small
+					months = short_modifier_time
+				}
+			}
+			25 = {
+				add_modifier = {
+					name = slave_shipments_intercepted_large
+					months = short_modifier_time
+				}
+			}
+		}
+	}
+}
+
+# Slaver Spotted in Brazilian Waters - GBR
+brazilian_slavery.4 = {
+	type = country_event
+	placement = scope:slaver_coastal_state_scope_2
+
+	title = brazilian_slavery.4.t
+	desc = brazilian_slavery.4.d
+	flavor = brazilian_slavery.4.f
+
+	event_image = {
+		video = "unspecific_naval_battle"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	duration = 3
+
+	#dlc = dlc008
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		has_modifier = aberdeen_act_enforced_gbr
+		c:BRZ ?= {
+			any_scope_state = {
+				is_coastal = yes
+				any_scope_pop = {
+					is_pop_type = slaves
+				}
+			}
+		}
+	}
+
+	immediate = {
+		c:BRZ ?= { save_scope_as = brazil_scope }
+		c:GBR ?= { save_scope_as = britain_scope }
+		c:BRZ ?= {
+			random_scope_state = {
+				limit = {
+					is_coastal = yes
+					any_scope_pop = {
+						is_pop_type = slaves
+					}
+				}
+				save_scope_as = slaver_coastal_state_scope_2
+				set_variable = { 
+					name = slaver_coastal_state_var_2
+					months = 2
+				}
+			}
+		}
+	}
+
+	option = {
+		name = brazilian_slavery.4.a
+		default_option = yes
+		change_infamy = 4
+		if = {
+			limit = {
+				any_interest_group = {
+					is_marginal = no
+					law_stance = {
+						law = law_type:law_slave_trade
+						value = strongly_disapprove
+					}
+				}
+			}
+			every_interest_group = {
+				limit = {
+					is_marginal = no
+					law_stance = {
+						law = law_type:law_slave_trade
+						value = strongly_disapprove
+					}
+				}
+				add_modifier = {
+					name = committed_abolitionists_modifier
+					months = normal_modifier_time
+				}
+			}
+		}
+		scope:brazil_scope = {
+			trigger_event = { id = brazilian_slavery.5 days = 0 popup = yes }
+		}
+	}
+	
+	option = {
+		name = brazilian_slavery.4.b
+		if = {
+			limit = {
+				any_interest_group = {
+					is_marginal = no
+					law_stance = {
+						law = law_type:law_slave_trade
+						value = strongly_disapprove
+					}
+				}
+			}
+			every_interest_group = {
+				limit = {
+					is_marginal = no
+					law_stance = {
+						law = law_type:law_slave_trade
+						value = strongly_disapprove
+					}
+				}
+				add_modifier = {
+					name = impotent_anti_slavery_squadron_modifier
+					months = normal_modifier_time
+				}
+			}
+		}
+	}
+}
+
+# Royal Navy seizes slaver in Brazilian waters. - BRZ
+brazilian_slavery.5 = {
+	type = country_event
+	placement = scope:slaver_coastal_state_scope_2
+
+	title = brazilian_slavery.5.t
+	desc = brazilian_slavery.5.d
+	flavor = brazilian_slavery.5.f
+
+	event_image = {
+		video = "unspecific_naval_battle"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	duration = 3
+
+	#dlc = dlc008
+
+	trigger = {
+		# triggered by brazilian_slavery.4
+	}
+
+	immediate = {
+		c:BRZ ?= { save_scope_as = brazil_scope }
+		c:GBR ?= { save_scope_as = britain_scope }
+		random_scope_state = {
+			limit = {
+				has_variable = slaver_coastal_state_var_2
+			}
+			save_scope_as = slaver_coastal_state_scope_2
+		}
+	}
+
+	option = {
+		name = brazilian_slavery.5.a
+		default_option = yes
+		add_modifier = {
+			name = weakness_in_the_face_of_albion_modifier
+			months = normal_modifier_time
+		}
+		add_radicals = {
+			value = small_radicals
+		}
+		random_list = {
+			50 = {
+				add_modifier = {
+					name = slave_shipments_intercepted_small
+					months = short_modifier_time
+				}
+			}
+			50 = {
+				add_modifier = {
+					name = slave_shipments_intercepted_large
+					months = short_modifier_time
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = brazilian_slavery.5.b
+		highlighted_option = yes
+		trigger = {
+			naval_power_projection >= 30
+		}
+		change_relations = { 
+			country = c:GBR 
+			value = -10 
+		}
+		add_modifier = {
+			name = weakness_in_the_face_of_albion_modifier
+			months = short_modifier_time
+			multiplier = 0.5
+		}
+		add_modifier = {
+			name = slave_shipments_intercepted_small
+			months = short_modifier_time
+		}
+	}
+}
+
+# Aberdeen Act Completion Event - BRZ
+brazilian_slavery.6 = {
+	type = country_event
+	placement = root
+
+	title = brazilian_slavery.6.t
+	desc = brazilian_slavery.6.d
+	flavor = brazilian_slavery.6.f
+
+	event_image = {
+		video = "unspecific_naval_battle"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	duration = 3
+
+	#dlc = dlc008
+
+	trigger = {
+		# triggered by journal entry
+	}
+
+	immediate = {
+		c:BRZ ?= { save_scope_as = brazil_scope }
+		c:GBR ?= { save_scope_as = britain_scope }	
+	}
+
+	option = {
+		name = brazilian_slavery.6.a
+		default_option = yes
+		show_as_tooltip = {
+			change_relations = { 
+				country = c:GBR 
+				value = 80
+			}
+		}
+		custom_tooltip = {
+			text = brazilian_slavery.6_tt
+		}
+	}
+}
+
+# Matter of Slavery Completion Event
+brazilian_slavery.7 = {
+	type = country_event
+	placement = root
+
+	title = brazilian_slavery.7.t
+	desc = brazilian_slavery.7.d
+	flavor = brazilian_slavery.7.f
+
+	event_image = {
+		video = "southamerica_christianity"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	duration = 3
+
+	#dlc = dlc008
+
+	trigger = {
+		# triggered by journal entry
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				any_scope_character = {
+					OR = {
+						is_heir = yes
+						is_ruler = yes
+					}
+					has_ideology = ideology:ideology_abolitionist
+				}
+			}
+			random_scope_character = {
+				limit = {
+					OR = {
+						is_heir = yes
+						is_ruler = yes
+					}
+					has_ideology = ideology:ideology_abolitionist
+				}
+				save_scope_as = golden_rose_recipient_scope
+			}
+		}
+		else = {
+			ruler = {
+				save_scope_as = golden_rose_recipient_scope
+			}
+		}
+	}
+
+	option = {
+		name = brazilian_slavery.7.a
+		default_option = yes
+		add_modifier = {
+			name = unfettered_pride_modifier
+			months = very_long_modifier_time
+		}
+		if = {
+			limit = {
+				any_interest_group = {
+					is_marginal = no
+					OR = {
+						law_stance = {
+							law = law_type:law_slave_trade
+							value >= approve
+						}
+						law_stance = {
+							law = law_type:law_legacy_slavery
+							value >= approve
+						}
+					}
+				}
+			}
+			every_interest_group = {
+				limit = {
+					is_marginal = no
+					OR = {
+						law_stance = {
+							law = law_type:law_slave_trade
+							value >= approve
+						}
+						law_stance = {
+							law = law_type:law_legacy_slavery
+							value >= approve
+						}
+					}
+				}
+				add_modifier = {
+					name = old_order_upset_negative
+					months = normal_modifier_time
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_interest_group = {
+					is_marginal = no
+					OR = {
+						law_stance = {
+							law = law_type:law_slave_trade
+							value <= disapprove
+						}
+						law_stance = {
+							law = law_type:law_legacy_slavery
+							value <= disapprove
+						}
+					}
+				}
+			}
+			every_interest_group = {
+				limit = {
+					is_marginal = no
+					OR = {
+						law_stance = {
+							law = law_type:law_slave_trade
+							value <= disapprove
+						}
+						law_stance = {
+							law = law_type:law_legacy_slavery
+							value <= disapprove
+						}
+					}
+				}
+				add_modifier = {
+					name = old_order_upset_positive
+					months = normal_modifier_time
+				}
+			}
+		}
+	}
+
+	option = {
+		name = brazilian_slavery.7.b
+		add_modifier = {
+			name = less_racist_brazil_modifier
+			months = very_long_modifier_time
+		}
+		if = {
+			limit = {
+				any_interest_group = {
+					is_marginal = no
+					OR = {
+						law_stance = {
+							law = law_type:law_slave_trade
+							value >= approve
+						}
+						law_stance = {
+							law = law_type:law_legacy_slavery
+							value >= approve
+						}
+					}
+				}
+			}
+			every_interest_group = {
+				limit = {
+					is_marginal = no
+					OR = {
+						law_stance = {
+							law = law_type:law_slave_trade
+							value >= approve
+						}
+						law_stance = {
+							law = law_type:law_legacy_slavery
+							value >= approve
+						}
+					}
+				}
+				add_modifier = {
+					name = old_order_upset_negative
+					months = normal_modifier_time
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_interest_group = {
+					is_marginal = no
+					OR = {
+						law_stance = {
+							law = law_type:law_slave_trade
+							value <= disapprove
+						}
+						law_stance = {
+							law = law_type:law_legacy_slavery
+							value <= disapprove
+						}
+					}
+				}
+			}
+			every_interest_group = {
+				limit = {
+					is_marginal = no
+					OR = {
+						law_stance = {
+							law = law_type:law_slave_trade
+							value <= disapprove
+						}
+						law_stance = {
+							law = law_type:law_legacy_slavery
+							value <= disapprove
+						}
+					}
+				}
+				add_modifier = {
+					name = old_order_upset_positive
+					months = normal_modifier_time
+				}
+			}
+		}
+		if = {
+			limit = {
+				scope:golden_rose_recipient_scope = {
+					is_female = no
+				}
+			}
+			add_modifier = {
+				name = black_guard_male_modifier
+				months = long_modifier_time
+			}
+		}
+		else_if = {
+			limit = {
+				scope:golden_rose_recipient_scope = {
+					is_female = yes
+				}
+			}
+			add_modifier = {
+				name = black_guard_female_modifier
+				months = long_modifier_time
+			}
+		}
+	}
+}
+
+# Slaves Flee / Refuse to Work
+brazilian_slavery.8 = {
+	type = country_event
+	placement = scope:slave_plantation_state_scope
+
+	title = brazilian_slavery.8.t
+	desc = brazilian_slavery.8.d
+	flavor = brazilian_slavery.8.f
+
+	event_image = {
+		video = "southamerica_slaves_night"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	duration = 3
+
+	#dlc = dlc008
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		NOT = { has_variable = slavery_event_cooldown }
+		any_scope_state = {
+			any_scope_pop = {
+				is_pop_type = slaves
+				is_employed = yes
+				workplace ?= {
+					OR = {
+						is_building_type = building_coffee_plantation
+						is_building_type = building_cotton_plantation
+						is_building_type = building_dye_plantation
+						is_building_type = building_opium_plantation
+						is_building_type = building_tea_plantation
+						is_building_type = building_tobacco_plantation
+						is_building_type = building_sugar_plantation
+						is_building_type = building_banana_plantation
+						is_building_type = building_silk_plantation				
+					}
+				}
+			}
+		}
+	}
+
+	immediate = {
+		set_variable = {
+			name = slavery_event_cooldown
+			months = normal_modifier_time
+		}
+		random_scope_state = {
+			limit = {
+				any_scope_pop = {
+					is_pop_type = slaves
+					is_employed = yes
+					workplace ?= {
+						OR = {
+							is_building_type = building_coffee_plantation
+							is_building_type = building_cotton_plantation
+							is_building_type = building_dye_plantation
+							is_building_type = building_opium_plantation
+							is_building_type = building_tea_plantation
+							is_building_type = building_tobacco_plantation
+							is_building_type = building_sugar_plantation
+							is_building_type = building_banana_plantation
+							is_building_type = building_silk_plantation				
+						}
+					}
+				}
+			}
+			random_scope_pop = {
+				limit = {
+					is_pop_type = slaves
+					is_employed = yes
+					workplace ?= {
+						OR = {
+							is_building_type = building_coffee_plantation
+							is_building_type = building_cotton_plantation
+							is_building_type = building_dye_plantation
+							is_building_type = building_opium_plantation
+							is_building_type = building_tea_plantation
+							is_building_type = building_tobacco_plantation
+							is_building_type = building_sugar_plantation
+							is_building_type = building_banana_plantation
+							is_building_type = building_silk_plantation				
+						}
+					}
+				}
+				save_scope_as = slave_plantation_slaves_scope
+				workplace = {
+					save_scope_as = slave_plantation_scope
+				}
+			}
+			save_scope_as = slave_plantation_state_scope
+		}
+	}
+
+	option = {
+		name = brazilian_slavery.8.a
+		default_option = yes
+		ig:ig_landowners = {
+			add_modifier = {
+				name = masters_upset_over_concessions
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = brazilian_slavery.8.b
+		ig:ig_landowners = {
+			add_modifier = {
+				name = unrestrained_masters
+				months = normal_modifier_time
+			}
+		}
+		scope:slave_plantation_scope = {
+			random_list = {
+				3 = {
+					add_modifier = {
+						name = slave_shortages_modifier
+						months = normal_modifier_time
+					}			
+				}
+				1 = {
+					add_modifier = {
+						name = slave_shortages_modifier
+						months = normal_modifier_time
+						multiplier = 0.5
+					}			
+				}
+			}
+		}
+		scope:slave_plantation_state_scope = {
+			add_radicals_in_state = {
+				pop_type = slaves
+				value = small_radicals
+			}
+		}
+	}
+
+	option = {
+		name = brazilian_slavery.8.c
+		highlighted_option = yes
+		trigger = {
+			has_law = law_type:law_slave_trade 
+		}
+		add_modifier = {
+			name = slave_purchases_modifier
+			multiplier = money_amount_multiplier_very_small
+			months = short_modifier_time
+		}
+	}
+}
+
+# Slave Sabotage
+brazilian_slavery.9 = {
+	type = country_event
+	placement = scope:slowdown_slave_plantation_state_scope
+
+	title = brazilian_slavery.9.t
+	desc = brazilian_slavery.9.d
+	flavor = brazilian_slavery.9.f
+
+	event_image = {
+		video = "southamerica_slaves_night"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	duration = 3
+
+	#dlc = dlc008
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		NOT = { has_variable = slavery_event_cooldown }
+		any_scope_state = {
+			any_scope_pop = {
+				is_pop_type = slaves
+				workplace ?= {
+					OR = {
+						is_building_type = building_coffee_plantation
+						is_building_type = building_cotton_plantation
+						is_building_type = building_dye_plantation
+						is_building_type = building_opium_plantation
+						is_building_type = building_tea_plantation
+						is_building_type = building_tobacco_plantation
+						is_building_type = building_sugar_plantation
+						is_building_type = building_banana_plantation
+						is_building_type = building_silk_plantation				
+					}
+				}
+			}
+		}
+	}
+
+	immediate = {
+		set_variable = {
+			name = slavery_event_cooldown
+			months = normal_modifier_time
+		}
+		random_scope_state = {
+			limit = {
+				any_scope_pop = {
+					is_pop_type = slaves
+					workplace ?= {
+						OR = {
+							is_building_type = building_coffee_plantation
+							is_building_type = building_cotton_plantation
+							is_building_type = building_dye_plantation
+							is_building_type = building_opium_plantation
+							is_building_type = building_tea_plantation
+							is_building_type = building_tobacco_plantation
+							is_building_type = building_sugar_plantation
+							is_building_type = building_banana_plantation
+							is_building_type = building_silk_plantation				
+						}
+					}
+				}
+			}
+			random_scope_pop = {
+				limit = {
+					is_pop_type = slaves
+					workplace ?= {
+						OR = {
+							is_building_type = building_coffee_plantation
+							is_building_type = building_cotton_plantation
+							is_building_type = building_dye_plantation
+							is_building_type = building_opium_plantation
+							is_building_type = building_tea_plantation
+							is_building_type = building_tobacco_plantation
+							is_building_type = building_sugar_plantation
+							is_building_type = building_banana_plantation
+							is_building_type = building_silk_plantation				
+						}
+					}
+				}
+				save_scope_as = slowdown_slave_plantation_slaves_scope
+				workplace = {
+					save_scope_as = slowdown_slave_plantation_scope
+				}
+			}
+			save_scope_as = slowdown_slave_plantation_state_scope
+		}
+		if = {
+			limit = {
+				any_political_movement = {
+					is_revolutionary_movement = yes
+					is_political_movement_type = movement_to_enact
+					desired_law = law_type:law_slavery_banned
+				}
+			}
+			save_revolution_scopes = yes
+		}
+	}
+
+	option = {
+		name = brazilian_slavery.9.a
+		default_option = yes
+		scope:slowdown_slave_plantation_state_scope = {
+			add_radicals_in_state = {
+				pop_type = slaves
+				value = medium_radicals
+			}
+		}
+		if = {
+			limit = {
+				any_interest_group = {
+					is_marginal = no
+					law_stance = {
+						law = law_type:law_slave_trade
+						value <= disapprove
+					}
+				}
+			}
+			every_interest_group = {
+				limit = {
+					is_marginal = no
+					law_stance = {
+						law = law_type:law_slave_trade
+						value <= disapprove
+					}
+				}
+				add_modifier = {
+					name = widespread_slave_abuse
+					months = normal_modifier_time
+				}
+			}
+		}
+	}
+
+	option = {
+		name = brazilian_slavery.9.b
+		scope:slowdown_slave_plantation_scope = {
+			random_list = {
+				3 = {
+					add_modifier = {
+						name = plantation_slowdowns_slavery_modifier
+						months = short_modifier_time
+					}			
+				}
+				1 = {
+					add_modifier = {
+						name = plantation_slowdowns_slavery_modifier
+						months = normal_modifier_time
+						multiplier = 0.75
+					}			
+				}
+			}
+		}
+	}
+
+	option = {
+		name = brazilian_slavery.9.c
+		trigger = {
+			any_political_movement = {
+				is_revolutionary_movement = yes
+				is_political_movement_type = movement_to_enact
+				desired_law = law_type:law_slavery_banned
+			}
+		}
+		scope:ongoing_revolution = {
+			add_civil_war_progress = revolution_advance_medium
+		}
+	}
+}
+
+# Slave Escape
+brazilian_slavery.10 = {
+	type = country_event
+	placement = scope:escape_slave_plantation_state_scope
+
+	title = brazilian_slavery.10.t
+	desc = brazilian_slavery.10.d
+	flavor = brazilian_slavery.10.f
+
+	event_image = {
+		video = "southamerica_slaves_night"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	duration = 3
+
+	#dlc = dlc008
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		NOT = { has_variable = slavery_event_cooldown }
+		any_scope_state = {
+			any_scope_pop = {
+				is_pop_type = slaves
+				workplace ?= {
+					OR = {
+						is_building_type = building_coffee_plantation
+						is_building_type = building_cotton_plantation
+						is_building_type = building_dye_plantation
+						is_building_type = building_opium_plantation
+						is_building_type = building_tea_plantation
+						is_building_type = building_tobacco_plantation
+						is_building_type = building_sugar_plantation
+						is_building_type = building_banana_plantation
+						is_building_type = building_silk_plantation				
+					}
+				}
+			}
+		}
+	}
+
+	immediate = {
+		set_variable = {
+			name = slavery_event_cooldown
+			months = normal_modifier_time
+		}
+		random_scope_state = {
+			limit = {
+				any_scope_pop = {
+					is_pop_type = slaves
+					workplace ?= {
+						OR = {
+							is_building_type = building_coffee_plantation
+							is_building_type = building_cotton_plantation
+							is_building_type = building_dye_plantation
+							is_building_type = building_opium_plantation
+							is_building_type = building_tea_plantation
+							is_building_type = building_tobacco_plantation
+							is_building_type = building_sugar_plantation
+							is_building_type = building_banana_plantation
+							is_building_type = building_silk_plantation				
+						}
+					}
+				}
+			}
+			random_scope_pop = {
+				limit = {
+					is_pop_type = slaves
+					workplace ?= {
+						OR = {
+							is_building_type = building_coffee_plantation
+							is_building_type = building_cotton_plantation
+							is_building_type = building_dye_plantation
+							is_building_type = building_opium_plantation
+							is_building_type = building_tea_plantation
+							is_building_type = building_tobacco_plantation
+							is_building_type = building_sugar_plantation
+							is_building_type = building_banana_plantation
+							is_building_type = building_silk_plantation				
+						}
+					}
+				}
+				save_scope_as = escape_slave_plantation_slaves_scope
+				workplace = {
+					save_scope_as = escape_slave_plantation_scope
+				}
+			}
+			save_scope_as = escape_slave_plantation_state_scope
+		}
+	}
+
+	option = {
+		name = brazilian_slavery.10.a
+		default_option = yes
+		random_list = {
+			3 = {
+				scope:escape_slave_plantation_state_scope = {
+					add_modifier = {
+						name = quilombo_destroyed_modifier
+						months = normal_modifier_time
+					}
+				}
+				scope:escape_slave_plantation_state_scope = {
+					add_loyalists_in_state = {
+						pop_type = slaves
+						value = small_radicals
+					}
+				}
+			}
+			1 = {
+				scope:escape_slave_plantation_scope = {
+					add_modifier = {
+						name = disastrous_slave_hunt
+						months = normal_modifier_time
+					}
+				}
+				scope:escape_slave_plantation_state_scope = {
+					add_radicals_in_state = {
+						pop_type = slaves
+						value = medium_radicals
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = brazilian_slavery.10.b
+		scope:escape_slave_plantation_state_scope = {
+			add_radicals_in_state = {
+				pop_type = slaves
+				value = small_radicals
+			}
+		}
+		if = {
+			limit = {
+				any_interest_group = {
+					is_marginal = no
+					law_stance = {
+						law = law_type:law_slave_trade
+						value <= disapprove
+					}
+				}
+			}
+			every_interest_group = {
+				limit = {
+					is_marginal = no
+					law_stance = {
+						law = law_type:law_slave_trade
+						value <= disapprove
+					}
+				}
+				add_modifier = {
+					name = widespread_slave_abuse
+					months = normal_modifier_time
+				}
+			}
+		}
+	}
+
+	option = {
+		name = brazilian_slavery.10.c
+		highlighted_option = yes
+		trigger = {
+			has_law = law_type:law_slave_trade 
+		}
+		add_modifier = {
+			name = slave_purchases_modifier
+			multiplier = money_amount_multiplier_very_small
+			months = short_modifier_time
+		}
+	}
+}
+
+# Enforce the Aberdeen Act - GBR
+brazilian_slavery.11 = {
+	type = country_event
+	placement = root
+
+	title = brazilian_slavery.11.t
+	desc = brazilian_slavery.11.d
+	flavor = brazilian_slavery.11.f
+
+	event_image = {
+		video = "unspecific_naval_battle"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	duration = 3
+
+	#dlc = dlc008
+
+	trigger = {
+		# triggered by journal entry
+	}
+
+	immediate = {
+		c:BRZ ?= { save_scope_as = brazil_scope }
+		c:GBR ?= { save_scope_as = britain_scope }	
+	}
+
+	option = {
+		name = brazilian_slavery.11.a
+		default_option = yes
+		change_relations = { 
+			country = c:BRZ 
+			value = -50 
+		}
+		# Makes up for part of the lost prestige and influence
+		add_modifier = {
+			name = aberdeen_act_enforced_gbr
+			months = normal_modifier_time
+		}
+		# Large convoy and trade penalties
+		show_as_tooltip = {
+			c:BRZ = {
+				add_modifier = {
+					name = aberdeen_act_enforced_brz
+					months = normal_modifier_time
+				}
+			}
+		}
+		c:BRZ = {
+			trigger_event = { id = brazilian_slavery.12 popup = yes }
+		}
+		custom_tooltip = {
+			text = aberdeen_act_pop_support_tt
+		}
+		every_country = {
+			limit = {
+				OR = {
+					has_diplomatic_relevance = c:BRZ
+					has_diplomatic_relevance = c:GBR
+				}
+			}
+			post_notification = aberdeen_act_notification
+		}
+	}
+}
+
+# Enforce the Aberdeen Act - BRZ
+brazilian_slavery.12 = {
+	type = country_event
+	placement = root
+
+	title = brazilian_slavery.11.t
+	desc = brazilian_slavery.11.d
+	flavor = brazilian_slavery.11.f
+
+	event_image = {
+		video = "unspecific_naval_battle"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	duration = 3
+
+	#dlc = dlc008
+
+	trigger = {
+		# triggered by journal entry
+	}
+
+	immediate = {
+		c:BRZ ?= { save_scope_as = brazil_scope }
+		c:GBR ?= { save_scope_as = britain_scope }	
+	}
+
+	option = {
+		name = brazilian_slavery.12.a
+		default_option = yes
+		# Makes up for part of the lost prestige and influence
+		show_as_tooltip = {
+			change_relations = { 
+				country = c:BRZ 
+				value = -50 
+			}
+		}
+		# Large convoy and trade penalties
+		c:BRZ = {
+			add_modifier = {
+				name = aberdeen_act_enforced_brz
+				months = normal_modifier_time
+			}
+		}
+		custom_tooltip = {
+			text = aberdeen_act_pop_support_tt
+		}
+	}
+}
+
+# Slavery Fail Event
+brazilian_slavery.13 = {
+	type = country_event
+	placement = root
+
+	title = brazilian_slavery.13.t
+	desc = brazilian_slavery.13.d
+	flavor = brazilian_slavery.13.f
+
+	event_image = {
+		video = "votp_gunboat_diplomacy"
+	}
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	duration = 3
+
+	#dlc = dlc008
+
+	trigger = {
+		# triggered by journal entry
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				c:GBR ?= {
+					has_law = law_type:law_slavery_banned
+				}
+			}
+			c:GBR ?= {
+				save_scope_as = anti_slavery_great_power_scope
+			}
+		}
+		else_if = {
+			limit = {
+				any_country = {
+					has_law = law_type:law_slavery_banned
+					country_rank = rank_value:great_power					
+				}
+			}
+			random_country = {
+				limit = {
+					has_law = law_type:law_slavery_banned
+					country_rank = rank_value:great_power
+				}
+				save_scope_as = anti_slavery_great_power_scope
+			}
+		}
+		else = {
+			random_country = {
+				limit = {
+					has_law = law_type:law_slavery_banned
+				}
+				save_scope_as = anti_slavery_great_power_scope				
+			}
+		}
+	}
+
+	option = {
+		name = brazilian_slavery.13.a
+		default_option = yes
+        ig:ig_rural_folk = {
+            add_ideology = ideology_pro_slavery
+        }
+        add_modifier = {
+            name = brazil_slaving_pariah_modifier
+        }
+        add_loyalists = {
+        	pop_type = aristocrats
+        	value = medium_radicals
+        }
+        add_radicals = {
+        	culture = cu:afro_brazilian
+        	value = large_radicals
+        }
+        every_country = {
+        	limit = {
+				has_law = law_type:law_slavery_banned
+				country_rank >= rank_value:great_power
+        	}
+        	change_relations = { country = root value = -30 }
+        }
+	}
+}

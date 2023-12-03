@@ -23,15 +23,43 @@ metro.1 = {
 	flavor = metro.1.f
 
 	immediate = {
-		capital = {
-			save_scope_as = capital_scope
+		random_scope_state = {
+			limit = {
+				OR = {
+					AND = {
+						ROOT.market_capital = {
+							owner = ROOT
+						}
+						THIS = ROOT.market_capital
+					}
+					AND = {
+						ROOT.market_capital = {
+							NOT = {
+								owner = ROOT
+							}
+						}
+						has_building = building_trade_center
+					}
+				}
+				any_scope_building = {
+					is_building_type = building_urban_center
+					level > 20
+				}
+				any_scope_building = {
+					is_building_type = building_railway
+					has_active_production_method = pm_steel_passenger_carriages
+					has_active_production_method = pm_electric_trains
+					level > 5
+				}
+			}
+			save_scope_as = metro_state
 		}	
 	}
 
 	option = {
 		name = metro.1.a
 		default_option = yes
-		capital = {
+		scope:metro_state = {
 			add_modifier = {
 				name = metro_system
 			}
@@ -44,7 +72,7 @@ metro.1 = {
 	option = {
 		name = metro.1.b
 		default_option = yes
-		capital = {
+		scope:metro_state = {
 			add_modifier = {
 				name = metro_system
 			}

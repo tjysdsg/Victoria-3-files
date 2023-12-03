@@ -80,6 +80,39 @@ french_empire_clothes_pop_trigger = {
 	}
 }
 
+russian_empire_clothes_trigger = {
+	exists = scope:character
+	scope:character = {
+		exists = c:RUS
+		exists = home_country
+		home_country = {
+			OR = {
+				AND = {
+					c:RUS = this
+					is_subject = no # preventing uniform conflicts if RUS becomes a subject of another country with puppet uniforms
+				}
+				is_subject_of = c:RUS
+			}		
+		}
+	}
+}
+
+russian_empire_clothes_pop_trigger = {
+	exists = scope:pop
+	scope:pop = {
+		exists = c:RUS
+		home_country = {
+			OR = {
+				AND = {
+					c:RUS = this
+					is_subject = no # preventing uniform conflicts if RUS becomes a subject of another country with puppet uniforms
+				}
+				is_subject_of = c:RUS
+			}		
+		}
+	}
+}
+
 german_clothes_trigger = {
 	exists = scope:character
 	scope:character = {
@@ -204,6 +237,7 @@ japanese_imperial_clothes_trigger = {
 				exists = c:JAP
 				home_country = {
 					this = c:JAP
+					NOT = { has_variable = meiji_restoration_complete }
 				}
 			}
 		}
@@ -496,24 +530,39 @@ ethiopian_clothes_trigger = {
 european_clothes_trigger = {
 	exists = scope:character
 	scope:character = {
-		culture = {
-			has_discrimination_trait = european_heritage
-		}
-		NOT = {
-			culture = cu:circassian
-		}
-		NOT = {
-			AND = { # Albanian characters serving either the Ottomans or Egyptians should wear that country's clothing.
-				culture = cu:albanian
-				exists = home_country
-				OR = {
-					home_country = {
-						exists = c:TUR
-						c:TUR = this
-					}
-					home_country = {
-						exists = c:EGY
-						c:EGY = this
+		OR = {
+			AND = {
+				culture = cu:japanese
+				devout_clothes_trigger = no
+				NOT = {
+					has_ideology = ideology:ideology_traditionalist
+					is_ruler = yes
+				}
+				owner ?= {
+					has_variable = meiji_restoration_complete
+				}
+			}
+			AND = {
+				culture = {
+					has_discrimination_trait = european_heritage
+				}
+				NOT = {
+					culture = cu:circassian
+				}
+				NOT = {
+					AND = { # Albanian characters serving either the Ottomans or Egyptians should wear that country's clothing.
+						culture = cu:albanian
+						exists = home_country
+						OR = {
+							home_country = {
+								exists = c:TUR
+								c:TUR = this
+							}
+							home_country = {
+								exists = c:EGY
+								c:EGY = this
+							}
+						}
 					}
 				}
 			}
@@ -821,14 +870,13 @@ south_east_asia_clothes_pop_trigger = {
 south_american_clothes_character_trigger = {
 	exists = scope:character
 	scope:character = {
-		OR = {
-			culture = cu:platinean
-			culture = cu:brazilian
-			culture = cu:south_andean
-			culture = cu:north_andean
-			culture = cu:mexican
-			culture = cu:central_american
-			culture = cu:caribeno
+		culture = {
+			has_discrimination_trait = european_heritage
+			OR = {
+				has_discrimination_trait = lusophone
+				has_discrimination_trait = hispanophone
+			}
+			NOT = { has_discrimination_trait = iberian_culture_group }
 		}
 	}
 }
@@ -836,14 +884,13 @@ south_american_clothes_character_trigger = {
 south_american_clothes_pop_trigger = {
 	exists = scope:pop
 	scope:pop = {
-		OR = {
-			culture = cu:platinean
-			culture = cu:brazilian
-			culture = cu:south_andean
-			culture = cu:north_andean
-			culture = cu:mexican
-			culture = cu:central_american
-			culture = cu:caribeno
+		culture = {
+			has_discrimination_trait = european_heritage
+			OR = {
+				has_discrimination_trait = lusophone
+				has_discrimination_trait = hispanophone
+			}
+			NOT = { has_discrimination_trait = iberian_culture_group }
 		}
 	}
 }
@@ -933,6 +980,14 @@ slavic_clothes_trigger = {
 				has_discrimination_trait = west_slavic
 				has_discrimination_trait = jugoslav
 			}
+		}   
+	}
+}
+
+nordic_clothes_pop_trigger = {
+	scope:pop ?= {
+		culture = {
+			has_discrimination_trait = scandinavian_culture_group			
 		}   
 	}
 }

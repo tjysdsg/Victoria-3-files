@@ -48,17 +48,95 @@
 
 DEFAULT = {
 	flag_definition = {
+		coa = list "communist"
+		priority = 1000
+		trigger = {
+			coa_def_communist_flag_trigger = yes
+		}
+	}
+	flag_definition = {
 		coa = list "anarchy"
-		priority = 500
+		priority = 2000
 		trigger = {
 			coa_def_anarchy_flag_trigger = yes
 		}
 	}
 	flag_definition = {
-		coa = list "communist"
-		priority = 1000
+		coa = colonial_southern_africa
+		allow_overlord_canton = yes
+		overlord_canton_scale = { @canton_scale_cross_x @canton_scale_cross_y }
+		priority = 100
 		trigger = {
-			coa_def_communist_flag_trigger = yes
+			exists = scope:actor
+			scope:actor = {
+				has_variable = southern_africa_subject_var
+			}
+			NOT = {
+				scope:actor = {
+					c:SAF ?= this
+					c:GBR ?= this.overlord
+				}
+			}
+		}
+	}
+	flag_definition = {
+		coa = colonial_congo
+		allow_overlord_canton = yes
+		overlord_canton_scale = { @canton_scale_cross_x @canton_scale_cross_y }
+		priority = 100
+		trigger = {
+			exists = scope:actor
+			scope:actor = {
+				has_variable = congo_subject_var
+			}
+		}
+	}
+	flag_definition = {
+		coa = colonial_niger
+		allow_overlord_canton = yes
+		overlord_canton_scale = { @canton_scale_cross_x @canton_scale_cross_y }
+		priority = 100
+		trigger = {
+			exists = scope:actor
+			scope:actor = {
+				has_variable = niger_subject_var
+			}
+		}
+	}
+	flag_definition = {
+		coa = colonial_senegal
+		allow_overlord_canton = yes
+		overlord_canton_scale = { @canton_scale_cross_x @canton_scale_cross_y }
+		priority = 100
+		trigger = {
+			exists = scope:actor
+			scope:actor = {
+				has_variable = senegal_subject_var
+			}
+		}
+	}
+	flag_definition = {
+		coa = colonial_zanj
+		allow_overlord_canton = yes
+		overlord_canton_scale = { @canton_scale_cross_x @canton_scale_cross_y }
+		priority = 100
+		trigger = {
+			exists = scope:actor
+			scope:actor = {
+				has_variable = zanj_subject_var
+			}
+		}
+	}
+	flag_definition = {
+		coa = colonial_ethiopia
+		allow_overlord_canton = yes
+		overlord_canton_scale = { @canton_scale_cross_x @canton_scale_cross_y }
+		priority = 100
+		trigger = {
+			exists = scope:actor
+			scope:actor = {
+				has_variable = ethiopia_subject_var
+			}
 		}
 	}
 }
@@ -222,7 +300,7 @@ AFS = {
         priority = 100
         trigger = {
             exists= c:AFS
-            scope:actor = { capital = { region = sr:region_congo } }
+            scope:actor = { capital ?= { region = sr:region_congo } }
         }
     }
     flag_definition = {
@@ -232,7 +310,7 @@ AFS = {
         priority = 100
         trigger = {
             exists= c:AFS
-            scope:actor = { capital = { region = sr:region_southern_africa } }
+            scope:actor = { capital ?= { region = sr:region_southern_africa } }
         }
     }
     flag_definition = {
@@ -242,7 +320,7 @@ AFS = {
         priority = 100
         trigger = {
             exists= c:AFS
-            scope:actor = { capital = { region = sr:region_zanj } }
+            scope:actor = { capital ?= { region = sr:region_zanj } }
         }
     }
     flag_definition = {
@@ -252,7 +330,7 @@ AFS = {
         priority = 100
         trigger = {
             exists= c:AFS
-            scope:actor = { capital = { region = sr:region_nile_basin } }
+            scope:actor = { capital ?= { region = sr:region_nile_basin } }
         }
     }
     flag_definition = {
@@ -263,7 +341,7 @@ AFS = {
         trigger = {
             exists= c:AFS
             scope:actor = {
-            	capital = {
+            	capital ?= {
             		OR = {
             			region = sr:region_senegal
             			region = sr:region_niger
@@ -279,7 +357,7 @@ AFS = {
         priority = 100
         trigger = {
             exists= c:AFS
-            scope:actor = { capital = { region = sr:region_north_africa } }
+            scope:actor = { capital ?= { region = sr:region_north_africa } }
         }
     }
 }
@@ -1231,6 +1309,12 @@ BRE = { # Bremen
 
 BRI = { # Brittany
 	flag_definition = {
+		coa = BRI
+		subject_canton = BRI_subject
+		allow_overlord_canton = yes
+		priority = 1
+	}
+	flag_definition = {
 		coa = BRI_republic
 		priority = 10
 		trigger = { 
@@ -1325,11 +1409,18 @@ BRZ = { # Brazil
 		}
 	}	
 	flag_definition = {
-		coa = BRZ_dictatorship
-		subject_canton = BRZ_dictatorship			
+		coa = BRZ_oligarchic_republic
+		subject_canton = BRZ_oligarchic_republic			
 		priority = 20
 		trigger = {
-			coa_def_dictatorship_flag_trigger = yes
+			scope:actor ?= {
+				has_law = law_type:law_presidential_republic
+				has_law = law_type:law_landed_voting
+				OR = {
+					has_law = law_type:law_tenant_farmers
+					has_law = law_type:law_serfdom
+				}
+			}
 		}
 	}	
 	flag_definition = {
@@ -3170,6 +3261,7 @@ GBR = { # Great Britain / United Kingdom
 	}
 	flag_definition = {
 		coa = GBR_republic
+		subject_canton = GBR_republic
 		priority = 15
 		trigger = { 
 			coa_def_republic_flag_trigger = yes
@@ -3290,7 +3382,7 @@ GBR = { # Great Britain / United Kingdom
 		priority = 22
 		trigger = { 
 			exists = scope:actor
-			scope:actor = { capital = { state_region = s:STATE_LANCASHIRE } }
+			scope:actor = { capital ?= { state_region = s:STATE_LANCASHIRE } }
 		}
 	}
 	flag_definition = {
@@ -3298,7 +3390,7 @@ GBR = { # Great Britain / United Kingdom
 		priority = 23
 		trigger = {
 			coa_def_communist_flag_trigger = yes
-			scope:actor = { capital = { state_region = s:STATE_LANCASHIRE } }
+			scope:actor = { capital ?= { state_region = s:STATE_LANCASHIRE } }
 		}
 	}
 	flag_definition = {
@@ -3306,7 +3398,7 @@ GBR = { # Great Britain / United Kingdom
 		priority = 1500
 		trigger = { 
 			coa_def_communist_flag_trigger = yes
-			scope:actor = { NOT = { capital = { state_region = s:STATE_LANCASHIRE } } }
+			scope:actor = { NOT = { capital ?= { state_region = s:STATE_LANCASHIRE } } }
 		}
 	}	
 	flag_definition = {
@@ -3324,6 +3416,37 @@ GCO = { # Gran Colombia
 		coa = CLM_gran_colombia
 		subject_canton = CLM_gran_colombia
 		priority = 1
+	}
+}
+
+FND = {
+	flag_definition = {
+		coa = FND_andes_federation
+		subject_canton = FND_andes_federation
+		priority = 1
+	}
+	flag_definition = {
+		coa = FND_united_provinces
+		subject_canton = FND_united_provinces
+		priority = 5
+		trigger = { 
+			scope:actor = {
+				OR = {
+					was_formed_from = PLT
+					was_formed_from = ARG
+					was_formed_from = URU
+					was_formed_from = PRG
+				}
+			}
+		}
+	}
+	flag_definition = {
+		coa = FND_communist
+		subject_canton = FND_communist
+		priority = 1000
+		trigger = { 
+			coa_def_communist_flag_trigger = yes
+		}
 	}
 }
 
@@ -3373,17 +3496,61 @@ GER = { # Germany
 		}
 	}
 	flag_definition = {
-		coa = GER_communist
-		subject_canton = GER_communist
-		priority = 1500
+		coa = GER_spartakist
+		subject_canton = GER_spartakist
+		priority = 2000
 		trigger = { 
 			coa_def_communist_flag_trigger = yes
 		}
-	}	
+	}
+	flag_definition = {
+		coa = GER_ddr
+		subject_canton = GER_ddr
+		priority = 1500
+		trigger = { 
+			scope:actor = {
+				OR = {
+					AND = {
+						has_law = law_type:law_single_party_state
+						py:communist_party = {
+							any_member = {
+								is_in_government = yes
+							}
+						}
+					}
+					AND = {
+						OR = {
+							has_law = law_type:law_autocracy
+							has_law = law_type:law_technocracy
+							has_law = law_type:law_oligarchy
+						}
+						any_scope_character = {
+							is_ruler = yes
+							OR = {
+								has_ideology = ideology:ideology_communist
+								has_ideology = ideology:ideology_vanguardist
+								has_ideology = ideology:ideology_anarchist
+							}
+						}
+					}
+					AND = {
+						is_subject = yes
+						overlord = {
+							has_law = law_type:law_council_republic
+						}
+					}
+				}
+				OR = {
+					has_law = law_type:law_parliamentary_republic
+					has_law = law_type:law_presidential_republic
+				}
+			}
+		}
+	}
 	flag_definition = {
 		coa = GER_fascist
 		subject_canton = GER_fascist
-		priority = 1500
+		priority = 1250
 		trigger = { 
 			coa_def_fascist_flag_trigger = yes
 		}
@@ -4335,6 +4502,7 @@ ITA = { # Italy
 	# Sardinia-Piedmont Italy
 	flag_definition = {
 		coa = ITA
+		subject_canton = ITA
 		priority = 15
 		trigger = {
 			exists = scope:actor
@@ -4362,6 +4530,7 @@ ITA = { # Italy
 	# Tuscany Italy
 	flag_definition = {
 		coa = ITA_tuscan
+		subject_canton = ITA_tuscan
 		priority = 15
 		trigger = {
 			exists = scope:actor
@@ -4375,6 +4544,7 @@ ITA = { # Italy
 	# Modena Italy
 	flag_definition = {
 		coa = ITA_modenan
+		subject_canton = ITA_modenan
 		priority = 15
 		trigger = {
 			exists = scope:actor
@@ -4388,6 +4558,7 @@ ITA = { # Italy
 	# Parma Italy
 	flag_definition = {
 		coa = ITA_parmesan
+		subject_canton = ITA_parmesan
 		priority = 15
 		trigger = {
 			exists = scope:actor
@@ -4401,6 +4572,7 @@ ITA = { # Italy
 	# Lucca Italy
 	flag_definition = {
 		coa = ITA_luccan
+		subject_canton = ITA_luccan
 		priority = 15
 		trigger = {
 			exists = scope:actor
@@ -4415,6 +4587,7 @@ ITA = { # Italy
 
 	flag_definition = {
 		coa = ITA_republic
+		subject_canton = ITA_republic
 		priority = 10
 		trigger = { 
 			coa_def_republic_flag_trigger = yes
@@ -4962,11 +5135,23 @@ KOK = { # Kokand
 
 KOR = { # Korea
 	flag_definition = {
-		coa = KOR
-		subject_canton = KOR	
+		coa = KOR_joseon
+		subject_canton = KOR_joseon	
 		allow_overlord_canton = yes		
 		coa_with_overlord_canton = KOR_subject			
 		priority = 1
+	}
+	flag_definition = {
+		coa = KOR		
+		priority = 2
+		trigger = { 
+			OR = {
+				scope:actor = {
+					has_variable = KOR_korean_empire_declared
+				}
+				coa_def_republic_flag_trigger = yes
+			}
+		}	
 	}
 	flag_definition = {
 		coa = KOR_subject_CHI		
@@ -5560,6 +5745,27 @@ MEX = { # Mexico
 	}	
 }
 
+MGB = { # Maghreb
+	flag_definition = {
+		coa = MGB
+		subject_canton = MGB
+		allow_overlord_canton = yes
+		priority = 1
+	}
+	flag_definition = {
+		coa = MGB_monarchy
+		subject_canton = MGB_monarchy
+		allow_overlord_canton = yes
+		priority = 10
+		trigger = { 
+			OR = {
+				coa_def_theocracy_flag_trigger = yes
+				coa_def_monarchy_flag_trigger = yes
+			}
+		}
+	}
+}
+
 MGD = { # Maguindanao
 	flag_definition = {
 		coa = MGD	
@@ -5681,6 +5887,15 @@ MOL = { # Moldavia
 		priority = 2
 		trigger = { 
 			coa_def_turkish_ensign_trigger = yes
+		}
+	}	
+	flag_definition = {
+		coa = ROM_united_principalities
+		priority = 100
+		trigger = { 
+			scope:actor = {
+				has_variable = ROM_united_principality
+			}
 		}
 	}	
 	flag_definition = {
@@ -6524,6 +6739,15 @@ ORI = { # Orissa
 	}
 }
 
+PAK = { # Pakistan
+	flag_definition = {
+		coa = PAK
+		subject_canton = PAK
+		allow_overlord_canton = yes
+		priority = 1
+	}
+}
+
 PAN = { # Sikh Empire
 	flag_definition = {
 		coa = PAN
@@ -6670,6 +6894,14 @@ PAT = { # Patagonia
 	}
 }
 
+PBC = { # Peru-Bolivia
+	flag_definition = {
+		coa = PBC
+		subject_canton = PBC
+		priority = 1
+	}
+}
+
 PER = { # Persia
 	flag_definition = {
 		coa = PER
@@ -6762,6 +6994,9 @@ PEU = { # Peru
 		priority = 10
 		trigger = { 
 			coa_def_republic_flag_trigger = yes
+			scope:actor ?= {
+				has_law = law_type:law_universal_suffrage
+			}
 		}
 	}	
 	flag_definition = {
@@ -6778,7 +7013,10 @@ PEU = { # Peru
 		coa_with_overlord_canton = PEU_subject			
 		priority = 20
 		trigger = {
-			coa_def_dictatorship_flag_trigger = yes
+			coa_def_republic_flag_trigger = yes
+			scope:actor ?= {
+				NOT = { has_law = law_type:law_universal_suffrage }
+			}
 		}
 	}	
 	flag_definition = {
@@ -6788,6 +7026,62 @@ PEU = { # Peru
 			coa_def_spanish_ensign_trigger = yes
 		}
 	}	
+}
+
+NPU = { # Peru
+	flag_definition = {
+		coa = PEU
+		allow_overlord_canton = no		
+		subject_canton = PEU
+		priority = 1
+	}
+	flag_definition = {
+		coa = PEU_monarchy
+		subject_canton = PEU_monarchy
+		allow_overlord_canton = no				
+		priority = 5
+		trigger = { 
+			coa_def_monarchy_flag_trigger = yes
+		}
+	}	
+	flag_definition = {
+		coa = PEU_absolute_monarchy
+		subject_canton = PEU_absolute_monarchy
+		priority = 20
+		trigger = { 
+			coa_def_absolute_monarchy_flag_trigger = yes
+		}
+	}	
+	flag_definition = {
+		coa = PEU_republic
+		subject_canton = PEU_republic
+		priority = 10
+		trigger = { 
+			coa_def_republic_flag_trigger = yes
+			scope:actor ?= {
+				has_law = law_type:law_universal_suffrage
+			}
+		}
+	}	
+	flag_definition = {
+		coa = PEU_communist
+		priority = 1500
+		trigger = { 
+			coa_def_communist_flag_trigger = yes
+		}
+	}		
+	flag_definition = {
+		coa = PEU
+		subject_canton = PEU
+		allow_overlord_canton = no		
+		priority = 20
+		trigger = {
+			coa_def_republic_flag_trigger = yes
+			scope:actor ?= {
+				NOT = { has_law = law_type:law_universal_suffrage }
+			}
+		}
+	}		
 }
 
 PHI = { # Philippines
@@ -7215,6 +7509,16 @@ RUS = { # Russia
 		priority = 1500 # need to override the DEFAULT
 		trigger = { 
 			coa_def_communist_flag_trigger = yes
+		}
+	}
+	flag_definition = {
+		coa = RUS_soviet_technocracy
+		priority = 1750 # need to override the DEFAULT
+		trigger = { 
+			coa_def_communist_flag_trigger = yes
+			scope:actor = {
+				has_law = law_type:law_technocracy
+			}
 		}
 	}
 	flag_definition = {
@@ -8134,6 +8438,33 @@ TID = { # Tidore
 	}
 }
 
+TIS = { # Turtle Island
+	flag_definition = {
+		coa = TIS
+		subject_canton = TIS
+		priority = 1
+	}
+	flag_definition = {
+		coa = TIS_republic
+		subject_canton = TIS_republic
+		priority = 20
+		trigger = { 
+			coa_def_republic_flag_trigger = yes
+		}
+	}
+	flag_definition = {
+		coa = TIS_haudenosaunee
+		subject_canton = TIS_haudenosaunee
+		priority = 100
+		trigger = {
+			exists = scope:actor
+			scope:actor = {
+				was_formed_from = IRO
+			}
+		}
+	}	
+}
+
 
 TNG = { # Tonga
 	flag_definition = {
@@ -8584,7 +8915,15 @@ URU = { # Uruguay
 		coa = URU_subject_BRZ
 		priority = 50
 		trigger = { 
-			coa_def_brazilian_ensign_trigger = yes
+			OR = {
+				coa_def_brazilian_ensign_trigger = yes
+				AND = {
+					exists = c:POR
+					scope:actor = {
+						is_subject_of = c:POR
+					}
+				}
+			}
 		}
 	}
 	flag_definition = {
@@ -8722,6 +9061,15 @@ WAL = { # Wallachia
 		priority = 2
 		trigger = { 
 			coa_def_turkish_ensign_trigger = yes		
+		}
+	}
+	flag_definition = {
+		coa = ROM_united_principalities
+		priority = 100
+		trigger = { 
+			scope:actor = {
+				has_variable = ROM_united_principality
+			}
 		}
 	}	
 }	
@@ -9025,10 +9373,292 @@ KAU = { # Kaurna
 	}
 }
 
-PRS = { # Paris Commune
+EQT = { # Confederation of the Equator
+	flag_definition = {
+		coa = EQT
+		subject_canton = EQT
+		priority = 1
+	}
+}
+
+CTR = { # Catharinense Republic
+	flag_definition = {
+		coa = CTR
+		subject_canton = CTR
+		priority = 1
+	}
+}
+
+MNG = { # Minas Gerais
+	flag_definition = {
+		coa = MNG
+		subject_canton = MNG
+		priority = 1
+	}
+}
+
+PAU = { # Paulistania
+	flag_definition = {
+		coa = PAU
+		subject_canton = PAU
+		priority = 1
+	}
+}
+
+BHI = { # Bahia
+	flag_definition = {
+		coa = BHI
+		subject_canton = BHI
+	}
+}
+
+PRC = { # Paris Commune
+	flag_definition = {
+		coa = PRC
+		subject_canton = PRC
+		priority = 1
+	}
+
 	flag_definition = {
 		coa = PRS
 		subject_canton = PRS
+		priority = 1500
+		trigger = { 
+			coa_def_communist_flag_trigger = yes
+		}
+	}
+}
+
+HRE = {
+	flag_definition = {
+		coa = HRE	
+		subject_canton = HRE
 		priority = 1
+	}
+	flag_definition = {
+		coa = HRE_republic
+		priority = 10
+		trigger = { 
+			coa_def_republic_flag_trigger = yes
+			coa_def_communist_flag_trigger = no
+		}
+	}
+	flag_definition = {
+		coa = HRE_technate
+		priority = 15
+		trigger = { 
+			scope:actor ?= {
+				OR = {
+					has_law = law_type:law_presidential_republic
+					has_law = law_type:law_parliamentary_republic
+				}
+				has_law = law_type:law_technocracy
+			}
+		}
+	}
+	flag_definition = {
+		coa = HRE_fascist
+		priority = 20
+		trigger = { 
+			coa_def_fascist_flag_trigger = yes
+		}
+	}
+	flag_definition = {
+		coa = HRE_communist
+		priority = 1500
+		trigger = { 
+			coa_def_communist_flag_trigger = yes
+		}
+	}
+}
+
+UNL = {
+	flag_definition = {
+		coa = UNL	
+		subject_canton = UNL
+		priority = 1
+	}
+	flag_definition = {
+		coa = UNL_republic
+		priority = 5
+		trigger = { 
+			coa_def_republic_flag_trigger = yes
+		}
+	}
+	flag_definition = {
+		coa = UNL_burgundy
+		priority = 5
+		trigger = { 
+			coa_def_absolute_monarchy_flag_trigger = yes
+		}
+	}
+	flag_definition = {
+		coa = UNL_communist
+		priority = 1500
+		trigger = { 
+			coa_def_communist_flag_trigger = yes
+		}
+	}
+}
+
+RHN = {
+	flag_definition = {
+		coa = RHN	
+		subject_canton = RHN
+		priority = 1
+	}
+	flag_definition = {
+		coa = RHN_communist
+		priority = 1500
+		trigger = { 
+			coa_def_communist_flag_trigger = yes
+		}
+	}
+}
+
+SPU = { # South Peru
+	flag_definition = {
+		coa = SPU
+		subject_canton = SPU
+		priority = 1
+	}
+}
+
+IQU = { # South Peru
+	flag_definition = {
+		coa = IQU
+		subject_canton = IQU
+		priority = 1
+	}
+}
+
+ALT = { # Los Altos
+	flag_definition = {
+		coa = ALT
+		subject_canton = ALT
+		priority = 1
+	}
+}
+
+NCR = { # North Carolina
+	flag_definition = {
+		coa = NCR
+		subject_canton = NCR
+		priority = 1
+	}
+	flag_definition = {
+		coa = NCR_confederate_pre_1861
+		priority = 10
+		trigger = { 
+			game_date < 1862.1.1 
+			NOT = {
+				scope:actor = {
+					has_law = law_type:law_slavery_banned
+				}
+			}
+		}
+	}
+	flag_definition = {
+		coa = NCR_confederate
+		priority = 15
+		trigger = { 
+			game_date >= 1862.1.1 
+			NOT = {
+				scope:actor = {
+					has_law = law_type:law_slavery_banned
+				}
+			}
+		}
+	}
+	flag_definition = {
+		coa = NCR_communist
+		priority = 1500
+		trigger = { 
+			coa_def_communist_flag_trigger = yes
+		}
+	}
+}
+
+
+SCR = { # South Carolina
+	flag_definition = {
+		coa = SCR
+		subject_canton = SCR
+		priority = 1
+	}
+	flag_definition = {
+		coa = SCR_communist
+		priority = 1500
+		trigger = { 
+			coa_def_communist_flag_trigger = yes
+		}
+	}
+}
+
+
+CLI = { # United Carolina
+	flag_definition = {
+		coa = CLI
+		subject_canton = CLI
+		priority = 1
+	}
+	flag_definition = {
+		coa = CLI_monarchist
+		priority = 5
+		trigger = { 
+			coa_def_monarchy_flag_trigger = yes
+		}
+	}
+	flag_definition = {
+		coa = CLI_communist
+		priority = 1500
+		trigger = { 
+			coa_def_communist_flag_trigger = yes
+		}
+	}
+}
+
+GRG = { # Georgia
+	flag_definition = {
+		coa = GRG
+		subject_canton = GRG
+		priority = 1
+	}
+	flag_definition = {
+		coa = GRG_communist
+		priority = 1500
+		trigger = { 
+			coa_def_communist_flag_trigger = yes
+		}
+	}
+}
+
+FLR = { # Florida
+	flag_definition = {
+		coa = FLR
+		subject_canton = FLR
+		priority = 1
+	}
+	flag_definition = {
+		coa = FLR_communist
+		priority = 1500
+		trigger = { 
+			coa_def_communist_flag_trigger = yes
+		}
+	}
+}
+
+PLT = {
+	flag_definition = {
+		coa = PLT	
+		subject_canton = PLT
+		priority = 1
+	}
+	flag_definition = {
+		coa = PLT_communist
+		priority = 1500
+		trigger = { 
+			coa_def_communist_flag_trigger = yes
+		}
 	}
 }

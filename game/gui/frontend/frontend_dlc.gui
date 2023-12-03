@@ -1,0 +1,62 @@
+types dlc_types {
+	type dlc_collection = hbox {
+		layoutpolicy_horizontal = expanding
+		layoutpolicy_vertical = expanding
+		margin_left = 20
+		spacing = 16
+
+		text_single = {
+			max_width = 150
+			minimumsize = { 0 25 }
+
+			text = "DLC"
+			align = nobaseline
+			using = Font_Size_Medium
+		}
+
+		hbox = {
+			datamodel = "[GetDlcCollection]"
+			spacing = 10
+
+			item = {
+				hbox = {
+					widget = {
+						visible = "[Dlc.IsMajor]"
+						size = { 80 80 }
+						dlc_button = {}
+					}
+
+					widget = {
+						visible = "[Not( Dlc.IsMajor )]"
+						size = { 65 65 }
+						dlc_button = {}
+					}
+				}
+			}
+		}
+
+		expand = {}
+	}
+
+	type dlc_button = button {
+		size = { 100% 100% }
+		alpha = "[TransparentIfFalse( Dlc.IsEnabled )]"
+		onclick = "[Dlc.ShowInStore]"
+		tooltip = "DLC_BUTTON_TOOLTIP"
+		using = tooltip_nw
+
+		icon = {
+			size = { 100% 100% }
+			texture = "gfx/interface/backgrounds/round_frame_dec.dds"
+
+			icon = {
+				size = { 100% 100% }
+				position = { 3 -3 }
+
+				texture = "[Dlc.GetIcon]"
+				parentanchor = center
+
+			}
+		}
+	}
+}

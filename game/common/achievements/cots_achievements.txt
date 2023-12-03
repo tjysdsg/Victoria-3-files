@@ -1,0 +1,209 @@
+﻿# possible - filters out achivements on game start so we dont have to check everything all the time
+# happened - checks if achivement happened
+
+achievement_magnanimous = {
+	possible = {
+		c:BRZ ?= THIS
+		has_dlc_feature = rp1_content
+	}
+	happened = {
+		custom_tooltip = {
+			text = achievement_magnanimous_tt
+			has_variable = brz_enduring_empire
+		}
+		has_law = law_type:law_monarchy
+	}
+}
+
+achievement_federation_day = {
+	possible = {
+		has_dlc_feature = rp1_content
+		OR = {
+			country_has_primary_culture = cu:platinean
+			country_has_primary_culture = cu:north_andean
+			country_has_primary_culture = cu:south_andean
+		}
+	}
+	happened = {
+		custom_tooltip = {
+			text = achievement_federation_day_tt
+			c:FND ?= THIS
+		}
+	}
+}
+
+achievement_not_yet_lost = {
+	possible = {
+		has_variable = not_yet_lost_ach_possible
+	}
+	happened = {
+		custom_tooltip = {
+			text = achievement_not_yet_lost_tt
+			c:PLC ?= THIS
+		}
+		custom_tooltip = {
+			text = achievement_not_yet_lost_2_tt
+			has_variable = greater_commonwealth_var
+		}
+	}
+}
+
+achievement_estado_novo = {
+	possible = {
+		c:BRZ ?= THIS
+		has_dlc_feature = rp1_content
+	}
+	happened = {
+		custom_tooltip = {
+			text = achievement_estado_novo_tt
+			has_variable = estado_novo_achievement
+		}
+	}
+}
+
+achievement_viva_la_confederacion= {
+	possible = {
+		c:BOL ?= THIS
+	}
+	happened = {
+		custom_tooltip = {
+			text = achievement_viva_la_confederacion_tt
+			c:PBC ?= THIS
+		}
+	}
+}
+
+achievement_desteapta_te_romane = {
+	possible = {
+		country_has_primary_culture = cu:romanian
+	}
+	happened = {
+		custom_tooltip = {
+			text = achievement_desteapta_te_romane_tt
+			c:ROM ?= this
+		}
+		custom_tooltip = {
+			text = achievement_desteapta_te_romane_2_tt
+			any_state = {
+				filter = {
+					state_region = {
+						is_homeland = cu:romanian
+					}
+				}
+				is_split_state = no
+				owner = ROOT
+				count = all
+			}
+		}
+	}
+}
+
+achievement_piratini_not_piratiny = {
+	possible = {
+		OR = {
+			c:PNI ?= THIS
+			c:PRA ?= THIS
+		}
+		has_dlc_feature = rp1_content
+	}
+	happened = {
+		custom_tooltip = {
+			text = achievement_piratini_not_piratiny_tt
+			OR = {
+				NOT = {
+					exists = c:BRZ
+				}
+				c:BRZ ?= {
+					this.gdp < root.gdp
+				}
+			}
+		}
+	}
+}
+
+achievement_stonks = {
+	happened = {
+		hidden_trigger = {
+			any_company = {
+				prosperity >= 100
+				count >= 3
+			}
+		}
+	}
+}
+
+achievement_banana_republic = {
+	possible = {
+		OR = {
+			country_has_primary_culture = cu:yankee
+			country_has_primary_culture = cu:dixie
+		}
+	}
+	happened = {
+		hidden_trigger = {
+			any_company = {
+				type = company_type:company_united_fruit
+				prosperity >= 100
+			}
+			country_has_building_group_levels = {
+				type = bg_plantations
+				value  >= 75
+			}
+		}
+	}
+}
+
+achievement_republic_or_death = {
+	possible = {
+		c:PRG ?= THIS
+		has_dlc_feature = rp1_content
+	}
+	happened = {
+		custom_tooltip = {
+			text = achievement_republic_or_death_tt
+			has_variable = paraguay_war_victory_achievement
+		}
+		has_modifier = populated_southamerica
+	}
+}
+
+achievement_spqr = {
+	possible = {
+		c:PAP ?= THIS
+	}
+	happened = {
+		OR = {
+			has_law = law_type:law_parliamentary_republic
+			has_law = law_type:law_presidential_republic
+			has_law = law_type:law_council_republic
+		}
+		custom_tooltip = {
+			text = achievement_spqr_tt
+			c:ITA ?= THIS
+		}
+	}
+}
+
+achievement_devils_railroad = {
+	happened = {
+		custom_tooltip = {
+			text = achievement_devils_railroad_tt
+			has_variable = je_amazonas_complete_variable
+		}
+		custom_tooltip = {
+			text = achievement_devils_railroad_2_tt
+			any_state = {
+				filter = {
+					OR = {
+						has_state_trait = state_trait_amazon_rainforest_level_2
+						has_state_trait = state_trait_amazon_rainforest_level_1
+						has_state_trait = state_trait_amazon_rainforest
+					}
+				}
+				owner = ROOT
+				has_building = building_railway
+				count = all
+			}
+		}
+	}
+}

@@ -144,7 +144,7 @@ expedition_events.602 = { #Choose commander
 			multiplier = money_amount_multiplier_medium
 		}
 		scope:expedition_leader_1 = {
-			set_character_busy = yes
+			set_character_busy_and_immortal = yes
 			set_variable = expedition_leader_var
 		}
 		trigger_event = { id = expedition_events.604 days = 30 }
@@ -162,7 +162,7 @@ expedition_events.602 = { #Choose commander
 			multiplier = money_amount_multiplier_medium
 		}
 		scope:expedition_leader_2 = {
-			set_character_busy = yes
+			set_character_busy_and_immortal = yes
 			set_variable = expedition_leader_var
 		}
 		trigger_event = { id = expedition_events.604 days = 30 }
@@ -179,7 +179,7 @@ expedition_events.602 = { #Choose commander
 			multiplier = money_amount_multiplier_medium
 		}
 		scope:expedition_leader_3 = {
-			set_character_busy = yes
+			set_character_busy_and_immortal = yes
 			set_variable = expedition_leader_var
 		}
 		trigger_event = { id = expedition_events.604 days = 30 }
@@ -264,7 +264,7 @@ expedition_events.611 = { #Successful expedition
 		}
 		scope:expedition_leader = {
 			add_trait = explorer
-			set_character_busy = no
+			set_character_busy_and_immortal = no
 			add_modifier = {
 				name = congo_expedition_modifier
 				months = normal_modifier_time
@@ -320,7 +320,10 @@ expedition_events.612 = { #Failed expedition
 		name = expedition_events.612.a
 		default_option = yes
 		trigger = {
-			var:expedition_progress < 6
+			OR = {
+				var:expedition_progress < 6
+				is_ai = yes
+			}
 		}
 		scope:expedition_leader = {
 			place_character_in_void = 24
@@ -348,7 +351,7 @@ expedition_events.612 = { #Failed expedition
 				name = failed_congo_river_expedition_modifier
 				months = normal_modifier_time
 			}
-			set_character_busy = no
+			set_character_busy_and_immortal = no
 			add_trait = explorer
 		}
 	}
@@ -1072,11 +1075,6 @@ expedition_events.696 = { #follow up if you killed the other expedition and mana
 				has_variable = expedition_leader_cruel_var
 			}
 			save_scope_as = expedition_leader_cruel
-		}
-		
-		random_scope_character = {
-			limit = { has_variable = expedition_leader_var }
-			save_scope_as = expedition_leader
 		}
 	}
 

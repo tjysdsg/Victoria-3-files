@@ -86,6 +86,11 @@
 	HEAT_MAP_GOOD = 		{ 0.11 0.46 0.05 1 }				# Green
 	HEAT_MAP_NEUTRAL = 		{ 0.75 0.75 0.75 1 }				# White
 
+	# LOCAL PRICES
+	LOCAL_PRICE_MAP_HIGH =	{ 1.000 0.674 0.454 2 }				# Gold
+	LOCAL_PRICE_MAP_LOW = 	{ 0.410 0.670 0.740 2 }				# Blue
+	LOCAL_PRICE_MAP_MID = 	{ 0.75 0.75 0.75 1 }				# White
+
 	# COLORS FOR RADICALS AND LOYALISTS HEAT MAP
 	RADICALS_HEAT_BASE = 	{ 0.5 0.04 0.02 0 }					# Red, but zero alpha
 	RADICALS_HEAT_MAX = 	{ 0.5 0.04 0.02 1 }					# Red
@@ -95,6 +100,10 @@
 	LOYALISTS_HEAT_MAX = 	{ 0.11 0.46 0.05 1 }				# Green
 	LOYALIST_PERCENTAGE_OF_POPULATION = 0.25					# In the Loyalists Map Mode, if the amount of loyalists in a state is above X the state will be colored with LOYALISTS_HEAT_MAX
 
+	#COLORS FOR POLLUTION HEAT MAP
+	POLLUTION_HEAT_BASE = 	{ 0.3 0.25 0.16 0 }
+	POLLUTION_HEAT_MAX = 	{ 0.3 0.25 0.16 1 }
+	POLLUTION_COLOR_CEILING_VALUE = 0.6							# In the Pollution map mode a state will reach POLLUTION_HEAT_MAX at this fraction of POLLUTION_MAX
 }
 
 # NOTE: Stolen from CK3, will need tweaking etc.
@@ -218,7 +227,7 @@ NGraphics = {
 	FLAT_MAP_ZOOM_STEP = 10			# At which zoom step to fade to flat map
 
 	# Water fixes
-	WATER_SHADOW_MULTIPLIER = 0.25 				# Controls water shadow brightness ( multiplies the environment cubemap by this value and adds it to the shadow as light )
+	WATER_SHADOW_MULTIPLIER = 0.75 				# Controls water shadow brightness ( multiplies the environment cubemap by this value and adds it to the shadow as light )
 
 	# Goods colors
 	GOOD_CATEGORY_MILITARY = { 0.29 0.16 0.17 1 }
@@ -231,10 +240,15 @@ NGraphics = {
 	MORALE_MEDIUM = { 0.7 0.5 0.1 1 }
 	MORALE_LOW = { 0.65 0.1 0.1 1 }
 
+	# Organization colors
+	ORGANIZATION_HIGH = { 0.14 0.60 0.2 1 }
+	ORGANIZATION_MEDIUM = { 0.7 0.5 0.1 1 }
+	ORGANIZATION_LOW = { 0.65 0.1 0.1 1 }
+
 	# Loyalty colors
-	LOYALTY_LOYALIST = {0.39 0.67 0.33 1}
-	LOYALTY_RADICAL = {0.88 0.34 0.34 1}
-	LOYALTY_NEUTRAL = {0.7 0.7 0.7 1 }
+	LOYALTY_LOYALIST = { 0.39 0.67 0.33 1}
+	LOYALTY_RADICAL = { 0.88 0.34 0.34 1}
+	LOYALTY_NEUTRAL = { 0.7 0.7 0.7 1 }
 
 	UNIMPORTANT_ELEMENT_ALPHA = 0.3
 
@@ -246,6 +260,10 @@ NGraphics = {
 	REVOLUTION_MAP_OBJECT_LAYER = "revolution_dynamic"
 	REVOLUTION_MAP_OBJECT_UPDATE_PROVINCES_PER_FRAME = 16			# Max number of provinces that may be updated per frame.
 	REVOLUTION_MAP_OBJECT_UPDATE_MAX_TIME_PER_FRAME = 0.002			# Max time per frame to spend on dynamic terrain updates in seconds.
+
+	# Night map objects
+	NIGHT_MAP_OBJECT_LAYERS = { "night_dynamic" "night_effects" }	# Layers that activate at night
+	DAY_MAP_OBJECT_LAYERS = { "day_dynamic" "day_effects" }	# Layers that activate at day
 
 	# Dynamic map objects
 	HIDDEN_MAP_OBJECT_LAYERS = { "mines_dynamic" "farms_dynamic" "forestry_dynamic" }	# These layers are hidden by default when the game starts
@@ -268,18 +286,66 @@ NGraphics = {
 	# Coa
 	COUNTRY_COLOR_LIST_NAME = "country_color_list"					# The Coat-of-Arms list to use when generating dynamic country map colors
 
-	# Segment Border
-	FRONT_SEGMENTS_POOL_SIZE = 1024									# Amount of border segments that is supported by border system
-
-	NAVAL_BATTLE_POSITION_RANDOM_TRIES = 10							# Amount of tries we rerandomize naval battle positions (between 0 and 100)
-
-	BORDER_GRAPHICS_SHIFT_DISTANCE = 5.0							# Distance from center to the compatant entities
-
 	# Scaled Distance Roughness
 	DISTANCE_ROUGHNESS_POSITION = 1.8		# Position to start blend
 	DISTANCE_ROUGHNESS_BLEND = 80.0			# Blend range
 	DISTANCE_ROUGHNESS_SCALE = 0.5			# Roughness multiplier scale
-	DAYS_AFTER_BATTLE_TO_SHOW_ENTITY = 7	# For how long to show battle entities after the battle
+
+	# Grid cell scores used for cities
+	CELL_SCORE_BASE = 1.0					# A cell that is 100% within the province will get the full base score. A cell outside the province will get 0. A 50/50 cell will get approximately half base score.
+	CELL_SCORE_UNDER_WATER_PENALTY = 10.0	# penalty per depth-units under water. Added for each corner of the cell
+	CELL_SCORE_SLOPE_MIN = 0.075			# amount of slope allowed before penalty kicks in. value corresponds to the slope's 'k' in f(x)=kx+m
+	CELL_SCORE_SLOPE_PENALTY = 6			# penalty per 'k' above the limit. Does not scale linearly with slope angle so might be tricky to tweak
+	CELL_SCORE_RIVER_PENALTY = 10.0			# Penalty per "to-close-to-river"-units	(distance-from-cell-center-to-river-edge - bias)
+	CELL_SCORE_ROAD_PENALTY = 10.0
+	CELL_SCORE_NOISE_FACTOR = 0.0			# Multiplies score with 1+-noise_factor
+
+	# Front entities graphics
+	FRONT_ENTITIES_CUTOFF = 300 			# Zoom at which we hide all front entities
+	FRONT_DIORAMA_GRID_WIDTH = 20			# Grid width of a diorama inside a province
+	FRONT_DIORAMA_GRID_HEIGHT = 20			# Grid height of a diorama inside a province
+	FRONT_DIORAMA_GRID_SCALE = 1.1			# Grid cell scale of a diorama inside a province
+	FRONT_DIORAMA_STATE_DEFAULT = "idle"		# Animation state name for entities when they do nothing (before war)
+	FRONT_DIORAMA_STATE_NO_GENERAL = "defend"	# Animation state name for entities without a general's order
+	FRONT_DIORAMA_FLAT_MAP_ENTITY = "generic_flatmap_unit_entity"	# The entity that is visible in the flat map mode instead of front entities
+
+	# Battle entities graphics
+	BATTLE_ENTITIES_CUTOFF = 300 			# Zoom at which we hide all battle entities
+	BATTLE_DIORAMA_GRID_WIDTH = 30			# Grid width of a diorama inside a province
+	BATTLE_DIORAMA_GRID_HEIGHT = 40			# Grid height of a diorama inside a province
+	BATTLE_DIORAMA_GRID_SCALE = 1.1			# Grid cell scale of a diorama inside a province
+	BATTLE_DIORAMA_ATTACKER_STATE = "advance"		# Animation state name for the attacker side
+	BATTLE_DIORAMA_DEFENDER_STATE = "defend"		# Animation state name for the defender side
+	BATTLE_DIORAMA_DEFEAT_STATE = "defeat"			# Animation state name for defeated entities during the battle
+	BATTLE_DIORAMA_VICTORY_SIDE_STATE = "victory"	# Animation state name for entities on the winning battle side after the battle
+	BATTLE_DIORAMA_DEFEATED_SIDE_STATE = "idle"		# Animation state name for entities on the defeated battle side after the battle
+	BATTLE_DIORAMA_DESTRUCTION_DELAY = 5	# How many seconds we show diorama entities after the battle is over
+	BATTLE_DIORAMA_VFX_START_TIME = 0 		# After how many seconds we show VFX on battle sides after the battle is over (must be <= BATTLE_DIORAMA_DESTRUCTION_DELAY)
+	BATTLE_DIORAMA_VFX_VICTORY_SIDE = "battle_diorama_victory_entity"		# Entity that spawns after BATTLE_DIORAMA_VFX_START_TIME seconds after the battle end on the victory side
+	BATTLE_DIORAMA_VFX_DEFEATED_SIDE = "battle_diorama_defeat_entity"	# Entity that spawns after BATTLE_DIORAMA_VFX_START_TIME seconds after the battle end on the defeated side
+	DAYS_AFTER_BATTLE_TO_SHOW_ENTITY = 7	# For how long to show battle environment entities after the battle
+
+	MILITARY_ENTITIES_FLYING_ENTITY_HEIGHT = 1					# If entity locator is higher than this value, then the entity is considered as flying i.e. doesn't occupy a cell and doesn't hide map objects beneath
+	MILITARY_ENTITIES_TOGGLE_MAP_OBJECTS_IN_RADIUS = 2			# How many cells around entities should be used for hiding map objects (trees)
+	MILITARY_ENTITIES_DITHER_DURATION = 1.0						# How many seconds it takes for diorama entities to gradually appear or disappear. Applies to all dioramas: front, land battle, fleet, and naval battle dioramas
+
+	NAVAL_ORDER_BASE_ENTITY = "naval_order_base_entity"
+	NAVAL_ORDER_ENTITY_HEIGHT = 0.25							# Height above water
+
+	OCCUPATION_ENTITY = "military_occupation_flag_entity"		# Entity that appears on occupied territory by occupying nation
+	OCCUPATION_ENTITY_DIRECTION = { 0.0 0.0 -1.0 }				# Direction of occupation entity
+
+	# Fleet entities graphics
+	FLEET_ENTITIES_CUTOFF = 300				# Zoom at which we hide all fleet entities
+	FLEET_ENTITIES_DEFAULT_STATE = "idle"	# Animation state name for the fleet entities stationed in a sea node
+
+	# Naval battles graphics
+	NAVAL_BATTLE_DIORAMA_ATTACKER_STATE = "advance"			# Animation state name for the attacker side
+	NAVAL_BATTLE_DIORAMA_DEFENDER_STATE = "defend"			# Animation state name for the defender side
+	NAVAL_BATTLE_DIORAMA_DEFEAT_STATE = "defeat"			# Animation state name for defeated entities during the battle
+	NAVAL_BATTLE_DIORAMA_VICTORY_SIDE_STATE = "idle"		# Animation state name for entities on the winning battle side after the battle
+	NAVAL_BATTLE_DIORAMA_DEFEATED_SIDE_STATE = "idle"		# Animation state name for entities on the defeated battle side after the battle
+	NAVAL_BATTLE_DIORAMA_DESTRUCTION_DELAY = 5				# For how many seconds we show diorama entities after the battle is over
 }
 
 NFrontend = {
@@ -304,6 +370,7 @@ NCamera = {
 	ZOOM_STEPS_MAX_TILT = { 89	89	89	89		89		89		89		89		89		89		89		89		89		89		89		89		}
 
 	MAX_PAN_TO_ZOOM_STEP = 7							# The camera will lower to this height (but only if above it) when panning to characters/provinces etc.
+	MAX_PAN_TO_ZOOM_STEP_EXTRA_CLOSE = 1 				
 
 	# Debug defines
 	DEBUG_GAMEPAD_LOWSPEED 		= 25.0
@@ -317,13 +384,6 @@ NCities = {
 	GRID_SCALE = 1.1
 	MESH_SCALE = 1.0		#scale all meshes by this
 
-	CELL_SCORE_BASE = 1.0					# A cell that is 100% within the province will get the full base score. A cell outside the province will get 0. A 50/50 cell will get approximately half base score.
-	CELL_SCORE_UNDER_WATER_PENALTY = 10.0	# penalty per depth-units under water. Added for each corner of the cell
-	CELL_SCORE_SLOPE_MIN = 0.075			# amount of slope allowed before penalty kicks in. value corresponds to the slope's 'k' in f(x)=kx+m
-	CELL_SCORE_SLOPE_PENALTY = 6			# penalty per 'k' above the limit. Does not scale linearly with slope angle so might be tricky to tweak
-	CELL_SCORE_RIVER_PENALTY = 10.0			# Penalty per "to-close-to-river"-units	(distance-from-cell-center-to-river-edge - bias)
-	CELL_SCORE_ROAD_PENALTY = 10.0
-	CELL_SCORE_NOISE_FACTOR = 0.0			# Multiplies score with 1+-noise_factor
 	MAX_ACTIVE_SOUND_EFFECTS = 5
 
 	CITY_RIVER_DISTANCE_BIAS = 0.75			# Higher values = more river avoidance
@@ -349,8 +409,17 @@ NCities = {
 	CITY_VFX_ZOOM_CUTOFF = 250				# zoom at which we hide all city VFXes
 	CITY_PARTICLES_ZOOM_CUTOFF = 200		# zoom at which we hide all city particle effects (for example chimney smoke)
 
-	CITY_REVOLUTION_ENTITY_DEFAULT = { "revolution_barricade_small_mesh" "revolution_barricade_mid_mesh" "revolution_barricade_large_mesh" }	# Randomly pick mesh
-	CITY_REVOLUTION_ENTITY_AMOUNT = 0.45	# Multiplier of revolution entities spawning
+	# For each camera distance to the city there is a cut-off factor for the amount of visible buildings in the city
+	# if the distance is lower than the first step, then the factor is 0, i.e. all buildings are visible
+	# if the distance is higher than the last step, then the factor from the last step is taken
+	# if the distance is between steps, then the factor is calculated linearly
+	CITY_BUILDINGS_CUTOFF_DISTANCES = 	{ 300 	400 	600 }	# steps of distances from camera to city to which apply corresponding cut-off factors, must be sorted from low to high
+	CITY_BUILDINGS_CUTOFF_FACTORS = 	{ 0 	0.7 	0.95 }	# which share of buildings to cut off at a certain distance step, must be sorted from low to high
+
+	NIGHT_LIGHT_COLOR_DEFAULT = { 1.0 0.16 0.035 6.5 }	# Lights color, Alpha is max intensity
+	NIGHT_LIGHT_FADE_TIME = 0.35			# Time for indiviual lights to fade in/out from when they activate
+	NIGHT_LIGHT_ACTIVATE_BEGIN = 0.3		# Time at which lights start to activate, on a 0.0 - 1.0 cycle where day is at 0.0 and 0.5 is the midpoint between day and night
+	NIGHT_LIGHT_ACTIVATE_END = 0.75			# Time at which lights finish activating
 }
 
 NRoutes = {
@@ -381,51 +450,14 @@ NProvinceHighlight = {
 	SAMPLE_COUNT = 16	# How many samples to use (max 16)
 }
 
-NMapCoa = {
-	ANGLE = 0.0							# Rotation of the coat of arms on the map. In radians
-	SIZE = 25.0							# Size of one CoA on the map. In world-units
-	SIZE_FLATMAP = 60.0					#
-	BLEND = 0.80f						# Minimum blend value. Final blend value will be the minimum of this and whatever the gradient borders use
-	BLEND_FLATMAP = 0.65f				#
-	BLEND_OCCUPATION = 1.0f				# Blend/Opacity of occupation stripes
-	BLEND_OCCUPATION_FLATMAP = 1.0f		#
-	BLEND_CLOSE_FADE_START = 100.0f		# Height at which to start fading out
-	BLEND_CLOSE_FADE_END = 60.0f		# Height at which to complete fading out
-	ROW_HORIZONTAL_OFFSET = 0.25		# Each row of coat of arms can be offset horizontally. This controls by how much in percentages
-	ROW_COUNT = 4						# How many rows to offset before starting over with an offset of 0s
-	STRIPE_SCALE = 1.0					# Scale of occupation stripes
-	STRIPE_SCALE_FLATMAP = 1.0
-}
+NTravelNetwork = {
+	FORMATION_CATCHUP_DISTANCE = 40.0			# If a military formation 3D caravan is this distance behind where it is supposed to be, accelerate with catch-up speed
+	FORMATION_CATCHUP_SPEED_MULTIPLIER = 1.5	# Accelerate averaged speed by this multiplied when 'catching up'
+	FORMATION_CATCHUP_MIN_SPEED = 15.0			# Minimum speed for catching up
+	FORMATION_SMOOTHING_STEP_COUNT = 5			# For smoothing visual movement speed, military formation speed is measured as a rolling average over X steps
+	FORMATION_SMOOTHING_STEP_TIME = 1.0			# Each step for the military formation speed smoothing is this long
+	FORMATION_SMOOTHING_SPEED_MULTIPLIER = 1.2  # General speed multiplier applied to the smoothing measurement (it's better to be "ahead" than "behind")
 
-NEdgeOfWorld = {
-	# Cloudfield at the edge of map top/bottom
-	# For papermap table bokehfield, see shader file
-	BASETILE = 20.0f
-	BASESCROLL = { 0.0055 0.00325 }
-	BASESTRENGTH = 1.0f
-	BASEPOSITION = 0.728
-	BASECONTRAST = 1.08
-
-	CLOUD1TILE = 2.0
-	CLOUD1SCROLL = { 0.0015 -0.0015 }
-	CLOUD1STRENGTH = 1.0
-	CLOUD1POSITION = 0.538
-	CLOUD1CONTRAST = 1.0
-
-	CLOUD2TILE = 3.0
-	CLOUD2SCROLL = { -0.0075 0.00055 }
-	CLOUD2STRENGTH = 1.0
-	CLOUD2POSITION = 0.158
-	CLOUD2CONTRAST = 1.202
-
-	HIGHCLOUDCOLOR = { 0.8 0.8 1.0 1.0 }
-	LOWCLOUDCOLOR = { 0.03 0.03 0.03 1.0 }
-	COLORMULTIPLY = 0.015
-	FADEDISTANCE = 50
-}
-
-NGuiFlag = {
-	SMALL_WAVE_SCALE = 7.0
-	WAVE_SCALE = 0.95
-	ANIMATION_SPEED = 0.9
+	FORMATION_ARROW_SAMPLING_STEP = 7.0		 # Size of the sampling step (in "map pixels") of the spline network, used when creating arrows
+	FORMATION_ARROW_SAMPLING_STEP_FLATMAP = 30.0 # Size of the sampling step (in "map pixels") of the spline network, used when creating arrows, when zoomed out ("flatmap")
 }

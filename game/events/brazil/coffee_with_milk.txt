@@ -1,0 +1,1646 @@
+﻿namespace = coffee_with_milk
+
+coffee_with_milk.1 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = coffee_with_milk.1.t
+	desc = coffee_with_milk.1.d
+	flavor = coffee_with_milk.1.f
+
+	event_image = {
+		video = "rp1_amazon_exploitation" 
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/middleclass_cafe"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by JE
+	}
+	
+	immediate = {
+		set_strategy = ai_strategy_plantation_economy
+	}
+	
+	option = {
+		name = coffee_with_milk.1.a 
+		default_option = yes
+		add_modifier = {
+			name = modifier_agricultural_development_trade
+			months = very_long_modifier_time
+			is_decaying = yes
+		}
+	}
+
+	option = {
+		name = coffee_with_milk.1.b
+		add_modifier = {
+			name = modifier_agricultural_development_landowners
+			months = very_long_modifier_time
+			is_decaying = yes
+		}
+	}
+}
+
+coffee_with_milk.2 = {
+	type = country_event
+	placement = scope:reinvestment_state
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = coffee_with_milk.2.t
+	desc = coffee_with_milk.2.d
+	flavor = coffee_with_milk.2.f
+
+	event_image = {
+		video = "rp1_brazilian_city"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/middleclass_cafe"
+
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	cooldown = { months = short_modifier_time }
+
+	trigger = {
+		any_scope_state = {
+			OR = {
+				any_scope_building = {
+					is_building_type = building_coffee_plantation
+					level >= 20
+				}
+				any_scope_building = {
+					is_building_type = building_livestock_ranch
+					level >= 20
+				}
+				any_scope_building = {
+					is_building_type = building_sugar_plantation
+					level >= 20
+				}
+			}
+		}
+	}
+	
+	immediate = {
+		ordered_scope_state = {
+			limit = {
+				OR = {
+					any_scope_building = {
+						is_building_type = building_coffee_plantation
+						level >= 20
+					}
+					any_scope_building = {
+						is_building_type = building_livestock_ranch
+						level >= 20
+					}
+					any_scope_building = {
+						is_building_type = building_sugar_plantation
+						level >= 20
+					}
+				}
+			}
+			order_by = gdp
+			save_scope_as = reinvestment_state
+		}
+	}
+	
+	option = {
+		name = coffee_with_milk.2.a 
+		default_option = yes
+		scope:reinvestment_state = {
+			add_modifier = {
+				name = modifier_plantation_reinvestment
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = coffee_with_milk.2.b
+		add_modifier = {
+			name = modifier_taxes_on_plantations
+			months = normal_modifier_time
+		}
+		scope:reinvestment_state = {
+			add_radicals_in_state = {
+				value = medium_radicals
+				strata = rich
+			}
+		}
+	}
+}
+
+coffee_with_milk.3 = {
+	type = country_event
+	placement = scope:population_state
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = coffee_with_milk.3.t
+	desc = coffee_with_milk.3.d
+	flavor = coffee_with_milk.3.f
+
+	event_image = {
+		video = "rp1_amazon_exploitation"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/middleclass_cafe"
+
+	icon = "gfx/interface/icons/event_icons/event_trade.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		any_scope_state = {
+			OR = {
+				any_scope_building = {
+					is_building_type = building_coffee_plantation
+					level >= 20
+					occupancy <= 0.9
+				}
+				any_scope_building = {
+					is_building_type = building_livestock_ranch
+					level >= 20
+					occupancy <= 0.9
+				}
+				any_scope_building = {
+					is_building_type = building_sugar_plantation
+					level >= 20
+					occupancy <= 0.9
+				}
+			}
+		}
+	}
+	
+	immediate = {
+		ordered_scope_state = {
+			limit = {
+				OR = {
+					any_scope_building = {
+						is_building_type = building_coffee_plantation
+						level >= 20
+						occupancy <= 0.9
+					}
+					any_scope_building = {
+						is_building_type = building_livestock_ranch
+						level >= 20
+						occupancy <= 0.9
+					}
+					any_scope_building = {
+						is_building_type = building_sugar_plantation
+						level >= 20
+						occupancy <= 0.9
+					}
+				}
+			}
+			order_by = gdp
+			save_scope_as = population_state
+			random_scope_building = {
+				limit = {
+					OR = {
+						is_building_type = building_coffee_plantation
+						is_building_type = building_livestock_ranch
+						is_building_type = building_sugar_plantation
+					}
+				}
+				save_scope_as = population_building
+			}
+		}
+	}
+	
+	option = {
+		name = coffee_with_milk.3.a 
+		default_option = yes
+		scope:population_state = {
+			add_modifier = {
+				name = modifier_population_state_immigration
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = coffee_with_milk.3.b
+		trigger = {
+			NOT = {
+				has_law = law_type:law_slavery_banned
+			}
+		}
+		random_interest_group = {
+			limit = {
+				law_stance = {
+					law = law_type:law_slave_trade
+					value > neutral
+				}
+			}
+			add_modifier = {
+				name = modifier_supported_slave_imports
+				months = normal_modifier_time
+				is_decaying = yes
+			}
+		}
+		random_interest_group = {
+			limit = {
+				law_stance = {
+					law = law_type:law_slave_trade
+					value < neutral
+				}
+			}
+			add_modifier = {
+				name = modifier_supported_slave_imports_negative
+				months = normal_modifier_time
+				is_decaying = yes
+			}
+		}
+		scope:population_state = {
+			add_modifier = {
+				name = modifier_population_state_slavery
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+coffee_with_milk.4 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = coffee_with_milk.4.t
+	desc = coffee_with_milk.4.d
+	flavor = coffee_with_milk.4.f
+
+	event_image = {
+		video = "rp1_brazilian_city"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/middleclass_cafe"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		#Fired by JE
+		NOT = { has_variable = had_coffe_with_milk_var }
+	}
+	
+	immediate = {
+		set_variable = had_coffe_with_milk_var
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				has_building = building_livestock_ranch
+				is_incorporated = yes
+			}
+			order_by = gdp
+			save_scope_as = milk_state
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				is_incorporated = yes
+				NOT = {
+					scope:milk_state = this
+				}
+			}
+			order_by = gdp
+			save_scope_as = coffee_state
+		}
+	}
+	
+	option = {
+		name = coffee_with_milk.4.a 
+		default_option = yes
+		show_as_tooltip = {
+			add_journal_entry = {
+				type = je_coffee_with_milk
+			}
+		}
+		set_variable = { name = coffee_with_milk_progress value = 120 }
+		set_variable = je_coffee_with_milk_start
+	}
+}
+
+coffee_with_milk.5 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = coffee_with_milk.5.t
+	desc = coffee_with_milk.5.d
+	flavor = coffee_with_milk.5.f
+
+	event_image = {
+		video = "southamerica_factory_opening"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/southamerica/factory_opening"
+
+	icon = "gfx/interface/icons/event_icons/event_trade.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by JE
+	}
+	
+	immediate = {
+
+	}
+	
+	option = {
+		name = coffee_with_milk.5.a 
+		default_option = yes
+		if = {
+			limit = {
+				has_law = law_type:law_collectivized_agriculture
+			}
+			add_modifier = {
+				name = modifier_successful_agrarian_production_collectivised
+				months = long_modifier_time
+			}
+		}
+		else_if = {
+			limit = {
+				has_law = law_type:law_commercialized_agriculture
+			}
+			add_modifier = {
+				name = modifier_successful_agrarian_production_commercialised
+				months = long_modifier_time
+			}
+		}
+		else_if = {
+			limit = {
+				has_law = law_type:law_homesteading
+			}
+			add_modifier = {
+				name = modifier_successful_agrarian_production_homesteading
+				months = long_modifier_time
+			}
+		}
+		else_if = {
+			limit = {
+				OR = {
+					has_law = law_type:law_tenant_farmers
+					has_law = law_type:law_serfdom
+				}
+			}
+			add_modifier = {
+				name = modifier_successful_agrarian_production_landowners
+				months = long_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = coffee_with_milk.5.b
+		if = {
+			limit = {
+				has_law = law_type:law_collectivized_agriculture
+			}
+			add_modifier = {
+				name = modifier_successful_agrarian_production_collectivised
+				months = long_modifier_time
+				multiplier = 0.5
+			}
+		}
+		else_if = {
+			limit = {
+				has_law = law_type:law_commercialized_agriculture
+			}
+			add_modifier = {
+				name = modifier_successful_agrarian_production_commercialised
+				months = long_modifier_time
+				multiplier = 0.5
+			}
+		}
+		else_if = {
+			limit = {
+				has_law = law_type:law_homesteading
+			}
+			add_modifier = {
+				name = modifier_successful_agrarian_production_homesteading
+				months = long_modifier_time
+				multiplier = 0.5
+			}
+		}
+		else_if = {
+			limit = {
+				OR = {
+					has_law = law_type:law_tenant_farmers
+					has_law = law_type:law_serfdom
+				}
+			}
+			add_modifier = {
+				name = modifier_successful_agrarian_production_landowners
+				months = long_modifier_time
+				multiplier = 0.5
+			}
+		}
+	}
+}
+
+coffee_with_milk.6 = {
+	type = country_event
+	placement = scope:northeast_state
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = coffee_with_milk.6.t
+	desc = coffee_with_milk.6.d
+	flavor = coffee_with_milk.6.f
+
+	event_image = {
+		video = "southamerica_aristocrats"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/southamerica/aristocrats"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		NOR = {
+			scope:milk_state = {
+				is_brazil_northeast_state = yes
+			}
+			scope:coffee_state = {
+				is_brazil_northeast_state = yes
+			}
+		}
+	}
+	
+	immediate = {
+		random_scope_state = {
+			limit = {
+				OR = {
+					state_region = s:STATE_PERNAMBUCO
+					state_region = s:STATE_PARAIBA
+					state_region = s:STATE_RIO_GRANDE_DO_NORTE
+					state_region = s:STATE_CEARA
+					state_region = s:STATE_PAUAI
+					state_region = s:STATE_MARANHAO
+					state_region = s:STATE_BAHIA
+				}
+			}
+			save_scope_as = northeast_state
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				has_building = building_livestock_ranch
+				is_incorporated = yes
+			}
+			order_by = gdp
+			save_scope_as = milk_state
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				is_incorporated = yes
+				NOT = {
+					scope:milk_state = this
+				}
+			}
+			order_by = gdp
+			save_scope_as = coffee_state
+		}
+	}
+	
+	option = {
+		name = coffee_with_milk.6.a 
+		default_option = yes
+		scope:northeast_state = {
+			add_radicals_in_state = {
+				value = large_radicals
+				strata = rich
+			}
+		}
+		add_modifier = {
+			name = modifier_landowners_split_brazil
+			months = normal_modifier_time
+		}
+	}
+
+	option = {
+		name = coffee_with_milk.6.b
+		scope:coffee_state = {
+			add_radicals_in_state = {
+				value = medium_radicals
+				strata = rich
+			}
+		}
+		scope:milk_state = {
+			add_radicals_in_state = {
+				value = medium_radicals
+				strata = rich
+			}
+		}
+		add_modifier = {
+			name = modifier_landowners_split_brazil
+			months = normal_modifier_time
+			multiplier = 0.5
+		}
+	}
+}
+
+coffee_with_milk.7 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = coffee_with_milk.7.t
+	desc = coffee_with_milk.7.d
+	flavor = {
+		first_valid = {
+			triggered_desc = {
+				desc = coffee_with_milk.7.f1
+				trigger = {
+					OR = {
+						has_law = law_type:law_presidential_republic
+						has_law = law_type:law_parliamentary_republic
+					}
+				}
+			}
+			triggered_desc = {
+				desc = coffee_with_milk.7.f2
+				trigger = {
+					NOR = {
+						has_law = law_type:law_presidential_republic
+						has_law = law_type:law_parliamentary_republic
+					}
+				}
+			}
+		}
+	}
+	event_image = {
+		video = "southamerica_election"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/southamerica/election"
+
+	icon = "gfx/interface/icons/event_icons/event_election.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		in_election_campaign = yes
+		ig:ig_landowners = {
+			has_party = yes
+		}
+	}
+	
+	immediate = {
+		ig:ig_landowners = {
+			save_scope_as = landowners_scope
+			party = {
+				save_scope_as = republicans_scope
+			}
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				has_building = building_livestock_ranch
+				is_incorporated = yes
+			}
+			order_by = gdp
+			save_scope_as = milk_state
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				is_incorporated = yes
+				NOT = {
+					scope:milk_state = this
+				}
+			}
+			order_by = gdp
+			save_scope_as = coffee_state
+		}
+	}
+	
+	option = {
+		name = coffee_with_milk.7.a 
+		default_option = yes
+		scope:republicans_scope = {
+			add_momentum = momentum_very_large
+		}
+	}
+
+	option = {
+		name = coffee_with_milk.7.b
+		trigger = {
+			NOT = {
+				has_modifier = modifier_governors_policy
+			}
+		}
+		highlighted_option = yes
+		scope:republicans_scope = {
+			add_momentum = momentum_medium
+		}
+	}
+}
+
+coffee_with_milk.8 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = coffee_with_milk.8.t
+	desc = coffee_with_milk.8.d
+	flavor = coffee_with_milk.8.f
+
+	event_image = {
+		video = "unspecific_politicians_arguing" 
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	#on_opened_soundeffect = "event:/SFX/Events/middleeast/middleclass_cafe"
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by JE
+		NOT = {
+			has_law = law_type:law_monarchy
+		}
+		NOT = {
+			has_variable = governors_policy_decision
+		}
+	}
+	
+	immediate = {
+		ig:ig_landowners = {
+			save_scope_as = landowners_ig
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				has_building = building_livestock_ranch
+				is_incorporated = yes
+			}
+			order_by = gdp
+			save_scope_as = milk_state
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				is_incorporated = yes
+				NOT = {
+					scope:milk_state = this
+				}
+			}
+			order_by = gdp
+			save_scope_as = coffee_state
+		}
+	}
+	
+	option = {
+		name = coffee_with_milk.8.a 
+		default_option = yes
+		add_modifier = {
+			name = modifier_governors_policy
+			months = very_long_modifier_time
+		}
+		set_variable = governors_policy_decision
+	}
+
+	option = {
+		name = coffee_with_milk.8.b
+		set_variable = governors_policy_decision
+		scope:milk_state = {
+			add_radicals_in_state = {
+				value = medium_radicals
+				pop_type = aristocrats
+			}
+		}
+		scope:coffee_state = {
+			add_radicals_in_state = {
+				value = medium_radicals
+				pop_type = aristocrats
+			}
+		}
+	}
+}
+
+coffee_with_milk.9 = {
+	type = country_event
+	placement = scope:bandits_state
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = coffee_with_milk.9.t
+	desc = coffee_with_milk.9.d
+	flavor = coffee_with_milk.9.f
+
+	event_image = {
+		video = "rp1_social_banditry"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		any_scope_state = {
+			is_incorporated = yes
+			OR = {
+				average_sol < average_expected_sol
+				turmoil >= 0.25
+			}
+		}
+	}
+	
+	immediate = {
+		random_scope_state = {
+			limit = {
+				is_incorporated = yes
+				OR = {
+					average_sol < average_expected_sol
+					turmoil >= 0.25
+				}
+			}
+			save_scope_as = bandits_state
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				has_building = building_livestock_ranch
+				is_incorporated = yes
+			}
+			order_by = gdp
+			save_scope_as = milk_state
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				is_incorporated = yes
+				NOT = {
+					scope:milk_state = this
+				}
+			}
+			order_by = gdp
+			save_scope_as = coffee_state
+		}
+	}
+	
+	option = {
+		name = coffee_with_milk.9.a 
+		default_option = yes
+		set_variable = cangaco_var
+		scope:bandits_state = {
+			add_modifier = {
+				name = modifier_the_cangaco
+				months = normal_modifier_time
+			}
+			every_neighbouring_state = {
+				limit = {
+					owner = root
+					NOT = {
+						this = prev
+					}
+					is_incorporated = yes
+					OR = {
+						average_sol < average_expected_sol
+						turmoil >= 0.25
+					}
+				}
+				add_modifier = {
+					name = modifier_the_cangaco
+					months = normal_modifier_time
+				}
+			}
+		}
+	}
+
+	option = {
+		name = coffee_with_milk.9.b
+		set_variable = cangaco_var
+		scope:bandits_state = {
+			add_modifier = {
+				name = modifier_the_cangaco
+				months = normal_modifier_time
+				multiplier = 0.5
+			}
+			every_neighbouring_state = {
+				limit = {
+					owner = root
+					NOT = {
+						this = prev
+					}
+					is_incorporated = yes
+					OR = {
+						average_sol < average_expected_sol
+						turmoil >= 0.25
+					}
+				}
+				add_modifier = {
+					name = modifier_the_cangaco
+					months = normal_modifier_time
+					multiplier = 0.5
+				}
+			}
+		}
+		add_modifier = {
+			name = modifier_cangaco_payments
+			months = normal_modifier_time
+		}
+	}
+}
+
+coffee_with_milk.10 = {
+	type = country_event
+	placement = scope:bandits_state
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = coffee_with_milk.10.t
+	desc = coffee_with_milk.10.d
+	flavor = coffee_with_milk.10.f
+
+	event_image = {
+		video = "rp1_social_banditry"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		has_variable = cangaco_var
+		any_scope_state = {
+			is_incorporated = yes
+			OR = {
+				average_sol < average_expected_sol
+				turmoil >= 0.25
+			}
+		}
+		OR = {
+			has_law = law_type:law_tenant_farmers
+			has_law = law_type:law_serfdom
+		}
+		has_technology_researched = camera
+	}
+	
+	immediate = {
+		ig:ig_landowners = {
+			save_scope_as = landowners_scope
+		}
+		ig:ig_rural_folk = {
+			save_scope_as = rf_scope
+		}
+		random_scope_state = {
+			limit = {
+				is_incorporated = yes
+				OR = {
+					average_sol < average_expected_sol
+					turmoil >= 0.25
+				}
+			}
+			save_scope_as = bandits_state
+		}
+		if = {
+			limit = {
+				game_date > 1870.1.1
+				game_date < 1890.1.1
+			}
+			create_character = {
+				template = BRZ_jesuino_brilliant
+				on_created = {
+					set_variable = bandit_agitator
+				}
+			}
+		}
+		if = {
+			limit = {
+				game_date > 1912.1.1
+				game_date <= 1920.1.1
+			}
+			create_character = {
+				template = BRZ_anesia_cauacu
+				on_created = {
+					set_variable = bandit_agitator
+				}
+			}
+		}
+		if = {
+			limit = {
+				game_date > 1920.1.1
+				game_date < 1936.1.1
+			}
+			create_character = {
+				template = BRZ_virgulino_ferreira
+				on_created = {
+					set_variable = bandit_agitator
+				}
+			}
+		}
+		else = {
+			create_character = {
+				is_agitator = yes
+				interest_group = ig_rural_folk
+				ideology = ideology_land_reformer
+				traits = {
+					bandit
+					firebrand
+					ambitious
+				}
+				on_created = {
+					set_variable = bandit_agitator
+				}
+			}
+		}
+		random_scope_character = {
+			limit = {
+				has_variable = bandit_agitator
+			}
+			save_scope_as = bandit_scope
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				has_building = building_livestock_ranch
+				is_incorporated = yes
+			}
+			order_by = gdp
+			save_scope_as = milk_state
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				is_incorporated = yes
+				NOT = {
+					scope:milk_state = this
+				}
+			}
+			order_by = gdp
+			save_scope_as = coffee_state
+		}
+	}
+	
+	option = {
+		name = coffee_with_milk.10.a 
+		default_option = yes
+		scope:bandits_state = {
+			add_radicals_in_state = {
+				value = medium_radicals
+				interest_group = owner.ig:ig_rural_folk
+			}
+		}
+		scope:bandit_scope = {
+			if = {
+				limit = {
+					has_template = BRZ_virgulino_ferreira
+				}
+				add_modifier = {
+					name = modifier_lamp_character_modifier
+				}
+			}
+			else = {
+				add_modifier = {
+					name = modifier_social_bandit_character_modifier
+				}
+			}
+		}
+	}
+
+	option = {
+		name = coffee_with_milk.10.b
+		scope:bandits_state = {
+			add_radicals_in_state = {
+				value = medium_radicals
+				interest_group = owner.ig:ig_rural_folk
+			}
+		}
+		scope:bandit_scope = {
+			if = {
+				limit = {
+					has_template = BRZ_virgulino_ferreira
+				}
+				add_modifier = {
+					name = modifier_lamp_hunted_character_modifier
+				}
+			}
+			else = {
+				add_modifier = {
+					name = modifier_social_bandit_hunted_character_modifier
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = coffee_with_milk.10.c
+		trigger = {
+			institution_investment_level = {
+				institution = institution_police
+				value >= 5
+			}
+		}
+		highlighted_option = yes
+		scope:bandits_state = {
+			add_radicals_in_state = {
+				value = large_radicals
+				interest_group = owner.ig:ig_rural_folk
+			}
+		}
+		random_list = {
+			25 = {
+				scope:bandit_scope = {
+					exile_character = yes
+				}
+			}
+			25 = {
+				scope:bandit_scope = {
+					kill_character = yes
+				}
+			}
+			50 = {
+				scope:bandit_scope = {
+					if = {
+						limit = {
+							has_template = BRZ_virgulino_ferreira
+						}
+						add_modifier = {
+							name = modifier_lamp_hunted_character_modifier
+						}
+					}
+					else = {
+						add_modifier = {
+							name = modifier_social_bandit_hunted_character_modifier
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+coffee_with_milk.11 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = coffee_with_milk.11.t
+	desc = coffee_with_milk.11.d
+	flavor = coffee_with_milk.11.f
+
+	event_image = {
+		video = "votp_cops_march"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_fire.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		capital = {
+			turmoil >= 0.15
+		}
+		ig:ig_armed_forces = {
+			ig_approval < 5
+		}
+		ig:ig_landowners = {
+			is_powerful = yes
+			is_in_government = yes
+		}
+		var:coffee_with_milk_progress >= 180
+	}
+	
+	immediate = {
+		capital = {
+			save_scope_as = capital_scope
+		}
+		ig:ig_armed_forces = {
+			save_scope_as = armed_forces_scope
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				has_building = building_livestock_ranch
+				is_incorporated = yes
+			}
+			order_by = gdp
+			save_scope_as = milk_state
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				is_incorporated = yes
+				NOT = {
+					scope:milk_state = this
+				}
+			}
+			order_by = gdp
+			save_scope_as = coffee_state
+		}
+	}
+	
+	option = {
+		name = coffee_with_milk.11.a 
+		default_option = yes
+		scope:armed_forces_scope = {
+			add_modifier = {
+				name = modifier_unjustly_blamed_for_rising
+				months = normal_modifier_time
+			}
+		}
+		add_modifier = {
+			name = modifier_revolt_of_eighteen
+			months = normal_modifier_time
+			multiplier = 0.5
+		}
+		scope:capital_scope.state_region = {
+			add_devastation = 5
+		}
+	}
+
+	option = {
+		name = coffee_with_milk.11.b
+		add_modifier = {
+			name = modifier_revolt_of_eighteen
+			months = normal_modifier_time
+		}
+		scope:capital_scope.state_region = {
+			add_devastation = 5
+		}
+	}
+}
+
+coffee_with_milk.12 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = coffee_with_milk.12.t
+	desc = coffee_with_milk.12.d
+	flavor = coffee_with_milk.12.f
+
+	event_image = {
+		video = "southamerica_factory_opening"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by JE
+	}
+	
+	immediate = {
+		ig:ig_landowners = {
+			save_scope_as = landowners_ig
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				has_building = building_livestock_ranch
+				is_incorporated = yes
+			}
+			order_by = gdp
+			save_scope_as = milk_state
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				is_incorporated = yes
+				NOT = {
+					scope:milk_state = this
+				}
+			}
+			order_by = gdp
+			save_scope_as = coffee_state
+		}
+	}
+	
+	option = {
+		name = coffee_with_milk.12.a 
+		default_option = yes
+		add_modifier = {
+			name = modifier_election_bonuses_landowners_brazil
+			months = normal_modifier_time
+		}
+		add_loyalists = {
+			value = medium_radicals
+			pop_type = aristocrats
+		}
+	}
+
+	option = {
+		name = coffee_with_milk.12.b
+		add_modifier = {
+			name = modifier_election_bonuses_landowners_brazil
+			months = normal_modifier_time
+			multiplier = 0.5
+		}
+		add_loyalists = {
+			value = small_radicals
+			pop_type = aristocrats
+		}
+	}
+}
+
+coffee_with_milk.13 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = coffee_with_milk.13.t
+	desc = coffee_with_milk.13.d
+	flavor = coffee_with_milk.13.f
+
+	event_image = {
+		video = "unspecific_politicians_arguing"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by JE
+	}
+	
+	immediate = {
+		ig:ig_landowners = {
+			save_scope_as = landowners_ig
+		}
+		if = {
+			limit = {
+				has_law = law_type:law_commercialized_agriculture
+			}
+			random_law = {
+				limit = {
+					type = law_type:law_commercialized_agriculture
+				}
+				save_scope_as = land_reform_law
+			}
+		}
+		if = {
+			limit = {
+				has_law = law_type:law_collectivized_agriculture
+			}
+			random_law = {
+				limit = {
+					type = law_type:law_collectivized_agriculture
+				}
+				save_scope_as = land_reform_law
+			}
+		}
+		if = {
+			limit = {
+				has_law = law_type:law_homesteading
+			}
+			random_law = {
+				limit = {
+					type = law_type:law_homesteading
+				}
+				save_scope_as = land_reform_law
+			}
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				has_building = building_livestock_ranch
+				is_incorporated = yes
+			}
+			order_by = gdp
+			save_scope_as = milk_state
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				is_incorporated = yes
+				NOT = {
+					scope:milk_state = this
+				}
+			}
+			order_by = gdp
+			save_scope_as = coffee_state
+		}
+	}
+	
+	option = {
+		name = coffee_with_milk.13.a 
+		default_option = yes
+		add_modifier = {
+			name = modifier_election_bonuses_brazil
+			months = normal_modifier_time
+		}
+		ig:ig_landowners = {
+			add_modifier = {
+				name = modifier_landowners_weaken_brazil
+				months = normal_modifier_time
+			}
+		}
+		add_radicals = {
+			value = medium_radicals
+			interest_group = ig:ig_landowners
+		}
+	}
+
+	option = {
+		name = coffee_with_milk.13.b
+		ig:ig_landowners = {
+			add_modifier = {
+				name = modifier_landowners_weaken_brazil
+				months = normal_modifier_time
+				multiplier = 0.5
+			}
+		}
+		add_radicals = {
+			value = small_radicals
+			interest_group = ig:ig_landowners
+		}
+	}
+}
+
+coffee_with_milk.14 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = coffee_with_milk.14.t
+	desc = coffee_with_milk.14.d
+	flavor = coffee_with_milk.14.f
+
+	event_image = {
+		video = "unspecific_ruler_speaking_to_people"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by JE
+	}
+	
+	immediate = {
+		ig:ig_landowners = {
+			save_scope_as = landowners_ig
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				has_building = building_livestock_ranch
+				is_incorporated = yes
+			}
+			order_by = gdp
+			save_scope_as = milk_state
+		}
+		ordered_scope_state = {
+			limit = {
+				is_capital = no
+				has_building = building_coffee_plantation
+				is_incorporated = yes
+				NOT = {
+					scope:milk_state = this
+				}
+			}
+			order_by = gdp
+			save_scope_as = coffee_state
+		}
+	}
+	
+	option = {
+		name = coffee_with_milk.14.a 
+		default_option = yes
+		add_loyalists = {
+			value = medium_radicals
+			pop_type = farmers
+		}
+		add_loyalists = {
+			value = medium_radicals
+			pop_type = laborers
+		}
+		add_loyalists = {
+			value = medium_radicals
+			pop_type = peasants
+		}
+	}
+}
+
+coffee_with_milk.15 = {
+	type = country_event
+	placement = scope:bandits_state
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = coffee_with_milk.15.t
+	desc = coffee_with_milk.15.d
+	flavor = coffee_with_milk.15.f
+
+	event_image = {
+		video = "rp1_social_banditry"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/middleeast/middleclass_cafe"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		any_scope_state = {
+			has_modifier = modifier_the_cangaco
+		}
+	}
+	
+	immediate = {
+		ig:ig_landowners = {
+			save_scope_as = landowners_ig
+		}
+		random_scope_state = {
+			limit = {
+				has_modifier = modifier_the_cangaco
+			}
+			save_scope_as = bandits_state
+		}
+	}
+	
+	option = {
+		name = coffee_with_milk.15.a 
+		default_option = yes
+		scope:bandits_state = {
+			add_modifier = {
+				name = modifier_plantation_burned_brazil
+				months = short_modifier_time
+			}
+		}
+		add_modifier = {
+			name = modifier_landowners_weakened_by_bandits
+			months = short_modifier_time
+		}
+	}
+
+	option = {
+		name = coffee_with_milk.15.b
+		scope:bandits_state = {
+			add_modifier = {
+				name = modifier_plantation_burned_brazil
+				months = short_modifier_time
+				multiplier = 0.5
+			}
+			add_radicals_in_state = {
+				value = medium_radicals
+				strata = poor
+			}
+		}
+		add_modifier = {
+			name = modifier_more_cops_against_bandits
+			months = short_modifier_time
+		}
+	}
+}
+
+coffee_with_milk.16 = {
+	type = country_event
+	placement = scope:bandits_state
+
+	duration = 3
+
+	#dlc = dlc008
+
+	title = coffee_with_milk.16.t
+	desc = coffee_with_milk.16.d
+	flavor = coffee_with_milk.16.f
+
+	event_image = {
+		video = "rp1_social_banditry"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		any_scope_state = {
+			has_modifier = modifier_the_cangaco
+		}
+	}
+	
+	immediate = {
+		ig:ig_landowners = {
+			save_scope_as = landowners_ig
+		}
+		ig:ig_rural_folk = {
+			save_scope_as = rural_folk_ig
+		}
+		random_scope_state = {
+			limit = {
+				has_modifier = modifier_the_cangaco
+			}
+			save_scope_as = bandits_state
+		}
+	}
+	
+	option = {
+		name = coffee_with_milk.16.a 
+		default_option = yes
+		scope:bandits_state = {
+			add_radicals_in_state = {
+				value = very_large_radicals
+				interest_group = owner.ig:ig_rural_folk
+			}
+		}
+	}
+
+	option = {
+		name = coffee_with_milk.16.b
+		add_radicals = {
+			value = medium_radicals
+			interest_group = owner.ig:ig_rural_folk
+		}
+	}
+}

@@ -16,6 +16,7 @@ types commander_panel_types
 		# background
 		widget = {
 			size = { 100% 100% }
+			position = { 0 1 }
 			using = Animation_Character_Panel_Refresh
 			
 			# Ruler General
@@ -213,12 +214,12 @@ types commander_panel_types
 
 			blockoverride "portrait_size" {
 				block "character_portrait_size" {
-					size = { 650 650 }
+					size = { 620 620 }
 				}
 			}
 
 			blockoverride "portrait_texture" {
-				portrait_texture = "[Character.GetAnimatedPortrait('agitator_environment', 'camera_leader', 'idle', PdxGetWidgetScreenSize(PdxGuiWidget.Self))]"
+				portrait_texture = "[Character.GetAnimatedPortrait('agitator_environment', 'camera_leader', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self))]"
 			}
 
 			blockoverride "portrait_icons" {}
@@ -238,12 +239,12 @@ types commander_panel_types
 
 			blockoverride "portrait_size" {
 				block "character_portrait_size" {
-					size = { 650 650 }
+					size = { 620 620 }
 				}
 			}
 
 			blockoverride "portrait_texture" {
-				portrait_texture = "[Character.GetAnimatedPortrait('politician_environment', 'camera_leader', 'idle', PdxGetWidgetScreenSize(PdxGuiWidget.Self))]"
+				portrait_texture = "[Character.GetAnimatedPortrait('politician_environment', 'camera_leader', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self))]"
 			}
 
 			blockoverride "portrait_icons" {}
@@ -263,12 +264,12 @@ types commander_panel_types
 
 			blockoverride "portrait_size" {
 				block "character_portrait_size" {
-					size = { 650 650 }
+					size = { 620 620 }
 				}
 			}
 
 			blockoverride "portrait_texture" {
-				portrait_texture = "[Character.GetAnimatedPortrait('ruler_environment', 'camera_leader', 'idle', PdxGetWidgetScreenSize(PdxGuiWidget.Self))]"
+				portrait_texture = "[Character.GetAnimatedPortrait('ruler_environment', 'camera_leader', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self))]"
 			}
 
 			blockoverride "portrait_icons" {}
@@ -288,12 +289,12 @@ types commander_panel_types
 
 			blockoverride "portrait_size" {
 				block "character_portrait_size" {
-					size = { 650 650 }
+					size = { 620 620 }
 				}
 			}
 
 			blockoverride "portrait_texture" {
-				portrait_texture = "[Character.GetAnimatedPortrait('admiral_environment', 'camera_leader', 'idle', PdxGetWidgetScreenSize(PdxGuiWidget.Self))]"
+				portrait_texture = "[Character.GetAnimatedPortrait('admiral_environment', 'camera_leader', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self))]"
 			}
 
 			blockoverride "portrait_icons" {}
@@ -313,12 +314,12 @@ types commander_panel_types
 
 			blockoverride "portrait_size" {
 				block "character_portrait_size" {
-					size = { 650 650 }
+					size = { 620 620 }
 				}
 			}
 
 			blockoverride "portrait_texture" {
-				portrait_texture = "[Character.GetAnimatedPortrait('general_environment', 'camera_leader', 'idle', PdxGetWidgetScreenSize(PdxGuiWidget.Self))]"
+				portrait_texture = "[Character.GetAnimatedPortrait('general_environment', 'camera_leader', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self))]"
 			}
 
 			blockoverride "portrait_icons" {}
@@ -338,12 +339,12 @@ types commander_panel_types
 
 			blockoverride "portrait_size" {
 				block "character_portrait_size" {
-					size = { 650 650 }
+					size = { 620 620 }
 				}
 			}
 
 			blockoverride "portrait_texture" {
-				portrait_texture = "[Character.GetAnimatedPortrait('general_environment_02', 'camera_leader', 'idle', PdxGetWidgetScreenSize(PdxGuiWidget.Self))]"
+				portrait_texture = "[Character.GetAnimatedPortrait('general_environment_02', 'camera_leader', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self))]"
 			}
 
 			blockoverride "portrait_icons" {}
@@ -356,7 +357,8 @@ types commander_panel_types
 			using = dark_area
 			parentanchor = bottom|hcenter
 			size = { 100% 50% }
-			alpha = 0.9
+			alpha = 0.85
+			position = { 0 2 }
 
 			modify_texture = {
 				texture = "gfx/interface/masks/fade_vertical_top.dds"
@@ -399,7 +401,7 @@ types commander_panel_types
 			state = {
 				name = _show
 
-				on_start = "[PdxGuiTriggerAllAnimations(Select_CString( Character.IsAgitator, 'agitator', 'not_agitator' ))]"
+				on_start = "[PdxGuiTriggerAllAnimations(Select_CString( CommanderPanel.AccessCharacter.IsAgitator, 'agitator', 'not_agitator' ))]"
 			}
 
 			state = {
@@ -413,7 +415,7 @@ types commander_panel_types
 			state = {
 				name = agitator
 
-				on_start = "[PdxGuiTriggerAllAnimations(Select_CString( Character.IsHistorical, 'historical_agitator', 'generic_agitator' ))]"
+				on_start = "[PdxGuiTriggerAllAnimations(Select_CString( CommanderPanel.AccessCharacter.IsHistorical, 'historical_agitator', 'generic_agitator' ))]"
 			}
 
 			state = {
@@ -434,6 +436,7 @@ types commander_panel_types
 
 			state = {
 				name = _hide
+				
 				start_sound = {
 					soundeffect = "event:/SFX/UI/SideBar/budget_stop"
 				}
@@ -448,28 +451,51 @@ types commander_panel_types
 			text = "CHARACTER_PANEL_SUBTITLE"
 		}
 
+		blockoverride "goto_visibility" {
+			visible = "[Not(Character.IsInExilePool)]"
+		}
+		blockoverride "goto_properties" {
+			datacontext = "[Character.GetCountry]"
+			tooltip = "ZOOM_TO_LOCATION"
+			onclick = "[Character.ZoomToLocation]"
+		}
+
 		blockoverride "goto_button" {
-			button_icon_goto = {
-				size = { 30 30 }
-				visible = "[Not( Character.IsInExilePool )]"
-				datacontext = "[Character.GetCountry]"
-				tooltip = "GO_TO_BUTTON_COUNTRY"
-				onclick = "[InformationPanelBar.OpenCountryPanel(Character.GetCountry.Self)]"
-			}
-			button_icon_goto = {
+			button_icon_goto = { # Character IS Exile
 				size = { 30 30 }
 				visible = "[And(Character.IsInExilePool, GetVariableSystem.Exists('politics_overview_exile_pool'))]"
 				datacontext = "[Character.GetCountry]"
 				tooltip = "GO_TO_BUTTON_EXILED_AGITATORS"
 				onclick = "[InformationPanelBar.OpenPanelTab( 'politics', 'default' )]"
 			}
-			button_icon_goto = {
+			button_icon_goto = { # Character IS Exile
 				size = { 30 30 }
 				visible = "[And(Character.IsInExilePool, Not(GetVariableSystem.Exists('politics_overview_exile_pool')))]"
 				datacontext = "[Character.GetCountry]"
 				tooltip = "GO_TO_BUTTON_EXILED_AGITATORS"
 				onclick = "[InformationPanelBar.OpenPanelTab( 'politics', 'default' )]"
 				onclick = "[GetVariableSystem.Toggle('politics_overview_exile_pool')]"
+			}
+			button_icon_goto = { #character is General at front
+				size = { 30 30 }
+				visible = "[And( Character.IsGeneral, Character.IsAtFront )  ]"
+				datacontext = "[Character.GetFront]"
+				tooltip = "GO_TO_BUTTON_FRONT"
+				onclick = "[InformationPanelBar.OpenFrontPanel(Character.GetFront)]"
+			}
+			button_icon_goto = { # character is Admiral with the order of raiding convoys
+				size = { 30 30 }
+				visible = "[And(Character.IsAdmiral, Character.GetOrderType.IsRaidConvoys) ]"
+				datacontext = "[Character.GetMilitaryFormation.GetTargetSeaNode]"
+				tooltip = "GO_TO_BUTTON_SEA_REGION"
+				onclick = "[InformationPanelBar.OpenSeaRegionPanel(Province.Self)]"
+			}
+			button_icon_goto = { #All other cases
+				size = { 30 30 }
+				visible = "[And( And( Not( Character.IsInExilePool ) , Not( And( Character.IsGeneral, Character.IsAtFront ))) ,  Not( And( Character.IsAdmiral, Character.GetOrderType.IsRaidConvoys ) ) )]"
+				datacontext = "[Character.GetCountry]"
+				tooltip = "GO_TO_BUTTON_COUNTRY"
+				onclick = "[InformationPanelBar.OpenCountryPanel(Character.GetCountry)]"
 			}
 		}
 
@@ -606,7 +632,7 @@ types commander_panel_types
 								blockoverride "additional_items" {
 									widget = {
 										name = "tutorial_highlight_character_panel_promote_button"
-
+										parentanchor = center
 										size = { 240 50 }
 
 										promote_commander_button = {
@@ -627,105 +653,6 @@ types commander_panel_types
 												size = { 210 40 }
 											}
 										}
-									}
-								}
-							}
-
-							### BATTALIONS, ATTRITION, MORALE
-							character_stats_entry = {
-
-								tooltip = "MILITARY_PANEL_COMMAND_LIMIT_BREAKDOWN_TOOLTIP"
-
-								blockoverride "visibility" {
-									visible = "[Character.IsGeneral]"
-								}
-
-								blockoverride "icon_texture" {
-									texture = "gfx/interface/icons/generic_icons/battalions.dds"
-									size = { 40 40 }
-								}
-
-								blockoverride "double_text_entry" {}
-
-								blockoverride "single_entry_value" {
-									raw_text = "#v [Character.GetNumCombatUnits]#!"
-								}
-
-								blockoverride "additional_items" {
-
-									### BATTALION ATTRITION
-									textbox = {
-										autoresize = yes
-										parentanchor = left|vcenter
-										position = { 135 0 }
-										align = left|nobaseline
-										text = "COMMANDER_PANEL_ATTRITION_FORMAT"
-									}
-								}
-
-								### BATTALION MORALE
-								white_progressbar_vertical = {
-									parentanchor = left|vcenter
-									position = { 190 0 }
-									size = { 7 30 }
-									tooltip = "COMMANDER_MORALE_TOOLTIP"
-									
-									blockoverride "values" {
-										min = 0
-										max = 1
-										value = "[FixedPointToFloat( Character.GetMorale )]"
-									}
-									blockoverride "color" {
-										color = "[GetMoraleColorVec( Character.GetMorale )]"
-									}
-									
-									onmousehierarchyenter = "[AccessHighlightManager.HighlightCommanderSupplyNetwork( Character.Self )]"
-									onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-									alwaystransparent = no
-								}
-							}
-
-							### FLOTILLAS
-							character_stats_entry = {
-
-								tooltip = "MILITARY_PANEL_COMMAND_LIMIT_BREAKDOWN_TOOLTIP"
-
-								blockoverride "visibility" {
-									visible = "[Character.IsAdmiral]"
-								}
-
-								blockoverride "icon_texture" {
-									texture = "gfx/interface/icons/generic_icons/flotillas.dds"
-									size = { 40 40 }
-								}
-
-								blockoverride "double_text_entry" {}
-
-								blockoverride "single_entry_value" {
-									raw_text = "#v [Character.GetNumCombatUnits]#!"
-								}
-
-								blockoverride "additional_items" {
-
-									### FLOTILLA MORALE
-									white_progressbar_vertical = {
-										parentanchor = left|vcenter
-										position = { 190 0 }
-										size = { 7 30 }
-										tooltip = "COMMANDER_MORALE_TOOLTIP"
-										
-										blockoverride "values" {
-											min = 0
-											max = 1
-											value = "[FixedPointToFloat( Character.GetMorale )]"
-										}
-										blockoverride "color" {
-											color = "[GetMoraleColorVec( Character.GetMorale )]"
-										}
-										
-										onmousehierarchyenter = "[AccessHighlightManager.HighlightCommanderSupplyNetwork( Character.Self )]"
-										onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-										alwaystransparent = no
 									}
 								}
 							}
@@ -868,7 +795,8 @@ types commander_panel_types
 
 							### AGE
 							character_stats_entry = {
-
+								### This is to not overcrowd the panel when the character is both a General and an Agitator
+								visible = "[Not(And(Character.IsAgitator, Character.IsGeneral))]"
 								tooltip = "CHARACTER_AGE_TOOLTIP"
 
 								blockoverride "icon_texture" {
@@ -1052,192 +980,6 @@ types commander_panel_types
 					datacontext = [Character.GetShippingLane]
 				}
 
-				### COMBAT UNITS
-				default_header = {
-					visible = "[Character.IsCommander]"
-					using = default_fade_in_out
-
-					blockoverride "text" {
-						datacontext = "[Character]"
-						text = "COMBAT_UNITS_CHARACTER_HEADER"
-					}
-				}
-
-				widget = { size = { 10 10 }}
-
-				# BATTALIONS / WARSHIPS
-				section_header_button = {
-					parentanchor = hcenter
-					size = { 95% 38 }
-				
-					visible = "[And(Character.IsCommander, GreaterThan_int32(Character.GetNumCombatUnits, '(int32)0'))]"
-					using = default_fade_in_out
-					enabled = "[And( Not( Character.IsOffer ), Not(IsDataModelEmpty( Character.GetCombatUnits )))]"
-					
-					blockoverride "onclick" {
-						onclick = "[GetVariableSystem.Toggle( Concatenate( 'combat_units_', Character.GetIDString ) )]"
-					}
-
-					blockoverride "onclick_showmore" {
-						visible = "[Not(GetVariableSystem.Exists( Concatenate( 'combat_units_', Character.GetIDString ) ))]"
-					}
-
-					blockoverride "onclick_showless" {
-						visible = "[GetVariableSystem.Exists( Concatenate( 'combat_units_', Character.GetIDString ) )]"
-					}
-
-					flowcontainer = {
-						parentanchor = vcenter
-						margin_left = 35
-						spacing = 10
-
-						textbox = {
-							visible = "[And(Character.IsFullyMobilized, Character.IsGeneral)]"
-							parentanchor = vcenter
-							elide = right
-							align = left|nobaseline
-							autoresize = yes
-
-							text = "MILITARY_PANEL_MOBILIZED"
-							tooltip = "GENERAL_IS_MOBILIZED_TOOLTIP"
-						}
-
-						textbox = {
-							visible = "[And(Character.IsMobilizing, Character.IsGeneral)]" 
-							parentanchor = vcenter
-							elide = right
-							align = left|nobaseline
-							autoresize = yes
-
-							text = "[Character.GetMobilizationPercentageFormatted]"
-							tooltip = "GENERAL_MOBILIZING_TOOLTIP"
-						}
-
-						textbox = {
-							visible = "[And(Not(Character.IsMobilized), Character.IsGeneral)]"
-							parentanchor = vcenter
-							elide = right
-							align = left|nobaseline
-							autoresize = yes
-
-							text = "GARRISONED_CONCEPT"
-						}
-					}
-
-					flowcontainer = {
-						parentanchor = right|vcenter
-						spacing = 10
-
-						textbox = {
-							visible = "[Character.HasShippingLane]"
-							parentanchor = vcenter
-							elide = right
-							align = right|nobaseline
-							autoresize = yes
-
-							text = "[Character.GetShippingLane.GetConvoyCostFormattedShort]"
-						}
-
-						# Attrition
-						textbox = {
-							visible = "[Or(Character.IsMobilized, NotEqualTo_CFixedPoint(Character.GetAttritionRaw,'(CFixedPoint)0'))]"
-							parentanchor = vcenter
-							autoresize = yes
-							align = nobaseline
-							text = "MILITARY_PANEL_TROOP_ATTRITION_LEVEL"
-							tooltip = "[Character.GetAttritionDesc]"
-						}
-
-						# Units
-						textbox = {
-							visible = "[Character.IsMobilized]"
-							parentanchor = vcenter
-							elide = right
-							align = right|nobaseline
-							autoresize = yes
-							text = "MILITARY_PANEL_COMMANDER_UNITS"
-						}
-						textbox = {
-							visible = "[Not(Character.IsMobilized)]"
-							parentanchor = vcenter
-							elide = right
-							align = right|nobaseline
-							autoresize = yes
-							text = "MILITARY_PANEL_COMMANDER_UNITS_UNMOBILIZED"
-						}
-
-						# Morale
-						morale_bar = {
-							size = { 6 24 }
-							parentanchor = vcenter
-							tooltip = "COMMANDER_MORALE_TOOLTIP"
-							
-							blockoverride "morale_value" {
-								value = "[FixedPointToFloat( Character.GetMorale )]"
-							}
-							blockoverride "morale_color" {
-								color = "[GetMoraleColorVec( Character.GetMorale )]"
-							}
-						}
-					}
-				}
-
-				### MANPOWER PACKAGES
-				flowcontainer = {
-					parentanchor = hcenter
-					direction = vertical
-					minimumsize = { @panel_width_minus_10 -1 }
-					maximumsize = { @panel_width_minus_10 -1 }
-					margin = { 0 6 }
-
-					visible = "[And(Character.IsCommander, And( GetVariableSystem.Exists( Concatenate( 'combat_units_', Character.GetIDString ) ), Not( Character.IsOffer )))]"
-
-					background = {
-						using = dark_area
-					}
-				
-					dynamicgridbox = {
-						datamodel = "[Character.AccessExpandedBuildingEntries]"
-
-						datamodel_wrap = 1
-						flipdirection = yes
-						parentanchor = hcenter
-
-						item = {
-							flowcontainer = {
-								margin_bottom = 5
-
-								combat_unit_building = {
-									blockoverride "datacontext" {
-										datacontext = "[MilitaryPanelBuildingEntry.GetBuilding]"
-									}
-
-									#TODO PRCAL-16920: Add toggles for building expand units
-									blockoverride "onclick" {
-										onclick = "[MilitaryPanelBuildingEntry.ToggleExpand]"
-									}
-									
-									blockoverride "onclick_showmore" {
-										visible = "[Not(MilitaryPanelBuildingEntry.IsExpanded)]"
-									}
-									
-									blockoverride "onclick_showless" {
-										visible = "[MilitaryPanelBuildingEntry.IsExpanded]"
-									}
-
-									blockoverride "combat_units_visible" {
-										visible = "[MilitaryPanelBuildingEntry.IsExpanded]"
-									}
-
-									blockoverride "units_datamodel" {
-										datamodel = "[Character.GetCombatUnitsFromBuilding(Building.Self)]"
-									}
-								}
-							}
-						}
-					}
-				}
-
 				widget = { size = { 20 20 }}
 			}
 
@@ -1259,196 +1001,68 @@ types commander_panel_types
 				
 			}
 		}
+		
 		blockoverride "fixed_bottom" {
 			divider_clean = {
 				size = { @panel_width_plus_14 4 }
-				visible = "[And(Character.IsCommander, Character.GetCountry.IsPlayer)]"
+				visible = "[Character.IsCommander]"
 			}
 				
 			flowcontainer = {
-				minimumsize = { 400 120 }
+				minimumsize = { 400 100 }
 				direction = vertical
-				visible = "[And(Character.IsCommander, Character.GetCountry.IsPlayer)]"
+				visible = "[Character.IsCommander]"
 				using = default_fade_in_out
+				margin_top = 10
 
-				# Mobilize this general button
+				empty_state = {
+					blockoverride "visible" {
+						visible = "[Not(Character.HasMilitaryFormation)]"
+					}
+					blockoverride "text" {
+						text = "NOT_PART_OF_ANY_MILITARY_FORMATION"
+					}
+				}
+
+				battle_item = {
+					visible = "[Character.IsInBattle]"
+					datacontext = "[Character.GetBattle]"
+				}
+
 				flowcontainer = {
+					visible = "[Character.HasMilitaryFormation]"
 					parentanchor = hcenter
-					spacing = 5
-					margin = { 2 12 }
-					visible = "[And(Character.IsGeneral, Not(Character.IsMobilized))]"
-					enabled = "[IsValid( Character.Mobilize )]"
-					
-					button = {
-						using = default_button_action
-						using = commander_mobilize_button_sound
-						size = { 430 60 }
-						
-						onclick = "[Execute( Character.Mobilize )]"
-						tooltip = "MOBILIZE_GENERAL_TOOLTIP"
+					margin = { 10 10 }
+					spacing = 20
+					datacontext = "[Character.GetMilitaryFormation]"
 
-						mobilization_icon_big = {
-							visible = yes
-							parentanchor = left|vcenter
-							widgetanchor = center
-							size = { 80 80 }
-						}
+					widget = {
+						parentanchor = vcenter
+						size = { 410 80 }
 
-						textbox = {
-							parentanchor = center
-							text = "MOBILIZE_GENERAL"
-							autoresize = yes
-							align = nobaseline
-							using = fontsize_xxl
-						}
-					}
-				}
+						military_formation_right_click_item = {
+							blockoverride "tooltip" {
+					        	tooltipwidget = {
+					        		FancyTooltip_MilitaryFormation = {}
+					        	}
+					        }
 
-				textbox = {
-					margin_top = 10
-					parentanchor = hcenter
-					visible = "[Not(Character.IsOffer)]"
-					text = "COMMANDER_CURRENT_ORDERS"
-					maximumsize = { 500 -1 }
-					autoresize = yes
-					multiline = yes
-					align = center|nobaseline
-				}
-
-				dynamicgridbox = {
-					visible = "[Or(Character.IsMobilized, Character.IsAdmiral)]"
-					datamodel = "[Character.AccessOrders]"
-					flipdirection = yes
-					parentanchor = hcenter
-					datamodel_wrap = 5
-
-					item = {
-						widget = {
-							size = { 108 120 }
-							tooltip = "COMMANDER_PANEL_ORDER_TOOLTIP"
-							using = tooltip_above
-							
-							### COMMANDER BUTTON
-							widget = {
-								size = { 60 60 }
-								parentanchor = hcenter
-
-								position = { 0 20 }
-								
-								icon = {
-									using = rotate_glow_blue
-									parentanchor = center
-									size = { 90 90 }
-									visible = "[Character.HasOrder( CommanderOrderType.Self )]"
-								}
-
-
-								button_icon_round_big_action = {
-									tooltip = "COMMANDER_PANEL_ORDER_TOOLTIP"
-									enabled = "[Character.CanSelectOrder( CommanderOrderType.Self )]"
-									onclick = "[Character.SelectOrder( CommanderOrderType.Self )]"
-
-									visible = "[Not( CommanderOrderType.HasMapInteraction )]"
-									clicksound = "[CommanderOrderType.GetClickSound]"
-
-									blockoverride "icon" {
-										texture = "[CommanderOrderType.GetTexture]"
-									}
-									blockoverride "icon_size" {
-										size = { 75% 75% }
-									}
-
-									blockoverride "button_selected" {
-										visible = "[Character.HasOrder( CommanderOrderType.Self )]"
-									}
-								}
-
-								button_icon_round_big_map_interaction = {
-									visible = "[CommanderOrderType.HasMapInteraction]"
-									size = { 100% 100% }
-									blockoverride "icon" {
-										texture = "[CommanderOrderType.GetTexture]"
-									}
-									blockoverride "icon_size" {
-										size = { 45 45 }
-									}
-									
-									onclick = "[Character.SelectOrder( CommanderOrderType.Self )]"
-									enabled = "[Character.CanSelectOrder( CommanderOrderType.Self )]"
-									clicksound = "[CommanderOrderType.GetClickSound]"
-
-									blockoverride "button_selected" {
-										visible = "[Character.HasOrder( CommanderOrderType.Self )]"
-									}
-								}
-
-								container = {
-									visible = "[Character.HasOrder( CommanderOrderType.Self )]"
-									parentanchor = top|right
-
-									# special naval invasion icon for generals
-									icon = {
-										visible = "[And( Character.IsGeneral, Character.HasNavalInvasionPlan )]"
-
-										tooltip = "GENERAL_NAVAL_INVASION_TOOLTIP"
-										texture = "gfx/interface/icons/commander_order_icons/naval_invasion.dds"
-										alwaystransparent = no
-										size = { 30 30 }
-
-										onmousehierarchyenter = "[AccessHighlightManager.HighlightHQ( Character.GetNavalInvasion.GetAdmiral.GetCommanderOrder.GetHQTarget )]"
-										onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"											
-									}
-									
-									# special patrol_coast highlight
-									icon = {
-										visible = "[And( Character.GetCommanderOrder.HasTarget, Character.GetCommanderOrder.GetType.IsInterception )]"
-										tooltip = "[Character.GetCommanderOrder.GetTooltip]"
-										texture = "gfx/interface/icons/commander_order_icons/has_target.dds"
-										alwaystransparent = no
-										size = { 30 30 }
-
-										onmousehierarchyenter = "[AccessHighlightManager.HighlightCommanderOrderInterception( Character.GetCommanderOrder.GetHQTarget )]"
-										onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-									}
-
-									# Front highlight
-									icon = {
-										visible = "[And( Character.GetCommanderOrder.HasTarget, Or( Character.GetCommanderOrder.GetType.IsAdvanceFront, Character.GetCommanderOrder.GetType.IsDefendFront ) ) ]"
-										tooltip = "[Character.GetCommanderOrder.GetTooltip]"
-										texture = "gfx/interface/icons/commander_order_icons/has_target.dds"
-										alwaystransparent = no
-										size = { 30 30 }
-
-										onmousehierarchyenter = "[AccessHighlightManager.HighlightFront( Character.GetCommanderOrder.GetFrontTarget )]"
-										onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-									}
-								}
+					        blockoverride "name_max_width" {
+								max_width = 255
 							}
-							
-							### COMMANDER ORDER NAME SELECTED
-							textbox = {
-								text = "[CommanderOrderType.GetName]"
-								size = { 100% 45 }
-								align = hcenter|nobaseline
-								multiline = yes
-								elide = right
-								parentanchor = bottom|hcenter
-								default_format = "#v"
-								visible = "[Character.HasOrder( CommanderOrderType.Self )]"
-							}
-							### COMMANDER ORDER NAME
-							textbox = {
-								text = "[CommanderOrderType.GetName]"
-								size = { 100% 45 }
-								align = hcenter|nobaseline
-								multiline = yes
-								elide = right
-								parentanchor = bottom|hcenter
-								visible = "[Not(Character.HasOrder( CommanderOrderType.Self ))]"
+
+							blockoverride "onclick" {
+								onclick = "[InformationPanelBar.OpenMilitaryFormationPanelTab( MilitaryFormation.AccessSelf, 'default' )]"
+								onrightclick = "[RightClickMenuManager.ShowForMilitaryFormation(MilitaryFormation.AccessSelf)]"
 							}
 						}
 					}
-				}
+
+					commander_order_button = {
+						parentanchor = vcenter
+						size = { 80 80 }
+					}
+			    }
 			}
 		}
 		

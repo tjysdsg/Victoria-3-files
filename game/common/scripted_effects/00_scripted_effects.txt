@@ -333,6 +333,21 @@ save_agitator_law_scopes = {
 }
 
 generate_french_monarch = {
+	hidden_effect = {
+		if = {
+			limit = {
+				any_scope_character = {
+					is_heir = yes
+				}
+			}
+			random_scope_character = {
+				limit = {
+					is_heir = yes
+				}
+				kill_character = yes
+			}
+		}
+	}
 	if = {
 		limit = {
 			has_variable = orleanist_restoration_var
@@ -341,95 +356,58 @@ generate_french_monarch = {
 			limit = {
 				year < 1850
 			}
-			create_character = {
-				# Louis Philippe I, starting ruler of France
-				first_name = "Louis-Philippe"
-				last_name = "d_Orleans"
-				ruler = yes
-				birth_date = 1773.10.6
-				dna = dna_king_louis_philippe_01
-				culture = cu:french
-				interest_group = ig_industrialists
-				ideology = ideology_orleanist
-				traits = {
-					tactful
+			if = {
+				limit = {
+					any_scope_character = {
+						has_template = FRA_louis_philippe
+					}
 				}
-				on_created = {
-					set_variable = {
-						name = orleanist_leader
-					}				
+				random_scope_character = {
+					limit = {
+						has_template = FRA_louis_philippe
+					}
+					set_character_as_ruler = yes
+				}
+			}
+			else_if = {
+				limit = {
+					any_scope_character = {
+						has_template = FRA_ferdinand_philippe
+						is_ruler = no
+					}
+				}
+				random_scope_character = {
+					limit = {
+						has_template = FRA_ferdinand_philippe
+					}
+					set_character_as_ruler = yes
+				}
+			}
+			else = {
+				create_character = {
+					template = FRA_ferdinand_philippe
 				}
 			}
 		}
 		else_if = {
 			limit = {
 				year >= 1850
-				year < 1870
-			}
-			create_character = {
-				# Prince Philippe, Count of Paris
-				first_name = "Philippe"
-				last_name = "d_Orleans"
-				ruler = yes
-				birth_date = 1838.8.24
-				culture = cu:french
-				interest_group = ig_armed_forces
-				ideology = ideology_orleanist
-				traits = {
-					# historian & journalist
-					# "outspoken democrat"
-					basic_offensive_planner # served "with distinction" as a staff officer in the Peninsula Campaign
-				}
-				on_created = {
-					set_variable = {
-						name = orleanist_leader
-					}				
-				}
-			}
-		}
-		else_if = {
-			limit = {
-				year >= 1870
 				year < 1894
 			}
 			create_character = {
-				# Prince Philippe, Count of Paris
-				first_name = "Philippe"
-				last_name = "d_Orleans"
-				ruler = yes
-				birth_date = 1838.8.24
-				culture = cu:french
-				interest_group = ig_armed_forces
-				ideology = ideology_orleanist
-				traits = {
-					# historian & journalist
-					# "outspoken democrat"
-					basic_offensive_planner # served "with distinction" as a staff officer in the Peninsula Campaign
-				}
+				template = FRA_philippe_de_orleans_of_paris
 				on_created = {
-					set_variable = {
-						name = orleanist_leader
-					}				
+					set_character_as_ruler = yes
+					add_character_role = politician	
 				}
 			}
-			create_character = {
-				# Prince Philippe, Duke of Orléans
-				first_name = "Philippe"
-				last_name = "d_Orleans"
-				heir = yes
-				birth_date = 1869.2.6
-				culture = cu:french
-				interest_group = ig_armed_forces
-				ideology = ideology_orleanist
-				traits = {
-					basic_political_operator
-					persistent
-					explorer
+			if = {
+				limit = {
+					year >= 1870
+					year < 1894
 				}
-				on_created = {
-					set_variable = {
-						name = orleanist_leader
-					}				
+				create_character = {
+					template = FRA_philippe_de_orleans_of_orleans
 				}
 			}
 		}
@@ -439,42 +417,14 @@ generate_french_monarch = {
 				year < 1926
 			}
 			create_character = {
-				# Prince Philippe, Duke of Orléans
-				first_name = "Philippe"
-				last_name = "d_Orleans"
-				ruler = yes
-				birth_date = 1869.2.6
-				culture = cu:french
-				interest_group = ig_armed_forces
-				ideology = ideology_orleanist
-				traits = {
-					basic_political_operator
-					persistent
-					explorer
-				}
+				template = FRA_philippe_de_orleans_of_orleans
 				on_created = {
-					set_variable = {
-						name = orleanist_leader
-					}				
+					set_character_as_ruler = yes
+					add_character_role = politician	
 				}
 			}
 			create_character = {
-				# Prince Jean, Duke of Guise
-				first_name = "Jean"
-				last_name = "d_Orleans"
-				heir = yes
-				birth_date = 1874.9.4
-				culture = cu:french
-				interest_group = ig_armed_forces
-				ideology = ideology_orleanist
-				traits = {
-					# amateur historian / archeologist
-				}
-				on_created = {
-					set_variable = {
-						name = orleanist_leader
-					}				
-				}
+				template = FRA_jean_de_orleans
 			}
 		}
 		else_if = {
@@ -482,42 +432,14 @@ generate_french_monarch = {
 				year >= 1926
 			}
 			create_character = {
-				# Prince Jean, Duke of Guise
-				first_name = "Jean"
-				last_name = "d_Orleans"
-				ruler = yes
-				birth_date = 1874.9.4
-				culture = cu:french
-				interest_group = ig_armed_forces
-				ideology = ideology_orleanist
-				traits = {
-					# amateur historian / archeologist
-				}
+				template = FRA_jean_de_orleans
 				on_created = {
-					set_variable = {
-						name = orleanist_leader
-					}				
+					set_character_as_ruler = yes
+					add_character_role = politician	
 				}
 			}
 			create_character = {
-				# Henri, Count of Paris
-				first_name = "Henri"
-				last_name = "d_Orleans"
-				ruler = yes
-				birth_date = 1908.7.5
-				culture = cu:french
-				interest_group = ig_armed_forces
-				ideology = ideology_orleanist
-				traits = {
-					ambitious
-					experienced_political_operator
-					arrogant
-				}
-				on_created = {
-					set_variable = {
-						name = orleanist_leader
-					}				
-				}
+				template = FRA_henri_de_orleans
 			}
 		}
 	}
@@ -530,42 +452,14 @@ generate_french_monarch = {
 				year < 1844
 			}
 			create_character = {
-				# Louis Antoine, Duke of Angoulême
-				first_name = "Louis"
-				last_name = "de_Bourbon"
-				ruler = yes
-				birth_date = 1775.8.6
-				culture = cu:french
-				interest_group = ig_armed_forces
-				ideology = ideology_legitimist
-				traits = {
-					basic_offensive_planner # see the battle of Trocadero
-					bigoted
-				}
+				template = FRA_louis_antoine_de_bourbon
 				on_created = {
-					set_variable = {
-						name = legitimist_leader
-					}				
+					set_character_as_ruler = yes
+					add_character_role = politician	
 				}
 			}
 			create_character = {
-				# Henri, Count of Chambord
-				first_name = "Henri"
-				last_name = "de_Bourbon"
-				heir = yes
-				birth_date = 1820.9.29
-				culture = cu:french
-				interest_group = ig_landowners
-				ideology = ideology_legitimist
-				traits = {
-					arrogant
-					basic_political_operator
-				}
-				on_created = {
-					set_variable = {
-						name = legitimist_leader
-					}				
-				}
+				template = FRA_henri_de_bourbon
 			}
 		}
 		else_if = {
@@ -574,42 +468,14 @@ generate_french_monarch = {
 				year < 1883
 			}
 			create_character = {
-				# Henri, Count of Chambord
-				first_name = "Henri"
-				last_name = "de_Bourbon"
-				ruler = yes
-				birth_date = 1820.9.29
-				culture = cu:french
-				interest_group = ig_landowners
-				ideology = ideology_legitimist
-				traits = {
-					arrogant
-					basic_political_operator
-				}
+				template = FRA_henri_de_bourbon
 				on_created = {
-					set_variable = {
-						name = legitimist_leader
-					}				
+					set_character_as_ruler = yes
+					add_character_role = politician	
 				}
 			}
 			create_character = {
-				# Infante Juan, Count of Montizón - Carlist
-				first_name = "Jean"
-				last_name = "de_Bourbon"
-				ruler = yes
-				birth_date = 1822.5.15
-				culture = cu:spanish
-				interest_group = ig_landowners
-				ideology = ideology_legitimist
-				traits = {
-					# "liberal tendencies"
-					reserved
-				}
-				on_created = {
-					set_variable = {
-						name = legitimist_leader
-					}				
-				}
+				template = FRA_jean_de_bourbon
 			}
 		}
 		else_if = {
@@ -618,43 +484,14 @@ generate_french_monarch = {
 				year < 1887
 			}
 			create_character = {
-				# Infante Juan, Count of Montizón - Carlist
-				first_name = "Jean"
-				last_name = "de_Bourbon"
-				ruler = yes
-				birth_date = 1822.5.15
-				culture = cu:spanish
-				interest_group = ig_landowners
-				ideology = ideology_legitimist
-				traits = {
-					# "liberal tendencies"
-					reserved
-				}
+				template = FRA_jean_de_bourbon
 				on_created = {
-					set_variable = {
-						name = legitimist_leader
-					}				
+					set_character_as_ruler = yes
+					add_character_role = politician	
 				}
 			}
 			create_character = {
-				# Infante Carlos, Duke of Madrid - Carlist
-				first_name = "Charles"
-				last_name = "de_Bourbon"
-				heir = yes
-				birth_date = 1822.5.15
-				culture = cu:spanish
-				interest_group = ig_landowners
-				ideology = ideology_legitimist
-				traits = {
-					basic_offensive_planner
-					ambitious
-					pious
-				}
-				on_created = {
-					set_variable = {
-						name = legitimist_leader
-					}				
-				}
+				template = FRA_carlos_de_bourbon
 			}
 		}
 		else_if = {
@@ -663,44 +500,14 @@ generate_french_monarch = {
 				year < 1909
 			}
 			create_character = {
-				# Infante Carlos, Duke of Madrid - Carlist
-				first_name = "Charles"
-				last_name = "de_Bourbon"
-				ruler = yes
-				birth_date = 1822.5.15
-				culture = cu:spanish
-				interest_group = ig_landowners
-				ideology = ideology_legitimist
-				traits = {
-					basic_offensive_planner
-					ambitious
-					pious
-				}
+				template = FRA_carlos_de_bourbon
 				on_created = {
-					set_variable = {
-						name = legitimist_leader
-					}				
+					set_character_as_ruler = yes
+					add_character_role = politician	
 				}
 			}
 			create_character = {
-				# Infante Jaime, Duke of Madrid - Carlist
-				first_name = "Jacques"
-				last_name = "de_Bourbon"
-				heir = yes
-				birth_date = 1870.6.27
-				culture = cu:spanish
-				interest_group = ig_armed_forces
-				ideology = ideology_legitimist
-				traits = {
-					# suspected of liberal tendencies (gah!)
-					surveyor
-					pious
-				}
-				on_created = {
-					set_variable = {
-						name = legitimist_leader
-					}				
-				}
+				template = FRA_jacques_de_bourbon
 			}
 		}
 		else_if = {
@@ -709,89 +516,29 @@ generate_french_monarch = {
 				year < 1931
 			}
 			create_character = {
-				# Infante Jaime, Duke of Madrid - Carlist
-				first_name = "Jacques"
-				last_name = "de_Bourbon"
-				ruler = yes
-				birth_date = 1870.6.27
-				culture = cu:spanish
-				interest_group = ig_armed_forces
-				ideology = ideology_legitimist
-				traits = {
-					# suspected of liberal tendencies (gah!)
-					surveyor
-					pious
-				}
+				template = FRA_jacques_de_bourbon
 				on_created = {
-					set_variable = {
-						name = legitimist_leader
-					}				
+					set_character_as_ruler = yes
+					add_character_role = politician			
 				}
 			}
 			create_character = {
-				# Infante Alfonso Carlos, Duke of San Jaime - Carlist
-				first_name = "Charles"
-				last_name = "de_Bourbon"
-				heir = yes
-				birth_date = 1849.9.12
-				culture = cu:spanish
-				interest_group = ig_armed_forces
-				ideology = ideology_legitimist
-				traits = {
-					stalwart_defender
-					pious
-					meticulous
-				}
-				on_created = {
-					set_variable = {
-						name = legitimist_leader
-					}				
-				}
+				template = FRA_alfonso_carlos_de_bourbon
 			}
 		}
 		else_if = {
 			limit = {
-				year >= 1831
+				year >= 1931
 			}
 			create_character = {
-				# Infante Alfonso Carlos, Duke of San Jaime - Carlist
-				first_name = "Charles"
-				last_name = "de_Bourbon"
-				ruler = yes
-				birth_date = 1849.9.12
-				culture = cu:spanish
-				interest_group = ig_armed_forces
-				ideology = ideology_legitimist
-				traits = {
-					stalwart_defender
-					pious
-					meticulous
-				}
+				template = FRA_alfonso_carlos_de_bourbon
 				on_created = {
-					set_variable = {
-						name = legitimist_leader
-					}				
+					set_character_as_ruler = yes
+					add_character_role = politician
 				}
 			}
 			create_character = {
-				# Alfonso XIII of Spain
-				first_name = "Alphonse"
-				last_name = "de_Bourbon"
-				heir = yes
-				birth_date = 1849.9.12
-				culture = cu:spanish
-				interest_group = ig_armed_forces
-				ideology = ideology_legitimist
-				traits = {
-					arrogant
-					expensive_tastes
-					basic_political_operator
-				}
-				on_created = {
-					set_variable = {
-						name = legitimist_leader
-					}				
-				}
+				template = FRA_alfonso_de_bourbon
 			}
 		}
 	}
@@ -888,21 +635,6 @@ generate_french_monarch = {
 	#			}
 	#		}
 	#	}
-		hidden_effect = {
-			if = {
-				limit = {
-					any_scope_character = {
-						is_heir = yes
-					}
-				}
-				random_scope_character = {
-					limit = {
-						is_heir = yes
-					}
-					kill_character = yes
-				}
-			}
-		}
 		if = {
 			limit = {
 				year < 1873
@@ -1016,23 +748,7 @@ generate_french_monarch = {
 					year < 1873
 				}
 				create_character = {
-					# Napoléon Eugène Louis Jean Joseph Bonaparte
-					first_name = "Napoleon"
-					last_name = "Bonaparte"
-					heir = yes
-					birth_date = 1856.3.16
-					culture = cu:french
-					interest_group = ig_armed_forces
-					ideology = ideology_bonapartist
-					traits = {
-						brave
-						surveyor
-					}
-					on_created = {
-						set_variable = {
-							name = bonapartist_leader
-						}				
-					}
+					template = FRA_napoleon_eugene_louis_bonaparte
 				}
 			}
 		}
@@ -1042,111 +758,35 @@ generate_french_monarch = {
 				year < 1879
 			}
 			create_character = {
-				# Napoléon Eugène Louis Jean Joseph Bonaparte
-				first_name = "Napoleon"
-				last_name = "Bonaparte"
-				ruler = yes
-				birth_date = 1856.3.16
-				culture = cu:french
-				interest_group = ig_armed_forces
-				ideology = ideology_bonapartist
-				traits = {
-					brave
-					surveyor
-				}
+				template = FRA_napoleon_eugene_louis_bonaparte
 				on_created = {
-					set_variable = {
-						name = bonapartist_leader
-					}				
+					set_character_as_ruler = yes
+					add_character_role = politician
 				}
 			}
 			create_character = {
-				# Victor, Prince Napoléon
-				first_name = "Victor"
-				last_name = "Bonaparte"
-				heir = yes
-				birth_date = 1862.7.18
-				culture = cu:french
-				interest_group = ig_landowners
-				ideology = ideology_bonapartist
-				traits = {
-					arrogant
-					basic_political_operator
-				}
-				on_created = {
-					set_variable = {
-						name = bonapartist_leader
-					}				
-				}
+				template = FRA_victor_bonaparte
 			}
 		}
 		else_if = {
 			limit = {
 				year >= 1879
-				year < 1915
-			}
-			create_character = {
-				# Victor, Prince Napoléon
-				first_name = "Victor"
-				last_name = "Bonaparte"
-				ruler = yes
-				birth_date = 1862.7.18
-				culture = cu:french
-				interest_group = ig_landowners
-				ideology = ideology_bonapartist
-				traits = {
-					arrogant
-					basic_political_operator
-				}
-				on_created = {
-					set_variable = {
-						name = bonapartist_leader
-					}				
-				}
-			}
-		}
-		else_if = {
-			limit = {
-				year >= 1915
 				year < 1926
 			}
 			create_character = {
-				# Victor, Prince Napoléon
-				first_name = "Victor"
-				last_name = "Bonaparte"
-				ruler = yes
-				birth_date = 1862.7.18
-				culture = cu:french
-				interest_group = ig_landowners
-				ideology = ideology_bonapartist
-				traits = {
-					arrogant
-					basic_political_operator
-				}
+				template = FRA_victor_bonaparte
 				on_created = {
-					set_variable = {
-						name = bonapartist_leader
-					}				
+					set_character_as_ruler = yes
+					add_character_role = politician
 				}
 			}
-			create_character = {
-				# Louis, Prince Napoléon
-				first_name = "Louis"
-				last_name = "Bonaparte"
-				ruler = yes
-				birth_date = 1914.1.23
-				culture = cu:french
-				interest_group = ig_petty_bourgeoisie
-				ideology = ideology_bonapartist
-				traits = {
-					brave
-					reckless
-					mountain_commander
+			if = {
+				limit = {
+					year >= 1915
+					year < 1926
 				}
-				on_created = {
-					set_variable = {
-						name = bonapartist_leader
-					}				
+				create_character = {
+					template = FRA_louis_bonaparte
 				}
 			}
 		}
@@ -1155,28 +795,18 @@ generate_french_monarch = {
 				year >= 1926
 			}
 			create_character = {
-				# Louis, Prince Napoléon
-				first_name = "Louis"
-				last_name = "Bonaparte"
-				ruler = yes
-				birth_date = 1914.1.23
-				culture = cu:french
-				interest_group = ig_petty_bourgeoisie
-				ideology = ideology_bonapartist
-				traits = {
-					brave
-					reckless
-					mountain_commander
-				}
+				template = FRA_louis_bonaparte
 				on_created = {
-					set_variable = {
-						name = bonapartist_leader
-					}				
+					set_character_as_ruler = yes
+					add_character_role = politician
 				}
 			}
 		}
 	}
-	ruler = {
+	random_scope_character = {
+		limit = {
+			is_ruler = yes
+		}
 		save_scope_as = french_monarch_scope
 	}
 }
@@ -1206,5 +836,34 @@ clean_up_exile_character_roles = { # scope: character
 			has_role = admiral
 		}
 		remove_character_role = admiral
+	}
+}
+
+unification_claims_effect = {
+	if = {
+		limit = {
+			any_state_region = {
+				any_scope_state = {
+					is_homeland_of_country_cultures = ROOT
+					NOT = { owner = ROOT }
+					NOT = { has_claim_by = ROOT }
+				}
+			}
+		}
+		every_state_region = {
+			limit = {
+				any_scope_state = {
+					is_homeland_of_country_cultures = ROOT
+					NOT = { owner = ROOT }
+					NOT = { has_claim_by = ROOT }
+				}
+			}
+			add_claim = ROOT
+		}
+	}
+	else = {
+		add_loyalists = {
+			value = 0.05
+		}
 	}
 }

@@ -1,0 +1,794 @@
+﻿namespace = silkworm_diseases
+
+# Pebrine Outbreak Start
+silkworm_diseases.1 = {
+	type = country_event
+	placement = scope:pebrine_state
+	event_image = {
+		video = "asia_dead_cattle_poor_harvest"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	title = silkworm_diseases.1.t
+	desc = silkworm_diseases.1.d
+	flavor = silkworm_diseases.1.f
+
+	duration = 3
+
+	dlc = dlc004
+
+	trigger = {
+		has_dlc_feature = voice_of_the_people_content
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = { 
+	            is_building_type = building_silk_plantation
+	            level >= 5
+	        }
+		}
+		OR = {
+			can_research = pasteurization
+			is_researching_technology = pasteurization
+		}
+		OR = {	
+			country_is_in_europe = yes
+			country_is_in_north_america = yes
+		}
+		NOT = {
+			has_variable = pebrine_outbreak_event
+		}	
+	}
+
+	immediate = {
+		set_variable = pebrine_outbreak_event
+		random_scope_state = {
+			limit = {
+				any_scope_building = { 
+		            is_building_type = building_silk_plantation
+		            level >= 5
+		        }
+			}
+			save_scope_as = pebrine_state
+			random_scope_building = {
+				limit = {
+					is_building_type = building_silk_plantation
+		            level >= 5
+				}
+				save_scope_as = pebrine_building
+			}
+		}
+	}
+
+	option = {
+		name = silkworm_diseases.1.a
+		default_option = yes
+		add_journal_entry = {
+			type = je_silkworm_diseases
+		}
+		scope:pebrine_state = {
+			add_modifier = {
+				name = modifier_pebrine_state_modifier
+				months = long_modifier_time
+			}
+		}
+	}
+}
+
+
+# Pebrine Outbreak Spread
+silkworm_diseases.2 = {
+	type = country_event
+	placement = scope:pebrine_state
+	event_image = {
+		video = "asia_dead_cattle_poor_harvest"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	title = silkworm_diseases.2.t
+
+	desc = silkworm_diseases.2.d
+
+	flavor = silkworm_diseases.2.f
+
+	duration = 3
+
+	dlc = dlc004
+
+	trigger = {
+		any_scope_state = {
+			is_incorporated = yes
+			any_scope_building = { 
+	            is_building_type = building_silk_plantation
+	            level >= 2
+	        }
+	        NOT = {
+	        	has_modifier = modifier_pebrine_state_modifier
+	        }
+			NOT = {
+				has_variable = var_has_had_pebrine
+			}
+		}
+		any_scope_state = {
+			has_modifier = modifier_pebrine_state_modifier
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				any_scope_building = { 
+		            is_building_type = building_silk_plantation
+		            level >= 2
+		        }
+		        NOT = {
+		        	has_modifier = modifier_pebrine_state_modifier
+		        }
+			}
+			save_scope_as = pebrine_state
+			random_scope_building = {
+				limit = {
+					is_building_type = building_silk_plantation
+		            level >= 2
+				}
+				save_scope_as = pebrine_building
+			}
+		}
+	}
+
+	option = {
+		name = silkworm_diseases.2.a
+		trigger = {
+			can_research = pasteurization
+		}
+		add_modifier = {
+			name = modifier_pebrine_research_funds
+			months = short_modifier_time
+			multiplier = money_amount_multiplier_medium
+		}
+		add_technology_progress = { progress = 4000 technology = pasteurization }
+		scope:pebrine_state = {
+			add_modifier = {
+				name = modifier_pebrine_state_modifier
+				months = long_modifier_time
+			}
+			set_variable = var_has_had_pebrine
+		}
+	}
+	option = {
+		name = silkworm_diseases.2.b
+		default_option = yes
+		scope:pebrine_state = {
+			add_modifier = {
+				name = modifier_pebrine_state_modifier
+				months = long_modifier_time
+			}
+			set_variable = var_has_had_pebrine
+		}
+	}
+}
+
+# Pebrine Outbreak Spread - International
+silkworm_diseases.3 = {
+	type = country_event
+	placement = scope:pebrine_state
+	event_image = {
+		video = "unspecific_trains"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	title = silkworm_diseases.3.t
+
+	desc = silkworm_diseases.3.d
+
+	flavor = silkworm_diseases.3.f
+
+	duration = 3
+
+	dlc = dlc004
+
+	trigger = {
+		#Triggered by the JE
+	}
+
+	immediate = {
+		set_variable = pebrine_outbreak_event
+		if = {
+			limit = {
+				any_neighbouring_state = {
+				is_incorporated = yes
+					owner = {
+						any_scope_state = {
+							is_incorporated = yes
+							has_modifier = modifier_pebrine_state_modifier
+						}
+					}
+				}
+			}
+			random_neighbouring_state = {
+				limit = {
+					is_incorporated = yes
+					owner = {
+						any_scope_state = {
+							is_incorporated = yes
+							has_modifier = modifier_pebrine_state_modifier
+						}
+					}			
+				}
+				owner = {
+					save_scope_as = pebrine_origin
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				any_country = {
+					NOT = { THIS = ROOT }
+					market = ROOT.market
+					any_scope_state = {
+						has_modifier = modifier_pebrine_state_modifier
+					}
+				}
+			}
+			random_country = {
+				limit = {
+					NOT = { THIS = ROOT }
+					market = ROOT.market
+					any_scope_state = {
+						has_modifier = modifier_pebrine_state_modifier
+					}
+				}
+				save_scope_as = pebrine_origin
+			}
+		}
+		else = {
+			random_country = {
+				limit = {
+					NOT = { THIS = ROOT }
+					has_journal_entry = je_silkworm_diseases
+				}
+				save_scope_as = pebrine_origin
+			}
+		}
+		random_scope_state = {
+			limit = {
+				any_scope_building = { 
+		            is_building_type = building_silk_plantation
+		            level >= 2
+		        }
+			}
+			save_scope_as = pebrine_state
+			random_scope_building = {
+				limit = {
+					is_building_type = building_silk_plantation
+		            level >= 2
+				}
+				save_scope_as = pebrine_building
+			}
+		}
+	}
+
+	option = {
+		name = silkworm_diseases.3.a
+		default_option = yes
+		add_journal_entry = {
+			type = je_silkworm_diseases
+		}
+		scope:pebrine_state = {
+			add_modifier = {
+				name = modifier_pebrine_state_modifier
+				months = long_modifier_time
+			}
+		}
+	}
+	option = {
+		name = silkworm_diseases.3.b
+		add_journal_entry = {
+			type = je_silkworm_diseases
+		}
+		change_relations = {
+			country = scope:pebrine_origin
+			value = -10
+		}
+		scope:pebrine_state = {
+			add_modifier = {
+				name = modifier_pebrine_state_modifier
+				months = long_modifier_time
+			}
+		}
+	}
+}
+
+# Silkworm Farm Owners Demand Recompense
+silkworm_diseases.4 = {
+	type = country_event
+	placement = scope:pebrine_state
+	event_image = {
+		video = "asia_farmers_market"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	title = silkworm_diseases.4.t
+
+	desc = silkworm_diseases.4.d
+
+	flavor = silkworm_diseases.4.f
+
+	duration = 3
+
+	dlc = dlc004
+
+	trigger = {
+		any_scope_state = {
+			has_modifier = modifier_pebrine_state_modifier
+		}
+		ig:ig_landowners = {
+			is_marginal = no
+		}
+		OR = {
+			has_law = law_type:law_serfdom
+			has_law = law_type:law_tenant_farmers
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				has_modifier = modifier_pebrine_state_modifier
+				has_building = building_silk_plantation
+			}
+			save_scope_as = pebrine_state
+			random_scope_building = {
+				limit = {
+					is_building_type = building_silk_plantation
+				}
+				save_scope_as = pebrine_building
+			}
+		}
+		ig:ig_landowners = {
+			save_scope_as = landowners_scope
+		}
+	}
+
+	option = {
+		name = silkworm_diseases.4.a
+		default_option = yes
+		add_modifier = {
+			name = modifier_landowner_bailout_funds
+			months = short_modifier_time
+			multiplier = money_amount_multiplier_small
+		}
+		add_modifier = {
+			name = modifier_landowner_bailout_funds_country
+			months = short_modifier_time
+		}
+		scope:pebrine_state = {
+			add_loyalists_in_state = {
+				value = small_radicals
+				interest_group = scope:landowners_scope
+			}
+		}
+	}
+	option = {
+		name = silkworm_diseases.4.b
+		scope:pebrine_state = {
+			add_radicals_in_state = {
+				value = small_radicals
+				interest_group = scope:landowners_scope
+			}
+			add_modifier = {
+				name = modifier_landowners_not_bailed_out
+				months = short_modifier_time
+			}
+		}
+	}
+}
+
+# Industrialists Propose Alternative
+silkworm_diseases.5 = {
+	type = country_event
+	placement = ROOT
+	event_image = {
+		video = "unspecific_gears_pistons"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	title = silkworm_diseases.5.t
+
+	desc = silkworm_diseases.5.d
+
+	flavor = silkworm_diseases.5.f
+
+	duration = 3
+
+	dlc = dlc004
+
+	trigger = {
+		any_scope_state = {
+			has_modifier = modifier_pebrine_state_modifier
+		}
+		ig:ig_industrialists = {
+			is_marginal = no
+		}
+		can_research = art_silk
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				has_modifier = modifier_pebrine_state_modifier
+			}
+			save_scope_as = pebrine_state
+		}
+		ig:ig_industrialists = {
+			save_scope_as = industrialists_scope
+		}
+	}
+
+	option = {
+		name = silkworm_diseases.5.a
+		default_option = yes
+		add_modifier = {
+			name = modifier_art_silk_research_funds
+			months = short_modifier_time
+			multiplier = money_amount_multiplier_small
+		}
+		add_modifier = {
+			name = modifier_art_silk_research
+			months = short_modifier_time
+		}
+		add_technology_progress = { progress = 4000 technology = art_silk }
+	}
+	option = {
+		name = silkworm_diseases.5.b
+		ig:ig_industrialists = {
+			add_modifier = {
+				name = modifier_art_silk_refused
+				months = short_modifier_time
+			}
+		}
+	}
+}
+
+# Workers Need Aid
+silkworm_diseases.6 = {
+	type = country_event
+	placement = scope:pebrine_state
+	event_image = {
+		video = "asia_union_leader"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	title = silkworm_diseases.6.t
+
+	desc = silkworm_diseases.6.d
+
+	flavor = silkworm_diseases.6.f
+
+	duration = 3
+
+	dlc = dlc004
+
+	trigger = {
+		any_scope_state = {
+			has_modifier = modifier_pebrine_state_modifier
+			any_scope_building = {
+				is_building_type = building_silk_plantation
+			}
+		}
+		ig:ig_rural_folk = {
+			is_marginal = no
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				has_modifier = modifier_pebrine_state_modifier
+				has_building = building_silk_plantation
+			}
+			save_scope_as = pebrine_state
+			random_scope_building = {
+				limit = {
+					is_building_type = building_silk_plantation
+				}
+				save_scope_as = pebrine_building
+			}
+		}
+	}
+
+	option = {
+		name = silkworm_diseases.6.a
+		default_option = yes
+		scope:pebrine_state = {
+			add_modifier = {
+				name = modifier_worker_bailout
+				months = short_modifier_time
+			}
+			add_loyalists_in_state = {
+				value = small_radicals
+				pop_type = laborers
+			}
+			add_loyalists_in_state = {
+				value = small_radicals
+				pop_type = farmers
+			}
+		}
+	}
+	option = {
+		name = silkworm_diseases.6.b
+		scope:pebrine_state = {
+			add_radicals_in_state = {
+				value = medium_radicals
+				pop_type = laborers
+			}
+			add_radicals_in_state = {
+				value = medium_radicals
+				pop_type = farmers
+			}
+			add_modifier = {
+				name = modifier_workers_not_bailed_out
+				months = short_modifier_time
+			}
+		}
+	}
+}
+
+# Egg Separation Process Discovered
+silkworm_diseases.7 = {
+	type = country_event
+	placement = ROOT
+	event_image = {
+		video = "middleeast_engineer_blueprint"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	title = silkworm_diseases.7.t
+
+	desc = silkworm_diseases.7.d
+
+	flavor = silkworm_diseases.7.f
+
+	duration = 3
+
+	dlc = dlc004
+
+	trigger = {
+		has_technology_researched = pasteurization
+		any_scope_state = {
+			has_modifier = modifier_pebrine_state_modifier
+		}
+	}
+
+	immediate = {
+		
+	}
+
+	option = {
+		name = silkworm_diseases.7.a
+		default_option = yes
+		custom_tooltip = {
+			text = pebrine_cure_acquire_tt
+			set_variable = pebrine_cure
+		}
+		add_modifier = {
+			name = modifier_pioneered_pebrine_cure
+			months = normal_modifier_time
+		}
+	}
+	option = {
+		name = silkworm_diseases.7.b
+		trigger = {
+			NOT = {
+				any_country = {
+					has_variable = cure_sponsor_var
+				}
+			}
+			any_country = {
+				NOT = {
+					THIS = ROOT
+				}
+				any_scope_state = {	
+					has_modifier = modifier_pebrine_state_modifier
+				}
+				NOT = {
+					has_variable = pebrine_cure
+				}
+			}
+		}
+		custom_tooltip = {
+			text = pebrine_cure_acquire_tt
+			set_variable = pebrine_cure
+		}	
+		set_variable = cure_sponsor_var
+		custom_tooltip = pebrine_foreign_aid_tt
+		hidden_effect = {
+			every_country = {
+				limit = {
+					any_scope_state = {	
+						has_modifier = modifier_pebrine_state_modifier
+					}
+					NOT = {
+						has_variable = pebrine_cure
+					}
+				}
+				trigger_event = { id = silkworm_diseases.8 weeks = 1 }
+			}
+		}
+	}
+}
+
+# Egg Separation Process Shared
+silkworm_diseases.8 = {
+	type = country_event
+	placement = ROOT
+	event_image = {
+		video = "unspecific_signed_contract"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	title = silkworm_diseases.8.t
+
+	desc = silkworm_diseases.8.d
+
+	flavor = silkworm_diseases.8.f
+
+	duration = 3
+
+	dlc = dlc004
+
+	trigger = {
+		#Triggered by another event
+	}
+
+	immediate = {
+		random_country = {
+			limit = {
+				has_variable = cure_sponsor_var
+			}
+			save_scope_as = cure_sponsor_scope
+		}
+	}
+
+	option = {
+		name = silkworm_diseases.8.a
+		default_option = yes
+		custom_tooltip = {
+			text = pebrine_cure_acquire_tt
+			set_variable = pebrine_cure
+		}
+		random_list = {
+			25 = {
+				set_owes_obligation_to = {
+					country = scope:cure_sponsor_scope
+					setting = yes
+				}
+				change_relations = {
+					country = scope:cure_sponsor_scope
+					value = 10
+				}
+			}
+			75 = {
+				change_relations = {
+					country = scope:cure_sponsor_scope
+					value = 10
+				}
+			}
+		}
+	}
+
+	option = {
+		name = silkworm_diseases.8.b
+		trigger = {
+			scope:cure_sponsor_scope = {
+				relations:root < 0
+			}
+		}
+		change_relations = {
+			country = scope:cure_sponsor_scope
+			value = -10
+		}
+	}
+}
+
+# End of the Epidemic
+silkworm_diseases.9 = {
+	type = country_event
+	placement = ROOT
+	event_image = {
+		video = "southamerica_factory_opening"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	title = silkworm_diseases.9.t
+
+	desc = silkworm_diseases.9.d
+
+	flavor = silkworm_diseases.9.f
+
+	duration = 3
+
+	dlc = dlc004
+
+	trigger = {
+		
+	}
+
+	immediate = {
+		
+	}
+
+	option = {
+		name = silkworm_diseases.9.a
+		default_option = yes
+		ig:ig_intelligentsia = {
+			add_modifier = {
+				name = modifier_intelligentsia_pebrine_credit
+				months = normal_modifier_time
+			}
+		}
+		every_scope_state = {
+			limit = {
+				has_modifier = modifier_pebrine_state_modifier
+			}
+			remove_modifier = modifier_pebrine_state_modifier
+		}
+	}
+	option = {
+		name = silkworm_diseases.9.b
+		every_scope_state = {
+			limit = {
+				has_modifier = modifier_pebrine_state_modifier
+			}
+			remove_modifier = modifier_pebrine_state_modifier
+			add_modifier = {
+				name = modifier_silk_grand_reopening
+				months = normal_modifier_time
+			}
+		}
+	}
+}

@@ -82,6 +82,7 @@ debug.9 = {
 		}
 		create_character = {
 			is_agitator = yes 
+			female = yes
 		}
 		create_character = {
 			is_agitator = yes 
@@ -125,6 +126,60 @@ debug.13 = {
 	immediate = {
 		add_journal_entry = {
 			type = je_government_petition
+		}
+	}
+}
+
+debug.14 = {
+	type = country_event 
+	hidden = yes
+	orphan = yes
+	immediate = {
+		paris_commune_automated_opposition_paris = yes
+	}
+}
+
+debug.15 = {
+	type = country_event 
+	hidden = yes
+	orphan = yes
+	immediate = {
+		paris_commune_automated_opposition_versailles = yes
+	}
+}
+
+debug.16 = { # Gunther Approved
+	type = country_event
+	hidden = yes
+	orphan = yes
+	immediate = {
+		while = {
+			limit = {
+				any_scope_state = { 
+					is_capital = no
+				}
+			}
+			random_scope_state = {
+				limit = {
+					is_capital = no
+				}
+				save_scope_as = relevant_state
+				set_variable = warlord_state
+			}
+			create_dynamic_country = {
+				origin = scope:relevant_state.owner
+				country_type = recognized
+				tier = principality
+				capital = scope:relevant_state
+				cede_state_trigger = {
+					has_variable = warlord_state
+				}
+				on_created = { 
+					every_scope_state = {
+						remove_variable = warlord_state
+					}
+				}
+			}
 		}
 	}
 }

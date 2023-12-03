@@ -534,7 +534,7 @@ law_census_voting = {
 			}
 		}
 	}
-
+	
 	ai_enact_weight_modifier = { #Petitions
 		value = 0
 		
@@ -753,27 +753,29 @@ law_single_party_state = {
 	}
 
 	on_activate = {
-		if = {
-			limit = {
+		hidden_effect = {
+			if = {
+				limit = {
+					ROOT = {
+						ruler.interest_group = {
+							has_party = yes
+						}
+					}
+				}
 				ROOT = {
-					ruler.interest_group = {
-						has_party = yes
-					}
+					set_variable = { name = only_valid_party value = ruler.interest_group.party }
 				}
 			}
-			ROOT = {
-				set_variable = { name = only_valid_party value = ruler.interest_group.party }
-			}
-		}
-		else_if = {
-			limit = {
-				NOT = {
-					any_active_party = {
-						exists = this
+			else_if = {
+				limit = {
+					NOT = {
+						any_active_party = {
+							exists = this
+						}
 					}
 				}
+				root = { gen_ruler_party = yes }
 			}
-			root = { gen_ruler_party = yes }
 		}
 		hidden_effect = { #Clears all currently active parties
 			deactivate_parties = yes

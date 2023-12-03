@@ -328,11 +328,21 @@ types country_panel_types
 				direction = vertical
 				visible = "[Not(IsDataModelEmpty(Country.AccessActivePowerStructureLaws))]"
 				datamodel = "[Country.AccessActivePowerStructureLaws]"
-				parentanchor = hcenter
 				spacing = 5		
 
 				item = {
-					country_panel_law_item = {}
+	              	flowcontainer = {
+	              		direction = vertical
+
+				   		country_panel_law_item = {
+				   			visible = "[Not(Law.IsBeingEnacted)]"
+	                    	enabled = "[And(Not(Country.IsEnactingLaw), GreaterThan_int32(Law.GetGroup.GetNumImposeOptions( Country.Self ), '(int32)0'))]"
+	                 	}
+
+	                 	country_panel_law_item_is_enacting = {
+	                 		visible = "[Law.IsBeingEnacted]"
+	                 	}
+	              	}
 				}
 			}
 
@@ -342,11 +352,21 @@ types country_panel_types
 				direction = vertical
 				visible = "[Not(IsDataModelEmpty(Country.AccessActiveEconomyLaws))]"
 				datamodel = "[Country.AccessActiveEconomyLaws]"
-				parentanchor = hcenter
 				spacing = 5		
 
 				item = {
-					country_panel_law_item = {}
+	              	flowcontainer = {
+	              		direction = vertical
+
+				   		country_panel_law_item = {
+				   			visible = "[Not(Law.IsBeingEnacted)]"
+	                    	enabled = "[And(Not(Country.IsEnactingLaw), GreaterThan_int32(Law.GetGroup.GetNumImposeOptions( Country.Self ), '(int32)0'))]"
+	                 	}
+
+	                 	country_panel_law_item_is_enacting = {
+	                 		visible = "[Law.IsBeingEnacted]"
+	                 	}
+	              	}
 				}
 				
 				background = {
@@ -368,23 +388,103 @@ types country_panel_types
 				direction = vertical
 				visible = "[Not(IsDataModelEmpty(Country.AccessActiveHumanRightsLaws))]"
 				datamodel = "[Country.AccessActiveHumanRightsLaws]"
-				parentanchor = hcenter
 				spacing = 5		
-
+				
 				item = {
-					country_panel_law_item = {}
+	              	flowcontainer = {
+	              		direction = vertical
+	              		
+				   		country_panel_law_item = {
+				   			visible = "[Not(Law.IsBeingEnacted)]"
+	                    	enabled = "[And(Not(Country.IsEnactingLaw), GreaterThan_int32(Law.GetGroup.GetNumImposeOptions( Country.Self ), '(int32)0'))]"
+	                 	}
+
+	                 	country_panel_law_item_is_enacting = {
+	                 		visible = "[Law.IsBeingEnacted]"
+	                 	}
+	              	}
 				}
 			}			
+		}
+
+		widget = { size = { 10 10 } }
+
+		### COMPANIES
+		default_header = {
+			parentanchor = hcenter
+			blockoverride "text" {
+				text = "COMPANIES"
+			}
+		}
+
+		widget = { size = { 10 10 } }
+
+		fixedgridbox = {
+			datamodel = "[Country.GetCompanies]"
+			parentanchor = hcenter
+			addrow = 100
+			addcolumn = @panel_width_half
+			datamodel_wrap = 2
+
+			item = {
+				flowcontainer = {
+					spacing = 10
+					minimumsize = { 270 100 }
+					maximumsize = { 270 100 }
+					margin = { 10 10 }
+
+					tooltipwidget = {
+						FancyTooltip_Company = {}
+					}
+
+					background = {
+						using = entry_bg_simple
+					}
+
+					icon = {
+						size = { 80 80 }
+						texture = "[Company.GetCompanyType.GetIcon]"
+
+					}
+					textbox = {
+						text = "[Company.GetName]"
+						maximumsize = { 180 -1 }
+						multiline = yes
+						parentanchor = vcenter
+						align = nobaseline
+						autoresize = yes
+						using = fontsize_large
+					}
+				}
+			}
+		}
+
+		empty_state = {
+			blockoverride "visible" {
+				visible = "[IsDataModelEmpty(Country.GetCompanies)]"
+			}
+			blockoverride "text" {
+				text = "NO_COMPANIES"
+			}
 		}			
 	}
 	
-	### LAW ITEM
-	type country_panel_law_item = widget {
+	### LAW ITEM WITH IMPOSE OPTION
+	type country_panel_law_item = button {
 		size = { 170 65 }
+		onclick = "[RightClickMenuManager.ShowForImposeLaw(Law.AccessSelf)]"
 		
-		background = {
-			using = entry_bg_simple
-		}		
+		using = default_button
+
+		tooltipwidget = {
+			FancyTooltip_Law = {
+				blockoverride "text_before" {
+   				visible = "[Or(Not(GreaterThan_int32(Law.GetGroup.GetNumImposeOptions( Country.Self ), '(int32)0')), Or(Country.IsEnactingLaw, Not(Or(ObjectsEqual(Country.GetOverlord, GetPlayer.Self), ObjectsEqual(Country.GetTopOverlord, GetPlayer.Self)))))]"
+   				text =  "IMPOSE_LAW_GROUP_CONDITIONS"
+   				margin_bottom = 15
+   			}
+			}
+		}
 
 		hbox = {
 			layoutpolicy_horizontal = expanding
@@ -401,17 +501,79 @@ types country_panel_types
 				fontsize_min = 10
 				multiline = yes
 				
-				text = "[Law.GetName]"
+				text = "[Law.GetNameNoFormatting]"
+			}
+		}
+		
+		### Number of impose options available shows in the corner of the button
+		textbox = {
+			raw_text = "#bold [Law.GetGroup.GetNumImposeOptions( Country.Self )]#!"
+			parentanchor = top|right
+			position = { -5 0 }
+			autoresize = yes
+			align = right|nobaseline
+			visible = "[GreaterThan_int32(Law.GetGroup.GetNumImposeOptions( Country.Self ), '(int32)0')]"
+			using = fontsize_small
+			background = {
+				using = default_background
+				margin = { 8 4 }
+			}
+		}
+	}
+
+	### LAW ITEM
+	type country_panel_law_item_is_enacting = widget {
+		size = { 170 65 }
+		
+		tooltipwidget = {
+			FancyTooltip_Law = {
+				blockoverride "text_before" {
+   				text =  "LAW_BEING_ENACTED_DESC"
+   				margin_bottom = 15
+   			}
 			}
 		}
 
-		widget = {
-			size = { 100% 100% }
+
+		hbox = {
+			layoutpolicy_horizontal = expanding
+			spacing = 5
+			margin = { 8 0 }
+
+			icon = {
+				size = { 54 54 }
+				texture = "gfx/interface/backgrounds/round_button_bg.dds"
+				
+				round_progress_default = {
+					size = { 48 48 }
+					value = "[FixedPointToFloat(Country.GetLawEnactmentProgress)]"
+					parentanchor = center
+				}
+				
+				law_icon = {
+					size = { 45 45 }
+					parentanchor = center
+				}
+			}
 			
-			tooltipwidget = {
-				FancyTooltip_Law = {}
+			textbox = {
+				layoutpolicy_horizontal = expanding
+				align = center|nobaseline
+				fontsize_min = 10
+				multiline = yes
+				
+				text = "[Law.GetNameNoFormatting]"
 			}
 		}
+
+		background = { 
+			using = paper_bg 
+		}
+
+		icon = {
+			using = highlighted_square_selection
+		}
+
 	}
 	
 	### MOVEMENT ITEM

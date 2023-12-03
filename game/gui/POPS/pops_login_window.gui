@@ -398,12 +398,16 @@ types POPS
 							vbox = {
 								layoutpolicy_horizontal = expanding
 								maximumsize = { 350 0 }
+								spacing = 15
 
-								hbox = {
+								vbox = {
 									layoutpolicy_horizontal = expanding
-									spacing = 5
+									spacing = 2
 
 									hbox = {
+										layoutpolicy_horizontal = expanding
+										spacing = 5
+
 										text_single = {
 											text = "EMAIL"
 											align = nobaseline
@@ -413,94 +417,133 @@ types POPS
 											raw_text = ":"
 											align = nobaseline
 										}
+
+										expand = {}
 									}
 
-									text_single = {
-										default_format = "#high"
-										text = "[POPStatusGetUserEmailMasked]"
-										align = nobaseline
+									widget = {
+										size = { 500 35 }
+
+										background = {
+											using = entry_bg_simple
+											alpha = 0.7
+										}
+
+										hbox = {
+											layoutpolicy_horizontal = expanding
+											margin_left = 10
+											spacing = 5
+											background = {
+												using = entry_bg_simple
+												alpha = 0.7
+											}
+
+											text_single = {
+												default_format = "#high"
+												text = "[POPStatusGetUserEmailMasked]"
+												align = left|nobaseline
+												max_width = 450
+												elide = right
+											}
+
+											expand = {}
+										}
 									}
 
-									expand = {}
 								}
 
-								hbox = {
+								vbox = {
 									layoutpolicy_horizontal = expanding
-									spacing = 5
-									minimumsize = { 0 33 }
+									spacing = 2
 
 									hbox = {
-										text_single = {
-											text = "USER_NAME"
-											align = nobaseline
-										}
-
-										text_single = {
-											raw_text = ":"
-											align = nobaseline
-										}
-									}
-
-									hbox = {
-										visible = "[Not( POPStatusIsUserNameEmpty )]"
+										layoutpolicy_horizontal = expanding
 										spacing = 5
 
+										hbox = {
+											text_single = {
+												text = "USER_NAME"
+												align = nobaseline
+											}
+
+											text_single = {
+												raw_text = ":"
+												align = nobaseline
+											}
+										}
+
+										expand = {}
+									}
+
+									widget = {
+										size = { 500 35 }
+
+										background = {
+											using = entry_bg_simple
+											alpha = 0.7
+										}
+
+										hbox = {
+											layoutpolicy_horizontal = expanding
+											margin_left = 10
+											spacing = 10
+											visible = "[Not( POPStatusIsUserNameEmpty )]"
+
+											text_single = {
+												default_format = "#high"
+												text = "[POPStatusGetUserName]"
+												align = nobaseline
+												max_width = 450
+												elide = right
+											}
+
+											button_change = {
+												size = { 24 24 }
+												onclick = "[POPSLoginView.SetState( 'change_username' )]"
+											}
+
+											expand = {}
+										}
+
+										hbox = {
+											visible = "[POPStatusIsUserNameEmpty]"
+
+											button_standard = {
+												text = "POPS_LOGIN_ADD_USER_NAME"
+												onclick = "[POPSLoginView.SetState( 'change_username' )]"
+											}
+										}
+									}
+								}
+
+									hbox = {
+										layoutpolicy_horizontal = expanding
+										spacing = 10
+										visible = "[And( POPSStatusIsLoggedIn, POPSStatusIsSupportConnectedAccount )]"
+
+										button_checkbox = {
+											visible = "[Not( POPSLoginView.IsConnectingAccount )]"
+											size = { 24 24 }
+											checked = "[POPSStatusIsAccountConnected]"
+											onclick = "[POPSLoginView.ToggleConnected]"
+										}
+
+										pops_load_indicator = {
+											size = { 24 24 }
+											visible = "[POPSLoginView.IsConnectingAccount]"
+											blockoverride "load_indicator"
+											{
+												visible = yes
+											}
+										}
+
 										text_single = {
-											default_format = "#high"
-											text = "[POPStatusGetUserName]"
+											text = "POPS_LOGIN_BIND_STEAM"
 											align = nobaseline
 										}
 
-										button_change = {
-											size = { 24 24 }
-											onclick = "[POPSLoginView.SetState( 'change_username' )]"
-										}
+										expand = {}
 									}
-
-									hbox = {
-										visible = "[POPStatusIsUserNameEmpty]"
-
-										button_standard = {
-											text = "POPS_LOGIN_ADD_USER_NAME"
-											onclick = "[POPSLoginView.SetState( 'change_username' )]"
-										}
-									}
-
-									expand = {}
-								}
-
-								spacer = {
-									size = { 10 30 }
-								}
-
-								hbox = {
-									layoutpolicy_horizontal = expanding
-									spacing = 10
-									visible = "[And( POPSStatusIsLoggedIn, POPSStatusIsSupportConnectedAccount )]"
-
-									button_checkbox = {
-										visible = "[Not( POPSLoginView.IsConnectingAccount )]"
-										size = { 24 24 }
-										checked = "[POPSStatusIsAccountConnected]"
-										onclick = "[POPSLoginView.ToggleConnected]"
-									}
-
-									pops_load_indicator = {
-										size = { 24 24 }
-										visible = "[POPSLoginView.IsConnectingAccount]"
-										blockoverride "load_indicator"
-										{
-											visible = yes
-										}
-									}
-
-									text_single = {
-										text = "POPS_LOGIN_BIND_STEAM"
-										align = nobaseline
-									}
-
-									expand = {}
-								}
 
 								text_multi = {
 									raw_text = "#X [POPSLoginView.GetErrorMessage] #!"

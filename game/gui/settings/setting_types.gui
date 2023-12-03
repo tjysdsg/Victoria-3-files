@@ -9,8 +9,18 @@ types Settings
 		size = { 100% 100% }
 		movable = no
 		layer = confirmation
+		visible_at_creation = no
 
-		using = Animation_ShowHide_Quick
+		# We don't use `using = Animation_ShowHide_Quick`, instead we use the specific `state = {}` definitions
+		# to circumvent an annoying localization reload settings-popup issue.
+		state = {
+			name = _show
+			using = Animation_FadeIn_Quick
+		}
+		state = {
+			name = _hide
+			using = Animation_FadeOut_Quick
+		}
 		using = Background_Full_Dim
 
 		button_normal = {
@@ -217,12 +227,23 @@ types Settings
 	}
 
 	type setting_segmented_control_button = button {
-		text = "[EnumSettingEntry.GetGUIName]"
 		align = left|vcenter
 		default_format = "#medium"
 
-		margin = { 10 0 }
-		minimumsize = { 220 30 }
+		### v3 wrapped in textbox
+		textbox = {
+			margin = { 15 1 }
+			autoresize = yes
+			resizeparent = yes
+			text = "[EnumSettingEntry.GetGUIName]"
+		}
+
+		minimumsize = { 220 32 }
+
+		#text = "[EnumSettingEntry.GetGUIName]"
+		#margin = { 10 0 }
+		#minimumsize = { 220 30 }
+		### to here
 
 		onclick = "[SelectEnumWithString(EnumSettingEntry.GetEnumString, EnumSettingEntry.AccessSetting)]"
 		visible = "[Not(EnumSettingEntry.IsSelected)]"
@@ -239,11 +260,23 @@ types Settings
 	}
 
 	type setting_segmented_control_active_button = button {
-		text = "[EnumSettingEntry.GetGUIName]"
-		align = left
+		align = left|vcenter
 		default_format = "#medium"
-		margin = { 10 0 }
-		minimumsize = { 220 30 }
+
+		### v3 wrapped in textbox
+		textbox = {
+			margin = { 15 1 }
+			autoresize = yes
+			resizeparent = yes
+			text = "[EnumSettingEntry.GetGUIName]"
+		}
+
+		minimumsize = { 220 32 }
+
+		#text = "[EnumSettingEntry.GetGUIName]"
+		#margin = { 10 0 }
+		#minimumsize = { 220 30 }
+		### to here
 
 		onclick = "[SelectEnumWithString(EnumSettingEntry.GetEnumString, EnumSettingEntry.AccessSetting)]"
 		visible = "[EnumSettingEntry.IsSelected]"
@@ -292,7 +325,7 @@ types Settings
 			parentanchor = left|vcenter
 			size = { 300 20 }
 			minimumsize = { -1 14 }
-			value = "[PdxValueSetting.GetValue(PdxSetting.GetSetting)]"
+			value = "[PdxValueSetting.GetCurrentValue(PdxSetting.GetSetting)]"
 			block "setting_value_scrollbar" {}
 
 			track = {
@@ -315,7 +348,7 @@ types Settings
 		text_single = {
 			position = { 310 3 }
 			autoresize = yes
-			text = "[PdxValueSetting.GetFormatedValue(PdxSetting.GetSetting)]"
+			text = "[PdxValueSetting.GetFormatedCurrentValue(PdxSetting.GetSetting)]"
 			default_format = "#low"
 			alwaystransparent = no
 			max_width = 80
@@ -500,6 +533,7 @@ types Settings
 							name = "jomini_settings_popup_confirm"
 							size = { 140 33 }
 							text = "SETTINGS_INPUT_CONFIRM"
+							enabled = "[JominiSettingsWindow.IsConfirmButtonEnabled]"
 							onclick = "[JominiSettingsWindow.OnClickConfirm]"
 							using = default_button_primary_action
 						}
@@ -522,18 +556,30 @@ types Settings
 					textbox = {
 						text = "[JominiSettingsWindow.GetInputActionName( InputActionBinding.Self )]"
 						autoresize = yes
-						maximumsize = { 160 -1 }
-						minimumsize = { 160 -1 }
+						maximumsize = { 140 -1 }
+						minimumsize = { 140 -1 }
 						align = nobaseline
 						parentanchor = vcenter
 						elide = right
+						fontsize_min = 12
 					}
 
 					button = {
 						name = "input_hotkey_1"
 						size = { 120 30 }
 						using = default_button
-						text = "[JominiSettingsWindow.GetKeyCodeName( InputActionBinding.Self, '(int32)0' )]"
+
+						textbox = {
+							text = "[JominiSettingsWindow.GetKeyCodeName( InputActionBinding.Self, '(int32)0' )]"
+							autoresize = yes
+							maximumsize = { 100 -1 }
+							minimumsize = { 100 -1 }
+							align = hcenter|nobaseline
+							parentanchor = center
+							elide = right
+							fontsize_min = 12
+						}
+
 						onclick = "[JominiSettingsWindow.ShowInputPopUp( CPdxInputBindingSetting.Self, InputActionBinding.Self, '(int32)0' ) ]"
 					}
 
@@ -541,7 +587,18 @@ types Settings
 						name = "input_hotkey_2"
 						size = { 120 30 }
 						using = default_button
-						text = "[JominiSettingsWindow.GetKeyCodeName( InputActionBinding.Self, '(int32)1' )]"
+
+						textbox = {
+							text = "[JominiSettingsWindow.GetKeyCodeName( InputActionBinding.Self, '(int32)1' )]"
+							autoresize = yes
+							maximumsize = { 100 -1 }
+							minimumsize = { 100 -1 }
+							align = hcenter|nobaseline
+							parentanchor = center
+							elide = right
+							fontsize_min = 12
+						}
+
 						onclick = "[JominiSettingsWindow.ShowInputPopUp( CPdxInputBindingSetting.Self, InputActionBinding.Self, '(int32)1' ) ]"
 					}
 				}

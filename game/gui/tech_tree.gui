@@ -144,21 +144,24 @@ types tech_tree
 						
 						hbox = {
 							textbox = {
-								layoutstretchfactor_horizontal = 2
+								layoutstretchfactor_horizontal = 3
 								layoutpolicy_horizontal = growing
 								size = { 0 30 }
 								raw_text = "#variable [Technology.GetNameNoFormatting]#!"
 								using = fontsize_large
 								align = left|nobaseline
+								fontsize_min = 14
 							}
+							
 							textbox = {
 								visible = "[Or(And(GreaterThan_CFixedPoint(Technology.GetProgress(GetPlayer.Self), '(CFixedPoint)0'), Not(Technology.HasResearchedTech(GetPlayer.Self))), GreaterThan_CFixedPoint(GetPlayer.GetMinWeeklyTechnologyProgressForTech(Technology.Self), '(CFixedPoint)0'))]"
-								layoutstretchfactor_horizontal = 1
+								layoutstretchfactor_horizontal = 2
 								layoutpolicy_horizontal = growing
 								size = { 0 30 }
-								text = "TECHNOLOGY_PROGRESS_WITH_GAIN_AND_TIME_LEFT"
+								text = "TECHNOLOGY_PROGRESS_WITH_GAIN"
 								align = right|nobaseline
 								using = fontsize_large
+								fontsize_min = 14
 							}
 						}
 
@@ -167,16 +170,21 @@ types tech_tree
 							tooltip = "TECHNOLOGY_GAIN_BREAKDOWN"
 							visible = "[Or(And(GreaterThan_CFixedPoint(Technology.GetProgress(GetPlayer.Self), '(CFixedPoint)0'), Not(Technology.HasResearchedTech(GetPlayer.Self))), GreaterThan_CFixedPoint(GetPlayer.GetMinWeeklyTechnologyProgressForTech(Technology.Self), '(CFixedPoint)0'))]"
 							layoutpolicy_horizontal = growing
-							size = { 500 18 }
+							size = { 500 25 }
+
 							blockoverride "values" {
 								max = "[FixedPointToFloat(Technology.GetCost(GetPlayer.Self))]"
 								value = "[FixedPointToFloat(Technology.GetProgress(GetPlayer.Self))]"
 							}
-							#textbox = {
-							#	text = "TECHNOLOGY_PROGRESS_WITH_GAIN_AND_TIME_LEFT"
-							#	align = nobaseline
-							#	autoresize = yes
-							#}
+
+							textbox = {
+								margin_right = 10
+								text = "TECHNOLOGY_PROGRESS_TIME_LEFT"
+								parentanchor = vcenter|right
+								align = nobaseline
+								autoresize = yes
+
+							}
 						}
 					}
 
@@ -958,7 +966,7 @@ types tech_tree
 					}
 
 					fontsize = 36
-					fontsize_min = 32
+					fontsize_min = 22
 				}
 			}
 		}
@@ -1043,6 +1051,11 @@ types tech_tree
 					texture = "[TechnologyUnlock.GetTexture]"
 					tooltip = "[TechnologyUnlock.GetTooltip]"
 
+					modify_texture = {
+						visible = "[TechnologyUnlock.HasFrame]"
+						using = simple_frame_mask
+					}
+
 					icon = {
 						size = { 25 25 }
 						parentanchor = bottom|right
@@ -1050,6 +1063,12 @@ types tech_tree
 
 						visible = "[TechnologyUnlock.IsGroup]"
 						texture = "gfx/interface/tech_tree/unlock_group_icon.dds"
+					}
+
+					icon = {
+						visible = "[TechnologyUnlock.HasFrame]"
+						using = simple_frame
+						size = { 100% 100% }
 					}
 				}
 			}

@@ -23,9 +23,45 @@
 	
 	on_enable = {
 		ig:ig_industrialists = {
-			set_ig_trait = ig_trait:ig_trait_tax_avoidance
-			set_ig_trait = ig_trait:ig_trait_engines_of_progress
-			set_ig_trait = ig_trait:ig_trait_job_creators
+			if = {
+				limit = {
+					owner = { c:JAP ?= this }
+				}
+				set_ig_trait = ig_trait:ig_trait_zaibatsu_withdrawal
+				set_ig_trait = ig_trait:ig_trait_engines_of_progress
+				set_ig_trait = ig_trait:ig_trait_zaibatsu_cooperation
+			}
+			else_if = {
+				limit = {
+					owner = { c:SWE ?= this }
+				}
+				set_ig_trait = ig_trait:ig_trait_tax_avoidance
+				set_ig_trait = ig_trait:ig_trait_engines_of_progress
+				set_ig_trait = ig_trait:ig_trait_kommerskollegium
+			}
+			else_if = {
+				limit = {
+					has_dlc_feature = voice_of_the_people_content
+					owner = { c:FRA ?= this }
+				}
+				set_ig_trait = ig_trait:ig_trait_tax_avoidance
+				set_ig_trait = ig_trait:ig_trait_engines_of_progress
+				set_ig_trait = ig_trait:ig_trait_ventilate_unify_beautify
+			}
+			else_if = {
+				limit = {
+					has_dlc_feature = rp1_content
+					owner = { c:BRZ ?= this }
+				}
+				set_ig_trait = ig_trait:ig_trait_tax_avoidance
+				set_ig_trait = ig_trait:ig_trait_the_goods_must_flow
+				set_ig_trait = ig_trait:ig_trait_job_creators
+			}
+			else = {
+				set_ig_trait = ig_trait:ig_trait_tax_avoidance
+				set_ig_trait = ig_trait:ig_trait_engines_of_progress
+				set_ig_trait = ig_trait:ig_trait_job_creators
+			}
 		}
 	}
 
@@ -49,7 +85,8 @@
 				limit = {
 					is_pop_type = capitalists
 				}
-				value = 200
+				value = 250
+				add = this.standard_of_living
 			}
 		}
 
@@ -60,6 +97,7 @@
 					is_pop_type = engineers
 				}
 				value = 50
+				add = this.standard_of_living
 			}
 		}
 
@@ -70,13 +108,14 @@
 					is_pop_type = shopkeepers
 				}
 				value = 50
+				add = this.standard_of_living
 			}
 		}
 
 		multiply = {
 			desc = "LEADER_POPULARITY"
 			scope:interest_group = {
-				leader = {
+				leader ?= {
 					value = popularity
 					multiply = 0.0025
 					add = 1
@@ -110,6 +149,33 @@
 				value = 1
 				add = scope:interest_group.modifier:interest_group_in_government_attraction_mult
 				min = 0
+			}
+		}
+		
+		if = {
+			limit = {
+				scope:interest_group = {
+					is_in_government = yes
+				}
+			}
+			multiply = { # Multiplied by 1.25x max
+				desc = "POP_LOYALISTS"
+				value = pop_loyalist_fraction
+				divide = 4
+				add = 1
+			}
+		}
+		if = {
+			limit = {
+				scope:interest_group = {
+					is_in_government = no
+				}
+			}
+			multiply = { # Multiplied by 1.25x max
+				desc = "POP_RADICALS"
+				value = pop_radical_fraction
+				divide = 4
+				add = 1
 			}
 		}
 	}

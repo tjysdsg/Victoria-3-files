@@ -75,17 +75,36 @@ fascism_events.1 = {
 		}
 		
 		#We add two fascist generals to replace them
-		create_character = {
-			is_general = yes
-			ig_leader = no
-			interest_group = scope:fascist_ig
-			ideology = ideology_fascist
+		if = {
+			limit = {
+				c:BRZ = this
+			}
+			create_character = {
+				is_general = yes
+				ig_leader = no
+				interest_group = scope:fascist_ig
+				ideology = ideology_integralist
+			}
+			create_character = {
+				is_general = yes
+				ig_leader = no
+				interest_group = scope:fascist_ig
+				ideology = ideology_integralist
+			}
 		}
-		create_character = {
-			is_general = yes
-			ig_leader = no
-			interest_group = scope:fascist_ig
-			ideology = ideology_fascist
+		else = {
+			create_character = {
+				is_general = yes
+				ig_leader = no
+				interest_group = scope:fascist_ig
+				ideology = ideology_fascist
+			}
+			create_character = {
+				is_general = yes
+				ig_leader = no
+				interest_group = scope:fascist_ig
+				ideology = ideology_fascist
+			}
 		}
 	}
 
@@ -260,7 +279,10 @@ fascism_events.2 = { #fascist leader gains popularity
 				}
 				NOT = { has_variable = og_fascist_ig }
 				leader = {
-					has_ideology = ideology:ideology_fascist
+					OR = {
+						has_ideology = ideology:ideology_fascist
+						has_ideology = ideology:ideology_integralist
+					}
 				}
 			}
 			leader = {
@@ -312,7 +334,10 @@ fascism_events.2 = { #fascist leader gains popularity
 				}
 				NOT = { has_variable = og_fascist_ig }
 				leader = {
-					has_ideology = ideology:ideology_fascist
+					OR = {
+						has_ideology = ideology:ideology_fascist
+						has_ideology = ideology:ideology_integralist
+					}
 				}
 			}
 		}
@@ -781,6 +806,8 @@ fascism_events.8 = { #national anthem
 			is_incorporated = yes
 			any_scope_building = {
 				is_building_type = building_arts_academy
+				is_under_construction = no
+				occupancy > 0.5
 			}
 		}
 	}

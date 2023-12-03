@@ -1,5 +1,8 @@
 ﻿je_rifling = {
     icon = "gfx/interface/icons/event_icons/event_military.dds"
+	
+	group = je_group_technology
+
     is_shown_when_inactive = {
         has_technology_researched = percussion_cap
     }
@@ -35,6 +38,8 @@
 
 je_machine_guns = {
     icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+    group = je_group_technology
     is_shown_when_inactive = {
         is_player = yes
         has_technology_researched = handcranked_machine_gun
@@ -44,23 +49,20 @@ je_machine_guns = {
         army_size >= 20
     }
     complete = {
-        country_pm_usage = {
-            target = ROOT
-            production_method = pm_machine_gunners
-            value > 0.20
-        }
-        any_scope_war = {
-            any_scope_front = {
-                any_scope_character = {
-                    owner = ROOT
-                    commander_pm_usage = {
-                        target = ROOT
-                        production_method = pm_machine_gunners
-                        value > 0.5
-                    }
-                }
-            }
-        }
+        army_mobilization_option_fraction = {  
+			target = mobilization_option:mobilization_option_machinegunners  
+			value >= 0.2  
+		} 
+		any_scope_war = {
+			any_scope_front = {
+				any_scope_general = {
+					owner = ROOT
+					this.commander_military_formation = {
+						has_mobilization_option = mobilization_option:mobilization_option_machinegunners
+					}
+				}
+			}
+		}
     }
     on_complete = {
         trigger_event = { 
@@ -72,6 +74,8 @@ je_machine_guns = {
 
 je_ironclads = {
     icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+    group = je_group_technology
     is_shown_when_inactive = {
         is_player = yes
         has_technology_researched = screw_frigate
@@ -81,23 +85,24 @@ je_ironclads = {
         navy_size >= 30
     }
     complete = {
-        country_pm_usage = {
-            target = ROOT
-            production_method = pm_ironclads
-            value > 0.20
+        country_navy_unit_type_fraction = {  
+            target = unit_type:combat_unit_type_ironclad
+            value >= 0.2  
         }
-        any_scope_character = {
-            has_role = admiral
-            OR = {
-                has_commander_order = patrol_coast
-                has_commander_order = raid_convoys
-                has_commander_order = naval_invasion
+        any_military_formation = {
+            filter = {
+                is_fleet = yes
             }
-            commander_pm_usage = {
-                target = ROOT
-                production_method = pm_ironclads
-                value > 0.30
+            any_scope_character = {
+                has_role = admiral
+                commander_military_formation = {
+                    formation_navy_unit_type_fraction = {  
+                        target = unit_type:combat_unit_type_ironclad
+                        value >= 0.2  
+                    }
+                }
             }
+            percent >= 0.25
         }
     }
     on_complete = {
@@ -110,6 +115,8 @@ je_ironclads = {
 
 je_monitors = {
     icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+    group = je_group_technology
     is_shown_when_inactive = {
         is_player = yes
         has_technology_researched = screw_frigate
@@ -119,23 +126,24 @@ je_monitors = {
         navy_size >= 20
     }
     complete = {
-        country_pm_usage = {
-            target = ROOT
-            production_method = pm_monitors
-            value > 0.20
+        country_navy_unit_type_fraction = {  
+            target = unit_type:combat_unit_type_monitor
+            value >= 0.2  
         }
-        any_scope_character = {
-            has_role = admiral
-            OR = {
-                has_commander_order = patrol_coast
-                has_commander_order = raid_convoys
-                has_commander_order = naval_invasion
+        any_military_formation = {
+            filter = {
+                is_fleet = yes
             }
-            commander_pm_usage = {
-                target = ROOT
-                production_method = pm_monitors
-                value > 0.30
+            any_scope_character = {
+                has_role = admiral
+                commander_military_formation = {
+                    formation_navy_unit_type_fraction = {  
+                        target = unit_type:combat_unit_type_monitor
+                        value >= 0.2  
+                    }
+                }
             }
+            percent >= 0.25
         }
     }
     on_complete = {

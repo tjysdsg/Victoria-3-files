@@ -1,0 +1,269 @@
+﻿# Issue the Golden Law
+golden_law_button = {
+	name = "golden_law_button"
+	desc = "golden_law_button_desc"
+
+	visible = { always = yes }
+
+	possible = {
+		has_law = law_type:law_legacy_slavery
+		c:BRZ ?= {
+			OR = {
+				AND = {
+					any_scope_character = {
+						OR = {
+							is_heir = yes
+							is_ruler = yes
+						}
+						OR = {
+							has_ideology = ideology:ideology_abolitionist
+							has_ideology = ideology:ideology_humanitarian
+							has_ideology = ideology:ideology_humanitarian_royalist
+						}
+						age >= 20
+					}
+				}
+				ig:ig_landowners = {
+					is_in_government = no
+					is_being_suppressed = yes
+					ig_clout < 0.25
+				}
+			}
+			is_enacting_law = law_type:law_slavery_banned
+			custom_tooltip = {
+				text = golden_law_button_tt_2
+				trigger_if = {
+					limit = {
+						is_enacting_law = law_type:law_slavery_banned
+					}
+					enactment_phase >= 1
+				}
+				trigger_else = {
+					always = no
+				}
+			}
+		}
+	}
+
+	ai_chance = {
+		base = 0
+		modifier = {
+			trigger = { 
+				ig:ig_landowners = {
+					is_in_government = no
+				}
+			}
+			add = 2
+		}
+		modifier = {
+			trigger = { 
+				ig:ig_landowners = {
+					is_in_government = no
+					is_being_suppressed = yes
+				}
+			}
+			add = 4
+		}
+		modifier = {
+			trigger = { 
+				any_interest_group = {
+					is_in_government = yes
+					OR = {
+						leader = {
+							OR = {
+								has_ideology = ideology:ideology_abolitionist
+								has_ideology = ideology:ideology_humanitarian
+								has_ideology = ideology:ideology_humanitarian_royalist
+							}
+						}
+						OR = {
+							law_stance = {
+								law = law_type:law_slave_trade
+								value = strongly_disapprove
+							}
+							law_stance = {
+								law = law_type:law_legacy_slavery
+								value = strongly_disapprove
+							}
+						}
+					}
+				}
+			}
+			add = 7
+		}
+		modifier = {
+			trigger = { 
+				OR = {
+					is_at_war = yes
+					any_revolution_ongoing = yes
+				}
+			}
+			add = -1000
+		}
+	}
+
+	effect = {
+		custom_tooltip = golden_law_button_tt
+        if = {
+            limit = {
+                has_journal_entry = je_pedro_brazil
+            }
+            remove_pedropoint_effect = yes
+        }
+		activate_law = law_type:law_slavery_banned
+		ig:ig_landowners = {
+			add_modifier = {
+				name = outraged_over_golden_law_modifier
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+# Authorize the Aberdeen Act
+je_aberdeen_act_button = {
+	name = "je_aberdeen_act_button"
+	desc = "je_aberdeen_act_button_desc"
+
+	visible = {
+		always = yes
+	}
+
+	possible = {
+		country_rank >= rank_value:great_power
+		c:BRZ ?= {
+			relations:root < relations_threshold:neutral
+		}
+		custom_tooltip = {
+			text = aberdeen_act_cd_tt
+			NOT = { 
+				has_variable = gbr_disrupt_brazil
+			}
+		}
+	}
+
+	ai_chance = {
+		base = 1
+		modifier = {
+			trigger = { 
+				OR = {
+					is_at_war = yes
+					any_revolution_ongoing = yes
+				}
+			}
+			add = -1000
+		}
+	}
+
+	effect = {
+		set_variable = {
+			name = gbr_disrupt_brazil
+			months = normal_modifier_time
+		}
+		trigger_event = { id = brazilian_slavery.11 popup = yes }
+		show_as_tooltip = {
+			change_relations = { 
+				country = c:BRZ 
+				value = -50 
+			}
+			# Makes up for part of the lost prestige and influence
+			add_modifier = {
+				name = aberdeen_act_enforced_gbr
+				months = normal_modifier_time
+			}
+			# Large convoy and trade penalties
+			c:BRZ = {
+				add_modifier = {
+					name = aberdeen_act_enforced_brz
+					months = normal_modifier_time
+				}
+			}
+		}
+	}
+}
+
+# Suppress Slave Trade Button
+je_slave_trade_suppression_button = {
+	name = "je_slave_trade_suppression_button"
+	desc = "je_slave_trade_suppression_button_desc"
+
+	visible = {
+		has_law = law_type:law_slave_trade 
+		NOT = { has_variable = var_slave_trade_suppression_var }
+	}
+
+	possible = {
+		ig:ig_landowners = {
+			is_in_government = no
+		}
+		custom_tooltip = {
+			text = slave_trade_button_cooldown_tt
+			NOT = {
+				has_variable = slave_trade_button_cooldown_var
+			}
+		}
+	}
+
+	effect = {
+		custom_tooltip = je_slave_trade_suppression_button_tt
+		set_variable = var_slave_trade_suppression_var
+		set_variable = {
+			name = slave_trade_button_cooldown_var
+			months = short_modifier_time
+		}
+		every_interest_group = {
+			limit = {
+                law_stance = {
+                    law = law_type:law_slave_trade
+                    value > neutral
+                }
+			}
+			add_modifier = {
+				name = restricted_slave_trade_ig_modifier
+			}
+		}
+		remove_modifier = unrestricted_slave_trade_modifier
+		add_modifier = {
+			name = restricted_slave_trade_modifier
+		}
+	}
+}
+
+# Stop Suppressing Slave Trade Button
+je_slave_trade_end_suppression_button = {
+	name = "je_slave_trade_end_suppression_button"
+	desc = "je_slave_trade_end_suppression_button_desc"
+
+	visible = {
+		has_law = law_type:law_slave_trade 
+		has_variable = var_slave_trade_suppression_var
+	}
+
+	possible = {
+		custom_tooltip = {
+			text = slave_trade_button_cooldown_tt
+			NOT = {
+				has_variable = slave_trade_button_cooldown_var
+			}
+		}
+	}
+
+	effect = {
+		custom_tooltip = je_slave_trade_end_suppression_button_tt
+		remove_variable = var_slave_trade_suppression_var
+		remove_modifier = restricted_slave_trade_modifier
+		set_variable = {
+			name = slave_trade_button_cooldown_var
+			months = short_modifier_time
+		}
+		every_interest_group = {
+			limit = {
+				has_modifier = restricted_slave_trade_ig_modifier
+			}
+			remove_modifier = restricted_slave_trade_ig_modifier
+		}
+		add_modifier = {
+			name = unrestricted_slave_trade_modifier
+		}
+	}
+}

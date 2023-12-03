@@ -1204,6 +1204,7 @@ types ongoing_outliner_items {
 				visible = "[Not(AccessPlayer.IsObjectiveIdle)]"
 				parentanchor = right|vcenter
 				position = { -3 0 }
+				spacing = 5
 
 				flowcontainer = {
 					visible = "[And(GetPlayer.HasObjective, Not(IsDataModelEmpty(AccessPlayer.AccessActivePlayerObjectiveJournalEntries)))]"
@@ -1217,15 +1218,14 @@ types ongoing_outliner_items {
 							autoresize = yes
 							align = left|nobaseline
 						}
-						
-						button_icon_goto = {
-							size = { 25 25 }
-							onclick = "[InformationPanelBar.OpenPanelTab('journal', 'default')]"
-							tooltip = "GO_TO_BUTTON_JOURNAL"
-						}
 					}
 				}
 
+				button_icon_goto = {
+					size = { 25 25 }
+					onclick = "[InformationPanelBar.OpenPanelTab('journal', 'default')]"
+					tooltip = "GO_TO_BUTTON_JOURNAL"
+				}
 			}
 		}
 
@@ -1281,15 +1281,22 @@ types ongoing_outliner_items {
 			}
 
 			flowcontainer = {
-				visible = "[And( Not( IsDataModelEmpty(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries) ), NotEqualTo_int32( GetDataModelSize(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries), GetDataModelSize(AccessPlayer.AccessActivePinnedNonPlayerObjectiveJournalEntries)))]"
 				parentanchor = right|vcenter
 				position = { -3 0 }
 				spacing = 5
 
 				textbox = {
+					visible = "[And( Not( IsDataModelEmpty(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries) ), NotEqualTo_int32( GetDataModelSize(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries), GetDataModelSize(AccessPlayer.AccessActivePinnedNonPlayerObjectiveJournalEntries)))]"
 					text = "NUMBER_OF_NON_PLAYER_OBJECTIVE_JOURNAL_ENTRIES_SHORT"
 					autoresize = yes
 					align = left|nobaseline
+				}
+
+				textbox = {
+					visible = "[IsDataModelEmpty(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries)]"
+					text = "NO_JOURNAL_ENTRIES_OUTLINER"
+					autoresize = yes
+					align = nobaseline
 				}
 				
 				button_icon_goto = {
@@ -1309,17 +1316,6 @@ types ongoing_outliner_items {
 			item = {
 				outliner_journal_entry = {}
 			}
-		}
-
-		textbox = {
-			visible = "[IsDataModelEmpty(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries)]"
-			text = "NO_JOURNAL_ENTRIES_OUTLINER"
-			autoresize = yes
-			multiline = yes
-			align = hcenter|nobaseline
-			minimumsize = { 340 -1 }
-			maximumsize = { 340 -1 }
-			margin = { 10 5 }
 		}
 	}
 	

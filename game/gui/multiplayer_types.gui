@@ -660,13 +660,17 @@ types JominiMultiplayerIngame {
 							hbox = {
 								layoutpolicy_horizontal = expanding
 								layoutpolicy_vertical = fixed
+								#max_width = 100
 								spacing = 5
 								margin = { 0 2 }
 
 								text_single = {
 									text = "[PlayerJoinRequest.GetPlayerName]"
 									autoresize = yes
+									max_width = 350
 									layoutpolicy_horizontal = expanding
+									fontsize_min = 14
+									elide = right
 								}
 
 								expand = {}
@@ -1232,12 +1236,12 @@ types JominiMultiplayerLobby
 			tooltip = JOMINI_MULTIPLAYER_GUI_PRIVATE_TT
 
 			button_radio = {
-				visible = "[Not(LobbyView.IsInvite)]"
+				visible = "[Not(LobbyView.GetServerInfo.IsInvite)]"
 				onclick = "[LobbyView.SetInvite]"
 			}
 
 			button_radio = {
-				visible = "[LobbyView.IsInvite]"
+				visible = "[LobbyView.GetServerInfo.IsInvite]"
 				frame = 2
 			}
 
@@ -1258,12 +1262,12 @@ types JominiMultiplayerLobby
 			tooltip = LOBBYVIEW_NO_CROSSPLAY_TOOLTIP
 
 			button_radio = {
-				visible = "[Not(LobbyView.IsPublicNoCrossplay)]"
+				visible = "[Not(LobbyView.GetServerInfo.IsPublic)]"
 				onclick = "[LobbyView.SetPublicNoCrossplay]"
 			}
 
 			button_radio = {
-				visible = "[LobbyView.IsPublicNoCrossplay]"
+				visible = "[LobbyView.GetServerInfo.IsPublic]"
 				frame = 2
 			}
 
@@ -1283,13 +1287,13 @@ types JominiMultiplayerLobby
 			tooltip = JOMINI_MULTIPLAYER_GUI_PUBLIC_TT
 
 			button_radio = {
-				visible = "[Not(LobbyView.IsPublicCrossplay)]"
+				visible = "[Not(LobbyView.GetServerInfo.IsPublic)]"
 				onclick = "[LobbyView.SetPublicCrossplay]"
 				enabled = "[Or(Not(JominiMultiplayerIsCrossplayFilterAvailable), JominiMultiplayerIsCrossplayEnabled)]"
 			}
 
 			button_radio = {
-				visible = "[LobbyView.IsPublicCrossplay]"
+				visible = "[LobbyView.GetServerInfo.IsPublic]"
 				frame = 2
 			}
 
@@ -1318,7 +1322,7 @@ types JominiMultiplayerLobby
 				layoutpolicy_horizontal = expanding
 				spacing = 20
 				margin_left = 10
-				margin_right = 30
+				margin_right = 10
 
 				visible = "[Not(LobbyView.GetServerInfo.IsInvite)]"
 
@@ -1357,7 +1361,7 @@ types JominiMultiplayerLobby
 				layoutpolicy_horizontal = expanding
 				spacing = 20
 				margin_left = 10
-				margin_right = 30
+				margin_right = 10
 				visible = "[JominiIsHostOrLocal]"
 
 				editbox_standard_with_label = {
@@ -1477,7 +1481,7 @@ types JominiMultiplayerLobby
 						layoutpolicy_horizontal = expanding
 						spacing = 5
 
-						datamodel = "[LobbyView.GetEnabledDLCs]"
+						datamodel = "[GetEnabledDlcNames]"
 
 						item = {
 							text_single = {
@@ -1491,7 +1495,7 @@ types JominiMultiplayerLobby
 				blockoverride "scrollbox_empty"
 				{
 					layoutpolicy_vertical = expanding
-					visible = "[IsDataModelEmpty(LobbyView.GetEnabledDLCs)]"
+					visible = "[IsDataModelEmpty(GetEnabledDlcNames)]"
 					text = "JOMINI_MULTIPLAYER_GUI_NO_DLCS"
 				}
 			}
@@ -1594,7 +1598,6 @@ types JominiMultiplayerLobby
 			hbox = {
 				layoutpolicy_horizontal = expanding
 				layoutpolicy_vertical = expanding
-				maximumsize = { 390 -1 }
 				margin = { 10 5 }
 				spacing = 10
 
@@ -1608,43 +1611,26 @@ types JominiMultiplayerLobby
 						layoutpolicy_horizontal = fixed
 						layoutpolicy_vertical = expanding
 
-						# button_standard = {
-						# 	size = { 60 70 }
-						# 	text = "no char"
-						# }
+						hbox = {
+							spacing = 5
 
-						widget = {
-							visible = "[LobbyPlayer.IsObserver]"
-							size = { 47 75 }
+							widget = {
+								visible = "[LobbyPlayer.IsObserver]"
+								size = { 47 75 }
 
-							icon_observer = {
-								parentanchor = center
-								size = { 48 48 }
+								icon_observer = {
+									parentanchor = center
+									size = { 48 48 }
+								}
 							}
-						}
 
-						container = {
-							visible = "[LobbyPlayer.HasPlayable]"
-							### v3 replacement
 							large_flag = {
 								datacontext = "[LobbyPlayer.GetPlayable.GetCountry]"
+								visible = "[LobbyPlayer.HasPlayable]"
 							}
-							# coa_realm_small_crown = {
-							# 	datacontext = "[LobbyPlayer.GetPlayable.GetCharacter]"
-							# 	visible = "[Character.IsValid]"
-							# }
-							### to here
+
 						}
-						
-						##### NO CHARACTER CHOSEN ####
-						
-						# container = {
-						# 	coa_realm_small_crown = {
-						# 		texture = "gfx/coat_of_arms/textured_emblems/_default.dds"
-						# 		# datacontext = "[LobbyPlayer.GetPlayable.GetCharacter]"
-						# 		visible = "[Not(Character.IsValid)]"
-						# 	}
-						# }
+
 					}
 				}
 
@@ -1656,20 +1642,15 @@ types JominiMultiplayerLobby
 						layoutpolicy_horizontal = expanding
 						spacing = 10
 
-						text_multi = {
+						text_single = {
 							layoutpolicy_horizontal = expanding
-							max_width = 300
-							autoresize = yes
+							max_width = 245
 							text = "[LobbyPlayer.GetName]"
 							default_format = "#high"
+							elide = right
 						}
 
-						text_single = {
-							visible = "[LobbyPlayer.IsHost]"
-							text = "HOST"
-							default_format = "#high"
-							margin_right = 5
-						}
+						expand = {}
 					}
 
 					hbox = {
@@ -1689,36 +1670,42 @@ types JominiMultiplayerLobby
 								}
 							}
 						}
-
-						widget = {
-							allow_outside = yes
-							minimumsize = { 30 0 }
-
-							button_kick_player = {
-								parentanchor = bottom|right
-								widgetanchor = bottom|right
-								size = { 30 30 }
-								visible = "[LobbyPlayer.CanRemovePlayer]"
-								onclick = "[LobbyPlayer.RemovePlayer]"
-								tooltip = "JOMINI_MULTIPLAYER_GUI_PLAYER_KICK_BUTTON_LABEL_TT"
-							}
-						}
-
-						widget = {
-							allow_outside = yes
-							minimumsize = { 30 0 }
-
-							button_clear = {
-								parentanchor = bottom|right
-								widgetanchor = bottom|right
-								size = { 30 30 }
-								visible = "[And( LobbyPlayer.IsLocalPlayer, Or( LobbyPlayer.HasPlayable, LobbyPlayer.IsObserver ) )]"
-								onclick = "[LobbyView.ClearSelection]"
-								tooltip = "JOMINI_MULTIPLAYER_GUI_CLEAR_SELECTION"
-							}
-						}
 					}
 				}
+
+				widget = {
+					minimumsize = { 30 30 }
+					visible = "[LobbyPlayer.CanRemovePlayer]"
+
+					button_kick_player = {
+						parentanchor = bottom|right
+						widgetanchor = bottom|right
+						size = { 30 30 }
+						onclick = "[LobbyPlayer.RemovePlayer]"
+						tooltip = "JOMINI_MULTIPLAYER_GUI_PLAYER_KICK_BUTTON_LABEL_TT"
+					}
+				}
+				
+				widget = {
+					minimumsize = { 30 30 }
+
+					text_single = {
+						visible = "[LobbyPlayer.IsHost]"
+						text = "HOST"
+						default_format = "#high"
+						margin_right = 5
+					}
+
+					button_clear = {
+						visible = "[And( LobbyPlayer.IsLocalPlayer, Or( LobbyPlayer.HasPlayable, LobbyPlayer.IsObserver ) )]"
+						parentanchor = bottom|right
+						widgetanchor = bottom|right
+						size = { 30 30 }
+						onclick = "[LobbyView.ClearSelection]"
+						tooltip = "JOMINI_MULTIPLAYER_GUI_CLEAR_SELECTION"
+					}
+				}
+
 			}
 		}
 	}
@@ -1728,7 +1715,7 @@ types JominiMultiplayerLobby
 		layoutpolicy_horizontal = expanding
 		layoutpolicy_vertical = expanding
 		margin = { 0 10 }
-		minimumsize = { 390 0 }
+		minimumsize = { 420 0 }
 
 		background = {
 			using = JominiLobbyViewModuleBackground
