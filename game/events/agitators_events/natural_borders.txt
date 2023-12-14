@@ -659,7 +659,26 @@ rhine_confederation.1 = {
 				change_tag = RHN
 			}
 		}
-		else = {
+		else_if = {
+			limit = {
+				any_country = {
+					is_subject_of = ROOT
+					capital = {
+						OR = {
+							region = sr:region_rhine
+							region = sr:region_north_germany
+							region = sr:region_south_germany
+						}
+					}
+					NOT = {
+						has_diplomatic_pact = {
+							who = ROOT
+							type = personal_union
+							is_initiator = no
+						}
+					}
+				}
+			}
 			ordered_country = {
 				limit = {
 					is_subject_of = ROOT
@@ -682,6 +701,50 @@ rhine_confederation.1 = {
 				change_tag = RHN
 			}
 		}
+		else = {
+			ordered_scope_state = {
+				limit = {
+					state_region = {
+						OR = {
+							is_homeland = cu:south_german
+							is_homeland = cu:north_german
+						}
+					}
+					OR = {
+						region = sr:region_rhine
+						region = sr:region_north_germany
+						region = sr:region_south_germany
+					}
+					is_incorporated = no
+					trigger_if = {
+						limit = {
+							ROOT = {
+								country_has_primary_culture = cu:french
+							}
+						}
+						NOR = {
+							state_region = s:STATE_RHINELAND
+							state_region = s:STATE_NORTH_RHINE
+							state_region = s:STATE_WALLONIA
+							state_region = s:STATE_FLANDERS
+						}
+					}
+				}
+				order_by = gdp
+				save_scope_as = rhine_state
+			}
+			create_country = {
+				tag = RHN
+				origin = ROOT
+				state = scope:rhine_state
+			}
+			ROOT = {
+				create_diplomatic_pact = {
+					country = c:RHN
+					type = puppet
+				}
+			}
+		}
 		c:RHN = {
 			save_scope_as = rhine_scope
 		}
@@ -699,7 +762,7 @@ rhine_confederation.1 = {
 					state_region = s:STATE_FLANDERS
 				}
 				NOT = {
-					ROOT = owner
+					owner = ROOT
 				}
 			}
 		}
