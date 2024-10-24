@@ -40,23 +40,35 @@ types journal_entry_panel_types
 				datacontext = "[JournalEntryPanel.AccessJournalEntry]"
 				direction = vertical
 				using = default_list_position
-				margin_top = 20
 				spacing = 10
 
-				container = {
-					minimumsize = { @panel_width -1 }
+				widget  = {
+					size = { @panel_width_plus_20 120 }
 					
 					parentanchor = hcenter
+
+					background = {
+						texture =  "gfx/interface/illustrations/journal/top_illu_journal_entries.dds"
+						using = top_illu_properties
+					}
 					
 					widget = {
 						size = { 250 120 }
 						parentanchor = hcenter
-						
+
 						icon = {
 							parentanchor = hcenter
-							texture = "[JournalEntry.GetIcon]"
 							size = { 120 120 }
+							texture = "gfx/interface/backgrounds/round_frame_dec.dds"
+
+							icon = {
+								parentanchor = center
+								texture = "[JournalEntry.GetIcon]"
+								size = { 100 100 }
+							}
 						}
+						
+						
 						
 						# completion in progress
 						icon = {
@@ -75,27 +87,30 @@ types journal_entry_panel_types
 							}
 						}
 					}
-					
+
 					### TIMED MODIFIERS
 					flowcontainer = {
-						margin_top = 10
-						margin_right = 14
-						margin_left = 14
-						margin_bottom = 5
+						background = {
+							using = fade_left_simple
+							margin_right = 10
+						}
+
 						datamodel = "[JournalEntry.GetTimedModifiers]"
 						spacing = 5
 						visible = "[Not(IsDataModelEmpty(JournalEntry.GetTimedModifiers))]"
-						maximumsize = { @panel_width_minus_10 45 }
-						parentanchor = right
+						parentanchor = vcenter|right
 						datamodel_wrap = 2
+						margin = { 10 10 }
+						margin_right = 30
 
 						item = {
 							icon = {
 								tooltip = "[TimedModifier.GetTooltip]"
 								texture = "[TimedModifier.GetIcon]"
-								size = { 25 25 }
+								size = { 35 35 }
 							}
 						}
+
 					}
 				}
 				
@@ -114,7 +129,7 @@ types journal_entry_panel_types
 					textbox = {
 						text = "[JournalEntry.GetTimeoutTooltip]"
 						autoresize = yes
-						align = left|nobaseline
+						align = nobaseline
 						using = fontsize_large
 						parentanchor = vcenter
 					}
@@ -163,6 +178,253 @@ types journal_entry_panel_types
 
 				flowcontainer = {
 					parentanchor = hcenter
+					direction = vertical
+
+					visible = "[Not( IsDataModelEmpty( JournalEntry.GetScriptedProgressBars ) )]"
+					datamodel = "[JournalEntry.GetScriptedProgressBars]"
+
+					spacing = 15
+
+					item = {
+						container = {
+
+							# Default
+							default_progressbar_horizontal = {
+								visible = "[ScriptedProgressBar.IsDefault]"
+								block "progressbar_size" {
+									size = { 504 30 }
+								}
+								tooltip = "[ScriptedProgressBar.GetPeriodicProgressBreakdown]"
+								blockoverride "values" {
+									value = "[JournalEntry.GetCurrentBarProgress(ScriptedProgressBar.Self)]"
+									min = 0
+									max = 1
+								}
+								textbox = {
+									text = "[ScriptedProgressBar.GetDesc]"
+									autoresize = yes
+									align = nobaseline
+									margin_left = 10
+									parentanchor = vcenter
+								}
+							}
+
+							# Default Bad
+							bad_progressbar_horizontal = {
+								visible = "[ScriptedProgressBar.IsDefaultBad]"
+								block "progressbar_size" {
+									size = { 504 30 }
+								}
+								tooltip = "[ScriptedProgressBar.GetPeriodicProgressBreakdown]"
+								blockoverride "values" {
+									value = "[JournalEntry.GetCurrentBarProgress(ScriptedProgressBar.Self)]"
+									min = 0
+									max = 1
+								}
+								textbox = {
+									text = "[ScriptedProgressBar.GetDesc]"
+									autoresize = yes
+									align = nobaseline
+									margin_left = 10
+									parentanchor = vcenter
+								}
+							}
+
+							#Default Green
+							green_progressbar_horizontal = {
+								visible = "[ScriptedProgressBar.IsDefaultGreen]"
+								block "progressbar_size" {
+									size = { 504 30 }
+								}
+
+								tooltip = "[ScriptedProgressBar.GetPeriodicProgressBreakdown]"
+								blockoverride "values" {
+									value = "[JournalEntry.GetCurrentBarProgress(ScriptedProgressBar.Self)]"
+									min = 0
+									max = 1
+								}
+								textbox = {
+									text = "[ScriptedProgressBar.GetDesc]"
+									autoresize = yes
+									align = nobaseline
+									margin_left = 10
+									parentanchor = vcenter
+								}
+								textbox = {
+									text = "[ScriptedProgressBar.GetSecondDesc]"
+									autoresize = yes
+									align = right|nobaseline
+									margin_right = 10
+									parentanchor = right|vcenter
+								}
+							}
+
+							# double sided bad
+							default_progressbar_horizontal = {
+								visible = "[ScriptedProgressBar.IsDoubleSidedBad]"
+								block "progressbar_size" {
+									size = { 504 30 }
+								}
+								tooltip = "[ScriptedProgressBar.GetPeriodicProgressBreakdown]"
+
+								blockoverride "noprogresstexture" {
+									noprogresstexture = "gfx/interface/progressbar/progressbar_bad.dds"
+								}
+
+								blockoverride "values" {
+									value = "[JournalEntry.GetCurrentBarProgress(ScriptedProgressBar.Self)]"
+									min = 0
+									max = 1
+								}
+								textbox = {
+									text = "[ScriptedProgressBar.GetDesc]"
+									autoresize = yes
+									align = nobaseline
+									margin_left = 10
+									parentanchor = vcenter
+								}
+								textbox = {
+									text = "[ScriptedProgressBar.GetSecondDesc]"
+									autoresize = yes
+									align = right|nobaseline
+									margin_right = 10
+									parentanchor = right|vcenter
+								}
+
+								#this is hack to get an extra marker on top of the frame (progressbar properties are copied)
+								blockoverride "on_top_of_the_progressbar" {
+									progressbar = {
+										noprogresstexture = "gfx/interface/icons/generic_icons/transparent.dds"
+										progresstexture = "gfx/interface/icons/generic_icons/transparent.dds"
+										size = { 100% 100% }
+										spriteType = Corneredtiled
+										spriteborder = { 4 4 }
+										texture_density = 2
+										skip_initial_animation = yes
+
+										block "values" {}
+										block "direction" {
+											direction = horizontal
+										}
+										block "progress_changed_animation" {
+											using = progressbar_changed_animation
+										}
+										block "animate_negative_change" {
+											animate_negative_changes = yes
+										}
+										marker = {
+
+											widget = {
+												size = { 50 50 }
+												icon = {
+													size = { 65 65 }
+													widgetanchor = center
+													position = { 0 12 }
+
+													block "progress_icon" {
+														texture = "[JournalEntry.GetIcon]"
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+
+							# Double sided gold
+							widget = {
+								size = { 520 45 }
+								parentanchor = center
+								visible = "[ScriptedProgressBar.IsDoubleSidedGold]"
+
+								default_progressbar_horizontal  = {
+									parentanchor = center
+									block "progressbar_size" {
+										size = { 430 30 }
+									}
+
+									blockoverride "noprogresstexture" {
+										noprogresstexture = "gfx/interface/progressbar/progressbar_gold.dds"
+									}
+
+									tooltip = "[ScriptedProgressBar.GetPeriodicProgressBreakdown]"
+									blockoverride "values" {
+										value = "[JournalEntry.GetCurrentBarProgress(ScriptedProgressBar.Self)]"
+										min = 0
+										max = 1
+									}
+									textbox = {
+										text = "[ScriptedProgressBar.GetDesc]"
+										autoresize = yes
+										align = nobaseline
+										margin_left = 10
+										parentanchor = vcenter
+									}
+									textbox = {
+										text = "[ScriptedProgressBar.GetSecondDesc]"
+										autoresize = yes
+										align = right|nobaseline
+										margin_right = 10
+										parentanchor = right|vcenter
+									}
+
+									#this is hack to get an extra marker on top of the frame (progressbar properties are copied)
+									blockoverride "on_top_of_the_progressbar" {
+										progressbar = {
+											noprogresstexture = "gfx/interface/icons/generic_icons/transparent.dds"
+											progresstexture = "gfx/interface/icons/generic_icons/transparent.dds"
+											size = { 100% 100% }
+											spriteType = Corneredtiled
+											spriteborder = { 4 4 }
+											texture_density = 2
+											skip_initial_animation = yes
+
+											block "values" {}
+											block "direction" {
+												direction = horizontal
+											}
+											block "progress_changed_animation" {
+												using = progressbar_changed_animation
+											}
+											block "animate_negative_change" {
+												animate_negative_changes = yes
+											}
+											marker = {
+
+												icon = {
+													size = { 65 33 }
+													parentanchor = vcenter
+													widgetanchor = center
+													texture = "gfx/interface/progressbar/progressbar_marker.dds"
+													using = shimmer
+												}
+											}
+										}
+									}
+								}
+
+								icon = {
+									size = { 45 45 }
+									parentanchor = left|vcenter
+									block "progressbar_left_icon" {
+										texture = "gfx/interface/progressbar/greatgame_bear_marker.dds"
+									}
+								}
+
+								icon = {
+									size = { 45 45 }
+									parentanchor = right|vcenter
+									block "progressbar_right_icon" {
+										texture = "gfx/interface/progressbar/greatgame_lion_marker.dds"
+									}
+								}
+							}
+						}
+					}
+				}
+
+				flowcontainer = {
+					parentanchor = hcenter
 					visible = "[And(JournalEntry.HasProgressBar, JournalEntry.IsActive)]"
 					margin = { 0 5 }
 					
@@ -180,7 +442,7 @@ types journal_entry_panel_types
 							visible = "[EqualTo_CFixedPoint(JournalEntry.GetBaselineValue, '(CFixedPoint)0')]"
 							text = "JOURNAL_ENTRY_PROGRESSBAR_FROM_ZERO"
 							autoresize = yes
-							align = left|nobaseline
+							align = nobaseline
 							margin_left = 10
 							parentanchor = vcenter
 						}
@@ -188,118 +450,160 @@ types journal_entry_panel_types
 							visible = "[Not(EqualTo_CFixedPoint(JournalEntry.GetBaselineValue, '(CFixedPoint)0'))]"
 							text = "JOURNAL_ENTRY_PROGRESSBAR_FROM_BASE"
 							autoresize = yes
-							align = left|nobaseline
+							align = nobaseline
 							margin_left = 10
 							parentanchor = vcenter
 						}
 					}
 				}
-					
-				textbox = {
-					text = "[JournalEntry.GetReason]"
-					autoresize = yes
-					multiline = yes
-					minimumsize = { @panel_width_minus_30 -1 }
-					maximumsize = { @panel_width_minus_30 -1 }
-					using = default_list_position
-					align = left|nobaseline
-					margin = { 5 0 }
-				}
 
-				textbox = {
-					visible = "[Not(StringIsEmpty(JournalEntry.GetProgressDesc))]"
-					text = "[JournalEntry.GetProgressDesc]"
-					autoresize = yes
-					multiline = yes
-					minimumsize = { @panel_width_minus_30 -1 }
-					maximumsize = { @panel_width_minus_30 -1 }
+				flowcontainer = {
+					direction = vertical
 					using = default_list_position
-					align = left|nobaseline
 
-					margin = { 20 20 }
-					background = {
-						using = entry_bg
+					spacing = 20
+
+					textbox = {
+						autoresize = yes
+						text = "[JournalEntry.GetReason]"
+						min_width = @panel_width_minus_30 
+						max_width = @panel_width_minus_30
+
+						multiline = yes
+						using = default_list_position
+
+						align = nobaseline
+						default_format = "#lore"
+
+						margin = { 15 15 }
+
+						background = {
+							using = entry_bg
+						}
 					}
-				}
-				
-				textbox = {
-					visible = "[Not(StringIsEmpty(JournalEntry.GetCompletionTooltip))]"
-					text = "[JournalEntry.GetCompletionTooltip]"
-					autoresize = yes
-					multiline = yes
-					minimumsize = { @panel_width_minus_30 -1 }
-					maximumsize = { @panel_width_minus_30 -1 }
-					using = default_list_position
-					align = left|nobaseline
 
-					margin = { 20 20 }
+					flowcontainer = {
+						direction = vertical
+						using = default_list_position
+						name = "complete_text"
 
-					background = {
-						texture = "gfx/interface/tooltip/tooltip_title_bg.dds"
-						using = color_gold_positive
-						alpha = 0.4
+						spacing = 5
+
+						textbox = {
+							visible = "[Not(StringIsEmpty(JournalEntry.GetProgressDesc))]"
+							text = "[JournalEntry.GetProgressDesc]"
+							autoresize = yes
+							multiline = yes
+							minimumsize = { @panel_width_minus_30 -1 }
+							maximumsize = { @panel_width_minus_30 -1 }
+							using = default_list_position
+							align = nobaseline
+
+							margin = { 15 0 }
+
+							background = {
+								using = entry_bg
+							}
+						}
 						
-						modify_texture = {
-							using = texture_velvet
+						textbox = {
+							visible = "[JournalEntry.CanComplete]"
+							text = "[JournalEntry.GetCompletionTooltip]"
+							autoresize = yes
+							multiline = yes
+							minimumsize = { @panel_width_minus_30 -1 }
+							maximumsize = { @panel_width_minus_30 -1 }
+							using = default_list_position
+							align = nobaseline
+
+							margin = { 15 5 }
+
+							background = {
+								texture = "gfx/interface/tooltip/tooltip_title_bg.dds"
+								using = color_gold_positive
+								alpha = 0.4
+								
+								modify_texture = {
+									using = texture_velvet
+								}
+							}
+						}
+
+						textbox = {
+							text = "[JournalEntry.GetOnCompleteTooltip]"
+							autoresize = yes
+							multiline = yes
+							minimumsize = { @panel_width_minus_30 -1 }
+							maximumsize = { @panel_width_minus_30 -1 }
+							using = default_list_position
+							align = nobaseline
+
+							margin_left = 35
+							margin_right = 15
+						}
+					}
+
+					flowcontainer = {
+						name = "fail_text"
+						direction = vertical
+						using = default_list_position
+
+						spacing = 5
+
+						textbox = {
+							visible = "[Not(StringIsEmpty(JournalEntry.GetFailureTooltip))]"
+							text = "[JournalEntry.GetFailureTooltip]"
+							autoresize = yes
+							multiline = yes
+							minimumsize = { @panel_width_minus_30 -1 }
+							maximumsize = { @panel_width_minus_30 -1 }
+							using = default_list_position
+							align = nobaseline
+
+							margin = { 15 5 }
+
+							background = {
+								texture = "gfx/interface/tooltip/tooltip_title_bg.dds"
+								using = color_blue_negative
+								alpha = 0.5
+								
+								modify_texture = {
+									using = texture_velvet
+								}
+							}
+						}
+
+						textbox = {
+							text = "[JournalEntry.GetOnFailTooltip]"
+							visible = "[Not(StringIsEmpty(JournalEntry.GetOnFailTooltip))]"
+							autoresize = yes
+							multiline = yes
+							minimumsize = { @panel_width_minus_30 -1 }
+							maximumsize = { @panel_width_minus_30 -1 }
+							using = default_list_position
+							align = nobaseline
+
+							margin_left = 35
+							margin_right = 15
+						}
+
+						textbox = {
+							text = "[JournalEntry.GetOnTimeoutTooltip]"
+							visible = "[Not(StringIsEmpty(JournalEntry.GetOnTimeoutTooltip))]"
+							autoresize = yes
+							multiline = yes
+							minimumsize = { @panel_width_minus_30 -1 }
+							maximumsize = { @panel_width_minus_30 -1 }
+							using = default_list_position
+							align = nobaseline
+
+							margin_left = 35
+							margin_right = 15
 						}
 					}
 				}
 
-				textbox = {
-				margin_bottom = 10
-					text = "[JournalEntry.GetOnCompleteTooltip]"
-					autoresize = yes
-					multiline = yes
-					minimumsize = { @panel_width_minus_30 -1 }
-					maximumsize = { @panel_width_minus_30 -1 }
-					using = default_list_position
-					align = left|nobaseline
-				}
-
-				textbox = {
-					visible = "[Not(StringIsEmpty(JournalEntry.GetFailureTooltip))]"
-					text = "[JournalEntry.GetFailureTooltip]"
-					autoresize = yes
-					multiline = yes
-					minimumsize = { @panel_width_minus_30 -1 }
-					maximumsize = { @panel_width_minus_30 -1 }
-					using = default_list_position
-					align = left|nobaseline
-
-					margin = { 20 20 }
-
-					background = {
-						texture = "gfx/interface/tooltip/tooltip_title_bg.dds"
-						using = color_blue_negative
-						alpha = 0.5
-						
-						modify_texture = {
-							using = texture_velvet
-						}
-					}
-				}
-
-				textbox = {
-					text = "[JournalEntry.GetOnFailTooltip]"
-					visible = "[Not(StringIsEmpty(JournalEntry.GetOnFailTooltip))]"
-					autoresize = yes
-					multiline = yes
-					minimumsize = { @panel_width_minus_30 -1 }
-					maximumsize = { @panel_width_minus_30 -1 }
-					using = default_list_position
-					align = left|nobaseline
-				}
-
-				textbox = {
-					text = "[JournalEntry.GetOnTimeoutTooltip]"
-					visible = "[Not(StringIsEmpty(JournalEntry.GetOnTimeoutTooltip))]"
-					autoresize = yes
-					multiline = yes
-					minimumsize = { @panel_width_minus_30 -1 }
-					maximumsize = { @panel_width_minus_30 -1 }
-					using = default_list_position
-					align = left|nobaseline
-				}
+				### TUTORIAL				
 
 				divider_clean = {
 					visible = "[Or(JournalEntry.HasHowTutorialLesson, JournalEntry.HasWhyTutorialLesson)]"

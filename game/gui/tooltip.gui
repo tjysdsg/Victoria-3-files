@@ -1,3 +1,5 @@
+@tooltip_max_width = 550
+
 template tooltip_properties
 {
 	alwaystransparent = no
@@ -57,133 +59,22 @@ types TooltipTypes
 		autoresize = yes
 		using = tooltip_font
 	}
+
+	# Alias (cannot rename the actual type due to how it is hooked into code)
+	type RegularTooltip = TooltipWidgetType {}
 	
 	type TooltipWidgetType = container {
-		using = tooltip_properties
-		
-		flowcontainer = {
-			direction = vertical
-			margin = { 15 12 }
-			
-			block "tooltip_content" {	
-				DefaultTooltipTextBox = {
-					name = "TooltipText"
-					margin_bottom = 0
-					autoresize = yes
-					multiline = yes
-					maximumsize = { 550 -1 }
-					fonttintcolor = "[TooltipInfo.GetTintColor]"
-				}
-				
-				DefaultTooltipTextBox = {
-					name = "TooltipTextDelayed"
-					autoresize = yes
-					margin_top = 0
-					margin_bottom = 0
-					multiline = yes
-					maximumsize = { 550 -1 }
-					fonttintcolor = "[TooltipInfo.GetTintColor]"
-				}
-
-				DefaultTooltipTextBox = {
-					margin_top = 10
-					text = "RIGHT_CLICK_TO_OPEN_CONTEXT_MENU"
-					visible = "[CanOpenRightClickContextMenu]"
-				}
-				
-				DefaultTooltipTextBox = {
-					name = "TooltipTextShortcut"
-					autoresize = yes
-					fonttintcolor = "[TooltipInfo.GetTintColor]"
-				}
-
-				DefaultTooltipTextBox = {
-					name = "TooltipTextInputAction"
-					autoresize = yes
-					fonttintcolor = "[TooltipInfo.GetTintColor]"
-				}
-			}
-			
-			block "tooltip_content_after" {}
-		}
-		
-		margin_widget = {
-			size = { 100% 100% }
-			margin = { 5 5 }
-
-			icon = {
-				name = "tooltip_frame_locked"
-				texture = "gfx/interface/tooltip/tooltip_locked.dds"
-				spriteType = Corneredstretched
-				spriteborder = { 6 6 }
-				tintcolor = "[TooltipInfo.GetTintColor]"
-				size = { 100% 100% }
-				texture_density = 2
-
-				# Commented out due to looping sound effect (PRCAL-21403)
-				#state = {
-				#	name = _show
-				#	start_sound = {
-				#		soundeffect = "event:/SFX/UI/Global/tooltip_lock"
-				#	}
-				#}
-			}
-			
-			### timer lock icon
-			block "progress"
-			{
-				progresspie = {
-					name = "tooltip_progress"
-					visible = "[And(UsesTimerLocking, Not(PdxGuiWidget.IsTooltipLocked))]"
-					parentanchor = top|right
-					position = { 12 -12 }
-					size = { 24 24 }
-					min = 0
-					max = 1
-					tintcolor = "[TooltipInfo.GetTintColor]"
-					value = "[PdxGuiWidget.GetTooltipLockProgress]"
-					texture = "gfx/interface/tooltip/tooltip_lock_timer.dds"
-					framesize = { 48 48 }
-					frame = 2
-
-					state = {
-						name = _show
-						alpha = 1
-					}
-		
-					state = {
-						name = _hide
-						bezier = { 0.25 0.1 0.25 1 }
-						duration = 0.05
-						alpha = 0
-					}
-				}
-			}
-		}
-	}
-
-	type FancyTooltipWidgetType = container {
 		using = tooltip_properties
 
 		container = {
 			flowcontainer = {
 				direction = vertical
-				margin = { 18 15 }
-				margin_top = 65
+
+				block "tooltip_margins" {
+					margin = { 18 15 }
+				}
 				
 				block "tooltip_content" {
-					DefaultTooltipTextBox = {
-						name = "BeforeTooltipText"
-						margin_bottom = 0
-						block "text_before"
-						{
-						}
-						autoresize = yes
-						multiline = yes
-						maximumsize = { 550 -1 }
-						fonttintcolor = "[TooltipInfo.GetTintColor]"
-					}
-
 					DefaultTooltipTextBox = {
 						name = "TooltipText"
 						block "text"
@@ -192,7 +83,7 @@ types TooltipTypes
 						margin_bottom = 0
 						autoresize = yes
 						multiline = yes
-						maximumsize = { 550 -1 }
+						maximumsize = { @tooltip_max_width -1 }
 						fonttintcolor = "[TooltipInfo.GetTintColor]"
 					}
 					
@@ -202,8 +93,14 @@ types TooltipTypes
 						margin_top = 0
 						margin_bottom = 0
 						multiline = yes
-						maximumsize = { 550 -1 }
+						maximumsize = { @tooltip_max_width -1 }
 						fonttintcolor = "[TooltipInfo.GetTintColor]"
+					}
+
+					caligula_table = {
+						block "table_visibility" {
+							visible = no
+						}
 					}
 
 					DefaultTooltipTextBox = {
@@ -214,18 +111,11 @@ types TooltipTypes
 						margin_top = 0
 						margin_bottom = 0
 						multiline = yes
-						maximumsize = { 550 -1 }
+						maximumsize = { @tooltip_max_width -1 }
 						fonttintcolor = "[TooltipInfo.GetTintColor]"
 					}
 
 					block "tooltip_content_after" {}
-					
-					container = {
-						parentanchor = top|hcenter
-						widgetanchor = top|hcenter
-						visible = "[IsInGame]"
-						block "buttons" {}
-					}
 
 					DefaultTooltipTextBox = {
 						name = "TooltipTextShortcut"
@@ -239,11 +129,178 @@ types TooltipTypes
 						fonttintcolor = "[TooltipInfo.GetTintColor]"
 					}
 
-					
 					DefaultTooltipTextBox = {
 						margin_top = 10
 						text = "RIGHT_CLICK_TO_OPEN_CONTEXT_MENU"
 						visible = "[CanOpenRightClickContextMenu]"
+					}
+
+					container = {
+						parentanchor = top|hcenter
+						widgetanchor = top|hcenter
+						visible = "[IsInGame]"
+						block "buttons" {}
+					}
+				}	
+			}
+		
+			margin_widget = {
+				size = { 100% 100% }
+				margin = { 5 5 }
+
+				icon = {
+					name = "tooltip_frame_locked"
+					texture = "gfx/interface/tooltip/tooltip_locked.dds"
+					spriteType = Corneredstretched
+					spriteborder = { 6 6 }
+					tintcolor = "[TooltipInfo.GetTintColor]"
+					size = { 100% 100% }
+					texture_density = 2
+
+					# Commented out due to looping sound effect (PRCAL-21403)
+					#state = {
+					#	name = _show
+					#	start_sound = {
+					#		soundeffect = "event:/SFX/UI/Global/tooltip_lock"
+					#	}
+					#}
+				}
+			}
+		}
+
+		### timer lock icon
+		block "progress"
+		{
+			progresspie = {
+				name = "tooltip_progress"
+				visible = "[And(UsesTimerLocking, Not(PdxGuiWidget.IsTooltipLocked))]"
+				parentanchor = top|right
+				position = { 8 -8 }
+				size = { 24 24 }
+				min = 0
+				max = 1
+				tintcolor = "[TooltipInfo.GetTintColor]"
+				value = "[PdxGuiWidget.GetTooltipLockProgress]"
+				texture = "gfx/interface/tooltip/tooltip_lock_timer.dds"
+				framesize = { 48 48 }
+				frame = 2
+
+				state = {
+					name = _show
+					alpha = 1
+				}
+	
+				state = {
+					name = _hide
+					bezier = { 0.25 0.1 0.25 1 }
+					duration = 0.05
+					alpha = 0
+				}
+			}
+		}
+	}
+
+	type FancyTooltipWidgetType = container {
+		using = tooltip_properties
+
+		container = {
+			flowcontainer = {
+				direction = vertical
+				block "tooltip_margins" {
+					margin = { 18 15 }
+				}
+				margin_top = 65
+				
+				block "tooltip_content" {
+					DefaultTooltipTextBox = {
+						name = "BeforeBeforeTooltipText"
+						margin_bottom = 0
+						block "text_before_before"
+						{
+						}
+						autoresize = yes
+						multiline = yes
+						maximumsize = { @tooltip_max_width -1 }
+						fonttintcolor = "[TooltipInfo.GetTintColor]"
+					}
+
+					DefaultTooltipTextBox = {
+						name = "BeforeTooltipText"
+						margin_bottom = 0
+						block "text_before"
+						{
+						}
+						autoresize = yes
+						multiline = yes
+						maximumsize = { @tooltip_max_width -1 }
+						fonttintcolor = "[TooltipInfo.GetTintColor]"
+					}
+
+					DefaultTooltipTextBox = {
+						name = "TooltipText"
+						block "text"
+						{
+						}
+						margin_bottom = 0
+						autoresize = yes
+						multiline = yes
+						maximumsize = { @tooltip_max_width -1 }
+						fonttintcolor = "[TooltipInfo.GetTintColor]"
+					}
+					
+					DefaultTooltipTextBox = {
+						name = "TooltipTextDelayed"
+						autoresize = yes
+						margin_top = 0
+						margin_bottom = 0
+						multiline = yes
+						maximumsize = { @tooltip_max_width -1 }
+						fonttintcolor = "[TooltipInfo.GetTintColor]"
+					}
+
+					caligula_table = {
+						block "table_visibility" {
+							visible = no
+						}
+					}
+
+					DefaultTooltipTextBox = {
+						block "instruction_text"
+						{
+						}
+						autoresize = yes
+						margin_top = 0
+						margin_bottom = 0
+						multiline = yes
+						maximumsize = { @tooltip_max_width -1 }
+						fonttintcolor = "[TooltipInfo.GetTintColor]"
+					}
+
+					block "tooltip_content_after" {}
+
+					DefaultTooltipTextBox = {
+						name = "TooltipTextShortcut"
+						autoresize = yes
+						fonttintcolor = "[TooltipInfo.GetTintColor]"
+					}
+
+					DefaultTooltipTextBox = {
+						name = "TooltipTextInputAction"
+						autoresize = yes
+						fonttintcolor = "[TooltipInfo.GetTintColor]"
+					}
+
+					DefaultTooltipTextBox = {
+						margin_top = 10
+						text = "RIGHT_CLICK_TO_OPEN_CONTEXT_MENU"
+						visible = "[CanOpenRightClickContextMenu]"
+					}
+
+					container = {
+						parentanchor = top|hcenter
+						widgetanchor = top|hcenter
+						visible = "[IsInGame]"
+						block "buttons" {}
 					}
 				}
 			}
@@ -461,4 +518,293 @@ TooltipWidgetType = {
 	name = "MapTooltipWidget"
 	alwaystransparent = yes
 	blockoverride "progress" {}
+}
+
+# Templates and types used in tooltips
+# Need to be defined in this file since tooltips can be used on the loading screen (where we do not have the all gui files loaded yet) 
+
+types Tables {
+	type caligula_table = margin_widget {
+		vbox = {
+			set_parent_size_to_minimum = yes
+
+			textbox = {
+				autoresize = yes
+				block "table_title" {
+					raw_text = "title"
+					visible = no
+				}
+				default_format = "#title"
+				align = left|nobaseline
+				layoutpolicy_horizontal = expanding
+			}
+
+			hbox = {				
+				# column 1
+				vbox = {
+					using = table_column
+					
+					textbox = {
+						using = table_header
+						
+						block "table_header_1" {
+							visible = no
+							# raw_text = "header 1"
+						}
+						
+						align = left|nobaseline
+						margin_left = 0
+					}
+
+					block "table_datamodel" {}
+					item = {
+						textbox = {
+							using = table_cell
+
+							block "table_value_1" {
+								visible = no
+								margin_left = 0
+								# raw_text = "value 1"
+							}
+
+							align = left|nobaseline
+							margin_left = 0
+						}
+					}
+				}
+
+				# column 2
+				vbox = {
+					using = table_column
+					
+					textbox = {
+						using = table_header
+						
+						block "table_header_2" {
+							visible = no
+							# raw_text = "header 2"
+						}
+						
+						align = right|nobaseline
+					}
+
+					block "table_datamodel" {}
+					item = {
+						textbox = {
+							using = table_cell
+
+							block "table_value_2" {
+								visible = no
+								margin_left = 0
+								# raw_text = "value 2"
+							}
+
+							align = right|nobaseline
+						}				
+					}
+				}
+
+				# column 3
+				vbox = {
+					using = table_column
+					
+					textbox = {
+						using = table_header
+						
+						block "table_header_3" {
+							visible = no
+							# raw_text = "header 3"
+						}
+						
+						align = right|nobaseline
+					}
+
+					block "table_datamodel" {}
+
+					item = {
+						textbox = {
+							using = table_cell
+
+							block "table_value_3" {
+								visible = no
+								margin_left = 0
+								# raw_text = "value 3"
+							}
+
+							align = right|nobaseline
+						}
+					}
+				}
+
+				# column 4
+				vbox = {
+					using = table_column
+					
+					textbox = {
+						using = table_header
+						
+						block "table_header_4" {
+							visible = no
+							# raw_text = "header 4"
+						}
+						
+						align = right|nobaseline
+					}
+
+					block "table_datamodel" {}
+
+					item = {
+						textbox = {
+							using = table_cell
+
+							block "table_value_4" {
+								visible = no
+								margin_left = 0
+								# raw_text = "value 4"
+							}
+
+							block "table_value_4_alignment" {
+								align = right|nobaseline
+							}
+						}
+					}
+				}
+
+				# column 5
+				vbox = {
+					using = table_column
+					
+					textbox = {
+						using = table_header
+						
+						block "table_header_5" {
+							visible = no
+							# raw_text = "header 5"
+						}
+						
+						align = right|nobaseline
+					}
+
+					block "table_datamodel" {}
+
+					item = {
+						textbox = {
+							using = table_cell
+
+							block "table_value_5" {
+								visible = no
+								margin_left = 0
+								# raw_text = "value 5"
+							}
+
+							align = right|nobaseline
+						}
+					}
+				}
+
+				# column 6
+				vbox = {
+					using = table_column
+					
+					textbox = {
+						using = table_header
+						
+						block "table_header_6" {
+							visible = no
+							# raw_text = "header 6"
+						}
+						
+						align = right|nobaseline
+					}
+
+					block "table_datamodel" {}
+
+					item = {
+						textbox = {
+							using = table_cell
+
+							block "table_value_6" {
+								visible = no
+								margin_left = 0
+								# raw_text = "value 6"
+							}
+
+							block "table_value_6_alignment" {
+								align = right|nobaseline
+							}
+						}
+					}
+				}
+			}
+		}	
+	}
+}
+
+template table_column {
+	layoutpolicy_horizontal = expanding
+	layoutpolicy_vertical = expanding
+}
+
+template table_header {
+	layoutpolicy_horizontal = expanding
+	layoutpolicy_vertical = expanding
+	autoresize = yes
+	minimumsize = { -1 26 }
+	maximumsize = { -1 26 }
+	margin_bottom = 3
+	
+	divider_clean = {
+		parentanchor = bottom|hcenter
+	}
+}
+
+template table_cell {
+	layoutpolicy_horizontal = expanding
+	layoutpolicy_vertical = expanding
+
+	block "autoresize_table_cells" {
+		autoresize = yes
+	}
+
+	elide = right
+	fontsize_min = 12
+
+	block "table_style" {
+		margin = { 20 3 }
+		margin_right = 0
+		minimumsize = { -1 30 }
+		maximumsize = { -1 30 }
+	}
+}
+
+template condensed_table {
+	margin = { 20 0 }
+	margin_right = 0
+	minimumsize = { -1 23 }
+	maximumsize = { -1 23 }
+}
+
+Types dividers {	
+	type divider_clean = icon {
+		texture = "gfx/interface/dividers/divider_clean.dds"
+		texture_density = 2
+		spriteType = CorneredTiled
+		spriteborder = { 4 0 }
+		
+		alpha = 0.3
+
+		block "size" {
+			size =  { 100% 2 }
+		}
+		
+		block "fade" {
+			modify_texture = {
+				texture = "gfx/interface/masks/fade_horizontal_center.dds"
+				spriteType = Corneredstretched
+				spriteborder = { 0 0 }
+				blend_mode = alphamultiply
+				alpha = 0.5
+			}
+		}
+	}
 }

@@ -117,6 +117,7 @@ types progressbars {
 			
 			using = progressbar_texture_properties
 		}
+		
 		background = {
 			texture = "gfx/interface/progressbar/progressbar_frame.dds"
 			spriteType = Corneredstretched
@@ -144,21 +145,23 @@ types progressbars {
 				}
 
 				# progress default
-				default_progressbar_horizontal = {
-					block "default_progressbar_visible" {
-						visible = yes
-					}
-					size = { 100% 100% }
-					blockoverride "background" {}
-					blockoverride "frame" {}
-					blockoverride "glow_visible" {
-						block "level_active" {}
-					}
+				block "progressbar_type" {
+					default_progressbar_horizontal = {
+						block "default_progressbar_visible" {
+							visible = yes
+						}
+						size = { 100% 100% }
+						blockoverride "background" {}
+						blockoverride "frame" {}
+						blockoverride "glow_visible" {
+							block "level_active" {}
+						}
 
-					blockoverride "values" {
-						block "default_progressbar_value" {}
-						min = 0
-						max = 1
+						blockoverride "values" {
+							block "default_progressbar_value" {}
+							min = 0
+							max = 1
+						}
 					}
 				}
 				
@@ -587,6 +590,130 @@ types progressbars {
 			}
 		}
 	}
+
+	### CHANGED VALUE INCREASED PROGRESSBAR
+	type changed_value_increased_progressbar_horizontal_bad = progressbar_properties {
+		
+		blockoverride "progressbar" {
+			progressbar = {
+				noprogresstexture = "gfx/interface/icons/generic_icons/transparent.dds"
+				progresstexture = "gfx/interface/progressbar/progressbar_bad.dds"
+				size = { 100% 100% }
+				spriteType = Corneredtiled
+				spriteborder = { 4 4 }
+				texture_density = 2
+				skip_initial_animation = yes
+				
+				block "values" {
+					min = 0
+					max = 1
+					block "new_value" {}
+				}
+				
+				direction = horizontal
+				using = progressbar_changed_animation
+				animate_negative_changes = yes
+				using = progressbar_marker_indicator
+				using = progressbar_texture_properties
+				
+				marker = {
+					widget = {
+						size = { 100% 100% }
+						
+						icon = {
+							texture = "gfx/interface/progressbar/progressbar_bad_glow.dds"
+							size = { 30 100% }
+							widgetanchor = right
+							alpha = 0.3
+							using = progressbar_texture_properties
+							
+							### line
+							icon = {
+								texture = "gfx/interface/progressbar/progressbar_bad_glow_line.dds"
+								size = { 3 100% }
+								parentanchor = right
+								spriteType = Corneredtiled
+								spriteborder = { 0 0 }
+							}
+						}
+						
+						icon = {
+							texture = "gfx/interface/progressbar/progressbar_bad.dds"
+							size = { 100% 100% }
+							spriteType = Corneredtiled
+							spriteborder = { 4 4 }
+							texture_density = 2
+							shaderfile = "gfx/FX/pdxgui_repeat_texture.shader"
+							widgetanchor = right
+							
+							modify_texture = {
+								texture = "gfx/interface/backgrounds/light_bg.dds"  
+								spriteType = CorneredTiled
+								spriteborder = { 6 6 }
+								texture_density = 2
+								blend_mode = overlay
+							}
+							
+							modify_texture = {
+								name = arrow_animation
+								texture = "gfx/interface/progressbar/progressbar_arrow.dds"
+								spriteType = Corneredtiled
+								spriteborder = { 0 0 }
+								block "arrow_texture_density" {
+									texture_density = 10 #use to match height of progressbar
+								}
+								translate_uv = { 0 0 }
+								blend_mode = alphamultiply
+							}
+							
+							state = {
+								trigger_on_create = yes
+								name = arrow_animation_1
+								next = arrow_animation_2
+								duration = 1
+								
+								modify_texture = {
+									name = arrow_animation
+									translate_uv = { -1 0 }
+								}
+							}
+							state = {
+								name = arrow_animation_2
+								next = arrow_animation_1
+								duration = 0
+								
+								modify_texture = {
+									name = arrow_animation
+									translate_uv = { 0 0 }
+								}
+							}
+						}
+					}
+				}
+			}
+			block "second_progressbar" {
+				progressbar = {
+					noprogresstexture = "gfx/interface/icons/generic_icons/transparent.dds"
+					progresstexture = "gfx/interface/progressbar/progressbar_default.dds"
+					size = { 100% 100% }
+					spriteType = Corneredtiled
+					spriteborder = { 4 4 }
+					texture_density = 2
+					skip_initial_animation = yes
+					
+					min = 0
+					max = 1
+					block "start_value" {}
+					
+					direction = horizontal
+					using = progressbar_changed_animation
+					animate_negative_changes = yes
+					using = progressbar_marker_indicator
+					using = progressbar_texture_properties
+				}
+			}
+		}
+	}
 	
 	### CHANGED VALUE DECREASED PROGRESSBAR
 	type changed_value_decreased_progressbar_horizontal = progressbar_properties {
@@ -634,6 +761,129 @@ types progressbars {
 						
 						icon = {
 							texture = "gfx/interface/progressbar/progressbar_bad.dds"
+							size = { 100% 100% }
+							spriteType = Corneredtiled
+							spriteborder = { 4 4 }
+							texture_density = 2
+							shaderfile = "gfx/FX/pdxgui_repeat_texture.shader"
+							widgetanchor = right
+							
+							modify_texture = {
+								texture = "gfx/interface/backgrounds/light_bg.dds"  
+								spriteType = CorneredTiled
+								spriteborder = { 6 6 }
+								texture_density = 2
+								blend_mode = overlay
+							}
+							
+							modify_texture = {
+								name = arrow_animation
+								texture = "gfx/interface/progressbar/progressbar_arrow.dds"
+								spriteType = Corneredtiled
+								spriteborder = { 0 0 }
+								block "arrow_texture_density" {
+									texture_density = 10 #use to match height of progressbar
+								}
+								translate_uv = { 0 0 }
+								blend_mode = alphamultiply
+								mirror = horizontal
+							}
+							
+							state = {
+								trigger_on_create = yes
+								name = arrow_animation_1
+								next = arrow_animation_2
+								duration = 1
+								
+								modify_texture = {
+									name = arrow_animation
+									translate_uv = { -1 0 }
+								}
+							}
+							state = {
+								name = arrow_animation_2
+								next = arrow_animation_1
+								duration = 0
+								
+								modify_texture = {
+									name = arrow_animation
+									translate_uv = { 0 0 }
+								}
+							}
+						}
+					}
+				}
+			}
+			block "second_progressbar" {
+				progressbar = {
+					noprogresstexture = "gfx/interface/icons/generic_icons/transparent.dds"
+					progresstexture = "gfx/interface/progressbar/progressbar_default.dds"
+					size = { 100% 100% }
+					spriteType = Corneredtiled
+					spriteborder = { 4 4 }
+					texture_density = 2
+					skip_initial_animation = yes
+					
+					min = 0
+					max = 1
+					block "new_value" {}
+					
+					direction = horizontal
+					using = progressbar_changed_animation
+					animate_negative_changes = yes
+					using = progressbar_marker_indicator
+					using = progressbar_texture_properties
+				}
+			}
+		}
+	}
+
+	### CHANGED VALUE DECREASED PROGRESSBAR
+	type changed_value_decreased_progressbar_horizontal_green = progressbar_properties {
+		blockoverride "progressbar" {
+			progressbar = {
+				noprogresstexture = "gfx/interface/icons/generic_icons/transparent.dds"
+				progresstexture = "gfx/interface/progressbar/progressbar_green.dds"
+				size = { 100% 100% }
+				spriteType = Corneredtiled
+				spriteborder = { 4 4 }
+				texture_density = 2
+				skip_initial_animation = yes
+				
+				block "values" {
+					min = 0
+					max = 1
+					block "start_value" {}
+				}
+				
+				direction = horizontal
+				using = progressbar_changed_animation
+				animate_negative_changes = yes
+				using = progressbar_texture_properties
+				
+				marker = {
+					widget = {
+						size = { 100% 100% }
+						
+						icon = {
+							texture = "gfx/interface/progressbar/progressbar_green_glow.dds"
+							size = { 30 100% }
+							widgetanchor = right
+							alpha = 0.3
+							using = progressbar_texture_properties
+							
+							### line
+							icon = {
+								texture = "gfx/interface/progressbar/progressbar_green_glow_line.dds"
+								size = { 3 100% }
+								parentanchor = right
+								spriteType = Corneredtiled
+								spriteborder = { 0 0 }
+							}
+						}
+						
+						icon = {
+							texture = "gfx/interface/progressbar/progressbar_green.dds"
 							size = { 100% 100% }
 							spriteType = Corneredtiled
 							spriteborder = { 4 4 }
@@ -902,7 +1152,7 @@ types progressbars {
 			progresstexture = "gfx/interface/progressbar/bar_horizontal_frame.dds"
 			noprogresstexture = "gfx/interface/icons/generic_icons/transparent.dds"
 			spriteType = Corneredtiled
-			spriteborder = { 2 2 }
+			spriteborder = { 4 4 }
 			texture_density = 2
 			alwaystransparent = yes
 			block "values" {}
@@ -1009,6 +1259,7 @@ types progressbars {
 			}
 		}
 	}
+
 }
 
 ### TEMPLATES

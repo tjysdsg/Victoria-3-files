@@ -30,7 +30,7 @@
 	### IMPASSABLE TERRAIN ###
 	COLOR_IMPASSABLE_TERRAIN = { 0.0 0.0 0.0 0.5 }				# Alpha can control blend with terrain color
 	IMPASSABLE_TERRAIN_TILING = 100								# Tiling of texture
-	IMPASSABLE_TERRAIN_HEIGHT = 5								# Height of parallax effect
+	IMPASSABLE_TERRAIN_HEIGHT = 8								# Height of parallax effect
 
 	### CLOSE DISTANCE FADE ###
 	# Used for borders and impassable terrain
@@ -71,7 +71,7 @@
 	COLOR_BELLIGERENT = 	{ 0.5 0.04 0.02 @full }				# Red
 	COLOR_DOMINEERING = 	{ 0.5 0.04 0.02 @full }				# Red
 	COLOR_ANTAGONISTIC = 	{ 0.5 0.04 0.02 @slightly }			# Slightly Red
-	COLOR_REBELLIOUS = 		{ 0.5 0.04 0.02 @slightly }			# Slightly Red
+	COLOR_REBELLIOUS = 		{ 0.5 0.04 0.02 @full }				# Red
 	COLOR_WARY = 			{ 0.5 0.04 0.02 @very_slightly }	# Very little red
 	COLOR_DISINTERESTED = 	{ 1 1 1 0 }							# No color
 	COLOR_CAUTIOUS = 		{ 0.85 0.85 0.08 0.5 }				# Yellow
@@ -80,6 +80,8 @@
 	COLOR_LOYAL = 			{ 0.11 0.46 0.05 @slightly }		# Slightly Green
 	COLOR_PROTECTIVE = 		{ 0.11 0.46 0.05 @slightly }		# Slightly Green
 	COLOR_GENIAL = 			{ 0.11 0.46 0.05 @full }			# Green
+	COLOR_DEFIANT = 		{ 0.11 0.46 0.05 @full }			# Green
+	COLOR_ALOOF = 			{ 0.85 0.85 0.08 0.5 }				# Yellow
 
 	# HEAT MAP THAT CAN BE PLACED ON A GOOD - BAD SCALE
 	HEAT_MAP_BAD = 			{ 0.5 0.04 0.02 1 }					# Red
@@ -99,6 +101,17 @@
 	LOYALISTS_HEAT_BASE = 	{ 0.11 0.46 0.05 0 }				# Green, but zero alpha
 	LOYALISTS_HEAT_MAX = 	{ 0.11 0.46 0.05 1 }				# Green
 	LOYALIST_PERCENTAGE_OF_POPULATION = 0.25					# In the Loyalists Map Mode, if the amount of loyalists in a state is above X the state will be colored with LOYALISTS_HEAT_MAX
+
+	#RELIGION/CULTURE MAPMODE PARAMETERS
+	RELIGION_SECOND_COLOR_CUTOFF = 0.3     	# Ratio of Rel2 / (Rel1+Rel2) has to be at least this much to be shown
+	RELIGION_THIRD_COLOR_CUTOFF = 0.1     	# Ratio of Rel3 / (Rel1+Rel2+Rel3) has to be at least this much to be shown
+	RELIGION_SECOND_COLOR_SCALING = 0.6		# Ratio of Rel2 / (Rel1+Rel2) is scaled by this when lerping Color1 to Color2
+	RELIGION_THIRD_COLOR_SCALING = 0.5		# Ratio of Rel3 / (Rel1+Rel2+Rel3) is scaled by this much when lerping Color1+2 to Color 3
+
+	CULTURE_SECOND_COLOR_CUTOFF = 0.4		# Ratio of Cult2 / (Cult1+Cult2) has to be at least this much to be shown
+	CULTURE_THIRD_COLOR_CUTOFF = 0.2		# Ratio of Cult3 / (Cult1+Cult2+Cult3) has to be at least this much to be shown
+	CULTURE_SECOND_COLOR_SCALING = 0.6		# Ratio of Cult2 / (Cult1+Cult2) is scaled by this when lerping Color1 to Color2
+	CULTURE_THIRD_COLOR_SCALING = 0.5		# Ratio of Cult3 / (Cult1+Cult2+Cult3) is scaled by this much when lerping Color1+2 to Color 3
 
 	#COLORS FOR POLLUTION HEAT MAP
 	POLLUTION_HEAT_BASE = 	{ 0.3 0.25 0.16 0 }
@@ -272,7 +285,7 @@ NGraphics = {
 	DYNAMIC_MAP_OBJECT_MASK_THRESHOLD_HIDE = 0.05
 	DYNAMIC_TERRAIN_ROAD_WIDTH = 2.5								# Controls how wide roads are considered to be when clearing map objects
 	DYNAMIC_TERRAIN_LAZY_UPDATE_PROVINCES_PER_FRAME = 16			# Max number of provinces that may be updated per frame.
-	DYNAMIC_TERRAIN_LAZY_UPDATE_MAX_TIME_PER_FRAME = 0.002			# Max time per frame to spend on dynamic terrain updates in seconds.
+	DYNAMIC_TERRAIN_LAZY_UPDATE_MAX_TIME_PER_FRAME = 0.0012			# Max time per frame to spend on dynamic terrain updates in seconds.
 
 	# Route Spline fix
 	ROUTE_GENERATION_NAV_MESH_DENSITY = 0.375						# Controls the density of vertexes in the navmesh used to generate the road system
@@ -282,6 +295,11 @@ NGraphics = {
 	FLAG_TEXT_ICON_SIZE = { 21 14 }
 	FLAG_TEXT_ICON_RESOLUTION = { 48 32 }
 	FLAG_TEXT_ICON_OFFSET = { 0 1 }
+
+	POWER_BLOC_COA_TEXT_ICON_FONT_SIZE = 16
+	POWER_BLOC_COA_TEXT_ICON_SIZE = { 22 22 }   # same height as country flags text icons here.
+	POWER_BLOC_COA_TEXT_ICON_RESOLUTION = { 128 128 } # somewhat high resolution here, so it doesn't get blurry in large text nor with GUI scaling.
+	POWER_BLOC_COA_TEXT_ICON_OFFSET = { 0 4 }
 
 	# Coa
 	COUNTRY_COLOR_LIST_NAME = "country_color_list"					# The Coat-of-Arms list to use when generating dynamic country map colors
@@ -330,10 +348,12 @@ NGraphics = {
 	MILITARY_ENTITIES_DITHER_DURATION = 1.0						# How many seconds it takes for diorama entities to gradually appear or disappear. Applies to all dioramas: front, land battle, fleet, and naval battle dioramas
 
 	NAVAL_ORDER_BASE_ENTITY = "naval_order_base_entity"
-	NAVAL_ORDER_ENTITY_HEIGHT = 0.25							# Height above water
+	NAVAL_ORDER_ENTITY_HEIGHT = 0.25						# Height above water
 
 	OCCUPATION_ENTITY = "military_occupation_flag_entity"		# Entity that appears on occupied territory by occupying nation
 	OCCUPATION_ENTITY_DIRECTION = { 0.0 0.0 -1.0 }				# Direction of occupation entity
+
+	POWER_BLOC_COLOR_UPDATE_NUM_FRAMES_BETWEEN = 30			# Number of frames to wait between powerbloc mapcolor updates
 
 	# Fleet entities graphics
 	FLEET_ENTITIES_CUTOFF = 300				# Zoom at which we hide all fleet entities
@@ -370,7 +390,7 @@ NCamera = {
 	ZOOM_STEPS_MAX_TILT = { 89	89	89	89		89		89		89		89		89		89		89		89		89		89		89		89		}
 
 	MAX_PAN_TO_ZOOM_STEP = 7							# The camera will lower to this height (but only if above it) when panning to characters/provinces etc.
-	MAX_PAN_TO_ZOOM_STEP_EXTRA_CLOSE = 1 				
+	MAX_PAN_TO_ZOOM_STEP_EXTRA_CLOSE = 1
 
 	# Debug defines
 	DEBUG_GAMEPAD_LOWSPEED 		= 25.0
@@ -446,7 +466,7 @@ NProvinceHighlight = {
 	TEXTURE_HEIGHT = 1024
 	# Province highlights use poisson disc sampling to create a gradient
 	# Poisson disc allows for a wider sample are with fewer samples
-	KERNEL_SCALE = 6	# Size of the sample area, in world space
+	KERNEL_SCALE = 8	# Size of the sample area, in world space
 	SAMPLE_COUNT = 16	# How many samples to use (max 16)
 }
 
@@ -454,10 +474,51 @@ NTravelNetwork = {
 	FORMATION_CATCHUP_DISTANCE = 40.0			# If a military formation 3D caravan is this distance behind where it is supposed to be, accelerate with catch-up speed
 	FORMATION_CATCHUP_SPEED_MULTIPLIER = 1.5	# Accelerate averaged speed by this multiplied when 'catching up'
 	FORMATION_CATCHUP_MIN_SPEED = 15.0			# Minimum speed for catching up
+	FORMATION_CATCHUP_MAX_SPEED = 250.0			# Maximum speed for catching up
 	FORMATION_SMOOTHING_STEP_COUNT = 5			# For smoothing visual movement speed, military formation speed is measured as a rolling average over X steps
 	FORMATION_SMOOTHING_STEP_TIME = 1.0			# Each step for the military formation speed smoothing is this long
 	FORMATION_SMOOTHING_SPEED_MULTIPLIER = 1.2  # General speed multiplier applied to the smoothing measurement (it's better to be "ahead" than "behind")
 
 	FORMATION_ARROW_SAMPLING_STEP = 7.0		 # Size of the sampling step (in "map pixels") of the spline network, used when creating arrows
 	FORMATION_ARROW_SAMPLING_STEP_FLATMAP = 30.0 # Size of the sampling step (in "map pixels") of the spline network, used when creating arrows, when zoomed out ("flatmap")
+}
+
+NPowerBlocCoa = {
+	PREVIEW_BACKGROUND_PATTERN = "pattern_solid.tga" # Pattern to use as background in coat of arms previews
+	PREVIEW_BACKGROUND_COLOR = { 0.0 0.0 0.0 0.0 } # First color for the background pattern
+	PREVIEW_SHIELD_PATTERN_COLOR_1 = "red"  # First color for shield patterns
+	PREVIEW_SHIELD_PATTERN_COLOR_2 = "black"  # Second color for shield patterns
+	PREVIEW_CENTER_COLOR_1 = "yellow"  # First color for the center piece
+	PREVIEW_CENTER_COLOR_2 = "black"  # Second color for the center piece
+	COLOR_LIST_NAME = "power_bloc_colors" # Which list to get colors from when randomly creating a power bloc. Lists are located in common/coat_of_arms/template_lists/color_lists.txt
+
+	# Positions and scales for each piece type. When updating these make sure to update them in 03_random_power_bloc.txt
+	SHIELD_PATTERN_SCALE = { 0.72 0.72 }
+	SHIELD_FRAME_SCALE = { 0.9 0.9  }
+	CENTER_SCALE = { 0.45 0.45 }
+	LEFT_SIDE_SCALE = { 0.65 0.65 }
+	RIGHT_SIDE_SCALE = { 0.65 0.65 }
+	TOP_SCALE = { 0.7 0.7 }
+
+	SHIELD_PATTERN_POSITION = { 0.49 0.6 }
+	SHIELD_FRAME_POSITION = { 0.5 0.6 }
+	CENTER_POSITION = { 0.49 0.54 }
+	LEFT_SIDE_POSITION = { 0.155 0.55 }
+	RIGHT_SIDE_POSITION = { 0.82 0.55 }
+	TOP_POSITION = { 0.5 0.19 }
+
+	# Layers from bottom to top. If we ever change this, remember to also update `game/common/coat_of_arms/coat_of_arms/03_random_power_bloc.txt`
+	PIECE_LAYERS_ORDER = { "shield_pattern" "top" "shield_frame" "center" "side" "side" }
+
+	PIECE_LAYER_INDEX_TO_FLIP = 5
+}
+
+NPowerBlocStatueCamera = {
+	CAMERA_START_ROTATION = -2.7
+	CAMERA_MIN_DISTANCE = 15.0
+	CAMERA_MAX_DISTANCE = 30
+	CAMERA_START_DISTANCE = 23.0
+	CAMERA_ANGLE = 0.3925				# in radians, 0.3925 is PI/8
+	CAMERA_ROTATION_SPEED = 0.15
+	CAMERA_DISTANCE_SPEED = 0.7
 }

@@ -22,16 +22,19 @@ law_traditionalism = {
 	modifier = {
 		state_shopkeepers_investment_pool_efficiency_mult = -0.5
 		state_capitalists_investment_pool_efficiency_mult = -0.5
-		state_aristocrats_investment_pool_efficiency_mult = -0.25	
+		state_farmers_investment_pool_efficiency_mult = -0.5	
+		state_clergymen_investment_pool_efficiency_mult = -0.5	
+		state_aristocrats_investment_pool_efficiency_mult = -0.5	
 		state_bureaucracy_population_base_cost_factor_mult = -0.25
+		country_government_dividends_reinvestment_add = 0.25
 		state_tax_capacity_mult = -0.25
 		country_private_construction_allocation_mult = 0.25
+		building_nationalization_cost_mult = 1.0
+		building_nationalization_investment_return_add = 0.1
+		country_leverage_resistance_mult = 0.25
 
 		state_market_access_price_impact = -0.15
-		
-		country_subsidies_bg_infrastructure = yes
-		country_subsidies_bg_power = yes
-		country_subsidies_bg_trade = yes
+		country_disable_nationalization_without_compensation_bool = yes
 	}
 	
 	possible_political_movements = {
@@ -46,12 +49,6 @@ law_traditionalism = {
 	pop_support = {
 		value = 0
 	}
-
-	build_from_investment_pool = {
-		bg_agriculture
-		bg_plantations
-		bg_ranching
-	}	
 	
 	# AI should never switch back to traditionalism
 	ai_will_do = {
@@ -62,11 +59,7 @@ law_traditionalism = {
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
 	}
@@ -92,22 +85,11 @@ law_interventionism = {
 	}
 	
 	modifier = {
-		country_subsidies_all = yes
+		country_disable_nationalization_without_compensation_bool = yes
 		country_private_construction_allocation_mult = 0.5
-	}
-
-	build_from_investment_pool = {
-		bg_agriculture
-		bg_plantations
-		bg_ranching
-		bg_manufacturing
-		bg_mining
-		bg_logging
-		bg_rubber
-		bg_whaling
-		bg_fishing
-		bg_oil_extraction
-		bg_infrastructure
+		building_nationalization_investment_return_add = 0.5
+		country_government_dividends_reinvestment_add = 0.5
+		country_government_dividends_efficiency_add = 0.25
 	}
 	
 	possible_political_movements = {
@@ -136,18 +118,64 @@ law_interventionism = {
 				value = 0.33
 			}
 		}
+		
+		# Literate pops support getting out of Traditionalism once you have Empiricism
+		add = {
+			desc = "empiricism"
+			
+			if = {
+				limit = { 
+					owner = { 
+						has_technology_researched = empiricism 
+						has_law = law_type:law_traditionalism
+					}
+					
+					# Aristocrats/Farmers/Peasants want agrarianism instead
+					NOR = { 
+						is_pop_type = aristocrats 
+						is_pop_type = farmers 
+						is_pop_type = peasants
+					}
+				}
+				add = {
+					value = literacy_rate
+					divide = 2
+				}
+			}
+		}		
 	}
 
 	ai_enact_weight_modifier = { #Petitions
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
+		}
+		
+		if = {
+			limit = { 
+				OR = {
+					has_journal_entry = je_sick_man_bureaucracy
+					has_modifier = shogun_ig_forced_to_open_market
+					has_journal_entry = je_meiji_main
+				}
+				has_law = law_type:law_traditionalism
+			}
+			add = 10000 # Top priority for Tanzimat/Meiji AI is to get out of Traditionalism
+		}
+
+		# AI should really try to get out of Traditionalism under the right circumstances
+		if = {
+			limit = {
+				has_law = law_type:law_traditionalism
+				NOT = { has_strategy = ai_strategy_reactionary_agenda }
+				OR = {
+					NOT = { has_strategy = ai_strategy_conservative_agenda }
+					any_political_movement = { desired_law = law_type:law_interventionism }				
+				}	
+			}
+			add = 1000
 		}
 	}
 }
@@ -172,27 +200,15 @@ law_agrarianism = {
 	
 	modifier = {
 		state_aristocrats_investment_pool_efficiency_mult = 0.5
+		state_clergymen_investment_pool_efficiency_mult = 0.5
 		state_farmers_investment_pool_efficiency_mult = 0.5
 		state_capitalists_investment_pool_efficiency_mult = -0.25
 		country_private_construction_allocation_mult = 0.5
+		building_nationalization_investment_return_add = 0.5
+		country_government_dividends_reinvestment_add = 0.5
+		country_government_dividends_efficiency_add = 0.3
 		
-		country_subsidies_bg_agriculture = yes
-		country_subsidies_bg_ranching = yes
-		country_subsidies_bg_plantations = yes
-		country_subsidies_bg_infrastructure = yes
-		country_subsidies_bg_power = yes
-		country_subsidies_bg_trade = yes
-	}
-
-	build_from_investment_pool = {
-		bg_agriculture
-		bg_plantations
-		bg_ranching
-		bg_infrastructure
-		bg_whaling
-		bg_logging
-		bg_rubber
-		bg_fishing
+		country_disable_nationalization_without_compensation_bool = yes
 	}
 	
 	possible_political_movements = {
@@ -235,6 +251,29 @@ law_agrarianism = {
 				value = 0.33
 			}
 		}
+		
+		# Literate pops support getting out of Traditionalism once you have Empiricism
+		add = {
+			desc = "empiricism"
+			
+			if = {
+				limit = { 
+					owner = { 
+						has_technology_researched = empiricism 
+						has_law = law_type:law_traditionalism
+					}				
+					OR = { 
+						is_pop_type = aristocrats
+						is_pop_type = farmers
+						is_pop_type = peasants
+					} 
+				}
+				add = {
+					value = literacy_rate
+					divide = 2
+				}
+			}
+		}			
 	}
 		
 	ai_will_do = {
@@ -248,13 +287,30 @@ law_agrarianism = {
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
+		
+		if = {
+			limit = { 
+				has_journal_entry = je_sick_man_bureaucracy
+				has_law = law_type:law_traditionalism
+			}
+			add = 10000 # Top priority for Tanzimat AI is to get out of Traditionalism
+		}	
+
+		# AI should really try to get out of Traditionalism under the right circumstances
+		if = {
+			limit = {
+				has_law = law_type:law_traditionalism
+				NOT = { has_strategy = ai_strategy_reactionary_agenda }
+				OR = {
+					NOT = { has_strategy = ai_strategy_conservative_agenda }
+					any_political_movement = { desired_law = law_type:law_agrarianism }				
+				}	
+			}
+			add = 1000
+		}		
 	}
 }
 
@@ -334,21 +390,12 @@ law_industry_banned = {
 		country_private_construction_allocation_mult = 0.5
 		country_production_tech_research_speed_mult = -0.25
 		country_production_tech_spread_mult = -0.25
-		country_subsidies_bg_agriculture = yes
-		country_subsidies_bg_ranching = yes
-		country_subsidies_bg_plantations = yes
-		country_subsidies_bg_infrastructure = yes
-		country_subsidies_bg_power = yes
-		country_subsidies_bg_trade = yes
+		building_nationalization_investment_return_add = 0.5
+		country_government_dividends_reinvestment_add = 0.25
+		country_government_dividends_efficiency_add = 0.3
+		country_disable_nationalization_without_compensation_bool = yes
 	}
 
-	build_from_investment_pool = {
-		bg_agriculture
-		bg_plantations
-		bg_ranching
-		bg_infrastructure
-	}
-	
 	possible_political_movements = {
 		law_interventionism
 		law_command_economy
@@ -383,11 +430,7 @@ law_industry_banned = {
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
 	}
@@ -418,23 +461,10 @@ law_laissez_faire = {
 		state_shopkeepers_investment_pool_efficiency_mult = 0.25	
 		state_capitalists_investment_pool_efficiency_mult = 0.25
 		country_private_construction_allocation_mult = 0.75
+		country_government_dividends_reinvestment_add = 1.0		
 		country_max_companies_add = 1
-		
-		country_subsidies_bg_infrastructure = yes
-		country_subsidies_bg_power = yes
-		country_subsidies_bg_trade = yes
-		country_private_buildings_protected = yes
-	}
-
-	build_from_investment_pool = {
-		bg_manufacturing
-		bg_mining
-		bg_logging
-		bg_rubber
-		bg_oil_extraction
-		bg_infrastructure
-		bg_whaling
-		bg_fishing	
+		country_disable_nationalization_bool = yes
+		country_force_privatization_bool = yes
 	}
 	
 	possible_political_movements = {
@@ -463,20 +493,63 @@ law_laissez_faire = {
 				value = 0.5
 			}
 		}
+		
+		# Literate pops support getting out of Traditionalism once you have Empiricism
+		add = {
+			desc = "empiricism"
+			
+			if = {
+				limit = { 
+					owner = { 
+						has_technology_researched = empiricism
+						has_law = law_type:law_traditionalism
+					}
+					
+					# Aristocrats/Farmers/Peasants want agrarianism instead
+					NOR = { 
+						is_pop_type = aristocrats 
+						is_pop_type = farmers 
+						is_pop_type = peasants
+					}
+				}
+				add = {
+					value = literacy_rate
+					divide = 2
+				}
+			}
+		}			
 	}
 
 	ai_enact_weight_modifier = { #Petitions
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
-	}
+		
+		if = {
+			limit = { 
+				has_modifier = shogun_ig_forced_to_open_market
+				has_journal_entry = je_meiji_main
+				has_law = law_type:law_traditionalism
+			}
+			add = 10000 # Top priority for Tanzimat/Meiji AI is to get out of Traditionalism
+		}	
+
+		# AI should really try to get out of Traditionalism under the right circumstances
+		if = {
+			limit = {
+				has_law = law_type:law_traditionalism
+				NOT = { has_strategy = ai_strategy_reactionary_agenda }
+				OR = {
+					NOT = { has_strategy = ai_strategy_conservative_agenda }
+					any_political_movement = { desired_law = law_type:law_laissez_faire }				
+				}	
+			}
+			add = 1000
+		}		
+	}	
 }
 
 law_cooperative_ownership = {
@@ -504,20 +577,11 @@ law_cooperative_ownership = {
 		state_shopkeepers_investment_pool_efficiency_mult = 0.25	
 		state_farmers_investment_pool_efficiency_mult = 0.25
 		country_private_construction_allocation_mult = 0.35
+		country_government_dividends_reinvestment_add = 1.0
 
-		country_subsidies_all = yes
+		country_force_collectivization_bool = yes
+		country_disable_privatization_bool = yes
 	}
-	
-	build_from_investment_pool = {
-		bg_manufacturing
-		bg_mining
-		bg_logging
-		bg_rubber
-		bg_oil_extraction
-		bg_infrastructure
-		bg_whaling
-		bg_fishing	
-	}	
 	
 	possible_political_movements = {
 		law_interventionism
@@ -549,11 +613,7 @@ law_cooperative_ownership = {
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
 		
@@ -564,6 +624,19 @@ law_cooperative_ownership = {
 			add = 250
 		}
 	}
+	
+	ai_impose_chance = {
+		value = 0
+		
+		if = {
+			limit = {
+				has_law = law_type:law_cooperative_ownership			
+			}
+			
+			add = base_impose_law_weight
+			multiply = 10.0
+		}
+	}	
 }
 
 law_command_economy = {
@@ -597,11 +670,17 @@ law_command_economy = {
 	}
 	
 	modifier = {
-		country_subsidies_all = yes
-		country_disable_investment_pool = yes
+		country_disable_investment_pool_bool = yes
 		
 		country_authority_mult = 0.25
 		country_bureaucrats_pol_str_mult = 0.25
+		building_nationalization_cost_mult = -0.5
+		building_nationalization_radicals_mult = -0.75
+		country_government_dividends_efficiency_add = 0.4
+		
+		country_leverage_resistance_mult = 0.25
+
+		country_disable_privatization_bool = yes
 	}
 	
 	possible_political_movements = {
@@ -642,11 +721,7 @@ law_command_economy = {
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
 		
@@ -664,4 +739,17 @@ law_command_economy = {
 			add = 100
 		}
 	}
+	
+	ai_impose_chance = {
+		value = 0
+		
+		if = {
+			limit = {
+				has_law = law_type:law_command_economy			
+			}
+			
+			add = base_impose_law_weight
+			multiply = 10.0
+		}
+	}	
 }

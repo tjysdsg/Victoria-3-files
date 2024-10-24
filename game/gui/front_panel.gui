@@ -33,6 +33,7 @@ types front_panel_types
 				size = { 30 30 }
 				onclick = "[WarManager.ToggleWarPanel( War.AccessSelf )]"
 				tooltip = "GO_TO_BUTTON_WAR"
+				input_action = "go_to_details"
 			}
 		}
 
@@ -1611,6 +1612,7 @@ types front_panel_types
 			flowcontainer = {
 				spacing = 7
 				parentanchor = vcenter
+				datacontext = "[Battle.AccessAttackerBattleParticipant]"
 
 				manpower_bar = {
 					size = { 8 30 }
@@ -1627,7 +1629,6 @@ types front_panel_types
 				}
 
 				white_progressbar_vertical = {
-					datacontext = "[Battle.AccessAttackerBattleParticipant]"
 					size = { 8 30 }
 					tooltip = "BATTLE_MORALE_TOOLTIP"
 					parentanchor = vcenter
@@ -1653,9 +1654,9 @@ types front_panel_types
 			flowcontainer = {
 				spacing = 7
 				parentanchor = vcenter
+				datacontext = "[Battle.AccessDefenderBattleParticipant]"
 
 				white_progressbar_vertical = {
-					datacontext = "[Battle.AccessDefenderBattleParticipant]"
 					size = { 8 30 }
 					tooltip = "BATTLE_MORALE_TOOLTIP"
 					parentanchor = vcenter
@@ -1738,6 +1739,9 @@ types front_panel_types
 					align = nobaseline
 					parentanchor = right
 					margin_right = 10
+					maximumsize = { 190 -1 }
+					elide = left
+					fontsize_min = 12
 				}
 
 				textbox = {
@@ -1747,6 +1751,9 @@ types front_panel_types
 					align = nobaseline
 					parentanchor = right
 					margin_right = 10
+					maximumsize = { 190 -1 }
+					elide = left
+					fontsize_min = 12
 				}
 			}
 			flowcontainer = {
@@ -1781,6 +1788,12 @@ types front_panel_types
 							using = small_battle_outcome_formatting
 							default_format = "#n"
 						}
+						textbox = {
+							visible = "[Battle.EndedInconclusively]"
+							text = "BATTLE_INCONCLUSIVE"
+							using = battle_outcome_formatting
+							default_format = "#n"
+						}
 					}
 					
 					# if you are observer
@@ -1801,8 +1814,13 @@ types front_panel_types
 							default_format = "#n"
 						}
 						textbox = {
-							visible = "[Not(Or( Battle.IsOnWinnerSide(GetPlayer.Self), Battle.IsOnLoserSide(GetPlayer.Self) ))]"
+							visible = "[And(Not(Or( Battle.IsOnWinnerSide(GetPlayer.Self), Battle.IsOnLoserSide(GetPlayer.Self) )), Not(Battle.EndedInconclusively))]"
 							text = "BATTLE_NONALLY_VICTORY"
+							using = small_battle_outcome_formatting
+						}
+						textbox = {
+							visible = "[Battle.EndedInconclusively]"
+							text = "BATTLE_INCONCLUSIVE_OUTCOME"
 							using = small_battle_outcome_formatting
 						}
 					}
@@ -1814,6 +1832,9 @@ types front_panel_types
 					align = nobaseline
 					margin_left = 5
 					margin_bottom = 2
+					minimumsize = { 350 -1 }
+					elide = right
+					fontsize_min = 12
 				}
 
 				widget = {
@@ -1837,19 +1858,29 @@ types front_panel_types
 						parentanchor = vcenter
 						spacing = 10
 
-						
 						tiny_flag_no_interact = {
 							datacontext = "[Battle.GetAttacker]"
 							parentanchor = vcenter
 						}
 
 						textbox = {
-							raw_text = "@battalions![Battle.GetStartingAttackerUnits|v]   @manpower![Battle.GetStartingAttackerManpower|vD]"
+							raw_text = "@battalions! [Battle.GetStartingAttackerUnits|v]   @manpower![Battle.GetStartingAttackerManpower|vD]"
 							tooltip = "[Battle.GetNumAdvancingUnitsAtStartOfBattleDesc]"
 							autoresize = yes
 							align = left|nobaseline
 							parentanchor = vcenter
 							alpha = "[TransparentIfZero_int32(Battle.GetStartingAttackerUnits)]"
+							visible = "[Not(Battle.IsNavalBattle)]"
+						}
+
+						textbox = {
+							raw_text = "@flotillas! [Battle.GetStartingAttackerUnits|v]   @manpower![Battle.GetStartingAttackerManpower|vD]"
+							tooltip = "[Battle.GetNumAdvancingUnitsAtStartOfBattleDesc]"
+							autoresize = yes
+							align = left|nobaseline
+							parentanchor = vcenter
+							alpha = "[TransparentIfZero_int32(Battle.GetStartingAttackerUnits)]"
+							visible = "[Battle.IsNavalBattle]"
 						}
 					}
 
@@ -1861,11 +1892,21 @@ types front_panel_types
 						alpha = "[TransparentIfZero_int32(Battle.GetStartingDefenderUnits)]"
 
 						textbox = {
-							raw_text = "@battalions![Battle.GetStartingDefenderUnits|v]   @manpower![Battle.GetStartingDefenderManpower|vD]"
+							raw_text = "@battalions! [Battle.GetStartingDefenderUnits|v]   @manpower![Battle.GetStartingDefenderManpower|vD]"
 							tooltip = "[Battle.GetNumDefendingUnitsAtStartOfBattleDesc]"
 							autoresize = yes
 							align = right|nobaseline
 							parentanchor = vcenter
+							visible = "[Not(Battle.IsNavalBattle)]"
+						}
+
+						textbox = {
+							raw_text = "@flotillas! [Battle.GetStartingDefenderUnits|v]   @manpower![Battle.GetStartingDefenderManpower|vD]"
+							tooltip = "[Battle.GetNumDefendingUnitsAtStartOfBattleDesc]"
+							autoresize = yes
+							align = right|nobaseline
+							parentanchor = vcenter
+							visible = "[Battle.IsNavalBattle]"
 						}
 
 						tiny_flag_no_interact = {

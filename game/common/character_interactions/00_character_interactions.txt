@@ -39,48 +39,25 @@ grant_command_to_ruler = {
 	}
 
 	ai_chance = {
-		value = 5
+		value = 0
 		if = {
 			limit = {
-				NOT = {
-					owner = {	
-						any_scope_general = {
-							exists = yes
-						}
-					}
-				}
-			}
-			add = 25
-		}	
-		if = {
-			limit = {
-				owner = {
+				AND = {
+					age <= 50
 					OR = {
-						is_diplomatic_play_committed_participant = yes
-						is_at_war = yes
+						has_trait = reckless
+						has_trait = direct
+						has_trait = imposing
 					}
-				}	
-			}
-			add = 25
-		}
-		if = {
-			limit = {
-				is_interest_group_type = ig_armed_forces
-			}
-			add = 25
-		}
-		if = {
-			limit = {
-				owner = {
-					any_scope_war = {
-						any_scope_front = {
-							is_vulnerable_front = root
-						}
+					NOR = {
+						has_trait = psychological_affliction
+						has_trait = wounded
+						has_trait = shellshocked
 					}
 				}
 			}
-			add = 50
-		}		
+			add = 100
+		}
 	}
 }
 
@@ -108,33 +85,17 @@ remove_command_from_ruler = {
 		value = 0
 		if = {
 			limit = {
-				owner = {	
-					any_scope_general = {
-						exists = yes
-						NOT = {
-							this = owner.ruler
-						}
-					}
-				}
-			} 
-			add = 25
-		}	
-		if = {
-			limit = {
-				NOT = {
-					owner = {
-						is_at_war = yes
+				OR = {
+					age > 50
+					OR = {
+						has_trait = psychological_affliction
+						has_trait = wounded
+						has_trait = shellshocked
 					}
 				}
 			}
-			add = 25
+			add = 100
 		}
-		if = {
-			limit = {
-				is_interest_group_type = ig_armed_forces
-			}
-			add = -50
-		}			
 	}
 }
 
@@ -152,10 +113,21 @@ grant_leadership_to_agitator = {
 		interest_group = {
 			is_in_government = yes
 		}
-		character_is_discriminated = no	
+		trigger_if = {
+			limit = { owner = { has_law = law_type:law_state_atheism } }
+			NOT = { culture = { culture_is_discriminated_in = root.owner } }
+			NOR = {
+				has_ideology = ideology:ideology_theocrat
+				has_ideology = ideology:ideology_integralist
+				has_ideology = ideology:ideology_traditionalist
+			}
+		}
+		trigger_else = {
+			character_is_discriminated = no
+		}		
 		OR = {
 			is_female = no
-			scope:actor = { has_law = law_type:law_womens_suffrage }
+			scope:actor ?= { has_law = law_type:law_womens_suffrage }
 		}
 	}
 
@@ -296,12 +268,15 @@ marry_ruler_or_heir = {
 	possible = {
 		any_country = {
 			NOT = { THIS = scope:actor }
+			NOT = { is_subject_type = subject_type_personal_union }
 			has_law = law_type:law_monarchy
 			religion = scope:actor.religion
 			ruler = {
 				age > 36
-				NOT = {
-					has_variable = marriage_target
+				hidden_trigger = {
+					NOT = {
+						has_variable = marriage_target
+					}
 				}
 			}
 		}
@@ -344,18 +319,46 @@ abdicate_monarch = {
 			popularity <= -50
 			has_trait = psychological_affliction
 			age >= 75
+			owner = {
+				any_interest_group = {
+					is_insurrectionary = yes
+				}
+			}
 		}
-		owner.heir = {
-			age >= 18
+		trigger_if = {
+			limit = {
+				NOT = {
+					owner = {
+						any_interest_group = {
+							is_insurrectionary = yes
+						}
+					}
+				}
+			}
+			owner.heir = {
+				age >= 18
+			}
 		}
 	}
 
 	effect = {
-		show_as_tooltip = {
-			kill_character = yes
+		custom_tooltip = leader_abdicates_the_throne_display_tt
+		if = {
+			limit = {
+				owner = {
+					any_interest_group = {
+						is_insurrectionary = yes
+					}
+				}
+			}
+			owner = {
+				trigger_event = { id = resignation.3 popup = yes }
+			}
 		}
-		owner = {
-			trigger_event = { id = wedding.3 popup = yes}
+		else = {
+			owner = {
+				trigger_event = { id = wedding.3 popup = yes}
+			}
 		}
 	}
 
@@ -438,6 +441,43 @@ exile_character = {
 			}
 			has_role = agitator
 		}
+		custom_tooltip = {
+			text = ideology_not_too_close_tt
+			NOT = {
+				OR = {
+					AND = {
+						owner.ruler = {
+							has_socialist_ideology = yes
+						}
+						has_socialist_ideology = yes
+					}
+					AND = {
+						owner.ruler = {
+							has_progressive_ideology = yes
+						}
+						has_progressive_ideology = yes
+					}
+					AND = {
+						owner.ruler = {
+							has_liberal_ideology = yes
+						}
+						has_liberal_ideology = yes
+					}
+					AND = {
+						owner.ruler = {
+							has_reactionary_ideology = yes
+						}
+						has_reactionary_ideology = yes
+					}
+					AND = {
+						owner.ruler = {
+							has_conservative_ideology = yes
+						}
+						has_conservative_ideology = yes
+					}
+				}
+			}
+		}
 	}
 
 	effect = {
@@ -449,6 +489,20 @@ exile_character = {
 		}
 		owner = {
 			save_scope_as = exiling_country_scope
+		}
+		if = {
+			limit = {
+				has_role = politician
+			}
+			owner = {
+				scope:relevant_ig = {
+					add_modifier = {
+						name = modifier_exiled_leader
+						months = normal_modifier_time
+						is_decaying = yes
+					}
+				}
+			}
 		}
 		if = {
 			limit = {
@@ -520,7 +574,6 @@ exile_character = {
 				limit = {
 					has_role = politician
 				}
-				set_as_interest_group_leader = no
 				remove_character_role = politician
 			}
 		}
@@ -701,7 +754,7 @@ invite_exile = {
 	show_requirements = yes
 
 	possible = {
-		scope:actor = { empty_agitator_slots >= 1 }
+		scope:actor ?= { empty_agitator_slots >= 1 }
 		# Only popular individuals need apply
 		popularity > 15
 		# Devout exiles must have country religion
@@ -734,7 +787,7 @@ invite_exile = {
 			}
 		}
 		# Cannot invite exiles if you have Closed Borders
-		scope:actor = {
+		scope:actor ?= {
 			NOT = { has_law = law_type:law_closed_borders }
 		}
 	}
@@ -742,6 +795,10 @@ invite_exile = {
 	effect = {
 		transfer_character = scope:actor
 		set_variable = exile_to_ruler_var
+		set_variable = {
+			name = memento_mori_immunity
+			months = 60
+		}
 		custom_tooltip = invite_exile_start_join_movement_effect
 		hidden_effect = {
 			remove_modifier = in_exile_modifier
@@ -752,7 +809,7 @@ invite_exile = {
 					has_variable = mazzini_var
 					has_dlc_feature = voice_of_the_people_content
 				}
-				scope:actor = {
+				scope:actor ?= {
 					trigger_event = { id = historical_agitators.7 days = 3 }
 				}
 			}
@@ -764,6 +821,39 @@ invite_exile = {
 				set_variable = {
 					name = garibaldi_cooldown_var
 					months = short_modifier_time
+				}
+			}
+			if = {
+				limit = {
+					exists = root.home_country
+					NOT = { root.home_country = scope:actor }
+				}
+				if = {
+					limit = {
+						root.home_country = {
+							any_interest_group = {
+								is_in_government = yes
+								OR = {
+									this.type = root.interest_group_type
+									this.leader.ideology = root.ideology
+								}
+							}
+						}
+					}
+					root.home_country = {
+						create_diplomatic_catalyst = {
+							type = catalyst_invited_exile_positive
+							target = scope:actor
+						}		
+					}
+				}
+				else = {
+					root.home_country = {
+						create_diplomatic_catalyst = {
+							type = catalyst_invited_exile_negative
+							target = scope:actor
+						}		
+					}
 				}
 			}
 		}

@@ -61,14 +61,22 @@ law_is_valid_for_ig_petition = {
 			value > neutral
 		}
 	}
-	NOT = {
-		ROOT = {
+	
+	root = {
+		NOR = {
 			has_law = scope:petition_law_trig.type
+			any_interest_group = {
+				is_in_government = yes 
+				is_marginal = no
+				law_stance = {
+					law = scope:petition_law_trig.type
+					value < neutral
+				}				
+			}
 		}
-	}  
-	ROOT = { 
-		can_have_political_movement = scope:petition_law_trig.type
-	} 			
+		can_have_political_movement = scope:petition_law_trig.type		
+	}
+			
 	can_be_enacted = yes
 }
 
@@ -92,8 +100,8 @@ ruler_is_legitimist = {
 
 character_has_patrol_coast_order = {
 	OR = {
-		has_commander_order = patrol_coast
-		has_commander_order = patrol_carrier_assualt
+		has_commander_order = interception_coast
+		has_commander_order = interception_carrier_assualt
 		has_commander_order = escort_convoys_advanced
 	}
 }
@@ -132,4 +140,400 @@ character_has_defend_order = {
 		has_commander_order = defend_last_stand
 		has_commander_order = defend_guerilla_warfare
 	}
+}
+
+researched_mass_politics = {
+	AND = {
+		has_technology_researched = nationalism
+		has_technology_researched = egalitarianism
+		has_technology_researched = labor_movement
+	}
+}
+
+any_pro_lobby_demand_is_valid = {
+	OR = {
+		can_break_diplomatic_pact = { target = scope:third_party_country type = alliance }
+		can_break_diplomatic_pact = { target = scope:third_party_country type = trade_agreement }
+		can_break_diplomatic_pact = { target = scope:third_party_country type = defensive_pact }
+		can_create_diplomatic_pact = { target = scope:third_party_country type = rivalry }
+		can_create_diplomatic_pact = { target = scope:third_party_country type = embargo }
+		pro_lobby_war_valid_check = yes
+		pro_lobby_leave_power_bloc_valid_check = yes
+	}
+}
+
+pro_lobby_war_valid_check = {
+	aggressive_diplomatic_plays_permitted = yes
+	NOT = { has_truce_with = scope:third_party_country }
+	NOT = { is_subject_of = scope:third_party_country }
+	NOT = { scope:third_party_country = { is_subject_of = root } }
+	"potential_diplomatic_play_power_ratio(scope:third_party_country)" >= 1
+	is_at_war = no
+	scope:third_party_country.relations:root < relations_threshold:cordial
+	AND = {
+		has_diplomatic_relevance = scope:third_party_country
+		OR = {
+			has_strategic_adjacency = scope:third_party_country
+			AND = {
+				has_port = yes
+				navy_size >= 10
+				scope:third_party_country = { has_port = yes }
+			}
+		}
+	}
+	trigger_if = { # You need worthy opponents.
+		limit = {
+			scope:third_party_country = {
+				country_rank = rank_value:great_power
+			}
+		}
+		scope:relevant_country = { 
+			OR = {
+				country_rank = rank_value:great_power
+				country_rank = rank_value:major_power
+			}
+		}		
+	}
+	
+	trigger_if = {
+		limit = {
+			scope:third_party_country = {
+				country_rank = rank_value:major_power
+			}
+		}
+		scope:relevant_country = { 
+			OR = {
+				country_rank = rank_value:great_power
+				country_rank = rank_value:major_power
+				country_rank = rank_value:minor_power
+			}
+		}		
+	}
+
+	trigger_if = {
+		limit = {
+			scope:third_party_country = {
+				country_rank = rank_value:minor_power
+			}
+		}
+		scope:relevant_country = { 
+			OR = {
+				country_rank = rank_value:major_power
+				country_rank = rank_value:minor_power
+				country_rank = rank_value:insignificant_power
+			}
+		}		
+	}
+
+	trigger_if = {
+		limit = {
+			scope:third_party_country = {
+				country_rank = rank_value:insignificant_power
+			}
+		}
+		scope:relevant_country = { 
+			OR = {
+				country_rank = rank_value:minor_power
+				country_rank = rank_value:insignificant_power
+			}
+		}		
+	}
+
+	trigger_if = {
+		limit = {
+			scope:third_party_country = {
+				country_rank = rank_value:unrecognized_major_power
+			}
+		}
+		scope:relevant_country = { 
+			OR = {
+				country_rank = rank_value:unrecognized_major_power
+				country_rank = rank_value:unrecognized_regional_power
+			}
+		}		
+	}
+
+	trigger_if = {
+		limit = {
+			scope:third_party_country = {
+				country_rank = rank_value:unrecognized_regional_power
+			}
+		}
+		scope:relevant_country = { 
+			OR = {
+				country_rank = rank_value:unrecognized_major_power
+				country_rank = rank_value:unrecognized_regional_power
+				country_rank = rank_value:unrecognized_power
+			}
+		}		
+	}
+
+	trigger_if = {
+		limit = {
+			scope:third_party_country = {
+				country_rank = rank_value:unrecognized_power
+			}
+		}
+		scope:relevant_country = { 
+			OR = {
+				country_rank = rank_value:unrecognized_regional_power
+				country_rank = rank_value:unrecognized_power
+			}
+		}		
+	}
+}
+
+pro_lobby_leave_power_bloc_valid_check = {
+	scope:third_party_country = {
+		is_power_bloc_leader = yes
+	}
+	is_in_same_power_bloc = scope:third_party_country
+	can_leave_power_bloc = yes
+}
+
+any_anti_lobby_demand_is_valid = {
+	OR = {
+		can_break_diplomatic_pact = { target = scope:relevant_country type = alliance }
+		can_break_diplomatic_pact = { target = scope:relevant_country type = trade_agreement }
+		can_break_diplomatic_pact = { target = scope:relevant_country type = defensive_pact }
+		can_create_diplomatic_pact = { target = scope:relevant_country type = rivalry }
+		can_create_diplomatic_pact = { target = scope:relevant_country type = embargo }
+		anti_lobby_war_valid_check = yes
+		anti_lobby_leave_power_bloc_valid_check = yes
+	}
+}
+
+anti_lobby_war_valid_check = {
+	aggressive_diplomatic_plays_permitted = yes
+	NOT = { has_truce_with = scope:relevant_country }
+	NOT = { is_subject_of = scope:relevant_country }						
+	NOT = { scope:relevant_country = { is_subject_of = root } }	
+	"potential_diplomatic_play_power_ratio(scope:relevant_country)" >= 1
+	is_at_war = no
+	scope:relevant_country.relations:root < relations_threshold:cordial
+}
+
+anti_lobby_leave_power_bloc_valid_check = {
+	scope:relevant_country = {
+		is_power_bloc_leader = yes
+	}
+	is_in_same_power_bloc = scope:relevant_country
+	can_leave_power_bloc = yes
+}
+
+any_anti_lobby_opportunity_is_valid = {
+	OR = {
+		can_create_diplomatic_pact = { target = scope:third_party_country type = trade_agreement }
+		can_create_diplomatic_pact = { target = scope:third_party_country type = defensive_pact }
+		can_create_diplomatic_pact = { target = scope:third_party_country type = alliance }
+		can_create_diplomatic_pact = { target = scope:third_party_country type = foreign_investment_agreement }
+		AND = {
+			scope:third_party_country = {
+				is_power_bloc_leader = yes
+			}
+			can_create_diplomatic_pact = { target = scope:third_party_country type = join_power_bloc }
+		}
+		AND = {
+			is_power_bloc_leader = yes
+			can_create_diplomatic_pact = { target = scope:third_party_country type = invite_to_power_bloc }
+		}
+	}
+}
+
+any_pro_lobby_opportunity_is_valid = {
+	OR = {
+		can_create_diplomatic_pact = { target = scope:relevant_country type = trade_agreement }
+		can_create_diplomatic_pact = { target = scope:relevant_country type = defensive_pact }
+		can_create_diplomatic_pact = { target = scope:relevant_country type = alliance }
+		can_create_diplomatic_pact = { target = scope:relevant_country type = foreign_investment_agreement }
+		AND = {
+			scope:relevant_country = {
+				is_power_bloc_leader = yes
+			}
+			can_create_diplomatic_pact = { target = scope:relevant_country type = join_power_bloc }
+		}
+		AND = {
+			is_power_bloc_leader = yes
+			can_create_diplomatic_pact = { target = scope:relevant_country type = invite_to_power_bloc }
+		}
+	}
+}
+
+# Note: This trigger checks if a country is a valid lobby target for a pro/anti country lobby, NOT a pro/anti overlord lobby
+is_valid_lobby_target = {
+	custom_tooltip = {
+		text = is_valid_lobby_target_tt
+		is_revolutionary = no
+		ROOT = {
+			# Same as above, this trigger will not work in the context of lobbies against subject relation countries
+			is_revolutionary = no
+			can_lobbies_target = PREV		
+		}
+
+		ROOT = {
+			OR = {
+				AND = {
+					has_port = yes
+					PREV = { has_port = yes }
+					navy_size >= 10
+				}
+				has_strategic_adjacency = PREV
+			}
+		}
+	}
+}
+
+goods_is_agricultural = {
+	OR = {
+		this = g:opium
+		this = g:grain
+		this = g:sugar
+		this = g:tea
+		this = g:coffee
+		this = g:wine
+		this = g:fruit
+		this = g:dye
+		this = g:tobacco
+		this = g:fabric
+		this = g:meat
+		this = g:silk
+		this = g:rubber
+	}
+}
+
+goods_is_artisanal = {
+	OR = {
+		this = g:fish
+		this = g:fine_art
+		this = g:luxury_clothes
+		this = g:luxury_furniture
+		this = g:liquor
+	}
+}
+
+goods_is_industrial = {
+	OR = {
+		this = g:ammunition
+		this = g:artillery
+		this = g:clippers
+		this = g:clothes
+		this = g:coal
+		this = g:engines
+		this = g:explosives
+		this = g:fertilizer
+		this = g:furniture
+		this = g:glass
+		this = g:groceries
+		this = g:hardwood
+		this = g:iron
+		this = g:lead
+		this = g:manowars
+		this = g:oil
+		this = g:paper
+		this = g:porcelain
+		this = g:small_arms
+		this = g:steel
+		this = g:sulfur
+		this = g:tools
+		this = g:wood
+		this = g:aeroplanes
+		this = g:automobiles
+		this = g:ironclads
+		this = g:radios
+		this = g:steamers
+		this = g:tanks
+		this = g:telephones
+	}
+}
+
+is_afghan_nation = {
+	OR = {
+		c:AFG ?= this
+		c:KAB ?= this
+		c:KAN ?= this
+		c:HER ?= this
+		c:KUN ?= this
+		c:MAI ?= this
+	}
+}
+
+is_african_subject = {
+	OR = {
+		has_variable = senegal_subject_var
+		has_variable = niger_subject_var
+		has_variable = zanj_subject_var
+		has_variable = congo_subject_var
+		has_variable = southern_africa_subject_var
+		has_variable = ethiopia_subject_var
+	}
+}
+
+asian_ally_against_russia_trigger = {
+	scope:target_country = {
+		country_rank >= rank_value:unrecognized_major_power
+		OR = {
+			capital.region = sr:region_japan
+			capital.region = sr:region_manchuria
+			capital.region = sr:region_north_china
+			capital.region = sr:region_south_china
+			capital.region = sr:region_indonesia
+		}
+	}
+	exists = c:RUS
+	c:RUS ?= {
+		any_scope_state = {
+			region = sr:region_manchuria
+			OR = {
+				any_scope_building = {
+					is_building_type = building_port
+					level >= 5
+				}
+				any_scope_building = {
+					is_building_type = building_naval_base
+					level >= 15
+				}
+			}
+		}
+	}
+}
+
+independent_chinese_country_exists_in_region = {
+	any_scope_country = {
+		filter = {
+			OR = {
+				any_primary_culture = {
+					has_discrimination_trait = han_chinese
+				}
+				country_has_primary_culture = cu:yi
+				country_has_primary_culture = cu:manchu
+			}
+		}
+		OR = {
+			is_subject_of = ROOT
+			trigger_if = {
+				limit = {
+					ROOT = {
+						is_power_bloc_leader = yes
+					}
+				}
+				is_in_same_power_bloc = ROOT
+			}
+		}
+		percent = 1
+	}
+}
+
+meiji_completion_trigger = {
+	AND = {
+		ig:ig_landowners = {
+			is_in_government = no
+		}
+		OR = {
+			government_legitimacy >= 50
+			ig:ig_landowners = { is_marginal = yes }
+		}
+		has_insurrectionary_interest_groups = no
+		is_at_war = no
+		owns_entire_state_region = STATE_KANTO		
+	}	
 }

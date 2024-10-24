@@ -17,7 +17,7 @@
 # player_diplomatic_relations
 # player_interest_group
 # player_invaded_state
-# player_national_market
+# player_market
 # player_naval_invasion
 # player_involved_market
 # player_state
@@ -25,6 +25,7 @@
 # player_market_goods
 # player_commander
 # player_military_formation
+# player_subject
 # player_trade_route
 
 ### ALERTS
@@ -224,22 +225,11 @@ market_goods_shortage_alert = {
 	texture = "gfx/interface/icons/alert_icons/goods_shortage.dds"
 
 	valid = {
-		market_goods_shortage_ratio < 0.33
+		market_goods_shortage_ratio > 0.33
 		country_has_local_shortage = scope:actor	 
 	}
 
 	open_panel = goods_panel
-	type = alert
-	color = red
-}
-
-low_supply  = {
-	script_context = player_commander
-	texture = "gfx/interface/icons/alert_icons/supply_low.dds"
-
-	valid = { supply <= 0.3 }
-
-	open_panel = commander
 	type = alert
 	color = red
 }
@@ -303,6 +293,73 @@ obligation_expiring = {
 	alert_group = expiring_obligations
 }
 
+overlord_can_decrease_subject_autonomy = {
+	texture = "gfx/interface/icons/diplomatic_action_icons/da_decrease_autonomy.dds"
+	script_context = player_subject
+
+	valid = {
+        overlord_can_decrease_subject_autonomy = yes
+	}
+
+	open_panel = diplomatic_overview|subjects
+    type = important_action
+	color = green
+	alert_group = can_decrease_subject_autonomy
+}
+
+subject_likely_to_increase_autonomy = {
+	texture = "gfx/interface/icons/diplomatic_action_icons/da_increase_autonomy.dds"
+    script_context = player_subject
+
+    valid = {
+        subject_can_increase_autonomy = yes
+    }
+
+    open_panel = diplomatic_overview|subjects
+    color = yellow
+}
+
+subject_can_increase_autonomy = {
+	texture = "gfx/interface/icons/diplomatic_action_icons/da_increase_autonomy.dds"
+    script_context = player_country
+
+    valid = {
+        subject_can_increase_autonomy = yes
+    }
+
+    open_panel = diplomatic_overview
+    type = important_action
+    color = green
+}
+
+has_low_liberty_desire = {
+	script_context = player_country
+    texture = "gfx/interface/icons/diplomatic_action_icons/da_decrease_autonomy.dds"
+
+	valid = {
+        can_own_autonomy_be_decreased = yes
+	}
+
+	open_panel = diplomatic_overview
+	type = alert
+	color = red
+}
+
+low_organization_active = { # Formation is at front
+	texture = "gfx/interface/icons/alert_icons/organization_alert.dds"
+	script_context = player_military_formation
+
+	valid = {
+		organization <= define:NMilitary|MILITARY_FORMATION_ORGANIZATION_MIN
+		is_on_front = yes
+	}
+
+	type = alert
+	color = red
+	open_panel = military_formation
+	alert_group = formation_low_organization
+}
+
 ### ANGRY IMPORTANT ACTIONS
 
 has_decreasing_interests_alert = {
@@ -316,12 +373,13 @@ has_decreasing_interests_alert = {
 	color = yellow
 }
 
-low_organization = {
+low_organization_idle = { # Formation is idle
 	texture = "gfx/interface/icons/alert_icons/organization_alert.dds"
 	script_context = player_military_formation
 
 	valid = {
 		organization <= define:NMilitary|MILITARY_FORMATION_ORGANIZATION_MIN
+		is_on_front = no
 	}
 
 	type = angry_important_action
@@ -341,7 +399,7 @@ insufficient_construction_for_investment = {
 
 	type = angry_important_action
 	color = yellow
-	open_panel = production_methods|construction_queues
+	open_panel = construction|default
 }
 
 # Hidden by default
@@ -496,7 +554,7 @@ can_take_decisions = {
 		has_possible_decisions = yes
 	}
 
-	open_panel = journal|decisions
+	open_panel = journal
 	type = important_action
 	color = green
 }
@@ -659,4 +717,64 @@ low_expected_sol_in_state = {
 	type = important_action
 	color = yellow
 	alert_group = low_sol_in_state
+}
+
+power_struggle_leader = {
+	texture = "gfx/interface/main_hud/powerblocs.dds"
+	script_context = player_country
+
+	valid = {
+		is_power_bloc_leader = yes
+		has_power_struggle = yes
+	}
+
+	open_panel = power_bloc_panel
+	type = alert
+	color = red
+}
+
+power_struggle_contender = {
+	texture = "gfx/interface/main_hud/powerblocs.dds"
+	script_context = player_country
+
+	valid = {
+		is_power_bloc_leader = no
+		has_power_struggle = yes
+	}
+
+	open_panel = power_bloc_panel
+	type = alert
+	color = green
+}
+
+power_bloc_invite_available = {
+	texture = "gfx/interface/main_hud/powerblocs.dds"
+	script_context = player_country
+
+	valid = {
+		is_power_bloc_leader = yes      # if you change this line, remember to change invite_to_power_bloc
+		power_bloc ?= {
+			can_invite_any_country = yes
+		}
+	}
+
+	open_panel = power_bloc_panel
+	type = important_action
+	color = green
+}
+
+power_bloc_mandates_available = {
+	texture = "gfx/interface/icons/generic_icons/mandate.dds"
+	script_context = player_country
+
+	valid = {
+		is_power_bloc_leader = yes
+		power_bloc ?= {
+			num_mandates > 0
+		}
+	}
+
+	open_panel = power_bloc_panel
+	type = important_action
+	color = green
 }

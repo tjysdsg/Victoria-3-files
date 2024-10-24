@@ -11,6 +11,8 @@
 		}
 	}
 
+	scripted_progress_bar = communism_1_progress_bar
+
 	possible = {
 		any_interest_group = {
 			is_marginal = no
@@ -38,12 +40,6 @@
 		root = {
 			save_scope_as = root_country
 		}
-		hidden_effect = {
-			set_variable = {
-				name = communism_je_1_var
-				value = 0
-			}
-		}
 		set_communism_vars = yes
 		trigger_event = { id = communism.10 days = 1 popup = yes }
 	}
@@ -56,19 +52,20 @@
 
 	on_monthly_pulse = {
 		random_events = {
-			100 = 0
+			200 = 0
 			5 = communism.7
 		}
 		effect = {
 			calculate_communism_progress = yes
-			add_communism_progress = yes
 		}
 	}
 
 	fail = {
 		custom_tooltip = {
-			text = communism_variable_at_full_tt
-			root.var:communism_je_1_var >= 100
+			text = communism_progress_bar_at_full_tt
+			scope:journal_entry = {
+				"scripted_bar_progress(communism_1_progress_bar)" >= 100
+			}
 		}
 	}
 
@@ -84,16 +81,6 @@
 		trigger_event = { id = communism.11 popup = yes }
 		custom_tooltip = communism_je_1_complete_tt
 	}
-
-	current_value = {
-		value = root.var:communism_je_1_var
-	}
-
-	goal_add_value = {
-		add = 100
-	}
-
-	progressbar = yes
 
 	should_be_pinned_by_default = yes
 }

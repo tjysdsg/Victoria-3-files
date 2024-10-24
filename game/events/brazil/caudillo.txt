@@ -390,10 +390,10 @@ caudillo.5 = {
 				set_variable = caudillo_kingmaker
 			}
 		}
-		py:conservative_party = {
+		py:conservative_party ?= {
 			save_scope_as = conservative_party
 		}
-		py:liberal_party = {
+		py:liberal_party ?= {
 			save_scope_as = liberal_party
 		}
 		if = {
@@ -444,6 +444,9 @@ caudillo.5 = {
 	}
 	option = { 
 		name = caudillo.5.b
+		trigger = {
+			exists = scope:liberal_party
+		}
 		if = {
 			limit = {
 				has_journal_entry = je_caudillo
@@ -542,5 +545,140 @@ caudillo.5 = {
 			}
 		}
 		update_party_support = yes
+	}
+
+	cancellation_trigger = {
+		NOT = {
+			exists = scope:army_leader
+		}
+	}
+}
+
+caudillo.6 = {
+	type = country_event
+	placement = ROOT
+	
+	title = caudillo.6.t
+	desc = caudillo.6.d
+	flavor = caudillo.6.f
+	
+	gui_window = event_window_2char
+
+	left_icon = scope:leadership_challenge_commander
+	right_icon = scope:leadership_challenge_politician
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/misc/2Characters"
+
+	icon = "gfx/interface/icons/ig_icons/armed_forces.dds"
+
+	cooldown = { months = normal_modifier_time }
+	
+	duration = 3
+	
+	trigger = {
+		has_journal_entry = je_caudillo
+		any_scope_character = {
+			OR = {
+				has_role = general
+				has_role = admiral
+			}
+			popularity > interest_group.leader.popularity
+			NOR = {
+				has_trait = reserved
+				has_trait = cautious
+			}
+			NOR = {
+				has_role = politician
+				is_ruler = yes
+				is_heir = yes
+			}
+			this.interest_group = {
+				leader = {
+					NOR = {
+						has_role = general
+						has_role = admiral
+					}
+				}
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_character = {
+			limit = {
+				OR = {
+					has_role = general
+					has_role = admiral
+				}
+				popularity > interest_group.leader.popularity
+				NOR = {
+					has_trait = reserved
+					has_trait = cautious
+				}
+				NOR = {
+					has_role = politician
+					is_ruler = yes
+					is_heir = yes
+				}
+				this.interest_group = {
+					leader = {
+						NOR = {
+							has_role = general
+							has_role = admiral
+						}
+					}
+				}
+			}
+			save_scope_as = leadership_challenge_commander
+			this.interest_group = {
+				save_scope_as = leadership_challenge_ig
+				leader = {
+					save_scope_as = leadership_challenge_politician
+				}
+			}
+		}
+	}
+	option = { 
+		name = caudillo.6.a
+		default_option = yes
+		if = {
+			limit = {
+				empty_agitator_slots >= 1
+				NOT = {
+					scope:leadership_challenge_politician = {
+						has_ideology = ideology:ideology_moderate
+					}
+				}
+			}
+			scope:leadership_challenge_politician = {
+				remove_character_role = politician
+				add_character_role = agitator
+			}
+		}
+		else = {
+			custom_tooltip = politician_gets_pushed_out_tt
+		}
+		scope:leadership_challenge_commander = {
+			add_character_role = politician
+			set_as_interest_group_leader = yes
+		}
+		custom_tooltip = {
+			text = gain_caudillo_points
+			change_variable = {
+				name = caudillo_var
+				add = 100
+			}
+		}
+	}
+	option = { 
+		name = caudillo.6.b
+		custom_tooltip = {
+			text = lose_caudillo_points
+			change_variable = {
+				name = caudillo_var
+				add = -100
+			}
+		}
 	}
 }

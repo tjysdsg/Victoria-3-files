@@ -31,8 +31,14 @@ building_key = {
 	naval = yes/no										# navy or army, default no, only applicable to military buildings, which is determined by building group
 	canal = canal_type_key								# reference to canal type, if set, marks the building as a canal
 
-	ai_value = fixed_point								# base AI value, default NAI.BUILDING_BASE_VALUE or NAI.GOVERNMENT_BUILDING_BASE_VALUE
-	ai_subsidies_weight = fixed_point					# how important the AI considers subsidizing this building to be, default 1.0
+	# base AI value, default NAI.BUILDING_BASE_VALUE or NAI.GOVERNMENT_BUILDING_BASE_VALUE
+	# scope is state the building is located in
+	# be careful when using this as applying complex triggers to it may negatively impact performance in a significant way
+	ai_value = script value							
+	
+	# how much the AI wants to nationalize/privatize the building, added to nationalization_desire value in ai_strategies
+	# scope is country the building is located in
+	ai_privatization_deisre = script value				
 
     slaves_role = pop_type_key                          # defines which pop type should slaves work as. Defaults to DEFAULT_POP_TYPE.
 
@@ -49,7 +55,8 @@ building_key = {
 	levels_per_mesh = int32								# how many levels is needed to add 1 extra building on the map, default 1
 	residence_points_per_level							# how many total "residence points" this building adds to its hub to determine residential buildings created, default 1
 	
-	override_centerpiece_mesh = yes						# should the building be replacing the centerpiece mesh
+	override_centerpiece_mesh = yes						# should the building be replacing the centerpiece mes. Requires centerpiece_mesh_weight to decide which entity or mesh higher prio for overriding building
+	statue = yes										# special building type for power bloc statues, mutually exclusive with override_centerpiece_mesh as it will use centerpiece element from power bloc. Requires centerpiece_mesh_weight to decide which entity or mesh higher prio for overriding building
 	centerpiece_mesh_weight = 1							# priority for replacing the correspondent centerpiece mesh
 	
 	meshes = {											# buildings we supposed to place for dynamic terrain placement
@@ -67,4 +74,8 @@ building_key = {
 	locator = locator_type								# locator type for special buildings
 	
 	lens = infrastructure								# override for which lens the building type should appear in, otherwise specified on building group
+	
+	ownership_type = no_ownership/self/other			# type of the building ownership, no_ownership - can't own other buildings, dividends if any are payed to the state; self - can own only itself, pays dividends to the owning buildings; other - building can own other buildings, pays dividends only to own pops
+	
+	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_wheat_farms_bg.dds" # Background texture for building registry items
 }

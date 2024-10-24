@@ -75,12 +75,9 @@ je_matter_of_slavery = {
 
 	group = je_group_historical_content
 
+    scripted_progress_bar = matter_of_slavery_progress_bar
+
     immediate = {
-        set_variable = { name = brz_slavery_next value = 0 }
-        set_variable = {
-            name = brazilian_slavery_progress_var
-            value = 0
-        }
         c:GBR ?= {
             save_scope_as = britain_scope
         }
@@ -98,7 +95,9 @@ je_matter_of_slavery = {
     fail = {
         custom_tooltip = {
             text = je_matter_of_slavery_fail
-            var:brazilian_slavery_progress_var <= 0
+            scope:journal_entry = {
+                "scripted_bar_progress(matter_of_slavery_progress_bar)" <= 0
+            }
         }
     }
 
@@ -185,14 +184,31 @@ je_matter_of_slavery = {
     }
 
     on_weekly_pulse = {
-        effect = {
-            calculate_brazil_slavery_progress = yes
-        }
+        
     }
 
     on_monthly_pulse = {
         effect = {
-            change_variable = { name = brazilian_slavery_progress_var add = var:brz_slavery_next }
+            if = {
+				limit = {
+					scope:journal_entry = {
+						"scripted_bar_progress(matter_of_slavery_progress_bar)" < 0
+					}
+				}
+				scope:journal_entry = {
+					set_bar_progress = { value = 0 name = matter_of_slavery_progress_bar }
+				}
+			}
+			if = {
+				limit = {
+					scope:journal_entry = {
+						"scripted_bar_progress(matter_of_slavery_progress_bar)" > 360
+					}
+				}
+				scope:journal_entry = {
+					set_bar_progress = { value = 360 name = matter_of_slavery_progress_bar }
+				}
+			}
         }
         random_events = {
             105 = 0
@@ -237,16 +253,6 @@ je_matter_of_slavery = {
     is_progressing = {
         has_law = law_type:law_slavery_banned
     }
-
-    current_value = {
-        value = root.var:brazilian_slavery_progress_var
-    }
-
-    goal_add_value = {
-        value = 100
-    }
-
-    progressbar = yes
 
     weight = 1000
 

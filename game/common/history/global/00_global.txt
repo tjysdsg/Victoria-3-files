@@ -22,19 +22,18 @@ GLOBAL = {
 		}
 	}
 
-	c:BRZ = {
+	c:BRZ ?= {
 		set_variable = {
 			name = pedropoints
 			value = 5
 		}
-		set_variable = {
-			name = brazilian_slavery_progress_var
-			value = 70
-		}
 	}
-
-	c:FRA = {
-		fra_define_leading_dynasty = yes
+	
+	c:HAI = {
+		add_treasury = {
+			value = gold_reserves_limit
+			multiply = -1.0
+		}
 	}
 
 ###ACHIEVEMENT VARIABLES###
@@ -311,6 +310,14 @@ GLOBAL = {
 		set_variable = not_yet_lost_ach_possible
 	}
 
+	#Declaration of Independence
+	every_country = {
+		limit = {
+			is_subject = yes
+		}
+		set_variable = declaration_of_independence_ach_possible
+	}
+
 	#Event Variables
 	
 	set_global_variable = {
@@ -347,20 +354,20 @@ GLOBAL = {
         }
 	}
 
-	c:UCA = {
+	c:UCA ?= {
 		add_radicals = {
-			value = 1.2
+			value = 0.25
 		}
 	}
 
-	c:PNI = {
+	c:PNI ?= {
 		trigger_event = {
 			id = garibaldi_events.1
 			days = 6
 		}
 	}
 	
-	c:RUS = {
+	c:RUS ?= {
 		every_scope_state = {
             limit = {
                 OR = {
@@ -369,31 +376,37 @@ GLOBAL = {
                 }
             }
             add_radicals_in_state = {
-                value = 1.5
+                value = 0.30
                 culture = cu:circassian
             }
-			add_radicals_in_state = {
-                value = very_large_radicals
-            }
             add_radicals_in_state = {
-                value = 0.75
+                value = 0.20
                 culture = cu:north_caucasian
             }
 			add_radicals_in_state = {
-                value = very_large_radicals
+                value = 0.20
             }
         }
-        create_truce = {
+        create_bidirectional_truce = {
 			country = c:CIR
-			months = 60
+			months = 240
 		}
-		create_truce = {
+		create_bidirectional_truce = {
 			country = c:CHC
-			months = 60
+			months = 240
+		}
+		if = {
+			limit = {
+				has_dlc_feature = ep1_content
+			}
+			trigger_event = {
+				id = kazakhstan_events.2
+				days = 690
+			}
 		}
 	}
 
-	c:ARG = {
+	c:ARG ?= {
 		every_scope_state = {
 			limit = {
 				NOR = {
@@ -402,69 +415,58 @@ GLOBAL = {
 				}
 			}
 			add_radicals_in_state = {
-				value = 3
+				value = 0.33
 				strata = rich
 			}
 			add_radicals_in_state = {
-				value = 1
+				value = 0.25
 				strata = middle
 			}
 			add_radicals_in_state = {
-				value = 0.5
+				value = 0.15
 				strata = poor
 			}
 		}
-		every_scope_state = {
-			limit = {
-				OR = {
-					state_region = s:STATE_BUENOS_AIRES
-					state_region = s:STATE_SANTA_FE
-				}
-			}
-			add_radicals_in_state = {
-				value = 0.25
-			}
-		}
 	}
 
-	c:URU = {
+	c:URU ?= {
 		add_radicals = {
-			value = 0.75
+			value = 0.15
 		}
 	}
 
-	c:BOL = {
+	c:BOL ?= {
 		trigger_event = {
 			id = peru_bolivia_events.2
 			days = 45
 		}
 	}
 
-	c:NPU = {
+	c:NPU ?= {
 		add_radicals = {
-			value = 0.75
+			value = 0.20
 		}
 	}
 
-	c:SPU = {
+	c:SPU ?= {
 		add_radicals = {
-			value = 0.50
+			value = 0.15
 		}
 	}
 
-	c:IQU = {
+	c:IQU ?= {
 		add_radicals = {
-			value = 0.25
+			value = 0.10
 		}
 	}
 
-	c:CHI = {
+	c:CHI ?= {
 		random_scope_state = {
 			limit = {	
 				state_region = s:STATE_SICHUAN
 			}
 			add_radicals_in_state = {
-                value = large_radicals
+                value = 0.1
                 culture = cu:han
             }
 		}
@@ -473,7 +475,7 @@ GLOBAL = {
 				state_region = s:STATE_YUNNAN
 			}
 			add_radicals_in_state = {
-                value = small_radicals
+                value = 0.025
                 culture = cu:han
             }
 		}
@@ -482,13 +484,18 @@ GLOBAL = {
 				state_region = s:STATE_CHONGQING
 			}
 			add_radicals_in_state = {
-                value = medium_radicals
+                value = 0.05
                 culture = cu:han
             }
 		}
 		add_radicals = {
-			value = medium_radicals
+			value = 0.025
 			culture = cu:han
+		}
+		
+		set_variable = {
+			name = china_warlord_explosion
+			value = 5
 		}
 	}
 }

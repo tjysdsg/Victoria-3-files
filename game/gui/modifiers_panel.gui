@@ -11,6 +11,55 @@
 
 types modifiers_panel
 {
+	type modifier_list_content = flowcontainer {
+		block "margin2" {
+			margin_top = 15
+		}
+		using = default_list_position
+		direction = vertical
+		visible = "[Not(Modifier.IsEmpty)]"
+
+		default_header = {
+			visible = "[Not(IsDataModelEmpty(Modifier.GetEntries))]"
+			blockoverride "text" {
+				block "header" {
+					text = "MODIFIERS_PANEL_MODIFIER_ENTRIES"
+				}
+			}
+		}
+
+		flowcontainer = {
+			direction = vertical
+			parentanchor = hcenter
+			datamodel = "[Modifier.GetEntries]"
+
+			item = {
+				widget = {
+					size = { @panel_width_minus_10 38 }
+					using = unclickable_listentry_small
+					tooltip = "MODIFIER_ENTRY_TOOLTIP"
+
+					hbox = {
+						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = expanding
+						textbox = {
+							text = "[ModifierEntry.GetName]"
+							align = left|nobaseline
+							layoutpolicy_horizontal = expanding
+							layoutpolicy_vertical = expanding
+						}
+
+						textbox = {
+							text = "[ModifierEntry.GetFormattedValue]"
+							align = left|nobaseline
+							autoresize = yes
+						}
+					}
+				}
+			}
+		}
+	}
+
 	type modifier_list = flowcontainer {
 		using = default_list_position
 		direction = vertical
@@ -26,7 +75,7 @@ types modifiers_panel
 		flowcontainer = {
 			using = default_list_position
 			direction = vertical
-			
+
 			default_header = {
 				blockoverride "text" {
 					text = "MODIFIERS_PANEL_TIMED_MODIFIERS"
@@ -42,17 +91,22 @@ types modifiers_panel
 					text = "MODIFIERS_PANEL_NO_TIMED_MODIFIERS"
 				}
 			}
-		
+
 			flowcontainer = {
 				direction = vertical
 				parentanchor = hcenter
 				datamodel = "[ModifiersPanel.GetTimedModifiers]"
-				
+
 				item = {
+					container = {
+						minimumsize = { @panel_width -1 }
+						maximumsize = { @panel_width -1 }
+						tooltip = "[TimedModifier.GetTooltip]"
+
 					flowcontainer = {
 						spacing = 10
 						using = unclickable_listentry_small
-						
+
 						icon = {
 							size = { 25 25 }
 							texture = "[TimedModifier.GetIcon]"
@@ -60,63 +114,26 @@ types modifiers_panel
 						}
 
 						textbox = {
-							size = { 500 40 }
+								size = { 480 40 }
 							text = "[TimedModifier.GetName]"
 							align = left|nobaseline
-							tooltip = "[TimedModifier.GetTooltip]"
 						}
 					}
+
+						textbox = {
+							text = "[TimedModifier.GetRemainingDuration]"
+							autoresize = yes
+							align = nobaseline
+							parentanchor = right|vcenter
 				}
+			}
+		}
 			}
 		}
 		
 		### NORMAL MODIFIERS
-		flowcontainer = {
-			block "margin2" {
-				margin_top = 15
-			}
-			using = default_list_position
-			direction = vertical
-			datacontext = "[ModifiersPanel.GetModifier]"						
-			visible = "[Not(Modifier.IsEmpty)]"
-			
-			default_header = {
-				visible = "[Not(IsDataModelEmpty(Modifier.GetEntries))]"
-				blockoverride "text" {
-					text = "MODIFIERS_PANEL_MODIFIER_ENTRIES"
-				}
-			}
-			
-			flowcontainer = {
-				direction = vertical
-				parentanchor = hcenter
-				datamodel = "[Modifier.GetEntries]"
-				
-				item = {
-					widget = {
-						size = { @panel_width_minus_10 38 }
-						using = unclickable_listentry_small
-						tooltip = "MODIFIER_ENTRY_TOOLTIP"
-						
-						hbox = {
-							layoutpolicy_horizontal = expanding
-							layoutpolicy_vertical = expanding
-							textbox = {
-								text = "[ModifierEntry.GetName]"
-								align = left|nobaseline
-								layoutpolicy_horizontal = expanding
-								layoutpolicy_vertical = expanding
-							}
-							
-							textbox = {
-								text = "[ModifierEntry.GetFormattedValue]"
-								align = left|nobaseline
-								autoresize = yes
-							}
-						}
-					}
-				}
-			}
+		modifier_list_content = {
+			datacontext = "[ModifiersPanel.GetModifier]"
 		}
 	}
 }

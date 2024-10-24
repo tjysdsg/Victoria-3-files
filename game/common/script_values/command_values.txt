@@ -65,31 +65,44 @@ front_commander_pick_weight = {
 	}
 }
 
-# the troop distribution weight of a Front for a country/commander
-# root = country
-# front = the front to calculate troop weight for
-# character = the country commander (if any; could be garrison)
-front_country_troop_weight = {
-    value = "scope:front.num_enemy_units(root)"
-}
-
 
 # root = state
-# front = the front this battle will happen on
-# own_commander = the commander leading this side in battle (if any; could be garrison)
-# enemy_commander = the commander leading this side in battle (if any; could be garrison)
-# is_strategic_objective = indicates whether the root state lies in the Front Strategic Objective
+# front = the front we're evaluating basecamp states for
+# own_commander = the commander leading this side in battle
+# is_strategic_objective = indicates whether the root state is the Front's Strategic Objective
+# is_adjacent_to_strategic_objective = indicates whether the root state is adjacent to the Front's Strategic Objective
 # distance_to_strategic_objective = *squared* distance to this front active Strategic Objective, if any (use `exists` to check). Always > 0.0 when it exists.
 # distance_to_closest_war_goal = *squared* distance to this front closest War Goal, if any (use `exists` to check). Always > 0.0 when it exists.
 # if the console variable `debug_front_battle_weight` is enabled, data will be logged to std::cout.
+# No randomness allowed
+
 front_battle_state_weight = {
     value = 100000
     if = {
         limit = {
             scope:is_strategic_objective = yes
         }
-        add = 100
+        add = 1000
     }
+	else_if = {
+		limit = {
+			scope:is_adjacent_to_strategic_objective = yes
+		}
+        add = 100
+	}
+	else_if = {
+		limit = {
+			exists = scope:distance_to_strategic_objective
+		}
+		divide = scope:distance_to_strategic_objective
+	}
+	else_if = {
+		limit = {
+			exists = scope:distance_to_closest_war_goal
+		}
+		divide = scope:distance_to_closest_war_goal
+	}
+	
     else = {
         subtract = 100
     }
@@ -97,12 +110,15 @@ front_battle_state_weight = {
 
 # root = province
 # front = the front this battle will happen on
-# own_commander = the commander leading this side in battle (if any; could be garrison)
-# enemy_commander = the commander leading this side in battle (if any; could be garrison)
+# own_commander = the commander leading this side in battle
+# enemy_commander = the commander defending in this battle (if any)
 # is_strategic_objective = indicates whether the root province lies in the Front Strategic Objective
+# is_adjacent_to_strategic_objective = indicates whether the root province is adjacent to the Front's Strategic Objective
 # distance_to_strategic_objective = *squared* distance to this front active Strategic Objective, if any (use `exists` to check). Always > 0.0 when it exists.
 # distance_to_closest_war_goal = *squared* distance to this front closest War Goal, if any (use `exists` to check). Always > 0.0 when it exists.
 # if the console variable `debug_front_battle_weight` is enabled, data will be logged to std::cout.
+# No randomness allowed
+
 front_battle_province_weight = {
     value = 100000
 

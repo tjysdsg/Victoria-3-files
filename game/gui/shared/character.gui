@@ -10,14 +10,14 @@ types character_types {
 		block "commander_order_icon" {
 			icon = {
 				size = { 100% 100% }
-				visible = "[And(And(Character.GetOrderType.IsValid, Or(And( Character.IsAdmiral, Not( Character.IsRepairing )), Character.IsGeneral)), Not(Character.GetNextOrderType.IsValid))]"
+				visible = "[And(And(Character.GetOrderType.IsValid, Or(And( Character.IsAdmiral, Not( Character.IsDefeated )), Character.IsGeneral)), Not(Character.GetNextOrderType.IsValid))]"
 				texture = "[Character.GetOrderType.GetTexture]"
 				tooltip = "[Character.GetOrderType.GetDesc]"
 			}
 
 			icon = {
 				size = { 100% 100% }
-				visible = "[And(And(Character.GetOrderType.IsValid, Or(And( Character.IsAdmiral, Not( Character.IsRepairing )), Character.IsGeneral)), Character.GetNextOrderType.IsValid)]"
+				visible = "[And(And(Character.GetOrderType.IsValid, Or(And( Character.IsAdmiral, Not( Character.IsDefeated )), Character.IsGeneral)), Character.GetNextOrderType.IsValid)]"
 				texture = "[Character.GetNextOrderType.GetTexture]"
 				tooltip = "[Character.GetNextOrderType.GetDesc]"
 			}
@@ -26,7 +26,7 @@ types character_types {
 		# admiral repairing icon
 		icon = {
 			size = { 100% 100% }
-			visible = "[And( Character.IsAdmiral, Character.IsRepairing )]"
+			visible = "[And( Character.IsAdmiral, Character.IsDefeated )]"
 			texture = "[Character.GetRepairingTexture]"
 			tooltip = "ADMIRAL_REPAIRING_DATE_TOOLTIP"
 		}
@@ -462,6 +462,33 @@ types character_types {
 		block "onclick" {}
 	}
 
+	type add_character_button_long = button {
+		using = default_button
+		size = { 170 40 }
+		parentanchor = vcenter
+		block "onclick" {}
+
+		icon = {
+			position = { 5 0 }
+			parentanchor = vcenter
+			size = { 25 25 }
+			texture = "gfx/interface/buttons/button_icons/plus.dds"
+		}
+
+		textbox = {
+			parentanchor = center
+			position = { 6 0 }
+			max_width = 140
+			autoresize = yes
+			fontsize_min = 14
+			elide = right
+			align = nobaseline
+			block "recruit_character_text" {
+				text = "RECRUIT_GENERAL_BUTTON"
+			}
+		}
+	}
+
 	### HEAD SIZES
 	type character_portrait_large = character_portrait_base_head {
 		size = { 110 110 }
@@ -492,6 +519,20 @@ types character_types {
 			}
 		}
 	}
+
+	type character_portrait_small_with_rank = character_portrait_base_head {
+		size = { 40 40 }
+		blockoverride "portrait_size" {
+			size = { 40 44 }
+		}
+		blockoverride "icon_size" {
+			size = { 22 22 }
+		}
+
+		blockoverride "rank_icon" {}
+	}
+
+
 	
 	type character_portrait_small2 = character_portrait_base_head {
 		size = { 60 60 }
@@ -705,7 +746,7 @@ types character_types {
 		{
 			block "pop_portrait_texture" {
 				# Always use Cached portraits by default (better for performance and they can't be animated)
-				portrait_texture = "[Pop.GetPortrait('environment_standard', 'camera_head', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self))]"
+				portrait_texture = "[Pop.GetTypedPortrait('environment_standard', 'camera_head', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'random_adult', '(int32)-1')]"
 				
 				# GetTypedPortrait will return the specified type, and age.
 				#  Valid types are 'male', 'female', 'boy', 'girl', 'random_adult', 'random_child', 'scripted'. Scripted uses the same scripted weights as GetPortrait (i.e. based on laws etc)
@@ -736,7 +777,7 @@ types character_types {
 		}
 		blockoverride "portrait_texture" {
 			block "pop_portrait_texture" {
-				portrait_texture = "[Pop.GetAnimatedPortrait('environment_standard', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self))]"
+				portrait_texture = "[Pop.GetAnimatedTypedPortrait('environment_standard', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'random_adult', '(int32)-1')]"
 			}
 		}
 	}
@@ -770,7 +811,7 @@ types character_types {
 		}
 		blockoverride "portrait_texture" {
 			block "pop_portrait_texture" {
-				portrait_texture = "[Pop.GetAnimatedPortrait('environment_standard', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self))]"
+				portrait_texture = "[Pop.GetAnimatedTypedPortrait('environment_standard', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'random_adult', '(int32)-1')]"
 			}
 		}
 	}
@@ -798,7 +839,21 @@ types character_types {
 	type pop_portrait_simple = pop_portrait_base {
 		size = { 85 95 }
 		blockoverride "pop_portrait_texture" {
-			portrait_texture = "[Pop.GetPortrait('small_pop_environment', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self))]"
+			portrait_texture = "[Pop.GetTypedPortrait('small_pop_environment', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'random_adult', '(int32)-1')]"
+		}
+	}
+
+	type pop_portrait_simple_female = pop_portrait_base {
+		size = { 85 95 }
+		blockoverride "pop_portrait_texture" {
+			portrait_texture = "[Pop.GetTypedPortrait('small_pop_environment', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'female', '(int32)-1')]"
+		}
+	}
+
+	type pop_portrait_simple_male = pop_portrait_base {
+		size = { 85 95 }
+		blockoverride "pop_portrait_texture" {
+			portrait_texture = "[Pop.GetTypedPortrait('small_pop_environment', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'male', '(int32)-1')]"
 		}
 	}
 }
@@ -837,4 +892,9 @@ template naval_commander_color
 			visible = "[Character.IsAdmiral]"
 		}
 	}
+}
+
+template visible_if_either_current_or_next_order
+{
+	visible = "[Or(Or(ObjectsEqual(Character.GetOrderType.Self, CommanderOrderType.Self), ObjectsEqual(Character.GetNextOrderType.Self, CommanderOrderType.Self)), Not(StringIsEmpty(GetDesc( Character.SelectOrder( CommanderOrderType.Self )))))]"
 }

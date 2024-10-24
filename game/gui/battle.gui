@@ -41,6 +41,7 @@ types battle_panel_types
 				size = { 30 30 }
 				onclick = "[InformationPanelBar.OpenFrontPanel(Front.AccessSelf)]"
 				tooltip = "GO_TO_BUTTON_FRONT"
+				input_action = "go_to_details"
 			}
 
 			button_icon_goto = {
@@ -49,6 +50,7 @@ types battle_panel_types
 				size = { 30 30 }
 				onclick = "[InformationPanelBar.OpenStatePanel(State.AccessSelf)]"
 				tooltip = "GO_TO_BUTTON_STATE"
+				input_action = "go_to_details"
 			}
 
 			button_icon_goto = {
@@ -57,6 +59,7 @@ types battle_panel_types
 				size = { 30 30 }
 				onclick = "[InformationPanelBar.OpenSeaRegionPanel(Battle.GetProvince)]"
 				tooltip = "GO_TO_BUTTON_SEA_REGION"
+				input_action = "go_to_details"
 			}
 		}
 		
@@ -383,6 +386,13 @@ types battle_panel_types
 						}
 
 						textbox = {
+							visible = "[Battle.EndedInconclusively]"
+							text = "BATTLE_INCONCLUSIVE"
+							using = battle_outcome_formatting
+							default_format = "#n"
+						}
+
+						textbox = {
 							text = "[Battle.GetStatusString]"
 							using = battle_outcome_status_formatting
 						}
@@ -409,8 +419,14 @@ types battle_panel_types
 						}
 
 						textbox = {
-							visible = "[Not(Or( Battle.IsOnWinnerSide(GetPlayer.Self), Battle.IsOnLoserSide(GetPlayer.Self) ))]"
+							visible = "[And(Not(Or( Battle.IsOnWinnerSide(GetPlayer.Self), Battle.IsOnLoserSide(GetPlayer.Self) )), Not(Battle.EndedInconclusively))]"
 							text = "BATTLE_NONALLY_VICTORY"
+							using = battle_outcome_formatting
+						}
+						
+						textbox = {
+							visible = "[Battle.EndedInconclusively]"
+							text = "BATTLE_INCONCLUSIVE_OUTCOME"
 							using = battle_outcome_formatting
 						}
 
@@ -608,6 +624,9 @@ types battle_panel_types
 					}
 					blockoverride "borrowed_units_visibility" {
 						visible = "[Not(IsDataModelEmpty(Battle.GetDefenderBorrowedFormations))]"
+					}
+					blockoverride "borrowed_units_datamodel" {
+						datamodel = "[Battle.GetDefenderBorrowedFormations]"
 					}
 					blockoverride "formation_header" {
 						text = "BATTLE_DEFENDING_FORMATION_HEADER"
@@ -1221,10 +1240,10 @@ types battle_panel_types
 				battle_formation_item = {}
 			}
 
-			# under command
+			# borrowed
 			default_header = {
 				block "borrowed_units_visibility" {
-					visible = no
+					visible = "[Not(IsDataModelEmpty(Battle.GetAttackerBorrowedFormations))]"
 				}
 
 				blockoverride "text" {
@@ -1246,10 +1265,12 @@ types battle_panel_types
 				spacing = 10
 
 				block "borrowed_units_visibility" {
-					visible = no
+					visible = "[Not(IsDataModelEmpty(Battle.GetAttackerBorrowedFormations))]"
 				}
 
-				datamodel = "[Battle.GetDefenderBorrowedFormations]"
+				block "borrowed_units_datamodel" {
+					datamodel = "[Battle.GetAttackerBorrowedFormations]"
+				}
 
 				item = {
 					battle_formation_item = {}
@@ -1375,12 +1396,13 @@ types battle_panel_types
 						}
 						
 						textbox = {
-							raw_text = "[BattleMilitaryFormation.GetTotalUnitsFromFormation]"
+							raw_text = "[BattleMilitaryFormation.GetTotalUnitsFromFormation|v]"
 							using = transparent_if_unmobilized_in_conflict
 							autoresize = yes
 							align = nobaseline
 							parentanchor = vcenter
 							margin_right = 5
+							using = fontsize_large
 						}
 					}
 
@@ -1496,7 +1518,7 @@ types battle_panel_types
 					icon = {
 						parentanchor = center
 						using = frame_small_mask
-						texture = "[CombatUnitType.GetTextureForCulture( MilitaryFormation.GetPrimaryCultureForGroup( CombatUnitGroup.Self ).Self )]"
+						texture = "[CombatUnitType.GetTextureForCulture( MilitaryFormation.GetPrimaryCultureForType( CombatUnitType.Self ).Self )]"
 						size = { 255 255 }
 						block "mirror_unit_image" {}
 					}
@@ -1538,7 +1560,6 @@ types battle_panel_types
 						flowcontainer = {
 							textbox = {
 								visible = "[And( MilitaryFormation.IsArmy, GreaterThan_int32( BattleUnitType.GetNumberOfRegularUnits, '(int32)0') )]"
-								parentanchor = hcenter
 								autoresize = yes
 								align = nobaseline|hcenter
 								using = fontsize_large
@@ -1551,7 +1572,6 @@ types battle_panel_types
 
 							textbox = {
 								visible = "[And( MilitaryFormation.IsArmy, GreaterThan_int32( BattleUnitType.GetNumberOfConscriptUnits, '(int32)0') )]"
-								parentanchor = hcenter
 								autoresize = yes
 								align = nobaseline|hcenter
 								using = fontsize_large
@@ -1564,7 +1584,6 @@ types battle_panel_types
 
 							textbox = {
 								visible = "[And( MilitaryFormation.IsFleet, GreaterThan_int32( BattleUnitType.GetNumberOfRegularUnits, '(int32)0') )]"
-								parentanchor = hcenter
 								autoresize = yes
 								align = nobaseline|hcenter
 								using = fontsize_large
@@ -1575,9 +1594,10 @@ types battle_panel_types
 								tooltip = "BATTLE_UNIT_TYPE_WARSHIPS_TOOLTIP"
 							}
 
-							widget = { size = { 5 5 } }
+							widget = { size = { 10 10 } }
 
 							white_progressbar_vertical = {
+								parentanchor = vcenter
 								size = { 8 22 }
 								tooltip = "BATTLE_UNIT_TYPE_AVERAGE_MORALE"
 								
@@ -1671,9 +1691,14 @@ types battle_panel_types
 			blockoverride "size" {
 				size = { 430 100 }
 			}
-			blockoverride "empty_state_visibility" {
+			blockoverride "empty_state_visibility" { 
 				visible = "[Battle.IsManpowerTrendsEmpty]"
 			}
+
+			blockoverride "everything_that_is_not_empty_state_visibility" {
+				visible = "[Not(Battle.IsManpowerTrendsEmpty)]"
+			}
+
 			blockoverride "empty_state_text" {
 				text = "GRAPH_NOT_INITIALIZED"
 			}
@@ -1716,6 +1741,10 @@ types battle_panel_types
 
 			blockoverride "empty_state_visibility" {
 				visible = "[Battle.IsManpowerTrendsEmpty]"
+			}
+
+			blockoverride "everything_that_is_not_empty_state_visibility" {
+				visible = "[Not(Battle.IsManpowerTrendsEmpty)]"
 			}
 			blockoverride "empty_state_text" {
 				text = "GRAPH_NOT_INITIALIZED"
@@ -1985,7 +2014,7 @@ template small_battle_outcome_formatting {
 	autoresize = yes
 	fontsize_min = 14
 	elide = right
-	max_width = @panel_width_minus_10
+	max_width = 350
 	align = nobaseline
 	using = fontsize_large
 }

@@ -42,7 +42,7 @@ garibaldi_events.1 = {
 			}
 		}
 		OR = {
-			AND = { # You're a nation fighting the good cause (defensive war)
+			AND = { # You're a nation fighting the good cause (defensive war OR democratically-inclined revolution/secession)
 				OR = {
 					has_law = law_type:law_anarchy
 					has_law = law_type:law_universal_suffrage
@@ -50,16 +50,48 @@ garibaldi_events.1 = {
 					has_law = law_type:law_wealth_voting
 					has_law = law_type:law_landed_voting
 				}
-				any_diplomatic_play = {
-					is_war = yes
-					target = root
-					initiator = {
+				OR = {
+					AND = {	
 						OR = {
-							has_law = law_type:law_autocracy
-							has_law = law_type:law_oligarchy
-							has_law = law_type:law_single_party_state
-						}
-					}
+							is_revolutionary = yes
+							is_secessionist = yes
+						}				
+						any_diplomatic_play = {
+							is_war = yes
+							initiator = root
+							target = {
+								OR = {
+									has_law = law_type:law_autocracy
+									has_law = law_type:law_oligarchy
+									has_law = law_type:law_single_party_state
+								}
+							}
+						}							
+					}	
+					AND = {
+						any_diplomatic_play = {
+							is_war = yes
+							target = root
+							initiator = {
+								is_secessionist = no
+								# Garibaldi should only care to get involved defensively against significant revolutions
+								OR = {
+									is_revolutionary = no
+									country_rank >= rank_value:major_power
+								}
+								# Garibaldi shouldn't be in the business of defending big powers against small ones
+								OR = {
+									is_revolutionary = yes
+									country_rank >= root.country_rank
+								}													
+								OR = {
+									has_law = law_type:law_autocracy
+									has_law = law_type:law_oligarchy
+									has_law = law_type:law_single_party_state
+								}
+							}
+						}					
+					}			
 				}
 			}
 			AND = { # You're fighting for Italy
@@ -89,6 +121,15 @@ garibaldi_events.1 = {
 								}
 							}
 						}
+						AND = {
+							initiator = {
+								any_primary_culture = {
+									has_discrimination_trait = italophone
+								}
+								this = root
+								is_secessionist = yes
+							}
+						}						
 						AND = {
 							target = {
 								any_primary_culture = {
@@ -141,8 +182,8 @@ garibaldi_events.1 = {
 						name = garibaldi_cooldown_var
 						months = short_modifier_time
 					}
+					save_scope_as = garibaldi_scope
 				}
-				save_scope_as = garibaldi_scope
 			}
 		}
 		else_if = {
@@ -208,35 +249,46 @@ garibaldi_events.1 = {
 		save_scope_as = garibaldi_new_home
 	}
 
+	cancellation_trigger = {
+		OR = {
+			NOT = {
+				exists = scope:garibaldi_scope
+			}
+			scope:garibaldi_scope = {
+				is_character_alive = no
+			}
+		}
+	}
+
 	option = {
 		name = garibaldi_events.1.a
 		default_option = yes
-		scope:garibaldi_scope = {
+		scope:garibaldi_scope ?= {
 			add_character_role = general
 		}
 		if = {
 			limit = {
 				global_var:garibaldi_fame_var = 1
-				scope:garibaldi_scope = { 
+				scope:garibaldi_scope ?= { 
 					NOT = {
 						has_modifier = garibaldi_popularity_modifier_tier_1 
 					}
 				}
 			}
-			scope:garibaldi_scope = {
+			scope:garibaldi_scope ?= {
 				add_modifier = garibaldi_popularity_modifier_tier_1
 			}
 		}
 		if = {
 			limit = {
 				global_var:garibaldi_fame_var = 2
-				scope:garibaldi_scope = {
+				scope:garibaldi_scope ?= {
 					NOT = { 
 						has_modifier = garibaldi_popularity_modifier_tier_2
 					}
 				}
 			}
-			scope:garibaldi_scope = {
+			scope:garibaldi_scope ?= {
 				if = {
 					limit = {
 						has_modifier = garibaldi_popularity_modifier_tier_1
@@ -251,13 +303,13 @@ garibaldi_events.1 = {
 		if = {
 			limit = {
 				global_var:garibaldi_fame_var = 3
-				scope:garibaldi_scope = {
+				scope:garibaldi_scope ?= {
 					NOT = { 
 						has_modifier = garibaldi_popularity_modifier_tier_3
 					}
 				}
 			}
-			scope:garibaldi_scope = {
+			scope:garibaldi_scope ?= {
 				if = {
 					limit = {
 						has_modifier = garibaldi_popularity_modifier_tier_2
@@ -272,13 +324,13 @@ garibaldi_events.1 = {
 		if = {
 			limit = {
 				global_var:garibaldi_fame_var = 4
-				scope:garibaldi_scope = {
+				scope:garibaldi_scope ?= {
 					NOT = { 
 						has_modifier = garibaldi_popularity_modifier_tier_4
 					}
 				}
 			}
-			scope:garibaldi_scope = {
+			scope:garibaldi_scope ?= {
 				if = {
 					limit = {
 						has_modifier = garibaldi_popularity_modifier_tier_3
@@ -293,13 +345,13 @@ garibaldi_events.1 = {
 		if = {
 			limit = {
 				global_var:garibaldi_fame_var >= 5
-				scope:garibaldi_scope = {
+				scope:garibaldi_scope ?= {
 					NOT = { 
 						has_modifier = garibaldi_popularity_modifier_tier_5
 					}
 				}
 			}
-			scope:garibaldi_scope = {
+			scope:garibaldi_scope ?= {
 				if = {
 					limit = {
 						has_modifier = garibaldi_popularity_modifier_tier_4
@@ -314,11 +366,11 @@ garibaldi_events.1 = {
 		if = {
 			limit = {
 				global_var:garibaldi_fame_var >= 2
-				scope:garibaldi_scope = {
+				scope:garibaldi_scope ?= {
 					has_trait = basic_offensive_planner
 				}
 			}
-			scope:garibaldi_scope = {
+			scope:garibaldi_scope ?= {
 				random_list = {
 					50 = {
 						hidden_effect = { 
@@ -334,11 +386,11 @@ garibaldi_events.1 = {
 		if = {
 			limit = {
 				global_var:garibaldi_fame_var >= 4
-				scope:garibaldi_scope = {
+				scope:garibaldi_scope ?= {
 					has_trait = experienced_offensive_planner
 				}
 			}
-			scope:garibaldi_scope = {
+			scope:garibaldi_scope ?= {
 				random_list = {
 					50 = {
 						hidden_effect = { 
@@ -429,7 +481,7 @@ garibaldi_events.1 = {
 					has_variable = garibaldi_var
 				}
 			}
-			scope:garibaldi_scope = {
+			scope:garibaldi_scope ?= {
 				exile_character = yes
 				clean_up_exile_character_roles = yes
 			}
@@ -643,11 +695,13 @@ garibaldi_events.2 = {
 	}
 
 	cancellation_trigger = {
-		NOT = {
-			exists = scope:garibaldi_scope
-		}
-		scope:garibaldi_scope = {
-			is_character_alive = no
+		OR = {
+			NOT = {
+				exists = scope:garibaldi_scope
+			}
+			scope:garibaldi_scope = {
+				is_character_alive = no
+			}
 		}
 	}
 
@@ -1140,7 +1194,7 @@ garibaldi_events.4 = {
 			}
 		}
 		scope:garibaldi_peasants_state_scope = {
-			add_radicals = {
+			add_radicals_in_state = {
 				pop_type = farmers
 				value = small_radicals
 			}

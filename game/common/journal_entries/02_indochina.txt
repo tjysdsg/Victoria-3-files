@@ -12,6 +12,7 @@
 			capital = {
 				state_region = {
 					set_variable = indochina_capital_state
+					save_scope_as = indochina_capital_state_scope
 				}
 			}
 		}
@@ -22,10 +23,24 @@
 		is_subject = no
 		is_at_war = no
 		OR = {
-			scope:indochina_conquest_target = { is_country_alive = no }
+			trigger_if = {
+				limit = {
+					exists = scope:indochina_conquest_target
+				}
+				custom_tooltip = {
+					text = conquered_indochina_target_tt
+					NOT = { exists = scope:indochina_conquest_target }
+				}
+			}
+			trigger_else = {
+				custom_tooltip = {
+					text = conquered_indochina_target_blank_tt
+					NOT = { exists = scope:indochina_conquest_target }
+				}
+			}
 			AND = {
 				exists = scope:indochina_conquest_target
-				scope:indochina_conquest_target = { is_subject_of = ROOT }
+				scope:indochina_conquest_target ?= { is_subject_of = ROOT }
 			}
 		}
 		custom_tooltip = {
@@ -63,4 +78,6 @@
 
 	invalid = {
 	}
+
+	should_be_pinned_by_default = yes
 }

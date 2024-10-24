@@ -679,20 +679,6 @@ je_tutorial_increase_immigration = {
 	transferable = yes
 }
 
-je_tutorial_expend_investment_pool = {
-	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
-	should_be_pinned_by_default = yes
-
-	group = je_group_tutorial
-
-	complete = {
-		investment_pool = 0
-	}
-
-	weight = 1015
-	transferable = yes
-}
-
 je_tutorial_improve_supply_network = {
 	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
 	should_be_pinned_by_default = yes
@@ -709,9 +695,7 @@ je_tutorial_improve_supply_network = {
 
 	goal_add_value = {
 		value = {
-			add = num_convoys_required
-			add = 100
-			subtract = num_convoys_available
+			add = 400
 		}
 	}
 	
@@ -1047,6 +1031,10 @@ je_tutorial_improve_rank = {
 		value = prestige
 		multiply = 1
 		min = 100
+	}
+
+	on_complete = {
+		set_variable = tutorial_form_pb_end
 	}
 	
 	weight = 1028
@@ -1670,7 +1658,7 @@ je_tutorial_create_formation = {
 
 	group = je_group_tutorial
 
-	complete = { #TODO placeholder will code support
+	complete = {
 		custom_tooltip = {
 			text = je_tutorial_create_formation_complete_trigger
 			NOT = {
@@ -1687,6 +1675,57 @@ je_tutorial_create_formation = {
 
 	on_complete = {
 	}
+	
+	weight = 1002
+	transferable = yes
+}
+
+je_subject_liberty = {
+	how_tutorial = lesson_subject_liberty_how
+	why_tutorial = lesson_subject_liberty_why
+
+	should_be_pinned_by_default = yes
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+
+	group = je_group_tutorial
+
+	complete = {
+		scope:target = {
+			liberty_desire < 50
+		}
+	}
+	
+	weight = 1002
+	transferable = yes
+}
+
+je_tutorial_foreign_investment = {
+	why_tutorial = lesson_foreign_investmen_why
+
+	should_be_pinned_by_default = yes
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+
+	group = je_group_tutorial
+
+	complete = {
+		scope:target = {
+			gdp_ownership_ratio = {
+				target = ROOT
+				value >= 0.2
+			}
+		}
+	}
+
+	invalid = {
+		NOT = { exists = scope:target }
+	}
+
+	on_invalid = {
+		remove_active_objective_subgoal = sg_foreign_investment
+	}
+
 	
 	weight = 1002
 	transferable = yes
@@ -1716,4 +1755,53 @@ je_tutorial_establish_company = {
 	
 	weight = 1002
 	transferable = yes
+}
+
+je_tutorial_form_power_bloc = {
+	how_tutorial = lesson_form_power_bloc_how
+	why_tutorial = lesson_form_power_bloc_why
+
+	should_be_pinned_by_default = yes
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+
+	group = je_group_tutorial
+
+	complete = {
+		is_power_bloc_leader = yes
+	}
+	
+	current_value = {
+	}
+
+	goal_add_value = {
+	}
+
+	on_complete = {
+	}
+	
+	weight = 1002
+	transferable = yes
+}
+
+je_tutorial_lobbies = {
+	how_tutorial = lesson_lobbies_how
+
+	should_be_pinned_by_default = yes
+
+	group = je_group_tutorial
+
+	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
+		
+	complete = {
+		scope:journal_entry = { is_goal_complete = yes }
+	}
+
+	current_value = scope:target.appeasement
+
+	goal_add_value = 3
+
+	invalid = { NOT = { exists = scope:target } }
+
+	on_invalid = { remove_active_objective_subgoal = sg_foreign_investment }
 }

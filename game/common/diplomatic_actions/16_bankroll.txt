@@ -1,4 +1,7 @@
 ﻿bankroll = {
+	groups= {
+		general
+	}
 	requires_approval = no
 	should_notify_third_parties = no
 
@@ -6,24 +9,18 @@
 		central_banking
 	}
 	
-	potential = {
+	selectable = {
 		NOT = { is_country_type = decentralized }
-		scope:target_country = {
-			NOT = { is_country_type = decentralized }
-		}	
+		is_revolutionary = no
 	}
 	
-	possible = {
-		NOT = { has_war_with = scope:target_country }
-		custom_tooltip = {
-			text = DIPLO_ACTION_RELATIONS_POOR_OR_LESS_NOT
-			scope:target_country.relations:root > relations_threshold:poor
+	potential = {
+		scope:target_country = {
+			NOT = { is_country_type = decentralized }
 		}
-		has_diplomatic_relevance = scope:target_country
-		is_revolutionary = no
-		in_default = no
-		country_rank >= scope:target_country.country_rank
 	}
+	
+	possible = {}
 	
 	pact = {	
 		cost = 100
@@ -37,8 +34,12 @@
 		relations_improvement_max = 80
 		
 		income_transfer = 0.20
-		recipient_gets_income_transfer = yes
-		income_transfer_based_on_recipient = yes
+		second_country_gets_income_transfer = yes
+		income_transfer_based_on_second_country = yes
+		
+		second_modifier = {
+			country_pact_leverage_generation_add = 200
+		}
 		
 		weekly_effect = {
 			if = {
@@ -74,32 +75,75 @@
 				}			
 			}
 		} 
-
-		is_about_to_auto_break = {
-            scope:target_country.relations:root <= -17 # this: poor + 3
-        }
-
-		should_auto_break = {
-			custom_tooltip = {
-				text = DIPLO_ACTION_RELATIONS_POOR_OR_LESS
-
-                # make sure to update is_about_to_auto_break when changing this:
-				scope:target_country.relations:root <= relations_threshold:poor
-			}
-		}		
-	
-		should_invalidate = {
-			OR = {
-				has_war_with = scope:target_country				
-				is_country_type = decentralized
-				scope:target_country = { is_country_type = decentralized }
-				in_default = yes
+		
+		requirement_to_maintain = {
+			trigger = {
+				has_diplomatic_relevance = scope:target_country
 			}
 		}
+
+	 	requirement_to_maintain = {
+			trigger = {
+				custom_tooltip = {
+					text = DIPLO_ACTION_RELATIONS_POOR_OR_LESS_NOT
+					scope:target_country.relations:root > relations_threshold:poor
+				}		
+			}
+			
+			show_about_to_break_warning = {
+				scope:target_country.relations:root <= -17 # this is: poor + 3
+				scope:target_country.relations_change_rate:root < 0
+			}					
+		}	
+
+		requirement_to_maintain = {
+			trigger = {
+				custom_tooltip = {
+					text = "DIPLOMATIC_PACT_REQUIREMENT_NOT_DECENTRALIZED"
+					NOT = { is_country_type = decentralized }
+					scope:target_country = {
+						NOT = { is_country_type = decentralized }
+					}				
+				}
+			}
+		}				
+	
+		requirement_to_maintain = {
+			trigger = {
+				custom_tooltip = {
+					text = "DIPLOMATIC_PACT_REQUIREMENT_AT_PEACE"
+					NOT = { has_war_with = scope:target_country }
+				}			
+			}
+		}		
+
+		requirement_to_maintain = {
+			trigger = {
+				country_rank >= scope:target_country.country_rank
+			}
+		}
+
+		requirement_to_maintain = {
+			trigger = {
+				in_default = no
+			}
+		}			
 	}
 	
 	ai = {
 		max_influence_spending_fraction = 0.20
+		
+		evaluation_chance = {
+			value = 0.0
+			
+			if = {
+				limit = { country_rank >= rank_value:major_power }
+				add = {
+					value = country_rank
+					multiply = 0.05
+				}				
+			}			
+		}		
 		
 		# This is only used for determining the value of a bankroll in sways, so it follows different logic from normal action acceptance
 		# The format here is as if scope:actor was asking if root wants a bankroll
@@ -221,6 +265,20 @@
 	
 		propose_score = {
 			value = 10
+
+			if = {
+				limit = {
+					exists = c:CIR
+					has_journal_entry = je_great_game_control
+					country_has_primary_culture = cu:british
+					scope:target_country = {
+						c:CIR ?= this
+					}
+				}
+				add = {
+					value = 50
+				}		
+			}
 		}
 	
 		will_propose = { 
@@ -308,6 +366,12 @@
 		}
 		
 		will_break = { 
+			NOT = {
+				AND = {
+					has_variable = forced_bankroll_time
+					var:forced_bankroll_time ?= scope:target_country
+				}
+			}
 			OR = {		
 				scaled_debt > 0.25
 				AND = {

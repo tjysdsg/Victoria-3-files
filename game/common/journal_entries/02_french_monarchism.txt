@@ -4,13 +4,16 @@
 	group = je_group_historical_content
 
 	immediate = {
-		set_variable = { name = fra_leading_dynasty_progress value = 0 }
 		fra_set_divided_monarchist_variables = yes
 		random_law = {
 			limit = { type = law_type:law_monarchy }
 			save_scope_as = monarchy_scope
 		}
 	}
+
+	scripted_progress_bar = divided_monarchists_orleanist_progress_bar
+	scripted_progress_bar = divided_monarchists_legitimist_progress_bar
+	scripted_progress_bar = divided_monarchists_bonapartist_progress_bar
 
 	complete = {
 		has_law = law_type:law_monarchy
@@ -45,18 +48,24 @@
 					OR = {
 						AND = {
 							ruler_is_orleanist = yes
-							var:orleanist_progress > var:legitimist_progress
-							var:orleanist_progress > var:bonapartist_progress
+							scope:journal_entry = { 
+								"scripted_bar_progress(divided_monarchists_orleanist_progress_bar)" > "scripted_bar_progress(divided_monarchists_legitimist_progress_bar)"
+								"scripted_bar_progress(divided_monarchists_orleanist_progress_bar)" > "scripted_bar_progress(divided_monarchists_bonapartist_progress_bar)" 
+							}
 						}
 						AND = {
 							ruler_is_bonapartist = yes
-							var:bonapartist_progress > var:legitimist_progress
-							var:bonapartist_progress > var:orleanist_progress
+							scope:journal_entry = { 
+								"scripted_bar_progress(divided_monarchists_bonapartist_progress_bar)" > "scripted_bar_progress(divided_monarchists_legitimist_progress_bar)"
+								"scripted_bar_progress(divided_monarchists_bonapartist_progress_bar)" > "scripted_bar_progress(divided_monarchists_orleanist_progress_bar)" 
+							}
 						}
 						AND = {
 							ruler_is_legitimist = yes
-							var:legitimist_progress > var:bonapartist_progress
-							var:legitimist_progress > var:orleanist_progress
+							scope:journal_entry = { 
+								"scripted_bar_progress(divided_monarchists_legitimist_progress_bar)" > "scripted_bar_progress(divided_monarchists_bonapartist_progress_bar)"
+								"scripted_bar_progress(divided_monarchists_legitimist_progress_bar)" > "scripted_bar_progress(divided_monarchists_orleanist_progress_bar)" 
+							}
 						}
 					}
 				}
@@ -65,17 +74,17 @@
 				desc = status_throne_challenged_fra
 				trigger = {
 					OR = {
-						AND = {
-							var:orleanist_progress > var:legitimist_progress
-							var:orleanist_progress > var:bonapartist_progress
+						scope:journal_entry = { 
+							"scripted_bar_progress(divided_monarchists_orleanist_progress_bar)" > "scripted_bar_progress(divided_monarchists_legitimist_progress_bar)"
+							"scripted_bar_progress(divided_monarchists_orleanist_progress_bar)" > "scripted_bar_progress(divided_monarchists_bonapartist_progress_bar)" 
 						}
-						AND = {
-							var:bonapartist_progress > var:legitimist_progress
-							var:bonapartist_progress > var:orleanist_progress
+						scope:journal_entry = { 
+							"scripted_bar_progress(divided_monarchists_bonapartist_progress_bar)" > "scripted_bar_progress(divided_monarchists_legitimist_progress_bar)"
+							"scripted_bar_progress(divided_monarchists_bonapartist_progress_bar)" > "scripted_bar_progress(divided_monarchists_orleanist_progress_bar)" 
 						}
-						AND = {
-							var:legitimist_progress > var:bonapartist_progress
-							var:legitimist_progress > var:orleanist_progress
+						scope:journal_entry = { 
+							"scripted_bar_progress(divided_monarchists_legitimist_progress_bar)" > "scripted_bar_progress(divided_monarchists_bonapartist_progress_bar)"
+							"scripted_bar_progress(divided_monarchists_legitimist_progress_bar)" > "scripted_bar_progress(divided_monarchists_orleanist_progress_bar)" 
 						}
 					}
 				}
@@ -92,7 +101,7 @@
 	modifiers_while_active = {
 		fra_republican_unrest
 	}
-	
+
 	on_weekly_pulse = {
 		events = {
 			french_pretenders.5
@@ -108,7 +117,6 @@
 				fra_weekly_pulse_orleanist_progress = yes  #Calculates how much the Orleanists will get next month. Updates weekly, but is not added until the monthly.
 				fra_weekly_pulse_bonapartist_progress = yes  #Calculates how much the Bonapartists will get next month. Updates weekly, but is not added until the monthly.
 			}
-			fra_define_leading_dynasty = yes 	#The progress bar in this JE is always equivalent to the progress of the dynasty that's currently doing best. This scripted effect determines which dynasty that is, and sets fra_leading_dynasty_progress to be equal to that dynasty's progress variable.
 		}
 	}
 
@@ -116,20 +124,13 @@
 		effect = {
 			if = {
 				limit = {
-					NOT = {
-						has_variable = fra_divided_monarchists_freeze
-					}
-				}
-				change_variable = { name = bonapartist_progress add = var:bonapartist_progress_next } #On the monthly tick, the value calculated in the fra_weekly_pulse_bonapartist_progress effect is added to the master progress variable.
-				change_variable = { name = orleanist_progress add = var:orleanist_progress_next }
-				change_variable = { name = legitimist_progress add = var:legitimist_progress_next }
-				fra_define_leading_dynasty = yes	#See above - this ensures that the monthly tick will not momentarily send the status loc out of sync with what the bar is representing.
-			}
-			if = {
-				limit = {
 					has_law = law_type:law_monarchy
-					scope:journal_entry = {
-						is_goal_complete = yes
+					scope:journal_entry = { 
+						OR = {
+							"scripted_bar_progress(divided_monarchists_orleanist_progress_bar)" >= 360
+							"scripted_bar_progress(divided_monarchists_legitimist_progress_bar)" >= 360
+							"scripted_bar_progress(divided_monarchists_bonapartist_progress_bar)" >= 360
+						}
 					}
 					NOT = {
 						has_variable = fra_divided_monarchists_freeze
@@ -137,9 +138,11 @@
 				}
 				if = { #Fires the event to enthrone the pretender - 1 if contextualised as coup, 10 if contextualised as reinforcement.
 					limit = {
-						var:bonapartist_progress > var:legitimist_progress
-						var:bonapartist_progress > var:orleanist_progress
-					} 
+						scope:journal_entry = { 
+							"scripted_bar_progress(divided_monarchists_bonapartist_progress_bar)" > "scripted_bar_progress(divided_monarchists_legitimist_progress_bar)"
+							"scripted_bar_progress(divided_monarchists_bonapartist_progress_bar)" > "scripted_bar_progress(divided_monarchists_orleanist_progress_bar)" 
+						}
+					}
 					if = {
 						limit = {
 							ruler_is_bonapartist = yes
@@ -152,8 +155,10 @@
 				}
 				else_if = {
 					limit = {
-						var:orleanist_progress > var:legitimist_progress
-						var:orleanist_progress > var:bonapartist_progress
+						scope:journal_entry = { 
+							"scripted_bar_progress(divided_monarchists_orleanist_progress_bar)" > "scripted_bar_progress(divided_monarchists_legitimist_progress_bar)"
+							"scripted_bar_progress(divided_monarchists_orleanist_progress_bar)" > "scripted_bar_progress(divided_monarchists_bonapartist_progress_bar)" 
+						}
 					}
 					if = {
 						limit = {
@@ -167,8 +172,10 @@
 				}
 				else_if = {
 					limit = {
-						var:legitimist_progress > var:orleanist_progress
-						var:legitimist_progress > var:bonapartist_progress
+						scope:journal_entry = { 
+							"scripted_bar_progress(divided_monarchists_legitimist_progress_bar)" > "scripted_bar_progress(divided_monarchists_bonapartist_progress_bar)"
+							"scripted_bar_progress(divided_monarchists_legitimist_progress_bar)" > "scripted_bar_progress(divided_monarchists_orleanist_progress_bar)" 
+						}
 					}
 					if = {
 						limit = {
@@ -198,11 +205,6 @@
 			10 = french_pretenders_pulse.18
 		}
 	}
-	on_yearly_pulse = {
-		random_events = {
-			
-		}
-	}
 
 	fail = {
 		any_interest_group = {
@@ -213,7 +215,7 @@
 			}
 		}
 		capital = {
-			turmoil >= 0.25
+			turmoil >= 0.5
 		}
 		OR = {
 			has_journal_entry = je_springtime_of_the_peoples
@@ -237,7 +239,7 @@
 		fra_clear_divided_monarchist_variables = yes #Removes all variables used for math in this JE, to save memory and performance.
 	}
 
-	invalid = { 
+	invalid = {
 		NOT = { #Previous "Stamp Out Monarchism" requirement is deprecated - this can now come back from the dead properly upon restoring the monarchy.
 			has_law = law_type:law_monarchy
 		}
@@ -254,16 +256,6 @@
 	}
 
 	weight = 100
-	
-	current_value = {
-		value = root.var:fra_leading_dynasty_progress #Set to always be equal to the leading dynasty's progress by the fra_define_leading_dynasty effect.
-	}
-
-	goal_add_value = {
-		value = 360
-	}
-
-	progressbar = yes
 
 	should_be_pinned_by_default = yes
 }
@@ -313,7 +305,7 @@ je_cement_the_rightful_dynasty = {
 			}
 		}
 	}
-	
+
 	is_progressing = {
 		NOT = {
 			any_civil_war = {
@@ -322,7 +314,7 @@ je_cement_the_rightful_dynasty = {
 		}
 		government_legitimacy >= 50
 	}
-	
+
 	progress_desc = {
 		first_valid = {
 			triggered_desc = {
@@ -362,7 +354,7 @@ je_cement_the_rightful_dynasty = {
 			desc = je_cement_the_rightful_dynasty_progressing_low_legitimacy
 		}
 	}
-	
+
 	complete = {
 		scope:journal_entry = {
 			is_goal_complete = yes
@@ -406,7 +398,7 @@ je_cement_the_rightful_dynasty = {
 									has_variable = orleanist_leader
 									has_variable = bonapartist_leader
 								}
-							} 
+							}
 						}
 					}
 					AND = {
@@ -451,12 +443,11 @@ je_cement_the_rightful_dynasty = {
 			}
 			remove_variable = bonapartist_restoration_var
 		}
-		change_variable = { name = bonapartist_progress subtract = 300 }
-		change_variable = { name = legitimist_progress subtract = 300 }
-		change_variable = { name = orleanist_progress subtract = 300 }
-		clamp_variable = { name = bonapartist_progress max = 360 min = 0 }
-		clamp_variable = { name = legitimist_progress max = 360 min = 0 }
-		clamp_variable = { name = orleanist_progress max = 360 min = 0 }
+		je:je_divided_monarchists = {
+			add_progress = { value = -300 name = divided_monarchists_bonapartist_progress_bar }
+			add_progress = { value = -300 name = divided_monarchists_legitimist_progress_bar }
+			add_progress = { value = -300 name = divided_monarchists_orleanist_progress_bar }
+		}
 	}
 
 	on_monthly_pulse = {

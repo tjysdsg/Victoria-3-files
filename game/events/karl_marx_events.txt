@@ -42,6 +42,7 @@ marx_events.1 = {
 		random_list = {
 			95 = {
 				trigger = {
+					country_is_in_north_america = no
 					country_is_in_europe = no
 				}
 				create_character = {
@@ -57,22 +58,13 @@ marx_events.1 = {
 			}
 			95 = {
 				trigger = {
-					country_is_in_europe = yes
+					OR = {
+						country_is_in_north_america = yes
+						country_is_in_europe = yes
+					}
 				}
 				create_character = {
-					first_name = Karl_Heinrich
-					last_name = Marx
-					historical = yes
-					is_agitator = yes
-					interest_group = ig_trade_unions
-					female = no
-					dna = dna_karl_marx
-					ideology = ideology_communist
-					religion = rel:jewish
-					traits = {
-						direct
-						persistent
-					}
+					template = agitator_karl_marx
 				}
 			}
 			5 = {
@@ -125,35 +117,15 @@ marx_events.1 = {
 					capital = { state_region = s:STATE_TEXAS }
 				}
 				create_character = {
-					first_name = Charlie # howdy
-					last_name = Marx
-					is_agitator = yes
-					interest_group = ig_trade_unions
-					female = no
-					dna = dna_karl_marx
-					ideology = ideology_communist
-					religion = rel:jewish
-					traits = {
-						direct
-						persistent
-					}
+					template = agitator_charlie_marx
 				}
 			}
 			1 = {
 				trigger = {
-					capital = { state_region = s:STATE_ESTONIA } 
+					capital = { state_region = s:STATE_TALINN } 
 				}
 				create_character = {
-					first_name = Kras
-					last_name = Masov
-					is_agitator = yes
-					interest_group = ig_trade_unions
-					female = no
-					ideology = ideology_communist
-					traits = {
-						direct
-						persistent
-					}
+					template = agitator_kras_masov
 				}
 			}
 		}
@@ -170,11 +142,11 @@ marx_events.1 = {
 		random_list = {
 			95 = {
 				trigger = {
+					country_is_in_north_america = no
 					country_is_in_europe = no
 				}
 				create_character = {
-					#role = politician # Remove this line
-					ig_leader = yes
+					is_agitator = yes
 					interest_group = ig_trade_unions
 					female = no
 					ideology = ideology_communist
@@ -182,25 +154,26 @@ marx_events.1 = {
 						direct
 						persistent
 					}
+					on_created = {
+						add_character_role = politician
+						set_as_interest_group_leader = yes
+						remove_character_role = agitator
+					}
 				}
 			}
 			95 = {
 				trigger = {
-					country_is_in_europe = yes
+					OR = {
+						country_is_in_north_america = yes
+						country_is_in_europe = yes
+					}
 				}
 				create_character = {
-					first_name = Karl_Heinrich
-					last_name = Marx
-					historical = yes
-					ig_leader = yes
-					interest_group = ig_trade_unions
-					female = no
-					dna = dna_karl_marx
-					ideology = ideology_communist
-					religion = rel:jewish
-					traits = {
-						direct
-						persistent
+					template = agitator_karl_marx
+					on_created = {
+						add_character_role = politician
+						set_as_interest_group_leader = yes
+						remove_character_role = agitator
 					}
 				}
 			}
@@ -239,13 +212,18 @@ marx_events.1 = {
 				}
 				create_character = { #Karla Marx
 					#role = politician # Remove this line
-					ig_leader = yes
+					is_agitator = yes
 					interest_group = ig_trade_unions
 					female = yes
 					ideology = ideology_communist
 					traits = {
 						direct
 						persistent
+					}
+					on_created = {
+						add_character_role = politician
+						set_as_interest_group_leader = yes
+						remove_character_role = agitator
 					}
 				}
 			}
@@ -254,34 +232,24 @@ marx_events.1 = {
 					capital = { state_region = s:STATE_TEXAS }
 				}
 				create_character = {
-					first_name = Charlie # howdy
-					last_name = Marx
-					ig_leader = yes
-					interest_group = ig_trade_unions
-					female = no
-					dna = dna_karl_marx
-					ideology = ideology_communist
-					religion = rel:jewish
-					traits = {
-						direct
-						persistent
+					template = agitator_charlie_marx
+					on_created = {
+						add_character_role = politician
+						set_as_interest_group_leader = yes
+						remove_character_role = agitator
 					}
 				}
 			}
 			1 = {
 				trigger = {
-					capital = { state_region = s:STATE_ESTONIA } 
+					capital = { state_region = s:STATE_TALINN } 
 				}
 				create_character = {
-					first_name = Kras
-					last_name = Masov
-					ig_leader = yes
-					interest_group = ig_trade_unions
-					female = no
-					ideology = ideology_communist
-					traits = {
-						direct
-						persistent
+					template = agitator_kras_masov
+					on_created = {
+						add_character_role = politician
+						set_as_interest_group_leader = yes
+						remove_character_role = agitator
 					}
 				}
 			}
@@ -294,6 +262,114 @@ marx_events.1 = {
 			add_modifier = {
 				name = modifier_ditched_marx
 				months = normal_modifier_time
+			}
+		}
+		custom_tooltip = {
+			text = exile_communist_agitator_tt
+			random_list = {
+				95 = {
+					trigger = {
+						country_is_in_north_america = no
+						country_is_in_europe = no
+					}
+					create_character = {
+						is_agitator = yes
+						interest_group = ig_trade_unions
+						female = no
+						ideology = ideology_communist
+						traits = {
+							direct
+							persistent
+						}
+						on_created = {
+							exile_character_with_martyrdom = yes
+						}
+					}
+				}
+				95 = {
+					trigger = {
+						OR = {
+							country_is_in_north_america = yes
+							country_is_in_europe = yes
+						}
+					}
+					create_character = {
+						template = agitator_karl_marx
+						on_created = {
+							exile_character_with_martyrdom = yes
+						}
+					}
+				}
+				5 = {
+					modifier = {
+						if = {
+							limit = {
+								OR = {
+									ruler = {
+										has_ideology = ideology:ideology_feminist
+									}
+									ig:ig_trade_unions = {
+										leader = {
+											OR = {
+												has_ideology = ideology:ideology_feminist
+												is_female = yes
+											}
+										}
+									}
+								}
+							}
+							add = 10
+						}
+						if = {
+							limit = {
+								has_law = law_type:law_women_in_the_workplace
+							}
+							add = 5
+						}
+						if = {
+							limit = {
+								has_law = law_type:law_womens_suffrage
+							}
+							add = 5
+						}
+					}
+					create_character = { #Karla Marx
+						#role = politician # Remove this line
+						is_agitator = yes
+						interest_group = ig_trade_unions
+						female = yes
+						ideology = ideology_communist
+						traits = {
+							direct
+							persistent
+						}
+						on_created = {
+							exile_character_with_martyrdom = yes
+						}
+					}
+				}
+				5 = {
+					trigger = {
+						capital = { state_region = s:STATE_TEXAS }
+					}
+					create_character = {
+						template = agitator_charlie_marx
+						on_created = {
+							exile_character_with_martyrdom = yes
+						}
+					}
+				}
+				1 = {
+					trigger = {
+						capital = { state_region = s:STATE_TALINN } 
+					}
+					create_character = {
+						template = agitator_kras_masov
+						on_created = {
+							exile_character_with_martyrdom = yes
+						}
+					}
+				}
 			}
 		}
 	}

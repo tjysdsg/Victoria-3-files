@@ -8,6 +8,13 @@
 	disallowing_laws = {
 		law_compulsory_primary_school
 	}
+
+	can_enact = {
+		custom_tooltip = {
+			modifier:country_disallow_law_no_schools_bool = no
+			text = disallow_law_no_schools_tt
+		}
+	}
 	
 	pop_support = {
 		value = 0
@@ -22,11 +29,7 @@
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
 	}
@@ -59,19 +62,23 @@ law_religious_schools = {
 	possible_political_movements = {
 		law_private_schools
 		law_public_schools
-	}	
+	}
+
+	can_impose = {
+		OR = {
+			AND = {
+				is_in_same_power_bloc = scope:target_country
+				AND = {
+					modifier:country_can_impose_same_lawgroup_education_system_in_power_bloc_bool = yes
+					has_law = scope:law
+				}
+			}
+			can_impose_law_default = yes
+		}
+	}
 	
 	pop_support = {
 		value = 0
-		add = {
-			desc = "POP_CLERGYMEN"			
-			if = {
-				limit = {
-					is_pop_type = clergymen
-				}
-				value = 0.33
-			}
-		}
 		add = {
 			desc = "POP_CLERGYMEN"			
 			if = {
@@ -103,12 +110,42 @@ law_religious_schools = {
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
+		}		
+	
+		if = {
+			limit = { 
+				OR = {
+					has_journal_entry = je_sick_man_education
+					has_journal_entry = je_terakoya
+				}
+				has_law = law_type:law_no_schools
+			}
+			add = 1000
+		}				
+	}
+
+	ai_impose_chance = {
+		value = 0
+		
+		if = {
+			limit = {
+				has_law = law_type:law_religious_schools
+				power_bloc ?= { has_principle_group = principle_group:principle_group_advanced_research }
+			}
+			add = base_impose_law_weight
+		}
+
+		if = {
+			limit = {
+				has_law = law_type:law_religious_schools
+				scope:target_country = {
+					has_law = law_type:law_no_schools
+				}
+				power_bloc ?= { has_principle_group = principle_group:principle_group_advanced_research }
+			}
+			add = 10
 		}
 	}
 }
@@ -137,7 +174,20 @@ law_private_schools = {
 	possible_political_movements = {
 		law_religious_schools
 		law_public_schools
-	}	
+	}
+
+	can_impose = {
+		OR = {
+			AND = {
+				is_in_same_power_bloc = scope:target_country
+				AND = {
+					modifier:country_can_impose_same_lawgroup_education_system_in_power_bloc_bool = yes
+					has_law = scope:law
+				}
+			}
+			can_impose_law_default = yes
+		}
+	}
 	
 	pop_support = {
 		value = 0
@@ -157,12 +207,43 @@ law_private_schools = {
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
+		}
+		
+	
+		if = {
+			limit = { 
+				OR = {
+					has_journal_entry = je_sick_man_education
+					has_journal_entry = je_terakoya
+				}
+				has_law = law_type:law_no_schools
+			}
+			add = 1000
+		}		
+	}
+
+	ai_impose_chance = {
+		value = 0
+		
+		if = {
+			limit = {
+				has_law = law_type:law_private_schools
+				power_bloc ?= { has_principle_group = principle_group:principle_group_advanced_research }
+			}
+			add = base_impose_law_weight
+		}
+
+		if = {
+			limit = {
+				has_law = law_type:law_private_schools
+				scope:target_country = {
+					has_law = law_type:law_no_schools
+				}
+				power_bloc ?= { has_principle_group = principle_group:principle_group_advanced_research }
+			}
+			add = 10
 		}
 	}
 }
@@ -192,19 +273,23 @@ law_public_schools = {
 	possible_political_movements = {
 		law_private_schools
 		law_religious_schools
-	}	
+	}
+
+	can_impose = {
+		OR = {
+			AND = {
+				is_in_same_power_bloc = scope:target_country
+				AND = {
+					modifier:country_can_impose_same_lawgroup_education_system_in_power_bloc_bool = yes
+					has_law = scope:law
+				}
+			}
+			can_impose_law_default = yes
+		}
+	}
 	
 	pop_support = {
 		value = 0
-		add = {
-			desc = "POP_ACADEMICS"			
-			if = {
-				limit = {
-					is_pop_type = academics
-				}
-				value = 0.25
-			}
-		}
 		add = {
 			desc = "POP_ACADEMICS"			
 			if = {
@@ -231,12 +316,42 @@ law_public_schools = {
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
+		}
+		
+		if = {
+			limit = { 
+				OR = {
+					has_journal_entry = je_sick_man_education
+					has_journal_entry = je_terakoya
+				}
+				has_law = law_type:law_no_schools
+			}
+			add = 1000
+		}			
+	}
+
+	ai_impose_chance = {
+		value = 0
+		
+		if = {
+			limit = {
+				has_law = law_type:law_public_schools
+				power_bloc ?= { has_principle_group = principle_group:principle_group_advanced_research }
+			}
+			add = base_impose_law_weight
+		}
+
+		if = {
+			limit = {
+				has_law = law_type:law_public_schools
+				scope:target_country = {
+					has_law = law_type:law_no_schools
+				}
+				power_bloc ?= { has_principle_group = principle_group:principle_group_advanced_research }
+			}
+			add = 10
 		}
 	}
 }

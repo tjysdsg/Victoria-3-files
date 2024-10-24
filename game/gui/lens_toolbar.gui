@@ -177,9 +177,9 @@ types lens_toolbar_types {
 
 			button = {
 				using = default_button_action
-				onclick = "[UnforceMapMode]"
+				onclick = "[UnlockMapMode]"
 				onclick = "[MapListPanelManager.CloseCurrentPanel]"
-				visible = "[IsMapModeForced]"
+				visible = "[IsMapModeLocked]"
 				shortcut = "close_window"
 				tooltip = "UNLOCK_MAP_MODE_TOOLTIP"
 				parentanchor = bottom|hcenter
@@ -251,7 +251,7 @@ types lens_toolbar_types {
 					parentanchor = vcenter
 					position = { 0 0 }
 					datamodel = "[GetMapModeIndices]"
-					onselectionchanged = "[SelectMapMode]"
+					onselectionchanged = "[SetLockedMapMode]"
 					onselectionchanged = "[MapListPanelManager.OpenCurrentPanel]"
 					selectedindex = "[GetSelectedMapMode]"
 					size = { 246 35 }
@@ -364,7 +364,7 @@ types lens_toolbar_types {
 
 					### no mapmode locked
 					icon = {
-						visible = "[Not(IsMapModeForced)]"
+						visible = "[Not(IsMapModeLocked)]"
 						size = { 34 34 }
 						texture = "gfx/interface/main_hud/lens_map_info.dds"
 						tooltip = "MAP_INFO"
@@ -374,11 +374,11 @@ types lens_toolbar_types {
 
 					### mapmode locked, click to unlock
 					button = {
-						visible = "[IsMapModeForced]"
+						visible = "[IsMapModeLocked]"
 						size = { 34 34 }
 						texture = "gfx/interface/main_hud/lens_map_info.dds"
 						tooltip = "MAP_INFO_MAP_MODE_LOCKED"
-						onclick = "[UnforceMapMode]"
+						onclick = "[UnlockMapMode]"
 						using = tooltip_above
 						parentanchor = center
 
@@ -572,9 +572,24 @@ types lens_toolbar_types {
 									datamodel = "[LensToolbar.GetOptions]"
 
 									item = {
-										lens_option_button = {
-											datacontext = "[LensToolbar.GetCurrentTab]"
-											datacontext = "[LensOption]"
+										flowcontainer = {
+											lens_option_button = {
+												visible = "[Not(LensOption.IsDiplomaticAction)]"
+												datacontext = "[LensToolbar.GetCurrentTab]"
+												datacontext = "[LensOption]"
+											}
+											
+											lens_option_button = {
+												visible = "[LensOption.IsDiplomaticAction]"
+												datacontext = "[LensToolbar.GetCurrentTab]"
+												datacontext = "[LensOption.GetDiplomaticAction]"
+												
+												blockoverride "button_tooltip" { 
+													tooltipwidget = { 
+														FancyTooltip_DiplomaticAction = {}
+													} 
+												}
+											}
 										}
 									}
 								}
@@ -647,9 +662,12 @@ types lens_toolbar_types {
 		enabled = "[LensOption.CanActivate]"
 		size = { -1 120 }
 		min_width = "[GetDefine('NGUI', 'LENS_TOOLBAR_ITEM_WIDTH')]"
-		tooltip = "LENS_OPTION_TOOLTIP"
 		using = tooltip_above
 		alwaystransparent = no
+		
+		block "button_tooltip" { 
+			tooltip = "LENS_OPTION_TOOLTIP" 
+		}
 
 		# hide goods buttons if we cant create routes with them ( we make them transparent rather than invisible because invisible buttons become weird empty holes in the grid box)
 		alpha = "[TransparentIfFalse( Not( And( Or( EqualTo_string( LensTab.GetKey, 'import_routes' ), EqualTo_string( LensTab.GetKey, 'export_routes' ) ), EqualTo_int32( LensOption.GetNumberOfSelections, '(int32)0' ) ) ) )]"
@@ -715,65 +733,82 @@ types lens_toolbar_types {
 				}
 			}
 
-			textbox = {
-				name = "title"
-				raw_text = "#BOLD [LensOption.GetText]#!"
-				align = center|nobaseline
-				position = { 0 -13 }
-				size = { 100% 50 }
-				parentanchor = hcenter|bottom
-				using = fontsize_small
-				elide = right
-				multiline = yes
-				margin_left = 5
-				margin_right = 5
-				alpha = 0.75
-
-				state = {
-					name = show
-					alpha = 1
-					duration = 0.15
-					using = Animation_Curve_Default
-				}
-				state = {
-					name = hide
-					alpha = 0.75
-					duration = 0.3
-					using = Animation_Curve_Default
-				}
-			}
-			
-			textbox = {
-				name = "cost"
-				raw_text = "#v [LensOption.GetCostText]#!"
-				align = center|nobaseline
+			widget = {
 				position = { 0 -3 }
-				size = { 100% 20 }
+				size = { 100% 55 }
 				parentanchor = hcenter|bottom
-				using = fontsize_small
-				elide = right
-				multiline = no
-				margin_left = 5
-				margin_right = 5
-				alpha = 0.75
 
-				state = {
-					name = show
-					alpha = 1
-					duration = 0.15
-					using = Animation_Curve_Default
+				vbox = {
+					layoutpolicy_horizontal = expanding
+					layoutpolicy_vertical = expanding
+
+					margin_left = 5
+					margin_right = 5
+
+					textbox = {
+						name = "title"
+
+						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = expanding
+
+						raw_text = "#BOLD [LensOption.GetText]#!"
+						align = top|hcenter|nobaseline
+						
+						using = fontsize_small
+						elide = right
+						multiline = yes
+						
+						alpha = 0.75
+
+						state = {
+							name = show
+							alpha = 1
+							duration = 0.15
+							using = Animation_Curve_Default
+						}
+						state = {
+							name = hide
+							alpha = 0.75
+							duration = 0.3
+							using = Animation_Curve_Default
+						}
+					}
+
+					textbox = {
+						name = "cost"
+						layoutpolicy_horizontal = expanding
+
+						visible = "[Not( StringIsEmpty(LensOption.GetCostText) )]"
+						raw_text = "#v [LensOption.GetCostText]#!"
+						align = center|nobaseline
+
+						using = fontsize_small
+						elide = right
+						autoresize = yes
+
+						alpha = 0.75
+
+						state = {
+							name = show
+							alpha = 1
+							duration = 0.15
+							using = Animation_Curve_Default
+						}
+						state = {
+							name = hide
+							alpha = 0.75
+							duration = 0.3
+							using = Animation_Curve_Default
+						}
+					}
 				}
-				state = {
-					name = hide
-					alpha = 0.75
-					duration = 0.3
-					using = Animation_Curve_Default
-				}
-			}			
+
+			}
 
 			textbox = {
 				visible = "[LensOption.ShouldShowNumberOfSelections]"
-				raw_text = "#BOLD [LensOption.GetNumberOfSelections|+]#!"
+				raw_text = "[LensOption.GetNumberOfSelections|+]"
+				default_format = "#b"
 				tooltip = "LENS_ACTION_NUMBER"
 				using = tooltip_above
 				#size = { 33 23 }

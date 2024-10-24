@@ -62,10 +62,7 @@ german_unification.1 = {
 				limit = {
 					is_ai = yes			
 					OR = {
-						has_diplomatic_pact = {
-							who = ROOT
-							type = customs_union
-						}
+						is_in_customs_union_with = root
 						is_supporting_unification_candidate = { who = root country_formation = GER }
 					}
 				}			
@@ -100,6 +97,30 @@ german_unification.1 = {
 					country_tier = principality
 				}
 			}
+			
+			# Reconcile with Austria if we didn't conquer states from them or release any crucial territories
+			hidden_effect = {
+				if = {
+					limit = {
+						exists = c:AUS
+						c:AUS = {
+							country_rank >= rank_value:great_power
+							NOT = { has_claim = root }
+							owns_entire_state_region = STATE_BOHEMIA
+							owns_entire_state_region = STATE_CENTRAL_HUNGARY
+							owns_entire_state_region = STATE_LOMBARDY
+						}
+					}
+					
+					c:AUS = {
+						set_mutual_secret_goal = {
+							country = root
+							secret_goal = reconcile
+						}						
+					}
+				}
+			}		
+			
 			change_tag = NGF
 		}
 		else_if = {

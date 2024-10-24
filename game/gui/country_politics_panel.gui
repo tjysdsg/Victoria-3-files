@@ -240,6 +240,43 @@ types country_panel_types
 		
 		widget = { size = { 10 10 } }
 
+		### POLITICAL LOBBIES
+
+		### MOVEMENTS
+		default_header = {
+			parentanchor = hcenter
+			blockoverride "text" {
+				text = POLITICAL_LOBBIES
+			}
+		}	
+
+		widget = { size = { 10 10 } }
+
+		empty_state = {
+			blockoverride "visible" {
+				visible = "[IsDataModelEmpty(Country.GetPoliticalLobbies)]"
+			}
+			blockoverride "text" {
+				text = "NO_POLITICAL_LOBBIES"
+			}
+		}
+
+		flowcontainer = {
+			direction = vertical
+			visible = "[Not(IsDataModelEmpty(Country.GetPoliticalLobbies))]"
+			datamodel = "[Country.GetPoliticalLobbies]"
+			parentanchor = hcenter
+			spacing = 5		
+
+			item = {
+				political_lobby_list_item = {
+					min_width = @panel_width_minus_10
+				}
+			}
+		}
+
+		widget = { size = { 10 10 } }
+
 		### INSTITUTIONS
 		default_header = {
 			parentanchor = hcenter
@@ -336,7 +373,7 @@ types country_panel_types
 
 				   		country_panel_law_item = {
 				   			visible = "[Not(Law.IsBeingEnacted)]"
-	                    	enabled = "[And(Not(Country.IsEnactingLaw), GreaterThan_int32(Law.GetGroup.GetNumImposeOptions( Country.Self ), '(int32)0'))]"
+	                    	enabled = "[GreaterThan_int32(Law.GetGroup.GetNumImposeOptions( Country.Self ), '(int32)0')]"
 	                 	}
 
 	                 	country_panel_law_item_is_enacting = {
@@ -360,7 +397,7 @@ types country_panel_types
 
 				   		country_panel_law_item = {
 				   			visible = "[Not(Law.IsBeingEnacted)]"
-	                    	enabled = "[And(Not(Country.IsEnactingLaw), GreaterThan_int32(Law.GetGroup.GetNumImposeOptions( Country.Self ), '(int32)0'))]"
+	                    	enabled = "[GreaterThan_int32(Law.GetGroup.GetNumImposeOptions( Country.Self ), '(int32)0')]"
 	                 	}
 
 	                 	country_panel_law_item_is_enacting = {
@@ -396,7 +433,7 @@ types country_panel_types
 	              		
 				   		country_panel_law_item = {
 				   			visible = "[Not(Law.IsBeingEnacted)]"
-	                    	enabled = "[And(Not(Country.IsEnactingLaw), GreaterThan_int32(Law.GetGroup.GetNumImposeOptions( Country.Self ), '(int32)0'))]"
+	                    	enabled = "[GreaterThan_int32(Law.GetGroup.GetNumImposeOptions( Country.Self ), '(int32)0')]"
 	                 	}
 
 	                 	country_panel_law_item_is_enacting = {
@@ -425,6 +462,7 @@ types country_panel_types
 			addrow = 100
 			addcolumn = @panel_width_half
 			datamodel_wrap = 2
+			flipdirection = yes
 
 			item = {
 				flowcontainer = {
@@ -448,12 +486,13 @@ types country_panel_types
 					}
 					textbox = {
 						text = "[Company.GetName]"
-						maximumsize = { 180 -1 }
+						maximumsize = { 160 80 }
 						multiline = yes
 						parentanchor = vcenter
 						align = nobaseline
 						autoresize = yes
 						using = fontsize_large
+						fontsize_min = 12
 					}
 				}
 			}
@@ -466,7 +505,178 @@ types country_panel_types
 			blockoverride "text" {
 				text = "NO_COMPANIES"
 			}
-		}			
+		}
+
+
+		widget = { size = { 10 10 } }
+
+		default_header = {
+			parentanchor = hcenter
+			blockoverride "text" {
+				text = "POPULATION"
+			}
+		}	
+		
+
+		### Pop statistics
+		flowcontainer = {
+			direction = vertical
+			margin_top = 10
+			margin_bottom = 10
+			spacing = 10
+
+			flowcontainer = {
+				direction = horizontal
+				spacing = 10
+				
+				container = {
+					minimumsize = { 265 -1 }
+					maximumsize = { 265 -1 }
+					parentanchor = vcenter
+				
+					background = {
+						using = entry_bg
+					}
+					
+					flowcontainer = {
+						margin = { 5 10 }
+						spacing = 5
+						parentanchor = center
+						using = population_tooltip_with_graph
+
+						icon = {
+							texture = "gfx/interface/icons/generic_icons/population.dds"
+							size = { 25 25 }
+						}
+						
+						textbox = {
+							text = "concept_population"
+							autoresize = yes
+							using = fontsize_large
+							align = nobaseline
+							parentanchor = vcenter
+							max_width = 150
+							fontsize_min = 14
+							elide = right
+						}
+
+						textbox = {
+							raw_text = " #variable [Country.GetTotalPopulation|D]#!"
+							autoresize = yes
+							using = fontsize_large
+							align = nobaseline
+							parentanchor = vcenter
+						}
+					}
+
+				}
+
+				textbox = {
+					minimumsize = { 265 -1 }
+					maximumsize = { 265 -1 }
+					margin = { 20 9 }
+					background = {
+						using = entry_bg
+					}
+					using = average_standard_of_living_tooltip_with_graph
+					text = "COUNTRY_SOL_ALL_LABEL"
+					autoresize = yes
+					using = fontsize_large
+					parentanchor = vcenter
+					align = hcenter|nobaseline
+					fontsize_min = 14
+					elide = right
+				}
+
+			}
+
+			flowcontainer = {
+				direction = horizontal
+				spacing = 10
+				
+				container = {
+					minimumsize = { 265 -1 }
+					maximumsize = { 265 -1 }
+					parentanchor = vcenter
+				
+					background = {
+						using = entry_bg
+					}
+					
+					flowcontainer = {
+						margin = { 5 10 }
+						spacing = 5
+						parentanchor = center
+						tooltip = "POLITICALLY_INVOLVED_POPULATION_TOOLTIP"
+					
+						textbox = {
+							text = "concept_politically_involved"
+							autoresize = yes
+							using = fontsize_large
+							align = nobaseline
+							parentanchor = vcenter
+							max_width = 170
+							fontsize_min = 14
+							elide = right
+						}
+
+						textbox = {
+							raw_text = " #variable [Country.GetPoliticallyInvolvedPopulation|D]#!"
+							autoresize = yes
+							using = fontsize_large
+							align = nobaseline
+							parentanchor = vcenter
+						}
+					}
+				}
+
+				container = {
+					minimumsize = { 265 -1 }
+					maximumsize = { 265 -1 }
+					parentanchor = vcenter
+				
+					background = {
+						using = entry_bg
+					}
+					
+					flowcontainer = {
+						margin = { 5 10 }
+						spacing = 5
+						parentanchor = center
+						tooltip = "POLITICALLY_UNALIGNED_POPULATION_TOOLTIP"
+						
+						textbox = {
+							text = "concept_politically_unaligned"
+							autoresize = yes
+							using = fontsize_large
+							align = nobaseline
+							parentanchor = vcenter
+							max_width = 170
+							fontsize_min = 14
+							elide = right
+						}
+
+						textbox = {
+							raw_text = " #variable [Country.GetInactivePopulation|D]#!"
+							autoresize = yes
+							using = fontsize_large
+							align = nobaseline
+							parentanchor = vcenter
+						}
+					}
+				}
+			}
+		}
+
+		button = {
+			parentanchor = hcenter
+			using = default_button
+			text = "POP_BROWSER"
+			align = hcenter|nobaseline
+			size = { @panel_width 50 }
+			using = fontsize_large
+			onclick = "[InformationPanelBar.OpenPopBrowserPanel( Country.Self )]"
+		}		
 	}
 	
 	### LAW ITEM WITH IMPOSE OPTION
@@ -479,8 +689,8 @@ types country_panel_types
 		tooltipwidget = {
 			FancyTooltip_Law = {
 				blockoverride "text_before" {
-   				visible = "[Or(Not(GreaterThan_int32(Law.GetGroup.GetNumImposeOptions( Country.Self ), '(int32)0')), Or(Country.IsEnactingLaw, Not(Or(ObjectsEqual(Country.GetOverlord, GetPlayer.Self), ObjectsEqual(Country.GetTopOverlord, GetPlayer.Self)))))]"
-   				text =  "IMPOSE_LAW_GROUP_CONDITIONS"
+   				visible = "[Not(GreaterThan_int32(Law.GetGroup.GetNumImposeOptions( Country.Self ), '(int32)0'))]"
+   				text =  "IMPOSE_LAW_NO_OPTIONS"
    				margin_bottom = 15
    			}
 			}

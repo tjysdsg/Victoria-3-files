@@ -25,32 +25,43 @@ peru_bolivia_events.1 = {
 	immediate = {
 		if = {
 			limit = {
-				any_state = {
-					state_region = s:STATE_AREQUIPA
-					owner = {
-						has_variable = pbc_member
+				any_subject_or_below = {
+					has_variable = pbc_member
+					any_scope_state = {
+						state_region = s:STATE_AREQUIPA
 					}
 				}
 			}
-			random_state = {
+			random_subject_or_below = {
+				limit = {
+					has_variable = pbc_member
+					any_scope_state = {
+						state_region = s:STATE_AREQUIPA
+					}					
+				}
+				random_scope_state = {
+					limit = {
+						state_region = s:STATE_AREQUIPA
+					}
+					save_scope_as = arequipa_state	
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				any_scope_state = {
+					state_region = s:STATE_AREQUIPA
+				}
+			}
+			random_scope_state = {
 				limit = {
 					state_region = s:STATE_AREQUIPA
-					owner = {
-						has_variable = pbc_member
-					}
 				}
-				save_scope_as = arequipa_state
+				save_scope_as = arequipa_state	
 			}
 		}
 		else = {
-			ordered_state = {
-				limit = {
-					owner = {
-						has_variable = pbc_member
-					}
-					state_is_in_south_america = yes
-					is_incorporated = yes
-				}
+			capital = {
 				save_scope_as = arequipa_state
 			}
 		}
@@ -523,7 +534,7 @@ peru_bolivia_events.4 = {
 			    }
 			}
 		}
-		if = { #Why? Because goal_add_value causes wonky things if we tie it directly to this variable. TODO revisit when support for a static target value in JEs.
+		if = {
 			limit = {
 				exists = global_var:peru_bolivia_var
 			}

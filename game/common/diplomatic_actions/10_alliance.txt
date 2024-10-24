@@ -1,4 +1,7 @@
 ﻿alliance = {
+	groups= {
+		general
+	}
 	requires_approval = yes
 	can_use_obligations = yes
 
@@ -6,49 +9,89 @@
 		international_relations
 	}
 	
-	potential = {
+	selectable = {
 		NOT = { is_country_type = decentralized }
-		scope:target_country = {
-			NOT = { is_country_type = decentralized }
-		}
-		aggressive_diplomatic_plays_permitted = yes
-		scope:target_country = {
-			aggressive_diplomatic_plays_permitted = yes
-		}
-		NAND = {
-			scope:target_country = { is_non_customs_union_subject = yes }
-			scope:target_country = { is_subject_of = root }
-		}
-		NAND = {
-			is_non_customs_union_subject = yes
-			is_subject_of = scope:target_country
-		}
+		is_revolutionary = no
 	}
 	
-	possible = {
-		NOT = { has_war_with = scope:target_country }
-		has_diplomatic_relevance = scope:target_country
-		custom_tooltip = {
-			text = DIPLO_ACTION_RELATIONS_CORDIAL_OR_GREATER
-			scope:target_country.relations:root >= relations_threshold:cordial
-		}
-		OR = {
-			has_technology_researched = multilateral_alliances
-			num_alliances < 1
-		}	
+	potential = {
 		scope:target_country = {
-			OR = {
-				has_technology_researched = multilateral_alliances
-				num_alliances < 1
-			}	
-		}
-		is_revolutionary = no
-		scope:target_country = {
+			NOT = { is_country_type = decentralized }
 			is_revolutionary = no
 		}
 	}
 	
+	possible = {
+		OR = {
+			has_technology_researched = multilateral_alliances
+			num_alliances < 1
+		}
+
+		scope:target_country = {
+			OR = {
+				has_technology_researched = multilateral_alliances
+				num_alliances < 1
+			}
+			custom_tooltip = {
+				text = "alliance_support_independence_subject"
+				NOT = {
+					any_subject_or_below = {
+						ROOT = {
+							has_diplomatic_pact = {
+								who = prev
+								type = support_independence
+							}
+						}
+					}
+				}
+			}
+		}
+
+		custom_tooltip = {
+			text = "alliance_support_independence_subject"
+			NOT = {
+				any_subject_or_below = {
+					has_diplomatic_pact = {
+						who = scope:target_country
+						type = support_independence
+					}
+				}
+			}
+		}
+	}
+	
 	accept_effect = {
+		if = {
+			limit = {
+				scope:target_country = {
+					has_diplomatic_pact = {
+						who = root
+						type = guarantee_independence
+					}									
+				}			
+			}
+			
+			scope:target_country = {
+				remove_diplomatic_pact = {
+					country = root
+					type = guarantee_independence
+				}			
+			}
+		}	
+		else_if = {
+			limit = {
+				has_diplomatic_pact = {
+					who = scope:target_country
+					type = guarantee_independence
+				}		
+			}
+			
+			remove_diplomatic_pact = {
+				country = scope:target_country
+				type = guarantee_independence
+			}
+		}		
+		
 		if = {
 			limit = {
 				scope:target_country = {
@@ -62,8 +105,25 @@
 			remove_diplomatic_pact = {
 				country = scope:target_country
 				type = defensive_pact
-			}			
+			}
+
+			add_lobby_appeasement_from_diplomacy_bidirectional = { 
+				FIRST = root
+				SECOND = scope:target_country 
+				PRO_AMOUNT = 1
+				ANTI_AMOUNT = -1
+				FACTOR = appeasement_alliance_formed
+			}				
 		}	
+		else = {
+			add_lobby_appeasement_from_diplomacy_bidirectional = { 
+				FIRST = root
+				SECOND = scope:target_country 
+				PRO_AMOUNT = 4
+				ANTI_AMOUNT = -4
+				FACTOR = appeasement_alliance_formed
+			}
+		}
 	}
 
 	pact = {
@@ -73,48 +133,141 @@
 		
 		relations_progress_per_day = 1.5 # At 100, +1 relations
 		relations_improvement_max = 80		
-	
-		is_about_to_auto_break = {
-            scope:target_country.relations:root < 23 # this is: cordial + 3
+
+		first_modifier = {
+			country_pact_leverage_generation_add = 300
 		}
 
-		should_auto_break = {
-			custom_tooltip = {
-				text = DIPLO_ACTION_RELATIONS_CORDIAL_OR_GREATER_NOT
-
-                # make sure to update is_about_to_auto_break when changing this:
-				scope:target_country.relations:root < relations_threshold:cordial
-			}		
+		second_modifier = {
+			country_pact_leverage_generation_add = 300
 		}
-
-		should_invalidate = {
-			OR = {
-				NOT = { has_diplomatic_relevance = scope:target_country }
-				has_war_with = scope:target_country				
-				is_country_type = decentralized
-				scope:target_country = { is_country_type = decentralized }
-				aggressive_diplomatic_plays_permitted = no
-				scope:target_country = { aggressive_diplomatic_plays_permitted = no }
-				AND = {
-					scope:target_country = { is_non_customs_union_subject = yes }
-					scope:target_country = { is_subject_of = root }
+		
+		requirement_to_maintain = {
+			trigger = {
+				has_diplomatic_relevance = scope:target_country
+			}
+		}
+			
+		requirement_to_maintain = {
+			trigger = {
+				custom_tooltip = {
+					text = "DIPLOMATIC_PACT_REQUIREMENT_NOT_DECENTRALIZED"
+					NOT = { is_country_type = decentralized }
+					scope:target_country = {
+						NOT = { is_country_type = decentralized }
+					}				
 				}
-				AND = {
-					is_non_customs_union_subject = yes
-					is_subject_of = scope:target_country
+			}
+		}		
+		
+		requirement_to_maintain = {
+			trigger = {
+				custom_tooltip = {
+					text = "DIPLOMATIC_PACT_REQUIREMENT_DIPLOMATIC_AUTONOMY"
+					aggressive_diplomatic_plays_permitted = yes
+					scope:target_country = { aggressive_diplomatic_plays_permitted = yes }					
+				}
+			}
+		}		
+
+		requirement_to_maintain = {
+			trigger = {
+				custom_tooltip = {
+					text = "DIPLOMATIC_PACT_REQUIREMENT_NO_SUBJECT_RELATION"
+					NOT = {
+						is_subject_of = scope:target_country
+						scope:target_country = { is_subject_of = root }
+					}				
+				}
+			}
+		}			
+
+		requirement_to_maintain = {
+			trigger = {
+				custom_tooltip = {
+					text = DIPLO_ACTION_RELATIONS_CORDIAL_OR_GREATER
+					scope:target_country.relations:root >= relations_threshold:cordial
+				}	
+			}
+			
+			show_about_to_break_warning = {
+				scope:target_country.relations:root < 23 # this is: cordial + 3
+				scope:target_country.relations_change_rate:root < 0
+			}		
+		}	
+		
+		requirement_to_maintain = {
+			trigger = {
+				custom_tooltip = {
+					text = "DIPLOMATIC_PACT_REQUIREMENT_AT_PEACE"
+					NOT = { has_war_with = scope:target_country }
+				}			
+			}
+		}
+
+		requirement_to_maintain = {
+			trigger = {
+				custom_tooltip = {
+					text = "DIPLOMATIC_PACT_REQUIREMENT_NO_SUPPORT_FOR_INDEPENDENCE"
+					NOT = {
+						any_subject_or_below = {
+							ROOT = {
+								has_diplomatic_pact = {
+									who = prev
+									type = support_independence
+								}
+							}
+						}
+					}
 				}
 			}
 		}
 
-		break_effect = {
+		manual_break_effect = {
 			change_relations = { country = scope:target_country value = -30 }
-			create_truce = { country = scope:target_country months = 12 }
+			create_bidirectional_truce = { country = scope:target_country months = 12 }
+			add_lobby_appeasement_from_diplomacy_bidirectional = { 
+				FIRST = root
+				SECOND = scope:target_country 
+				PRO_AMOUNT = -4
+				ANTI_AMOUNT = 4
+				FACTOR = appeasement_alliance_broken
+			}		
+		}
+		
+		auto_break_effect = {
+			create_bidirectional_truce = { country = scope:target_country months = 12 }
+			if = {
+				limit = { 
+					NOR = { 
+						is_subject_of = scope:target_country 
+						scope:target_country = { is_subject_of = root }
+					}
+				}
+				
+				add_lobby_appeasement_from_diplomacy_bidirectional = { 
+					FIRST = root
+					SECOND = scope:target_country 
+					PRO_AMOUNT = -4
+					ANTI_AMOUNT = 4
+					FACTOR = appeasement_alliance_broken
+				}				
+			}									
 		}
 	}
 
 	ai = {
 		check_acceptance_for_will_break = yes
 		check_acceptance_for_will_propose = yes
+		
+		evaluation_chance = {
+			value = 0.1
+			
+			add = {
+				value = country_rank
+				multiply = 0.05
+			}			
+		}			
 	
 		accept_score = {
 			value = 0
@@ -346,11 +499,117 @@
 					value = "num_alliances"
 					multiply = -10
 				}					
+			}
+
+			add = {
+				desc = "DIPLOMATIC_ACCEPTANCE_ACTOR_PRO_LOBBY_CLOUT"					
+				value = "scope:actor.lobby_foreign_pro_clout(scope:target_country)"
+				multiply = 50
+				max = 25
+			}
+			
+			add = {
+				desc = "DIPLOMATIC_ACCEPTANCE_ACTOR_ANTI_LOBBY_CLOUT"					
+				value = "scope:actor.lobby_foreign_anti_clout(scope:target_country)"
+				multiply = -50
+				min = -25
+			}
+
+			add = {
+				desc = "DIPLOMATIC_ACCEPTANCE_TARGET_PRO_LOBBY_CLOUT"					
+				value = "scope:target_country.lobby_foreign_pro_clout(scope:actor)"
+				multiply = 100
+				max = 25
+			}
+			
+			add = {
+				desc = "DIPLOMATIC_ACCEPTANCE_TARGET_ANTI_LOBBY_CLOUT"					
+				value = "scope:target_country.lobby_foreign_anti_clout(scope:actor)"
+				multiply = -100
+				min = -25
+			}	
+			
+			if = {
+				limit = {
+					scope:actor = {
+						has_variable = pro_lobby_proposal_alliance
+						var:pro_lobby_opportunity_target ?= scope:target_country
+					}
+				}
+				add = {
+					desc = "LOBBY_OPPORTUNITY_BONUS"
+					value = 100
+				}
+			}
+
+			if = {
+				limit = {
+					scope:actor = {
+						has_variable = anti_lobby_proposal_alliance
+						var:anti_lobby_opportunity_target ?= scope:target_country
+					}
+				}
+				add = {
+					desc = "LOBBY_OPPORTUNITY_BONUS"
+					value = 50
+				}
+			}
+			
+			if = {
+				limit = {
+					exists = power_bloc
+					exists = scope:actor.power_bloc			
+				}
+				if = {
+					limit = {
+						power_bloc = scope:actor.power_bloc
+					}
+					add = {
+						desc = "DIPLOMATIC_ACCEPTANCE_SAME_POWER_BLOC"
+						value = 15
+					}					
+				}
+				else = {
+					add = {
+						desc = "DIPLOMATIC_ACCEPTANCE_DIFFERENT_POWER_BLOC"
+						value = -25
+					}					
+				}				
 			}			
+
+			add = {
+				desc = "DIPLOMATIC_ACCEPTANCE_PRINCIPLE_SACRED_CIVICS"
+
+				if = {
+					limit = {
+						AND = {
+							scope:actor.power_bloc ?= {
+								OR = {
+									has_principle = principle:principle_sacred_civics_1
+									has_principle = principle:principle_sacred_civics_2
+									has_principle = principle:principle_sacred_civics_3
+								}
+							}
+							scope:actor.religion = root.religion
+						}
+					}
+					add = 10
+				}
+			}
 		}
 
 		propose_score = {
 			value = 10
+
+			if = {
+				limit = {
+					country_has_primary_culture = cu:british
+					asian_ally_against_russia_trigger = yes
+				}
+				add = {
+					value = 50
+				}
+			}
 			
 			add = {
 				value = scope:target_country.country_rank
@@ -382,6 +641,16 @@
 					value = 50
 				}			
 			}
+
+			if = {
+				limit = {
+					country_has_primary_culture = cu:british
+					asian_ally_against_russia_trigger = yes
+				}
+				add = {
+					value = 50
+				}
+			}
 		}
 		
 		owe_obligation_chance = {
@@ -403,7 +672,17 @@
 					}				
 					value = 10
 				}	
-			}			
+			}	
+
+			if = {
+				limit = {
+					country_has_primary_culture = cu:british
+					asian_ally_against_russia_trigger = yes
+				}
+				add = {
+					value = 25
+				}
+			}		
 		}	
 	}
 }

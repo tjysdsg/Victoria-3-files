@@ -35,7 +35,24 @@ types political_movement_panel_types
 				datacontext = "[PoliticalMovement.GetCountry]"
 				tooltip = "GO_TO_BUTTON_COUNTRY"
 				onclick = "[InformationPanelBar.OpenCountryPanel(PoliticalMovement.GetCountry.Self)]"
+				input_action = "go_to_details"
 			}
+		}
+
+		blockoverride "pin_visibility" {
+			visible = "[ObjectsEqual(PoliticalMovement.GetCountry.Self, GetPlayer.Self)]"
+		}
+
+		blockoverride "pin_properties" {
+			visible = "[PoliticalMovement.IsPinnedInOutliner]"
+			onclick = "[PoliticalMovement.TogglePinInOutliner]"
+			tooltip = "UNPIN_POLITICAL_MOVEMENT"
+		}
+
+		blockoverride "unpin_properties" {
+			visible = "[Not(PoliticalMovement.IsPinnedInOutliner)]"
+			onclick = "[PoliticalMovement.TogglePinInOutliner]"
+			tooltip = "PIN_POLITICAL_MOVEMENT"
 		}
 
 		blockoverride "fixed_top"
@@ -54,6 +71,62 @@ types political_movement_panel_types
 				blockoverride "illu" {
 					texture = "gfx/interface/illustrations/top_illus/top_illu_revolutionary_movement.dds"
 				}
+			}
+
+			widget = {
+				size = { 5 5 }
+			}
+
+			widget = {
+				size = { @panel_width 40 }
+				visible = "[Not(PoliticalMovement.IsPlacated)]"
+
+				law_enactment_controls2 = {
+					datacontext = "[PoliticalMovement.GetLaw]"
+					visible = "[Not(ObjectsEqual(PoliticalMovement.GetLaw.Self, GetPlayer.GetActiveLawFromGroup(PoliticalMovement.GetLaw.GetGroup.GetKey)))]"
+					
+				}
+				hbox = {
+					datacontext = "[GetPlayer.GetLawBeingEnacted]"
+					visible = "[And(ObjectsEqual(PoliticalMovement.GetLaw.Self, GetPlayer.GetActiveLawFromGroup(PoliticalMovement.GetLaw.GetGroup.GetKey)), Law.IsValid)]"
+					
+					layoutpolicy_horizontal = preferred
+					layoutpolicy_vertical = expanding
+					margin = { 5 0 }
+
+					tooltipwidget = {
+						FancyTooltip_Law = {}
+					}
+					
+					background = {
+						using = dark_area
+					}
+
+					icon = {
+						size = { 40 40 }
+						texture = "[Law.GetTexture]"
+					}
+
+					textbox = {
+						layoutpolicy_horizontal = preferred
+						text = "BEING_ENACTED_LAW"
+						size = { 0 40 }
+						align = hcenter|nobaseline
+						elide = right
+					}
+
+					button_icon_cancel = {
+						size = { 35 35 }
+						tooltip = "[Law.GetCancelTooltip]"
+						enabled = "[IsValid( Law.StopEnacting )]"
+						onclick = "[PopupManager.AskConfirmation( Law.StopEnacting )]"
+						using = close_button_sound
+					}
+				}
+			}
+
+			widget = {
+				size = { 5 5 }
 			}
 
 			### TABS
@@ -448,10 +521,14 @@ types political_movement_panel_types
 			direction = horizontal
 			spacing = 10
 
+			datacontext = "[PoliticalMovement.GetLaw]"
+			tooltipwidget = {
+				FancyTooltip_Law = {}
+			}
+
 			### Law icon
 			button_icon_round_big = {
 				size = { 70 70 }
-				datacontext = "[PoliticalMovement.GetLaw]"
 				
 				blockoverride "icon" {
 					texture = "[Law.GetTexture]"
@@ -462,13 +539,12 @@ types political_movement_panel_types
 				}
 
 				onclick = "[InformationPanelBar.OpenChangeLaw(Law.AccessSelf)]"
-				tooltip = "[Law.GetTooltip]"
 			}
 
 			flowcontainer = {
 				parentanchor = left|vcenter
 				direction = vertical
-				spacing = 10
+				spacing = 5
 
 				textbox = {
 					layoutpolicy_horizontal = expanding
@@ -476,6 +552,7 @@ types political_movement_panel_types
 					align = left|nobaseline
 					elide = right
 					fontsize_min = 16
+					using = fontsize_large
 					text = "POLITICAL_MOVEMENT_SUPPORT_WITH_LABEL"
 				}
 
@@ -486,6 +563,7 @@ types political_movement_panel_types
 					align = left|nobaseline
 					elide = right
 					fontsize_min = 16
+					using = fontsize_large
 					text = "POLITICAL_MOVEMENT_RADICALISM_WITH_LABEL"
 				}
 

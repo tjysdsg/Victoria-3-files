@@ -16,18 +16,64 @@ types country_panel_types
 		direction = vertical
 		minimumsize = { @panel_width -1 }
 		maximumsize = { @panel_width -1 }
-		margin_top = 10
-		#spacing = 5
+		datacontext = "[CountryPanel.AccessCountry]"
 
-		#ATTITUDE / INFAMY
-		attitude_info = {
-			blockoverride "context" {
-				datacontext = "[Country]"
+		widget = {
+			size = { @panel_width 125 }
+			parentanchor = hcenter
+
+			#ATTITUDE / INFAMY
+			attitude_info = {
+				size = { 460 105 }
+				position = { 10 0 }
+				parentanchor = left|vcenter
+
+				blockoverride "context" {
+					datacontext = "[Country]"
+				}
 			}
-		}
 
-		widget = { 
-			size = { 5 5 }
+			#MAP MODES
+			map_modes_minimized = {
+				parentanchor = right|vcenter
+				position = { -10 0 }
+
+				blockoverride "expanded_size" {
+					size = { 450 45 }
+				}
+				blockoverride "first_button_click" {
+					onclick = "[CountryPanel.ShowAttitude]"
+				}
+				blockoverride "first_button_selected" {
+					visible = "[CountryPanel.IsShowingAttitude]"
+				}
+				blockoverride "first_button_not_selected" {
+					visible = "[Not(CountryPanel.IsShowingAttitude)]"
+				}
+				blockoverride "first_button_icon" {
+					texture = "gfx/interface/icons/map_mode_icons/attitude.dds"
+				}
+				blockoverride "first_button_text" {
+					text = "MAP_MODE_ATTITUDE_COUNTRY"
+				}
+				blockoverride "second_button_click" {
+					onclick = "[CountryPanel.ShowRelations]"
+				}
+				blockoverride "second_button_selected" {
+					visible = "[CountryPanel.IsShowingRelations]"
+				}
+				blockoverride "second_button_not_selected" {
+					visible = "[Not(CountryPanel.IsShowingRelations)]"
+				}
+				blockoverride "second_button_icon" {
+					texture = "gfx/interface/icons/map_mode_icons/relations.dds"
+				}
+				blockoverride "second_button_text" {
+					text = "MAP_MODE_RELATIONS_COUNTRY"
+				}
+				blockoverride "third_button" {}
+				blockoverride "fourth_button" {}
+			}
 		}
 
 		flowcontainer = {
@@ -38,78 +84,479 @@ types country_panel_types
 		
 			default_header = {
 				blockoverride "text" {
-					text = DIPLO_ACTIONS
+					text = "DIPLO_ACTIONS"
 				}
-			}
-
-			empty_state = {
-				blockoverride "visible" {
-					visible = "[IsDataModelEmpty(Country.GetPotentialDiploActions)]"
-				}
-				blockoverride "text" {
-					text = "NO_DIPLO_ACTIONS"
-				}
-				blockoverride "margin" {
-					margin_top = 10
-					margin_bottom = 10
-				}				
 			}
 
 			flowcontainer = {
 				name = "tutorial_highlight_country_diplomatic_actions_list"
+				parentanchor = hcenter
 				direction = vertical
-				datamodel = "[Country.GetPotentialDiploActions]"
-				using = default_list_position
-				spacing = 4
 
-				item = {
-					diplomatic_action_button = {}
+				### OVERLORD ACTIONS
+				panel_dropdown = {
+					visible = "[Country.IsSubjectOf(GetPlayer.Self)]"
+
+					blockoverride "section_header_tooltip" {
+						tooltip = "AVAILABLE_OVERLORD_ACTIONS_TOOLTIP"
+					}
+
+					blockoverride "section_header_left_text" {
+						text = "OVERLORD_ACTIONS"
+					}
+
+					blockoverride "section_header_right_text" {
+						raw_text = "#v [GetDataModelSize(Country.GetAllOverlordDiploActions)]#!"
+					}
+
+					blockoverride "onclick" {
+						onclick = "[GetVariableSystem.Toggle('show_overlord_actions_country_panel')]"
+					}
+
+					blockoverride "onclick_showmore" {
+						visible = "[Not(GetVariableSystem.Exists('show_overlord_actions_country_panel'))]"
+					}
+
+					blockoverride "onclick_showless" {
+						visible = "[GetVariableSystem.Exists('show_overlord_actions_country_panel')]"
+					}
+
+					blockoverride "items_visibility"{
+						visible = "[GetVariableSystem.Exists('show_overlord_actions_country_panel')]"
+					}
+
+					blockoverride "dropdown_datamodel"{
+						datamodel = "[Country.GetAvailableOverlordDiploActions]"
+					}
+
+					blockoverride "second_dropdown_datamodel"{
+						datamodel = "[Country.GetPotentialOverlordDiploActions]"
+					}
+
+					blockoverride "empty_state_visibility" {
+						# Show empty state if both the first and second datamodels are empty and the dropdown is open.
+						visible = "[And(And(IsDataModelEmpty(Country.GetAvailableOverlordDiploActions), IsDataModelEmpty(Country.GetPotentialOverlordDiploActions)), GetVariableSystem.Exists('show_overlord_actions_country_panel'))]"
+					}
+
+					blockoverride "empty_state_text" {
+						text = "NO_OVERLORD_ACTIONS"
+					}
+
+					blockoverride "item" {
+						diplomatic_action_button = {}
+					}
+
+					blockoverride "second_item" {
+						diplomatic_action_button = {}
+					}
+				}
+
+				### SUBJECT ACTIONS
+				panel_dropdown = {
+					visible = "[GetPlayer.IsSubjectOf(Country.Self)]"
+
+					blockoverride "section_header_tooltip" {
+						tooltip = "AVAILABLE_SUBJECT_ACTIONS_TOOLTIP"
+					}
+
+					blockoverride "section_header_left_text" {
+						text = "SUBJECT_ACTIONS"
+					}
+
+					blockoverride "section_header_right_text" {
+						raw_text = "#v [GetDataModelSize(Country.GetAllSubjectDiploActions)]#!"
+					}
+
+					blockoverride "onclick" {
+						onclick = "[GetVariableSystem.Toggle('show_subject_actions_country_panel')]"
+					}
+
+					blockoverride "onclick_showmore" {
+						visible = "[Not(GetVariableSystem.Exists('show_subject_actions_country_panel'))]"
+					}
+
+					blockoverride "onclick_showless" {
+						visible = "[GetVariableSystem.Exists('show_subject_actions_country_panel')]"
+					}
+
+					blockoverride "items_visibility"{
+						visible = "[GetVariableSystem.Exists('show_subject_actions_country_panel')]"
+					}
+
+					blockoverride "dropdown_datamodel"{
+						datamodel = "[Country.GetAvailableSubjectDiploActions]"
+					}
+
+					blockoverride "second_dropdown_datamodel"{
+						datamodel = "[Country.GetPotentialSubjectDiploActions]"
+					}
+
+					blockoverride "empty_state_visibility" {
+						# Show empty state if both the first and second datamodels are empty and the dropdown is open.
+						visible = "[And(And(IsDataModelEmpty(Country.GetAvailableSubjectDiploActions), IsDataModelEmpty(Country.GetPotentialSubjectDiploActions)), GetVariableSystem.Exists('show_subject_actions_country_panel'))]"
+					}
+
+					blockoverride "empty_state_text" {
+						text = "NO_SUBJECT_ACTIONS"
+					}
+
+					blockoverride "item" {
+						diplomatic_action_button = {}
+					}
+
+					blockoverride "second_item" {
+						diplomatic_action_button = {}
+					}
+				}
+				
+				### BLOC LEADER ACTIONS
+				panel_dropdown = {
+					visible = "[And(Country.GetPowerBloc.IsLeader(GetPlayer.Self), Not(IsDataModelEmpty(Country.GetAllPowerBlocLeaderDiploActions)))]"
+
+					blockoverride "section_header_tooltip" {
+						tooltip = "AVAILABLE_BLOC_LEADER_ACTIONS_TOOLTIP"
+					}
+
+					blockoverride "section_header_left_text" {
+						text = "BLOC_LEADER_ACTIONS"
+					}
+
+					blockoverride "section_header_right_text" {
+						raw_text = "#v [GetDataModelSize(Country.GetAllPowerBlocLeaderDiploActions)]#!"
+					}
+
+					blockoverride "onclick" {
+						onclick = "[GetVariableSystem.Toggle('show_bloc_leader_actions_country_panel')]"
+					}
+
+					blockoverride "onclick_showmore" {
+						visible = "[Not(GetVariableSystem.Exists('show_bloc_leader_actions_country_panel'))]"
+					}
+
+					blockoverride "onclick_showless" {
+						visible = "[GetVariableSystem.Exists('show_bloc_leader_actions_country_panel')]"
+					}
+
+					blockoverride "items_visibility"{
+						visible = "[GetVariableSystem.Exists('show_bloc_leader_actions_country_panel')]"
+					}
+
+					blockoverride "dropdown_datamodel"{
+						datamodel = "[Country.GetAvailablePowerBlocLeaderDiploActions]"
+					}
+
+					blockoverride "second_dropdown_datamodel"{
+						datamodel = "[Country.GetPotentialPowerBlocLeaderDiploActions]"
+					}
+
+					blockoverride "empty_state_visibility" {
+						# Show empty state if both the first and second datamodels are empty and the dropdown is open.
+						visible = "[And(IsDataModelEmpty(Country.GetAllPowerBlocLeaderDiploActions), GetVariableSystem.Exists('show_bloc_leader_actions_country_panel'))]"
+					}
+
+					blockoverride "empty_state_text" {
+						text = "NO_BLOC_LEADER_ACTIONS"
+					}
+
+					blockoverride "item" {
+						diplomatic_action_button = {}
+					}
+
+					blockoverride "second_item" {
+						diplomatic_action_button = {}
+					}
+				}				
+
+				### BLOC MEMBER ACTIONS
+				panel_dropdown = {
+					visible = "[And(Country.GetPowerBloc.IsMember(GetPlayer.Self), Not(IsDataModelEmpty(Country.GetAllPowerBlocMemberDiploActions)))]"
+
+					blockoverride "section_header_tooltip" {
+						tooltip = "AVAILABLE_BLOC_ACTIONS_TOOLTIP"
+					}
+
+					blockoverride "section_header_left_text" {
+						text = "BLOC_MEMBER_ACTIONS"
+					}
+
+					blockoverride "section_header_right_text" {
+						raw_text = "#v [GetDataModelSize(Country.GetAllPowerBlocMemberDiploActions)]#!"
+					}
+
+					blockoverride "onclick" {
+						onclick = "[GetVariableSystem.Toggle('show_bloc_actions_country_panel')]"
+					}
+
+					blockoverride "onclick_showmore" {
+						visible = "[Not(GetVariableSystem.Exists('show_bloc_actions_country_panel'))]"
+					}
+
+					blockoverride "onclick_showless" {
+						visible = "[GetVariableSystem.Exists('show_bloc_actions_country_panel')]"
+					}
+
+					blockoverride "items_visibility"{
+						visible = "[GetVariableSystem.Exists('show_bloc_actions_country_panel')]"
+					}
+
+					blockoverride "dropdown_datamodel"{
+						datamodel = "[Country.GetAvailablePowerBlocMemberDiploActions]"
+					}
+
+					blockoverride "second_dropdown_datamodel"{
+						datamodel = "[Country.GetPotentialPowerBlocMemberDiploActions]"
+					}
+
+					blockoverride "empty_state_visibility" {
+						# Show empty state if both the first and second datamodels are empty and the dropdown is open.
+						visible = "[And(IsDataModelEmpty(Country.GetAllPowerBlocMemberDiploActions), GetVariableSystem.Exists('show_bloc_actions_country_panel'))]"
+					}
+
+					blockoverride "empty_state_text" {
+						text = "NO_BLOC_MEMBER_ACTIONS"
+					}
+
+					blockoverride "item" {
+						diplomatic_action_button = {}
+					}
+
+					blockoverride "second_item" {
+						diplomatic_action_button = {}
+					}
+				}
+
+				### GENERAL DIPLOMATIC ACTIONS
+				panel_dropdown = {
+					blockoverride "section_header_tooltip" {
+						tooltip = "POTENTIAL_DIPLOMATIC_ACTIONS_TOOLTIP"
+					}
+
+					blockoverride "section_header_left_text" {
+						text = "DIPLOMATIC_ACTIONS_TEXT"
+					}
+
+					blockoverride "section_header_right_text" {
+						raw_text = "#v [GetDataModelSize(Country.GetAllGeneralDiploActions)]#!"
+					}
+
+					blockoverride "onclick" {
+						onclick = "[GetVariableSystem.Toggle('show_diplomatic_actions_country_panel')]"
+					}
+
+					blockoverride "onclick_showmore" {
+						visible = "[Not(GetVariableSystem.Exists('show_diplomatic_actions_country_panel'))]"
+					}
+
+					blockoverride "onclick_showless" {
+						visible = "[GetVariableSystem.Exists('show_diplomatic_actions_country_panel')]"
+					}
+
+					blockoverride "items_visibility"{
+						visible = "[GetVariableSystem.Exists('show_diplomatic_actions_country_panel')]"
+					}
+
+					blockoverride "dropdown_datamodel"{
+						datamodel = "[Country.GetAllGeneralDiploActions]"
+					}
+
+					blockoverride "empty_state_visibility" {
+						visible = "[And(IsDataModelEmpty(Country.GetAllGeneralDiploActions), GetVariableSystem.Exists('show_diplomatic_actions_country_panel'))]"
+					}
+
+					blockoverride "empty_state_text" {
+						text = "NO_DIPLO_ACTIONS"
+					}
+
+					blockoverride "item" {
+						diplomatic_action_button = {}
+					}
+
+					blockoverride "second_list" {}
 				}
 			}
 
 			default_header = {
 				blockoverride "text" {
-					text = "DIPLOMATIC_PLAYS_TARGETING_COUNTRY"
+					text = "DIPLOMATIC_DEMANDS_TARGETING_COUNTRY"
 				}
 			}
+
+			flowcontainer = {
+				name = "tutorial_highlight_country_diplomatic_demands_list"
+				parentanchor = hcenter
+				direction = vertical
+
+				### COUNTRY DIPLOMATIC DEMANDS
+				panel_dropdown = {
+					blockoverride "section_header_tooltip" {
+						tooltip = "POTENTIAL_DIPLOMATIC_DEMANDS_TOOLTIP"
+					}
+
+					blockoverride "section_header_left_text" {
+						text = "DIPLOMATIC_DEMANDS_TEXT"
+					}
+
+					blockoverride "section_header_right_text" {
+						raw_text = "#v [GetDataModelSize(Country.GetPotentialDiploPlays)]#!"
+					}
+
+					blockoverride "onclick" {
+						onclick = "[GetVariableSystem.Toggle('show_diplomatic_demands_country_panel')]"
+					}
+
+					blockoverride "onclick_showmore" {
+						visible = "[GetVariableSystem.Exists('show_diplomatic_demands_country_panel')]" # Currently reversed so that it is shown by default
+					}
+
+					blockoverride "onclick_showless" {
+						visible = "[Not(GetVariableSystem.Exists('show_diplomatic_demands_country_panel'))]" # Currently reversed so that it is shown by default
+					}
+
+					blockoverride "items_visibility"{
+						visible = "[Not(GetVariableSystem.Exists('show_diplomatic_demands_country_panel'))]" # Currently reversed so that it is shown by default
+					}
+
+					blockoverride "dropdown_datamodel"{
+						datamodel = "[Country.GetPotentialDiploPlays]"
+					}
+
+					blockoverride "empty_state_visibility" {
+						# "show_diplomatic_demands_country_panel" is currently reversed so that it is shown by default
+						visible = "[And(IsDataModelEmpty(Country.GetPotentialDiploPlays), Not(GetVariableSystem.Exists('show_diplomatic_demands_country_panel')))]"
+					}
+
+					blockoverride "empty_state_text" {
+						text = "NO_DIPLOMATIC_DEMANDS_TARGETING_COUNTRY"
+					}
+
+					blockoverride "item" {
+						diplomatic_play_button_country = {}
+					}
+
+					blockoverride "second_list" {}
+				}
+
+				### STATE TARGETED DIPLOMATIC DEMANDS
+				panel_dropdown = {
+					blockoverride "section_header_tooltip" {
+						tooltip = "POTENTIAL_DIPLOMATIC_DEMANDS_TARGETING_STATES_TOOLTIP"
+					}
+
+					blockoverride "section_header_left_text" {
+						text = "DIPLOMATIC_DEMANDS_TARGETING_STATES_TEXT"
+					}
+
+					blockoverride "section_header_right_text" {
+						raw_text = "#v [GetDataModelSize(Country.AccessStates)]#!"
+					}
+
+					blockoverride "onclick" {
+						onclick = "[GetVariableSystem.Toggle('show_states_country_panel')]"
+					}
+
+					blockoverride "onclick_showmore" {
+						visible = "[Not(GetVariableSystem.Exists('show_states_country_panel'))]"
+					}
+
+					blockoverride "onclick_showless" {
+						visible = "[GetVariableSystem.Exists('show_states_country_panel')]"
+					}
+
+					blockoverride "items_visibility"{
+						visible = "[GetVariableSystem.Exists('show_states_country_panel')]"
+					}
+
+					blockoverride "dropdown_datamodel"{
+						datamodel = "[Country.AccessStates]"
+					}
+
+					blockoverride "empty_state_visibility" {
+						visible = "[And(IsDataModelEmpty(Country.AccessStates), GetVariableSystem.Exists('show_states_country_panel'))]"
+					}
+
+					blockoverride "empty_state_text" {
+						text = "NO_STATES_IN_COUNTRY"
+					}
+
+					blockoverride "second_list" {}
+
+					blockoverride "items_parentanchor" {
+						parentanchor = hcenter
+					}
+
+					blockoverride "item" {
+						panel_dropdown = {
+							blockoverride "section_header_size" {
+								size = { 500 40 }
+							}
+
+							blockoverride "section_header_tooltip" {
+								tooltip = "POTENTIAL_DIPLOMATIC_DEMANDS_TARGETING_SPECIFIC_STATE_TOOLTIP"
+							}
+
+							blockoverride "section_header_left_text" {
+								raw_text = "[State.GetCountry.GetFlagTextIcon] [State.GetName]"
+							}
+
+							blockoverride "section_header_right_text" {
+								raw_text = "#v [GetDataModelSize(State.GetPotentialDiploPlays)]#!"
+							}
+
+							blockoverride "onclick" {
+								onclick = "[GetVariableSystem.Toggle(Concatenate('show_diplomatic_demands_states_country_panel_', State.GetIDString))]"
+							}
+
+							blockoverride "onclick_showmore" {
+								visible = "[Not(GetVariableSystem.Exists(Concatenate('show_diplomatic_demands_states_country_panel_', State.GetIDString)))]"
+							}
+
+							blockoverride "onclick_showless" {
+								visible = "[GetVariableSystem.Exists(Concatenate('show_diplomatic_demands_states_country_panel_', State.GetIDString))]"
+							}
+
+							blockoverride "items_visibility"{
+								visible = "[GetVariableSystem.Exists(Concatenate('show_diplomatic_demands_states_country_panel_', State.GetIDString))]"
+							}
+
+							blockoverride "dropdown_datamodel"{
+								datamodel = "[State.GetPotentialDiploPlays]"
+							}
+
+							blockoverride "empty_state_visibility" {
+								visible = "[And(IsDataModelEmpty(State.GetPotentialDiploPlays), GetVariableSystem.Exists(Concatenate('show_diplomatic_demands_states_country_panel_', State.GetIDString)))]"
+							}
+
+							blockoverride "empty_state_text" {
+								text = "NO_DIPLOMATIC_DEMANDS_TARGETING_STATE"
+							}
+
+							blockoverride "item" {
+								diplomatic_play_button_state = {
+									size = { 500 50 }
+
+									blockoverride "text_size" {
+										size = { 370 50 }
+									}
+								}
+							}
+
+							blockoverride "second_list" {}
+						}
+					}
+				}
+			}
+
+			divider_decorative = {}
 			
 			flowcontainer = {
 				direction = vertical
 				using = default_list_position
 
-				flowcontainer = {
-					direction = vertical
-					datamodel = "[Country.GetPotentialDiploPlays]"
-					using = default_list_position					
-
-					item = {
-						diplomatic_play_button_country = {}
-					}
-				}
-
-				flowcontainer = {
-					direction = vertical
-					datamodel = "[Country.AccessStates]"
-					using = default_list_position					
-
-					item = {
-						dynamicgridbox = {
-							datamodel = "[State.GetPotentialDiploPlays]"
-
-							item = {
-								diplomatic_play_button_state = {}
-							}
-						}
-					}
-				}
-
-				widget = { size = { 10 10 }}
-
 				section_header_button = {
 					visible = "[Not(IsDataModelEmpty(Country.GetNonPotentialDiploPlays))]"
 
 					blockoverride "left_text" {
-						text = "UNAVAILABLE_DIPLOMATIC_PLAYS_TARGETING_COUNTRY"
+						text = "UNAVAILABLE_DIPLOMATIC_DEMANDS_TARGETING_COUNTRY"
 					}
 
 					blockoverride "onclick" {
@@ -123,6 +570,12 @@ types country_panel_types
 					blockoverride "onclick_showless" {
 						visible = "[GetVariableSystem.Exists('unavailable_diplo_plays')]"
 					}
+
+					blockoverride "right_text" {
+						section_header_right_text = {
+							raw_text = "#v [GetDataModelSize(Country.GetNonPotentialDiploPlays)]#!"
+						}
+					}
 				}
 
 				flowcontainer = {
@@ -130,7 +583,7 @@ types country_panel_types
 					datamodel = "[Country.GetNonPotentialDiploPlays]"
 					using = default_list_position
 					visible = "[GetVariableSystem.Exists('unavailable_diplo_plays')]"
-					margin_bottom = 10					
+					margin_bottom = 10
 
 					item = {
 						diplomatic_play_button_country = {}
@@ -141,7 +594,7 @@ types country_panel_types
 					visible = "[Not(IsDataModelEmpty(Country.GetNonPotentialDiploPlays))]"
 
 					blockoverride "left_text" {
-						text = "UNAVAILABLE_DIPLOMATIC_PLAYS_TARGETING_STATE"
+						text = "UNAVAILABLE_DIPLOMATIC_DEMANDS_TARGETING_STATE"
 					}
 
 					blockoverride "onclick" {
