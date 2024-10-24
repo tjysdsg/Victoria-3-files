@@ -1,3 +1,6 @@
+@entry_width = 350
+@entry_height = 30
+
 types ongoing_outliner_items {
 	### WARS ITEM
 	type outliner_war_item = widget {
@@ -109,7 +112,21 @@ types ongoing_outliner_items {
 	}
 
 	### DIPLO PLAYS ITEM
-	type diplomatic_play_item = widget {
+	type diplomatic_play_item = container {
+		visible = "[DiplomaticPlay.IsPinnedInOutliner]"
+		diplomatic_play_item_impl = {
+			visible = "[Not(DiplomaticPlay.IsCommittedParticipant(GetPlayer))]"
+		}
+		diplomatic_play_item_impl = {
+			visible = "[DiplomaticPlay.IsCommittedParticipant(GetPlayer)]"
+
+			blockoverride "diplo_play_button_style" {
+				using = default_button_primary
+			}
+		}
+	}
+
+	type diplomatic_play_item_impl = widget {
 		name = "diplo_play_item"
 		size = { 350 62 }
 		tooltip = "DIPLOMATIC_PLAY_OUTLINER_TOOLTIP"
@@ -117,15 +134,21 @@ types ongoing_outliner_items {
 		button = {
 			size = { 100% 55 }
 			parentanchor = center
-			using = default_button
-			onclick = "[InformationPanelBar.OpenDiplomaticPlayPanel( DiplomaticPlay.AccessSelf )]"
+
+			block "diplo_play_button_style" {
+				using = default_button
+			}
 			
+			onclick = "[InformationPanelBar.OpenDiplomaticPlayPanel( DiplomaticPlay.AccessSelf )]"
+			onrightclick = "[RightClickMenuManager.ShowForDiplomaticPlay(DiplomaticPlay.AccessSelf)]"
+
 			button = {
 				texture = "gfx/interface/outliner/diplo_play_dec_outliner.dds"
 				size = { 121 57 }
 				parentanchor = hcenter
 				position = { 0 -7 }
 				alwaystransparent = yes
+				visible = "[DiplomaticPlay.IsCommittedParticipant(GetPlayer)]"
 			}
 		}
 
@@ -176,10 +199,10 @@ types ongoing_outliner_items {
 		
 		### left side
 		flowcontainer = {
-			datacontext = "[DiplomaticPlay.GetInitiator]"
+			datacontext = "[DiplomaticPlay.AccessInitiator]"
 			parentanchor = vcenter|left
-			position = { 10 0 }
-			spacing = 5
+			position = { 12 0 }
+			spacing = 7
 			
 			tiny_flag_no_interact = {
 				parentanchor = vcenter
@@ -189,9 +212,10 @@ types ongoing_outliner_items {
 				direction = vertical
 				
 				flowcontainer = {
-					#tooltip = "DIPLO_PLAY_COUNTRY_BATTALIONS_BREAKDOWN"
+					tooltip = "DIPLO_PLAY_TOTAL_MOBILIZED_BATTALIONS_BREAKDOWN"
 					margin_top = 2
 					parentanchor = left
+					spacing = 2
 
 					icon = {
 						size = { 20 20 }
@@ -220,9 +244,9 @@ types ongoing_outliner_items {
 				}
 				
 				flowcontainer = {
-					#tooltip = "DIPLO_PLAY_COUNTRY_FLOTILLAS_BREAKDOWN"
-					parentanchor = left
-
+					tooltip = "DIPLO_PLAY_TOTAL_FLOTILLAS_BREAKDOWN"
+					spacing = 2
+					
 					icon = {
 						size = { 20 20 }
 						texture = "gfx/interface/icons/generic_icons/flotillas.dds"
@@ -231,7 +255,7 @@ types ongoing_outliner_items {
 
 					textbox = {
 						autoresize = yes
-						raw_text = "#variable [Country.GetWarships]#!"
+						text = "[DiplomaticPlay.GetTotalNumWarshipsForSide( Country.Self )|v]"
 						align = nobaseline
 					}
 				}
@@ -240,18 +264,19 @@ types ongoing_outliner_items {
 		
 		### right side
 		flowcontainer = {
-			datacontext = "[DiplomaticPlay.GetTarget]"
+			datacontext = "[DiplomaticPlay.AccessTarget]"
 			parentanchor = vcenter|right
-			position = { -10 0 }
-			spacing = 5
+			position = { -12 0 }
+			spacing = 7
 			
 			flowcontainer = {
 				direction = vertical
 				
 				flowcontainer = {
-					#tooltip = "DIPLO_PLAY_COUNTRY_BATTALIONS_BREAKDOWN"
+					tooltip = "DIPLO_PLAY_TOTAL_MOBILIZED_BATTALIONS_BREAKDOWN"
 					parentanchor = right
 					margin_top = 2
+					spacing = 2
 
 					textbox = {
 						autoresize = yes
@@ -280,12 +305,13 @@ types ongoing_outliner_items {
 				}
 				
 				flowcontainer = {
-					#tooltip = "DIPLO_PLAY_COUNTRY_FLOTILLAS_BREAKDOWN"
+					tooltip = "DIPLO_PLAY_TOTAL_FLOTILLAS_BREAKDOWN"
 					parentanchor = right
+					spacing = 2
 
 					textbox = {
 						autoresize = yes
-						raw_text = "#variable [Country.GetWarships]#!"
+						text = "[DiplomaticPlay.GetTotalNumWarshipsForSide( Country.Self )|v]"
 						align = nobaseline
 					}
 
@@ -311,6 +337,8 @@ types ongoing_outliner_items {
 		datacontext = "[Outliner.AccessCategory('diplo_plays')]"
 		datamodel = "[OutlinerEntry.AccessSubEntries]"
 		visible = "[OutlinerEntry.IsShown]"
+		spacing = 3
+		margin_top = 3
 
 		item = {
 			diplomatic_play_item = {
@@ -427,14 +455,30 @@ types ongoing_outliner_items {
 					texture = "gfx/interface/backgrounds/round_button_bg.dds"
 					
 					round_progress_default = {
-						size = { 48 48 }
+						visible = "[Not(LessThan_int32(GetPlayer.GetGovernmentLegitimacy, '(int32)25'))]"
+						size = { 80% 80% }
+						parentanchor = center
 						datacontext = "[GetPlayer.GetLawBeingEnacted]"
 						value = "[FixedPointToFloat(GetPlayer.GetLawEnactmentProgress)]"
+					}
+
+					round_progress_bad = {
+						visible = "[LessThan_int32(GetPlayer.GetGovernmentLegitimacy, '(int32)25')]"
+						size = { 80% 80% }
 						parentanchor = center
+						datacontext = "[GetPlayer.GetLawBeingEnacted]"
+						value = "[FixedPointToFloat(GetPlayer.GetLawEnactmentProgress)]"
 					}
 					
 					law_icon = {
-						size = { 45 45 }
+						alpha = "[TransparentIfTrue(LessThan_int32(GetPlayer.GetGovernmentLegitimacy, '(int32)25'))]"
+						size = { 38 38 }
+						parentanchor = center
+					}
+
+					paused_icon_bad = {
+						visible = "[LessThan_int32(GetPlayer.GetGovernmentLegitimacy, '(int32)25')]"
+						#size = { 28 28 }
 						parentanchor = center
 					}
 				}
@@ -558,7 +602,7 @@ types ongoing_outliner_items {
 
 			# Setbacks
 			hbox = {
-				visible = "[GreaterThan_int32(GetDefine('NPolitics', 'LAW_ENACTMENT_MAX_SETBACKS'), '(int32)0')]"
+				visible = "[GreaterThan_int32(GetPlayer.GetMaxLawEnactmentSetbacks, '(int32)0')]"
 				layoutpolicy_horizontal = preferred
 				layoutpolicy_vertical = preferred
 				spacing = 2
@@ -585,7 +629,7 @@ types ongoing_outliner_items {
 
 					#Setback 1
 					enactment_setback = {
-						visible = "[GreaterThanOrEqualTo_int32(GetDefine('NPolitics', 'LAW_ENACTMENT_MAX_SETBACKS'), '(int32)1')]"
+						visible = "[GreaterThanOrEqualTo_int32(GetPlayer.GetMaxLawEnactmentSetbacks, '(int32)1')]"
 
 						blockoverride "has_setback_visibility" {
 							visible = "[GreaterThanOrEqualTo_int32(Law.GetEnactmentSetbackCount, '(int32)1')]"
@@ -594,7 +638,7 @@ types ongoing_outliner_items {
 
 					#Setback 2
 					enactment_setback = {
-						visible = "[GreaterThanOrEqualTo_int32(GetDefine('NPolitics', 'LAW_ENACTMENT_MAX_SETBACKS'), '(int32)2')]"
+						visible = "[GreaterThanOrEqualTo_int32(GetPlayer.GetMaxLawEnactmentSetbacks, '(int32)2')]"
 
 						blockoverride "has_setback_visibility" {
 							visible = "[GreaterThanOrEqualTo_int32(Law.GetEnactmentSetbackCount, '(int32)2')]"
@@ -603,7 +647,7 @@ types ongoing_outliner_items {
 
 					#Setback 3
 					enactment_setback = {
-						visible = "[GreaterThanOrEqualTo_int32(GetDefine('NPolitics', 'LAW_ENACTMENT_MAX_SETBACKS'), '(int32)3')]"
+						visible = "[GreaterThanOrEqualTo_int32(GetPlayer.GetMaxLawEnactmentSetbacks, '(int32)3')]"
 
 						blockoverride "has_setback_visibility" {
 							visible = "[GreaterThanOrEqualTo_int32(Law.GetEnactmentSetbackCount, '(int32)3')]"
@@ -612,7 +656,7 @@ types ongoing_outliner_items {
 
 					#Setback 4
 					enactment_setback = {
-						visible = "[GreaterThanOrEqualTo_int32(GetDefine('NPolitics', 'LAW_ENACTMENT_MAX_SETBACKS'), '(int32)4')]"
+						visible = "[GreaterThanOrEqualTo_int32(GetPlayer.GetMaxLawEnactmentSetbacks, '(int32)4')]"
 
 						blockoverride "has_setback_visibility" {
 							visible = "[GreaterThanOrEqualTo_int32(Law.GetEnactmentSetbackCount, '(int32)4')]"
@@ -621,7 +665,7 @@ types ongoing_outliner_items {
 
 					#Setback 5
 					enactment_setback = {
-						visible = "[GreaterThanOrEqualTo_int32(GetDefine('NPolitics', 'LAW_ENACTMENT_MAX_SETBACKS'), '(int32)5')]"
+						visible = "[GreaterThanOrEqualTo_int32(GetPlayer.GetMaxLawEnactmentSetbacks, '(int32)5')]"
 
 						blockoverride "has_setback_visibility" {
 							visible = "[GreaterThanOrEqualTo_int32(Law.GetEnactmentSetbackCount, '(int32)5')]"
@@ -630,7 +674,7 @@ types ongoing_outliner_items {
 
 					#Setback 6
 					enactment_setback = {
-						visible = "[GreaterThanOrEqualTo_int32(GetDefine('NPolitics', 'LAW_ENACTMENT_MAX_SETBACKS'), '(int32)6')]"
+						visible = "[GreaterThanOrEqualTo_int32(GetPlayer.GetMaxLawEnactmentSetbacks, '(int32)6')]"
 
 						blockoverride "has_setback_visibility" {
 							visible = "[GreaterThanOrEqualTo_int32(Law.GetEnactmentSetbackCount, '(int32)6')]"
@@ -805,6 +849,7 @@ types ongoing_outliner_items {
 	type outliner_diplomatic_pact_item = button {
 		size = { 350 35 }
 		using = default_button
+		tooltip = "[DiplomaticPact.GetTooltip]"
 
 		onclick = "[InformationPanelBar.OpenCountryPanel(Country.Self)]"
 		onrightclick = "[RightClickMenuManager.ShowForCountry(Country.AccessSelf)]"
@@ -819,15 +864,15 @@ types ongoing_outliner_items {
 			icon = {
 				size = { 30 30 }
 				texture = [DiplomaticPact.GetDiplomaticActionType.GetTexture]
-				tooltip = "[DiplomaticPact.GetTooltip]"
 			}
 			
-			tiny_flag = {}
+			tiny_flag_no_interact = {
+				blockoverride "tooltip" {}
+			}
 			
 			hbox = {
 				layoutpolicy_horizontal = expanding
 				spacing = 5
-				tooltip = "[GetPlayer.GetRelationsTooltip( Country.Self )]"
 				
 				textbox = {
 					layoutpolicy_horizontal = expanding
@@ -844,7 +889,7 @@ types ongoing_outliner_items {
 					size = { 90 4 }
 					
 					blockoverride "values" {
-						value = "[FixedPointToFloat(Country.GetRelationsWith( GetPlayer ))]"
+						value = "[IntToFloat(Country.GetRelationsWith( GetPlayer ))]"
 						min = "[GetDefine('NDiplomacy', 'MIN_RELATIONS')]"
 						max = "[GetDefine('NDiplomacy', 'MAX_RELATIONS')]"
 					}
@@ -879,18 +924,161 @@ types ongoing_outliner_items {
 
 	### DIPLO PACTS LIST
 	type outliner_diplomatic_pacts = flowcontainer {
-		direction = vertical
-		parentanchor = right
-		
 		datacontext = "[Outliner.AccessCategory('diplo_pacts')]"
-		datamodel = "[OutlinerEntry.AccessSubEntries]"
-
 		visible = "[OutlinerEntry.IsShown]"
+		parentanchor = right
+		direction = vertical
 
-		item = {
-			outliner_diplomatic_pact_item = {
-				datacontext = "[OutlinerEntry.AccessScope.AccessDiplomaticPact]"
-				datacontext = "[DiplomaticPact.GetSecondCountry]"
+		background = {
+			using = default_background
+			alpha = 1
+			margin_right = 15
+			
+			modify_texture = {
+				texture = "gfx/interface/masks/fade_horizontal_left.dds"
+				spriteType = Corneredstretched
+				spriteborder = { 0 0 }
+				blend_mode = alphamultiply
+				alpha = 0.5
+			}
+		}
+
+		outliner_group = {
+			blockoverride "visibility" {
+				visible = "[GreaterThan_int32(OutlinerEntry.GetNumSubEntries, '(int32)1')]"
+			}
+
+			blockoverride "title_text" {
+				text = "ONGOING_DIPLOMATIC_ACTIONS_CONCEPT"
+				default_format = "#v"
+			}
+
+			blockoverride "item" {
+				outliner_diplomatic_pact_item = {
+					datacontext = "[OutlinerEntry.AccessScope.AccessDiplomaticPact]"
+					datacontext = "[DiplomaticPact.GetSecondCountry]"
+				}
+			}
+
+			blockoverride "fixedgridbox_cell_size" {
+				addcolumn = 350
+				addrow = 35
+			}
+
+			blockoverride "pin_button_onhover_animation" {}
+		}
+
+		flowcontainer = {
+			visible = "[Not(GreaterThan_int32(OutlinerEntry.GetNumSubEntries, '(int32)1'))]"
+			parentanchor = hcenter
+			direction = vertical
+			datamodel = "[OutlinerEntry.AccessSubEntries]"
+
+			item = {
+				outliner_diplomatic_pact_item = {
+					datacontext = "[OutlinerEntry.AccessScope.AccessDiplomaticPact]"
+					datacontext = "[DiplomaticPact.GetSecondCountry]"
+				}
+			}
+		}
+	}
+
+	### PLAYERS LIST
+	type outliner_players = flowcontainer {
+		datacontext = "[Outliner.AccessCategory('players')]"
+		visible = "[GameIsMultiplayer]"
+		parentanchor = right
+		direction = vertical
+
+		background = {
+			using = default_background
+			alpha = 1
+			margin_right = 15
+			
+			modify_texture = {
+				texture = "gfx/interface/masks/fade_horizontal_center.dds"
+				spriteType = Corneredstretched
+				spriteborder = { 0 0 }
+				blend_mode = alphamultiply
+				alpha = 0.5
+			}
+		}
+
+		section_header_button = {
+			blockoverride "layout" {
+				size = { @entry_width 30 }
+			}
+
+			blockoverride "arrow_size" {
+				size = { 18 18 }
+			}
+
+			blockoverride "arrow_position" {
+				position = { 7 0 }
+				parentanchor = vcenter
+			}
+
+			blockoverride "fontsize" {}
+
+			blockoverride "left_textbox_default_format" {
+				default_format = "#v"
+			}
+
+			blockoverride "left_textbox_margin_left" {
+				margin_left = 30
+			}
+
+			blockoverride "left_text" {
+				text = "PLAYERS"
+			}
+
+			blockoverride "right_text" {
+				textbox = {
+					layoutstretchfactor_horizontal = 1
+					layoutpolicy_horizontal = expanding
+					layoutpolicy_vertical = expanding
+					margin_right = 25
+					elide = right
+					align = right|nobaseline
+					alwaystransparent = yes
+					fontsize_min = 12
+					text = "[GetDataModelSize(Outliner.AccessPlayers)]"
+				}
+			}
+
+			blockoverride "onclick" {
+				onclick = "[OutlinerEntry.ToggleExpanded]"
+			}
+
+			blockoverride "onclick_showmore" {
+				visible = "[Not(OutlinerEntry.IsExpanded)]"
+			}
+
+			blockoverride "onclick_showless" {
+				visible = "[OutlinerEntry.IsExpanded]"
+			}
+		}
+
+		container = {
+			block "list_visibility" {
+				visible = "[OutlinerEntry.IsExpanded]"
+			}
+
+			fixedgridbox = {
+				block "fixedgridbox_cell_size" {
+					addcolumn = @entry_width
+					addrow = 50
+				}
+
+				block "datamodel" {
+					datamodel = "[Outliner.AccessPlayers]"
+				}
+
+				item = {
+					block "item" {
+						player_item = {}
+					}
+				}
 			}
 		}
 	}
@@ -1290,6 +1478,10 @@ types ongoing_outliner_items {
 					text = "NUMBER_OF_NON_PLAYER_OBJECTIVE_JOURNAL_ENTRIES_SHORT"
 					autoresize = yes
 					align = left|nobaseline
+					elide = right
+					fontsize_min = 14
+					minimumsize = { 180 -1 }
+					maximumsize = { 180 -1 }
 				}
 
 				textbox = {
@@ -1712,6 +1904,7 @@ types ongoing_outliner_items {
 	### NON-REVOLUTIONARY POLITICAL MOVEMENT ITEM
 	type outliner_non_revolutionary_political_movement_item = flowcontainer {
 		direction = vertical
+		visible = "[PoliticalMovement.IsPinnedInOutliner]"
 
 		onmousehierarchyenter = "[AccessHighlightManager.HighlightPoliticalMovement(PoliticalMovement.Self)]"
 		onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
@@ -1726,6 +1919,7 @@ types ongoing_outliner_items {
 			button = {
 				size = { 100% 90 }
 				onclick = "[InformationPanelBar.OpenPoliticalMovementPanel(PoliticalMovement.AccessSelf)]"
+				onrightclick = "[RightClickMenuManager.ShowForPoliticalMovement(PoliticalMovement.AccessSelf)]"
 				using = default_button
 				parentanchor = bottom
 

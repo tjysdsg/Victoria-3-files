@@ -5,6 +5,13 @@
 	
 	progressiveness = 0	
 	
+	can_enact = {
+		custom_tooltip = {
+			modifier:country_disallow_law_no_colonial_affairs_bool = no
+			text = disallow_law_no_colonial_affairs_tt
+		}
+	}
+
 	pop_support = {
 		value = 0
 	}
@@ -17,11 +24,7 @@
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
 
@@ -62,13 +65,24 @@ law_frontier_colonization = {
 		colonization
 	}
 
-	limited_to_frontier_colonization = yes
-	
 	modifier = {
 		state_migration_pull_unincorporated_mult = 0.5
 	}
 	
 	institution = institution_colonial_affairs
+
+	can_impose = {
+		OR = {
+			AND = {
+				is_in_same_power_bloc = scope:target_country
+				AND = {
+					modifier:country_can_impose_same_lawgroup_colonization_in_power_bloc_bool = yes
+					has_law = scope:law
+				}
+			}
+			can_impose_law_default = yes
+		}
+	}
 
 	pop_support = {
 		value = 0
@@ -109,6 +123,19 @@ law_colonial_resettlement = {
 	
 	institution = institution_colonial_affairs
 
+	can_impose = {
+		OR = {
+			AND = {
+				is_in_same_power_bloc = scope:target_country
+				AND = {
+					modifier:country_can_impose_same_lawgroup_colonization_in_power_bloc_bool = yes
+					has_law = scope:law
+				}
+			}
+			can_impose_law_default = yes
+		}
+	}
+
 	pop_support = {
 		value = 0
 		# Officers like colonialism
@@ -137,12 +164,26 @@ law_colonial_resettlement = {
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
+		}
+	}
+
+	ai_impose_chance = {
+		value = 0
+		
+		if = {
+			limit = {
+				OR = {
+					has_law = law_type:law_colonial_resettlement
+					has_law = law_type:law_frontier_colonization
+				}
+				scope:target_country = {
+					has_law = law_type:law_no_colonial_affairs
+				}
+				power_bloc ?= { has_principle_group = principle_group:principle_group_colonial_offices }
+			}
+			add = 10
 		}
 	}
 }
@@ -171,6 +212,19 @@ law_colonial_exploitation = {
 	
 	institution = institution_colonial_affairs 
 
+	can_impose = {
+		OR = {
+			AND = {
+				is_in_same_power_bloc = scope:target_country
+				AND = {
+					modifier:country_can_impose_same_lawgroup_colonization_in_power_bloc_bool = yes
+					has_law = scope:law
+				}
+			}
+			can_impose_law_default = yes
+		}
+	}
+
 	pop_support = {
 		value = 0
 		# Officers like colonialism
@@ -197,12 +251,23 @@ law_colonial_exploitation = {
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
+		}
+	}
+
+	ai_impose_chance = {
+		value = 0
+		
+		if = {
+			limit = {
+				has_law = law_type:law_colonial_exploitation
+				scope:target_country = {
+					has_law = law_type:law_no_colonial_affairs
+				}
+				power_bloc ?= { has_principle_group = principle_group:principle_group_colonial_offices }
+			}
+			add = 10
 		}
 	}
 }

@@ -16,14 +16,29 @@ default_popup = {
 		flowcontainer = {
 			direction = vertical
 			resizeparent = yes
-			margin_top = 10
+			margin_top = 2
+
 
 			flowcontainer = {
 				parentanchor = hcenter
 				margin_bottom = 10
 
+				background = {
+					fittype = start
+					texture = "gfx/loadingscreens/victoria3_load_9.dds"
+					alpha = 0.1
+
+					modify_texture = {
+						texture = "gfx/interface/masks/fade_top_illus.dds"
+						blend_mode = alphamultiply
+						alpha = 1
+					}
+				}
+
 				### LEFT SIDE
 				flowcontainer = {
+					datacontext = "[TransferFormationPopup.GetLeftStagedFormation]"
+
 					direction = vertical
 					spacing = 10
 					margin = { 10 0 }
@@ -33,12 +48,14 @@ default_popup = {
 						spacing = 10
 
 						button_icon_round_big_action = {
-							visible = "[TransferFormationPopup.HasLeftFormation]"
+							visible = "[Or( StagedFormation.HasValidFormation, GetVariableSystem.Exists( Concatenate( StagedFormation.GetIDString, '_new_formation') ) )]"
 							parentanchor = vcenter
 							size = { 40 40 }
 							tooltip = "REMOVE_SOURCE_FORMATION"
 							using = tooltip_above
 							onclick = "[TransferFormationPopup.DeselectLeftFormation]"
+							onclick = "[GetVariableSystem.Clear( 'transfer_formation_new_formation' )]"
+							onclick = "[GetVariableSystem.Clear( Concatenate( StagedFormation.GetIDString, '_new_formation') )]"
 							
 							blockoverride "icon" {
 								texture = "gfx/interface/icons/generic_icons/red_cross.dds"
@@ -51,9 +68,9 @@ default_popup = {
 
 						# LEFT SIDE - SELECTED ORIGIN FORMATION
 						military_formation_right_click_item = {
-							visible = "[TransferFormationPopup.HasLeftFormation]"
-							datacontext = "[TransferFormationPopup.GetLeftFormation]"
-							size = { 320 80 }
+							visible = "[StagedFormation.HasValidFormation]"
+							datacontext = "[StagedFormation.GetMilitaryFormation]"
+							size = { 345 80 }
 
 							blockoverride "default_button_template" {
 								using = default_button
@@ -65,68 +82,42 @@ default_popup = {
 						
 							blockoverride "onclick" {
 								onclick = "[TransferFormationPopup.SelectLeftFormation]"
-								onrightclick = "[TransferFormationPopup.DeselectLeftFormation]"
 							}
 						}
 
 						# LEFT SIDE - SELECTED NEW ARMY
-						#button = {
-						#	#visible = "[TransferFormationPopup.HasSourceNewArmy]"
-						#	visible = no
-						#	using = default_button
-						#	using = fontsize_large
-						#	using = default_content_fade
-						#	size = { 320 80 }
-						#	tooltip = "CHANGE_A_FORMATION"
-						#	text = "CREATE_NEW_ARMY"
-						#
-						#	blockoverride "onclick" {
-						#		onclick = "[TransferFormationPopup.SelectLeftFormation]"
-						#		#onrightclick = "[PopupManager.AskConfirmation(TransferFormationPopup.DeselectLeftFormation)]" # todo PRCAL-30807: Make this function be able to have a confirmation popup
-						#	}
-						#}
-
-						# LEFT SIDE - SELECTED NEW ARMY
-						#button = {
-						#	#visible = "[TransferFormationPopup.HasSourceNewArmy]"
-						#	visible = no
-						#	using = default_button
-						#	using = fontsize_large
-						#	using = default_content_fade
-						#	size = { 320 80 }
-						#	tooltip = "CHANGE_A_FORMATION"
-						#	text = "CREATE_NEW_ARMY"
-						#
-						#	blockoverride "onclick" {
-						#		onclick = "[TransferFormationPopup.SelectLeftFormation]"
-						#		#onrightclick = "[PopupManager.AskConfirmation(TransferFormationPopup.DeselectLeftFormation)]" # todo PRCAL-30807: Make this function be able to have a confirmation popup
-						#	}
-						#}
-
-						# LEFT SIDE - SELECTED NEW ARMY
-						#button = {
-						#	#visible = "[TransferFormationPopup.HasSourceNewFleet]"
-						#	visible = no
-						#	using = default_button
-						#	using = fontsize_large
-						#	using = default_content_fade
-						#	size = { 320 80 }
-						#	tooltip = "CHANGE_A_FORMATION"
-						#	text = "CREATE_NEW_FLEET"
-						#
-						#	blockoverride "onclick" {
-						#		onclick = "[TransferFormationPopup.SelectLeftFormation]"
-						#		#onrightclick = "[PopupManager.AskConfirmation(TransferFormationPopup.DeselectLeftFormation)]" # todo PRCAL-30807: Make this function be able to have a confirmation popup
-						#	}
-						#}
-
-						# LEFT SIDE - SELECT ORIGIN ARMY (+) BUTTON
 						button = {
+							visible = "[And(TransferFormationPopup.HasArmyContext, GetVariableSystem.Exists( Concatenate( StagedFormation.GetIDString, '_new_formation') ) )]"
 							using = default_button
 							using = fontsize_large
 							using = default_content_fade
-							visible = "[Not(TransferFormationPopup.HasLeftFormation)]"
-							size = { 320 80 }
+							size = { 345 80 }
+							tooltip = "CHANGE_A_FORMATION"
+							text = "CREATE_NEW_ARMY"
+						
+							onclick = "[TransferFormationPopup.SelectLeftFormation]"
+						}
+
+						# LEFT SIDE - SELECTED NEW FLEET
+						button = {
+							visible = "[And(TransferFormationPopup.HasFleetContext, GetVariableSystem.Exists( Concatenate( StagedFormation.GetIDString, '_new_formation') ) )]"
+							using = default_button
+							using = fontsize_large
+							using = default_content_fade
+							size = { 345 80 }
+							tooltip = "CHANGE_A_FORMATION"
+							text = "CREATE_NEW_FLEET"
+						
+							onclick = "[TransferFormationPopup.SelectLeftFormation]"
+						}
+
+						# LEFT SIDE - SELECT ORIGIN ARMY (+) BUTTON
+						button = {
+							visible = "[And(Not(StagedFormation.HasValidFormation), Not( GetVariableSystem.Exists( Concatenate( StagedFormation.GetIDString, '_new_formation' ) ) ) )]"
+							using = default_button
+							using = fontsize_large
+							using = default_content_fade
+							size = { 345 80 }
 							tooltip = "SELECT_MILITARY_FORMATION_TO_SEND_FROM"
 							onclick = "[TransferFormationPopup.SelectLeftFormation]"
 
@@ -141,9 +132,13 @@ default_popup = {
 						widget = {
 							visible = "[TransferFormationPopup.CanReset]"
 							size = { 150 80 }
+							datacontext = "[TransferFormationPopup.GetLeftStagedFormation]"
+							tooltip = "TRANSFER_FORMATION_CHANGES_TO_TOTAL_NUMBER_OF_UNITS_TOOLTIP"
+							using = tooltip_below
+							parentanchor = vcenter
 
 							background = {
-								using = entry_bg
+								using = entry_bg_simple
 							}
 
 							flowcontainer = {
@@ -153,6 +148,7 @@ default_popup = {
 
 								flowcontainer = {
 									spacing = 5
+									parentanchor = hcenter
 
 									### ARMY ICON
 									icon = {
@@ -176,17 +172,23 @@ default_popup = {
 									textbox = {
 										parentanchor = vcenter
 										autoresize = yes
-										align = center|nobaseline
+										align = hcenter|nobaseline
 										using = fontsize_large
 										using = look_at_me_text_animation
-
-										datacontext = "[TransferFormationPopup.GetLeftStagedFormation]"
 										text = "TRANSFER_FORMATION_CHANGES_TO_TOTAL_NUMBER_OF_UNITS"
+									}
+
+									icon = {
+										visible = "[LessThan_int32(StagedFormation.GetCommandLimitRawIfTransferred, StagedFormation.GetNumCombatUnitsIfTransferred)]"
+										size = { 30 30 }
+										parentanchor = vcenter
+										using = look_at_me_animation
+										texture = "gfx/interface/icons/generic_icons/warning.dds"
 									}
 								}
 
 								textbox = {
-									visible = "[And( TransferFormationPopup.HasLeftFormation, And(IsDataModelEmpty(TransferFormationPopup.GetLeftCommanders), EqualTo_int32(TransferFormationPopup.GetLeftStagedFormation.GetNumCombatUnitsIfTransferred, '(int32)0')))]"
+									visible = "[And( StagedFormation.HasValidFormation, And(IsDataModelEmpty(StagedFormation.GetCommanders), EqualTo_int32(StagedFormation.GetNumCombatUnitsIfTransferred, '(int32)0')))]"
 									parentanchor = hcenter
 									align = nobaseline
 									autoresize = yes
@@ -213,7 +215,7 @@ default_popup = {
 							minimumsize = { -1 100 }
 
 							blockoverride "visible" {
-								visible = "[Not(TransferFormationPopup.HasLeftFormation)]"
+								visible = "[And(Not(StagedFormation.HasValidFormation), Not(GetVariableSystem.Exists(Concatenate(StagedFormation.GetIDString, '_new_formation'))))]"
 							}
 
 							blockoverride "text" {
@@ -222,8 +224,8 @@ default_popup = {
 						}
 
 						dynamicgridbox = {
-							visible = "[Not(IsDataModelEmpty(TransferFormationPopup.GetLeftCommanders))]"
-							datamodel = "[TransferFormationPopup.GetLeftCommanders]"
+							visible = "[Not(IsDataModelEmpty(StagedFormation.GetCommanders))]"
+							datamodel = "[StagedFormation.GetCommanders]"
 							parentanchor = hcenter
 							datamodel_wrap = 6
 							flipdirection = yes
@@ -246,7 +248,7 @@ default_popup = {
 							minimumsize = { -1 100 }
 
 							blockoverride "visible" {
-								visible = "[And(TransferFormationPopup.HasLeftFormation, IsDataModelEmpty(TransferFormationPopup.GetLeftCommanders))]"
+								visible = "[And(Or(StagedFormation.HasValidFormation, GetVariableSystem.Exists(Concatenate(StagedFormation.GetIDString, '_new_formation'))), IsDataModelEmpty(StagedFormation.GetCommanders))]"
 							}
 
 							blockoverride "text" {
@@ -263,13 +265,15 @@ default_popup = {
 						margin = { 0 10 }
 
 						background = {
+							visible = "[Or(StagedFormation.HasValidFormation, GetVariableSystem.Exists(Concatenate(StagedFormation.GetIDString, '_new_formation')))]"
 							using = dark_area
+							alpha = 0.2
 						}
 
 						# LEFT SIDE - UNIT TYPES FROM SELECTED ORIGIN FORMATION
 						flowcontainer = {
-							visible = "[Not(IsDataModelEmpty(TransferFormationPopup.GetLeftUnitTypes))]"
-							datamodel = "[TransferFormationPopup.GetLeftUnitTypes]"
+							visible = "[Not(IsDataModelEmpty(StagedFormation.GetUnitTypes))]"
+							datamodel = "[StagedFormation.GetUnitTypes]"
 
 							parentanchor = hcenter
 							direction = vertical
@@ -278,10 +282,12 @@ default_popup = {
 							item = {
 								flowcontainer = {
 									unit_type_selection_with_arrow_button = {
-										visible = "[Or(GreaterThan_int32(StagedUnitTypeTransfer.GetNumRegulars, '(int32)0'), GreaterThan_int32(StagedUnitTypeTransfer.GetNumConscripts, '(int32)0'))]"
 
-										datacontext = "[TransferFormationPopup.GetLeftFormation]"
-										datacontext = "[StagedUnitTypeTransfer.GetUnitType]"
+										# Keep this visible as long as there are available units to be transferred
+										visible = "[Or(GreaterThan_int32(StagedUnitsWithType.GetNumRegulars, '(int32)0'), GreaterThan_int32(StagedUnitsWithType.GetNumConscripts, '(int32)0'))]"
+
+										datacontext = "[StagedFormation.GetMilitaryFormation]"
+										datacontext = "[StagedUnitsWithType.GetUnitType]"
 
 										blockoverride "right_side_arrow_buttons" {}
 									}
@@ -295,25 +301,11 @@ default_popup = {
 							minimumsize = { -1 100 }
 
 							blockoverride "visible" {
-								visible = "[And(TransferFormationPopup.HasLeftFormation, IsDataModelEmpty(TransferFormationPopup.GetLeftUnitTypes))]"
+								visible = "[And(StagedFormation.HasValidFormation, IsDataModelEmpty(StagedFormation.GetUnitTypes))]"
 							}
 
 							blockoverride "text" {
 								text = "NO_UNITS_IN_MILITARY_FORMATION"
-							}
-						}
-
-						# LEFT SIDE - NO FORMATION SELECTED - WILL CREATE NEW FORMATION
-						empty_state = {
-							parentanchor = hcenter
-							minimumsize = { -1 100 }
-
-							blockoverride "visible" {
-								visible = "[Not(TransferFormationPopup.HasLeftFormation)]"
-							}
-
-							blockoverride "text" {
-								text = "THIS_WILL_CREATE_A_NEW_MILITARY_FORMATION"
 							}
 						}
 					}
@@ -323,6 +315,8 @@ default_popup = {
 
 				### RIGHT SIDE
 				flowcontainer = {
+					datacontext = "[TransferFormationPopup.GetRightStagedFormation]"
+
 					direction = vertical
 					spacing = 10
 					margin = { 10 0 }
@@ -334,11 +328,15 @@ default_popup = {
 						### RIGHT SIDE - EXPECTED UNIT NUMBERS FOR FORMATION IF TRANSFER IS CONFIRMED
 						widget = {
 							visible = "[TransferFormationPopup.CanReset]"
-
 							size = { 150 80 }
+							datacontext = "[TransferFormationPopup.GetRightStagedFormation]"
+							tooltip = "TRANSFER_FORMATION_CHANGES_TO_TOTAL_NUMBER_OF_UNITS_TOOLTIP"
+							using = tooltip_below
+							parentanchor = vcenter
 
 							background = {
-								using = entry_bg
+								using = entry_bg_simple
+								alpha = 0.5
 							}
 
 							flowcontainer = {
@@ -348,6 +346,7 @@ default_popup = {
 
 								flowcontainer = {
 									spacing = 5
+									parentanchor = hcenter
 
 									### ARMY ICON
 									icon = {
@@ -371,17 +370,23 @@ default_popup = {
 									textbox = {
 										parentanchor = vcenter
 										autoresize = yes
-										align = center|nobaseline
+										align = hcenter|nobaseline
 										using = fontsize_large
 										using = look_at_me_text_animation
-
-										datacontext = "[TransferFormationPopup.GetRightStagedFormation]"
 										text = "TRANSFER_FORMATION_CHANGES_TO_TOTAL_NUMBER_OF_UNITS"
+									}
+
+									icon = {
+										visible = "[LessThan_int32(StagedFormation.GetCommandLimitRawIfTransferred, StagedFormation.GetNumCombatUnitsIfTransferred)]"
+										size = { 30 30 }
+										parentanchor = vcenter
+										using = look_at_me_animation
+										texture = "gfx/interface/icons/generic_icons/warning.dds"
 									}
 								}
 
 								textbox = {
-									visible = "[And(TransferFormationPopup.HasRightFormation, And(IsDataModelEmpty(TransferFormationPopup.GetRightCommanders), EqualTo_int32(TransferFormationPopup.GetRightStagedFormation.GetNumCombatUnitsIfTransferred, '(int32)0')))]"
+									visible = "[And( StagedFormation.HasValidFormation, And(IsDataModelEmpty(StagedFormation.GetCommanders), EqualTo_int32(StagedFormation.GetNumCombatUnitsIfTransferred, '(int32)0')))]"
 									parentanchor = hcenter
 									align = nobaseline
 									autoresize = yes
@@ -396,9 +401,9 @@ default_popup = {
 
 						# RIGHT SIDE - SELECTED DESTINATION FORMATION
 						military_formation_right_click_item = {
-							visible = "[TransferFormationPopup.HasRightFormation]"
-							datacontext = "[TransferFormationPopup.GetRightFormation]"
-							size = { 320 80 }
+							visible = "[StagedFormation.HasValidFormation]"
+							datacontext = "[StagedFormation.GetMilitaryFormation]"
+							size = { 345 80 }
 
 							blockoverride "default_button_template" {
 								using = default_button
@@ -410,51 +415,42 @@ default_popup = {
 						
 							blockoverride "onclick" {
 								onclick = "[TransferFormationPopup.SelectRightFormation]"
-								#onrightclick = "[TransferFormationPopup.DeselectRightFormation]"
 							}
 						}
 
 						# RIGHT SIDE - SELECTED NEW ARMY
-						#button = {
-						#	#visible = "[TransferFormationPopup.HasTargetNewArmy]"
-						#	visible = no
-						#	using = default_button
-						#	using = fontsize_large
-						#	using = default_content_fade
-						#	size = { 320 80 }
-						#	tooltip = "CHANGE_A_FORMATION"
-						#	text = "CREATE_NEW_ARMY"
-						#
-						#	blockoverride "onclick" {
-						#		onclick = "[TransferFormationPopup.SelectLeftFormation]"
-						#		#onrightclick = "[PopupManager.AskConfirmation(TransferFormationPopup.DeselectRightFormation)]" # todo PRCAL-30807: Make this function be able to have a confirmation popup
-						#	}
-						#}
-
-						# RIGHT SIDE - SELECTED NEW ARMY
-						#button = {
-						#	#visible = "[TransferFormationPopup.HasTargetNewFleet]"
-						#	visible = no
-						#	using = default_button
-						#	using = fontsize_large
-						#	using = default_content_fade
-						#	size = { 320 80 }
-						#	tooltip = "CHANGE_A_FORMATION"
-						#	text = "CREATE_NEW_FLEET"
-						#
-						#	blockoverride "onclick" {
-						#		onclick = "[TransferFormationPopup.SelectLeftFormation]"
-						#		#onrightclick = "[PopupManager.AskConfirmation(TransferFormationPopup.DeselectRightFormation)]" # todo PRCAL-30807: Make this function be able to have a confirmation popup
-						#	}
-						#}
-
-						# RIGHT SIDE - SELECT DESTINATION ARMY (+) BUTTON
 						button = {
-							visible = "[Not(TransferFormationPopup.HasRightFormation)]"
+							visible = "[And( TransferFormationPopup.HasArmyContext,  GetVariableSystem.Exists( Concatenate( StagedFormation.GetIDString, '_new_formation') ) )]"
 							using = default_button
 							using = fontsize_large
 							using = default_content_fade
-							size = { 320 80 }
+							size = { 345 80 }
+							tooltip = "CHANGE_A_FORMATION"
+							text = "CREATE_NEW_ARMY"
+						
+							onclick = "[TransferFormationPopup.SelectRightFormation]"
+						}
+
+						# RIGHT SIDE - SELECTED NEW FLEET
+						button = {
+							visible = "[And( TransferFormationPopup.HasFleetContext, GetVariableSystem.Exists( Concatenate( StagedFormation.GetIDString, '_new_formation') ) )]"
+							using = default_button
+							using = fontsize_large
+							using = default_content_fade
+							size = { 345 80 }
+							tooltip = "CHANGE_A_FORMATION"
+							text = "CREATE_NEW_FLEET"
+						
+							onclick = "[TransferFormationPopup.SelectRightFormation]"
+						}
+
+						# RIGHT SIDE - SELECT DESTINATION ARMY (+) BUTTON
+						button = {
+							visible = "[And(Not(StagedFormation.HasValidFormation), Not( GetVariableSystem.Exists( Concatenate( StagedFormation.GetIDString, '_new_formation' ) ) ) )]"
+							using = default_button
+							using = fontsize_large
+							using = default_content_fade
+							size = { 345 80 }
 							tooltip = "SELECT_MILITARY_FORMATION_TO_SEND_TO"
 							onclick = "[TransferFormationPopup.SelectRightFormation]"
 
@@ -466,12 +462,14 @@ default_popup = {
 						}
 
 						button_icon_round_big_action = {
-							visible = "[TransferFormationPopup.HasRightFormation]"
+							visible = "[Or( StagedFormation.HasValidFormation, GetVariableSystem.Exists( Concatenate( StagedFormation.GetIDString, '_new_formation') ) )]"
 							parentanchor = vcenter
 							size = { 40 40 }
 							tooltip = "REMOVE_TARGET_FORMATION"
 							using = tooltip_above
 							onclick = "[TransferFormationPopup.DeselectRightFormation]"
+							onclick = "[GetVariableSystem.Clear( 'transfer_formation_new_formation' )]"
+							onclick = "[GetVariableSystem.Clear( Concatenate( StagedFormation.GetIDString, '_new_formation') )]"
 							
 							blockoverride "icon" {
 								texture = "gfx/interface/icons/generic_icons/red_cross.dds"
@@ -496,7 +494,7 @@ default_popup = {
 							minimumsize = { -1 100 }
 
 							blockoverride "visible" {
-								visible = "[Not(TransferFormationPopup.HasRightFormation)]"
+								visible = "[And(Not(StagedFormation.HasValidFormation), Not(GetVariableSystem.Exists(Concatenate(StagedFormation.GetIDString, '_new_formation'))))]"
 							}
 
 							blockoverride "text" {
@@ -505,8 +503,8 @@ default_popup = {
 						}
 
 						dynamicgridbox = {
-							visible = "[Not(IsDataModelEmpty(TransferFormationPopup.GetRightCommanders))]"
-							datamodel = "[TransferFormationPopup.GetRightCommanders]"
+							visible = "[Not(IsDataModelEmpty(StagedFormation.GetCommanders))]"
+							datamodel = "[StagedFormation.GetCommanders]"
 							parentanchor = hcenter
 							datamodel_wrap = 6
 							flipdirection = yes
@@ -526,7 +524,7 @@ default_popup = {
 							minimumsize = { -1 100 }
 
 							blockoverride "visible" {
-								visible = "[And(TransferFormationPopup.HasRightFormation, IsDataModelEmpty(TransferFormationPopup.GetRightCommanders))]"
+								visible = "[And(Or(StagedFormation.HasValidFormation, GetVariableSystem.Exists(Concatenate(StagedFormation.GetIDString, '_new_formation'))), IsDataModelEmpty(StagedFormation.GetCommanders))]"
 							}
 
 							blockoverride "text" {
@@ -543,13 +541,14 @@ default_popup = {
 						margin = { 0 10 }
 
 						background = {
+							visible = "[Or(StagedFormation.HasValidFormation, GetVariableSystem.Exists(Concatenate(StagedFormation.GetIDString, '_new_formation')))]"
 							using = dark_area
 						}
 
 						# RIGHT SIDE - UNIT TYPES FROM SELECTED TARGET FORMATION
 						flowcontainer = {
-							visible = "[Not(IsDataModelEmpty(TransferFormationPopup.GetRightUnitTypes))]"
-							datamodel = "[TransferFormationPopup.GetRightUnitTypes]"
+							visible = "[Not(IsDataModelEmpty(StagedFormation.GetUnitTypes))]"
+							datamodel = "[StagedFormation.GetUnitTypes]"
 
 							parentanchor = hcenter
 							direction = vertical
@@ -558,10 +557,12 @@ default_popup = {
 							item = {
 								flowcontainer = {
 									unit_type_selection_with_arrow_button = {
-										visible = "[Or(GreaterThan_int32(StagedUnitTypeTransfer.GetNumRegulars, '(int32)0'), GreaterThan_int32(StagedUnitTypeTransfer.GetNumConscripts, '(int32)0'))]"
 
-										datacontext = "[TransferFormationPopup.GetRightFormation]"
-										datacontext = "[StagedUnitTypeTransfer.GetUnitType]"
+										# Keep this visible as long as there are available units to be transferred
+										visible = "[Or(GreaterThan_int32(StagedUnitsWithType.GetNumRegulars, '(int32)0'), GreaterThan_int32(StagedUnitsWithType.GetNumConscripts, '(int32)0'))]"
+
+										datacontext = "[StagedFormation.GetMilitaryFormation]"
+										datacontext = "[StagedUnitsWithType.GetUnitType]"
 
 										blockoverride "left_side_arrow_buttons" {}
 									}
@@ -575,25 +576,11 @@ default_popup = {
 							minimumsize = { -1 100 }
 
 							blockoverride "visible" {
-								visible = "[And(TransferFormationPopup.HasRightFormation, IsDataModelEmpty(TransferFormationPopup.GetRightUnitTypes))]"
+								visible = "[And(StagedFormation.HasValidFormation, IsDataModelEmpty(StagedFormation.GetUnitTypes))]"
 							}
 
 							blockoverride "text" {
 								text = "NO_UNITS_IN_MILITARY_FORMATION"
-							}
-						}
-
-						# RIGHT SIDE - NO FORMATION SELECTED - WILL CREATE NEW FORMATION
-						empty_state = {
-							parentanchor = hcenter
-							minimumsize = { -1 100 }
-
-							blockoverride "visible" {
-								visible = "[Not(TransferFormationPopup.HasRightFormation)]"
-							}
-
-							blockoverride "text" {
-								text = "THIS_WILL_CREATE_A_NEW_MILITARY_FORMATION"
 							}
 						}
 					}
@@ -607,70 +594,130 @@ default_popup = {
 			parentanchor = hcenter
 		}
 
-		flowcontainer = {
-			using = default_list_position
-			direction = vertical
-			parentanchor = hcenter
+		container = {
+			minimumsize = { 1340 -1 }
+
+			### RESET BUTTON - ARMY CLICKSOUND
+			button = {
+				visible = "[TransferFormationPopup.HasArmyContext]"
+				parentanchor = bottom
+				position = { 20 -20 }
+				using = default_button_primary_action
+				using = ui_pointer_over
+				size = { 170 42 }
+
+				clicksound = "event:/SFX/UI/Military/military_units_transfer_army"
+
+				enabled = "[TransferFormationPopup.CanReset]"
+				onclick = "[TransferFormationPopup.Reset]"
+
+				tooltip = "[TransferFormationPopup.GetResetDesc]"
+				using = tooltip_above
+				text = "RESET"
+			}
+
+			### RESET BUTTON - FLEET CLICKSOUND
+			button = {
+				visible = "[TransferFormationPopup.HasFleetContext]"
+				parentanchor = bottom
+				position = { 20 -20 }
+				using = default_button_primary_action
+				using = ui_pointer_over
+				size = { 170 42 }
+
+				clicksound = "event:/SFX/UI/Military/military_units_transfer_navy"
+
+				enabled = "[TransferFormationPopup.CanReset]"
+				onclick = "[TransferFormationPopup.Reset]"
+
+				tooltip = "[TransferFormationPopup.GetResetDesc]"
+				using = tooltip_above
+				text = "RESET"
+			}
+
+			### LEFT SIDE - MOVE ALL/HALF BUTTONS
+			flowcontainer = {
+				parentanchor = hcenter|vcenter
+				position = { -75 0 }
+				direction = vertical
+				spacing = 10
+				datacontext = "[TransferFormationPopup.GetLeftStagedFormation]"
+				datacontext = "[StagedFormation.GetMilitaryFormation]"
+
+				button = {
+					size = { 100 40 }
+					using = default_button_action
+					tooltip = "LEFT_SIDE_MOVE_ALL_TOOLTIP"
+					text = "LEFT_SIDE_MOVE_ALL"
+					enabled = "[Not( And( IsDataModelEmpty(StagedFormation.GetCommanders), EqualTo_int32(StagedFormation.GetNumCombatUnitsIfTransferred, '(int32)0') ) )]"
+					onclick = "[TransferFormationPopup.MovePercentageRight('(int32)100')]"
+					using = tooltip_ws
+				}
+
+				button = {
+					size = { 100 40 }
+					using = default_button_action
+					tooltip = "LEFT_SIDE_MOVE_HALF_TOOLTIP"
+					text = "LEFT_SIDE_MOVE_HALF"
+					enabled = "[Not(And(LessThan_int32(GetDataModelSize(StagedFormation.GetCommanders), '(int32)2'), LessThan_int32(StagedFormation.GetNumCombatUnitsIfTransferred, '(int32)2')))]"
+					onclick = "[TransferFormationPopup.MovePercentageRight('(int32)50')]"
+					using = tooltip_ws
+				}
+			}
+
+			vertical_divider_stronger_full = {
+				parentanchor = hcenter
+			}
+
+			### RIGHT SIDE - MOVE ALL/HALF BUTTONS
+			flowcontainer = {
+				parentanchor = hcenter|vcenter
+				position = { 75 0 }
+				direction = vertical
+				spacing = 10
+				datacontext = "[TransferFormationPopup.GetRightStagedFormation]"
+				datacontext = "[StagedFormation.GetMilitaryFormation]"
+
+				button = {
+					size = { 100 40 }
+					using = default_button_action
+					tooltip = "RIGHT_SIDE_MOVE_ALL_TOOLTIP"
+					text = "RIGHT_SIDE_MOVE_ALL"
+					enabled = "[Not( And( IsDataModelEmpty(StagedFormation.GetCommanders), EqualTo_int32(StagedFormation.GetNumCombatUnitsIfTransferred, '(int32)0') ) )]"
+					onclick = "[TransferFormationPopup.MovePercentageLeft('(int32)100')]"
+				}
+
+				button = {
+					size = { 100 40 }
+					using = default_button_action
+					tooltip = "RIGHT_SIDE_MOVE_HALF_TOOLTIP"
+					text = "RIGHT_SIDE_MOVE_HALF"
+					enabled = "[Not(And(LessThan_int32(GetDataModelSize(StagedFormation.GetCommanders), '(int32)2'), LessThan_int32(StagedFormation.GetNumCombatUnitsIfTransferred, '(int32)2')))]"
+					onclick = "[TransferFormationPopup.MovePercentageLeft('(int32)50')]"
+				}
+			}
 
 			flowcontainer = {
 				direction = vertical
-				margin = { 20 20 }
-				parentanchor = hcenter
-				spacing = 10
-
-				textbox = {
-					parentanchor = hcenter
-					autoresize = yes
-					align = nobaseline
-					text = "[TransferFormationPopup.GetTravelTimeDesc]"
-				}
+				parentanchor = right|bottom
 
 				flowcontainer = {
+					direction = vertical
+					margin = { 20 20 }
 					parentanchor = hcenter
-					spacing = 20
+					spacing = 10
 
-					### RESET BUTTON - ARMY CLICKSOUND
-					button = {
-						visible = "[TransferFormationPopup.HasArmyContext]"
-
-						parentanchor = vcenter
-						using = default_button_primary_action
-						using = ui_pointer_over
-						size = { 170 42 }
-
-						clicksound = "event:/SFX/UI/Military/military_units_transfer_army"
-
-						enabled = "[TransferFormationPopup.CanReset]"
-						onclick = "[TransferFormationPopup.Reset]"
-
-						tooltip = "[TransferFormationPopup.GetResetDesc]"
-						using = tooltip_above
-						text = "RESET"
-					}
-
-					### RESET BUTTON - FLEET CLICKSOUND
-					button = {
-						visible = "[TransferFormationPopup.HasFleetContext]"
-
-						parentanchor = vcenter
-						using = default_button_primary_action
-						using = ui_pointer_over
-						size = { 170 42 }
-
-						clicksound = "event:/SFX/UI/Military/military_units_transfer_navy"
-
-						enabled = "[TransferFormationPopup.CanReset]"
-						onclick = "[TransferFormationPopup.Reset]"
-
-						tooltip = "[TransferFormationPopup.GetResetDesc]"
-						using = tooltip_above
-						text = "RESET"
+					textbox = {
+						parentanchor = hcenter
+						autoresize = yes
+						align = nobaseline
+						text = "[TransferFormationPopup.GetTravelTimeDesc]"
 					}
 
 					flowcontainer = {
 						visible = "[TransferFormationPopup.HasArmyContext]"
 						direction = vertical
-						parentanchor = vcenter
+						parentanchor = hcenter
 
 						# confirm button if we need to show confirmation - ARMIES
 						button = {
@@ -766,10 +813,14 @@ default_popup = {
 types transfer_formation_types
 {	
 	type transfer_formation_commander_left_side = widget {
-		size = { 130 100 }
+		size = { 140 90 }
 
-		background = {
-			using = entry_bg
+		widget = {
+			size = { 135 100% }
+
+			background = {
+				using = entry_bg
+			}
 		}
 
 		background = {
@@ -787,7 +838,7 @@ types transfer_formation_types
 		military_formation_commander = {
 			parentanchor = vcenter
 			size = { 80 80 }
-			position = { 5 0 }
+			position = { 10 0 }
 
 			datacontext = "[StagedCommanderTransfer.GetCommander]"
 
@@ -811,8 +862,12 @@ types transfer_formation_types
 			position = { -10 0 }
 			size = { 35 60 }
 			onclick = "[TransferFormationPopup.MoveCommander(StagedCommanderTransfer.AccessSelf)]"
-			enabled = "[TransferFormationPopup.CanMoveCommander(StagedCommanderTransfer.AccessSelf))]"
-			tooltip = "TRANSFER_FORMATION_MOVE_COMMANDER_TOOLTIP" # todo PRCAL-30807: Make sure to add any reasons why in the tooltip below
+
+			onclick = "[GetVariableSystem.SetIf( 'transfer_formation_new_formation', 'true', Not(TransferFormationPopup.HasRightFormation) )]"
+			onclick = "[GetVariableSystem.SetIf( Concatenate( TransferFormationPopup.GetRightStagedFormation.GetIDString, '_new_formation'), 'true', Not(TransferFormationPopup.HasRightFormation) )]"
+
+			enabled = "[TransferFormationPopup.CanMoveCommander(StagedCommanderTransfer.AccessSelf)]"
+			tooltip = "TRANSFER_FORMATION_MOVE_COMMANDER_TOOLTIP"
 			using = tooltip_above
 			
 			blockoverride "icon_size" {
@@ -822,10 +877,14 @@ types transfer_formation_types
 	}
 
 	type transfer_formation_commander_right_side = widget {
-		size = { 130 100 }
+		size = { 140 90 }
 
-		background = {
-			using = entry_bg
+		widget = {
+			size = { 135 100% }
+
+			background = {
+				using = entry_bg
+			}
 		}
 
 		background = {
@@ -843,7 +902,7 @@ types transfer_formation_types
 		military_formation_commander = {
 			parentanchor = vcenter|right
 			size = { 80 80 }
-			position = { -5 0 }
+			position = { -12 0 }
 
 			datacontext = "[StagedCommanderTransfer.GetCommander]"
 
@@ -867,8 +926,12 @@ types transfer_formation_types
 			position = { 10 0 }
 			size = { 35 60 }
 			onclick = "[TransferFormationPopup.MoveCommander(StagedCommanderTransfer.AccessSelf)]"
-            enabled = "[TransferFormationPopup.CanMoveCommander(StagedCommanderTransfer.AccessSelf))]"
-			tooltip = "TRANSFER_FORMATION_MOVE_COMMANDER_TOOLTIP" # todo PRCAL-30807: Can be moved. Make sure to add any reasons why in the tooltip.
+			
+			onclick = "[GetVariableSystem.SetIf( 'transfer_formation_new_formation', 'true', Not(TransferFormationPopup.HasLeftFormation))]"
+			onclick = "[GetVariableSystem.SetIf( Concatenate( TransferFormationPopup.GetLeftStagedFormation.GetIDString, '_new_formation'), 'true', Not(TransferFormationPopup.HasLeftFormation))]"
+
+            enabled = "[TransferFormationPopup.CanMoveCommander(StagedCommanderTransfer.AccessSelf)]"
+			tooltip = "TRANSFER_FORMATION_MOVE_COMMANDER_TOOLTIP"
 			using = tooltip_above
 			
 			blockoverride "icon_size" {
@@ -880,10 +943,10 @@ types transfer_formation_types
 	type unit_type_selection_with_arrow_button = flowcontainer {
 		direction = vertical
 		margin = { 0 10 }
-		datacontext = "[StagedUnitTypeTransfer.GetUnitType.GetGroup]"
+		datacontext = "[StagedUnitsWithType.GetUnitType.GetGroup]"
 
 		background = {
-			visible = "[StagedUnitTypeTransfer.HasMoved]"
+			visible = "[StagedUnitsWithType.HasMoved]"
 			using = rounded_background_blue
 			alpha = 0.7
 		}
@@ -918,80 +981,30 @@ types transfer_formation_types
 
 			icon = {
 				parentanchor = vcenter
-				texture = "[TransferFormationPopup.GetCulturalTexture(StagedUnitTypeTransfer.AccessSelf)]"
+				texture = "[TransferFormationPopup.GetCulturalTexture(StagedUnitsWithType.Self)]"
 				size = { 120 120 }
-			}
 
+				modify_texture = {
+					using = simple_frame_mask
+				}
+
+				icon = {
+					using = simple_frame
+					size = { 100% 100% }
+				}
+			}
 
 			flowcontainer = {
 				direction = vertical
 				parentanchor = vcenter
 				spacing = 5
 
-				# todo PRCAL-30807 - Remove this whole widget
-				widget = {
-					using = default_fade_in_out
-					parentanchor = hcenter
-					size = { 465 40 }
-
-					background = {
-						using = dark_area
-					}
-
-					textbox = {
-						parentanchor = vcenter
-						position = { 10 0 }
-						align = nobaseline
-						text = "TRANSFER_UNIT_TYPE_NAME"
-						using = fontsize_large
-					}
-
-					flowcontainer = {
-						parentanchor = right|vcenter
-						position = { -10 0 }
-						spacing = 10
-
-						textbox = {
-							visible = "[TransferFormationPopup.HasFleetContext]"
-							parentanchor = vcenter
-							autoresize = yes
-							align = nobaseline
-							raw_text = "[TransferFormationPopup.GetContextualUnitTypeIcon] #v [StagedUnitTypeTransfer.GetNumRegulars]#!"
-							tooltip = "UNIT_TYPE_FLOTILLAS_TOOLTIP_FOR_GUI"
-						}
-
-						textbox = {
-							visible = "[TransferFormationPopup.HasArmyContext]"
-							parentanchor = vcenter
-							autoresize = yes
-							align = nobaseline
-							raw_text = "[TransferFormationPopup.GetContextualUnitTypeIcon] #v [StagedUnitTypeTransfer.GetNumRegulars]#!"
-							tooltip = "UNIT_TYPE_BATTALIONS_TOOLTIP_FOR_GUI"
-						}
-
-						vertical_divider = {
-							visible = "[TransferFormationPopup.HasArmyContext]"
-						}
-
-						textbox = {
-							visible = "[TransferFormationPopup.HasArmyContext]"
-							alpha = "[TransparentIfZero_int32(StagedUnitTypeTransfer.GetNumConscripts)]"
-							parentanchor = vcenter
-							autoresize = yes
-							align = nobaseline
-							raw_text = "@conscripts! #v [StagedUnitTypeTransfer.GetNumConscripts]#!"
-							tooltip = "UNIT_TYPE_CONSCRIPT_TOOLTIP_FOR_GUI_NOT_RAISED"
-						}
-					}
-				}
-
-				section_header_button = {
-					visible = no # todo PRCAL-30807 - Re-add this section header button when code support is in for the drop-down unit list
+				section_header_button = {					
 					using = default_fade_in_out
 					parentanchor = hcenter
 
 					block "section_header_size" {
-						size = { 465 40 }
+						size = { 454 40 }
 					}
 
 					blockoverride "arrow_position" {
@@ -1004,8 +1017,14 @@ types transfer_formation_types
 					}
 
 					blockoverride "left_text" {
-						datacontext = "[StagedUnitTypeTransfer]"
 						text = "TRANSFER_UNIT_TYPE_NAME"
+						tooltipwidget = {
+							FancyTooltip_CombatUnitTypeWithCulture = {
+								blockoverride "culture_texture" {
+									texture = "[TransferFormationPopup.GetCulturalTexture(StagedUnitsWithType.Self)]"
+								}
+							}
+						}
 					}
 
 					blockoverride "right_text" {
@@ -1018,7 +1037,7 @@ types transfer_formation_types
 								parentanchor = vcenter
 								autoresize = yes
 								align = nobaseline
-								raw_text = "[TransferFormationPopup.GetContextualUnitTypeIcon] #v [StagedUnitTypeTransfer.GetNumRegulars]#!"
+								raw_text = "[TransferFormationPopup.GetContextualUnitTypeIcon] #v [StagedUnitsWithType.GetNumRegulars]#!"
 								tooltip = "UNIT_TYPE_FLOTILLAS_TOOLTIP_FOR_GUI"
 							}
 
@@ -1027,7 +1046,7 @@ types transfer_formation_types
 								parentanchor = vcenter
 								autoresize = yes
 								align = nobaseline
-								raw_text = "[TransferFormationPopup.GetContextualUnitTypeIcon] #v [StagedUnitTypeTransfer.GetNumRegulars]#!"
+								raw_text = "[TransferFormationPopup.GetContextualUnitTypeIcon] #v [StagedUnitsWithType.GetNumRegulars]#!"
 								tooltip = "UNIT_TYPE_BATTALIONS_TOOLTIP_FOR_GUI"
 							}
 
@@ -1037,26 +1056,26 @@ types transfer_formation_types
 
 							textbox = {
 								visible = "[TransferFormationPopup.HasArmyContext]"
-								alpha = "[TransparentIfZero_int32(StagedUnitTypeTransfer.GetNumConscripts)]"
+								alpha = "[TransparentIfZero_int32(StagedUnitsWithType.GetNumConscripts)]"
 								parentanchor = vcenter
 								autoresize = yes
 								align = nobaseline
-								raw_text = "@conscripts! #v [StagedUnitTypeTransfer.GetNumConscripts]#!"
+								raw_text = "@conscripts! #v [StagedUnitsWithType.GetNumConscripts]#!"
 								tooltip = "UNIT_TYPE_CONSCRIPT_TOOLTIP_FOR_GUI_NOT_RAISED"
 							}
 						}
 					}
 					
 					blockoverride "onclick" {
-						onclick = "[GetVariableSystem.Toggle(Concatenate('transfer_', TransferFormationPopup.GetIDString(StagedUnitTypeTransfer.AccessSelf)))]"
+						onclick = "[GetVariableSystem.Toggle(Concatenate('transfer_', StagedFormation.GetIDStringForUnitType( StagedUnitsWithType.Self )))]"
 					}
 
 					blockoverride "onclick_showmore" {
-						visible = "[Not(GetVariableSystem.Exists(Concatenate('transfer_', TransferFormationPopup.GetIDString(StagedUnitTypeTransfer.AccessSelf))))]"
+						visible = "[Not(GetVariableSystem.Exists(Concatenate('transfer_', StagedFormation.GetIDStringForUnitType( StagedUnitsWithType.Self ))))]"
 					}
 
 					blockoverride "onclick_showless" {
-						visible = "[GetVariableSystem.Exists(Concatenate('transfer_', TransferFormationPopup.GetIDString(StagedUnitTypeTransfer.AccessSelf)) )]"
+						visible = "[GetVariableSystem.Exists(Concatenate('transfer_', StagedFormation.GetIDStringForUnitType( StagedUnitsWithType.Self )) )]"
 					}
 				}
 
@@ -1074,9 +1093,14 @@ types transfer_formation_types
 							button_icon_move_left = {
 								parentanchor = vcenter
 								size = { 35 60 }
-								onclick = "[TransferFormationPopup.MoveRegulars(StagedUnitTypeTransfer.AccessSelf)]"
+								onclick = "[TransferFormationPopup.MoveRegulars(StagedUnitsWithType.AccessSelf)]"
+
+								onclick = "[GetVariableSystem.SetIf( 'transfer_formation_new_formation', 'true', Not(TransferFormationPopup.HasLeftFormation))]"
+								onclick = "[GetVariableSystem.SetIf( Concatenate( TransferFormationPopup.GetLeftStagedFormation.GetIDString, '_new_formation'), 'true', Not(TransferFormationPopup.HasLeftFormation))]"
+
+
 								#enabled = "[TranferFormationPopup.CanMoveUnits(MilitaryFormationUnitEntry)" # todo PRCAL-30807: Can be moved. Also make sure to add any reasons why in the tooltip below
-								enabled = "[GreaterThan_int32(StagedUnitTypeTransfer.GetNumSelectedRegulars, '(int32)0')]"
+								enabled = "[StagedUnitsWithType.CanMoveRegularsToStaged]"
 								tooltip = "TRANSFER_FORMATION_MOVE_UNITS_TOOLTIP"
 								using = tooltip_above
 								
@@ -1090,9 +1114,11 @@ types transfer_formation_types
 							direction = vertical
 							spacing = 5
 							margin = { 5 5 }
+							min_width = 180
 
 							background = {
 								using = entry_bg
+								alpha = 0.4
 							}
 
 							flowcontainer = {
@@ -1100,9 +1126,7 @@ types transfer_formation_types
 								spacing = 5
 
 								# Set number of units to send
-								# todo: PRCAL-30807: allow edit behavior for this label by making it an editbox
-								#editbox = {
-								textbox = {
+								editbox = {
 									background = {
 										using = text_edit_bg
 									}
@@ -1123,30 +1147,30 @@ types transfer_formation_types
 										texture = "gfx/interface/icons/generic_icons/flotillas.dds"
 									}
 
-									text = "[StagedUnitTypeTransfer.GetNumSelectedRegulars|v]"
+									text = "[StagedUnitsWithType.GetNumSelectedRegulars]"
+									ontextedited = "[StagedUnitsWithType.OnRegularsEditboxValueChanged]"
 
-									size = { 120 40 }
+									size = { 130 40 }
 									margin_left = 40
 									align = left|nobaseline
 
-									# todo: PRCAL-30807: uncomment these when making this widget an editbox
-									#maxcharacters = 6
-									#alwaystransparent = no
+									maxcharacters = 6
+									alwaystransparent = no
 								}
 							}
 
 							scrollbar = {
 								direction = horizontal
-								size = { 160 20 }
-								value = "[StagedUnitTypeTransfer.GetNumSelectedRegulars]"
+								size = { 170 20 }
+								value = "[StagedUnitsWithType.GetNumSelectedRegulars]"
 
 
 								min = 0.0
-								max = "[IntToFixedPoint(StagedUnitTypeTransfer.GetNumRegulars)]"
+								max = "[IntToFixedPoint(StagedUnitsWithType.GetNumFilteredRegulars)]"
 								step = 1.0
 								wheelstep = 1.0
 
-								onvaluechanged = "[StagedUnitTypeTransfer.OnRegularsSliderValueChanged]"
+								onvaluechanged = "[StagedUnitsWithType.OnRegularsSliderValueChanged]"
 
 								track = {
 									using = SettingsValueTrack
@@ -1172,9 +1196,13 @@ types transfer_formation_types
 							button_icon_move_right = {
 								parentanchor = vcenter
 								size = { 35 60 }
-								onclick = "[TransferFormationPopup.MoveRegulars(StagedUnitTypeTransfer.AccessSelf)]"
+								onclick = "[TransferFormationPopup.MoveRegulars(StagedUnitsWithType.AccessSelf)]"
+
+								onclick = "[GetVariableSystem.SetIf( 'transfer_formation_new_formation', 'true', Not(TransferFormationPopup.HasRightFormation))]"
+								onclick = "[GetVariableSystem.SetIf( Concatenate( TransferFormationPopup.GetRightStagedFormation.GetIDString, '_new_formation'), 'true', Not(TransferFormationPopup.HasRightFormation))]"
+
 								#enabled = "[TranferFormationPopup.CanMoveUnits(MilitaryFormationUnitEntry)" # todo PRCAL-30807: Can be moved. Also make sure to add any reasons why in the tooltip below
-								enabled = "[GreaterThan_int32(StagedUnitTypeTransfer.GetNumSelectedRegulars, '(int32)0')]"
+								enabled = "[StagedUnitsWithType.CanMoveRegularsToStaged]"
 								tooltip = "TRANSFER_FORMATION_MOVE_UNITS_TOOLTIP"
 								using = tooltip_above
 								
@@ -1195,18 +1223,21 @@ types transfer_formation_types
 						parentanchor = vcenter
 						spacing = 5
 
-						alpha = "[TransparentIfZero_int32(StagedUnitTypeTransfer.GetNumConscripts)]"
+						alpha = "[TransparentIfZero_int32(StagedUnitsWithType.GetNumFilteredConscripts)]"
 
 						### RIGHT SIDE - MOVE BUTTON - CONSCRIPTS
 						block "right_side_arrow_buttons" {
 							### MOVE BUTTON
 							button_icon_move_left = {
-								visible = "[GreaterThan_int32(StagedUnitTypeTransfer.GetNumConscripts, '(int32)0')]"
 								parentanchor = vcenter
 								size = { 35 60 }
-								onclick = "[TransferFormationPopup.MoveConscripts(StagedUnitTypeTransfer.AccessSelf)]"
+								onclick = "[TransferFormationPopup.MoveConscripts(StagedUnitsWithType.AccessSelf)]"
+								
+								onclick = "[GetVariableSystem.SetIf( 'transfer_formation_new_formation', 'true', Not(TransferFormationPopup.HasLeftFormation))]"
+								onclick = "[GetVariableSystem.SetIf( Concatenate( TransferFormationPopup.GetLeftStagedFormation.GetIDString, '_new_formation'), 'true', Not(TransferFormationPopup.HasLeftFormation))]"
+
 								#enabled = "[TranferFormationPopup.CanMoveUnits(MilitaryFormationUnitEntry)" # todo PRCAL-30807: Can be moved. Also make sure to add any reasons why in the tooltip below
-								enabled = "[GreaterThan_int32(StagedUnitTypeTransfer.GetNumSelectedConscripts, '(int32)0')]"
+								enabled = "[StagedUnitsWithType.CanMoveConscriptsToStaged]"
 								tooltip = "TRANSFER_FORMATION_MOVE_CONSCRIPT_BATTALIONS_TOOLTIP"
 								using = tooltip_above
 								
@@ -1231,8 +1262,6 @@ types transfer_formation_types
 
 
 								# Set number of conscripts to send
-								# todo: PRCAL-30807: allow edit behavior for this label by making it an editbox
-								#editbox = {
 								editbox = {
 									background = {
 										using = text_edit_bg
@@ -1245,30 +1274,30 @@ types transfer_formation_types
 										texture = "gfx/interface/icons/generic_icons/conscripts.dds"
 									}
 
-									text = "[StagedUnitTypeTransfer.GetNumSelectedConscripts]"
+									text = "[StagedUnitsWithType.GetNumSelectedConscripts]"
+									ontextedited = "[StagedUnitsWithType.OnConscriptsEditboxValueChanged]"
 
 									size = { 120 40 }
 									margin_left = 40
 									align = left|nobaseline
 
-									# todo: PRCAL-30807: uncomment these when making this widget an editbox
-									#maxcharacters = 6
-									#alwaystransparent = no
+									maxcharacters = 6
+									alwaystransparent = no
 								}
 							}
 
 							scrollbar = {
 								direction = horizontal
 								size = { 160 20 }
-								value = "[StagedUnitTypeTransfer.GetNumSelectedConscripts]"
+								value = "[StagedUnitsWithType.GetNumSelectedConscripts]"
 
 
 								min = 0.0
-								max = "[IntToFixedPoint(StagedUnitTypeTransfer.GetNumConscripts)]"
+								max = "[IntToFixedPoint(StagedUnitsWithType.GetNumFilteredConscripts)]"
 								step = 1.0
 								wheelstep = 1.0
 
-								onvaluechanged = "[StagedUnitTypeTransfer.OnConscriptsSliderValueChanged]"
+								onvaluechanged = "[StagedUnitsWithType.OnConscriptsSliderValueChanged]"
 
 								track = {
 									using = SettingsValueTrack
@@ -1292,12 +1321,15 @@ types transfer_formation_types
 						block "left_side_arrow_buttons" {
 							### MOVE BUTTON
 							button_icon_move_right = {
-								visible = "[GreaterThan_int32(StagedUnitTypeTransfer.GetNumConscripts, '(int32)0')]"
 								parentanchor = vcenter
 								size = { 35 60 }
-								onclick = "[TransferFormationPopup.MoveConscripts(StagedUnitTypeTransfer.AccessSelf)]"
+								onclick = "[TransferFormationPopup.MoveConscripts(StagedUnitsWithType.AccessSelf)]"
+
+								onclick = "[GetVariableSystem.SetIf( 'transfer_formation_new_formation', 'true', Not(TransferFormationPopup.HasRightFormation))]"
+								onclick = "[GetVariableSystem.SetIf( Concatenate( TransferFormationPopup.GetRightStagedFormation.GetIDString, '_new_formation'), 'true', Not(TransferFormationPopup.HasRightFormation))]"
+
 								#enabled = "[TranferFormationPopup.CanMoveUnits(MilitaryFormationUnitEntry)" # todo PRCAL-30807: Can be moved. Also make sure to add any reasons why in the tooltip below
-								enabled = "[GreaterThan_int32(StagedUnitTypeTransfer.GetNumSelectedConscripts, '(int32)0')]"
+								enabled = "[StagedUnitsWithType.CanMoveConscriptsToStaged]"
 								tooltip = "TRANSFER_FORMATION_MOVE_CONSCRIPT_BATTALIONS_TOOLTIP"
 								using = tooltip_above
 								
@@ -1312,59 +1344,73 @@ types transfer_formation_types
 		}
 
 		widget = {
-			# todo: PRCAL-30807: add filtering
-			#visible = "[GetVariableSystem.Exists(Concatenate('transfer_', TransferFormationPopup.GetIDString(StagedUnitTypeTransfer.AccessSelf)))]"
-			visible = no
-
+			visible = "[GetVariableSystem.Exists(Concatenate('transfer_', StagedFormation.GetIDStringForUnitType( StagedUnitsWithType.Self )))]"
+			
 			size = { 10 10 } 
 		}
 
 		divider_clean = {
-			# todo: PRCAL-30807: add filtering
-			#visible = "[GetVariableSystem.Exists(Concatenate('transfer_', TransferFormationPopup.GetIDString(StagedUnitTypeTransfer.AccessSelf)))]"
-			visible = no
+			visible = "[GetVariableSystem.Exists(Concatenate('transfer_', StagedFormation.GetIDStringForUnitType( StagedUnitsWithType.Self )))]"
 		}
 
 		### FILTERS
 		transfer_unit_filters = {
-			# todo: PRCAL-30807: add filtering
-			visible = no
+			visible = "[GetVariableSystem.Exists(Concatenate('transfer_', StagedFormation.GetIDStringForUnitType( StagedUnitsWithType.Self )))]"
 		}
 
-		fixedgridbox = {
-			# todo: PRCAL-30807: add filtering; default sort units by veterancy level
-			#visible = "[GetVariableSystem.Exists(Concatenate('transfer_', TransferFormationPopup.GetIDString(StagedUnitTypeTransfer.AccessSelf)))]"
-			visible = no
+        empty_state = {
+        	blockoverride "visible" {
+        		visible = "[And(IsDataModelEmpty(StagedUnitsWithType.GetStagedCombatUnitsInState( StagedUnitsWithType.GetStateFilter.AccessSelf )), StagedUnitsWithType.HasStateFilter)]"
+        	}
 
+        	blockoverride "text" {
+        		text = "TRANSFER_FORMATION_NO_UNITS_AVAILABLE"
+        	}
+        }
+
+		fixedgridbox = {
+			visible = "[And(GetVariableSystem.Exists(Concatenate('transfer_', StagedFormation.GetIDStringForUnitType( StagedUnitsWithType.Self ))), Not(StagedUnitsWithType.HasStateFilter) )]"
+
+			datamodel = "[StagedUnitsWithType.GetStagedCombatUnits]"
+			
 			parentanchor = hcenter
 			datamodel_wrap = 2
-			addcolumn = 300
-			addrow = 40
+			addcolumn = 298
+			addrow = 42
 			flipdirection = yes
-
-			# todo: PRCAL-30807: we don't have an unit entry here, need to somehow allow the surrogate to provide this data model
-			#datamodel = "[MilitaryFormationUnitEntry.GetCombatUnits]"
-
+			
 			background = {
 				using = dark_area
 			}
 
 			item = {
-				widget = {
-					size = { 300 40 }
+				small_combat_unit_with_checkbox = {}
+			}
+		}
 
-					small_combat_unit_with_checkbox = {
-						parentanchor = center
-					}
-				}
+		fixedgridbox = {
+			visible = "[And(GetVariableSystem.Exists(Concatenate('transfer_', StagedFormation.GetIDStringForUnitType( StagedUnitsWithType.Self ))), StagedUnitsWithType.HasStateFilter )]"
+
+			datamodel = "[StagedUnitsWithType.GetStagedCombatUnitsInState( StagedUnitsWithType.GetStateFilter.AccessSelf )]"
+			
+			parentanchor = hcenter
+			datamodel_wrap = 2
+			addcolumn = 298
+			addrow = 42
+			flipdirection = yes
+			
+			background = {
+				using = dark_area
+			}
+
+			item = {
+				small_combat_unit_with_checkbox = {}
 			}
 		}
 	}
 
 	type transfer_unit_filters = flowcontainer {
-		# todo: PRCAL-30807: add filtering
-		#visible = "[GetVariableSystem.Exists(Concatenate('transfer_', TransferFormationPopup.GetIDString(StagedUnitTypeTransfer.AccessSelf)))]"
-		visible = no
+		visible = "[GetVariableSystem.Exists(Concatenate('transfer_', StagedFormation.GetIDStringForUnitType( StagedUnitsWithType.Self )))]"
 
 		parentanchor = hcenter
 		spacing = 20
@@ -1382,7 +1428,7 @@ types transfer_formation_types
 		}
 
 		filter_button = {
-			visible = "[Not(GetVariableSystem.HasValue(Concatenate(TransferFormationPopup.GetIDString(StagedUnitTypeTransfer.AccessSelf), '_unit_type_filter'), 'all_states'))]"
+			visible = "[StagedUnitsWithType.HasStateFilter]"
 			size = { 180 40 }
 
 			blockoverride "text" {
@@ -1390,12 +1436,12 @@ types transfer_formation_types
 			}
 
 			blockoverride "onclick" {
-				onclick = "[GetVariableSystem.Set( Concatenate(TransferFormationPopup.GetIDString(StagedUnitTypeTransfer.AccessSelf), '_unit_type_filter'), 'all_states' )]"
+				onclick = "[StagedUnitsWithType.ClearStateFilter]"
 			}
 		}
 
-		filter_button_selected = {
-			visible = "[GetVariableSystem.HasValue(Concatenate(TransferFormationPopup.GetIDString(StagedUnitTypeTransfer.AccessSelf), '_unit_type_filter'), 'all_states')]" # todo PRCAL-30807: This should start as the default selected filter, you should never not have a filter selected.
+		filter_background_selected = {
+			visible = "[Not(StagedUnitsWithType.HasStateFilter)]"
 			size = { 180 40 }
 
 			blockoverride "text" {
@@ -1404,56 +1450,69 @@ types transfer_formation_types
 		}
 
 		filter_button = {
-			visible = "[Not(GetVariableSystem.HasValue(Concatenate(TransferFormationPopup.GetIDString(StagedUnitTypeTransfer.AccessSelf), '_unit_type_filter'), 'specific_state'))]"
-			size = { 180 40 }
+			visible = "[Not(StagedUnitsWithType.HasStateFilter)]"
+			size = { 220 40 }
 
 			blockoverride "text" {
 				text = "BY_SPECIFIC_STATE"
 			}
 
 			blockoverride "onclick" {
-				# todo: the following needs to change somehow. ShowForFilterUnitStates cannot be called like this. First, what does it do? Second, we don't have a unit entry here
-				#onclick = "[RightClickMenuManager.ShowForFilterUnitStates(MilitaryFormationUnitEntry.AccessSelf, MilitaryFormation.AccessSelf)]" # todo PRCAL-30807: Populate filter_unit_states_right_click_menu with the current available States to filter on which are the States where the units in this Unit Type of this Formation are from.
+				onclick = "[RightClickMenuManager.ToggleFilterUnitStates(StagedUnitsWithType.AccessSelf, StagedFormation.AccessSelf, PdxGuiWidget.AccessSelf)]"
 			}
 		}
 
-		filter_button_selected = {
-			visible = "[GetVariableSystem.HasValue(Concatenate(TransferFormationPopup.GetIDString(StagedUnitTypeTransfer.AccessSelf), '_unit_type_filter'), 'specific_state' )]"
-			size = { 180 40 }
+		filter_background_selected = {
+			visible = "[StagedUnitsWithType.HasStateFilter]"
+			size = { 220 40 }
 
 			blockoverride "text" {
-				text = "BY_SPECIFIC_STATE_SELECTED" # todo PRCAL-30807: This should show when a specific State has been selected and filter the units on that and it should name this State.
+				text = "BY_SPECIFIC_STATE_SELECTED"
 			}
+
+			blockoverride "onclick" {
+                onclick = "[RightClickMenuManager.ToggleFilterUnitStates(StagedUnitsWithType.AccessSelf, StagedFormation.AccessSelf, PdxGuiWidget.AccessSelf)]"
+            }
+
+            icon = {
+                using = highlighted_square_selection
+            }
 		}
 	}
 
-	type small_combat_unit_with_checkbox = widget {
+	type small_combat_unit_with_checkbox = margin_widget {
 		tooltip = "COMBAT_UNIT_TOOLTIP"
 		using = tooltip_above
 
 		onmousehierarchyenter = "[AccessHighlightManager.HighlightState(CombatUnit.GetBuilding.GetState)]"
 		onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
 
-		block "size" {
-			size = { 295 100% }
-		}
+		size = { 294 42 }
+		margin = { 0 2 }
 
-		background = {
-			visible = "[Not(TransferFormationPopup.IsUnitSelected( CombatUnit.AccessSelf ))]"
+		icon = {
+			visible = "[Not(StagedUnitsWithType.IsUnitSelected( CombatUnit.Self ))]"
 			using = entry_bg_unit
 			alpha = 0.5
+			position = { 2 2 }
+			size = { 291 100% }
 		}
-
-		background = {
-			visible = "[TransferFormationPopup.IsUnitSelected( CombatUnit.AccessSelf )]"
-			using = paper_bg
-		}
-
+		
 		hbox = {
 			layoutpolicy_horizontal = expanding
-			layoutpolicy_vertical = preferred
-			margin = { 10 0 }
+			layoutpolicy_vertical = fixed
+			margin = { 6 6 }
 			spacing = 5
+
+			background = {
+				visible = "[StagedUnitsWithType.IsUnitSelected( CombatUnit.Self )]"
+				using = paper_bg
+			}
+
+			background = {
+				visible = "[StagedUnitsWithType.IsUnitSelected( CombatUnit.Self )]"
+				using = highlighted_square_selection
+			}
 
 			button_checkbox = {
 				size = { 30 30 }
@@ -1462,12 +1521,12 @@ types transfer_formation_types
 				tooltip = "SELECT_UNIT_TO_TRANSFER"
 				using = tooltip_above
 
-				checked = "[TransferFormationPopup.IsUnitSelected( CombatUnit.AccessSelf )]"
-				onclick = "[TransferFormationPopup.ToggleUnitSelected( CombatUnit.AccessSelf )]"
+				checked = "[StagedUnitsWithType.IsUnitSelected( CombatUnit.Self )]"
+				onclick = "[StagedUnitsWithType.ToggleUnitSelected( CombatUnit.Self )]"
 			}
 
-			widget = {
-				size = { 250 40 }
+			margin_widget = {
+				size = { 248 30 }
 
 				textbox = {
 					visible = "[TransferFormationPopup.HasArmyContext]"
@@ -1525,11 +1584,6 @@ types transfer_formation_types
 				}
 			}
 		}
-
-		icon = {
-			visible = "[TransferFormationPopup.IsUnitSelected( CombatUnit.AccessSelf )]"
-			using = highlighted_square_selection
-		}
 	}
 
 	type new_fleet_button = flowcontainer {
@@ -1541,27 +1595,32 @@ types transfer_formation_types
 
 		# SELECT NEW FLEET
 		button = {
-			#visible = "[Not(TransferFormationPopup.IsNewFleetSelected)]" # todo PRCAL-30807: Add a way to check if a new fleet is already selected on either side.
+			visible = "[Not( GetVariableSystem.Exists( 'transfer_formation_new_formation' ) )]"
 			using = default_button_action
 			using = fontsize_large
 			using = default_content_fade
 			parentanchor = hcenter
-			size = { 320 80 }
+			size = { 345 80 }
 			tooltip = "SELECT_NEW_FLEET"
 			text = "CREATE_NEW_FLEET"
+			enabled = "[TransferFormationPopup.HasFleetContext]"
+
+			block "deselect_selected_formation_if_there_is_one" {
+				onclick = "[TransferFormationPopup.DeselectRightFormation]"
+			}
 		
-			#onclick = "[TransferFormationPopup.SetSelectedTargetNewFleet]" # todo PRCAL-30807: Add a way to select a new fleet as a target.
+			onclick = "[GetVariableSystem.Set( 'transfer_formation_new_formation', 'true' )]"
+			onclick = "[GetVariableSystem.Set( Concatenate( StagedFormation.GetIDString, '_new_formation'), 'true' )]"
             onclick = "[RightClickMenuManager.Close]"
 		}
 
 		# SELECT NEW FLEET SELECTED
 		button = {
-			#visible = "[TransferFormationPopup.IsNewFleetSelected]" # todo PRCAL-30807: Add a way to check if a new fleet is already selected on either side.
-			visible = no
+			visible = "[GetVariableSystem.HasValue( 'transfer_formation_new_formation', 'true' )]"
 			using = fontsize_large
 			using = default_content_fade
 			parentanchor = hcenter
-			size = { 320 80 }
+			size = { 345 80 }
 			tooltip = "SELECT_NEW_FLEET_SELECTED"
 			text = "CREATE_NEW_FLEET"
 
@@ -1584,29 +1643,32 @@ types transfer_formation_types
 
 		# SELECT NEW ARMY
 		button = {
-			#visible = "[Not(TransferFormationPopup.IsNewArmySelected)]" # todo PRCAL-30807: Add a way to check if a new Army is already selected on either side.
+			visible = "[Not( GetVariableSystem.Exists( 'transfer_formation_new_formation' ) )]"
 			using = default_button_action
 			using = fontsize_large
 			using = default_content_fade
 			parentanchor = hcenter
-			size = { 320 80 }
+			size = { 345 80 }
 			tooltip = "SELECT_NEW_ARMY"
 			text = "CREATE_NEW_ARMY"
-		
-			blockoverride "onclick" {
-				#onclick = "[TransferFormationPopup.SetSelectedSourceNewArmy]" # todo PRCAL-30807: Add a way to select a new army as a source.
-                onclick = "[RightClickMenuManager.Close]"
+			enabled = "[TransferFormationPopup.HasArmyContext]"
+
+			block "deselect_selected_formation_if_there_is_one" {
+				onclick = "[TransferFormationPopup.DeselectRightFormation]"
 			}
+
+			onclick = "[GetVariableSystem.Set( 'transfer_formation_new_formation', 'true' )]"
+			onclick = "[GetVariableSystem.Set( Concatenate( StagedFormation.GetIDString, '_new_formation'), 'true' )]"
+			onclick = "[RightClickMenuManager.Close]"
 		}
 
 		# SELECT NEW ARMY SELECTED
 		button = {
-			#visible = "[TransferFormationPopup.IsNewArmySelected]" # todo PRCAL-30807: Add a way to check if a new Army is already selected on either side.
-			visible = no
+			visible = "[GetVariableSystem.HasValue( 'transfer_formation_new_formation', 'true' )]"
 			using = fontsize_large
 			using = default_content_fade
 			parentanchor = hcenter
-			size = { 320 80 }
+			size = { 345 80 }
 			tooltip = "SELECT_NEW_ARMY_SELECTED"
 			text = "CREATE_NEW_ARMY"
 

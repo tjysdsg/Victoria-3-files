@@ -4389,3 +4389,438 @@
 #	}
 #}
 
+
+#test.113 = {
+#	title = "Power Bloc, identity, principle links and lists"
+#	is_popup = yes
+#
+#	option = {
+#		name = "Power bloc is ..."
+#		highlighted_option = yes
+#		show_as_unavailable = { always = yes }
+#
+#		trigger = {
+#            is_in_power_bloc = yes
+#            power_bloc ?= {
+#                power_bloc_leader = c:FRA
+#                not = { power_bloc_leader = c:FRA }
+#
+#                identity = identity:identity_1
+#                not = { identity = identity:identity_1 }
+#
+#                has_identity = identity:identity_2
+#                not = { has_identity = identity:identity_2 }
+#
+#                has_principle = principle:principle_A_level_1
+#                not = { has_principle = principle:principle_A_level_1 }
+#
+#                any_power_bloc_member = {
+#                    country_rank >= rank_value:great_power
+#                }
+#            }
+#		}
+#	}
+#
+#	option = {
+#		name = "Any power bloc is ..."
+#		highlighted_option = yes
+#		show_as_unavailable = { always = yes }
+#		trigger = {
+#			any_power_bloc = {
+#                power_bloc_leader = c:FRA
+#                identity = identity:identity_2
+#                has_identity = identity:identity_2
+#                has_principle = principle:principle_A_level_1
+#                any_power_bloc_member = {
+#                    country_rank >= rank_value:great_power
+#                }
+#            }
+#		}
+#	}
+#
+#	option = {
+#		name = "No power bloc is ..."
+#		highlighted_option = yes
+#		show_as_unavailable = { always = yes }
+#		trigger = {
+#            not = {
+#                any_power_bloc = {
+#                    power_bloc_leader = c:FRA
+#                    identity = identity:identity_2
+#                    has_identity = identity:identity_2
+#                    has_principle = principle:principle_A_level_1
+#                    any_power_bloc_member = {
+#                        country_rank >= rank_value:great_power
+#                    }
+#                }
+#            }
+#		}
+#	}
+#
+#	option = {
+#		name = "Exactly X power blocs are ..."
+#		highlighted_option = yes
+#		show_as_unavailable = { always = yes }
+#		trigger = {
+#            any_power_bloc = {
+#                count = 3
+#                power_bloc_leader = c:FRA
+#            }
+#		}
+#	}
+#
+#	option = {
+#		name = "X% of power blocs are ..."
+#		highlighted_option = yes
+#		show_as_unavailable = { always = yes }
+#		trigger = {
+#            any_power_bloc = {
+#                percent > 0.5
+#                power_bloc_leader = c:FRA
+#            }
+#		}
+#	}
+#
+#	option = {
+#		name = "CANCEL"
+#		default_option = yes
+#	}
+#}
+
+
+#test.114 = {
+#	title = "Catalyst & Lobby testing"
+#	is_popup = yes
+#	orphan = yes
+#	
+#	immediate = {
+#		random_diplomatically_relevant_country = {
+#			save_scope_as = relevant_country 
+#		}
+#		
+#		random_interest_group = {
+#			save_scope_as = relevant_ig
+#		}	
+#		
+#		random_political_lobby = {
+#			save_scope_as = relevant_lobby
+#		}
+#	}
+#
+#	option = {
+#		name = "one diplomatic catalyst please"			
+#		
+#		create_diplomatic_catalyst = {  
+#			type = catalyst_relations_level_increased  
+#			target = scope:relevant_country
+#		}		
+#	}
+#	
+#	option = {
+#		name = "can I have a little lobby sir"			
+#		
+#		create_political_lobby = {  
+#			type = lobby_pro_country  
+#			target = scope:relevant_country 
+#			add_interest_group = scope:relevant_ig
+#			lobby_formation_reason = diplomacy
+#		}
+#	}	
+#	
+#	option = {
+#		name = "kill them! kill them all!"			
+#		
+#		every_political_lobby = {
+#			disband_political_lobby = yes
+#		}
+#	}
+#
+#	option = {
+#		name = "testing a lobby, yes siree"
+#		trigger = {
+#			exists = scope:relevant_lobby
+#		}
+#		
+#		scope:relevant_lobby ?= {
+#			change_appeasement = {
+#				amount = 5
+#				factor = appeasement_lobby_request_failed
+#			}
+#		} 		
+#		scope:relevant_lobby ?= {
+#			add_lobby_member = scope:relevant_ig
+#		}	
+#	}
+#
+#	option = {
+#		name = "remove all IGs from lobbies"			
+#		
+#		every_political_lobby = {
+#			every_lobby_member = {
+#				save_scope_as = remove_me_ig
+#				prev = { remove_lobby_member = scope:remove_me_ig }
+#			}
+#		}
+#	}			
+#	
+#
+#	option = {
+#		name = "CANCEL"
+#		default_option = yes
+#	}
+#}
+
+#test.115 = {
+#	title = "Variable testing"
+#	is_popup = yes
+#	orphan = yes
+#	
+#	immediate = {
+#		random_active_party = {
+#			set_variable = {
+#				name = test_variable
+#			}
+#		}
+#		
+#		random_political_lobby = {
+#			set_variable = {
+#				name = test_variable
+#			}
+#		}	
+#	}
+#
+#	option = {
+#		name = "test that variable!"			
+#		
+#		random_political_lobby = {
+#			limit = { has_variable = test_variable }
+#			change_appeasement = {
+#				amount = -5
+#				factor = appeasement_lobby_request_failed
+#			}			
+#		}
+#
+#		random_active_party = {
+#			limit = { has_variable = test_variable }
+#			add_momentum = 100
+#		}			
+#	}
+#	
+#	option = {
+#		name = "CANCEL"
+#		default_option = yes
+#	}
+#}
+
+#test.116 = {
+#	title = "Diplo pact trigger testing"
+#	is_popup = yes
+#	orphan = yes
+#	
+#	immediate = {
+#		random_country = {
+#			limit = {
+#				root = { 
+#					can_break_diplomatic_pact = {
+#						target = prev
+#						type = trade_agreement
+#					}				
+#				}
+#			}
+#			save_scope_as = break_pact_country
+#		}	
+#		random_country = {
+#			limit = {
+#				root = { 
+#					can_send_diplomatic_action = {
+#						target = prev
+#						type = trade_agreement
+#					}				
+#				}
+#			}
+#			save_scope_as = send_action_country
+#		}		
+#	}
+#
+#	option = {
+#		name = "make it so"			
+#			
+#		if = {
+#			limit = { exists = scope:send_action_country }
+#			create_diplomatic_pact = {
+#				country = scope:send_action_country
+#				type = trade_agreement
+#			}		
+#		}	
+#		
+#		if = {
+#			limit = { exists = scope:break_pact_country }
+#			remove_diplomatic_pact = {
+#				country = scope:break_pact_country
+#				type = trade_agreement
+#			}		
+#		}
+#	}
+#	
+#	option = {
+#		name = "CANCEL"
+#		default_option = yes
+#	}
+#}
+
+#test.117 = {
+#	title = "New diplomacy triggers test"
+#	is_popup = yes
+#	orphan = yes
+#	
+#	
+#	option = {
+#		name = "This option is enabled if we can add a war goal against Britain"	
+#		show_as_unavailable = { always = yes }		
+#		trigger = { 
+#			exists = c:GBR 
+#			can_add_wargoal_against = c:GBR	
+#		}
+#
+#		add_treasury = 5
+#	}	
+#
+#	option = {
+#		name = "This option is enabled if we can win against Britain"	
+#		show_as_unavailable = { always = yes }		
+#		trigger = { 
+#			exists = c:GBR 
+#			potential_diplomatic_play_power_ratio = {
+#				type = dp_war_reparations
+#				target = c:GBR
+#				state = c:GBR.capital
+#				value >= 1
+#			}		
+#		}
+#
+#		add_treasury = 5
+#	}
+#	
+#	option = {
+#		name =  "This option is enabled if we can win against Saxony"	
+#		show_as_unavailable = { always = yes }
+#		trigger = { 
+#			exists = c:SAX 
+#			potential_diplomatic_play_power_ratio = {
+#				type = dp_war_reparations
+#				target = c:SAX
+#				state = c:SAX.capital
+#				value >= 1
+#			}				
+#		}
+#
+#		add_treasury = 5
+#	}	
+#	
+#	option = {
+#		name = "This option is enabled if Bavaria can win against us"
+#		show_as_unavailable = { always = yes }
+#		trigger = { 
+#			c:BAV ?= { "potential_diplomatic_play_power_ratio(root)" >= 1 }
+#		}
+#
+#		add_treasury = 5
+#	}		
+#	
+#	
+#	option = {
+#		name = "CANCEL"
+#		default_option = yes
+#	}
+#}
+#
+
+#test.118 = {
+#	title = "New wargoal triggers test"
+#	is_popup = yes
+#	orphan = yes
+#	
+#	option = {
+#		name = "This option is enabled if we have a conquer state wargoal against britain in a war"	
+#		show_as_unavailable = { always = yes }		
+#		trigger = { 
+#			exists = c:GBR 
+#			war_participant_has_war_goal_of_type_against = {
+#				type = conquer_state
+#				target = c:GBR
+#			}
+#		}
+#
+#		add_treasury = 5
+#	}
+#	
+#	option = {
+#		name = "This option is enabled if our war side has a conquer state wargoal against britain"	
+#		show_as_unavailable = { always = yes }		
+#		trigger = { 
+#			exists = c:GBR 
+#			war_side_has_war_goal_of_type_against = {
+#				type = conquer_state
+#				target = c:GBR
+#			}
+#		}
+#
+#		add_treasury = 5
+#	}
+#	
+#	option = {
+#		name = "This option is enabled if we have a conquer state wargoal against britain in a play"	
+#		show_as_unavailable = { always = yes }		
+#		trigger = { 
+#			exists = c:GBR 
+#			play_participant_has_war_goal_of_type_against = {
+#				type = conquer_state
+#				target = c:GBR
+#			}
+#		}
+#
+#		add_treasury = 5
+#	}	
+#
+#	option = {
+#		name = "This option is enabled if our diplomatic play side has a conquer state wargoal against britain"	
+#		show_as_unavailable = { always = yes }		
+#		trigger = { 
+#			exists = c:GBR 
+#			play_side_has_war_goal_of_type_against = {
+#				type = conquer_state
+#				target = c:GBR
+#			}
+#		}
+#
+#		add_treasury = 5
+#	}	
+#	
+#	option = {
+#		name = "CANCEL"
+#		default_option = yes
+#	}
+#}
+
+#test.119 = {
+#	title = "Power struggle trigger test"
+#	is_popup = yes
+#	orphan = yes
+#	
+#	option = {
+#		name = "This option is enabled if we have a power struggle"	
+#		show_as_unavailable = { always = yes }		
+#		trigger = { 
+#			power_bloc ?= {
+#				has_power_struggle = yes
+#			}
+#		}
+#
+#		add_treasury = 5
+#	}
+#	
+#	option = {
+#		name = "CANCEL"
+#		default_option = yes
+#	}
+#}

@@ -16,58 +16,222 @@ types country_panel_types
 		direction = vertical
 		minimumsize = { @panel_width -1 }
 		maximumsize = { @panel_width -1 }
-		margin_top = 10
-		#spacing = 5
-
+		datacontext = "[CountryPanel.AccessCountry]"
 		
-		#ATTITUDE / INFAMY
-		attitude_info = {
-			blockoverride "context" {
+		widget = {
+			size = { @panel_width 125 }
+			parentanchor = hcenter
+
+			#ATTITUDE / INFAMY
+			attitude_info = {
+				size = { 460 105 }
+				position = { 10 0 }
+				parentanchor = left|vcenter
+
+				blockoverride "context" {
+					datacontext = "[Country]"
+				}
+			}
+
+			#MAP MODES
+			map_modes_minimized = {
+				parentanchor = right|vcenter
+				position = { -10 0 }
+
+				blockoverride "expanded_size" {
+					size = { 450 45 }
+				}
+				blockoverride "first_button_click" {
+					onclick = "[CountryPanel.ShowAttitude]"
+				}
+				blockoverride "first_button_selected" {
+					visible = "[CountryPanel.IsShowingAttitude]"
+				}
+				blockoverride "first_button_not_selected" {
+					visible = "[Not(CountryPanel.IsShowingAttitude)]"
+				}
+				blockoverride "first_button_icon" {
+					texture = "gfx/interface/icons/map_mode_icons/attitude.dds"
+				}
+				blockoverride "first_button_text" {
+					text = "MAP_MODE_ATTITUDE_COUNTRY"
+				}
+				blockoverride "second_button_click" {
+					onclick = "[CountryPanel.ShowRelations]"
+				}
+				blockoverride "second_button_selected" {
+					visible = "[CountryPanel.IsShowingRelations]"
+				}
+				blockoverride "second_button_not_selected" {
+					visible = "[Not(CountryPanel.IsShowingRelations)]"
+				}
+				blockoverride "second_button_icon" {
+					texture = "gfx/interface/icons/map_mode_icons/relations.dds"
+				}
+				blockoverride "second_button_text" {
+					text = "MAP_MODE_RELATIONS_COUNTRY"
+				}
+				blockoverride "third_button" {}
+				blockoverride "fourth_button" {}
+			}
+		}
+
+		default_header = {
+			visible = "[Country.IsSubject]"
+
+			blockoverride "text" {
+				text = "OVERLORD"
+			}
+		}
+
+		### OVERLORD - NO BUTTONS - If Country is NOT the player and is NOT a Subject of the player
+		overlord = {
+			visible = "[And(And(Country.IsAIOrOtherPlayer, Country.GetSubjectType.IsValid), Not(Country.IsSubjectOf(GetPlayer.Self)))]"
+
+			blockoverride "diplo_actions_button_visibility" {
+				visible = no
+			}
+
+			blockoverride "overlord_datacontext" {
+				datacontext = "[CountryPanel.AccessCountry.AccessOverlord]"
+			}
+
+			blockoverride "liberty_desire_overlord_datacontext" {
+				datacontext = "[CountryPanel.AccessCountry.AccessOverlord]"
+			}
+
+			blockoverride "whos_overlord_text" {
+				text = "COUNTRY_OVERLORD"
+			}
+
+			blockoverride "whos_liberty_desire_text" {
+				text = "COUNTRY_DIPLOMACY_TAB_LIBERTY_DESIRE"
+			}
+
+			blockoverride "active_pacts_datamodel" {
+				datamodel = "[CountryPanel.AccessCountry.GetNonSubjectDiplomaticPactsWith(Country.GetOverlord)]"
+			}
+
+			blockoverride "country_subject_type_datacontext" {
+				datacontext = "[CountryPanel.AccessCountry.GetSubjectType]"
+			}
+
+			blockoverride "country_liberty_desire_datacontext" {
+				datacontext = "[CountryPanel.AccessCountry]"
+			}
+		}
+
+		### OVERLORD - NO BUTTONS - If Country is NOT the player and is a Subject of the player.
+		overlord = {
+			visible = "[And(And(Country.IsAIOrOtherPlayer, Country.GetSubjectType.IsValid), Country.IsSubjectOf(GetPlayer.Self))]"
+
+			blockoverride "diplo_actions_button_visibility" {
+				visible = no
+			}
+
+			blockoverride "overlord_datacontext" {
+				datacontext = "[CountryPanel.AccessCountry.AccessOverlord]"
+			}
+
+			blockoverride "whos_overlord_text" {
+				text = "COUNTRY_OVERLORD"
+			}
+
+			blockoverride "whos_liberty_desire_text" {
+				text = "COUNTRY_DIPLOMACY_TAB_LIBERTY_DESIRE"
+			}
+
+			blockoverride "active_pacts_datamodel" {
+				datamodel = "[Country.GetNonSubjectDiplomaticPactsWith(Country.GetOverlord)]"
+			}
+
+			blockoverride "country_subject_type_datacontext" {
+				datacontext = "[Country.GetSubjectType]"
+			}
+
+			blockoverride "country_liberty_desire_datacontext" {
 				datacontext = "[Country]"
 			}
+
+			blockoverride "liberty_desire_bar_stagnated" {
+				gold_progressbar_horizontal = {
+					visible = "[Not(Or( GreaterThan_CFixedPoint(Abs_CFixedPoint(Country.GetWeeklyLibertyDesireChange), GetDefine('NGUI', 'LIBERTY_DESIRE_TREND_INDICATOR_LIMIT')), GreaterThan_CFixedPoint(Country.GetWeeklyLibertyDesireChange, GetDefine('NGUI', 'LIBERTY_DESIRE_TREND_INDICATOR_LIMIT'))))]"
+					size = { 100% 100% }
+					blockoverride "background" {}
+					blockoverride "frame" {}
+					blockoverride "glow_visible" {
+						visible = "[LibertyDesireLevel.IsActive( Country.GetLibertyDesireRaw )]"
+					}
+
+					blockoverride "values" {
+						value = "[LibertyDesireLevel.GetProgress( Country.GetLibertyDesireRaw )]"
+						min = 0
+						max = 1
+					}
+				}
+			}
+
+			blockoverride "liberty_desire_bar_decreased" {
+				changed_value_decreased_progressbar_horizontal_green = {
+					visible = "[GreaterThan_CFixedPoint(Abs_CFixedPoint(Country.GetWeeklyLibertyDesireChange), GetDefine('NGUI', 'LIBERTY_DESIRE_TREND_INDICATOR_LIMIT'))]"
+					size = { 100% 100% }
+
+					blockoverride "second_progressbar" {}
+
+					blockoverride "values" {
+						min = 0
+						max = 1
+						value = "[LibertyDesireLevel.GetProgress( Country.GetLibertyDesireRaw )]"
+					}
+
+					blockoverride "glow_size" {
+						size = { 40 100% }
+					}
+
+					blockoverride "arrow_texture_density" {
+						texture_density = 6 #use to match height of progressbar
+					}
+				}
+			}
+
+			blockoverride "liberty_desire_bar_increased" {
+				changed_value_increased_progressbar_horizontal_bad = {
+					visible = "[GreaterThan_CFixedPoint(Country.GetWeeklyLibertyDesireChange, GetDefine('NGUI', 'LIBERTY_DESIRE_TREND_INDICATOR_LIMIT'))]"
+					size = { 100% 100% }
+
+					blockoverride "second_progressbar" {}
+
+					blockoverride "values" {
+						value = "[LibertyDesireLevel.GetProgress( Country.GetLibertyDesireRaw )]"
+						min = 0
+						max = 1
+					}
+
+					blockoverride "glow_size" {
+						size = { 40 100% }
+					}
+
+					blockoverride "arrow_texture_density" {
+						texture_density = 6 #use to match height of progressbar
+					}
+				}
+			}
 		}
 
-		#MAP MODE
+		### OVERLORD - WITH BUTTONS - If Country is the player and is a Subject of someone.
+		overlord = {
+			visible = "[And(Country.IsLocalPlayer, Country.GetSubjectType.IsValid)]"
 
-		map_modes = {
-			margin = { 0 10 }
-			parentanchor = hcenter
-			blockoverride "first_button_click" {
-				onclick = "[CountryPanel.ShowAttitude]"
+			blockoverride "overlord_datacontext" {
+				datacontext = "[CountryPanel.AccessCountry.AccessOverlord]"
 			}
-			blockoverride "first_button_selected" {
-				visible = "[CountryPanel.IsShowingAttitude]"
+
+			blockoverride "liberty_desire_overlord_datacontext" {
+				datacontext = "[CountryPanel.AccessCountry.AccessOverlord]"
 			}
-			blockoverride "first_button_not_selected" {
-				visible = "[Not(CountryPanel.IsShowingAttitude)]"
-			}
-			blockoverride "first_button_icon" {
-				texture = "gfx/interface/icons/map_mode_icons/attitude.dds"
-			}
-			blockoverride "first_button_text" {
-				text = "MAP_MODE_ATTITUDE_COUNTRY"
-			}
-			blockoverride "second_button_click" {
-				onclick = "[CountryPanel.ShowRelations]"
-			}
-			blockoverride "second_button_selected" {
-				visible = "[CountryPanel.IsShowingRelations]"
-			}
-			blockoverride "second_button_not_selected" {
-				visible = "[Not(CountryPanel.IsShowingRelations)]"
-			}
-			blockoverride "second_button_icon" {
-				texture = "gfx/interface/icons/map_mode_icons/relations.dds"
-			}
-			blockoverride "second_button_text" {
-				text = "MAP_MODE_RELATIONS_COUNTRY"
-			}
-			blockoverride "third_button" {}
-			blockoverride "fourth_button" {}
 		}
 
-		diplomatic_info = {
-		}
+		diplomatic_info = {}
 
 		widget = { 
 			size = { 5 5 }
@@ -77,7 +241,6 @@ types country_panel_types
 		flowcontainer = {
 			parentanchor = hcenter
 			direction = vertical
-			visible = "[Not(Country.IsLocalPlayer)]"
 		
 			default_header = {
 				blockoverride "text" {
@@ -125,7 +288,7 @@ types country_panel_types
 
 						textbox = {
 							parentanchor = center					
-							text = "[StrategicRegion.GetNameNoFormatting]"
+							text = "[StrategicRegion.GetNameNoFormatting] [SelectLocalization(GetPlayer.HasInterestIn(StrategicRegion.Self), '@green_checkmark!', '@red_cross!')]"
 							size = { 175 35 }
 							fontsize_min = 10
 							align = hcenter|nobaseline

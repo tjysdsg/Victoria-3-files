@@ -1,5 +1,6 @@
 # COPY-PASTED FOR NOW
 @panel_width_minus_10 = 530			# used to be 450
+@panel_width_minus_30 = 510
 @panel_width = 540  				# used to be 460
 @panel_width_half = 270				# used to be 230
 @panel_width_plus_10 = 550  		# used to be 470
@@ -60,22 +61,22 @@ types journal
 				}
 
 				blockoverride "second_button" {
-					text = "DECISIONS"
+					text = "INACTIVE_JOURNAL_ENTRIES"
 				}
 				blockoverride "second_button_tooltip" {
-					tooltip = "DECISIONS"
+					tooltip = "INACTIVE_JOURNAL_ENTRIES"
 				}
 				blockoverride "second_button_click" {
-					onclick = "[InformationPanel.SelectTab('decisions')]"
+					onclick = "[InformationPanel.SelectTab('inactive_journal_entries')]"
 				}
 				blockoverride "second_button_visibility" {
-					visible = "[InformationPanel.IsTabSelected('decisions')]"
+					visible = "[InformationPanel.IsTabSelected('inactive_journal_entries')]"
 				}
 				blockoverride "second_button_visibility_checked" {
-					visible = "[Not( InformationPanel.IsTabSelected('decisions') )]"
+					visible = "[Not( InformationPanel.IsTabSelected('inactive_journal_entries') )]"
 				}
 				blockoverride "second_button_selected" {
-					text = "DECISIONS"
+					text = "INACTIVE_JOURNAL_ENTRIES"
 				}
 			}
 		}
@@ -85,7 +86,6 @@ types journal
 			flowcontainer = {
 				direction = vertical
 				using = default_list_position
-				spacing = 15
 				margin_top = 10
 				
 				### JOURNAL
@@ -175,82 +175,94 @@ types journal
 						}
 					}
 
-					### INACTIVE
+					### DECISIONS
 					default_header = {
-						visible = "[Not(IsDataModelEmpty(AccessPlayer.AccessInactiveJournalEntries))]"
 						blockoverride "text" {
-							text = "INACTIVE_JOURNAL_ENTRIES"
+							text = "DECISIONS"
 						}
 					}
 
 					flowcontainer = {
-						margin = { 0 10 }
+						using = default_list_position
 						direction = vertical
-						spacing = 10
-						parentanchor = hcenter
-						datamodel = "[AccessPlayer.GetGroupsForInActiveJournalEntries]"
+						margin_bottom = 10
+						using = default_content_fade
 
-						item = {
-							flowcontainer = {
-								direction = vertical
-								textbox = {
-									text = "[JournalEntryGroup.GetName]"
-									autoresize = yes
-									align = nobaseline
-									default_format = "#title"
-									margin_left = 3
-								}							
+						
+						textbox = {
+							visible = "[IsDataModelEmpty(GetPlayer.GetDecisions)]"
+							text = NO_DECISIONS
+							autoresize = yes
+							align = left|nobaseline
+							using = fontsize_xxl
+							parentanchor = top|hcenter
+							margin_bottom = 25
+							margin_top = 10
+							alpha = 0.3
+						}
+
+						dynamicgridbox = {
+							parentanchor = hcenter
+							datamodel = "[GetPlayer.GetDecisions]"
+							item = {
 								flowcontainer = {
+									margin = { 0 2 }
 									direction = vertical
-									datamodel = "[JournalEntryGroup.GetInactiveJournalEntryTypes(GetPlayer.Self)]"
-									spacing = 2
-									item = {
-										journal_entry = {
-											datacontext = "[AccessPlayer.GetJournalEntry(JournalEntryType.Self)]"
-											alpha = 0.75
-											blockoverride "fontsize" {}
-											blockoverride "iconsize" {
-												size = { 35 35 }
-											}
-										}
+									
+									decision = {
+										minimumsize = { @panel_width_minus_30 -1 }
 									}
 								}
 							}
 						}
 					}
 				}
-				
-				### DECISIONS
+
+				### INACTIVE JOURNAL ENTRIES
 				flowcontainer = {
-					visible = "[InformationPanel.IsTabSelected('decisions')]"
+					visible = "[InformationPanel.IsTabSelected('inactive_journal_entries')]"
 					using = default_list_position
 					direction = vertical
-					margin_bottom = 10
 					using = default_content_fade
 
-					
-					textbox = {
-						visible = "[IsDataModelEmpty(GetPlayer.GetDecisions)]"
-						text = NO_DECISIONS
-						autoresize = yes
-						align = left|nobaseline
-						using = fontsize_xxl
-						parentanchor = top|hcenter
-						margin_bottom = 25
-						margin_top = 10
-						alpha = 0.3
+					spacing = 10
+					parentanchor = hcenter
+					datamodel = "[AccessPlayer.GetGroupsForInActiveJournalEntries]"
+
+
+					empty_state = {
+						parentanchor = vcenter
+						blockoverride "visible" {
+							visible = "[IsDataModelEmpty(AccessPlayer.GetGroupsForInActiveJournalEntries)]"
+						}
+						blockoverride "text" {
+							text = "NO_INACTIVE_JOURNAL_ENTRIES"
+						}
 					}
 
-					dynamicgridbox = {
-						parentanchor = hcenter
-						datamodel = "[GetPlayer.GetDecisions]"
-						item = {
+					item = {
+						flowcontainer = {
+							direction = vertical
+							textbox = {
+								text = "[JournalEntryGroup.GetName]"
+								autoresize = yes
+								align = nobaseline
+								default_format = "#title"
+								margin_left = 3
+							}							
 							flowcontainer = {
-								margin = { 0 2 }
 								direction = vertical
-								
-								decision = {
-									minimumsize = { @panel_width -1 }
+								datamodel = "[JournalEntryGroup.GetInactiveJournalEntryTypes(GetPlayer.Self)]"
+								spacing = 2
+								item = {
+									journal_entry = {
+										datacontext = "[AccessPlayer.GetJournalEntry(JournalEntryType.Self)]"
+										alpha = 0.75
+										blockoverride "fontsize" {}
+										blockoverride "iconsize" {
+											size = { 35 35 }
+										}
+									}
 								}
 							}
 						}
@@ -392,8 +404,7 @@ types journal
 				# progress bar
 				flowcontainer = {
 					visible = "[And(JournalEntry.HasProgressBar, JournalEntry.IsActive)]"
-					margin = { 0 5 }
-					
+					margin = { 0 10 }
 					default_progressbar_horizontal = {
 						block "progressbar_size" {
 							size = { 420 6 }
@@ -406,6 +417,175 @@ types journal
 					}
 				}
 				
+				# scripted progress bars
+				flowcontainer = {
+					visible = "[Not( IsDataModelEmpty( JournalEntry.GetScriptedProgressBars ) )]"
+					datamodel = "[JournalEntry.GetScriptedProgressBars]"
+					margin = { 0 10 }
+					direction = vertical
+				    parentanchor = vcenter
+					spacing = 20
+					item = {
+						container = {
+
+							# Default
+							default_progressbar_horizontal = {
+								visible = "[ScriptedProgressBar.IsDefault]"
+								block "progressbar_size" {
+									size = { 420 6 }
+								}
+								tooltip = "[ScriptedProgressBar.GetPeriodicProgressBreakdown]"
+								blockoverride "values" {
+									value = "[JournalEntry.GetCurrentBarProgress(ScriptedProgressBar.Self)]"
+									min = 0
+									max = 1
+								}
+							}
+
+							# Default Bad
+							bad_progressbar_horizontal = {
+								visible = "[ScriptedProgressBar.IsDefaultBad]"
+								block "progressbar_size" {
+									size = { 420 6 }
+								}
+								tooltip = "[ScriptedProgressBar.GetPeriodicProgressBreakdown]"
+								blockoverride "values" {
+									value = "[JournalEntry.GetCurrentBarProgress(ScriptedProgressBar.Self)]"
+									min = 0
+									max = 1
+								}
+							}
+
+							#Default Green
+							green_progressbar_horizontal = {
+								visible = "[ScriptedProgressBar.IsDefaultGreen]"
+								block "progressbar_size" {
+									size = { 420 6 }
+								}
+
+								tooltip = "[ScriptedProgressBar.GetPeriodicProgressBreakdown]"
+								blockoverride "values" {
+									value = "[JournalEntry.GetCurrentBarProgress(ScriptedProgressBar.Self)]"
+									min = 0
+									max = 1
+								}
+							}
+
+							# double sided bad
+							default_progressbar_horizontal = {
+								visible = "[ScriptedProgressBar.IsDoubleSidedBad]"
+								block "progressbar_size" {
+									size = { 420 6 }
+								}
+								tooltip = "[ScriptedProgressBar.GetPeriodicProgressBreakdown]"
+
+								blockoverride "noprogresstexture" {
+									noprogresstexture = "gfx/interface/progressbar/progressbar_bad.dds"
+								}
+
+								blockoverride "values" {
+									value = "[JournalEntry.GetCurrentBarProgress(ScriptedProgressBar.Self)]"
+									min = 0
+									max = 1
+								}
+
+								#this is hack to get an extra marker on top of the frame (progressbar properties are copied)
+								blockoverride "on_top_of_the_progressbar" {
+									progressbar = {
+										noprogresstexture = "gfx/interface/icons/generic_icons/transparent.dds"
+										progresstexture = "gfx/interface/icons/generic_icons/transparent.dds"
+										size = { 100% 100% }
+										spriteType = Corneredtiled
+										spriteborder = { 4 4 }
+										texture_density = 2
+										skip_initial_animation = yes
+
+										block "values" {}
+										block "direction" {
+											direction = horizontal
+										}
+										block "progress_changed_animation" {
+											using = progressbar_changed_animation
+										}
+										block "animate_negative_change" {
+											animate_negative_changes = yes
+										}
+										marker = {
+
+											widget = {
+												size = { 50 50 }
+												icon = {
+													size = { 35 35 }
+													widgetanchor = center
+													position = { 0 5 }
+
+													block "progress_icon" {
+														texture = "[JournalEntry.GetIcon]"
+													}
+												}
+											}
+										}
+									}
+								}
+
+							}
+
+							# Double sided gold
+							default_progressbar_horizontal  = {
+								visible = "[ScriptedProgressBar.IsDoubleSidedGold]"
+								block "progressbar_size" {
+									size = { 420 6 }
+								}
+
+								blockoverride "noprogresstexture" {
+									noprogresstexture = "gfx/interface/progressbar/progressbar_gold.dds"
+								}
+
+								tooltip = "[ScriptedProgressBar.GetPeriodicProgressBreakdown]"
+								blockoverride "values" {
+									value = "[JournalEntry.GetCurrentBarProgress(ScriptedProgressBar.Self)]"
+									min = 0
+									max = 1
+								}
+
+								#this is hack to get an extra marker on top of the frame (progressbar properties are copied)
+								blockoverride "on_top_of_the_progressbar" {
+									progressbar = {
+										noprogresstexture = "gfx/interface/icons/generic_icons/transparent.dds"
+										progresstexture = "gfx/interface/icons/generic_icons/transparent.dds"
+										size = { 100% 100% }
+										spriteType = Corneredtiled
+										spriteborder = { 4 4 }
+										texture_density = 2
+										skip_initial_animation = yes
+
+										block "values" {}
+										block "direction" {
+											direction = horizontal
+										}
+										block "progress_changed_animation" {
+											using = progressbar_changed_animation
+										}
+										block "animate_negative_change" {
+											animate_negative_changes = yes
+										}
+										marker = {
+
+											icon = {
+												size = { 40 20 }
+												parentanchor = vcenter
+												widgetanchor = center
+												texture = "gfx/interface/progressbar/progressbar_marker.dds"
+												using = shimmer
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
 				# time out info
 				flowcontainer = {
 					visible = "[And(JournalEntry.CanTimeOut, JournalEntry.IsActive)]"
@@ -472,8 +652,8 @@ types journal
 	
 	### DECISION
 	type decision = container {
-		maximumsize = { @panel_width_minus_10 -1 }
-		minimumsize = { @panel_width_minus_10 -1 }
+		maximumsize = { @panel_width_minus_30 -1 }
+		minimumsize = { @panel_width_minus_30 -1 }
 		
 		flowcontainer = {
 			margin = { 20 10 }

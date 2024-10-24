@@ -1,4 +1,8 @@
 ﻿take_on_debt = {
+	groups= {
+		general
+	}
+	
 	requires_approval = yes
 	should_notify_third_parties = yes
 	show_effect_in_tooltip = yes
@@ -7,10 +11,15 @@
 		central_banking
 	}
 	
-	potential = {
+	selectable = {
 		NOT = { is_country_type = decentralized }
+		is_revolutionary = no
+	}
+	
+	potential = {
 		scope:target_country = {
 			NOT = { is_country_type = decentralized }
+			is_revolutionary = no
 		}
 	}
 	
@@ -64,6 +73,10 @@
 	}
 	
 	ai = {
+		evaluation_chance = {
+			value = 0.25
+		}		
+	
 		propose_score = {
 			value = 100				
 		}
@@ -362,8 +375,8 @@
 						"scope:actor.infamy" >= infamy_threshold:pariah
 					}
 					value = -50
-				}					
-			}					
+				}
+			}
 
 			add = {
 				desc = "DIPLOMATIC_ACCEPTANCE_RANK"
@@ -377,12 +390,36 @@
 					limit = { scope:actor = { country_rank < root.country_rank } }
 					value = -20
 				}				
-			}				
+			}
+
+			add = {
+				desc = "DIPLOMATIC_ACCEPTANCE_PRINCIPLE_SACRED_CIVICS"
+
+				if = {
+					limit = {
+						AND = {
+							scope:actor.power_bloc ?= {
+								OR = {
+									has_principle = principle:principle_sacred_civics_1
+									has_principle = principle:principle_sacred_civics_2
+									has_principle = principle:principle_sacred_civics_3
+								}
+							}
+							scope:actor.religion = root.religion
+						}
+					}
+					add = 20
+				}
+			}
 		}	
 	}
 }
 
 redeem_obligation = {
+	groups= {
+		general
+	}
+	
 	requires_approval = no
 	
 	potential = {
@@ -408,6 +445,10 @@ redeem_obligation = {
 	}
 	
 	ai = {
+		evaluation_chance = {
+			value = 0.25
+		}	
+	
 		propose_score = {
 			value = 10
 		}	

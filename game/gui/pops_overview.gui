@@ -479,6 +479,31 @@ types pops_overview
 				}
 			}
 		}
+
+		blockoverride "fixed_bottom" {
+			flowcontainer = {
+				direction = vertical
+				spacing = 5
+
+				divider_clean = {
+					size = { @panel_width_plus_14 4 }
+				}
+
+				background = {
+					using = dark_area
+				}
+
+				button = {
+					parentanchor = hcenter
+					using = default_button_primary
+					text = "POP_BROWSER"
+					align = hcenter|nobaseline
+					size = { @panel_width 50 }
+					using = fontsize_large
+					onclick = "[InformationPanelBar.OpenPopBrowserPanel( GetPlayer.Self )]"
+				}
+			}
+		}
 	}
 
 	type pop_strata_summary = flowcontainer {
@@ -544,6 +569,9 @@ types pops_overview
 				textbox = {
 					block "sol_summary" {}
 					autoresize = yes
+					maximumsize = { 180 -1 }
+					multiline = yes
+					align = hcenter
 				}
 				margin_bottom = 15
 			}
@@ -1431,7 +1459,7 @@ types pops_overview
 
 								### WAGE
 								textbox = {
-									visible = "[Not(Building.IsRoleFullyReplacedByAnotherPopType(PopListItem.GetPopType))]"
+									visible = "[And(PopListItem.GetPopType.IsPaidWages(Building.Self),Not(Building.IsRoleFullyReplacedByAnotherPopType(PopListItem.GetPopType)))]"
 									text = "AVG_WAGE_POP_LIST"
 									align = left|nobaseline
 									autoresize = yes

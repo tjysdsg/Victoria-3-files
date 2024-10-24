@@ -389,14 +389,15 @@ types timekeeper
 					parentanchor = vcenter
 					size = { 100 58 }
 					using = default_button
-					onclick = "[InformationPanelBar.OpenPanelTab('production_methods', 'construction_queues')]"
+					onclick = "[InformationPanelBar.OpenConstructionPanel( GetPlayer.Self )]"
 					enabled = "[Country.IsValid]"
 					widget = {
 						visible = "[Country.IsValid]"
 						tooltip = "CONSTRUCTION_QUEUE_TOOLTIP"
 						size = { 100% 100% }
+						input_action = "construction_queue" #must add it in here for the shortcut text to appear in the tooltip
 					}
-					input_action = construction_queue
+					input_action = "construction_queue"
 
 					flowcontainer = {
 						direction = vertical
@@ -471,10 +472,15 @@ types timekeeper
 						blockoverride "buildings_datamodel" {
 							datamodel = "[Country.AccessShownCurrentlyConstructingGovernmentQueue]"
 						}
+
+						blockoverride "ownership_color"
+						{
+							color = "[GetDefine('NGUI','BUILDING_OWNERSHIP_COLOR_PLAYER_GOVERNMENT')]"
+						}
 					}
 
 					mini_construction_queue = {
-						visible = "[And(Country.HasConstructionQueued, Country.ShouldShowPrivateConstructionQueue)]"
+						visible = "[Country.HasConstructionQueued]"
 
 						blockoverride "alpha" {
 							#alpha = "[TransparentIfZero_int32(Country.GetNumInactiveAndNonShownPrivateConstructionQueueElements)]"
@@ -498,6 +504,11 @@ types timekeeper
 
 						blockoverride "buildings_datamodel" {
 							datamodel = "[Country.AccessShownCurrentlyConstructingPrivateQueue]"
+						}
+
+						blockoverride "ownership_color"
+						{
+							color = "[GetDefine('NGUI','BUILDING_OWNERSHIP_COLOR_PLAYER_POPS')]"
 						}
 					}
 				}
@@ -1252,7 +1263,7 @@ types construction_in_outliner
 							FancyTooltip_Building = {}
 						}
 						onclick = "[InformationPanelBar.OpenBuildingDetailsPanel(Building.AccessSelf)]"
-
+						using = tooltip_below
 						size = { 30 30 }
 						texture = "[Building.GetTexture]"
 
@@ -1279,6 +1290,19 @@ types construction_in_outliner
 			margin_top = -5
 			margin_bottom = -5
 			margin_right = 0
+		}
+
+		background = {
+			using = fade_right_entry_header_colored
+			margin_left = -10
+			margin_top = -5
+			margin_bottom = -5
+			margin_right = 0
+			mirror = horizontal
+			block "ownership_color"
+			{
+				#color = "[GetDefine('NGUI','BUILDING_OWNERSHIP_COLOR_PLAYER_GOVERNMENT')]"
+			}
 		}
 	}
 }

@@ -41,7 +41,7 @@ default_popup = {
 
 						item = {
 							widget = {
-								size = { 320 80 }
+								using = standard_formation_item_size
 
 								military_formation_right_click_item = {
 
@@ -143,7 +143,7 @@ default_popup = {
 
 						item = {
 							widget = {
-								size = { 320 80 }
+								using = standard_formation_item_size
 
 								military_formation_right_click_item = {
 
@@ -161,6 +161,14 @@ default_popup = {
 			                        			}
 			                        		}
 			                        	}
+									}
+
+									blockoverride "status_visibility" {
+										visible = "[MilitaryFormation.IsMobilized]"
+									}
+
+									blockoverride "mobilization_info_visibliity" {
+										visible = "[Not(MilitaryFormation.IsMobilized)]"
 									}
 								}
 							}
@@ -258,6 +266,43 @@ default_popup = {
 					text = "NAVAL_INVASION_PLANNER_EFFICIENCY_LABEL"
 				}
 
+				flowcontainer = {
+					visible = "[Not(IsDataModelEmpty(NavalInvasionPlannerPopup.GetSelectedArmies))]"
+					direction = vertical
+					datamodel = "[NavalInvasionPlannerPopup.GetSelectedArmies]"
+
+					item = {
+						flowcontainer = {
+							icon = {
+								parentanchor = vcenter
+								size = { 30 30 }
+								texture = "[MilitaryFormation.GetFlag]"
+								color = "[MilitaryFormation.GetFlagColor]"
+							}
+
+							textbox = {
+								visible = "[Not(MilitaryFormation.IsMobilized)]"
+								parentanchor = vcenter
+								autoresize = yes
+								align = nobaseline
+								multiline = yes
+								max_width = 550
+								text = "NAVAL_INVASION_PLANNER_ARMY_WILL_MOBILIZE"
+							}
+
+							textbox = {
+								visible = "[MilitaryFormation.IsMobilized]"
+								parentanchor = vcenter
+								autoresize = yes
+								align = nobaseline
+								multiline = yes
+								max_width = 550
+								text = "NAVAL_INVASION_PLANNER_ARMY_IS_MOBILIZED"
+							}
+						}
+					}
+				}
+
 				textbox = {
 					visible = "[And(NavalInvasionPlannerPopup.HasSelectedNecessaryFormations,LessThan_CFixedPoint(NavalInvasionPlannerPopup.GetEfficiencyRaw,'(CFixedPoint)1'))]"
 					autoresize = yes
@@ -279,7 +324,7 @@ default_popup = {
 					parentanchor = hcenter
 					autoresize = yes
 					align = nobaseline
-					text = "NAVAL_INVASION_PLANNER_TRAVEL_TIME_LABEL"
+					text = "[NavalInvasionPlannerPopup.GetTravelTimeDesc]"
 				}
 
 				button = {

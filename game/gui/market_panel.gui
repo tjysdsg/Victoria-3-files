@@ -198,6 +198,7 @@ types market_panel
 						visible = "[GetVariableSystem.Exists( 'trade_route_filters' )]"
 					}
 				}
+				
 				flowcontainer = {
 					visible = "[GetVariableSystem.Exists( 'trade_route_filters' )]"
 					minimumsize = { @panel_width_plus_14 -1 }
@@ -285,7 +286,7 @@ types market_panel
 								}
 							}
 
-							filter_button_selected = {
+							filter_background_selected = {
 								visible = "[Not(GetVariableSystem.Exists( 'trade_route_grouping' ))]"
 								size = { 132 40 }
 
@@ -307,7 +308,7 @@ types market_panel
 								}
 							}
 
-							filter_button_selected = {
+							filter_background_selected = {
 								visible = "[GetVariableSystem.HasValue( 'trade_route_grouping', 'goods' )]"
 								size = { 132 40 }
 
@@ -329,7 +330,7 @@ types market_panel
 								}
 							}
 
-							filter_button_selected = {
+							filter_background_selected = {
 								visible = "[GetVariableSystem.HasValue( 'trade_route_grouping', 'country' )]"
 								size = { 132 40 }
 
@@ -348,7 +349,7 @@ types market_panel
 							}
 
 							### ALL - SELECTED
-							filter_button_selected = {
+							filter_background_selected = {
 								visible = "[Not(Market.GetOnlyShowPlayerTradeRoutes)]"
 							}
 
@@ -362,7 +363,7 @@ types market_panel
 							}
 
 							### ONLY YOURS - SELECTED
-							filter_button_selected = {
+							filter_background_selected = {
 								visible = "[Market.GetOnlyShowPlayerTradeRoutes]"
 
 								blockoverride "text" {
@@ -371,6 +372,61 @@ types market_panel
 							}
 						}
 					}
+				}
+			}
+
+			flowcontainer = {
+				sort_button = {
+					size = { 50 20 }
+					tooltip = "SORT_BY_MARKET_GOODS"
+					onclick = "[Market.Sort('name')]"
+					onclick = "[Market.RestoreSort]"
+					button = {
+						texture = "gfx/interface/buttons/sort_button_icons/sort_icon_good.dds"
+						size = { 25 25 }
+						parentanchor = center
+						alwaystransparent = yes
+					}
+				}
+
+				sort_button = {
+					name = "tutorial_highlight_market_details_panel_sell_orders"
+					align = hcenter|nobaseline
+					text = "[concept_sell_orders]"
+					size = { 100 20 }
+					onclick = "[Market.Sort('sell')]"
+					onclick = "[Market.RestoreSort]"
+					elide = right
+				}
+
+				sort_button = {
+					name = "tutorial_highlight_market_details_panel_buy_orders"
+					align = hcenter|nobaseline
+					text = "[concept_buy_orders]"
+					size = { 100 20 }
+					onclick = "[Market.Sort('buy')]"
+					onclick = "[Market.RestoreSort]"
+					margin_right = 7
+					elide = right
+				}
+
+				sort_button = {
+					align = hcenter|nobaseline
+					text = "BALANCE"
+					size = { 80 20 }
+					onclick = "[Market.Sort('balance')]"
+					onclick = "[Market.RestoreSort]"
+					margin_right = 7
+					tooltip = "SORT_BY_BALANCE_TOOLTIP"
+					elide = right
+				}
+				
+				sort_button = {
+					align = hcenter|nobaseline
+					text = "[concept_market_price]"
+					size = { 210 20 }
+					onclick = "[Market.Sort('price')]"
+					onclick = "[Market.RestoreSort]"
 				}
 			}
 		}
@@ -506,62 +562,6 @@ types market_panel
 			direction = vertical
 			using = default_list_position
 			margin_bottom = 20
-
-			flowcontainer = {
-				using = default_list_position
-				margin = { 0 5 }
-				margin_top = 10
-				
-				sort_button = {
-					size = { 60 20 }
-					tooltip = "SORT_BY_MARKET_GOODS"
-					onclick = "[Market.Sort('name')]"
-					onclick = "[Market.RestoreSort]"
-					button = {
-						texture = "gfx/interface/buttons/sort_button_icons/sort_icon_good.dds"
-						size = { 25 25 }
-						parentanchor = center
-						alwaystransparent = yes
-					}
-				}
-
-				sort_button = {
-					name = "tutorial_highlight_market_details_panel_sell_orders"
-					align = hcenter|nobaseline
-					text = "[concept_sell_orders]"
-					size = { 100 20 }
-					onclick = "[Market.Sort('sell')]"
-					onclick = "[Market.RestoreSort]"
-				}
-
-				sort_button = {
-					name = "tutorial_highlight_market_details_panel_buy_orders"
-					align = hcenter|nobaseline
-					text = "[concept_buy_orders]"
-					size = { 100 20 }
-					onclick = "[Market.Sort('buy')]"
-					onclick = "[Market.RestoreSort]"
-					margin_right = 7
-				}
-
-				sort_button = {
-					align = hcenter|nobaseline
-					text = "BALANCE"
-					size = { 90 20 }
-					onclick = "[Market.Sort('balance')]"
-					onclick = "[Market.RestoreSort]"
-					margin_right = 7
-					tooltip = "SORT_BY_BALANCE_TOOLTIP"
-				}
-				
-				sort_button = {
-					align = hcenter|nobaseline
-					text = "[concept_market_price]"
-					size = { 190 20 }
-					onclick = "[Market.Sort('price')]"
-					onclick = "[Market.RestoreSort]"
-				}
-			}
 
 			flowcontainer = {
 				using = default_list_position
@@ -860,7 +860,7 @@ types market_panel
 				align = right|nobaseline
 				visible = "[GreaterThan_CFixedPoint(Goods.GetMarketSellOrders, '(CFixedPoint)0')]"
 				text = "[Goods.GetMarketSellOrdersWithTooltip]"
-				size = { 105 40 }
+				size = { 95 40 }
 				margin_right = 10
 				parentanchor = vcenter
 			}
@@ -870,7 +870,7 @@ types market_panel
 				visible = "[Not(GreaterThan_CFixedPoint(Goods.GetMarketSellOrders, '(CFixedPoint)0'))]"
 				raw_text = "-"
 				alpha = 0.5
-				size = { 105 40 }
+				size = { 95 40 }
 				margin_right = 10
 				parentanchor = vcenter
 			}
@@ -881,7 +881,7 @@ types market_panel
 				align = right|nobaseline
 				visible = "[GreaterThan_CFixedPoint(Goods.GetMarketBuyOrders, '(CFixedPoint)0')]"
 				text = "[Goods.GetMarketBuyOrdersWithTooltip]"
-				size = { 100 40 }
+				size = { 90 40 }
 				margin_right = 10
 				parentanchor = vcenter
 			}
@@ -891,7 +891,7 @@ types market_panel
 				visible = "[Not(GreaterThan_CFixedPoint(Goods.GetMarketBuyOrders, '(CFixedPoint)0'))]"
 				raw_text = "-"
 				alpha = 0.5
-				size = { 100 40 }
+				size = { 90 40 }
 				margin_right = 10
 				parentanchor = vcenter
 			}
@@ -901,8 +901,8 @@ types market_panel
 			flowcontainer = {
 				direction = vertical
 				minimumsize = { 90 52 }
-				margin_top = 10
-				spacing = 5
+				margin_top = 8
+				spacing = 4
 				tooltip = "MARKET_GOODS_BALANCE_TOOLTIP"
 
 				textbox = {
@@ -958,21 +958,67 @@ types market_panel
 			
 			widget = {
 				using = market_price_tooltip_with_graph
-				size = { 190 55 }
+				size = { 210 55 }
+
 				
 				textbox = {
 					align = right|nobaseline
 					raw_text = "@money![Goods.GetMarketPrice|0v] [Goods.GetCompareIconAgainstBasePriceNoFormatting( Goods.GetMarketPrice )]"
-					size = { 110 40 }
+					size = { 90 40 }
 					margin_right = 10
 					parentanchor = vcenter
+					margin_left = 5
+					fontsize_min = 12
+					elide = right
+				}
+
+				# graph
+				flowcontainer = {
+					position = { 90 0 }
+					parentanchor = vcenter
+
+					widget = {
+						size = { 40 26 }
+
+						background = {
+							using = light_bg
+							margin = { 3 3 }
+						}
+						
+						background = {
+							texture = "gfx/interface/graph/graph_frame.dds"
+							spriteType = Corneredtiled
+							spriteborder = { 2 2 }
+							texture_density = 5
+							margin = { 1 1 }
+							alpha = 1
+
+							modify_texture = {
+								texture = "gfx/interface/backgrounds/default_bg_shading.dds"
+								spriteType = Corneredstretched
+								spriteborder = { 0 0 }
+								blend_mode = overlay
+								alpha = 1
+							}
+						}
+
+						plotline = {
+							parentanchor = center
+							size = { 38 24 }
+							using = plot_line
+							width = 2
+							color = { .9 .9 .9 1.0 }
+							visible = "[Not(IsEmpty(Goods.GetPriceTrend))]"
+							plotpoints = "[GetTrendPlotPointsNormalized( Goods.GetPriceTrend, Goods.GetMinPrice, Goods.GetMaxPrice )]"
+						}
+					}
 				}
 
 				flowcontainer = {
 					direction = vertical
 					minimumsize = { 80 52 }
-					spacing = 5
-					margin_top = 10
+					spacing = 4
+					margin_top = 8
 					parentanchor = right
 
 					textbox = {
@@ -1029,6 +1075,7 @@ types market_panel
 
 	type filter_button = button {
 		using = default_button
+		using = tooltip_above
 
 		block "size" {
 			size = { 200 40 }
@@ -1042,9 +1089,38 @@ types market_panel
 			text = "ALL"
 		}
 	}
+	
+	type filter_selected_button = button {
+		using = default_button
+		using = tooltip_above
 
-	type filter_button_selected = widget {
+		block "size" {
+			size = { 200 40 }
+		}
 
+		block "onclick" {
+			onclick = "[Market.ToggleOnlyShowPlayerTradeRoutes]"
+		}
+
+		block "text" {
+			text = "ALL"
+		}
+		
+		background = {
+			using = paper_bg
+		}
+		
+		icon = {
+			name = "selected_bg"
+			size = { 100% 100% }
+			using = highlighted_square_selection
+			using = shimmer_fade_in
+		}
+	}
+
+	type filter_background_selected = widget {
+		using = tooltip_above
+		
 		block "size" {
 			size = { 200 40 }
 		}

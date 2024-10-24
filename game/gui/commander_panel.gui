@@ -369,7 +369,7 @@ types commander_panel_types
 		}
 
 		character_interactions_button = {
-			name = "tutorial_highlight_character_panel_promote_button"
+			name = "tutorial_highlight_character_panel_interactions_button_1"
 		}
 
 		# Heir Portrait
@@ -467,6 +467,7 @@ types commander_panel_types
 				datacontext = "[Character.GetCountry]"
 				tooltip = "GO_TO_BUTTON_EXILED_AGITATORS"
 				onclick = "[InformationPanelBar.OpenPanelTab( 'politics', 'default' )]"
+				input_action = "go_to_details"
 			}
 			button_icon_goto = { # Character IS Exile
 				size = { 30 30 }
@@ -475,6 +476,7 @@ types commander_panel_types
 				tooltip = "GO_TO_BUTTON_EXILED_AGITATORS"
 				onclick = "[InformationPanelBar.OpenPanelTab( 'politics', 'default' )]"
 				onclick = "[GetVariableSystem.Toggle('politics_overview_exile_pool')]"
+				input_action = "go_to_details"
 			}
 			button_icon_goto = { #character is General at front
 				size = { 30 30 }
@@ -482,6 +484,7 @@ types commander_panel_types
 				datacontext = "[Character.GetFront]"
 				tooltip = "GO_TO_BUTTON_FRONT"
 				onclick = "[InformationPanelBar.OpenFrontPanel(Character.GetFront)]"
+				input_action = "go_to_details"
 			}
 			button_icon_goto = { # character is Admiral with the order of raiding convoys
 				size = { 30 30 }
@@ -489,6 +492,7 @@ types commander_panel_types
 				datacontext = "[Character.GetMilitaryFormation.GetTargetSeaNode]"
 				tooltip = "GO_TO_BUTTON_SEA_REGION"
 				onclick = "[InformationPanelBar.OpenSeaRegionPanel(Province.Self)]"
+				input_action = "go_to_details"
 			}
 			button_icon_goto = { #All other cases
 				size = { 30 30 }
@@ -496,6 +500,7 @@ types commander_panel_types
 				datacontext = "[Character.GetCountry]"
 				tooltip = "GO_TO_BUTTON_COUNTRY"
 				onclick = "[InformationPanelBar.OpenCountryPanel(Character.GetCountry)]"
+				input_action = "go_to_details"
 			}
 		}
 
@@ -597,7 +602,6 @@ types commander_panel_types
 										size = { 35 35 }
 
 										icon = {
-
 											size = { 40	40 }
 											texture = "gfx/interface/backgrounds/round_button_bg.dds"
 											parentanchor = vcenter|left
@@ -663,46 +667,9 @@ types commander_panel_types
 								tooltip = "CHARACTER_PRIMARY_ROLE_TOOLTIP"
 
 								blockoverride "icon" {
-									widget = {
+									character_role_icon = {
 										parentanchor = left|vcenter
 										position = { 10 0 }
-										size = { 35 35 }
-										icon = {
-											visible = "[And(And(Character.IsPolitician,And(Not(Character.IsRuler),Not(Character.IsHeir))),Not(Character.IsAgitator))]"
-											parentanchor = left|vcenter
-											size = { 100% 100% }
-											texture = "gfx/interface/icons/character_role_icons/politician.dds"
-										}
-										icon = {
-											visible = "[Character.IsAgitator]"
-											parentanchor = left|vcenter
-											size = { 100% 100% }
-											texture = "gfx/interface/icons/character_role_icons/agitator.dds"
-										}
-										icon = {
-											visible = "[Character.IsRuler]"
-											parentanchor = left|vcenter
-											size = { 100% 100% }
-											texture = "gfx/interface/icons/character_role_icons/ruler.dds"
-										}
-										icon = {
-											visible = "[Character.IsHeir]"
-											parentanchor = left|vcenter
-											size = { 100% 100% }
-											texture = "gfx/interface/icons/character_role_icons/heir.dds"
-										}
-										icon = {
-											visible = "[And(And(Not(Or(Character.IsPolitician, Or(Character.IsRuler, Character.IsHeir))), Character.IsGeneral),Not(Character.IsAgitator))]"
-											parentanchor = left|vcenter
-											size = { 100% 100% }
-											texture = "gfx/interface/icons/character_role_icons/general.dds"
-										}
-										icon = {
-											visible = "[And(And(Not(Or(Character.IsPolitician, Or(Character.IsRuler, Character.IsHeir))), Character.IsAdmiral),Not(Character.IsAgitator))]"
-											parentanchor = left|vcenter
-											size = { 100% 100% }
-											texture = "gfx/interface/icons/character_role_icons/admiral.dds"
-										}
 									}
 								}
 								blockoverride "double_entry_label" {
@@ -922,7 +889,7 @@ types commander_panel_types
 					}
 
 					character_interactions_button = {
-						name = "tutorial_highlight_character_panel_promote_button"
+						name = "tutorial_highlight_character_panel_interactions_button_2"
 					}
 
 					widget = {
@@ -962,24 +929,6 @@ types commander_panel_types
 				}
 				character_traits = {}
 
-				### SHIPPING LANE
-				default_header = {
-					visible = "[Character.HasShippingLane]"
-					using = default_fade_in_out
-
-					blockoverride "text" {
-						text = "SHIPPING_LANE_CHARACTER_HEADER"
-					}
-				}
-
-				shipping_lane_item = {
-					margin_left = 10
-					margin_bottom = 10
-					margin_top = 5
-					visible = [Character.HasShippingLane]
-					datacontext = [Character.GetShippingLane]
-				}
-
 				widget = { size = { 20 20 }}
 			}
 
@@ -1003,17 +952,24 @@ types commander_panel_types
 		}
 		
 		blockoverride "fixed_bottom" {
-			divider_clean = {
-				size = { @panel_width_plus_14 4 }
-				visible = "[Character.IsCommander]"
-			}
 				
 			flowcontainer = {
 				minimumsize = { 400 100 }
 				direction = vertical
 				visible = "[Character.IsCommander]"
 				using = default_fade_in_out
-				margin_top = 10
+
+				divider_clean = {
+					size = { @panel_width_plus_14 4 }
+				}
+
+				background = {
+					using = dark_area
+				}
+
+				widget = {
+					size = { 5 5 }
+				}
 
 				empty_state = {
 					blockoverride "visible" {
@@ -1063,8 +1019,14 @@ types commander_panel_types
 						size = { 80 80 }
 					}
 			    }
+
+				widget = {
+					size = { 10 10 }
+				}
 			}
 		}
+
+		blockoverride "bottom_spacing" {}
 		
 		blockoverride "pin_visibility" {
 			visible = "[ObjectsEqual(CommanderPanel.AccessCharacter.GetCountry, GetPlayer.Self)]"
@@ -1207,6 +1169,42 @@ types character_stats
 		}
 		blockoverride "single_text_entry" {}
 	}
+
+	type character_role_icon = widget {
+		tooltip = "CHARACTER_PRIMARY_ROLE_TOOLTIP"
+		size = { 35 35 }
+
+		icon = {
+			visible = "[And(And(Character.IsPolitician,And(Not(Character.IsRuler),Not(Character.IsHeir))),Not(Character.IsAgitator))]"
+			size = { 100% 100% }
+			texture = "gfx/interface/icons/character_role_icons/politician.dds"
+		}
+		icon = {
+			visible = "[Character.IsAgitator]"
+			size = { 100% 100% }
+			texture = "gfx/interface/icons/character_role_icons/agitator.dds"
+		}
+		icon = {
+			visible = "[Character.IsRuler]"
+			size = { 100% 100% }
+			texture = "gfx/interface/icons/character_role_icons/ruler.dds"
+		}
+		icon = {
+			visible = "[Character.IsHeir]"
+			size = { 100% 100% }
+			texture = "gfx/interface/icons/character_role_icons/heir.dds"
+		}
+		icon = {
+			visible = "[And(And(Not(Or(Character.IsPolitician, Or(Character.IsRuler, Character.IsHeir))), Character.IsGeneral),Not(Character.IsAgitator))]"
+			size = { 100% 100% }
+			texture = "gfx/interface/icons/character_role_icons/general.dds"
+		}
+		icon = {
+			visible = "[And(And(Not(Or(Character.IsPolitician, Or(Character.IsRuler, Character.IsHeir))), Character.IsAdmiral),Not(Character.IsAgitator))]"
+			size = { 100% 100% }
+			texture = "gfx/interface/icons/character_role_icons/admiral.dds"
+		}
+	}
 }
 
 types commander_panel_types
@@ -1229,13 +1227,13 @@ types commander_panel_types
 		parentanchor = hcenter
 
 		background = {
-			margin = { 100 -5 }
+			margin = { 100 10 }
 			using = entry_bg_simple
 		}
 
 		item = {
 			flowcontainer = {
-				margin = { 20 20 }
+				margin = { 15 15 }
 				using = tooltip_above
 				tooltipwidget = {
 					FancyTooltip_CharacterTrait = {}
@@ -1251,9 +1249,11 @@ types commander_panel_types
 					margin_left = 5
 					max_width = 130
 					autoresize = yes
+					elide = right
 					parentanchor = vcenter
 					align = left|nobaseline
 					multiline = yes
+					fontsize_min = 10
 					using = fontsize_small
 				}
 			}	

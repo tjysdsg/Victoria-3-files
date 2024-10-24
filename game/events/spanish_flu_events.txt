@@ -50,6 +50,7 @@ plague.1 = {
 		set_variable = {
 			name = plague_originator
 		}
+		save_scope_as = plague_originator_country
 		random_scope_state = {
 			limit = {
 				is_incorporated = yes
@@ -67,6 +68,7 @@ plague.1 = {
 			save_scope_as = plague_origin_state
 			set_variable = plague_originator_state
 			randomize_plague_level_effect = yes
+			add_plague_modifier_effect = yes
 		}
 	}
 
@@ -74,7 +76,7 @@ plague.1 = {
 		name = plague.1.a
 		default_option = yes
 		scope:plague_origin_state = {
-			add_plague_modifier_effect = yes
+			custom_tooltip = plague_state_mortality.tt
 		}
 		custom_tooltip = plague_decisions_available.tt
 		hidden_effect = {
@@ -87,6 +89,7 @@ plague.1 = {
 			}
 		}
 		add_journal_entry = { type = je_spanish_flu }
+		set_variable = country_hit_by_plague # so that countries cannot get JE multiple times
 	}
 }
 
@@ -112,34 +115,19 @@ plague.2 = {
 	trigger = {
 		has_global_variable = spanish_flu
 		OR = {
-			any_scope_state = {
-				NOT = { 
-					has_variable = state_hit_by_plague
-				}
-				OR = {
-					any_neighbouring_state = {
-						has_modifier = plague_modifier
-						NOT = {
-							owner = {
-								has_variable = plague_lockdown
-							}
-						}
-					}
-					any_country = {
-						NOT = { THIS = ROOT }
-						market = ROOT.market
-						any_scope_state = {
-							has_modifier = plague_modifier
-						}
-					}
-				}
-			}
 			AND = {
 				NOT = {
 					has_journal_entry = je_spanish_flu
 				}
 				any_scope_state = {
 					has_variable = plague_international_spread_var
+				}
+			}
+			any_scope_state = {
+				NOT = { has_modifier = plague_modifier }
+				NOT = { has_variable = state_hit_by_plague }
+				any_neighbouring_state = {
+					has_modifier = plague_modifier
 				}
 			}
 		}
@@ -173,29 +161,15 @@ plague.2 = {
 			random_scope_state = {
 				limit = {
 					NOT = { has_modifier = plague_modifier }
-					OR = {
-						any_neighbouring_state = {
-							has_modifier = plague_modifier
-							NOT = {
-								owner = {
-									has_variable = plague_lockdown
-								}
-							}
-						}
-						owner = {
-							NOT = { THIS = ROOT }
-							market = root.market
-							any_scope_state = {
-								has_modifier = plague_modifier
-							}
-						}
+					NOT = { has_variable = state_hit_by_plague }
+					any_neighbouring_state = {
+						has_modifier = plague_modifier
 					}
 				}
 				save_scope_as = plague_spread_target
 			}
 		}
 		scope:plague_spread_target = {
-			set_variable = state_hit_by_plague
 			randomize_plague_level_effect = yes
 			add_plague_modifier_effect = yes
 			if = {
@@ -222,16 +196,49 @@ plague.2 = {
 		name = plague.2.a
 		show_as_tooltip = {
 			scope:plague_spread_target = {
-				add_plague_modifier_effect = yes
+				custom_tooltip = plague_state_mortality.tt
 				if = {
 					limit = {
-						any_neighbouring_state = {
-							owner = ROOT
-							NOT = { has_modifier = plague_modifier }
+						owner = { has_variable = plague_lockdown }
+					}
+					add_modifier = {
+						name = plague_lockdown_mod
+						months = 6
+					}
+				}
+				else_if = {
+					limit = {
+						owner = { has_variable = plague_measures }
+					}
+					add_modifier = {
+						name = plague_measures_mod
+						months = 6
+					}
+				}
+			}
+			if = {
+				limit = {
+					exists = scope:plague_spread_target_2
+				}
+				scope:plague_spread_target_2 = {
+					custom_tooltip = plague_state_mortality.tt
+					if = {
+						limit = {
+							owner = { has_variable = plague_lockdown }
+						}
+						add_modifier = {
+							name = plague_lockdown_mod
+							months = 6
 						}
 					}
-					scope:plague_spread_target_2 = {
-						add_plague_modifier_effect = yes
+					else_if = {
+						limit = {
+							owner = { has_variable = plague_measures }
+						}
+						add_modifier = {
+							name = plague_measures_mod
+							months = 6
+						}
 					}
 				}
 			}
@@ -243,6 +250,7 @@ plague.2 = {
 				}
 			}
 			add_journal_entry = { type = je_spanish_flu }
+			set_variable = country_hit_by_plague # so that countries cannot get JE multiple times
 		}
 		custom_tooltip = plague_decisions_available.tt
 	}
@@ -286,6 +294,7 @@ plague.3 = {
 					}
 				}
 				add_journal_entry = { type = je_spanish_flu }
+				set_variable = country_hit_by_plague # so that countries cannot get JE multiple times
 			}
 		}
 	}
@@ -436,8 +445,15 @@ plague.5 = {
 					has_modifier = plague_measures_mod
 				}
 			}
-			remove_modifier = plague_lockdown_mod
-			remove_modifier = plague_measures_mod
+			if = {
+				limit = {
+					has_modifier = plague_lockdown_mod
+				}
+				remove_modifier = plague_lockdown_mod
+			}
+			else = {
+				remove_modifier = plague_measures_mod
+			}
 		}
 	}
 }
@@ -911,20 +927,22 @@ plague.200 = {
 			any_scope_state = {
 				has_modifier = plague_modifier
 				any_neighbouring_state = {
+					NOT = { has_modifier = plague_modifier }
 					NOT = { has_variable = state_hit_by_plague }
 					owner = {
-						NOT = {
-							has_journal_entry = je_spanish_flu
-						}
+						NOT = { this = ROOT }
+						NOT = { has_journal_entry = je_spanish_flu }
+						NOT = { has_variable = country_hit_by_plague }
+						NOT = { is_country_type = decentralized } # for balance reasons
 					}
 				}
 			}
 			any_country = {
 				NOT = { THIS = ROOT }
 				market = root.market
-				NOT = {
-					has_journal_entry = je_spanish_flu
-				}
+				NOT = { has_journal_entry = je_spanish_flu }
+				NOT = { has_variable = country_hit_by_plague }
+				NOT = { is_country_type = decentralized } # for balance reasons
 			}
 		}
 	}
@@ -935,13 +953,13 @@ plague.200 = {
 				any_scope_state = {
 					has_modifier = plague_modifier
 					any_neighbouring_state = {
-						NOT = {
-							has_modifier = plague_modifier
-						}
+						NOT = { has_modifier = plague_modifier }
+						NOT = { has_variable = state_hit_by_plague}
 						owner = {
-							NOT = {
-								has_journal_entry = je_spanish_flu
-							}
+							NOT = { this = ROOT }
+							NOT = { has_journal_entry = je_spanish_flu }
+							NOT = { has_variable = country_hit_by_plague }
+							NOT = { is_country_type = decentralized } # for balance reasons
 						}
 					}
 				}
@@ -950,26 +968,25 @@ plague.200 = {
 				limit = {
 					has_modifier = plague_modifier
 					any_neighbouring_state = {
-						NOT = {
-							has_modifier = plague_modifier
-						}
+						NOT = { has_modifier = plague_modifier }
+						NOT = { has_variable = state_hit_by_plague }
 						owner = {
-							NOT = {
-								has_journal_entry = je_spanish_flu
-							}
+							NOT = { this = ROOT }
+							NOT = { has_journal_entry = je_spanish_flu }
+							NOT = { has_variable = country_hit_by_plague }
+							NOT = { is_country_type = decentralized } # for balance reasons
 						}
 					}
 				}
 				random_neighbouring_state = {
 					limit = {
-						NOR = {
-							has_modifier = plague_modifier
-							has_variable = state_hit_by_plague
-						}
+						NOT = { has_modifier = plague_modifier }
+						NOT = { has_variable = state_hit_by_plague }
 						owner = {
-							NOT = {
-								has_journal_entry = je_spanish_flu
-							}
+							NOT = { this = ROOT }
+							NOT = { has_journal_entry = je_spanish_flu }
+							NOT = { has_variable = country_hit_by_plague }
+							NOT = { is_country_type = decentralized }
 						}
 					}
 					set_variable = {
@@ -986,9 +1003,9 @@ plague.200 = {
 				limit = {
 					NOT = { THIS = ROOT }
 					market = root.market
-					NOT = {
-						has_journal_entry = je_spanish_flu
-					}
+					NOT = { has_journal_entry = je_spanish_flu }
+					NOT = { has_variable = country_hit_by_plague }
+					NOT = { is_country_type = decentralized } # for balance reasons
 				}
 				if = {
 					limit = {

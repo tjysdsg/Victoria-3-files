@@ -735,6 +735,82 @@ template rotate_glow_animation_02 {
 	}
 }
 
+template rotate_glow_animation_02_with_sound {
+	block "rotate_animation_texture" {
+		texture = "gfx/interface/animation/rotate_glow2.dds"
+	}
+	size = { 100% 100% }
+	alwaystransparent = yes
+	ignore_in_debug_draw = yes
+	
+	modify_texture = {
+		name = mask_left
+		texture = "gfx/interface/animation/rotate_glow_mask3.dds"
+		blend_mode = alphamultiply
+	}
+	modify_texture = {
+		name = mask_right
+		texture = "gfx/interface/animation/rotate_glow_mask3.dds"
+		blend_mode = alphamultiply
+	}
+	
+	### mask rotating left
+	state = {
+		block "trigger" {
+			trigger_on_create = yes
+			name = left
+		}
+		next = left2
+		duration = 0.0
+		modify_texture = {
+			name = mask_left
+			rotate_uv = 0
+		}
+	}
+	state = {
+		name = left2
+		next = left
+		duration = 30.0
+		modify_texture = {
+			name = mask_left
+			rotate_uv = 360
+		}	
+	}
+	
+	#### mask rotating right
+	state = {
+		block "trigger" {
+			trigger_on_create = yes
+			name = right
+		}
+		next = right2
+		duration = 0.0
+		modify_texture = {
+			name = mask_right
+			rotate_uv = 0
+		}
+	}
+	state = {
+		name = right2
+		next = right
+		duration = 50.0
+		modify_texture = {
+			name = mask_right
+			rotate_uv = -360
+		}
+	}
+
+	state = {
+		name = _show
+		start_sound = { soundeffect = "event:/SFX/UI/SubjectInteractions/principles_button_shimmer_loop" }
+	}
+	
+	state = {
+		name = _hide
+		end_sound = { soundeffect = "event:/SFX/UI/SubjectInteractions/principles_button_shimmer_loop_stop" }
+	}
+}
+
 template rotate_glow_blue {
 	texture = "gfx/interface/animation/rotate_glow_blue.dds"
 	size = { 100% 100% }

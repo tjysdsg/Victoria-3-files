@@ -273,14 +273,15 @@ types budget
 						flowcontainer = {
 							dynamicgridbox = {
 								flipdirection = yes
-								datamodel_wrap = 5
+								datamodel_wrap = 10
 								datamodel = "[BudgetPanel.AccessTaxedGoods]"
 								item = {		
 									button_icon_round = {
 										size = { 35 35 }
 										onclick = "[InformationPanelBar.OpenGoodsPanel(AccessPlayer.AccessFirstMarket.Self, Goods.Self)]"
 										onrightclick = "[RightClickMenuManager.ShowForGoods(Goods.AccessSelf)]"
-										tooltip = "BUDGET_CONSUMPTION_TAX_TOOLTIP"													
+										tooltip = "BUDGET_CONSUMPTION_TAX_TOOLTIP"
+										using = tooltip_se
 
 										blockoverride "icon" {
 											texture = "[Goods.GetTexture]"
@@ -438,7 +439,7 @@ types budget
 									margin_bottom = 10
 									flowcontainer = {
 										direction = horizontal
-										spacing = 10
+										spacing = 20
 										
 										flowcontainer = {
 											direction = vertical
@@ -448,7 +449,7 @@ types budget
 												name = "tutorial_highlight_pause_all_construction"
 
 												using = default_button_action
-												size = { 190 35 }
+												size = { 210 35 }
 												text = "PAUSE_ALL_CONSTRUCTION_BUTTON"
 												onclick = "[Execute(PauseAllConstruction)]"
 												enabled = "[IsValid(PauseAllConstruction)]"
@@ -460,7 +461,7 @@ types budget
 
 											button = {
 												using = default_button_action
-												size = { 190 35 }
+												size = { 210 35 }
 												text = "RESUME_ALL_CONSTRUCTION_BUTTON"
 												onclick = "[Execute(ResumeAllConstruction)]"
 												enabled = "[IsValid(ResumeAllConstruction)]"
@@ -479,13 +480,13 @@ types budget
 											
 											item = {
 												widget = {
-													size = { 45 52 }
+													size = { 46 52 }
 													tooltip = "[ChangeAllConstructionSpeedTooltip(ProductionMethod.Self)]"
 													using = tooltip_above
 													
 													button_icon_round_action = {
 														visible = "[Not(IsCurrentProductionMethod(ProductionMethod.Self))]"
-														size = { 45 45 }
+														size = { 46 46 }
 														onclick = "[Execute(ChangeAllConstructionSpeed(ProductionMethod.Self))]"
 														using = confirm_button_sound
 														enabled = "[IsValid(ChangeAllConstructionSpeed(ProductionMethod.Self))]"
@@ -500,7 +501,7 @@ types budget
 													
 													#selected PM
 													widget = {
-														size = { 45 45 }
+														size = { 46 46 }
 														visible = "[IsCurrentProductionMethod(ProductionMethod.Self)]"
 														using = default_fade_in_out
 
@@ -1048,8 +1049,9 @@ types budget
 										
 										align = right|nobaseline
 										raw_text = "#variable @money![State.GetTaxationRevenue|=+D]#!"
-										tooltip = "[State.GetTaxationRevenueTooltip]"
 										alpha = "[TransparentIfZero(State.GetTaxationRevenue)]"
+
+										using = state_taxation_revenue_with_table
 									}
 								}
 							}

@@ -156,8 +156,8 @@ basic_artillery_commander = {
  	command_modifier = {
  		unit_combat_unit_type_siege_artillery_offense_mult = 0.05
 		unit_combat_unit_type_shrapnel_artillery_offense_mult = 0.05
-		unit_combat_unit_type_cannon_artillery_mult = 0.05
-		unit_combat_unit_type_mobile_artillery_mult = 0.05
+		unit_combat_unit_type_cannon_artillery_offense_mult = 0.05
+		unit_combat_unit_type_mobile_artillery_offense_mult = 0.05
  		character_battle_condition_aggressive_maneuver_mult = 1
  		character_battle_condition_mud_mult = 0.5
  	}
@@ -276,8 +276,8 @@ experienced_artillery_commander = {
 	command_modifier = {
 		unit_combat_unit_type_siege_artillery_offense_mult = 0.1
 		unit_combat_unit_type_shrapnel_artillery_offense_mult = 0.1
-		unit_combat_unit_type_cannon_artillery_mult = 0.1
-		unit_combat_unit_type_mobile_artillery_mult = 0.1
+		unit_combat_unit_type_cannon_artillery_offense_mult = 0.1
+		unit_combat_unit_type_mobile_artillery_offense_mult = 0.1
 		character_battle_condition_aggressive_maneuver_mult = 2
 		character_battle_condition_mud_mult = 0.5
 	}
@@ -373,8 +373,8 @@ expert_artillery_commander = {
 	command_modifier = {
 		unit_combat_unit_type_siege_artillery_offense_mult = 0.15
 		unit_combat_unit_type_shrapnel_artillery_offense_mult = 0.15
-		unit_combat_unit_type_cannon_artillery_mult = 0.15
-		unit_combat_unit_type_mobile_artillery_mult = 0.15
+		unit_combat_unit_type_cannon_artillery_offense_mult = 0.15
+		unit_combat_unit_type_mobile_artillery_offense_mult = 0.15
 		character_battle_condition_aggressive_maneuver_mult = 3
 		character_battle_condition_mud_mult = 0.5
 	}
@@ -497,10 +497,17 @@ trench_rat = {
 		value = 10
 		if = {
 			limit = {
-				commander_pm_usage = {
-					target = owner
-					production_method = pm_training_streamlining
-					value > 0.5
+				commander_military_formation = {
+					OR = {
+						formation_army_unit_type_fraction = {
+							target = unit_type:combat_unit_type_trench_infantry
+							value >= 0.25
+						}
+						formation_army_unit_type_fraction = {
+							target = unit_type:combat_unit_type_squad_infantry
+							value >= 0.25
+						}
+					}
 				}
 			}
 			multiply = 5
@@ -536,21 +543,16 @@ defense_in_depth_specialist = {
 		value = 10
 		if = {
 			limit = {
-				OR = {
-					commander_pm_usage = {
-						target = owner
-						production_method = pm_training_streamlining
-						value > 0.5
-					}
-					commander_pm_usage = {
-						target = owner
-						production_method = pm_nco_incorporation
-						value > 0.5
-					}
-					commander_pm_usage = {
-						target = owner
-						production_method = pm_mobile_warfare_tactics
-						value > 0.5
+				commander_military_formation = {
+					OR = {
+						formation_army_unit_type_fraction = {
+							target = unit_type:combat_unit_type_trench_infantry
+							value >= 0.25
+						}
+						formation_army_unit_type_fraction = {
+							target = unit_type:combat_unit_type_squad_infantry
+							value >= 0.25
+						}
 					}
 				}
 			}
@@ -1797,7 +1799,7 @@ erudite = {
 		if = {
 			limit = {
 				has_role = agitator
-				interest_group = {
+				interest_group ?= {
 					is_interest_group_type = ig_intelligentsia
 				}
 			}
@@ -1890,7 +1892,7 @@ engineer = {
 		if = {
 			limit = {
 				has_role = agitator
-				interest_group = {
+				interest_group ?= {
 					is_interest_group_type = ig_trade_unions
 				}
 			}
@@ -1940,12 +1942,49 @@ master_bureaucrat = {
 		if = {
 			limit = {
 				has_role = agitator
-				interest_group = {
+				interest_group ?= {
 					is_interest_group_type = ig_petty_bourgeoisie
 				}
 			}
 			multiply = 3
 		}
+	}
+
+	possible = {
+		NOT = { age < define:NCharacters|ADULT_AGE }
+	}
+
+	replace = {
+	}
+}
+
+political_appointee = {
+	type = skill
+	texture = "gfx/interface/icons/character_trait_icons/political_appointee.dds"
+
+	character_modifier = {
+		character_popularity_add = -10	# We didn't ask for you!
+	}
+
+	country_modifier = {
+		country_legitimacy_base_add = -5
+		interest_group_in_government_attraction_mult = -0.1
+	}
+
+	agitator_modifier = {
+		interest_group_in_government_approval_add = 1
+		interest_group_in_opposition_approval_add = -1
+	}
+
+	command_modifier = {
+	}
+
+	interest_group_modifier = {
+		interest_group_pol_str_mult = -0.05 # Appointees are not popular
+	}
+
+	weight = {
+		value = 0 # This should not be randomized
 	}
 
 	possible = {

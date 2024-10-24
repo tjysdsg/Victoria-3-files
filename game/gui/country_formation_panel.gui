@@ -59,11 +59,22 @@ types country_formation_types
 					button = {
 						enabled = "[IsValid(CountryFormation.FormCountry(GetPlayer))]"		
 						onclick = "[Execute(CountryFormation.FormCountry(GetPlayer))]"
-						text = "FORM_COUNTRY"
-						tooltip = "FORM_COUNTRY_TOOLTIP"
 						using = default_button
 						size = { 250 75 }
-					}					
+
+						textbox = {
+							max_width = 230
+							autoresize = yes
+							multiline = yes
+							text = "FORM_COUNTRY"
+							tooltip = "FORM_COUNTRY_TOOLTIP"
+							elide = right
+							align = nobaseline|hcenter
+							fontsize_min = 16
+							using = fontsize_large
+							parentanchor = center
+						}	
+					}				
 				}
 				
 				divider_decorative = {}
@@ -232,56 +243,47 @@ types country_formation_types
 						item = {
 							container = {
 								minimumsize = { 60 40 }
-								
-								flag_icon = {								
-									size = { 48 32 }
+
+								small_flag = {
 									visible = "[Not(CountryFormation.IsMajorFormation)]"
 									parentanchor = center
-									# Using medium size textures in small flag for better downscaling of flag details
-									block "flag_definition" {
-										texture = "[Country.GetFlag.GetMediumFlagTexture]"
-										frame = "[Country.GetFlag.GetMediumFlagFrame]"
-									}
-									framesize = "[GetMediumFlagFrameSize]"
-									block "flag_tooltip" {
+
+									blockoverride "flag_tooltip" {
 										tooltipwidget = {
 											FancyTooltip_Country = {}
 										}
 									}
-								}								
-							
-								flag_icon = {								
-									size = { 48 32 }
+								}
+
+								small_flag = {
 									visible = "[CountryFormation.IsMajorFormation]"
 									parentanchor = center
-									# Using medium size textures in small flag for better downscaling of flag details
-									block "flag_definition" {
-										texture = "[Country.GetFlag.GetMediumFlagTexture]"
-										frame = "[Country.GetFlag.GetMediumFlagFrame]"
-									}
-									framesize = "[GetMediumFlagFrameSize]"
-									block "flag_tooltip" {
+
+									blockoverride "flag_tooltip" {
 										tooltip = "FORM_COUNTRY_SUPPORT_BREAKDOWN"
 									}
 								}
 								
-								flag_icon = {	
+								flag_icon = {
 									size = { 24 16 }
-									visible = "[And(CountryFormation.IsMajorFormation,CountryFormation.IsSupportingAnyCandidate(Country.Self))]"
+									visible = "[And(CountryFormation.IsMajorFormation, CountryFormation.IsSupportingAnyCandidate(Country.Self))]"
 									parentanchor = top|right
+									framesize = "[GetSmallFlagFrameSize]"
+
 									block "flag_definition" {			
 										texture = "[CountryFormation.GetSupportedCandidateCountry(Country.Self).GetFlag.GetSmallFlagTexture]"
 										frame = "[CountryFormation.GetSupportedCandidateCountry(Country.Self).GetFlag.GetSmallFlagFrame]"			
 									}
-									framesize = "[GetSmallFlagFrameSize]"
-									block "flag_tooltip" {
+
+									blockoverride "flag_tooltip" {
 										tooltip = "FORM_COUNTRY_SUPPORTING_COUNTRY"
 									}
-								}								
-							}					
-						}					
-					}					
+								}
+							}
+						}
+					}
 				}
+
 				divider_decorative = {}
 				
 				# Controlled state regions
@@ -319,111 +321,105 @@ types country_formation_types
 						}
 						
 						item = {
-							flowcontainer = {
-								container = {	
-									minimumsize = { 275 50 }
-									visible = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
-									tooltip = "[CountryFormation.GetControlsStateRegionDesc(GetMetaPlayer.GetPlayedOrObservedCountry,StateRegion.Self)]"
-									
-									background = {
-										using = entry_bg_simple
-									}
-									
-									icon = {
-										position = { 5 -1 }
-										visible = "[CountryFormation.ControlsStateRegion(GetMetaPlayer.GetPlayedOrObservedCountry,StateRegion.Self)]"
-										texture = "gfx/interface/icons/generic_icons/green_checkmark.dds"
-										size = { 40 40 }
-										parentanchor = vcenter
-									}	
+							widget = {
+								size = { 270 50 }
+								visible = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
+								tooltip = "[CountryFormation.GetControlsStateRegionDesc(GetMetaPlayer.GetPlayedOrObservedCountry,StateRegion.Self)]"
+								
+								background = {
+									using = entry_bg_simple
+								}
+
+								flowcontainer = {
+									parentanchor = vcenter
+									position = { 10 0 }
+									spacing = 8
 
 									icon = {
-										position = { 5 -1 }
-										visible = "[Not(CountryFormation.ControlsStateRegion(GetMetaPlayer.GetPlayedOrObservedCountry,StateRegion.Self))]"
-										texture = "gfx/interface/icons/generic_icons/red_cross.dds"
-										size = { 40 40 }
+										visible = "[CountryFormation.ControlsStateRegion(GetMetaPlayer.GetPlayedOrObservedCountry,StateRegion.Self)]"
 										parentanchor = vcenter
-									}									
+										texture = "gfx/interface/icons/generic_icons/green_checkmark.dds"
+										size = { 30 30 }
+									}
+
+									icon = {
+										visible = "[Not(CountryFormation.ControlsStateRegion(GetMetaPlayer.GetPlayedOrObservedCountry,StateRegion.Self))]"
+										parentanchor = vcenter
+										texture = "gfx/interface/icons/generic_icons/red_cross.dds"
+										size = { 30 30 }
+									}
 									
 									textbox = {
-										position = { 50 -1 }
 										parentanchor = vcenter
+										align = nobaseline
 										using = fontsize_large
 										text = "[StateRegion.GetName]"
 										autoresize = yes
-										max_width = 165
+										max_width = 95
+										fontsize_min = 14
 										elide = right
-										fontsize_min = 12
-									}	
+									}
 
-									textbox = {
-										position = { -10 -1 }
-										using = fontsize_large
-										text = "FORM_COUNTRY_SPLIT_STATE"
-										autoresize = yes
-										parentanchor = vcenter|right
-									}								
-									
-									flag_icon = {
-										visible = "[Not(StateRegion.IsSplitState)]"
-										datacontext = "[StateRegion.GetLargestStateOwner]"
-										position = { -10 -1 }
-										size = { 48 32 }
-										# Using medium size textures in small flag for better downscaling of flag details
-										block "flag_definition" {
-											texture = "[Country.GetFlag.GetMediumFlagTexture]"
-											frame = "[Country.GetFlag.GetMediumFlagFrame]"
-										}
-										framesize = "[GetMediumFlagFrameSize]"
-										block "flag_tooltip" {
-											tooltipwidget = {
-												FancyTooltip_Country = {}
-											}
-										}
-										parentanchor = vcenter|right
-									}														
+								}							
+								
+								textbox = {
+									visible = "[StateRegion.IsSplitState]"
+									parentanchor = right|vcenter
+									align = nobaseline
+									using = fontsize_large
+									text = "FORM_COUNTRY_SPLIT_STATE"
+									autoresize = yes
+									max_width = 75
+									fontsize_min = 14
+									elide = right
 								}
-								container = {	
-									minimumsize = { 275 50 }
+
+								small_flag_no_interact = {
+									visible = "[Not(StateRegion.IsSplitState)]"
+									datacontext = "[StateRegion.GetLargestStateOwner]"
+									parentanchor = right|vcenter
+									position = { -10 0 }
+								}
+
+								
+								widget = {	
+									minimumsize = { 270 50 }
 									visible = "[Not(GetMetaPlayer.GetPlayedOrObservedCountry.IsValid)]"
 
 									background = {
 										using = entry_bg_simple
-									}								
+									}
 									
 									textbox = {
-										position = { 10 -1 }
 										parentanchor = vcenter
+										position = { 10 0 }
+										align = nobaseline
 										using = fontsize_large
 										text = "[StateRegion.GetName]"
 										autoresize = yes
-									}	
+										max_width = 95
+										fontsize_min = 14
+										elide = right
+									}
 
 									textbox = {
-										position = { -10 -1 }
+										visible = "[StateRegion.IsSplitState]"
+										parentanchor = right|vcenter
+										position = { -10 0 }
+										align = nobaseline
 										using = fontsize_large
 										text = "FORM_COUNTRY_SPLIT_STATE"
 										autoresize = yes
-										parentanchor = vcenter|right
-									}								
-									
-									flag_icon = {
+										max_width = 75
+										fontsize_min = 14
+										elide = right
+									}
+
+									small_flag_no_interact = {
 										visible = "[Not(StateRegion.IsSplitState)]"
 										datacontext = "[StateRegion.GetLargestStateOwner]"
-										position = { -10 -1 }
-										size = { 48 32 }
-										# Using medium size textures in small flag for better downscaling of flag details
-										block "flag_definition" {
-											texture = "[Country.GetFlag.GetMediumFlagTexture]"
-											frame = "[Country.GetFlag.GetMediumFlagFrame]"
-										}
-										framesize = "[GetMediumFlagFrameSize]"
-										block "flag_tooltip" {
-											tooltipwidget = {
-												FancyTooltip_Country = {}
-											}
-										}
-										parentanchor = vcenter|right
+										parentanchor = right|vcenter
+										position = { -10 0 }
 									}														
 								}							
 							}

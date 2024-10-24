@@ -34,6 +34,8 @@
 	
 	modifier = {
 		interest_group_ig_landowners_pol_str_mult = 0.5
+		state_peasants_internal_migration_disallowed_bool = yes
+		state_peasants_mass_migration_disallowed_bool = yes
 	}
 
 	possible_political_movements = {
@@ -65,11 +67,7 @@
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
 	}
@@ -84,6 +82,7 @@ law_tenant_farmers = {
 
 	modifier = {
 		interest_group_ig_landowners_pol_str_mult = 0.25
+		state_peasants_internal_migration_disallowed_bool = yes
 	}
 
 	possible_political_movements = {
@@ -127,34 +126,60 @@ law_tenant_farmers = {
 				value = 0.1
 			}
 		}
+		
+		# Literate pops support getting out of Serfdom once you have Empiricism
 		add = {
-			desc = "POP_PEASANTS"		
+			desc = "empiricism"
+			
 			if = {
 				limit = { 
-					is_pop_type = peasants
 					owner = { 
+						has_technology_researched = empiricism 
 						has_law = law_type:law_serfdom
-					}
+					}		
 				}
 				add = {
-					value = literacy_rate
-					divide = 2
+					value = literacy_rate			
+					if = {
+						limit = { is_pop_type = aristocrats }
+						divide = 5
+					}	
+					else = {
+						divide = 2
+					}
 				}
-			}			
-		}
+			}
+		}			
 	}
 
 	ai_enact_weight_modifier = { #Petitions
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
+		
+		if = {
+			limit = { 
+				has_journal_entry = je_meiji_main
+				has_law = law_type:law_serfdom
+			}
+			add = 10000 # Top priority for Meiji AI is to get out of Serfdom
+		}
+
+		# AI should really try to get out of Serfdom under the right circumstances
+		if = {
+			limit = {
+				has_law = law_type:law_serfdom
+				NOT = { has_strategy = ai_strategy_reactionary_agenda }
+				OR = {
+					NOT = { has_strategy = ai_strategy_conservative_agenda }
+					any_political_movement = { desired_law = law_type:law_tenant_farmers }				
+				}			
+			}
+			add = 1000
+		}		
 	}
 }
 
@@ -180,6 +205,7 @@ law_commercialized_agriculture = {
 	}
 	
 	on_enact = {
+		custom_tooltip = financial_districts_buy_farms_tt
 		if = {
 			limit = {
 				NOR = {
@@ -220,35 +246,66 @@ law_commercialized_agriculture = {
 				value = 0.1
 			}
 		}
-
+		
+		# Literate pops support getting out of Serfdom once you have Empiricism
 		add = {
-			desc = "POP_PEASANTS"		
+			desc = "empiricism"
+			
 			if = {
 				limit = { 
-					is_pop_type = peasants
 					owner = { 
+						has_technology_researched = empiricism 
 						has_law = law_type:law_serfdom
-					}
+					}				
+					
+					# Peasants & Farmers want Homesteading instead of Commercialized Agriculture
+					NOR = { 
+						is_pop_type = farmers
+						is_pop_type = peasants
+					} 
 				}
 				add = {
-					value = literacy_rate
-					divide = 2
+					value = literacy_rate			
+					if = {
+						limit = { is_pop_type = aristocrats }
+						divide = 5
+					}	
+					else = {
+						divide = 2
+					}
 				}
-			}			
-		}
+			}
+		}		
 	}
 
 	ai_enact_weight_modifier = { #Petitions
 		value = 0
+
+		if = {
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
+			add = 750
+		}
 		
 		if = {
 			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
+				has_journal_entry = je_meiji_main
+				has_law = law_type:law_serfdom
 			}
-			add = 750
+			add = 10000 # Top priority for Meiji AI is to get out of Serfdom
 		}
+
+		# AI should really try to get out of Serfdom under the right circumstances
+		if = {
+			limit = {
+				has_law = law_type:law_serfdom
+				NOT = { has_strategy = ai_strategy_reactionary_agenda }
+				OR = {
+					NOT = { has_strategy = ai_strategy_conservative_agenda }
+					any_political_movement = { desired_law = law_type:law_collectivized_agriculture }				
+				}
+			}
+			add = 1000
+		}		
 	}
 }
 
@@ -267,6 +324,8 @@ law_homesteading = {
 
 	modifier = {
 		country_farmers_pol_str_mult = 0.25
+		building_group_bg_agriculture_allowed_collectivization_add = 0.5
+		building_group_bg_ranching_allowed_collectivization_add = 0.5
 	}
 
 	on_enact = {
@@ -310,37 +369,50 @@ law_homesteading = {
 				value = 0.50
 			}
 		}
-
+		
+		# Literate pops support getting out of Serfdom once you have Empiricism
 		add = {
-			desc = "POP_PEASANTS"		
+			desc = "empiricism"
+			
 			if = {
 				limit = { 
-					is_pop_type = peasants
 					owner = { 
-						OR = {
-							has_law = law_type:law_serfdom
-							has_law = law_type:law_tenant_farmers
-						}
-					}
+						has_technology_researched = empiricism 
+						has_law = law_type:law_serfdom
+					}				
+					OR = { 
+						is_pop_type = farmers
+						is_pop_type = peasants 
+					} 
 				}
 				add = {
 					value = literacy_rate
+					divide = 2
 				}
-			}			
-		}
+			}
+		}		
 	}
 
 	ai_enact_weight_modifier = { #Petitions
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
+		
+		# AI should really try to get out of Serfdom under the right circumstances
+		if = {
+			limit = {
+				has_law = law_type:law_serfdom
+				NOT = { has_strategy = ai_strategy_reactionary_agenda }
+				OR = {
+					NOT = { has_strategy = ai_strategy_conservative_agenda }
+					any_political_movement = { desired_law = law_type:law_homesteading }				
+				}
+			}
+			add = 1000
+		}		
 	}
 }
 
@@ -352,7 +424,8 @@ law_collectivized_agriculture = {
 	progressiveness = 50
 
 	modifier = {
-		
+		building_group_bg_agriculture_allowed_collectivization_add = 1.0
+		building_group_bg_ranching_allowed_collectivization_add = 1.0
 	}
 
 	on_enact = {
@@ -412,11 +485,7 @@ law_collectivized_agriculture = {
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
 		

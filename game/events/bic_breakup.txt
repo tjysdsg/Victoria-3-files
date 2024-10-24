@@ -53,13 +53,37 @@ bic_breakup.1 = {
 						}
 					}
 					any_neighbouring_state = {
-						owner = { is_subject_of = ROOT }
+						owner = { 
+							OR = {
+								is_subject_of = ROOT 
+								AND = {
+									is_subject_of = ROOT.top_overlord
+									NOT = {
+										this = root
+									}
+									any_scope_state = {
+										is_coastal = no
+									}
+								}
+							}
+						}
 					}
 				}
 			}
-			random_country = {
+			every_country = {
 				limit = {
-					is_subject_of = ROOT
+					OR = {
+						is_subject_of = ROOT 
+						AND = {
+							is_subject_of = ROOT.top_overlord
+							NOT = {
+								this = root
+							}
+							any_scope_state = {
+								is_coastal = no
+							}
+						}
+					}
 					any_scope_state = {
 						any_neighbouring_state = {
 							is_capital = no
@@ -72,31 +96,51 @@ bic_breakup.1 = {
 						}
 					}
 				}
-				save_scope_as = test_scope
-			}
-			random_scope_state = {
-				limit = {
-					is_capital = no
-					NOT = {
-						state_region = {
-							is_homeland = cu:bengali
+				save_scope_as = prince_scope
+				ROOT = {
+					random_scope_state = {
+						limit = {
+							is_capital = no
+							NOT = {
+								state_region = {
+									is_homeland = cu:bengali
+								}
+							}
+							any_neighbouring_state = {
+								 
+							}
 						}
-					}
-					any_neighbouring_state = {
-						owner = scope:test_scope
+						set_state_owner = scope:prince_scope
 					}
 				}
-				set_state_owner = scope:test_scope
 			}
-			clear_saved_scope = test_scope
+			clear_saved_scope = prince_scope
 		}
 		custom_tooltip = {
 			text = india_princes_independent_tt
 			every_country = {
 				limit = {
-					is_subject_of = ROOT
+					OR = {
+						is_subject_of = ROOT 
+						AND = {
+							is_subject_of = ROOT.top_overlord
+							OR = {
+								any_scope_state = {
+									is_coastal = no
+								}
+								THIS = ROOT
+							}
+							OR = {
+								capital.region = sr:region_north_india
+								capital.region = sr:region_south_india
+							}
+						}
+					}
 				}
 				make_independent = yes
+				c:GBR.power_bloc ?= {
+					add_leverage = { target = PREV value = -500 }
+				}
 			}
 		}
 		change_tag = BGL

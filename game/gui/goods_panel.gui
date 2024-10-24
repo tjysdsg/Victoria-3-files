@@ -29,6 +29,7 @@ types goods_panel_types
 				size = { 30 30 }
 				onclick = "[InformationPanelBar.OpenMarketPanel(GoodsPanel.AccessGoods.AccessMarket)]"
 				tooltip = "GO_TO_BUTTON_MARKET"
+				input_action = "go_to_details"
 			}
 		}
 
@@ -107,126 +108,149 @@ types goods_panel_types
 		}
 
 		blockoverride "fixed_bottom"{
-			fixed_bottom_spacer = {}
 			flowcontainer = {
-				direction = horizontal
-				spacing = 10
-				datacontext = "[GoodsPanel.AccessGoods]"
-				button = {
-					visible = "[And(Goods.IsTradeable, And(Goods.HasMarketContext, Goods.HasImportExportControl))]"
-				
-					using = default_button_map_interaction
-					size = { 260 70 }
-					
-					icon = {
-						texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_import_lens_option.dds"
-						size = { 40 40 }
-						position = { 0 3 }
-						parentanchor = hcenter
-					}
-					textbox = {
-						text = "NEW_IMPORT_ROUTE"
-						size = { 100% 30 }
-						position = { 0 -3 }
-						parentanchor = bottom
-						margin = { 10 0 }
-						elide = right
-						align = center|nobaseline
-					}
-					
-					using = shimmer
-					blockoverride "shimmer_visibility" {
-						visible = "[Goods.CanEstablishImportTradeRoute]"
-					}
-					enabled = "[Goods.CanEstablishImportTradeRoute]"
-					onclick = "[Goods.EstablishImportTradeRoute]"
-					tooltip = "ESTABLISH_IMPORT_ROUTE_TOOLTIP"
-				}
-				button = {
-					visible = "[And(Goods.IsTradeable, And(Goods.HasMarketContext, Goods.HasImportExportControl))]"
-				
-					using = default_button_map_interaction
-					size = { 260 70 }
-					
-					icon = {
-						texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_export_lens_option.dds"
-						size = { 40 40 }
-						position = { 0 3 }
-						parentanchor = hcenter
-					}
-					textbox = {
-						text = "NEW_EXPORT_ROUTE"
-						size = { 100% 30 }
-						position = { 0 -3 }
-						parentanchor = bottom
-						margin = { 10 0 }
-						elide = right
-						align = center|nobaseline
-					}
-					
-					using = shimmer
-					blockoverride "shimmer_visibility" {
-						visible = "[Goods.CanEstablishExportTradeRoute]"
-					}
-					enabled = "[Goods.CanEstablishExportTradeRoute]"
-					onclick = "[Goods.EstablishExportTradeRoute]"
-					tooltip = "ESTABLISH_EXPORT_ROUTE_TOOLTIP"
+				direction = vertical
+				spacing = 5
+
+				divider_clean = {
+					size = { @panel_width_plus_14 4 }
 				}
 
-				button = {
-					visible = "[And(Goods.IsTradeable, And(Goods.HasMarketContext, Not(Goods.HasImportExportControl)))]"
-					
-					using = default_button_map_interaction
-					size = { 260 70 }
-					
-					icon = {
-						texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_import_lens_option.dds"
-						size = { 40 40 }
-						position = { 0 3 }
-						parentanchor = hcenter
-					}
-					textbox = {
-						text = "NEW_IMPORT_ROUTE_TO_PLAYER"
-						size = { 100% 30 }
-						position = { 0 -3 }
-						parentanchor = bottom
-						margin = { 10 0 }
-						elide = right
-						align = center|nobaseline
-					}
-					
-					enabled = "[IsValid(Goods.EstablishTradeRouteWithPlayerMarket('(bool)yes'))]"
-					onclick = "[Execute(Goods.EstablishTradeRouteWithPlayerMarket('(bool)yes'))]"
-					tooltip = "ESTABLISH_IMPORT_ROUTE_TO_PLAYER_MARKET_TOOLTIP"
+				background = {
+					using = dark_area
 				}
-				button = {
-					visible = "[And(Goods.IsTradeable, And(Goods.HasMarketContext, Not(Goods.HasImportExportControl)))]"
+
+				flowcontainer = {
+					parentanchor = hcenter
+					direction = horizontal
+					spacing = 10
+					datacontext = "[GoodsPanel.AccessGoods]"
+					margin_top = 5
+
+					button = {
+						visible = "[And(Goods.IsTradeable, And(Goods.HasMarketContext, Goods.HasImportExportControl))]"
 					
-					using = default_button_map_interaction
-					size = { 260 70 }
-					
-					icon = {
-						texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_export_lens_option.dds"
-						size = { 40 40 }
-						position = { 0 3 }
-						parentanchor = hcenter
+						using = default_button_map_interaction
+						size = { 260 70 }
+						
+						icon = {
+							texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_import_lens_option.dds"
+							size = { 40 40 }
+							position = { 0 3 }
+							parentanchor = hcenter
+						}
+						textbox = {
+							text = "NEW_IMPORT_ROUTE"
+							size = { 100% 30 }
+							position = { 0 -3 }
+							parentanchor = bottom
+							margin = { 10 0 }
+							elide = right
+							align = center|nobaseline
+						}
+						
+						using = shimmer
+						blockoverride "shimmer_visibility" {
+							visible = "[Goods.CanEstablishImportTradeRoute]"
+						}
+						enabled = "[Goods.CanEstablishImportTradeRoute]"
+						onclick = "[Goods.EstablishImportTradeRoute]"
+						tooltip = "ESTABLISH_IMPORT_ROUTE_TOOLTIP"
 					}
-					textbox = {
-						text = "NEW_EXPORT_ROUTE_FROM_PLAYER"
-						size = { 100% 30 }
-						position = { 0 -3 }
-						parentanchor = bottom
-						margin = { 10 0 }
-						elide = right
-						align = center|nobaseline
-					}
+
+					button = {
+						visible = "[And(Goods.IsTradeable, And(Goods.HasMarketContext, Goods.HasImportExportControl))]"
 					
-					enabled = "[IsValid(Goods.EstablishTradeRouteWithPlayerMarket('(bool)no'))]"
-					onclick = "[Execute(Goods.EstablishTradeRouteWithPlayerMarket('(bool)no'))]"
-					tooltip = "ESTABLISH_EXPORT_ROUTE_FROM_PLAYER_MARKET_TOOLTIP"
+						using = default_button_map_interaction
+						size = { 260 70 }
+						
+						icon = {
+							texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_export_lens_option.dds"
+							size = { 40 40 }
+							position = { 0 3 }
+							parentanchor = hcenter
+						}
+						textbox = {
+							text = "NEW_EXPORT_ROUTE"
+							size = { 100% 30 }
+							position = { 0 -3 }
+							parentanchor = bottom
+							margin = { 10 0 }
+							elide = right
+							align = center|nobaseline
+						}
+						
+						using = shimmer
+						blockoverride "shimmer_visibility" {
+							visible = "[Goods.CanEstablishExportTradeRoute]"
+						}
+						enabled = "[Goods.CanEstablishExportTradeRoute]"
+						onclick = "[Goods.EstablishExportTradeRoute]"
+						tooltip = "ESTABLISH_EXPORT_ROUTE_TOOLTIP"
+					}
+
+					button = {
+						visible = "[And(Goods.IsTradeable, And(Goods.HasMarketContext, Not(Goods.HasImportExportControl)))]"
+						
+						using = default_button_map_interaction
+						size = { 260 70 }
+						
+						icon = {
+							texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_import_lens_option.dds"
+							size = { 40 40 }
+							position = { 0 3 }
+							parentanchor = hcenter
+						}
+						textbox = {
+							text = "NEW_IMPORT_ROUTE_TO_PLAYER"
+							size = { 100% 30 }
+							position = { 0 -3 }
+							parentanchor = bottom
+							margin = { 10 0 }
+							elide = right
+							align = center|nobaseline
+						}
+						
+						enabled = "[IsValid(Goods.EstablishTradeRouteWithPlayerMarket('(bool)yes'))]"
+						onclick = "[Execute(Goods.EstablishTradeRouteWithPlayerMarket('(bool)yes'))]"
+						tooltip = "ESTABLISH_IMPORT_ROUTE_TO_PLAYER_MARKET_TOOLTIP"
+					}
+
+					button = {
+						visible = "[And(Goods.IsTradeable, And(Goods.HasMarketContext, Not(Goods.HasImportExportControl)))]"
+						
+						using = default_button_map_interaction
+						size = { 260 70 }
+						
+						icon = {
+							texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_export_lens_option.dds"
+							size = { 40 40 }
+							position = { 0 3 }
+							parentanchor = hcenter
+						}
+						textbox = {
+							text = "NEW_EXPORT_ROUTE_FROM_PLAYER"
+							size = { 100% 30 }
+							position = { 0 -3 }
+							parentanchor = bottom
+							margin = { 10 0 }
+							elide = right
+							align = center|nobaseline
+						}
+						
+						enabled = "[IsValid(Goods.EstablishTradeRouteWithPlayerMarket('(bool)no'))]"
+						onclick = "[Execute(Goods.EstablishTradeRouteWithPlayerMarket('(bool)no'))]"
+						tooltip = "ESTABLISH_EXPORT_ROUTE_FROM_PLAYER_MARKET_TOOLTIP"
+					}
+				}
+
+				widget = {
+					size = { 5 5 }
 				}
 			}
 		}
+		
+		blockoverride "bottom_spacing" {}
 
 		blockoverride "scrollarea_content"
 		{
@@ -350,13 +374,18 @@ types goods_panel_types
 							
 							consumption_tax_button_toggle = {
 								visible = "[Not(ObjectsEqual(GetMetaPlayer.GetPlayedOrObservedCountry.GetCapital.GetMarket, Goods.GetMarket))]"
-								enabled = "[Not(IsValid( Goods.ToggleTaxation(GetMetaPlayer.GetPlayedOrObservedCountry)))]"
-								tooltip = "NOT_PLAYER_MARKET_CONSUMPTION_TAXES"
+								
+								blockoverride "tooltip" {
+									tooltip = "NOT_PLAYER_MARKET_CONSUMPTION_TAXES"
+								}
+
+								blockoverride "enabled" {
+									enabled = no
+								}
 							}
+
 							consumption_tax_button_toggle = {
 								visible = "[ObjectsEqual(GetMetaPlayer.GetPlayedOrObservedCountry.GetCapital.GetMarket, Goods.GetMarket)]"
-								enabled = "[IsValid( Goods.ToggleTaxation(GetMetaPlayer.GetPlayedOrObservedCountry) )]"
-								tooltip = "[Goods.GetTaxDesc(GetMetaPlayer.GetPlayedOrObservedCountry)]"
 							}
 						}
 					}
@@ -405,6 +434,11 @@ types goods_panel_types
 						blockoverride "empty_state_visibility" {
 							visible = "[IsEmpty(Goods.GetPriceTrend)]"
 						}
+
+						blockoverride "everything_that_is_not_empty_state_visibility" {
+							visible = "[Not(IsEmpty(Goods.GetPriceTrend))]"
+						}
+
 						blockoverride "empty_state_text" {
 							text = "GRAPH_NOT_INITIALIZED"
 						}
@@ -701,9 +735,12 @@ types "production_method_items" {
 			
 			state = {
 				name = show_map_mode_list
-				size = { 350 45 }
 				duration = 0.2
 				using = Animation_Curve_Default
+				
+				block "expanded_size" {
+					size = { 350 45 }
+				}
 			}
 			state = {
 				name = hide_map_mode_list
@@ -1343,7 +1380,7 @@ types "production_method_items" {
 
 		textbox = {
 			datacontext = "[BuildingType]"
-			visible = "[And(BuildingType.IsBuildable, BuildingType.HasRequiredTechnologiesInCountry(GetPlayer.Self))]"
+			visible = "[And(And(BuildingType.IsBuildable, BuildingType.HasRequiredTechnologiesInCountry(GetPlayer.Self)), BuildingType.HasRequiredPrinciplesInCountry(GetPlayer.Self))]"
 			tooltip = "BUILDING_ACTION_NUMBER"
 			raw_text = "#BOLD [BuildingType.GetNumAvailableStatesForBuilding|+]#!"
 			align = right|nobaseline
@@ -1498,6 +1535,14 @@ types "production_method_items" {
 	
 	type consumption_tax_button_toggle = button_icon_round_toggle_action {
 		size = { 44 44 }
+
+		block "tooltip" {
+			tooltip = "[Goods.GetTaxDesc(GetMetaPlayer.GetPlayedOrObservedCountry)]"
+		}
+
+		block "enabled" {
+			enabled = "[IsValid( Goods.ToggleTaxation(GetMetaPlayer.GetPlayedOrObservedCountry) )]"
+		}
 
 		blockoverride "on_click" {
 			onclick = "[Execute( Goods.ToggleTaxation(GetPlayer) )]"

@@ -1,5 +1,6 @@
 ﻿### Constants
 @max_battles_to_win_state = 4
+@min_battles_to_win_state = 2
 @min_victory_score = 100
 @hazardous_terrain_factor = 0.03
 @forested_terrain_factor = 0.02
@@ -132,12 +133,17 @@ occupation_cost = {
 		}
 	}
 	
-	save_temporary_value_as = pre_max_cost
+	save_temporary_value_as = pre_clamped_cost
 	if = {
-		limit = { scope:pre_max_cost > @[min_victory_score*max_battles_to_win_state] }
+		limit = { scope:pre_clamped_cost > @[min_victory_score*max_battles_to_win_state] }
 		max = @[min_victory_score*max_battles_to_win_state]
 		desc = "OCCUPATION_COST_MAX_VALUE_REACHED"
 	}
+	if = {
+		limit = { scope:pre_clamped_cost < @[min_victory_score*min_battles_to_win_state] }
+		min = @[min_victory_score*min_battles_to_win_state]
+		desc = "OCCUPATION_COST_MIN_VALUE_REACHED"
+	}	
 }
 
 # root = battleside

@@ -47,13 +47,17 @@ law_mercantilism = {
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
+		
+		if = {
+			limit = { 
+				has_journal_entry = je_meiji_diplomacy
+				has_law = law_type:law_isolationism
+			}
+			add = 1000
+		}		
 	}
 }
 
@@ -81,6 +85,10 @@ law_protectionism = {
 		tariff_export_add = 0.30
 	}	
 	
+	modifier = {
+		country_leverage_resistance_mult = 0.25
+	}
+
 	possible_political_movements = {
 		law_free_trade
 	}	
@@ -93,13 +101,17 @@ law_protectionism = {
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
+		
+		if = {
+			limit = { 
+				has_journal_entry = je_meiji_diplomacy
+				has_law = law_type:law_isolationism
+			}
+			add = 1000
+		}				
 	}
 }
 
@@ -133,6 +145,7 @@ law_free_trade = {
 		country_trade_route_competitiveness_mult = 0.5
 		country_trade_route_quantity_mult = 0.5
 		country_trade_route_cost_mult = -0.5
+		country_leverage_resistance_mult = -0.25
 	}
 	
 	possible_political_movements = {
@@ -147,13 +160,17 @@ law_free_trade = {
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
+		
+		if = {
+			limit = { 
+				has_journal_entry = je_meiji_diplomacy
+				has_law = law_type:law_isolationism
+			}
+			add = 1000
+		}		
 	}
 }
 
@@ -166,16 +183,22 @@ law_isolationism = {
 	
 	disallowing_laws = {
 		law_laissez_faire
-	}		
+	}
+	
+	can_enact = {
+		is_in_power_bloc = no
+	}
 	
 	modifier = {
 		country_authority_mult = 0.5
 		state_tax_capacity_mult = 0.25
 		country_tech_spread_mult = -0.15
 		
+		country_leverage_resistance_mult = 1.0
+		
 		country_max_declared_interests_mult = -0.5
 		
-		market_disallow_trade_routes = yes
+		market_disallow_trade_routes_bool = yes
 	}
 	
 	possible_political_movements = {
@@ -188,10 +211,13 @@ law_isolationism = {
 	}
 	
 	ai_will_do = {
-		ruler = {
-			OR = {
-				has_ideology = ideology:ideology_traditionalist
-				has_ideology = ideology:ideology_vanguardist
+		OR = {
+			has_journal_entry = je_gyojo_shinwon
+			ruler = {
+				OR = {
+					has_ideology = ideology:ideology_traditionalist
+					has_ideology = ideology:ideology_vanguardist
+				}
 			}
 		}
 	}
@@ -200,11 +226,7 @@ law_isolationism = {
 		value = 0
 		
 		if = {
-			limit = { 
-				has_journal_entry = je_government_petition
-				has_variable = desired_law_var
-                scope:law = var:desired_law_var
-			}
+			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
 	}

@@ -96,6 +96,22 @@ types diplomatic_play_panel_types
 		blockoverride "window_header_name" {
 			text = "DIPLOMATIC_PLAY_NAME"
 		}
+
+		blockoverride "pin_visibility" {
+			visible = "[DiplomaticPlay.IsInvolved(GetPlayer)]"
+		}
+
+		blockoverride "pin_properties" {
+			visible = "[DiplomaticPlay.IsPinnedInOutliner]"
+			onclick = "[DiplomaticPlay.TogglePinInOutliner]"
+			tooltip = "UNPIN_DIPLOMATIC_PLAY"
+		}
+
+		blockoverride "unpin_properties" {
+			visible = "[Not(DiplomaticPlay.IsPinnedInOutliner)]"
+			onclick = "[DiplomaticPlay.TogglePinInOutliner]"
+			tooltip = "PIN_DIPLOMATIC_PLAY"
+		}
 		
 		#TOP
 		blockoverride "fixed_top"
@@ -174,7 +190,7 @@ types diplomatic_play_panel_types
 						}
 
 						textbox = {
-							align = left|nobaseline
+							align = nobaseline
 							parentanchor = vcenter
 							position = { 30 0 }
 							raw_text = "#v [DiplomaticPlay.GetNumberOfPossibleSwayCountriesFormatted( GetPlayer.Self )]#!"
@@ -197,7 +213,7 @@ types diplomatic_play_panel_types
 						}
 
 						textbox = {
-							align = left|nobaseline
+							align = nobaseline
 							parentanchor = vcenter
 							position = { 30 0 }
 							raw_text = "#v [DiplomaticPlay.GetNumberOfPossibleSwayCountriesFormatted( GetPlayer.Self )]#!"
@@ -391,7 +407,7 @@ types diplomatic_play_panel_types
 							datamodel = "[DiplomaticPlay.AccessTargetWarGoals]"
 						}
 						blockoverride "side_visible_property" {
-							visible = "[DiplomaticPlay.IsTarget(GetPlayer.Self)]"
+							visible = "[And(DiplomaticPlay.IsValidWarGoalDeclarer(GetPlayer.Self),DiplomaticPlay.IsTargetOrBacker(GetPlayer.Self))]"
 						}
 						blockoverride "side_visible_not_property" {
 							visible = "[Not(DiplomaticPlay.IsTarget(GetPlayer.Self))]"
@@ -671,7 +687,7 @@ types diplomatic_play_panel_types
 				### TOP INFO
 				container = {
 					parentanchor = hcenter
-					minimumsize = { @panel_width -1 }
+					minimumsize = { @panel_width_plus_14 -1 }
 					
 					### INITIATOR
 					diplo_play_side_sway_tab = {}
@@ -679,7 +695,7 @@ types diplomatic_play_panel_types
 					### INSTRUCTION (CANNOT SWAY AND INITIATOR OR TARGET)
 					textbox = {
 						visible = "[And(Or(LessThan_int32(DiplomaticPlay.GetEscalation, GetDefine('NDiplomacy', 'DIPLOMATIC_PLAY_OPENING_PHASE_END')), GreaterThanOrEqualTo_int32(DiplomaticPlay.GetEscalation, GetDefine('NDiplomacy', 'DIPLOMATIC_PLAY_CLOSING_PHASE_START'))), DiplomaticPlay.IsTargetOrInitiator(GetPlayer))]"
-						position = { 0 20 }
+						position = { 0 10 }
 						parentanchor = center
 						autoresize = yes
 						minimumsize = { 300 -1 }
@@ -694,7 +710,7 @@ types diplomatic_play_panel_types
 					### INSTRUCTION (CANNOT SWAY AND INVOLVED)
 					textbox = {
 						visible = "[And(Or(LessThan_int32(DiplomaticPlay.GetEscalation, GetDefine('NDiplomacy', 'DIPLOMATIC_PLAY_OPENING_PHASE_END')), GreaterThanOrEqualTo_int32(DiplomaticPlay.GetEscalation, GetDefine('NDiplomacy', 'DIPLOMATIC_PLAY_CLOSING_PHASE_START'))), And(Not(Or(DiplomaticPlay.IsUndecidedParticipant(GetPlayer),DiplomaticPlay.IsBacker(GetPlayer))), Not(DiplomaticPlay.IsTargetOrInitiator(GetPlayer))))]"
-						position = { 0 20 }
+						position = { 0 10 }
 						parentanchor = center
 						autoresize = yes
 						minimumsize = { 300 -1 }
@@ -709,7 +725,7 @@ types diplomatic_play_panel_types
 					### INSTRUCTION (INITIATOR OR TARGET CAN SWAY)
 					textbox = {
 						visible = "[And(And(GreaterThanOrEqualTo_int32(DiplomaticPlay.GetEscalation, GetDefine('NDiplomacy', 'DIPLOMATIC_PLAY_OPENING_PHASE_END')),LessThan_int32(DiplomaticPlay.GetEscalation, GetDefine('NDiplomacy', 'DIPLOMATIC_PLAY_CLOSING_PHASE_START'))), And(DiplomaticPlay.IsTargetOrInitiator(GetPlayer), Not(Or(DiplomaticPlay.IsUndecidedParticipant(GetPlayer),DiplomaticPlay.IsBacker(GetPlayer)))))]"
-						position = { 0 20 }
+						position = { 0 10 }
 						parentanchor = center
 						autoresize = yes
 						minimumsize = { 300 -1 }
@@ -724,7 +740,7 @@ types diplomatic_play_panel_types
 					### INSTRUCTION (INVOLVED COUNTRIES)
 					textbox = {
 						visible = "[Or(Or(DiplomaticPlay.IsUndecidedParticipant(GetPlayer),DiplomaticPlay.IsBacker(GetPlayer)), Not(DiplomaticPlay.IsInvolved(GetPlayer)))]"
-						position = { 0 20 }
+						position = { 0 10 }
 						parentanchor = center
 						autoresize = yes
 						minimumsize = { 300 -1 }
@@ -758,11 +774,12 @@ types diplomatic_play_panel_types
 				flowcontainer = {
 					direction = horizontal
 					parentanchor = hcenter
+					spacing = 2
 
 					# initiator backer
 					diplomatic_play_stance_lane = {
 						blockoverride "list_datamodel" {
-							datamodel = "[DiplomaticPlay.AccessInitiatorBackersNoForcedSubjects]"
+							datamodel = "[DiplomaticPlay.AccessInitiatorBackersNoLoyalSubjects]"
 						}
 						blockoverride "icon_properties" {
 							texture = "gfx/interface/icons/diplo_play_icons/stance_supports.dds"
@@ -810,8 +827,6 @@ types diplomatic_play_panel_types
 						}							
 					}
 
-					vertical_divider_full = {}
-
 					# initiator leaning
 					diplomatic_play_stance_lane = {
 						datacontext = "[DiplomaticPlay.GetInitiator]"
@@ -854,7 +869,7 @@ types diplomatic_play_panel_types
 						}
 					}
 					
-					vertical_divider_full = {}
+					vertical_divider_full = { maximumsize = { -1 65 }}
 					
 					# on the fence
 					diplomatic_play_stance_lane = {
@@ -893,7 +908,7 @@ types diplomatic_play_panel_types
 						}
 					}
 					
-					vertical_divider_full = {}
+					vertical_divider_full = { maximumsize = { -1 65 }}
 
 					# target leaning
 					diplomatic_play_stance_lane = {
@@ -936,12 +951,10 @@ types diplomatic_play_panel_types
 						}
 					}
 					
-					vertical_divider_full = {}
-					
 					# target backer
 					diplomatic_play_stance_lane = {
 						blockoverride "list_datamodel" {
-							datamodel = "[DiplomaticPlay.AccessTargetBackersNoForcedSubjects]"
+							datamodel = "[DiplomaticPlay.AccessTargetBackersNoLoyalSubjects]"
 						}
 						blockoverride "icon_properties" {
 							texture = "gfx/interface/icons/diplo_play_icons/stance_supports.dds"
@@ -967,7 +980,7 @@ types diplomatic_play_panel_types
 						blockoverride "show_button" {
 							visible = "[Not(Or(DiplomaticPlay.IsTargetBacker( GetPlayer ), DiplomaticPlay.IsTargetOrInitiator( GetPlayer )))]"
 						}
-						
+							
 						blockoverride "reverse_sway_button_properties" {
 							enabled = "[DiplomaticPlay.CanSwayCountry(GetPlayer.Self, DiplomaticPlay.GetTarget)]"
 							onclick = "[InformationPanelBar.OpenSwayCountryPanel( DiplomaticPlay.Self, DiplomaticPlay.GetTarget )]"
@@ -1104,7 +1117,7 @@ types diplomatic_play_panel_types
 					
 					button = {
 						using = default_button_action
-						visible = "[And( DiplomaticPlay.IsInitiator(GetPlayer), Not( DiplomaticPlay.GetDiplomaticPlayType.HasEnableSwitchSides ))]"
+						visible = "[And( DiplomaticPlay.IsInitiator(GetPlayer), Not( IsValid( DiplomaticPlay.SwitchSide( GetPlayer ))))]"
 						size = { @panel_width 50 }
 						text = "DIPLO_PLAY_BACK_DOWN"
 						using = fontsize_large
@@ -1114,7 +1127,7 @@ types diplomatic_play_panel_types
 					}
 					button = {
 						using = default_button_action
-						visible = "[And( DiplomaticPlay.IsTarget(GetPlayer), Not( DiplomaticPlay.GetDiplomaticPlayType.HasEnableSwitchSides ))]"
+						visible = "[And( DiplomaticPlay.IsTarget(GetPlayer), Not( IsValid( DiplomaticPlay.SwitchSide( GetPlayer ))))]"
 						size = { @panel_width 50 }
 						text = "DIPLO_PLAY_GIVE_IN"
 						using = fontsize_large
@@ -1124,7 +1137,7 @@ types diplomatic_play_panel_types
 					}
 					button = {
 						using = default_button_action
-						visible = "[And( DiplomaticPlay.IsTarget(GetPlayer), DiplomaticPlay.GetDiplomaticPlayType.HasEnableSwitchSides)]"
+						visible = "[IsValid( DiplomaticPlay.SwitchSide( GetPlayer ))]"
 						size = { @panel_width 50 }
 						text = "DIPLOMATIC_PLAY_SWITCH_COUNTRY"
 						using = fontsize_large
@@ -1191,7 +1204,7 @@ types custom_popup_types
 			
 			flowcontainer = {
 				block "parentanchor" {}
-				spacing = 5
+				spacing = 7
 				
 				textbox = {
 					autoresize = yes
@@ -1265,7 +1278,8 @@ types custom_popup_types
 				textbox = {
 					size = { 40 25 }
 					block "involved_num_mobilized_battalions" {}
-					align = right|nobaseline
+					align = nobaseline
+					default_format = "#v"
 				}
 				textbox = {
 					size = { 10 25 }
@@ -1275,7 +1289,8 @@ types custom_popup_types
 				textbox = {
 					size = { 40 25 }
 					block "involved_num_total_battalions" {}
-					align = left|nobaseline
+					align = nobaseline
+					margin_left = 7
 				}
 			}
 			
@@ -1290,7 +1305,8 @@ types custom_popup_types
 				textbox = {
 					size = { 40 25 }
 					block "involved_num_total_warships" {}
-					align = right|nobaseline
+					align = nobaseline
+					default_format = "#v"
 				}
 			}
 		}
@@ -1352,36 +1368,43 @@ types custom_popup_types
 
 				block "parentanchor" {}
 
-				icon = {
-					size = { 25 25 }
-					texture = "gfx/interface/icons/generic_icons/battalions.dds"
-					parentanchor = vcenter
-				}
-
-				textbox = {
-					autoresize = yes
-					text = "[DiplomaticPlay.GetTotalNumMobilizedBattalionsForSide( Country.Self )|v]"
+				flowcontainer = {				
 					tooltip = "DIPLO_PLAY_TOTAL_MOBILIZED_BATTALIONS_BREAKDOWN"
-					align = nobaseline
-					using = fontsize_xxl
-					parentanchor = vcenter
+					
+					icon = {
+						size = { 25 25 }
+						texture = "gfx/interface/icons/generic_icons/battalions.dds"
+						parentanchor = vcenter
+					}
+
+					textbox = {
+						autoresize = yes
+						text = "[DiplomaticPlay.GetTotalNumMobilizedBattalionsForSide( Country.Self )|v]"
+						align = nobaseline
+						using = fontsize_xxl
+						parentanchor = vcenter
+					}
 				}
 				
 				widget = { size = { 10 0 }}
 
-				icon = {
-					size = { 25 25 }
-					texture = "gfx/interface/icons/generic_icons/flotillas.dds"
-					parentanchor = vcenter
-				}
-
-				textbox = {
-					autoresize = yes
-					text = "[DiplomaticPlay.GetTotalNumWarshipsForSide( Country.Self )|v]"
+				flowcontainer = {
+					spacing = 5
 					tooltip = "DIPLO_PLAY_TOTAL_FLOTILLAS_BREAKDOWN"
-					align = nobaseline
-					using = fontsize_xxl
-					parentanchor = vcenter
+					
+					icon = {
+						size = { 25 25 }
+						texture = "gfx/interface/icons/generic_icons/flotillas.dds"
+						parentanchor = vcenter
+					}
+
+					textbox = {
+						autoresize = yes
+						text = "[DiplomaticPlay.GetTotalNumWarshipsForSide( Country.Self )|v]"
+						align = nobaseline
+						using = fontsize_xxl
+						parentanchor = vcenter
+					}
 				}
 			}
 		}
@@ -1583,11 +1606,10 @@ types custom_popup_types
 			block "parentanchor" {}
 			text = "DIPLO_PLAY_NO_SUPPORTS"
 			autoresize = yes
-			align = nobaseline
+			align = hcenter|nobaseline
 			using = empty_state_text_properties
 			margin = { 5 0 }
-			margin_top = 2
-			margin_bottom = 25
+			minimumsize = { @diplo_play_side_width 50 }
 		}
 		
 		fixedgridbox = {
@@ -1641,7 +1663,7 @@ types custom_popup_types
 
 			add_wargoal_button = {
 				block "side_visible_property" {
-					visible = "[DiplomaticPlay.IsInitiator(GetPlayer.Self)]"
+					visible = "[And(DiplomaticPlay.IsValidWarGoalDeclarer(GetPlayer.Self),DiplomaticPlay.IsInitiatorOrBacker(GetPlayer.Self))]"
 				}
 			}
 			
@@ -1707,11 +1729,11 @@ types custom_popup_types
 							}
 							
 							button = {
+								visible = "[And(Not(WarGoal.IsPrimaryDemand), WarGoal.GetHolder.IsLocalPlayer)]"
 								using = default_button
 								size = { 200 30 }
 								text = "DIPLO_PLAY_MAKE_PRIMARY_DEMAND"
 								tooltip = "DIPLO_PLAY_MAKE_PRIMARY_DEMAND_TOOLTIP"
-								visible = "[Not(WarGoal.IsPrimaryDemand)]"
 								enabled = "[IsValid(WarGoal.MakeWarGoalPrimaryDemand(GetPlayer.Self))]"
 								onclick = "[Execute(WarGoal.MakeWarGoalPrimaryDemand(GetPlayer.Self))]"
 								parentanchor = vcenter
@@ -1785,7 +1807,7 @@ types custom_popup_types
 				raw_text = "#variable @battalions! [Country.GetBattalions|0]#!"
 				minimumsize = { 70 -1 }
 				using = fontsize_large
-				align = left|nobaseline
+				align = nobaseline
 			}
 
 			textbox = {
@@ -1793,7 +1815,7 @@ types custom_popup_types
 				raw_text = "#variable @flotillas! [Country.GetWarships|0]#!"
 				minimumsize = { 70 -1 }
 				using = fontsize_large
-				align = left|nobaseline
+				align = nobaseline
 			}
 		}
 	}
@@ -1820,7 +1842,6 @@ types custom_popup_types
 			parentanchor = hcenter
 
 			widget = {
-				#TODO: also show this for the selected lane by an involved country (this is instead of disabling the button, we want to show the icon+highlight circle instead.)
 				block "show_icon" {
 					visible = no
 				}
@@ -1864,7 +1885,7 @@ types custom_popup_types
 					}
 					blockoverride "icon_size" {
 						block "icon_size" {
-							size = { 50 50 }
+							size = { 75% 75% }
 						}
 					}												
 				}
@@ -1883,14 +1904,21 @@ types custom_popup_types
 					}
 					blockoverride "icon_size" {
 						block "icon_size" {
-							size = { 50 50 }
+							size = { 75% 75% }
 						}
 					}												
 				}							
 			}
+
+			widget = {
+				size = { 2 2 }
+				block "show_reverse_sway_button" {
+					visible = no
+				}
+			}
 			
 			widget = {
-				size = { 110 65 }
+				size = { 105 65 }
 				parentanchor = hcenter
 
 				block "show_reverse_sway_button" {
@@ -1903,7 +1931,7 @@ types custom_popup_types
 					using = diplomatic_play_support_button_sound
 
 					block "button_size" {
-						size = { 110 65 }
+						size = { 105 65 }
 					}
 
 					block "reverse_sway_button_properties" {}
@@ -1955,182 +1983,211 @@ types custom_popup_types
 		
 		# country list
 		flowcontainer = {
-			minimumsize = { 105 -1 }
 			direction = vertical
-			spacing = 5
 			block "list_datamodel" {}
+			spacing = 2
+			parentanchor = hcenter
 			
 			item = {
 				widget = {
-					size = { 105 120 }
-
+					# hack to conditionally show the correct tooltip
 					widget = {
 						visible = "[Not(Or(DiplomaticPlay.IsInitiator(GetPlayer.Self),DiplomaticPlay.IsTarget(GetPlayer.Self)))]"
 						size = { 100% 100% }
 						tooltip = "DIPLO_PLAY_COUNTRY_TOOLTIP"
 					}
-					
+
 					background = {
 						using = entry_bg_simple
 					}
-					
+
 					icon = {
 						visible = "[ObjectsEqual(GetMetaPlayer.GetPlayedOrObservedCountry.Self, Country.Self)]"
 						using = highlighted_square_selection
 					}
-					
-					button = {
+
+					tiny_flag = {
+						mobilization_icon_flag = {}
 						parentanchor = hcenter
-						using = default_button
-						size = { 100% 100% }
-						visible = "[Or(DiplomaticPlay.IsInitiator(GetPlayer.Self),DiplomaticPlay.IsTarget(GetPlayer.Self))]"
-						enabled = "[DiplomaticPlay.CanSwayCountry(GetPlayer.Self, Country.Self)]"
-						onclick = "[InformationPanelBar.OpenSwayCountryPanel( DiplomaticPlay.Self, Country.Self )]"
-						tooltip = "SWAY_COUNTRY_TOOLTIP"
-					}
-						
-				
-					# flag + icons
-					widget = {
-						visible = "[Not(ObjectsEqual(GetMetaPlayer.GetPlayedOrObservedCountry.Self, Country.Self))]"
-						position = { 0 20 }
-						size = { 92 30 }
-						parentanchor = hcenter
-						
-						tiny_flag_no_interact = {
-							parentanchor = hcenter
-							position = { 0 3 }
-							mobilization_icon_flag = {}
-						}
-						
-						icon = {
-							visible = "[And(DiplomaticPlay.HasAcceptedSway(Country.Self),Not(DiplomaticPlay.GetAcceptedSway(Country.Self).GetSwayOffer.TakesEffectImmediately))]"
-							tooltip = "[DiplomaticPlay.GetAcceptedSway(Country.Self).GetSwayOffer.GetName(GetPlayer.Self,Country.Self, DiplomaticPlay.Self)]"
-							texture = "[DiplomaticPlay.GetAcceptedSway(Country.Self).GetSwayOffer.GetTexture]"
-							size = { 25 25 }
-						}
-						
-						diplo_play_sway_approval = {
-							blockoverride "visible_approval_icon" {
-								visible = "[And(DiplomaticPlay.WouldAcceptAnySway( GetPlayer.Self, Country.Self ), Or(DiplomaticPlay.IsInitiator( GetPlayer.Self ),DiplomaticPlay.IsTarget( GetPlayer.Self )))]"
-							}
-
-							size = { 25 25 }
-							parentanchor = right
-							tooltip = "CAN_SWAY_COUNTRY_TOOLTIP"
-						}
-
-						diplo_play_sway_disapproval = {
-							blockoverride "visible_disapproval_icon" {
-								visible = "[And(Not(DiplomaticPlay.WouldAcceptAnySway( GetPlayer.Self, Country.Self )), Or(DiplomaticPlay.IsInitiator( GetPlayer.Self ),DiplomaticPlay.IsTarget( GetPlayer.Self )))]"
-							}
-
-							size = { 25 25 }
-							parentanchor = right
-							tooltip = "CANNOT_SWAY_COUNTRY_TOOLTIP"
-						}
+						position = { 0 7 }
+						scale = 1.2 # for layout purposes in this specific screen, tiny_flag was slightly to small and small_flag slightly too big
 					}
 
 					flowcontainer = {
-						visible = "[ObjectsEqual(GetMetaPlayer.GetPlayedOrObservedCountry.Self, Country.Self)]"
+						resizeparent = yes
 						direction = vertical
-						parentanchor = hcenter
-						position = { 0 2 }
+						minimumsize = { 105 -1 }
+						margin_top = 2
 
-						# flag + icons
-						widget = {
-							size = { 92 30 }
-							parentanchor = hcenter
-							
-							icon = {
-								parentanchor = center
-								using = rotate_glow_animation_02
-								size = { 85 85 }
-							}
+						# ATTITUDE + SWAY
+						container = {
+							minimumsize = { 105 30 }
 
-							tiny_flag_no_interact = {
-								parentanchor = center
-								position = { 0 3 }
-								mobilization_icon_flag = {}
-							}
-							
-							icon = {
-								visible = "[And(DiplomaticPlay.HasAcceptedSway(Country.Self),Not(DiplomaticPlay.GetAcceptedSway(Country.Self).GetSwayOffer.TakesEffectImmediately))]"
-								tooltip = "[DiplomaticPlay.GetAcceptedSway(Country.Self).GetSwayOffer.GetName(GetPlayer.Self,Country.Self, DiplomaticPlay.Self)]"
-								texture = "[DiplomaticPlay.GetAcceptedSway(Country.Self).GetSwayOffer.GetTexture]"
-								size = { 25 25 }
-							}
-						}
-
-						# you text
-						textbox = {
-							parentanchor = hcenter
-							visible = "[ObjectsEqual(GetMetaPlayer.GetPlayedOrObservedCountry.Self, Country.Self)]"
-							size = { 85 20 }
-							elide = right
-							text = "DIPLO_PLAY_YOU"
-							align = center|nobaseline
-						}
-					}
-
-
-					container = {
-						position = { 0 -10 }
-						parentanchor = bottom|hcenter
-						
-						button = {
-							visible = "[ObjectsEqual(GetMetaPlayer.GetPlayedOrObservedCountry.Self, Country.Self)]"
-							size = { 100% 100% }
-							using = default_button
-							onclick = "[InformationPanelBar.OpenPanel('military')]"
-						}
-						
-						# troops
-						flowcontainer = {
-							direction = vertical
-
-							# Battalions
-							flowcontainer = {
-								margin_left = 5
+							# ATTITUDE INFO
+							widget = {
+								parentanchor = left|vcenter
+								position = { 4 0 }
+								size = { 27 27 }
 
 								icon = {
-									size = { 20 20 }
-									texture = "gfx/interface/icons/generic_icons/battalions.dds"
+									size = { 100% 100% }
+									texture = "gfx/interface/icons/ai_attitude_icons/human.dds"
+									visible = "[And(Country.IsPlayer, Not(Country.IsLocalPlayer))]"
+									tooltip = "ai_attitude_human_tooltip"
+								}
+
+								icon = {
+									size = { 100% 100% }
+									texture = "[Country.GetAttitudeTowards(GetPlayer).GetTexture]"
+									visible = "[Not(Country.IsPlayer)]"
+									tooltip = "[Country.GetAttitudeTowards(GetPlayer).GetTooltip]"
+								}
+							}
+
+							# SWAY INFO
+							container = {
+								parentanchor = right|vcenter
+								position = { -3 1 }
+								
+								# HAS ACCEPTED SWAY 
+								icon = {
+									visible = "[And(DiplomaticPlay.HasAcceptedSway(Country.Self),Not(DiplomaticPlay.GetAcceptedSway(Country.Self).GetSwayOffer.TakesEffectImmediately))]"
+									tooltip = "[DiplomaticPlay.GetAcceptedSway(Country.Self).GetSwayOffer.GetName(GetPlayer.Self,Country.Self, DiplomaticPlay.Self)]"
+									texture = "[DiplomaticPlay.GetAcceptedSway(Country.Self).GetSwayOffer.GetTexture]"
+									size = { 27 27 }
 									parentanchor = vcenter
 								}
 
+								# SWAY
+								button = {	
+									using = default_button
+
+									blockoverride "bevel_margin" {
+										margin = { 1 1 }
+									}
+
+									size = { 27 27 }
+									visible = "[Or(DiplomaticPlay.IsInitiator(GetPlayer.Self),DiplomaticPlay.IsTarget(GetPlayer.Self))]"
+									enabled = "[DiplomaticPlay.CanSwayCountry(GetPlayer.Self, Country.Self)]"
+									onclick = "[InformationPanelBar.OpenSwayCountryPanel( DiplomaticPlay.Self, Country.Self )]"
+									tooltip = "SWAY_COUNTRY_TOOLTIP"
+
+									diplo_play_sway_approval = {
+										blockoverride "visible_approval_icon" {
+											visible = "[And(DiplomaticPlay.WouldAcceptAnySway( GetPlayer.Self, Country.Self ), Or(DiplomaticPlay.IsInitiator( GetPlayer.Self ),DiplomaticPlay.IsTarget( GetPlayer.Self )))]"
+										}
+
+										size = { 20 20 }
+										parentanchor = center
+									}
+
+									diplo_play_sway_disapproval = {
+										blockoverride "visible_disapproval_icon" {
+											visible = "[And(Not(DiplomaticPlay.WouldAcceptAnySway( GetPlayer.Self, Country.Self )), Or(DiplomaticPlay.IsInitiator( GetPlayer.Self ),DiplomaticPlay.IsTarget( GetPlayer.Self )))]"
+										}
+
+										size = { 20 20 }
+										parentanchor = center
+									}
+								}
+							}
+						}
+
+						widget = { size = { 2 2 }}
+
+						divider_clean = {
+							maximumsize = { 95 -1 }
+							parentanchor = hcenter
+						}
+
+						# Military Information
+						flowcontainer = {
+							direction = vertical
+							margin_left = 5
+							margin_right = 5
+							margin_bottom = 5
+							margin_top = 5
+							
+							# Battalions
+							flowcontainer = {
+								tooltip = "PANEL_MILITARY_ARMY_OVERVIEW_TOOLTIP"
+								maximumsize = { 95 -1 }
+								
 								textbox = {
 									autoresize = yes
-									minimumsize = { 35 30 }
-									raw_text = "#v [Country.GetBattalions]#!"
+									raw_text = "@battalions![Country.GetRegularBattalions|v]"
 									align = nobaseline
 								}
 
 								textbox = {
 									autoresize = yes
-									minimumsize = { 40 30 }
-									raw_text = "(#v [Country.GetFullyMobilizedBattalionsPercentageRaw|0%]#!)"
+									raw_text = " + [Country.CalcConscriptableBattalions|v]"
 									align = nobaseline
+									visible = "[NotZero(Country.CalcConscriptableBattalions)]"
 								}
 							}
 
 							# Flotillas
-							flowcontainer = {
-								margin_left = 5
-
-								icon = {
-									size = { 20 20 }
-									texture = "gfx/interface/icons/generic_icons/flotillas.dds"
-									parentanchor = vcenter
-								}
-
-								textbox = {
-									autoresize = yes
-									minimumsize = { 40 30 }
-									raw_text = "#variable [Country.GetWarships]#!"
-									align = nobaseline
-								}
+							textbox = {
+								raw_text = "@flotillas!#variable [Country.GetWarships|0]#!"
+								tooltip = "PANEL_MILITARY_NAVY_CURRENT_FLOTILLAS_TOOLTIP"
+								align = nobaseline
+								autoresize = yes
+								visible = "[NotZero(Country.GetWarships)]"
+								maximumsize = { 95 -1 }
 							}
+
+							# Mobilization
+							textbox = {
+								tooltip = "PANEL_MILITARY_ARMY_OVERVIEW_TOOLTIP"
+								autoresize = yes
+								raw_text = "COUNTRY_MOBILIZATION_SWAY_PANEL"
+								align = nobaseline
+								visible = "[NotZero_CFixedPoint(Country.GetFullyMobilizedBattalionsPercentageRaw)]"
+								elide = left
+								fontsize_min = 12
+								maximumsize = { 95 -1 }
+							}
+						}
+
+						divider_clean = {
+							maximumsize = { 95 -1 }
+							parentanchor = hcenter
+						}
+
+						flowcontainer = {
+							margin_bottom = 5
+							parentanchor = hcenter
+							visible = "[Not(Country.IsPlayer)]"
+
+							textbox = {
+								autoresize = yes
+								raw_text = "#v [DiplomaticPlay.GetInitiatorPreferenceScore(Country.Self)|+=]#!"
+								tooltip = "[DiplomaticPlay.GetInitiatorPreferenceScoreDesc(Country.Self)]"
+								minimumsize = { 50 -1 }
+								maximumsize = { 50 -1 }
+								align = hcenter|nobaseline
+							}
+
+							vertical_divider = {}
+
+							textbox = {
+								autoresize = yes
+								raw_text = "#v [DiplomaticPlay.GetTargetPreferenceScore(Country.Self)|+=]#!"								
+								tooltip = "[DiplomaticPlay.GetTargetPreferenceScoreDesc(Country.Self)]"
+								minimumsize = { 50 -1 }
+								maximumsize = { 50 -1 }
+								align = hcenter|nobaseline
+							}
+						}
+
+						textbox = {
+							visible = "[Country.IsPlayer]"
+							parentanchor = hcenter
+							size = { 100 28 }
+							text = "FE_PLAYER"
+							align = hcenter|nobaseline
+							margin_bottom = 5
 						}
 					}
 				}

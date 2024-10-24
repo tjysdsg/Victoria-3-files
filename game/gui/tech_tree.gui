@@ -730,6 +730,7 @@ types tech_tree
 								datacontext = "[TechTreeItem.GetTechnology]"
 								position = "[TechTreeItem.GetPosition]"
 								widgetid = "[TechTreeItem.GetKey]"
+								visible = "[Technology.ShouldShow(GetPlayer.Self)]"
 							
 								tooltipwidget = {
 									FancyTooltip_Technology_Tech_Tree = {}
@@ -916,7 +917,7 @@ types tech_tree
 			background = {
 				visible = "[Technology.IsResearching(GetPlayer.Self)]"
 				using = rounded_background_blue
-				alpha = 0.7
+				alpha = 0.9
 			}
 
 			background = {
@@ -1025,8 +1026,10 @@ types tech_tree
 
 		### UNLOCK ICONS
 		flowcontainer = {
+			visible = "[Technology.ShouldShow(GetPlayer.Self)]"
 			parentanchor = bottom|left
 			spacing = 3
+			datamodel = "[Technology.GetUnlocks(GetPlayer.Self)]"
 
 			state = {
 				name = "not_researching"
@@ -1040,16 +1043,14 @@ types tech_tree
 				position = { 180 -45 }
  			}
 
-
 			block "unlocks_alpha" {}
 
-			visible = "[Technology.ShouldShow(GetPlayer.Self)]"
-			datamodel = "[Technology.GetUnlocks(GetPlayer.Self)]"
 			item = {
 				icon = {
 					size = { 45 45 }
 					texture = "[TechnologyUnlock.GetTexture]"
 					tooltip = "[TechnologyUnlock.GetTooltip]"
+					using = tooltip_se
 
 					modify_texture = {
 						visible = "[TechnologyUnlock.HasFrame]"
@@ -1149,6 +1150,7 @@ types tech_tree
 			visible = "[IsValid(Technology.AddToQueueWithUnlocks(GetPlayer.Self))]"
 			size = { 50 50 }
 			tooltip = "ADD_TO_TECH_QUEUE"
+			using = tooltip_ne
 			onclick = "[Execute( Technology.AddToQueueWithUnlocks(GetPlayer.Self) )]"
 			enabled = "[IsValid( Technology.AddToQueueWithUnlocks(GetPlayer.Self) )]"
 		}

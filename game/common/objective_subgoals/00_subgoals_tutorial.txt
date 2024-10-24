@@ -475,6 +475,7 @@ sg_expand_productive_building = {
 			is_under_construction = no
 			is_government_funded = no
 			is_subsidized = no
+			NOT = { is_building_group = bg_owner_buildings }
 			earnings >= 8.0
 		}
 	}
@@ -502,6 +503,7 @@ sg_expand_productive_building = {
 						is_under_construction = no
 						is_government_funded = no
 						is_subsidized = no
+						NOT = { is_building_group = bg_owner_buildings }
 						earnings >= 8.0
 					}
 				}
@@ -514,6 +516,7 @@ sg_expand_productive_building = {
 						is_under_construction = no
 						is_government_funded = no
 						is_subsidized = no
+						NOT = { is_building_group = bg_owner_buildings }
 						earnings >= 8.0
 					}
 					
@@ -528,6 +531,7 @@ sg_expand_productive_building = {
 					is_under_construction = no
 					is_government_funded = no
 					is_subsidized = no
+					NOT = { is_building_group = bg_owner_buildings }
 					earnings >= 8.0
 				}
 			}
@@ -538,6 +542,7 @@ sg_expand_productive_building = {
 					is_under_construction = no
 					is_government_funded = no
 					is_subsidized = no
+					NOT = { is_building_group = bg_owner_buildings }
 					earnings >= 8.0
 				}
 				
@@ -570,6 +575,7 @@ sg_fix_unproductive_building = {
 					is_building_type = building_urban_center
 					is_building_type = building_trade_center
 					is_building_group = bg_monuments_hidden
+					is_building_group = bg_owner_buildings
 				}
 				is_under_construction = no
 				is_subsidized = no
@@ -606,6 +612,7 @@ sg_fix_unproductive_building = {
 							is_building_type = building_urban_center
 							is_building_type = building_trade_center
 							is_building_group = bg_monuments_hidden 
+							is_building_group = bg_owner_buildings
 						}
 						is_under_construction = no
 						is_subsidized = no
@@ -623,6 +630,7 @@ sg_fix_unproductive_building = {
 							is_building_type = building_urban_center
 							is_building_type = building_trade_center
 							is_building_group = bg_monuments_hidden
+							is_building_group = bg_owner_buildings
 						}
 						is_under_construction = no
 						is_subsidized = no
@@ -642,6 +650,7 @@ sg_fix_unproductive_building = {
 						is_building_type = building_urban_center
 						is_building_type = building_trade_center
 						is_building_group = bg_monuments_hidden
+						is_building_group = bg_owner_buildings
 					}
 					is_under_construction = no
 					is_subsidized = no
@@ -657,6 +666,7 @@ sg_fix_unproductive_building = {
 						is_building_type = building_urban_center
 						is_building_type = building_trade_center
 						is_building_group = bg_monuments_hidden
+						is_building_group = bg_owner_buildings
 					}
 					is_under_construction = no
 					is_subsidized = no
@@ -802,31 +812,6 @@ sg_increase_immigration = {
 			type = je_tutorial_increase_immigration
 			objective_subgoal = sg_increase_immigration
 			target = scope:tutorial_increase_immigration
-		}
-	}
-}
-
-# Spend Investment Pool
-sg_expend_investment_pool = {
-	category = sgcat_tutorial
-
-	unlocking_subgoals_any = {
-		sg_improve_market_access_with_railways
-	}
-
-	trigger = {
-		investment_pool >= 10000
-		NOR = {
-			has_law = law_type:law_command_economy
-			has_law = law_type:law_traditionalism
-			NOT = { has_game_rule = directly_controlled_investment_pool }
-		}
-	}
-
-	on_start = {
-		add_journal_entry = {
-			type = je_tutorial_expend_investment_pool
-			objective_subgoal = sg_expend_investment_pool
 		}
 	}
 }
@@ -1121,7 +1106,8 @@ sg_enact_institution_law = {
 				has_law = law_type:law_no_social_security
 			}
 			and = {
-				has_law = law_type:law_no_schools
+			    NOT = { has_law = law_type:law_serfdom }
+			    has_law = law_type:law_no_schools
 			}
 			and = {
 				has_law = law_type:law_no_colonial_affairs
@@ -1132,18 +1118,10 @@ sg_enact_institution_law = {
 	on_start = {
 		if = {
 			limit = {
-				has_law = law_type:law_no_schools
+			    NOT = { has_law = law_type:law_serfdom }
+			    has_law = law_type:law_no_schools
 			}
 			law_type:law_no_schools = {
-				save_scope_as = tut_institution_lawtype
-			}
-		}
-
-		else_if = {
-			limit = {
-				has_law = law_type:law_no_health_system
-			}
-			law_type:law_no_health_system = {
 				save_scope_as = tut_institution_lawtype
 			}
 		}
@@ -1153,6 +1131,15 @@ sg_enact_institution_law = {
 				has_law = law_type:law_no_police
 			}
 			law_type:law_no_police = {
+				save_scope_as = tut_institution_lawtype
+			}
+		}
+
+		else_if = {
+			limit = {
+				has_law = law_type:law_no_health_system
+			}
+			law_type:law_no_health_system = {
 				save_scope_as = tut_institution_lawtype
 			}
 		}
@@ -1399,11 +1386,27 @@ sg_expand_military = {
 	unlocking_subgoals_any = {
 		sg_create_formation
 	}
+
+	trigger = {	
+		any_military_formation = {
+			is_army = yes
+			owner = ROOT
+		}
+	}
 	
 	on_start = {
+		random_military_formation = {
+			limit = {
+				is_army = yes
+				owner = ROOT
+			}
+			save_scope_as = tut_expand_army
+		}
+
 		add_journal_entry = {
 			type = je_tutorial_expand_military
 			objective_subgoal = sg_expand_military
+			target = scope:tut_expand_army
 		}
 	}
 }
@@ -1943,6 +1946,122 @@ sg_create_formation = {
 	}
 }
 
+# Subject Liberty Desire
+sg_subject_liberty = {
+	category = sgcat_tutorial
+	is_repeatable = no
+
+	trigger = {
+		any_country = {
+			is_subject_of = ROOT
+			liberty_desire >= 70
+			liberty_desire_weekly_progress > 0
+		}
+	}
+	
+	on_start = {
+		if = {
+			limit = {
+				any_country = {
+					is_subject_of = ROOT
+					liberty_desire >= 70
+					liberty_desire_weekly_progress > 0
+				}
+			}
+			random_country = {
+				limit = {
+					is_subject_of = ROOT
+					liberty_desire >= 70
+					liberty_desire_weekly_progress > 0
+				}
+				save_scope_as = tut_subject_liberty_desire
+			}
+		}
+
+		add_journal_entry = {
+			type = je_subject_liberty
+			objective_subgoal = sg_subject_liberty
+			target = scope:tut_subject_liberty_desire
+		}
+	}
+}
+
+# Foreign Investment
+sg_foreign_investment = {
+	category = sgcat_tutorial
+	is_repeatable = no
+
+	unlocking_subgoals_all = {
+		sg_subject_liberty
+	}
+
+	trigger = {
+		any_country = {
+			OR = {
+				is_subject_of = ROOT
+				has_diplomatic_pact = {
+					who = root
+					type = foreign_investment_agreement
+				}
+				root = {
+					has_diplomatic_pact = {
+						who = prev
+						type = foreign_investment_rights
+						is_initiator = yes
+					}
+				}
+			}
+		}
+	}
+	
+	on_start = {
+		if = {
+			limit = {
+				any_country = {
+					OR = {
+						is_subject_of = ROOT
+						has_diplomatic_pact = {
+							who = root
+							type = foreign_investment_agreement
+						}
+						root = {
+							has_diplomatic_pact = {
+								who = prev
+								type = foreign_investment_rights
+								is_initiator = yes
+							}
+						}
+					}
+				}
+			}
+			random_country = {
+				limit = {
+					OR = {
+						is_subject_of = ROOT
+						has_diplomatic_pact = {
+							who = root
+							type = foreign_investment_agreement
+						}
+						root = {
+							has_diplomatic_pact = {
+								who = prev
+								type = foreign_investment_rights
+								is_initiator = yes
+							}
+						}
+					}
+				}
+				save_scope_as = tut_foreign_investment
+			}
+		}
+
+		add_journal_entry = {
+			type = je_tutorial_foreign_investment
+			objective_subgoal = sg_foreign_investment
+			target = scope:tut_foreign_investment
+		}	
+	}
+}
 
 # Establish Company
 sg_establish_company = {
@@ -1962,5 +2081,75 @@ sg_establish_company = {
 			type = je_tutorial_establish_company
 			objective_subgoal = sg_establish_company
 		}	
+	}
+}
+
+# Form Power Bloc
+sg_form_power_bloc = {
+	category = sgcat_tutorial
+	is_repeatable = no
+
+	unlocking_subgoals_all = {
+	}
+
+	trigger = {
+		OR = {
+			country_rank = rank_value:great_power
+			AND = {
+				country_rank = rank_value:major_power
+				has_variable = tutorial_form_pb_end
+			}
+		}
+		is_in_power_bloc = no
+	}
+	
+	on_start = {
+		add_journal_entry = {
+			type = je_tutorial_form_power_bloc
+			objective_subgoal = sg_form_power_bloc
+		}	
+	}
+}
+
+# Lobbies
+sg_lobbies = {
+	category = sgcat_tutorial
+	
+	unlocking_subgoals_any = {
+		sg_increase_relations
+	}
+
+	trigger = {
+		any_political_lobby = {
+			appeasement <= 7
+		}
+	}
+	
+	on_start = {
+		if = {
+			limit = {
+				any_political_lobby = {
+					OR = {
+						is_political_lobby_type = lobby_pro_country
+						is_political_lobby_type = lobby_anti_country
+					}
+				}
+			}
+			random_political_lobby = {
+				limit = {
+					OR = {
+						is_political_lobby_type = lobby_pro_country
+						is_political_lobby_type = lobby_anti_country
+					}
+				}
+				save_scope_as = tut_political_lobby
+			}
+		}
+
+		add_journal_entry = {
+			type = je_tutorial_lobbies
+			objective_subgoal = sg_lobbies
+			target = scope:tut_political_lobby
+		}
 	}
 }

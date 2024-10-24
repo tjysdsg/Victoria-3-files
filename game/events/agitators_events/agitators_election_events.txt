@@ -678,6 +678,9 @@ agitators_election_events.4 = {
 			NOT = {
 				exists = scope:agitator_scope
 			}
+			NOT = {
+				exists = scope:opposition_party_scope
+			}
 			in_election_campaign = no
 		}
 	}
@@ -708,14 +711,14 @@ agitators_election_events.4 = {
 		scope:agitator_party_scope = {
 			add_momentum = momentum_large
 		}
-		scope:opposition_party_scope = {
+		scope:opposition_party_scope ?= {
 			add_momentum = momentum_medium_decrease
 		}
 	}
 
 	option = {
 		name = agitators_election_events.4.b
-		scope:opposition_party_scope = {
+		scope:opposition_party_scope ?= {
 			add_momentum = momentum_large_decrease
 		}
 	}
@@ -986,7 +989,7 @@ agitators_election_events.7 = {
 	flavor = agitators_election_events.7.f
 
 	event_image = {
-		video = "unspecific_gears_pistons"
+		video = "ep1_printing_press"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
@@ -3562,7 +3565,7 @@ agitators_election_events.25 = {
 				is_incorporated = yes
 				any_scope_building = {
 					is_building_type = building_urban_center
-					level <= 5
+					level >= 5
 				}
 			}
 			save_scope_as = industry_enroachment_state
@@ -4782,7 +4785,10 @@ agitators_election_events.36 = {
 	}
 	event_image = {
 		trigger = {
-			religion = rel:shinto
+			OR = {
+				religion = rel:shinto
+				religion = rel:confucian
+			}
 		}
 		video = "asia_confucianism_shinto"
 	}
@@ -6172,13 +6178,9 @@ agitators_election_events.44 = {
 		scope:anti_democratic_party = {
 			add_momentum = momentum_medium
 		}
-		custom_tooltip = {
-			text = agitators_election_events.44.c.tt
-
-			add_modifier = {
-				name = modifier_radical_womens_universal_suffrage_support
-				months = normal_modifier_time
-			}
+		add_modifier = {
+			name = modifier_radical_womens_universal_suffrage_support
+			months = normal_modifier_time
 		}
 		add_radicals = {
 			value = small_radicals

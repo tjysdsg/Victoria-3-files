@@ -67,6 +67,7 @@ types politics_panel_types
 			}
 
 			button = {
+				name = "tutorial_highlight_reform_government_button"
 				datacontext = "[ReformGovernment.GetCountry]"
 				size = { 400 45 }
 				using = default_button_primary
@@ -138,10 +139,19 @@ types politics_panel_types
 					size = { 300 45 }
 					text = "CONFIRM"
 					using = fontsize_large
+					using = tooltip_above
 					tooltip = "TOOLTIP_REFORM_GOVERNMENT"
 					enabled = "[IsValid(ReformGovernment.Confirm)]"
 					onclick = "[PopupManager.AskConfirmationCustom(ReformGovernment.Confirm, 'reform_government_confirmation_window')]"
 					using = confirm_button_sound
+
+					icon = {
+						visible = "[LessThan_int32(ReformGovernment.GetPredictedLegitimacy, '(int32)25')]"
+						size = { 30 30 }
+						parentanchor = vcenter
+						position = { 10 0 }
+						texture = "gfx/interface/icons/generic_icons/warning.dds"
+					}
 				}
 
 				# NO CONFIRMATION
@@ -151,11 +161,20 @@ types politics_panel_types
 					size = { 300 45 }
 					text = "CONFIRM"
 					using = fontsize_large
+					using = tooltip_above
 					tooltip = "TOOLTIP_REFORM_GOVERNMENT"
 					enabled = "[IsValid(ReformGovernment.Confirm)]"
 					onclick = "[Execute(ReformGovernment.Confirm)]"
 					onclick = "[GetVariableSystem.Toggle('reform_government')]"
 					using = confirm_button_sound
+
+					icon = {
+						visible = "[LessThan_int32(ReformGovernment.GetPredictedLegitimacy, '(int32)25')]"
+						size = { 30 30 }
+						parentanchor = vcenter
+						position = { 10 0 }
+						texture = "gfx/interface/icons/generic_icons/warning.dds"
+					}
 				}
 			}
 		}
@@ -359,6 +378,7 @@ types politics_panel_types
 					
 					# legitimacy when reforming
 					vbox = {
+						name = "tutorial_highlight_reform_legitimacy"
 						visible = "[GetVariableSystem.Exists('reform_government')]"
 						margin = { 5 0 }
 						layoutpolicy_horizontal = expanding
@@ -370,13 +390,22 @@ types politics_panel_types
 							spacing = 10
 							datacontext = "[ReformGovernment.GetPredictedLegitimacyLevel]"
 							tooltip = "LEGITIMACY_LEVEL_PREDICTED_TOOLTIP"
-								
+
+							icon = {
+								visible = "[LessThan_int32(ReformGovernment.GetPredictedLegitimacy, '(int32)25')]"
+								size = { 25 25 }
+								using = tooltip_above
+								tooltip = "ILLEGITIMATE_GOVERNMENT_WARNING_REFORM"
+								texture = "gfx/interface/icons/generic_icons/warning.dds"
+							}
+
 							textbox = {
 								autoresize = yes
 								text = "[LegitimacyLevel.GetNameNoFormatting|v]"
 								align = left|nobaseline
 								elide = right
 							}
+
 							textbox = {
 								layoutpolicy_horizontal = expanding
 								size = { 0 20 }

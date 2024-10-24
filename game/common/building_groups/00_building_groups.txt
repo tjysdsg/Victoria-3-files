@@ -21,7 +21,7 @@
 # max_hiring_rate = X					Maximum value for how much of the building's max staffing level can be hired in a single week (default NDefines::NEconomy::DEFAULT_MAX_HIRING_RATE)
 # proportionality_limit = X				How high is the building's tolerance for pop types being out of proportion? default NDefines::NEconomy::EMPLOYMENT_PROPORTIONALITY_LIMIT)
 # hires_unemployed_only = yes			If yes, buildings in this group may only hire from the unemployment pool. Default no.
-
+# is_shown_in_outliner = yes			If no, buildingtypes in this group will not show up in the outliner, this is for special stuff like the monuments
 # Manufacturing
 
 bg_manufacturing = {
@@ -38,6 +38,7 @@ bg_manufacturing = {
 	}
 	
 	economy_of_scale_ai_factor = 2.0
+	foreign_investment_ai_factor = 0.25
 }
 
 bg_light_industry = {
@@ -72,6 +73,27 @@ bg_military_shipyards = {
 	infrastructure_usage_per_level = 2
 }
 
+bg_artillery_foundaries = {
+	parent_group = bg_light_industry
+		
+	urbanization = 20
+	infrastructure_usage_per_level = 2
+}
+
+bg_arms_industries = {
+	parent_group = bg_light_industry
+		
+	urbanization = 20
+	infrastructure_usage_per_level = 2
+}
+
+bg_munition_plants = {
+	parent_group = bg_heavy_industry
+		
+	urbanization = 20
+	infrastructure_usage_per_level = 3
+}
+
 # Agriculture
 
 bg_agriculture = {
@@ -93,6 +115,7 @@ bg_agriculture = {
 	}
 	
 	economy_of_scale_ai_factor = 1.5
+	foreign_investment_ai_factor = 0.75
 }
 
 bg_rye_farms = {
@@ -183,6 +206,7 @@ bg_ranching = {
 	}
 	
 	economy_of_scale_ai_factor = 1.5
+	foreign_investment_ai_factor = 0.75
 }
 
 bg_livestock_ranches = {
@@ -232,6 +256,7 @@ bg_plantations = {
 	}
 	
 	economy_of_scale_ai_factor = 1.5
+	foreign_investment_ai_factor = 1.25
 }
 
 bg_coffee_plantations = {
@@ -310,6 +335,7 @@ bg_mining = {
 	}
 	
 	economy_of_scale_ai_factor = 2.0
+	foreign_investment_ai_factor = 1.0
 }
 
 bg_gold_fields = {
@@ -321,7 +347,11 @@ bg_gold_fields = {
 	
 	depletable_resource = yes
 	
+	always_self_owning = yes
+	
 	pays_taxes = no
+
+	infrastructure_usage_per_level = 0
 
 	default_building = building_gold_fields
 	
@@ -393,6 +423,7 @@ bg_logging = {
 	}
 	
 	economy_of_scale_ai_factor = 1.5
+	foreign_investment_ai_factor = 1.0
 }
 
 bg_rubber = {
@@ -422,6 +453,7 @@ bg_rubber = {
 	}
 	
 	economy_of_scale_ai_factor = 1.5
+	foreign_investment_ai_factor = 1.0
 }
 
 # Fishing
@@ -447,6 +479,7 @@ bg_whaling = {
 	}
 	
 	economy_of_scale_ai_factor = 2.0
+	foreign_investment_ai_factor = 0.75
 }
 
 bg_fishing = {
@@ -470,6 +503,7 @@ bg_fishing = {
 	}
 	
 	economy_of_scale_ai_factor = 1.5
+	foreign_investment_ai_factor = 0.75
 }
 
 # Oil Extraction
@@ -497,6 +531,7 @@ bg_oil_extraction = {
 	}
 	
 	economy_of_scale_ai_factor = 2.0
+	foreign_investment_ai_factor = 1.0
 }
 
 # Service
@@ -509,6 +544,8 @@ bg_service = {
 	always_possible = yes	
 	
 	auto_place_buildings = yes	
+	
+	always_self_owning = yes
 	
 	economy_of_scale = yes
 	
@@ -536,6 +573,7 @@ bg_urban_facilities = {
 	}
 	
 	economy_of_scale_ai_factor = 2.0
+	foreign_investment_ai_factor = 0.25
 }
 
 bg_arts = {
@@ -559,6 +597,7 @@ bg_power = {
 	}
 	
 	economy_of_scale_ai_factor = 1.5
+	foreign_investment_ai_factor = 0.5
 
 	infrastructure_usage_per_level = 2
 	
@@ -601,6 +640,10 @@ bg_trade = {
 
 	always_possible = yes	
 	
+	subsidized = yes
+	
+	always_self_owning = yes
+	
 	created_by_trade_routes = yes
 	
 	auto_place_buildings = yes
@@ -629,6 +672,61 @@ bg_trade = {
 	}
 }
 
+# Needed for autonomous investment to track investments separately from other ownership buildings
+bg_financial_districts = {
+	parent_group = bg_owner_buildings
+}
+
+# Needed for autonomous investment to track investments separately from other ownership buildings
+bg_manor_houses = {
+	parent_group = bg_owner_buildings
+	
+	infrastructure_usage_per_level = 0.0
+}
+
+bg_owner_buildings = {
+	parent_group = bg_urban_facilities
+	
+	min_productivity_to_hire = 10.0
+
+	category = urban
+
+	lens = trade
+
+	always_possible = yes
+	
+	can_use_slaves = yes
+
+	auto_place_buildings = yes
+
+	owns_other_buildings = yes
+	
+	always_self_owning = yes
+
+	min_hiring_rate = 1.0
+	max_hiring_rate = 1.0
+
+	ignores_productivity_when_hiring = yes
+
+	proportionality_limit = 1.0
+
+	economy_of_scale = no
+
+	default_building = building_financial_district
+
+	cash_reserves_max = 10000
+
+	urbanization = 0
+
+	infrastructure_usage_per_level = 0.1
+
+	fired_pops_become_radical = no
+
+	should_auto_expand = {
+		always = no
+	}
+}
+
 # Infrastructure
 
 bg_infrastructure = {
@@ -641,6 +739,7 @@ bg_infrastructure = {
 	stateregion_max_level = yes
 	
 	economy_of_scale_ai_factor = 1.5
+	foreign_investment_ai_factor = 0.75
 }
 
 bg_public_infrastructure = {
@@ -690,6 +789,7 @@ bg_monuments = {
 	parent_group = bg_government
 	lens = special
 	inheritable_construction = yes
+	economy_of_scale = no
 }
 
 # Military
@@ -727,8 +827,10 @@ bg_navy = {
 
 bg_skyscraper = {
 	parent_group = bg_government
+	economy_of_scale = no
 }
 
 bg_monuments_hidden = {
 	always_possible = yes
+	is_shown_in_outliner = no
 }

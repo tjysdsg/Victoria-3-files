@@ -1,14 +1,17 @@
 types right_click_menu_types {
 	type right_click_menu_item = button {
+		name = "right_click_menu_item"
+		align = left|nobaseline
+		using = fontsize_large
+		
 		block "size" {
 			size = { 460 44 }
 		}
+		
 		block "button" {
 			using = default_button
 		}
-		align = left|nobaseline
-		using = fontsize_large
-		name = "right_click_menu_item"
+		
 		block "properties" {
 			raw_tooltip = "Default Item Tooltip"
 			enabled = yes
@@ -41,6 +44,8 @@ types right_click_menu_types {
 				elide = right
 				margin = { 5 0 }
 			}
+
+			block "rclick_item_after_label" {}
 
 			block "right_text" {}
 		}
@@ -238,6 +243,85 @@ types right_click_menu_types {
 		}
 	}
 
+	type right_click_menu_dropdown = flowcontainer {
+		direction = vertical
+
+		block "parentanchor" {
+			parentanchor = hcenter
+		}
+		
+		section_header_button = {
+			using = default_fade_in_out
+			parentanchor = hcenter
+
+			block "section_header_tooltip" {}
+
+			block "section_header_size" {
+				size = { 360 44 }
+			}
+
+			blockoverride "arrow_position" {
+				position = { 2 0 }
+				parentanchor = left|vcenter
+			}
+
+			blockoverride "left_textbox_margin_left" {
+				margin_left = 30
+			}
+
+			blockoverride "right_text" {
+				block "section_header_right_text" {}
+			}
+		}
+
+		block "dropdown_items" {
+			dynamicgridbox = {
+				block "items_visibility" {}
+				
+				block "dropdown_datamodel" {
+					datamodel = "[DataModelRepeatedItem('(int32)4')]"
+				}
+
+				item = {
+					flowcontainer = {
+						right_click_menu_item = {
+
+							blockoverride "margin" {
+								block "item_margin" {
+									margin_left = 15
+								}
+							}
+
+							blockoverride "right_text" {
+								block "item_right_textbox" {
+									textbox = {
+										layoutpolicy_horizontal = expanding
+										layoutpolicy_vertical = expanding
+										align = right|nobaseline
+										fontsize_min = 12
+										elide = right
+										margin = { 5 0 }
+										margin_right = 10
+
+										block "item_right_text_visibility" {
+											visible = no
+										}
+
+										block "item_right_text" {
+											raw_text = "#todo Right Text#!"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			block "additional_dropdown_items_after_gridbox" {}
+		}
+	}
+
 	type military_formation_right_click_item = button {
 		size = { 100% 100% }
 
@@ -258,7 +342,7 @@ types right_click_menu_types {
 				### Remove this visible state when the GetIcon/GetTexture function is in
 				visible = "[MilitaryFormation.IsArmy]"
 				parentanchor = vcenter
-				size = { 50 50 }
+				size = { 65 65 }
 				texture = "[MilitaryFormation.GetFlag]"
 				color = "[MilitaryFormation.GetFlagColor]"
 			}
@@ -267,7 +351,7 @@ types right_click_menu_types {
 			icon = {
 				visible = "[MilitaryFormation.IsFleet]"
 				parentanchor = vcenter
-				size = { 50 50 }
+				size = { 65 65 }
 				texture = "[MilitaryFormation.GetFlag]"
 				color = "[MilitaryFormation.GetFlagColor]"
 			}
@@ -282,11 +366,13 @@ types right_click_menu_types {
 					spacing = 5
 
 					textbox = {
+						minimumsize = { 180 30 }
+						maximumsize = { 180 30 }
 						parentanchor = vcenter
 						align = nobaseline
+						elide = right
 						autoresize = yes
 						text = "[MilitaryFormation.GetName]"
-						elide = right
 						fontsize_min = 14
 
 						block "name_max_width" {
@@ -298,37 +384,38 @@ types right_click_menu_types {
 						spacing = 5
 						parentanchor = vcenter
 
-						### ARMY ICON
-						icon = {
-							visible = "[MilitaryFormation.IsArmy]"
-							size = { 30 30 }
-							parentanchor = vcenter
-							texture = "gfx/interface/icons/generic_icons/battalions.dds"
-						}
-
-						### FLEET ICON
-						icon = {
-							visible = "[MilitaryFormation.IsFleet]"
-							size = { 30 30 }
-							parentanchor = vcenter
-							texture = "gfx/interface/icons/generic_icons/flotillas.dds"
-						}
-
 						### NUMBER OF UNITS
 						textbox = {
 							parentanchor = vcenter
 							autoresize = yes
-							align = center|nobaseline
+							align = hcenter|nobaseline
 							using = fontsize_large
-							text = "MILITARY_FORMATION_TOTAL_NUMBER_OF_UNITS"
+							text = "MILITARY_FORMATION_TOTAL_NUMBER_OF_UNITS_WITH_ICON"
+							max_width = 90
+							elide = right
+							fontsize_min = 12
 						}
 					}
 				}
 
 				textbox = {
+					block "status_visibility" {}
 					align = nobaseline
 					autoresize = yes
 					text = "[MilitaryFormation.GetShortFormationStatusDesc]"
+					max_width = 235
+					elide = right
+					fontsize_min = 14
+				}
+
+				textbox = {
+					block "mobilization_info_visibliity" {
+						visible = no
+					}
+
+					align = nobaseline
+					autoresize = yes
+					text = "NAVAL_INVASION_PLANNER_ARMY_NOT_MOBILIZED"
 					max_width = 235
 					elide = right
 					fontsize_min = 14
@@ -354,7 +441,7 @@ types right_click_menu_types {
 			icon = {
 				visible = "[MilitaryFormation.IsArmy]"
 				parentanchor = vcenter
-				size = { 50 50 }
+				size = { 65 65 }
 				texture = "[MilitaryFormation.GetFlag]"
 				color = "[MilitaryFormation.GetFlagColor]"
 			}
@@ -362,7 +449,7 @@ types right_click_menu_types {
 			icon = {
 				visible = "[MilitaryFormation.IsFleet]"
 				parentanchor = vcenter
-				size = { 50 50 }
+				size = { 65 65 }
 				texture = "[MilitaryFormation.GetFlag]"
 				color = "[MilitaryFormation.GetFlagColor]"
 			}
@@ -377,6 +464,8 @@ types right_click_menu_types {
 					spacing = 5
 
 					textbox = {
+						minimumsize = { 180 30 }
+						maximumsize = { 180 30 }
 						parentanchor = vcenter
 						align = nobaseline
 						autoresize = yes
@@ -391,31 +480,18 @@ types right_click_menu_types {
 
 					flowcontainer = {
 						spacing = 5
-						parentanchor = right|vcenter
-
-						### ARMY ICON
-						icon = {
-							visible = "[MilitaryFormation.IsArmy]"
-							size = { 30 30 }
-							parentanchor = vcenter
-							texture = "gfx/interface/icons/generic_icons/battalions.dds"
-						}
-
-						### FLEET ICON
-						icon = {
-							visible = "[MilitaryFormation.IsFleet]"
-							size = { 30 30 }
-							parentanchor = vcenter
-							texture = "gfx/interface/icons/generic_icons/flotillas.dds"
-						}
+						parentanchor = vcenter
 
 						### NUMBER OF UNITS
 						textbox = {
 							parentanchor = vcenter
 							autoresize = yes
-							align = center|nobaseline
+							align = hcenter|nobaseline
 							using = fontsize_large
-							text = "MILITARY_FORMATION_TOTAL_NUMBER_OF_UNITS"
+							text = "MILITARY_FORMATION_TOTAL_NUMBER_OF_UNITS_WITH_ICON"
+							max_width = 90
+							elide = right
+							fontsize_min = 12
 						}
 					}
 				}
@@ -444,8 +520,8 @@ right_click_menu = {
 	blockoverride "title_text" {
 		text = "BUILDING_RIGHT_CLICK_MENU_TITLE"
 	}
-	blockoverride "items" {
 
+	blockoverride "items" {
 		flowcontainer = {
 			visible = "[Not(Building.GetBuildingType.IsMilitaryBuilding)]"
 			direction = vertical
@@ -472,6 +548,8 @@ right_click_menu = {
 					onclick = "[Execute( Building.QueueConstruction )]"
 				}
 			}
+
+			### TOGGLE AUTO_EXPAND ON
 			right_click_menu_item = {
 				
 				blockoverride "margin" {
@@ -479,31 +557,10 @@ right_click_menu = {
 				}
 
 				blockoverride "properties" {
-					visible = "[And(IsPotential( Building.ToggleAutoExpand ),Not(Building.IsAutoExpanding))]"
-					tooltip = [Building.GetAutoExpandTooltip]
+					visible = "[And(IsPotential( Building.ToggleAutoExpand ), Not(Building.IsAutoExpanding))]"
+					tooltip = "[Building.GetAutoExpandTooltip]"
 					enabled = "[IsValid( Building.ToggleAutoExpandOn )]"
 					onclick = "[Execute( Building.ToggleAutoExpandOn )]"
-				}
-
-				blockoverride "texture" {
-					texture = "gfx/interface/production_methods/auto_expand.dds"
-				}
-				
-				blockoverride = "text" {
-					text = "BUILDING_RIGHT_CLICK_MENU_AUTOEXPAND_ON"
-				}
-			}
-
-			right_click_menu_item = {
-				
-				blockoverride "margin" {
-					margin_left = 45
-				}
-				blockoverride "properties" {
-					visible = "[And(IsPotential( Building.ToggleAutoExpand ),Building.IsAutoExpanding)]"				
-					tooltip = [Building.GetAutoExpandTooltip]
-					enabled = "[IsValid( Building.ToggleAutoExpandOff )]"
-					onclick = "[Execute( Building.ToggleAutoExpandOff )]"
 				}
 
 				blockoverride "texture" {
@@ -511,7 +568,34 @@ right_click_menu = {
 				}
 				
 				blockoverride = "text" {
+					text = "BUILDING_RIGHT_CLICK_MENU_AUTOEXPAND_ON"
+				}
+			}
+
+			### TOGGLE AUTO_EXPAND OFF
+			right_click_menu_item = {
+				
+				blockoverride "margin" {
+					margin_left = 45
+				}
+
+				blockoverride "properties" {
+					visible = "[And(IsPotential( Building.ToggleAutoExpand ), Building.IsAutoExpanding)]"				
+					tooltip = "[Building.GetAutoExpandTooltip]"
+					enabled = "[IsValid( Building.ToggleAutoExpandOff )]"
+					onclick = "[Execute( Building.ToggleAutoExpandOff )]"
+				}
+
+				blockoverride "texture" {
+					texture = "gfx/interface/production_methods/auto_expand.dds"
+				}
+				
+				blockoverride = "text" {
 					text = "BUILDING_RIGHT_CLICK_MENU_AUTOEXPAND_OFF"
+				}
+
+				icon = {
+					using = highlighted_square_selection
 				}
 			}
 
@@ -520,6 +604,7 @@ right_click_menu = {
 				blockoverride "margin" {
 					margin_left = 45
 				}
+
 				blockoverride "properties" {
 					visible = "[And(Building.IsExpandable, IsValid( Building.QueueConstruction ))]"
 					onclick = "[Building.GetBuildingType.ActivateExpansionLens]"
@@ -539,6 +624,7 @@ right_click_menu = {
 				blockoverride "margin" {
 					margin_left = 45
 				}
+
 				blockoverride "properties" {	
 					tooltip = "[Building.GetCancelConstructionTooltip]"
 					visible = "[IsValid( Building.CancelConstruction )]"
@@ -560,6 +646,7 @@ right_click_menu = {
 				blockoverride "margin" {
 					margin_left = 45
 				}
+
 				blockoverride "properties" {
 					visible = "[And( And( Building.IsValid, Building.IsDownsizeable ), Not( ShouldAskConfirmation( Building.Downsize ) ) )]"
 					tooltip = "[Building.GetDownsizeTooltip]"
@@ -581,6 +668,7 @@ right_click_menu = {
 				blockoverride "margin" {
 					margin_left = 45
 				}
+
 				blockoverride "properties" {
 					visible = "[And( And( Building.IsValid, Building.IsDownsizeable ), ShouldAskConfirmation( Building.Downsize ) )]"
 					tooltip = "[Building.GetDownsizeTooltip]"
@@ -598,20 +686,22 @@ right_click_menu = {
 			}
 		}
 
+		### TOGGLE SUBSIDIZE ON
 		right_click_menu_item = {
 			
 			blockoverride "margin" {
 				margin_left = 45
 			}
+
 			blockoverride "properties" {
-				visible = "[And(IsValid( Building.ToggleSubsidies ),Not(Building.IsSubsidized))]"			
+				visible = "[And(IsValid( Building.ToggleSubsidies ), Not(Building.IsSubsidized))]"			
 				tooltip = "[Building.GetSubsidizeTooltip]"
 				enabled = "[IsValid( Building.ToggleSubsidiesOn )]"
 				onclick = "[Execute( Building.ToggleSubsidiesOn )]"
 			}
 
 			blockoverride "texture" {
-				texture = "gfx/interface/production_methods/subsidized.dds"
+				texture = "gfx/interface/production_methods/subsidized_not.dds"
 			}
 			
 			blockoverride = "text" {
@@ -619,13 +709,15 @@ right_click_menu = {
 			}
 		}
 
+		### TOGGLE SUBSIDIZE OFF
 		right_click_menu_item = {
 			
 			blockoverride "margin" {
 				margin_left = 45
 			}
+
 			blockoverride "properties" {
-				visible = "[And(IsValid( Building.ToggleSubsidies ),Building.IsSubsidized)]"			
+				visible = "[And(IsValid( Building.ToggleSubsidies ), Building.IsSubsidized)]"			
 				tooltip = "[Building.GetSubsidizeTooltip]"
 				enabled = "[IsValid( Building.ToggleSubsidiesOff )]"
 				onclick = "[Execute( Building.ToggleSubsidiesOff )]"
@@ -638,6 +730,10 @@ right_click_menu = {
 			blockoverride = "text" {
 				text = "BUILDING_RIGHT_CLICK_MENU_SUBSIDIZE_OFF"
 			}
+
+			icon = {
+				using = highlighted_square_selection
+			}
 		}
 
 		# RESET PRODUCTION METHODS
@@ -646,6 +742,7 @@ right_click_menu = {
 			blockoverride "margin" {
 				margin_left = 45
 			}
+
 			blockoverride "properties" {
 				onclick = "[Execute( Building.ResetProductionMethodsToStandard )]"
 				enabled = "[IsValid( Building.ResetProductionMethodsToStandard )]"
@@ -660,11 +757,13 @@ right_click_menu = {
 				text = "RESET_PM_BUILDING"
 			}
 		}
+
 		right_click_menu_item = {
 			
 			blockoverride "margin" {
 				margin_left = 45
 			}
+
 			blockoverride "properties" {
 				onclick = "[Execute( Building.GetBuildingType.ResetProductionMethodsToStandard )]"
 				enabled = "[IsValid( Building.GetBuildingType.ResetProductionMethodsToStandard )]"
@@ -678,7 +777,310 @@ right_click_menu = {
 			blockoverride = "text" {
 				text = "RESET_PM_BUILDING_TYPE"
 			}
-		}	
+		}
+
+		right_click_menu_item = {
+			
+			blockoverride "margin" {
+				margin_left = 45
+			}
+
+			blockoverride "properties" {
+					enabled = "[IsValid( Building.NationalizeBuildingLevels( '(int32)1' ) )]"
+					onclick = "[PopupManager.ShowNationalizeBuildingConfirmation(Building.Self)]"
+					tooltip = "BUILDING_NATIONALIZE_TOOLTIP"
+			}
+			
+			blockoverride "texture" {
+				texture = "gfx/interface/production_methods/nationalize.dds"
+			}
+			
+			blockoverride = "text" {
+				text = "BUILDING_NATIONALIZE"
+			}
+		}
+
+		### TOGGLE PRIVITZATION ON
+		right_click_menu_item = {
+			
+			blockoverride "margin" {
+				margin_left = 45
+			}
+
+			blockoverride "properties" {
+				enabled = "[IsValid( Building.TogglePrivatization)]"
+				onclick = "[Execute( Building.TogglePrivatization)]"
+				tooltip = "[Building.GetTogglePrivatizationTooltip]"
+				visible = "[Building.CanBePrivatized]"
+			}
+			
+			blockoverride "texture" {
+				texture = "gfx/interface/production_methods/privatize.dds"
+			}
+			
+			blockoverride = "text" {
+				text = "BUILDING_DISABLE_PRIVATIZATION"
+			}
+
+			icon = {
+				using = highlighted_square_selection
+			}
+		}
+
+		### TOGGLE PRIVITZATION OFF
+		right_click_menu_item = {
+			
+			blockoverride "margin" {
+				margin_left = 45
+			}
+
+			blockoverride "properties" {
+				enabled = "[IsValid( Building.TogglePrivatization)]"
+				onclick = "[Execute( Building.TogglePrivatization)]"
+				tooltip = "[Building.GetTogglePrivatizationTooltip]"
+				visible = "[Not(Building.CanBePrivatized)]"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/production_methods/privatize_not.dds"
+			}
+
+			blockoverride = "text" {
+				text = "BUILDING_ENABLE_PRIVATIZATION"
+			}
+		}
+	}
+}
+
+right_click_menu = {
+	name = "building_actions_right_click_menu"
+	datacontext = "[GetMetaPlayer.GetPlayedOrObservedCountry]"
+	parentanchor = right
+
+	blockoverride "title_text" {
+		text = "BUILDING_ACTIONS_RIGHT_CLICK_MENU_TITLE"
+	}
+
+	blockoverride "items" {
+		flowcontainer = {
+			visible = "[Not(Building.GetBuildingType.IsMilitaryBuilding)]"
+			direction = vertical
+			parentanchor = hcenter
+
+			### TOGGLE AUTO_EXPAND ON
+			right_click_menu_item = {
+				
+				blockoverride "margin" {
+					margin_left = 45
+				}
+
+				blockoverride "properties" {
+					visible = "[And(IsPotential( Building.ToggleAutoExpand ), Not(Building.IsAutoExpanding))]"
+					tooltip = "[Building.GetAutoExpandTooltip]"
+					enabled = "[IsValid( Building.ToggleAutoExpandOn )]"
+					onclick = "[Execute( Building.ToggleAutoExpandOn )]"
+				}
+
+				blockoverride "texture" {
+					texture = "gfx/interface/production_methods/auto_expand_not.dds"
+				}
+				
+				blockoverride = "text" {
+					text = "BUILDING_RIGHT_CLICK_MENU_AUTOEXPAND_ON"
+				}
+			}
+
+			### TOGGLE AUTO_EXPAND OFF
+			right_click_menu_item = {
+				
+				blockoverride "margin" {
+					margin_left = 45
+				}
+
+				blockoverride "properties" {
+					visible = "[And(IsPotential( Building.ToggleAutoExpand ), Building.IsAutoExpanding)]"				
+					tooltip = "[Building.GetAutoExpandTooltip]"
+					enabled = "[IsValid( Building.ToggleAutoExpandOff )]"
+					onclick = "[Execute( Building.ToggleAutoExpandOff )]"
+				}
+
+				blockoverride "texture" {
+					texture = "gfx/interface/production_methods/auto_expand.dds"
+				}
+				
+				blockoverride = "text" {
+					text = "BUILDING_RIGHT_CLICK_MENU_AUTOEXPAND_OFF"
+				}
+
+				icon = {
+					using = highlighted_square_selection
+				}
+			}
+		}
+
+		### TOGGLE SUBSIDIZE ON
+		right_click_menu_item = {
+			
+			blockoverride "margin" {
+				margin_left = 45
+			}
+
+			blockoverride "properties" {
+				visible = "[And(IsValid( Building.ToggleSubsidies ), Not(Building.IsSubsidized))]"			
+				tooltip = "[Building.GetSubsidizeTooltip]"
+				enabled = "[IsValid( Building.ToggleSubsidiesOn )]"
+				onclick = "[Execute( Building.ToggleSubsidiesOn )]"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/production_methods/subsidized_not.dds"
+			}
+			
+			blockoverride = "text" {
+				text = "BUILDING_RIGHT_CLICK_MENU_SUBSIDIZE_ON"
+			}
+		}
+
+		### TOGGLE SUBSIDIZE OFF
+		right_click_menu_item = {
+			
+			blockoverride "margin" {
+				margin_left = 45
+			}
+
+			blockoverride "properties" {
+				visible = "[And(IsValid( Building.ToggleSubsidies ), Building.IsSubsidized)]"			
+				tooltip = "[Building.GetSubsidizeTooltip]"
+				enabled = "[IsValid( Building.ToggleSubsidiesOff )]"
+				onclick = "[Execute( Building.ToggleSubsidiesOff )]"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/production_methods/subsidized.dds"
+			}
+			
+			blockoverride = "text" {
+				text = "BUILDING_RIGHT_CLICK_MENU_SUBSIDIZE_OFF"
+			}
+
+			icon = {
+				using = highlighted_square_selection
+			}
+		}
+
+		# RESET PRODUCTION METHODS
+		right_click_menu_item = {
+			
+			blockoverride "margin" {
+				margin_left = 45
+			}
+
+			blockoverride "properties" {
+				onclick = "[Execute( Building.ResetProductionMethodsToStandard )]"
+				enabled = "[IsValid( Building.ResetProductionMethodsToStandard )]"
+				tooltip = "[Building.GetResetProductionMethodsToStandardTooltip]"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/lens_toolbar_icons/reset_production_methods_lens_option.dds"
+			}
+			
+			blockoverride = "text" {
+				text = "RESET_PM_BUILDING"
+			}
+		}
+
+		right_click_menu_item = {
+			
+			blockoverride "margin" {
+				margin_left = 45
+			}
+
+			blockoverride "properties" {
+				onclick = "[Execute( Building.GetBuildingType.ResetProductionMethodsToStandard )]"
+				enabled = "[IsValid( Building.GetBuildingType.ResetProductionMethodsToStandard )]"
+				tooltip = "[Building.GetBuildingType.GetResetProductionMethodsToStandardTooltip]"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/lens_toolbar_icons/reset_production_methods_lens_option.dds"
+			}
+			
+			blockoverride = "text" {
+				text = "RESET_PM_BUILDING_TYPE"
+			}
+		}
+
+		right_click_menu_item = {
+			
+			blockoverride "margin" {
+				margin_left = 45
+			}
+
+			blockoverride "properties" {
+					enabled = "[IsValid( Building.NationalizeBuildingLevels( '(int32)1' ) )]"
+					onclick = "[PopupManager.ShowNationalizeBuildingConfirmation(Building.Self)]"
+					tooltip = "BUILDING_NATIONALIZE_TOOLTIP"
+			}
+			
+			blockoverride "texture" {
+				texture = "gfx/interface/production_methods/nationalize.dds"
+			}
+			
+			blockoverride = "text" {
+				text = "BUILDING_NATIONALIZE"
+			}
+		}
+
+		### TOGGLE PRIVITZATION ON
+		right_click_menu_item = {
+			
+			blockoverride "margin" {
+				margin_left = 45
+			}
+
+			blockoverride "properties" {
+				enabled = "[IsValid( Building.TogglePrivatization)]"
+				onclick = "[Execute( Building.TogglePrivatization)]"
+				tooltip = "[Building.GetTogglePrivatizationTooltip]"
+				visible = "[Building.CanBePrivatized]"
+			}
+			
+			blockoverride "texture" {
+				texture = "gfx/interface/production_methods/privatize.dds"
+			}
+			
+			blockoverride = "text" {
+				text = "BUILDING_DISABLE_PRIVATIZATION"
+			}
+
+			icon = {
+				using = highlighted_square_selection
+			}
+		}
+
+		### TOGGLE PRIVITZATION OFF
+		right_click_menu_item = {
+			
+			blockoverride "margin" {
+				margin_left = 45
+			}
+
+			blockoverride "properties" {
+				enabled = "[IsValid( Building.TogglePrivatization)]"
+				onclick = "[Execute( Building.TogglePrivatization)]"
+				tooltip = "[Building.GetTogglePrivatizationTooltip]"
+				visible = "[Not(Building.CanBePrivatized)]"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/production_methods/privatize_not.dds"
+			}
+
+			blockoverride = "text" {
+				text = "BUILDING_ENABLE_PRIVATIZATION"
+			}
+		}
 	}
 }
 
@@ -748,7 +1150,9 @@ right_click_menu = {
 				onclick = "[Execute( InterestGroup.ToggleSuppression )]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/generic_icons/ig_suppress.dds"
+			}
 			
 			blockoverride = "text" {
 				text = "IG_RIGHT_CLICK_MENU_SUPPRESS"
@@ -763,7 +1167,9 @@ right_click_menu = {
 				onclick = "[Execute( InterestGroup.ToggleSuppression )]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/generic_icons/ig_suppress.dds"
+			}
 			
 			blockoverride = "text" {
 				text = "IG_RIGHT_CLICK_MENU_SUPPRESS_NOT"
@@ -778,7 +1184,9 @@ right_click_menu = {
 				onclick = "[Execute( InterestGroup.TogglePromotion )]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/generic_icons/ig_bolster.dds"
+			}
 			
 			blockoverride = "text" {
 				text = "IG_RIGHT_CLICK_MENU_PROMOTE"
@@ -793,7 +1201,9 @@ right_click_menu = {
 				onclick = "[Execute( InterestGroup.TogglePromotion )]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/generic_icons/ig_bolster.dds"
+			}
 			
 			blockoverride = "text" {
 				text = "IG_RIGHT_CLICK_MENU_PROMOTE_NOT"
@@ -807,7 +1217,19 @@ right_click_menu = {
 				onclick = "[InterestGroup.TogglePinInOutliner]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "icon" {
+				icon = {
+					visible = "[InterestGroup.IsPinnedInOutliner]"
+					texture = "gfx/interface/outliner/pinned_icon.dds"
+					size = { 28 28 }
+				}
+
+				icon = {
+					visible = "[Not(InterestGroup.IsPinnedInOutliner)]"
+					texture = "gfx/interface/outliner/unpinned_icon.dds"
+					size = { 28 28 }
+				}
+			}
 			
 			blockoverride = "text" {
 				text = "IG_RIGHT_CLICK_MENU_PIN_IN_OUTLINER"
@@ -831,7 +1253,9 @@ right_click_menu = {
 				onclick = "[Execute( Decree.GetRemoveCommand )]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/buttons/button_icons/close.dds"
+			}
 			
 			blockoverride = "text" {
 				text = "DECREE_RIGHT_CLICK_MENU_REMOVE"
@@ -849,16 +1273,16 @@ right_click_menu = {
 
 	blockoverride "items" {
 		dynamicgridbox = {
-			datamodel = "[MilitaryFormation.GetEligibleTypesByGroup( CombatUnitGroup.AccessSelf )]"
+			datamodel = "[MilitaryFormation.GetEligibleTypesByGroup( CombatUnitGroup.Self )]"
 			
 			item = {
 				flowcontainer = {
 					default_unit_right_click_item = {
-						visible = "[Not(ObjectsEqual(CombatUnitType.AccessSelf, MilitaryFormation.GetSelectedUnitTypeForGroup(CombatUnitGroup.Self)))]"
+						visible = "[Not(ObjectsEqual(CombatUnitType.Self, MilitaryFormation.GetSelectedUnitTypeForGroup(CombatUnitGroup.Self).Self))]"
 					}
 
 					default_unit_right_click_item_selected = {
-						visible = "[ObjectsEqual(CombatUnitType.AccessSelf, MilitaryFormation.GetSelectedUnitTypeForGroup(CombatUnitGroup.Self))]"
+						visible = "[ObjectsEqual(CombatUnitType.Self, MilitaryFormation.GetSelectedUnitTypeForGroup(CombatUnitGroup.Self).Self)]"
 					}
 				}
 			}
@@ -882,10 +1306,31 @@ right_click_menu = {
 				tooltip = "GO_TO_BUTTON_MILITARY_FORMATION"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/generic_icons/information.dds"
+			}
 
 			blockoverride = "text" {
 				text = "CHARACTER_RIGHT_CLICK_MENU_INFORMATION"
+			}
+
+			blockoverride "size" {
+				size = { 260 44 }
+			}
+		}
+
+		right_click_menu_item = {		# EDIT NAME AND EMBLEM
+			blockoverride "properties" {
+				onclick = "[PopupManager.ShowMilitaryFormationChangeName(MilitaryFormation.Self)]"
+				tooltip = "CUSTOMIZE_NAME_AND_EMBLEM"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/buttons/button_icons/edit.dds"
+			}
+
+			blockoverride = "text" {
+				text = "CUSTOMIZE"
 			}
 
 			blockoverride "size" {
@@ -899,7 +1344,19 @@ right_click_menu = {
 				onclick = "[MilitaryFormation.TogglePinInOutliner]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "icon" {
+				icon = {
+					visible = "[MilitaryFormation.IsPinnedInOutliner]"
+					texture = "gfx/interface/outliner/pinned_icon.dds"
+					size = { 28 28 }
+				}
+
+				icon = {
+					visible = "[Not(MilitaryFormation.IsPinnedInOutliner)]"
+					texture = "gfx/interface/outliner/unpinned_icon.dds"
+					size = { 28 28 }
+				}
+			}
 			
 			blockoverride "text" {
 				text = "MILITARY_FORMATION_RIGHT_CLICK_MENU_PIN_IN_OUTLINER"
@@ -1117,7 +1574,11 @@ right_click_menu = {
 				}
 
 				new_army_button = {
-					visible = no # todo PRCAL-30807 - Re-add this
+					datacontext = "[TransferFormationPopup.GetLeftStagedFormation]"
+
+					blockoverride "deselect_selected_formation_if_there_is_one" {
+						onclick = "[TransferFormationPopup.DeselectLeftFormation]"
+					}
 				}
 
 				dynamicgridbox = {
@@ -1125,7 +1586,7 @@ right_click_menu = {
 
 					item = {
 						widget = {
-							size = { 320 80 }
+							using = standard_formation_item_size
 
 							military_formation_right_click_item = {
 								visible = "[Not(TransferFormationPopup.IsFormationSelected( MilitaryFormation.AccessSelf ))]"
@@ -1177,7 +1638,11 @@ right_click_menu = {
 				}
 
 				new_fleet_button = {
-					visible = no # todo PRCAL-30807 - Re-add this
+					datacontext = "[TransferFormationPopup.GetLeftStagedFormation]"
+
+					blockoverride "deselect_selected_formation_if_there_is_one" {
+						onclick = "[TransferFormationPopup.DeselectLeftFormation]"
+					}
 				}
 
 				dynamicgridbox = {
@@ -1185,7 +1650,7 @@ right_click_menu = {
 
 					item = {
 						widget = {
-							size = { 320 80 }
+							using = standard_formation_item_size
 
 							military_formation_right_click_item = {
 								visible = "[Not(TransferFormationPopup.IsFormationSelected( MilitaryFormation.AccessSelf ))]"
@@ -1251,7 +1716,11 @@ right_click_menu = {
 				}
 
 				new_army_button = {
-					visible = no # todo PRCAL-30807 - Re-add this
+					datacontext = "[TransferFormationPopup.GetLeftStagedFormation]"
+
+					blockoverride "deselect_selected_formation_if_there_is_one" {
+						onclick = "[TransferFormationPopup.DeselectLeftFormation]"
+					}
 				}
 
 				dynamicgridbox = {
@@ -1259,7 +1728,7 @@ right_click_menu = {
 
 					item = {
 						widget = {
-							size = { 320 80 }
+							using = standard_formation_item_size
 
 							military_formation_right_click_item = {
 								visible = "[Not(TransferFormationPopup.IsFormationSelected( MilitaryFormation.AccessSelf ))]"
@@ -1325,7 +1794,11 @@ right_click_menu = {
 				}
 
 				new_fleet_button = {
-					visible = no # todo PRCAL-30807 - Re-add this
+					datacontext = "[TransferFormationPopup.GetLeftStagedFormation]"
+
+					blockoverride "deselect_selected_formation_if_there_is_one" {
+						onclick = "[TransferFormationPopup.DeselectLeftFormation]"
+					}
 				}
 
 				dynamicgridbox = {
@@ -1333,7 +1806,7 @@ right_click_menu = {
 
 					item = {
 						widget = {
-							size = { 320 80 }
+							using = standard_formation_item_size
 
 							military_formation_right_click_item = {
 								visible = "[Not(TransferFormationPopup.IsFormationSelected( MilitaryFormation.AccessSelf ))]"
@@ -1390,6 +1863,7 @@ right_click_menu = {
 
 			flowcontainer = {
 				direction = vertical
+				datacontext = "[TransferFormationPopup.GetRightStagedFormation]"
 
 				textbox = {
 					align = nobaseline
@@ -1398,16 +1872,14 @@ right_click_menu = {
 					margin_left = 10
 				}
 
-				new_army_button = {
-					visible = no # todo PRCAL-30807 - Re-add this
-				}
+				new_army_button = {}
 
 				dynamicgridbox = {
 					datamodel = "[AccessPlayer.GetMilitaryFormationsArmy]"
 
 					item = {
 						widget = {
-							size = { 320 80 }
+							using = standard_formation_item_size
 
 							military_formation_right_click_item = {
 								visible = "[Not(TransferFormationPopup.IsFormationSelected( MilitaryFormation.AccessSelf ))]"
@@ -1425,6 +1897,8 @@ right_click_menu = {
 
 								blockoverride "onclick" {
 									onclick = "[TransferFormationPopup.SetSelectedRightFormation( MilitaryFormation.AccessSelf )]"
+									onclick = "[GetVariableSystem.Clear( 'transfer_formation_new_formation' )]"
+									onclick = "[GetVariableSystem.Clear( Concatenate( StagedFormation.GetIDString, '_new_formation') )]"
 		                       		onclick = "[RightClickMenuManager.Close]"
 								}
 							}
@@ -1450,7 +1924,8 @@ right_click_menu = {
 
 			flowcontainer = {
 				direction = vertical
-
+				datacontext = "[TransferFormationPopup.GetRightStagedFormation]"
+				
 				textbox = {
 					align = nobaseline
 					autoresize = yes
@@ -1458,16 +1933,14 @@ right_click_menu = {
 					margin_left = 10
 				}
 
-				new_fleet_button = {
-					visible = no # todo PRCAL-30807 - Re-add this
-				}
+				new_fleet_button = {}
 
 				dynamicgridbox = {
 					datamodel = "[AccessPlayer.GetMilitaryFormationsFleet]"
 
 					item = {
 						widget = {
-							size = { 320 80 }
+							using = standard_formation_item_size
 
 							military_formation_right_click_item = {
 								visible = "[Not(TransferFormationPopup.IsFormationSelected( MilitaryFormation.AccessSelf ))]"
@@ -1485,6 +1958,8 @@ right_click_menu = {
 
 								blockoverride "onclick" {
 									onclick = "[TransferFormationPopup.SetSelectedRightFormation( MilitaryFormation.AccessSelf )]"
+									onclick = "[GetVariableSystem.Clear( 'transfer_formation_new_formation' )]"
+									onclick = "[GetVariableSystem.Clear( Concatenate( StagedFormation.GetIDString, '_new_formation') )]"
 		                       		onclick = "[RightClickMenuManager.Close]"
 								}
 							}
@@ -1524,6 +1999,7 @@ right_click_menu = {
 
 			flowcontainer = {
 				direction = vertical
+				datacontext = "[TransferFormationPopup.GetRightStagedFormation]"
 
 				textbox = {
 					align = nobaseline
@@ -1532,16 +2008,14 @@ right_click_menu = {
 					margin_left = 10
 				}
 
-				new_army_button = {
-					visible = no # todo PRCAL-30807 - Re-add this
-				}
+				new_army_button = {}
 
 				dynamicgridbox = {
 					datamodel = "[AccessPlayer.GetMilitaryFormationsArmy]"
 
 					item = {
 						widget = {
-							size = { 320 80 }
+							using = standard_formation_item_size
 
 							military_formation_right_click_item = {
 								visible = "[Not(TransferFormationPopup.IsFormationSelected( MilitaryFormation.AccessSelf ))]"
@@ -1559,6 +2033,8 @@ right_click_menu = {
 
 								blockoverride "onclick" {
 									onclick = "[TransferFormationPopup.SetSelectedRightFormation( MilitaryFormation.AccessSelf )]"
+									onclick = "[GetVariableSystem.Clear( 'transfer_formation_new_formation' )]"
+									onclick = "[GetVariableSystem.Clear( Concatenate( StagedFormation.GetIDString, '_new_formation') )]"
 		                       		onclick = "[RightClickMenuManager.Close]"
 								}
 							}
@@ -1598,7 +2074,8 @@ right_click_menu = {
 
 			flowcontainer = {
 				direction = vertical
-
+				datacontext = "[TransferFormationPopup.GetRightStagedFormation]"
+				
 				textbox = {
 					align = nobaseline
 					autoresize = yes
@@ -1606,16 +2083,14 @@ right_click_menu = {
 					margin_left = 10
 				}
 
-				new_fleet_button = {
-					visible = no # todo PRCAL-30807 - Re-add this
-				}
+				new_fleet_button = {}
 
 				dynamicgridbox = {
 					datamodel = "[AccessPlayer.GetMilitaryFormationsFleet]"
 
 					item = {
 						widget = {
-							size = { 320 80 }
+							using = standard_formation_item_size
 
 							military_formation_right_click_item = {
 								visible = "[Not(TransferFormationPopup.IsFormationSelected( MilitaryFormation.AccessSelf ))]"
@@ -1633,6 +2108,8 @@ right_click_menu = {
 
 								blockoverride "onclick" {
 									onclick = "[TransferFormationPopup.SetSelectedRightFormation( MilitaryFormation.AccessSelf )]"
+									onclick = "[GetVariableSystem.Clear( 'transfer_formation_new_formation' )]"
+									onclick = "[GetVariableSystem.Clear( Concatenate( StagedFormation.GetIDString, '_new_formation') )]"
 		                       		onclick = "[RightClickMenuManager.Close]"
 								}
 							}
@@ -1660,7 +2137,9 @@ right_click_menu = {
 }
 
 right_click_menu = {
+	datacontext = "[StagedFormation.GetMilitaryFormation]"
 	name = "filter_unit_states_right_click_menu"
+	parentanchor = right|bottom
 
 	blockoverride "title_text" {
 		text = "SELECT_STATE_TO_FILTER_ON"
@@ -1672,20 +2151,20 @@ right_click_menu = {
 			direction = vertical
 
 			dynamicgridbox = {
-				#datamodel = "[MilitaryFormationUnitEntry.GetStates]"
-				datamodel = "[AccessPlayer.AccessStates]"
-
+				datamodel = "[StagedUnitsWithType.GetStagedCombatUnitStates]"
 
 				item = {
 					widget = {
 						size = { 460 44 }
 
 						right_click_menu_item = {
-							#visible = "[Not(MilitaryFormationUnitEntry.IsFilteredOnState(State.AccessSelf))]" # todo PRCAL-30099: Create a way to check if the units are already filtered on a specific State.
+							visible = "[Not(ObjectsEqual(StagedUnitsWithType.GetStateFilter.Self, State.Self))]"
 
 							blockoverride "properties" {
-								#onclick = "[MilitaryFormationUnitEntry.FilterCombatUnitsOnState(State.AccessSelf)]" # todo PRCAL-30099: Make a filter for a specific State on the Unit Type Units.
-								onclick = "[GetVariableSystem.Set( Concatenate(MilitaryFormationUnitEntry.GetIDString, '_unit_type_filter'), 'specific_state' )]"
+								onclick = "[StagedUnitsWithType.SetStateFilter( State.AccessSelf )]"
+								
+								datacontext = "[StagedUnitsWithType]"
+								datacontext = "[StagedFormation]"
 								tooltip = "FILTER_UNITS_IN_STATE_TOOLTIP"
 							}
 							
@@ -1718,8 +2197,7 @@ right_click_menu = {
 						}
 
 						right_click_menu_item = {
-							#visible = "[MilitaryFormationUnitEntry.IsFilteredOnState(State.AccessSelf)]" # todo PRCAL-30099: Create a way to check if the units are already filtered on a specific State.
-							visible = no
+							visible = "[ObjectsEqual(StagedUnitsWithType.GetStateFilter.Self, State.Self)]"
 
 							background = {
 								using = paper_bg
@@ -1728,8 +2206,7 @@ right_click_menu = {
 							blockoverride "button" {}
 
 							blockoverride "properties" {
-								#onclick = "[MilitaryFormationUnitEntry.FilterCombatUnitsOnState(State.AccessSelf)]" # todo PRCAL-30099: Make a filter for a specific State on the Unit Type Units.
-								onclick = "[GetVariableSystem.Set( Concatenate(MilitaryFormationUnitEntry.GetIDString, '_unit_type_filter'), 'specific_state' )]"
+								onclick = "[StagedUnitsWithType.SetStateFilter( State.AccessSelf )]"
 								tooltip = "FILTER_UNITS_IN_STATE_TOOLTIP"
 							}
 							
@@ -1751,7 +2228,7 @@ right_click_menu = {
 							}
 
 							blockoverride "icon" {
-								small_flag_no_interact = {
+								tiny_flag_no_interact = {
 									datacontext = "[State.GetCountry]"
 								}
 							}
@@ -1786,7 +2263,7 @@ right_click_menu = {
 
 			item = {
 				widget = {
-					size = { 320 80 }
+					using = standard_formation_item_size
 
 					military_formation_right_click_item = {
 						visible = "[Not(NavalInvasionPlannerPopup.IsMilitaryFormationSelected(MilitaryFormation.Self))]"
@@ -1847,7 +2324,7 @@ right_click_menu = {
 
 			item = {
 				widget = {
-					size = { 320 80 }
+					using = standard_formation_item_size
 
 					military_formation_right_click_item = {
 						visible = "[Not(NavalInvasionPlannerPopup.IsMilitaryFormationSelected(MilitaryFormation.Self))]"
@@ -1902,7 +2379,7 @@ right_click_menu = {
 
 			item = {
 				widget = {
-					size = { 320 80 }
+					using = standard_formation_item_size
 
 					military_formation_right_click_item = {
 						visible = "[And(Not(MilitaryFormation.IsTargetSeaNode(NavalInvasion.GetSeaNode.Self)), Not(MilitaryFormation.IsCurrentSeaNode(NavalInvasion.GetSeaNode.Self)))]"
@@ -1963,7 +2440,7 @@ right_click_menu = {
 
 			item = {
 				widget = {
-					size = { 320 80 }
+					using = standard_formation_item_size
 
 					military_formation_right_click_item = {
                         visible = "[Or(Not(MilitaryFormation.IsMobilized),And(Not(MilitaryFormation.IsTargetHQ(NavalInvasion.GetDefenderHQ.Self)), Not(MilitaryFormation.IsCurrentHQ(NavalInvasion.GetDefenderHQ.Self))))]"
@@ -2033,7 +2510,7 @@ right_click_menu = {
 								tooltipwidget = {
 									FancyTooltip_CommanderOrderType = {
 										blockoverride "text_before" {
-											visible = "[Or(Or(ObjectsEqual(Character.GetOrderType.Self, CommanderOrderType.Self), ObjectsEqual(Character.GetNextOrderType.Self, CommanderOrderType.Self)), Not(StringIsEmpty(GetDesc( Character.SelectOrder( CommanderOrderType.Self )))))]"
+											using = visible_if_either_current_or_next_order
 											text =  "NEXT_OR_CURRENT_ORDER"
 											margin_bottom = 15
 										}
@@ -2078,7 +2555,7 @@ right_click_menu = {
 							tooltipwidget = {
 								FancyTooltip_CommanderOrderType = {
 									blockoverride "text_before" {
-										visible = "[Or(Or(ObjectsEqual(Character.GetOrderType.Self, CommanderOrderType.Self), ObjectsEqual(Character.GetNextOrderType.Self, CommanderOrderType.Self)), Not(StringIsEmpty(GetDesc( Character.SelectOrder( CommanderOrderType.Self )))))]"
+										using = visible_if_either_current_or_next_order
 										text =  "NEXT_OR_CURRENT_ORDER"
 										margin_bottom = 15
 									}
@@ -2133,7 +2610,7 @@ right_click_menu = {
 							tooltipwidget = {
 								FancyTooltip_CommanderOrderType = {
 									blockoverride "text_before" {
-										visible = "[Or(Or(ObjectsEqual(Character.GetOrderType.Self, CommanderOrderType.Self), ObjectsEqual(Character.GetNextOrderType.Self, CommanderOrderType.Self)), Not(StringIsEmpty(GetDesc( Character.SelectOrder( CommanderOrderType.Self )))))]"
+										using = visible_if_either_current_or_next_order
 										text =  "NEXT_OR_CURRENT_ORDER"
 										margin_bottom = 15
 									}
@@ -2184,137 +2661,155 @@ right_click_menu = {
 				}
 			}
 
-			flowcontainer = {
-				parentanchor = hcenter
-				direction = vertical
-
-				section_header_button = {
-					using = default_fade_in_out
-					parentanchor = hcenter
+			right_click_menu_dropdown = {
+				blockoverride "section_header_tooltip" {
 					tooltip = "UNAVAILABLE_ORDERS_TOOLTIP"
+				}
 
-					block "section_header_size" {
-						size = { 360 44 }
-					}
+				blockoverride "left_text" {
+					text = "UNAVAILABLE_ORDERS"
+				}
 
-					blockoverride "arrow_position" {
-						position = { 2 0 }
-						parentanchor = left|vcenter
-					}
+				blockoverride "section_header_right_text" {
+					flowcontainer = {
+						margin = { 5 0 }
+						spacing = 5
 
-					blockoverride "left_textbox_margin_left" {
-						margin_left = 30
-					}
-
-					blockoverride "left_text" {
-						text = "UNAVAILABLE_ORDERS"
-					}
-
-					blockoverride "right_text" {
-						flowcontainer = {
-							margin = { 5 0 }
-							spacing = 5
+						icon = {
+							visible = "[Character.HasUnavailableAdvanceOrders]"
+							size = { 35 35 }
+							texture = "gfx/interface/backgrounds/round_button_bg.dds"
+							parentanchor = vcenter
 
 							icon = {
-								visible = "[Character.HasUnavailableAdvanceOrders]"
-								size = { 35 35 }
-								texture = "gfx/interface/backgrounds/round_button_bg.dds"
-								parentanchor = vcenter
-
-								icon = {
-									size = { 75% 75% }
-									texture = "gfx/interface/icons/commander_order_icons/advance.dds"
-									parentanchor = center
-								}
-							}
-
-							icon = {
-								visible = "[Character.HasUnavailableDefendOrders]"
-								size = { 35 35 }
-								texture = "gfx/interface/backgrounds/round_button_bg.dds"
-								parentanchor = vcenter
-
-								icon = {
-									size = { 75% 75% }
-									texture = "gfx/interface/icons/commander_order_icons/defend.dds"
-									parentanchor = center
-								}
-							}
-
-							textbox = {
-								parentanchor = vcenter
-								autoresize = yes
-								align = nobaseline
-								default_format = "#v"
-								raw_text = "[GetDataModelSize(Character.AccessUnavailableOrders)]"
+								size = { 75% 75% }
+								texture = "gfx/interface/icons/commander_order_icons/advance.dds"
+								parentanchor = center
 							}
 						}
-					}
-					
-					blockoverride "onclick" {
-						onclick = "[GetVariableSystem.Toggle('show_unavailable_orders')]"
-					}
 
-					blockoverride "onclick_showmore" {
-						visible = "[Not(GetVariableSystem.Exists('show_unavailable_orders'))]"
-					}
+						icon = {
+							visible = "[Character.HasUnavailableDefendOrders]"
+							size = { 35 35 }
+							texture = "gfx/interface/backgrounds/round_button_bg.dds"
+							parentanchor = vcenter
 
-					blockoverride "onclick_showless" {
-						visible = "[GetVariableSystem.Exists('show_unavailable_orders')]"
+							icon = {
+								size = { 75% 75% }
+								texture = "gfx/interface/icons/commander_order_icons/defend.dds"
+								parentanchor = center
+							}
+						}
+
+						textbox = {
+							parentanchor = vcenter
+							autoresize = yes
+							align = nobaseline
+							default_format = "#v"
+							raw_text = "[GetDataModelSize(Character.AccessUnavailableOrders)]"
+						}
 					}
 				}
 
-				### ORDERS
-				dynamicgridbox = {
+				blockoverride "onclick" {
+					onclick = "[GetVariableSystem.Toggle('show_unavailable_orders')]"
+				}
+
+				blockoverride "onclick_showmore" {
+					visible = "[Not(GetVariableSystem.Exists('show_unavailable_orders'))]"
+				}
+
+				blockoverride "onclick_showless" {
 					visible = "[GetVariableSystem.Exists('show_unavailable_orders')]"
+				}
+
+				blockoverride "items_visibility" {
+					visible = "[GetVariableSystem.Exists('show_unavailable_orders')]"
+				}
+
+				blockoverride "dropdown_datamodel" {
 					datamodel = "[Character.AccessUnavailableOrders]"
+				}
 
-					item = {
-						flowcontainer = {
-							right_click_menu_item = {
-								
-								blockoverride "properties" {
-									tooltipwidget = {
-										FancyTooltip_CommanderOrderType = {
-											blockoverride "text_before" {
-												visible = "[Or(Or(ObjectsEqual(Character.GetOrderType.Self, CommanderOrderType.Self), ObjectsEqual(Character.GetNextOrderType.Self, CommanderOrderType.Self)), Not(StringIsEmpty(GetDesc( Character.SelectOrder( CommanderOrderType.Self )))))]"
-												text =  "NEXT_OR_CURRENT_ORDER"
-												margin_bottom = 15
-											}
-										}
-									}
-									clicksound = "[CommanderOrderType.GetClickSound]"
-							        enabled = no
-							        onclick = "[Character.SelectOrder( CommanderOrderType.Self )]"
-							        onclick = "[RightClickMenuManager.Close]"
-								}
-
-								blockoverride "texture" {
-									texture = "[CommanderOrderType.GetTexture]"
-								}
-
-								blockoverride "text" {
-									text = "[CommanderOrderType.GetNameNoFormatting]"
-								}
-
-								blockoverride "size" {
-									size = { 360 44 }
-								}
-
-								blockoverride "right_text" {
-									textbox = {
-										visible = "[Character.HasOrder( CommanderOrderType.Self )]"
-										layoutpolicy_horizontal = expanding
-										layoutpolicy_vertical = expanding
-										text = "CURRENT"
-										align = right|nobaseline
-										fontsize_min = 12
-										elide = right
-										margin = { 5 0 }
-										margin_right = 10
-									}
-								}
+				blockoverride "properties" {
+					tooltipwidget = {
+						FancyTooltip_CommanderOrderType = {
+							blockoverride "text_before" {
+								using = visible_if_either_current_or_next_order
+								text =  "NEXT_OR_CURRENT_ORDER"
+								margin_bottom = 15
 							}
+						}
+					}
+
+					clicksound = "[CommanderOrderType.GetClickSound]"
+			        enabled = no
+			        onclick = "[Character.SelectOrder( CommanderOrderType.Self )]"
+			        onclick = "[RightClickMenuManager.Close]"
+				}
+
+				blockoverride "item_margin" {
+					margin_left = 35
+				}
+
+				blockoverride "texture" {
+					texture = "[CommanderOrderType.GetTexture]"
+				}
+
+				blockoverride "text" {
+					text = "[CommanderOrderType.GetNameNoFormatting]"
+				}
+
+				blockoverride "size" {
+					size = { 360 44 }
+				}
+
+				blockoverride "item_right_text_visibility" {
+					visible = "[Character.HasOrder( CommanderOrderType.Self )]"
+				}
+
+				blockoverride "item_right_text" {
+					text = "CURRENT"
+				}
+			}
+		}
+	}
+}
+
+right_click_menu = {
+	name = "military_formation_marker_right_click_menu"
+
+	blockoverride "title_text" {
+		text = "MILITARY_FORMATION_MARKER_SELECT_FORMATION"
+	}
+
+	blockoverride "items" {
+		flowcontainer = {
+			spacing = 10
+
+			dynamicgridbox = {
+				datamodel = "[FormationMarker.GetFormations]"
+
+				item = {
+					right_click_menu_item = {
+						tooltipwidget = {
+							FancyTooltip_MilitaryFormation = {}
+						}
+					
+						blockoverride "properties" {
+							onclick = "[InformationPanelBar.OpenMilitaryFormationPanelTab( MilitaryFormation.AccessSelf, 'default' )]"
+						}
+
+						blockoverride "texture" {
+							texture = "[MilitaryFormation.GetFlag]"
+						}
+
+						blockoverride "text" {
+							text = "MILITARY_FORMATION_MARKER_RIGHT_CLICK_ITEM_DESC"
+						}
+
+						blockoverride "size" {
+							size = { 360 44 }
 						}
 					}
 				}
@@ -2338,7 +2833,10 @@ right_click_menu = {
 				onclick = "[InformationPanelBar.OpenCommanderPanel(Character.AccessSelf)]"
 				tooltip = "GO_TO_BUTTON_CHARACTER"
 			}
-			blockoverride "icon" {}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/generic_icons/information.dds"
+			}
 
 			blockoverride = "text" {
 				text = "CHARACTER_RIGHT_CLICK_MENU_INFORMATION"
@@ -2354,7 +2852,20 @@ right_click_menu = {
 				visible = "[Character.GetCountry.IsLocalPlayer]"
 				onclick = "[Character.TogglePinInOutliner]"
 			}
-			blockoverride "icon" {}
+			
+			blockoverride "icon" {
+				icon = {
+					visible = "[Character.IsPinnedInOutliner]"
+					texture = "gfx/interface/outliner/pinned_icon.dds"
+					size = { 28 28 }
+				}
+
+				icon = {
+					visible = "[Not(Character.IsPinnedInOutliner)]"
+					texture = "gfx/interface/outliner/unpinned_icon.dds"
+					size = { 28 28 }
+				}
+			}
 			
 			blockoverride = "text" {
 				text = "CHARACTER_RIGHT_CLICK_MENU_PIN_IN_OUTLINER"
@@ -2382,8 +2893,12 @@ right_click_menu = {
 					visible = "[And( Character.GetCountry.IsLocalPlayer, Character.IsCommander )]"
 					tooltip = "MILITARY_PANEL_PROMOTE_CHARACTER_TOOLTIP"
 					enabled = "[IsValid(Character.GetPromoteCommand)]"
-					onclick = "[PopupManager.AskConfirmationWithSound(Character.GetPromoteCommand, 'event:/SFX/UI/Military/commander_promote')]"			}
-				blockoverride "icon" {}
+					onclick = "[PopupManager.AskConfirmationWithSound(Character.GetPromoteCommand, 'event:/SFX/UI/Military/commander_promote')]"			
+				}
+
+				blockoverride "texture" {
+					texture = "[Character.GetNextCommanderRank.GetTexture]"
+				}
 
 				blockoverride = "text" {
 					text = "CHARACTER_RIGHT_CLICK_MENU_PROMOTE_COMMANDER"
@@ -2475,7 +2990,7 @@ right_click_menu = {
 								tooltipwidget = {
 									FancyTooltip_CommanderOrderType = {
 										blockoverride "text_before" {
-											visible = "[Or(Or(ObjectsEqual(Character.GetOrderType.Self, CommanderOrderType.Self), ObjectsEqual(Character.GetNextOrderType.Self, CommanderOrderType.Self)), Not(StringIsEmpty(GetDesc( Character.SelectOrder( CommanderOrderType.Self )))))]"
+											using = visible_if_either_current_or_next_order
 											text =  "NEXT_OR_CURRENT_ORDER"
 											margin_bottom = 15
 										}
@@ -2522,7 +3037,7 @@ right_click_menu = {
 							tooltipwidget = {
 								FancyTooltip_CommanderOrderType = {
 									blockoverride "text_before" {
-										visible = "[Or(Or(ObjectsEqual(Character.GetOrderType.Self, CommanderOrderType.Self), ObjectsEqual(Character.GetNextOrderType.Self, CommanderOrderType.Self)), Not(StringIsEmpty(GetDesc( Character.SelectOrder( CommanderOrderType.Self )))))]"
+										using = visible_if_either_current_or_next_order
 										text =  "NEXT_OR_CURRENT_ORDER"
 										margin_bottom = 15
 									}
@@ -2577,7 +3092,7 @@ right_click_menu = {
 							tooltipwidget = {
 								FancyTooltip_CommanderOrderType = {
 									blockoverride "text_before" {
-										visible = "[Or(Or(ObjectsEqual(Character.GetOrderType.Self, CommanderOrderType.Self), ObjectsEqual(Character.GetNextOrderType.Self, CommanderOrderType.Self)), Not(StringIsEmpty(GetDesc( Character.SelectOrder( CommanderOrderType.Self )))))]"
+										using = visible_if_either_current_or_next_order
 										text =  "NEXT_OR_CURRENT_ORDER"
 										margin_bottom = 15
 									}
@@ -2693,7 +3208,7 @@ right_click_menu = {
 							blockoverride "properties" {
 								tooltip = "IMPOSE_LAW_TOOLTIP"
 								enabled = "[IsValid( Law.StartImposing )]"
-								onclick = "[Execute( Law.StartImposing )]"
+								onclick = "[PopupManager.AskConfirmation( Law.StartImposing )]"
 							}
 
 							blockoverride "texture" {
@@ -2775,49 +3290,6 @@ right_click_menu = {
 }
 
 right_click_menu = {
-	name = "naval_invasion_right_click_menu"
-
-	blockoverride "title_text" {
-		text = "NAVAL_INVASION_RIGHT_CLICK_MENU_TITLE"
-	}
-
-	blockoverride "items" {
-		dynamicgridbox = {
-			datamodel = "[MapInteractions.AccessMapInteractionCharacter.AccessCountry.AccessNavalInvasionGenerals]"
-			item = {
-				flowcontainer = {
-					character_portrait_mini = {
-						widgetanchor = left|vcenter
-						parentanchor = left|vcenter
-					}
-
-					right_click_menu_item = {
-						enabled = "[IsValid( MapInteractions.AccessMapInteractionCharacter.GetNavalInvasionCommand( Character.Self, State.Self ) )]"
-
-						blockoverride "properties" {
-							tooltip = "NAVAL_INVASION_RIGHT_CLICK_MENU_TOOLTIP"
-							onclick = "[Execute( MapInteractions.AccessMapInteractionCharacter.GetNavalInvasionCommand( Character.Self, State.Self ) )]"
-							onclick = "[MapInteractions.ShowMapInteractionNotification]"
-							onclick = "[MapListPanelManager.ResetActiveMapInteraction]"
-						}
-
-						blockoverride "sound" {
-							using = order_admiral_naval_invasion_button_sound
-						}
-
-						blockoverride "icon" {}
-						
-						blockoverride = "text" {
-							raw_text = "[Character.GetFullNameNoFormatting] ([GetUnitStrengthHeader( Character.GetMilitaryFormation.GetCurrentManpower, Character.GetMilitaryFormation.GetMaxManpower, Character.GetMilitaryFormation.GetCombatUnitsTypeIcon )], [Character.GetMilitaryFormation.GetMobilizationPercentageFormatted])"
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-right_click_menu = {
 	name = "state_right_click_menu"
 
 	blockoverride "title_text" {
@@ -2827,142 +3299,134 @@ right_click_menu = {
 	blockoverride "header_text" {} #no header for state menu, handle in items instead
 
 	blockoverride "items" {
-		flowcontainer = {
-			direction = horizontal
-			spacing = 5
-			margin_left = 10
 
-			tiny_flag = {
-				parentanchor = left|vcenter
+		container = {
+			minimumsize = { 460 -1 }
+
+			flowcontainer = {
+				parentanchor = vcenter
+				spacing = 5
+				margin_left = 10
+
+				tiny_flag = {
+					parentanchor = vcenter
+				}
+
+				textbox = {
+					parentanchor = vcenter
+					autoresize = yes
+					align = nobaseline
+					text = "STATE_RIGHT_CLICK_MENU_COUNTRY_TITLE"
+				}
+
+				button_icon_goto = {
+					parentanchor = vcenter
+					size = { 28 28 }
+					onclick = "[InformationPanelBar.OpenCountryPanelTab(Country.Self, 'default')]"
+					tooltip = "GO_TO_BUTTON_COUNTRY"
+					input_action = "go_to_details"
+				}
 			}
 
-			textbox = {
-				autoresize = yes
-				align = left|nobaseline
-				text = "STATE_RIGHT_CLICK_MENU_COUNTRY_TITLE"
+			flowcontainer = {
+				parentanchor = right|vcenter
+				margin_right = 10
+				spacing = 5
+
+				button_icon_zoom = {
+					parentanchor = vcenter
+					size = { 28 28 }
+					tooltip = "ZOOM_TO_CAPITAL_STATE"
+					onclick = "[Country.AccessCapital.ZoomToCapital]"
+					enabled = "[Not( Country.AccessCapital.IsZoomingToCapital )]"
+				}
+
+				button_icon_toggle_pin = {
+					parentanchor = vcenter
+					size = { 28 28 }
+
+					blockoverride "tooltip" {
+						tooltip = "COUNTRY_RIGHT_CLICK_MENU_PIN_IN_OUTLINER"
+					}
+
+					blockoverride "view_1" {
+						visible = "[Not(Country.IsPinnedInOutliner)]"
+					}
+
+					blockoverride "view_2" {
+						visible = "[Country.IsPinnedInOutliner]"
+					}
+
+					blockoverride "on_click" {
+						onclick = "[Country.TogglePinInOutliner]"
+					}
+				}
 			}
 		}
 
 		widget = { size = { 4 4 }} #pixelpushing tweak for flag, hack due to parentanchor and margins interacting weird
 
-		right_click_menu_item = {
-			blockoverride "properties" {
-				onclick = "[InformationPanelBar.OpenCountryPanelTab(Country.Self, 'default')]"
+		country_right_click_menu_items = {}
+
+		container = {
+			minimumsize = { 460 -1 }
+
+			flowcontainer = {
+				parentanchor = vcenter
+				spacing = 5
+				margin_left = 10
+				margin_top = 20
+
+				textbox = {
+					parentanchor = vcenter
+					autoresize = yes
+					align = nobaseline
+					text = "STATE_RIGHT_CLICK_MENU_STATE_TITLE"
+				}
+
+				button_icon_goto = {
+					parentanchor = vcenter
+					size = { 28 28 }
+					onclick = "[InformationPanelBar.OpenStatePanel( State.AccessSelf )]"
+					tooltip = "GO_TO_BUTTON_STATE"
+				}
 			}
 
-			blockoverride "icon" {}
-			
-			blockoverride = "text" {
-				text = "STATE_RIGHT_CLICK_MENU_COUNTRY_INFORMATION"
-			}	
-		}
+			flowcontainer = {
+				parentanchor = right|vcenter
+				margin_right = 10
+				spacing = 5
 
-		right_click_menu_item = {
-			blockoverride "properties" {
-				onclick = "[Country.AccessCapital.ZoomToCapital]"
-				using = zoom_button_sound
-				enabled = "[Not( Country.AccessCapital.IsZoomingToCapital )]"
-			}
+				button_icon_zoom = {
+					parentanchor = vcenter
+					size = { 28 28 }
+					onclick = "[State.ZoomToCapital]"
+					tooltip = "ZOOM_TO_STATE"
+					enabled = "[Not( State.IsZoomingToCapital )]"
+				}
 
-			blockoverride "icon" {}
-			
-			blockoverride = "text" {
-				text = "ZOOM_TO_CAPITAL_STATE"
-			}	
-		}
+				button_icon_toggle_pin = {
+					visible = "[Country.IsLocalPlayer]"
+					parentanchor = vcenter
+					size = { 28 28 }
 
-		right_click_menu_item = {
-			visible = "[Country.IsLocalPlayer]"
-			blockoverride "properties" {
-				onclick = "[State.TogglePinInOutliner]"
-			}
-
-			blockoverride "icon" {}
-			
-			blockoverride = "text" {
-				text = "STATE_RIGHT_CLICK_MENU_PIN_IN_OUTLINER"
-			}		
-		}
-
-		right_click_menu_item = {
-			visible = "[Not(Country.IsLocalPlayer)]"
-			blockoverride "properties" {
-				onclick = "[InformationPanelBar.OpenCountryPanelTab(Country.Self, 'diplomacy')]"
-			}
-
-			blockoverride "icon" {}
-			
-			blockoverride = "text" {
-				text = "STATE_RIGHT_CLICK_MENU_DIPLOMACY"
-			}	
-		}
-
-		dynamicgridbox = {
-			datamodel = "[Country.GetPotentialDiploActions]"
-			item = {
-				right_click_menu_item = {
-					blockoverride "properties" {
-						tooltip = "DIPLOMATIC_ACTION_TOOLTIP"
-						onclick = "[DiplomaticAction.ExecuteWithConfirmation]"
-						enabled = "[IsValid(DiplomaticAction.ExecuteAction)]"
-						clicksound = "[DiplomaticAction.GetSoundWithConfirmation]"
-					}
-					icon = {
-						visible = "[DiplomaticAction.IsActivePact]"
-						using = highlighted_square_selection
-					}
-					
-					blockoverride "margin" {
-						margin_left = 55
-					}				
-
-					diplomatic_action_acceptance_icon = {
-						visible = "[Not(DiplomaticAction.GetType.CanSelectAnyState)]"
-						position = { -10 0 }
+					blockoverride "tooltip" {
+						tooltip = "STATE_RIGHT_CLICK_MENU_PIN_IN_OUTLINER"
 					}
 
-					blockoverride "texture" {
-						texture = "[DiplomaticAction.GetType.GetTexture]"
+					blockoverride "view_1" {
+						visible = "[Not(State.IsPinnedInOutliner)]"
 					}
-					
-					blockoverride = "text" {
-						text = "[DiplomaticAction.GetFullName]"
+
+					blockoverride "view_2" {
+						visible = "[State.IsPinnedInOutliner]"
+					}
+
+					blockoverride "on_click" {
+						onclick = "[State.TogglePinInOutliner]"
 					}
 				}
 			}
-		}
-
-		dynamicgridbox = {
-			datamodel = "[Country.GetPotentialDiploPlays]"
-			item = {
-				right_click_menu_item = {
-					blockoverride "properties" {
-						tooltip = "[DiplomaticPlayType.GetStartTooltipCountry(GetPlayer,Country.Self)]"
-						onclick = "[DiplomaticPlayType.ShowConfirmationCountry(Country.Self)]"
-						using = confirm_button_sound
-					}
-
-					blockoverride "margin" {
-						margin_left = 55
-					}
-					
-					blockoverride "texture" {
-						texture = "[DiplomaticPlayType.GetTexture]"
-					}
-
-					blockoverride "text" {
-						text = "[DiplomaticPlayType.GetName]"
-					}
-				}
-			}
-		}
-		textbox = {
-			text = "STATE_RIGHT_CLICK_MENU_STATE_TITLE"
-			autoresize = yes
-			align = left|nobaseline
-			margin_top = 15
-			margin_bottom = 2
-			margin_left = 10
 		}
 
 		right_click_menu_item = {
@@ -2973,7 +3437,9 @@ right_click_menu = {
 				tooltip = "TOOLTIP_INCORPORATE_STATE"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/state_status_icons/incorporated_state.dds"
+			}
 
 			blockoverride "text" {
 				text = "STATE_RIGHT_CLICK_MENU_INCORPORATE"
@@ -2987,60 +3453,12 @@ right_click_menu = {
 				tooltip = "TOOLTIP_CANCEL_INCORPORATION"
 			}
 			
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/state_status_icons/unincorporated_state.dds"
+			}
 
 			blockoverride = "text" {
 				text = "STATE_RIGHT_CLICK_MENU_CANCEL_INCORPORATION"
-			}
-		}
-		
-		dynamicgridbox = {
-			datamodel = "[State.AccessDecrees]"
-			item = {
-				right_click_menu_item = {
-					blockoverride "properties" {
-						onclick = "[Execute(Decree.GetRemoveCommand)]"
-						enabled = "[IsValid(Decree.GetRemoveCommand)]"
-						tooltip = "[Decree.BuildTooltip]"
-						visible = "[ObjectsEqual(State.GetOwner, GetPlayer.Self)]"
-					}
-					
-					blockoverride "text" {
-						text = "DECREE_REMOVE"
-					}
-
-					blockoverride "texture" {
-						texture = "[Decree.GetTexture]"
-					}
-
-					blockoverride "margin" {
-						margin_left = 55
-					}
-				}
-			}
-		}
-		dynamicgridbox = {
-			datamodel = "[State.GetPotentialDecrees]"
-			item = {
-				right_click_menu_item = {
-					blockoverride "properties" {
-						onclick = "[Execute(DecreeType.GetSetCommand(State.Self))]"
-						enabled = "[IsValid(DecreeType.GetSetCommand(State.Self))]"
-						tooltip = "[DecreeType.BuildTooltip( State.Self )]"
-					}
-					
-					blockoverride "margin" {
-						margin_left = 55
-					}
-
-					blockoverride "text" {
-						text = "[DecreeType.GetName]"
-					}
-
-					blockoverride "texture" {
-						texture = "[DecreeType.GetTexture]"
-					}			
-				}
 			}
 		}
 
@@ -3113,49 +3531,169 @@ right_click_menu = {
 				onclick = "[Execute( State.GetStateRegion.Colonize )]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/lens_toolbar_icons/establish_colony.dds"
+			}
 			
 			blockoverride "text" {
 				text = "STATE_RIGHT_CLICK_MENU_COLONIZE"
 			}	
 		}
 
-		dynamicgridbox = {
-			datamodel = "[State.GetPotentialDiploPlays]"
-			item = {
-				right_click_menu_item = {
-					blockoverride "properties" {
-						tooltip = "[DiplomaticPlayType.GetStartTooltipState(GetPlayer,State.Self)]"
-						onclick = "[DiplomaticPlayType.ShowConfirmationState(State.Self)]"
-						using = confirm_button_sound
-					}
+		### DECREES
+		right_click_menu_dropdown = {
+			visible = "[And(Or(Not(IsDataModelEmpty(State.AccessDecrees)), Not(IsDataModelEmpty(State.GetPotentialDecrees))), State.GetCountry.IsLocalPlayer)]"
 
-					blockoverride "margin" {
-						margin_left = 55
-					}
-					
-					blockoverride "texture" {
-						texture = "[DiplomaticPlayType.GetTexture]"
-					}
-					
-					blockoverride "text" {
-						text = "[DiplomaticPlayType.GetName]"
+			blockoverride "section_header_tooltip" {
+				tooltip = "DECREES_IN_STATE"
+			}
+
+			blockoverride "section_header_size" {
+				size = { 460 44 }
+			}
+
+			blockoverride "left_text" {
+				text = "concept_decrees"
+			}
+
+			blockoverride "section_header_right_text" {
+				section_header_right_text = {
+					raw_text = "#v [Add_int32(GetDataModelSize(State.AccessDecrees), GetDataModelSize(State.GetPotentialDecrees))]#!"
+				}
+			}
+
+			blockoverride "onclick" {
+				onclick = "[GetVariableSystem.Toggle('show_state_decrees_in_right_click_menus')]"
+			}
+
+			blockoverride "onclick_showmore" {
+				visible = "[Not(GetVariableSystem.Exists('show_state_decrees_in_right_click_menus'))]"
+			}
+
+			blockoverride "onclick_showless" {
+				visible = "[GetVariableSystem.Exists('show_state_decrees_in_right_click_menus')]"
+			}
+
+			blockoverride "items_visibility" {
+				visible = "[GetVariableSystem.Exists('show_state_decrees_in_right_click_menus')]"
+			}
+
+			blockoverride "dropdown_datamodel" {
+				datamodel = "[State.AccessDecrees]"
+			}
+
+			blockoverride "properties" {
+				onclick = "[Execute(Decree.GetRemoveCommand)]"
+				enabled = "[IsValid(Decree.GetRemoveCommand)]"
+				tooltip = "[Decree.GetTooltip]"
+				visible = "[ObjectsEqual(Decree.GetCountry.Self, GetPlayer.Self)]"
+				onclick = "[GetVariableSystem.Toggle('show_state_decrees_in_right_click_menus')]" # This is here in order to not close the dropdown when clicked.
+			}
+
+			blockoverride "texture" {
+				texture = "[Decree.GetTexture]"
+			}
+
+			blockoverride "text" {
+				text = "DECREE_REMOVE"
+			}
+			
+			blockoverride "item_margin" {
+				margin_left = 55
+			}
+
+			blockoverride "additional_dropdown_items_after_gridbox" {
+				dynamicgridbox = {
+					visible = "[GetVariableSystem.Exists('show_state_decrees_in_right_click_menus')]"
+					datamodel = "[State.GetPotentialDecrees]"
+
+					item = {
+						right_click_menu_item = {
+							blockoverride "properties" {
+								onclick = "[Execute(DecreeType.GetSetCommand(State.Self))]"
+								enabled = "[IsValid(DecreeType.GetSetCommand(State.Self))]"
+								tooltip = "[DecreeType.GetTooltipForState( State.Self )]"
+								onclick = "[GetVariableSystem.Toggle('show_state_decrees_in_right_click_menus')]" # This is here in order to not close the dropdown when clicked.
+							}
+							
+							blockoverride "margin" {
+								margin_left = 55
+							}
+
+							blockoverride "text" {
+								text = "[DecreeType.GetName]"
+							}
+
+							blockoverride "texture" {
+								texture = "[DecreeType.GetTexture]"
+							}			
+						}
 					}
 				}
 			}
 		}
-		right_click_menu_item = {
-			blockoverride "properties" {
-				onclick = "[State.ZoomToCapital]"
-				using = zoom_button_sound
-				enabled = "[Not( State.IsZoomingToCapital )]"
+
+		### ALL GENERAL DIPLOMATIC DEMANDS TARGETING THIS STATE
+		right_click_menu_dropdown = {
+			visible = "[Not(IsDataModelEmpty(State.GetPotentialDiploPlays))]"
+
+			blockoverride "section_header_tooltip" {
+				tooltip = "COUNTRY_RIGHT_CLICK_MENU_STATE_DIPLOMATIC_DEMANDS_TOOLTIP"
 			}
 
-			blockoverride "icon" {}
-			
+			blockoverride "section_header_size" {
+				size = { 460 44 }
+			}
+
+			blockoverride "left_text" {
+				text = "DIPLOMATIC_DEMANDS_IN_STATE_TEXT"
+			}
+
+			blockoverride "section_header_right_text" {
+				section_header_right_text = {
+					raw_text = "#v [GetDataModelSize(State.GetPotentialDiploPlays)]#!"
+				}
+			}
+
+			blockoverride "onclick" {
+				onclick = "[GetVariableSystem.Toggle('show_state_diplomatic_demands_right_click_menu')]"
+			}
+
+			blockoverride "onclick_showmore" {
+				visible = "[Not(GetVariableSystem.Exists('show_state_diplomatic_demands_right_click_menu'))]"
+			}
+
+			blockoverride "onclick_showless" {
+				visible = "[GetVariableSystem.Exists('show_state_diplomatic_demands_right_click_menu')]"
+			}
+
+			blockoverride "items_visibility" {
+				visible = "[GetVariableSystem.Exists('show_state_diplomatic_demands_right_click_menu')]"
+			}
+
+			blockoverride "dropdown_datamodel" {
+				datamodel = "[State.GetPotentialDiploPlays]"
+			}
+
+			blockoverride "properties" {
+				tooltip = "[DiplomaticPlayType.GetStartTooltipState(GetPlayer,State.Self)]"
+				onclick = "[DiplomaticPlayType.ShowConfirmationState(State.Self)]"
+				using = confirm_button_sound
+				onclick = "[GetVariableSystem.Toggle('show_state_diplomatic_demands_right_click_menu')]" # This is here in order to not close the dropdown when clicked.
+				onclick = "[RightClickMenuManager.Close]"
+			}
+
+			blockoverride "texture" {
+				texture = "[DiplomaticPlayType.GetTexture]"
+			}
+
 			blockoverride "text" {
-				text = "ZOOM_TO_STATE_NO_REASON"
-			}	
+				text = "[DiplomaticPlayType.GetName]"
+			}
+			
+			blockoverride "item_margin" {
+				margin_left = 55
+			}
 		}
 
 		right_click_menu_item = {
@@ -3167,7 +3705,9 @@ right_click_menu = {
 				onclick = "[ToggleObserveCountry(Country.Self)]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/generic_icons/observer_mode_icon.dds"
+			}
 			
 			blockoverride "text" {
 				text = "COUNTRY_RIGHT_CLICK_MENU_OBSERVE"
@@ -3202,6 +3742,452 @@ right_click_menu = {
 	}
 }
 
+types country_right_click_menu {
+	type country_right_click_menu_items = flowcontainer {
+		direction = vertical
+
+		right_click_menu_item = {
+			visible = "[Not(Country.IsLocalPlayer)]"
+			blockoverride "properties" {
+				onclick = "[InformationPanelBar.OpenCountryPanelTab(Country.Self, 'diplomacy')]"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/main_hud/dip_btn.dds"
+			}
+			
+			blockoverride = "text" {
+				text = "STATE_RIGHT_CLICK_MENU_DIPLOMACY"
+			}	
+		}
+
+		### KICK BLOC MEMBER
+		right_click_menu_item = {
+			visible = "[Country.GetPowerBloc.IsLeader(GetPlayer.Self)]"
+			tooltip = "POWER_BLOC_KICK_MEMBER_TOOLTIP"
+
+			blockoverride "properties" {
+				onclick = "[PopupManager.AskConfirmation(Country.GetPowerBloc.Kick(Country.Self))]"
+				enabled = "[IsValid(Country.GetPowerBloc.Kick(Country.Self))]"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/buttons/button_icons/kick_out.dds"
+			}
+			
+			blockoverride = "text" {
+				text = "POWER_BLOC_KICK_MEMBER"
+			}	
+		}
+
+		### SUBJECT ---> OVERLORD INTERACTIONS
+		right_click_menu_dropdown = {
+			visible = "[GetPlayer.IsSubjectOf(Country.Self)]"
+
+			blockoverride "section_header_tooltip" {
+				tooltip = "AVAILABLE_SUBJECT_ACTIONS_TOOLTIP"
+			}
+
+			blockoverride "section_header_size" {
+				size = { 460 44 }
+			}
+
+			blockoverride "left_text" {
+				text = "SUBJECT_ACTIONS"
+			}
+
+			blockoverride "section_header_right_text" {
+				section_header_right_text = {
+					raw_text = "#v [GetDataModelSize(Country.GetAllSubjectDiploActions)]#!"
+				}
+			}
+
+			blockoverride "onclick" {
+				onclick = "[GetVariableSystem.Toggle('show_subject_actions_right_click_menu')]"
+			}
+
+			blockoverride "onclick_showmore" {
+				visible = "[Not(GetVariableSystem.Exists('show_subject_actions_right_click_menu'))]"
+			}
+
+			blockoverride "onclick_showless" {
+				visible = "[GetVariableSystem.Exists('show_subject_actions_right_click_menu')]"
+			}
+
+			blockoverride "items_visibility" {
+				visible = "[GetVariableSystem.Exists('show_subject_actions_right_click_menu')]"
+			}
+
+			blockoverride "dropdown_datamodel" {
+				datamodel = "[Country.GetAllSubjectDiploActions]"
+			}
+
+			blockoverride "properties" {
+				using = diplomatic_action_button_properties
+				onclick = "[GetVariableSystem.Toggle('show_subject_actions_right_click_menu')]" # This is here in order to not close the dropdown when clicked.
+			}
+
+			blockoverride "rclick_item_after_label" {
+				using = diplomatic_action_button_after_label
+			}
+
+			blockoverride "sound" {
+				using = generic_diplomatic_action_sound
+			}
+
+			blockoverride "texture" {
+				texture = "[DiplomaticAction.GetType.GetTexture]"
+			}
+
+			blockoverride "text" {
+				text = "DIPLOMATIC_ACTION_ACTIVE_AND_NON_ACTIVE_NAME"
+			}
+			
+			blockoverride "item_margin" {
+				margin_left = 55
+			}
+		}
+		
+		### POWER BLOC LEADER INTERACTIONS
+		right_click_menu_dropdown = {
+			visible = "[And(GetPlayer.GetPowerBloc.IsLeader(GetPlayer.Self), Not(IsDataModelEmpty(Country.GetAllPowerBlocLeaderDiploActions)))]"
+
+			blockoverride "section_header_tooltip" {
+				tooltip = "AVAILABLE_BLOC_LEADER_ACTIONS_TOOLTIP"
+			}
+
+			blockoverride "section_header_size" {
+				size = { 460 44 }
+			}
+
+			blockoverride "left_text" {
+				text = "BLOC_LEADER_ACTIONS"
+			}
+
+			blockoverride "section_header_right_text" {
+				section_header_right_text = {
+					raw_text = "#v [GetDataModelSize(Country.GetAllPowerBlocLeaderDiploActions)]#!"
+				}
+			}
+
+			blockoverride "onclick" {
+				onclick = "[GetVariableSystem.Toggle('show_bloc_leader_actions_right_click_dropdown')]"
+			}
+
+			blockoverride "onclick_showmore" {
+				visible = "[Not(GetVariableSystem.Exists('show_bloc_leader_actions_right_click_dropdown'))]"
+			}
+
+			blockoverride "onclick_showless" {
+				visible = "[GetVariableSystem.Exists('show_bloc_leader_actions_right_click_dropdown')]"
+			}
+
+			blockoverride "items_visibility" {
+				visible = "[GetVariableSystem.Exists('show_bloc_leader_actions_right_click_dropdown')]"
+			}
+
+			blockoverride "dropdown_datamodel" {
+				datamodel = "[Country.GetAllPowerBlocLeaderDiploActions]"
+			}
+
+			blockoverride "properties" {
+				using = diplomatic_action_button_properties
+				onclick = "[GetVariableSystem.Toggle('show_bloc_leader_actions_right_click_dropdown')]" # This is here in order to not close the dropdown when clicked.
+			}
+
+			blockoverride "rclick_item_after_label" {
+				using = diplomatic_action_button_after_label
+			}
+
+			blockoverride "sound" {
+				using = generic_diplomatic_action_sound
+			}
+
+			blockoverride "texture" {
+				texture = "[DiplomaticAction.GetType.GetTexture]"
+			}
+
+			blockoverride "text" {
+				text = "DIPLOMATIC_ACTION_ACTIVE_AND_NON_ACTIVE_NAME"
+			}
+			
+			blockoverride "item_margin" {
+				margin_left = 55
+			}
+		}		
+
+		### POWER BLOC MEMBER INTERACTIONS
+		right_click_menu_dropdown = {
+			visible = "[And(GetPlayer.GetPowerBloc.IsMember(Country.Self), Not(IsDataModelEmpty(Country.GetAllPowerBlocMemberDiploActions)))]"
+
+			blockoverride "section_header_tooltip" {
+				tooltip = "AVAILABLE_BLOC_ACTIONS_TOOLTIP"
+			}
+
+			blockoverride "section_header_size" {
+				size = { 460 44 }
+			}
+
+			blockoverride "left_text" {
+				text = "BLOC_MEMBER_ACTIONS"
+			}
+
+			blockoverride "section_header_right_text" {
+				section_header_right_text = {
+					raw_text = "#v [GetDataModelSize(Country.GetAllPowerBlocMemberDiploActions)]#!"
+				}
+			}
+
+			blockoverride "onclick" {
+				onclick = "[GetVariableSystem.Toggle('show_bloc_member_actions_right_click_dropdown')]"
+			}
+
+			blockoverride "onclick_showmore" {
+				visible = "[Not(GetVariableSystem.Exists('show_bloc_member_actions_right_click_dropdown'))]"
+			}
+
+			blockoverride "onclick_showless" {
+				visible = "[GetVariableSystem.Exists('show_bloc_member_actions_right_click_dropdown')]"
+			}
+
+			blockoverride "items_visibility" {
+				visible = "[GetVariableSystem.Exists('show_bloc_member_actions_right_click_dropdown')]"
+			}
+
+			blockoverride "dropdown_datamodel" {
+				datamodel = "[Country.GetAllPowerBlocMemberDiploActions]"
+			}	
+
+			blockoverride "properties" {
+				using = diplomatic_action_button_properties
+				onclick = "[GetVariableSystem.Toggle('show_bloc_member_actions_right_click_dropdown')]" # This is here in order to not close the dropdown when clicked.
+			}
+
+			blockoverride "rclick_item_after_label" {
+				using = diplomatic_action_button_after_label
+			}
+
+			blockoverride "sound" {
+				using = generic_diplomatic_action_sound
+			}
+
+			blockoverride "texture" {
+				texture = "[DiplomaticAction.GetType.GetTexture]"
+			}
+
+			blockoverride "text" {
+				text = "DIPLOMATIC_ACTION_ACTIVE_AND_NON_ACTIVE_NAME"
+			}
+			
+			blockoverride "item_margin" {
+				margin_left = 55
+			}
+		}
+
+		### OVERLORD ---> SUBJECT INTERACTIONS
+		right_click_menu_dropdown = {
+			visible = "[Country.IsSubjectOf(GetPlayer.Self)]"
+
+			blockoverride "section_header_tooltip" {
+				tooltip = "AVAILABLE_OVERLORD_ACTIONS_TOOLTIP"
+			}
+
+			blockoverride "section_header_size" {
+				size = { 460 44 }
+			}
+
+			blockoverride "left_text" {
+				text = "OVERLORD_ACTIONS"
+			}
+
+			blockoverride "section_header_right_text" {
+				section_header_right_text = {
+					raw_text = "#v [GetDataModelSize(Country.GetAllOverlordDiploActions)]#!"
+				}
+			}
+
+			blockoverride "onclick" {
+				onclick = "[GetVariableSystem.Toggle('show_overlord_actions_right_click_dropdown')]"
+			}
+
+			blockoverride "onclick_showmore" {
+				visible = "[Not(GetVariableSystem.Exists('show_overlord_actions_right_click_dropdown'))]"
+			}
+
+			blockoverride "onclick_showless" {
+				visible = "[GetVariableSystem.Exists('show_overlord_actions_right_click_dropdown')]"
+			}
+
+			blockoverride "items_visibility" {
+				visible = "[GetVariableSystem.Exists('show_overlord_actions_right_click_dropdown')]"
+			}
+
+			blockoverride "dropdown_datamodel" {
+				datamodel = "[Country.GetAllOverlordDiploActions]"
+			}
+
+			blockoverride "properties" {
+				using = diplomatic_action_button_properties
+				onclick = "[GetVariableSystem.Toggle('show_overlord_actions_right_click_dropdown')]" # This is here in order to not close the dropdown when clicked.
+			}
+
+			blockoverride "rclick_item_after_label" {
+				using = diplomatic_action_button_after_label
+			}
+
+			blockoverride "sound" {
+				using = generic_diplomatic_action_sound
+			}
+
+			blockoverride "texture" {
+				texture = "[DiplomaticAction.GetType.GetTexture]"
+			}
+
+			blockoverride "text" {
+				text = "DIPLOMATIC_ACTION_ACTIVE_AND_NON_ACTIVE_NAME"
+			}
+			
+			blockoverride "item_margin" {
+				margin_left = 55
+			}
+		}
+
+		### GENERAL DIPLOMATIC ACTIONS
+		right_click_menu_dropdown = {
+			visible = "[Not(IsDataModelEmpty(Country.GetAllGeneralDiploActions))]"
+
+			blockoverride "section_header_tooltip" {
+				tooltip = "COUNTRY_RIGHT_CLICK_MENU_DIPLOMATIC_ACTIONS_TOOLTIP"
+			}
+
+			blockoverride "section_header_size" {
+				size = { 460 44 }
+			}
+
+			blockoverride "left_text" {
+				text = "DIPLOMATIC_ACTIONS_TEXT"
+			}
+
+			blockoverride "section_header_right_text" {
+				section_header_right_text = {
+					raw_text = "#v [GetDataModelSize(Country.GetAllGeneralDiploActions)]#!"
+				}
+			}
+
+			blockoverride "onclick" {
+				onclick = "[GetVariableSystem.Toggle('show_potential_diplomatic_actions_right_click_menu')]"
+			}
+
+			blockoverride "onclick_showmore" {
+				visible = "[Not(GetVariableSystem.Exists('show_potential_diplomatic_actions_right_click_menu'))]"
+			}
+
+			blockoverride "onclick_showless" {
+				visible = "[GetVariableSystem.Exists('show_potential_diplomatic_actions_right_click_menu')]"
+			}
+
+			blockoverride "items_visibility" {
+				visible = "[GetVariableSystem.Exists('show_potential_diplomatic_actions_right_click_menu')]"
+			}
+
+			blockoverride "dropdown_datamodel" {
+				datamodel = "[Country.GetAllGeneralDiploActions]"
+			}
+
+			blockoverride "properties" {
+				using = diplomatic_action_button_properties
+				onclick = "[GetVariableSystem.Toggle('show_potential_diplomatic_actions_right_click_menu')]" # This is here in order to not close the dropdown when clicked.
+			}
+
+			blockoverride "rclick_item_after_label" {
+				using = diplomatic_action_button_after_label
+			}
+
+			blockoverride "sound" {
+				using = generic_diplomatic_action_sound
+			}
+
+			blockoverride "texture" {
+				texture = "[DiplomaticAction.GetType.GetTexture]"
+			}
+
+			blockoverride "text" {
+				text = "DIPLOMATIC_ACTION_ACTIVE_AND_NON_ACTIVE_NAME"
+			}
+			
+			blockoverride "item_margin" {
+				margin_left = 55
+			}
+		}
+
+		### ALL GENERAL DIPLOMATIC DEMANDS
+		right_click_menu_dropdown = {
+			visible = "[Not(IsDataModelEmpty(Country.GetPotentialDiploPlays))]"
+
+			blockoverride "section_header_tooltip" {
+				tooltip = "COUNTRY_RIGHT_CLICK_MENU_DIPLOMATIC_DEMANDS_TOOLTIP"
+			}
+
+			blockoverride "section_header_right_text" {
+				section_header_right_text = {
+					raw_text = "#v [GetDataModelSize(Country.GetPotentialDiploPlays)]#!"
+				}
+			}
+
+			blockoverride "section_header_size" {
+				size = { 460 44 }
+			}
+
+			blockoverride "left_text" {
+				text = "DIPLOMATIC_DEMANDS_TEXT"
+			}
+
+			blockoverride "onclick" {
+				onclick = "[GetVariableSystem.Toggle('show_potential_diplomatic_demands_right_click_menu')]"
+			}
+
+			blockoverride "onclick_showmore" {
+				visible = "[Not(GetVariableSystem.Exists('show_potential_diplomatic_demands_right_click_menu'))]"
+			}
+
+			blockoverride "onclick_showless" {
+				visible = "[GetVariableSystem.Exists('show_potential_diplomatic_demands_right_click_menu')]"
+			}
+
+			blockoverride "items_visibility" {
+				visible = "[GetVariableSystem.Exists('show_potential_diplomatic_demands_right_click_menu')]"
+			}
+
+			blockoverride "dropdown_datamodel" {
+				datamodel = "[Country.GetPotentialDiploPlays]"
+			}
+
+			blockoverride "properties" {
+				tooltip = "[DiplomaticPlayType.GetStartTooltipCountry(GetPlayer, Country.Self)]"
+				onclick = "[DiplomaticPlayType.ShowConfirmationCountry(Country.Self)]"
+				onclick = "[GetVariableSystem.Toggle('show_potential_diplomatic_demands_right_click_menu')]" # This is here in order to not close the dropdown when clicked.
+				onclick = "[RightClickMenuManager.Close]"
+			}
+
+			blockoverride "sound" {
+				using = diplomatic_play_confirmation_sound
+			}
+
+			blockoverride "texture" {
+				texture = "[DiplomaticPlayType.GetTexture]"
+			}
+
+			blockoverride "text" {
+				text = "[DiplomaticPlayType.GetName]"
+			}
+			
+			blockoverride "item_margin" {
+				margin_left = 55
+			}
+		}
+	}
+}
+
 right_click_menu = {
 	name = "country_right_click_menu"
 
@@ -3212,115 +4198,75 @@ right_click_menu = {
 	blockoverride "header_text" {} #no header for state menu, handle in items instead
 
 	blockoverride "items" {
-		flowcontainer = {
-			direction = horizontal
-			spacing = 5
-			margin_left = 10
+		container = {
+			minimumsize = { 460 -1 }
 
-			tiny_flag = {
-				parentanchor = left|vcenter
+			flowcontainer = {
+				parentanchor = vcenter
+				spacing = 5
+				margin_left = 10
+
+				tiny_flag = {
+					parentanchor = vcenter
+				}
+
+				textbox = {
+					parentanchor = vcenter
+					autoresize = yes
+					align = left|nobaseline
+					text = "STATE_RIGHT_CLICK_MENU_COUNTRY_TITLE"
+				}
+
+				button_icon_goto = {
+					parentanchor = vcenter
+					size = { 28 28 }
+					onclick = "[InformationPanelBar.OpenCountryPanelTab(Country.Self, 'default')]"
+					tooltip = "GO_TO_BUTTON_COUNTRY"
+					input_action = "go_to_details"
+				}
 			}
 
-			textbox = {
-				autoresize = yes
-				align = left|nobaseline
-				text = "STATE_RIGHT_CLICK_MENU_COUNTRY_TITLE"
+			flowcontainer = {
+				parentanchor = right|vcenter
+				margin_right = 10
+				spacing = 5
+
+				button_icon_zoom = {
+					parentanchor = vcenter
+					size = { 28 28 }
+					tooltip = "ZOOM_TO_CAPITAL_STATE"
+					onclick = "[Country.AccessCapital.ZoomToCapital]"
+					enabled = "[Not( Country.AccessCapital.IsZoomingToCapital )]"
+				}
+
+				button_icon_toggle_pin = {
+					parentanchor = vcenter
+					size = { 28 28 }
+
+					blockoverride "tooltip" {
+						tooltip = "COUNTRY_RIGHT_CLICK_MENU_PIN_IN_OUTLINER"
+					}
+
+					blockoverride "view_1" {
+						visible = "[Not(Country.IsPinnedInOutliner)]"
+					}
+
+					blockoverride "view_2" {
+						visible = "[Country.IsPinnedInOutliner]"
+					}
+
+					blockoverride "on_click" {
+						onclick = "[Country.TogglePinInOutliner]"
+					}
+				}
 			}
 		}
 
 		widget = { size = { 4 4 }} #pixelpushing tweak for flag, hack due to parentanchor and margins interacting weird
 
-		right_click_menu_item = {
-			blockoverride "properties" {
-				onclick = "[InformationPanelBar.OpenCountryPanel(Country.Self)]"
-			}
+		country_right_click_menu_items = {}
 
-			blockoverride "icon" {}
-			
-			blockoverride "text" {
-				text = "STATE_RIGHT_CLICK_MENU_COUNTRY_INFORMATION"
-			}
-		}
-
-		right_click_menu_item = {
-			visible = "[Not(Country.IsLocalPlayer)]"
-			blockoverride "properties" {
-				onclick = "[InformationPanelBar.OpenCountryPanelTab(Country.Self, 'diplomacy')]"
-			}
-
-			blockoverride "icon" {}
-			
-			blockoverride "text" {
-				text = "STATE_RIGHT_CLICK_MENU_DIPLOMACY"
-			}
-		}
-
-		right_click_menu_item = {
-			blockoverride "properties" {
-				onclick = "[Country.AccessCapital.ZoomToCapital]"
-				using = zoom_button_sound
-			}
-
-			blockoverride "icon" {}
-			
-			blockoverride "text" {
-				text = "ZOOM_TO_CAPITAL_STATE"
-			}		
-		}
-
-		dynamicgridbox = {
-			datamodel = "[Country.GetPotentialDiploActions]"
-			item = {
-				right_click_menu_item = {
-					blockoverride "properties" {
-						tooltip = "DIPLOMATIC_ACTION_TOOLTIP"
-						visible = "[Or( IsValid(DiplomaticAction.ExecuteAction), DiplomaticAction.IsActivePact)]"
-						onclick = "[DiplomaticAction.ExecuteWithConfirmation]"
-						enabled = "[IsValid(DiplomaticAction.ExecuteAction)]"
-						clicksound = "[DiplomaticAction.GetSoundWithConfirmation]"
-					}
-					icon = {
-						visible = "[DiplomaticAction.IsActivePact]"
-						using = highlighted_square_selection
-					}
-					
-					blockoverride "margin" {
-						margin_left = 55
-					}
-					
-					diplomatic_action_acceptance_icon = {
-						visible = "[Not(DiplomaticAction.GetType.CanSelectAnyState)]"						
-						position = { -10 0 }
-					}
-
-					blockoverride "texture" {
-						texture = "[DiplomaticAction.GetType.GetTexture]"						
-					}
-					
-					blockoverride "text" {
-						text = "[DiplomaticAction.GetFullName]"
-					}
-				}
-			}
-		}
-		dynamicgridbox = {
-			datamodel = "[Country.GetPotentialDiploPlays]"
-			item = {
-				right_click_menu_item = {
-					blockoverride "properties" {
-						tooltip = "[DiplomaticPlayType.GetStartTooltipCountry(GetPlayer,Country.Self)]"
-						onclick = "[DiplomaticPlayType.ShowConfirmationCountry(Country.Self)]"
-						using = confirm_button_sound
-					}
-
-					blockoverride "icon" {}
-					
-					blockoverride "text" {
-						text = "[DiplomaticPlayType.GetName]"
-					}
-				}
-			}
-		}
+		widget = { size = { 10 10 }}
 
 		right_click_menu_item = {
 			visible = "[GetMetaPlayer.IsObserver]"
@@ -3330,11 +4276,848 @@ right_click_menu = {
 				onclick = "[ToggleObserveCountry(Country.Self)]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/generic_icons/observer_mode_icon.dds"
+			}
 			
 			blockoverride "text" {
 				text = "COUNTRY_RIGHT_CLICK_MENU_OBSERVE"
 			}
+		}
+	}
+}
+
+right_click_menu = {
+	name = "political_movement_right_click_menu"
+
+	blockoverride "title_text" {
+		text = "[PoliticalMovement.GetName]"
+	}
+
+	blockoverride "items" {
+		right_click_menu_item = {
+			blockoverride "properties" {
+				onclick = "[InformationPanelBar.OpenPoliticalMovementPanel(PoliticalMovement.AccessSelf)]"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/generic_icons/information.dds"
+			}
+			
+			blockoverride "text" {
+				text = "INFORMATION"
+			}
+		}
+
+		right_click_menu_item = {
+			visible = "[ObjectsEqual(PoliticalMovement.GetCountry.Self, GetPlayer.Self)]"
+
+			blockoverride "properties" {
+				onclick = "[PoliticalMovement.TogglePinInOutliner]"
+			}
+
+			blockoverride "icon" {
+				icon = {
+					visible = "[PoliticalMovement.IsPinnedInOutliner]"
+					texture = "gfx/interface/outliner/pinned_icon.dds"
+					size = { 28 28 }
+				}
+
+				icon = {
+					visible = "[Not(PoliticalMovement.IsPinnedInOutliner)]"
+					texture = "gfx/interface/outliner/unpinned_icon.dds"
+					size = { 28 28 }
+				}
+			}
+			
+			blockoverride = "text" {
+				text = "POLITICAL_MOVEMENT_RIGHT_CLICK_MENU_PIN_IN_OUTLINER"
+			}
+		}
+	}
+}
+
+right_click_menu = {
+	name = "power_bloc_right_click_menu"
+
+	blockoverride "title_text" {
+		text = "[PowerBloc.GetName]"
+	}
+
+	blockoverride "items" {
+		right_click_menu_item = {
+			blockoverride "properties" {
+				onclick = "[InformationPanelBar.OpenPowerBlocPanel(PowerBloc.Self)]"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/generic_icons/information.dds"
+			}
+
+			blockoverride "text" {
+				text = "INFORMATION"
+			}
+		}
+	}
+}
+
+right_click_menu = {
+	name = "diplomatic_play_right_click_menu"
+
+	blockoverride "title_text" {
+		text = "[DiplomaticPlay.GetName]"
+	}
+
+	blockoverride "items" {
+		right_click_menu_item = {
+			blockoverride "properties" {
+				onclick = "[InformationPanelBar.OpenDiplomaticPlayPanelTab( DiplomaticPlay.AccessSelf, 'default' )]"
+			}
+
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/generic_icons/information.dds"
+			}
+			
+			blockoverride "text" {
+				text = "INFORMATION"
+			}
+		}
+
+		right_click_menu_item = {
+			blockoverride "properties" {
+				onclick = "[DiplomaticPlay.TogglePinInOutliner]"
+			}
+
+			blockoverride "icon" {
+				icon = {
+					visible = "[DiplomaticPlay.IsPinnedInOutliner]"
+					texture = "gfx/interface/outliner/pinned_icon.dds"
+					size = { 28 28 }
+				}
+
+				icon = {
+					visible = "[Not(DiplomaticPlay.IsPinnedInOutliner)]"
+					texture = "gfx/interface/outliner/unpinned_icon.dds"
+					size = { 28 28 }
+				}
+			}
+			
+			blockoverride = "text" {
+				text = "DIPLOMATIC_PLAY_RIGHT_CLICK_MENU_PIN_IN_OUTLINER"
+			}
+		}
+
+		flowcontainer = {
+			margin_top = 10
+			direction = vertical
+
+			# INITIATOR ACTIONS
+			right_click_menu_item = {
+				blockoverride "properties" {
+					visible = "[DiplomaticPlay.IsUndecidedParticipant(GetPlayer)]"
+					enabled = "[DiplomaticPlay.CanSupportInitiator(GetPlayer)]"
+					tooltip = "SUPPORT_INITIATOR_DIPLOMATIC_PLAY_TOOLTIP"
+					onclick = "[Execute(DiplomaticPlay.SupportInitiator(GetPlayer))]"
+				}
+
+				blockoverride "texture" {
+					texture = "gfx/interface/icons/diplo_play_icons/stance_supports.dds"
+					mirror = horizontal
+				}
+				
+				blockoverride = "text" {
+					text = "SUPPORT_INITIATOR"
+				}
+			}
+			
+			right_click_menu_item = {
+				blockoverride "properties" {
+					visible = "[DiplomaticPlay.IsBacker(GetPlayer)]"
+					enabled = "[DiplomaticPlay.CanSupportInitiator(GetPlayer)]"
+					tooltip = "SUPPORT_INITIATOR_DIPLOMATIC_PLAY_TOOLTIP"
+					onclick = "[PopupManager.AskConfirmation(DiplomaticPlay.SupportInitiator(GetPlayer))]"
+				}
+
+				blockoverride "texture" {
+					texture = "gfx/interface/icons/diplo_play_icons/stance_supports.dds"
+					mirror = horizontal
+				}
+				
+				blockoverride = "text" {
+					text = "SUPPORT_INITIATOR"
+				}
+			}
+			
+			right_click_menu_item = {
+				blockoverride "properties" {
+					visible = "[Or(DiplomaticPlay.IsUndecidedParticipant(GetPlayer),DiplomaticPlay.IsBacker(GetPlayer))]"		
+					enabled = "[DiplomaticPlay.CanSwayCountry(GetPlayer.Self, DiplomaticPlay.GetInitiator)]"
+					onclick = "[InformationPanelBar.OpenSwayCountryPanel( DiplomaticPlay.Self, DiplomaticPlay.GetInitiator )]"
+					tooltip = "[DiplomaticPlay.GetCanSwayCountryDesc(GetPlayer.Self, DiplomaticPlay.GetInitiator)]"
+				}
+
+				blockoverride "texture" {
+					texture = "gfx/interface/icons/generic_icons/information.dds"
+				}
+				
+				blockoverride = "text" {
+					text = "REVERSE_SWAY_INITIATOR"
+				}
+			}
+			
+
+			# TARGET ACTIONS
+			right_click_menu_item = {
+				blockoverride "properties" {
+					visible = "[DiplomaticPlay.IsUndecidedParticipant(GetPlayer)]"
+					enabled = "[DiplomaticPlay.CanSupportTarget(GetPlayer)]"
+					tooltip = "SUPPORT_TARGET_DIPLOMATIC_PLAY_TOOLTIP"
+					onclick = "[Execute(DiplomaticPlay.SupportTarget(GetPlayer))]"
+				}
+
+				blockoverride "texture" {
+					texture = "gfx/interface/icons/diplo_play_icons/stance_supports.dds"
+				}
+				
+				blockoverride = "text" {
+					text = "SUPPORT_TARGET"
+				}
+			}
+			
+			right_click_menu_item = {
+				blockoverride "properties" {
+					visible = "[DiplomaticPlay.IsBacker(GetPlayer)]"
+					enabled = "[DiplomaticPlay.CanSupportTarget(GetPlayer)]"
+					tooltip = "SUPPORT_TARGET_DIPLOMATIC_PLAY_TOOLTIP"
+					onclick = "[PopupManager.AskConfirmation(DiplomaticPlay.SupportTarget(GetPlayer))]"
+				}
+
+				blockoverride "texture" {
+					texture = "gfx/interface/icons/diplo_play_icons/stance_supports.dds"
+				}
+				
+				blockoverride = "text" {
+					text = "SUPPORT_TARGET"
+				}
+			}
+			
+			right_click_menu_item = {
+				blockoverride "properties" {
+					enabled = "[DiplomaticPlay.CanSwayCountry(GetPlayer.Self, DiplomaticPlay.GetTarget)]"
+					onclick = "[InformationPanelBar.OpenSwayCountryPanel( DiplomaticPlay.Self, DiplomaticPlay.GetTarget )]"
+					tooltip = "[DiplomaticPlay.GetCanSwayCountryDesc(GetPlayer.Self, DiplomaticPlay.GetTarget)]"
+					visible = "[Or(DiplomaticPlay.IsUndecidedParticipant(GetPlayer),DiplomaticPlay.IsBacker(GetPlayer))]"
+				}
+
+				blockoverride "texture" {
+					texture = "gfx/interface/icons/generic_icons/information.dds"
+				}
+				
+				blockoverride = "text" {
+					text = "REVERSE_SWAY_TARGET"
+				}
+			}
+		}
+
+		### ACTION BUTTONS
+		flowcontainer = {
+			visible = "[DiplomaticPlay.IsInvolved(GetPlayer)]"
+			direction = vertical
+			
+			right_click_menu_item = {
+				visible = "[And( DiplomaticPlay.IsInitiator(GetPlayer), Not( IsValid( DiplomaticPlay.SwitchSide( GetPlayer ))))]"
+				blockoverride "properties" {
+					onclick = "[PopupManager.AskConfirmation(DiplomaticPlay.Yield(GetPlayer))]"
+					tooltip = "YIELD_DIPLOMATIC_PLAY_TOOLTIP"
+					enabled = "[DiplomaticPlay.CanYield(GetPlayer)]"
+				}
+
+				blockoverride "texture" {
+					texture = "gfx/interface/icons/generic_icons/capitulate.dds"
+				}
+				
+				blockoverride = "text" {
+					text = "DIPLO_PLAY_BACK_DOWN"
+				}
+			}
+
+			right_click_menu_item = {
+				visible = "[And( DiplomaticPlay.IsTarget(GetPlayer), Not( IsValid( DiplomaticPlay.SwitchSide( GetPlayer ))))]"
+				blockoverride "properties" {
+					onclick = "[PopupManager.AskConfirmation(DiplomaticPlay.Yield(GetPlayer))]"
+					tooltip = "YIELD_DIPLOMATIC_PLAY_TOOLTIP"
+					enabled = "[DiplomaticPlay.CanYield(GetPlayer)]"
+				}
+
+				blockoverride "texture" {
+					texture = "gfx/interface/icons/generic_icons/capitulate.dds"
+				}
+				
+				blockoverride = "text" {
+					text = "DIPLO_PLAY_GIVE_IN"
+				}
+			}
+
+			right_click_menu_item = {
+				visible = "[IsValid( DiplomaticPlay.SwitchSide( GetPlayer ))]"
+				blockoverride "properties" {
+					onclick = "[Execute( DiplomaticPlay.SwitchSide( GetPlayer ))]"
+					tooltip = "DIPLOMATIC_PLAY_SWITCH_COUNTRY_TOOLTIP"
+					enabled = "[IsValid( DiplomaticPlay.SwitchSide( GetPlayer ))]"
+				}
+
+				blockoverride "texture" {
+					texture = "gfx/interface/icons/generic_icons/toggle.dds"
+				}
+				
+				blockoverride = "text" {
+					text = "DIPLOMATIC_PLAY_SWITCH_COUNTRY"
+				}
+			}
+
+			right_click_menu_item = {
+				visible = "[And( Not( DiplomaticPlay.IsInitiator(GetPlayer) ), Not( DiplomaticPlay.IsTarget(GetPlayer) ))]"
+				blockoverride "properties" {
+					onclick = "[PopupManager.AskConfirmation(DiplomaticPlay.DeclareNeutrality(GetPlayer))]"
+					tooltip = "DECLARE_NEUTRALITY_DIPLOMATIC_PLAY_TOOLTIP"
+					enabled = "[DiplomaticPlay.CanDeclareNeutrality(GetPlayer)]"
+				}
+
+				blockoverride "texture" {
+					texture = "gfx/interface/icons/diplo_play_icons/stance_on_the_fence.dds"
+				}
+				
+				blockoverride = "text" {
+					text = "DIPLO_PLAY_DECLARE_NEUTRALITY"
+				}
+			}
+		}
+	}
+}
+
+right_click_menu = {
+	name = "overlord_actions_right_click_menu"
+	parentanchor = vcenter|right
+
+	blockoverride "title_text" {
+		text = "OVERLORD_ACTIONS_RIGHT_CLICK_MENU_TITLE"
+	}
+
+	blockoverride "items" {
+		widget = {
+			size = { 5 5 }
+		}
+
+		empty_state = {
+			blockoverride "visible" {
+				visible = "[IsDataModelEmpty(Country.GetAllOverlordDiploActions)]"
+			}
+			blockoverride "text" {
+				text = "NO_AVAILABLE_ACTIONS"
+			}
+		}
+
+		dynamicgridbox = {
+			datamodel = "[Country.GetAvailableOverlordDiploActions]"
+			datamodel_wrap = 6
+			flipdirection = yes
+
+			item = {
+				diplomatic_action_grid_button = {}
+			}
+		}
+
+		widget = {
+			size = { 10 10 }
+		}
+
+		### POTENTIAL OVERLORD ACTIONS
+		right_click_menu_dropdown = {
+			visible = "[Not(IsDataModelEmpty(Country.GetPotentialOverlordDiploActions))]"
+			
+			blockoverride "section_header_tooltip" {
+				tooltip = "POTENTIAL_OVERLORD_ACTIONS_TOOLTIP"
+			}
+
+			blockoverride "section_header_size" {
+				size = { 600 44 }
+			}
+
+			blockoverride "left_text" {
+				text = "POTENTIAL_OVERLORD_ACTIONS"
+			}
+
+			blockoverride "section_header_right_text" {
+				section_header_right_text = {
+					raw_text = "#v [GetDataModelSize(Country.GetPotentialOverlordDiploActions)]#!"
+				}
+			}
+
+			blockoverride "onclick" {
+				onclick = "[GetVariableSystem.Toggle('show_potential_overlord_actions')]"
+			}
+
+			blockoverride "onclick_showmore" {
+				visible = "[Not(GetVariableSystem.Exists('show_potential_overlord_actions'))]"
+			}
+
+			blockoverride "onclick_showless" {
+				visible = "[GetVariableSystem.Exists('show_potential_overlord_actions')]"
+			}
+
+			blockoverride "items_visibility" {
+				visible = "[GetVariableSystem.Exists('show_potential_overlord_actions')]"
+			}
+
+			blockoverride "properties" {
+				enabled = "[IsValid(DiplomaticAction.ExecuteAction)]"
+				using = diplomatic_action_tooltip
+			}
+
+			blockoverride "dropdown_items" {
+
+				widget = {
+					size = { 5 5 }
+				}
+
+				dynamicgridbox = {
+					visible = "[GetVariableSystem.Exists('show_potential_overlord_actions')]"
+					datamodel = "[Country.GetPotentialOverlordDiploActions]"
+					datamodel_wrap = 6
+					flipdirection = yes
+
+					item = {
+						diplomatic_action_grid_button = {}
+					}
+				}
+			}
+		}
+	}
+}
+
+right_click_menu = {
+	name = "subject_actions_right_click_menu"
+	parentanchor = vcenter|right
+
+	blockoverride "title_text" {
+		text = "SUBJECT_ACTIONS_RIGHT_CLICK_MENU_TITLE"
+	}
+
+	blockoverride "items" {
+
+		widget = {
+			size = { 5 5 }
+		}
+
+		empty_state = {
+			blockoverride "visible" {
+				visible = "[IsDataModelEmpty(Country.GetAllSubjectDiploActions)]"
+			}
+			blockoverride "text" {
+				text = "NO_AVAILABLE_ACTIONS"
+			}
+		}
+
+		dynamicgridbox = {
+			visible = "[Not(IsDataModelEmpty(Country.GetAllSubjectDiploActions))]"
+			datamodel = "[Country.GetAvailableSubjectDiploActions]"
+			datamodel_wrap = 6
+			flipdirection = yes
+
+			item = {
+				diplomatic_action_grid_button = {}
+			}
+		}
+
+		widget = {
+			size = { 10 10 }
+		}
+
+		### POTENTIAL SUBJECT ACTIONS
+		right_click_menu_dropdown = {
+			visible = "[Not(IsDataModelEmpty(Country.GetPotentialSubjectDiploActions))]"
+			
+			blockoverride "section_header_tooltip" {
+				tooltip = "POTENTIAL_SUBJECT_ACTIONS_TOOLTIP"
+			}
+
+			blockoverride "section_header_size" {
+				size = { 600 44 }
+			}
+
+			blockoverride "left_text" {
+				text = "POTENTIAL_SUBJECT_ACTIONS"
+			}
+
+			blockoverride "section_header_right_text" {
+				section_header_right_text = {
+					raw_text = "#v [GetDataModelSize(Country.GetPotentialSubjectDiploActions)]#!"
+				}
+			}
+
+			blockoverride "onclick" {
+				onclick = "[GetVariableSystem.Toggle('show_potential_subject_actions')]"
+			}
+
+			blockoverride "onclick_showmore" {
+				visible = "[Not(GetVariableSystem.Exists('show_potential_subject_actions'))]"
+			}
+
+			blockoverride "onclick_showless" {
+				visible = "[GetVariableSystem.Exists('show_potential_subject_actions')]"
+			}
+
+			blockoverride "items_visibility" {
+				visible = "[GetVariableSystem.Exists('show_potential_subject_actions')]"
+			}
+
+			blockoverride "properties" {
+				enabled = "[IsValid(DiplomaticAction.ExecuteAction)]"
+				using = diplomatic_action_tooltip
+			}
+
+			blockoverride "dropdown_items" {
+
+				widget = {
+					size = { 5 5 }
+				}
+
+				dynamicgridbox = {
+					visible = "[GetVariableSystem.Exists('show_potential_subject_actions')]"
+					datamodel = "[Country.GetPotentialSubjectDiploActions]"
+					datamodel_wrap = 6
+					flipdirection = yes
+
+					item = {
+						diplomatic_action_grid_button = {}
+					}
+				}
+			}
+		}
+	}
+}
+
+right_click_menu = {
+	name = "bloc_leader_actions_right_click_menu"
+	parentanchor = vcenter|right
+
+	blockoverride "title_text" {
+		text = "BLOC_LEADER_ACTIONS_RIGHT_CLICK_MENU_TITLE"
+	}
+
+	blockoverride "items" {
+
+		widget = {
+			size = { 5 5 }
+		}
+
+		empty_state = {
+			blockoverride "visible" {
+				visible = "[IsDataModelEmpty(Country.GetAllPowerBlocLeaderDiploActions)]"
+			}
+			blockoverride "text" {
+				text = "NO_AVAILABLE_ACTIONS"
+			}
+		}
+
+		dynamicgridbox = {
+			datamodel = "[Country.GetAvailablePowerBlocLeaderDiploActions]"
+			datamodel_wrap = 6
+			flipdirection = yes
+
+			item = {
+				diplomatic_action_grid_button = {}
+			}
+		}
+
+		widget = {
+			size = { 10 10 }
+		}
+
+		### UNAVAILABLE BLOC LEADER ACTIONS
+		right_click_menu_dropdown = {
+			visible = "[Not(IsDataModelEmpty(Country.GetPotentialPowerBlocLeaderDiploActions))]"
+
+			blockoverride "section_header_tooltip" {
+				tooltip = "POTENTIAL_BLOC_LEADER_ACTIONS_TOOLTIP"
+			}
+
+			blockoverride "section_header_size" {
+				size = { 600 44 }
+			}
+
+			blockoverride "left_text" {
+				text = "POTENTIAL_BLOC_LEADER_ACTIONS"
+			}
+
+			blockoverride "section_header_right_text" {
+				section_header_right_text = {
+					raw_text = "#v [GetDataModelSize(Country.GetPotentialPowerBlocLeaderDiploActions)]#!"
+				}
+			}
+
+			blockoverride "onclick" {
+				onclick = "[GetVariableSystem.Toggle('show_potential_bloc_actions')]"
+			}
+
+			blockoverride "onclick_showmore" {
+				visible = "[Not(GetVariableSystem.Exists('show_potential_bloc_actions'))]"
+			}
+
+			blockoverride "onclick_showless" {
+				visible = "[GetVariableSystem.Exists('show_potential_bloc_actions')]"
+			}
+
+			blockoverride "items_visibility" {
+				visible = "[GetVariableSystem.Exists('show_potential_bloc_actions')]"
+			}
+
+			blockoverride "properties" {
+				enabled = "[IsValid(DiplomaticAction.ExecuteAction)]"
+				using = diplomatic_action_tooltip
+			}
+
+			blockoverride "dropdown_items" {
+
+				widget = {
+					size = { 5 5 }
+				}
+
+				dynamicgridbox = {
+					visible = "[GetVariableSystem.Exists('show_potential_bloc_actions')]"
+					datamodel = "[Country.GetPotentialPowerBlocLeaderDiploActions]"
+					datamodel_wrap = 6
+					flipdirection = yes
+
+					item = {
+						diplomatic_action_grid_button = {}
+					}
+				}
+			}
+		}
+	}
+}
+
+right_click_menu = {
+	name = "bloc_actions_right_click_menu"
+	parentanchor = vcenter|right
+
+	blockoverride "title_text" {
+		text = "BLOC_ACTIONS_RIGHT_CLICK_MENU_TITLE"
+	}
+
+	blockoverride "items" {
+
+		widget = {
+			size = { 5 5 }
+		}
+
+		empty_state = {
+			blockoverride "visible" {
+				visible = "[IsDataModelEmpty(Country.GetAllPowerBlocMemberDiploActions)]"
+			}
+			blockoverride "text" {
+				text = "NO_AVAILABLE_ACTIONS"
+			}
+		}
+
+		dynamicgridbox = {
+			datamodel = "[Country.GetAvailablePowerBlocMemberDiploActions]"
+			datamodel_wrap = 6
+			flipdirection = yes
+
+			item = {
+				diplomatic_action_grid_button = {}
+			}
+		}
+
+		widget = {
+			size = { 10 10 }
+		}
+
+		### UNAVAILABLE BLOC MEMBER ACTIONS
+		right_click_menu_dropdown = {
+			visible = "[Not(IsDataModelEmpty(Country.GetPotentialPowerBlocMemberDiploActions))]"
+
+			blockoverride "section_header_tooltip" {
+				tooltip = "POTENTIAL_BLOC_ACTIONS_TOOLTIP"
+			}
+
+			blockoverride "section_header_size" {
+				size = { 600 44 }
+			}
+
+			blockoverride "left_text" {
+				text = "POTENTIAL_BLOC_ACTIONS"
+			}
+
+			blockoverride "section_header_right_text" {
+				section_header_right_text = {
+					raw_text = "#v [GetDataModelSize(Country.GetPotentialPowerBlocMemberDiploActions)]#!"
+				}
+			}
+
+			blockoverride "onclick" {
+				onclick = "[GetVariableSystem.Toggle('show_potential_bloc_actions')]"
+			}
+
+			blockoverride "onclick_showmore" {
+				visible = "[Not(GetVariableSystem.Exists('show_potential_bloc_actions'))]"
+			}
+
+			blockoverride "onclick_showless" {
+				visible = "[GetVariableSystem.Exists('show_potential_bloc_actions')]"
+			}
+
+			blockoverride "items_visibility" {
+				visible = "[GetVariableSystem.Exists('show_potential_bloc_actions')]"
+			}
+
+			blockoverride "properties" {
+				enabled = "[IsValid(DiplomaticAction.ExecuteAction)]"
+				using = diplomatic_action_tooltip
+			}
+
+			blockoverride "dropdown_items" {
+
+				widget = {
+					size = { 5 5 }
+				}
+
+				dynamicgridbox = {
+					visible = "[GetVariableSystem.Exists('show_potential_bloc_actions')]"
+					datamodel = "[Country.GetPotentialPowerBlocMemberDiploActions]"
+					datamodel_wrap = 6
+					flipdirection = yes
+
+					item = {
+						diplomatic_action_grid_button = {}
+					}
+				}
+			}
+		}
+	}
+}
+
+right_click_menu = {
+	name = "customization_option_items_right_click_menu"
+	parentanchor = vcenter|right
+
+	blockoverride "title_text" {
+		raw_text = "Select a #v Statue Pattern#!" # TODO PRCAL-32207: statue customization
+	}
+
+	blockoverride "items" {
+
+		widget = {
+			size = { 5 5 }
+		}
+
+		dynamicgridbox = {
+			datamodel = "[DataModelRepeatedItem('(int32)12')]" # TODO PRCAL-32207: statue customization
+			datamodel_wrap = 5
+			flipdirection = yes
+
+			item = {
+				customization_option_item = {}
+			}
+		}
+
+		widget = {
+			size = { 10 10 }
+		}
+	}
+}
+
+right_click_menu = {
+	name = "power_bloc_coa_pieces_right_click_menu"
+	parentanchor = vcenter|right
+
+	blockoverride "title_text" {
+		text = "POWER_BLOC_COA_SELECT_ITEM"
+	}
+
+	blockoverride "items" {
+
+		widget = {
+			size = { 5 5 }
+		}
+
+		dynamicgridbox = {
+			datamodel = "[PowerBlocCoaPieceSelector.GetItems]"
+			datamodel_wrap = 4
+			flipdirection = yes
+
+			item = {
+				power_bloc_coa_piece_item = {}
+			}
+		}
+
+		widget = {
+			size = { 10 10 }
+		}
+	}
+}
+
+right_click_menu = {
+	name = "power_bloc_map_texture_right_click_menu"
+	parentanchor = vcenter|right
+
+	blockoverride "title_text" {
+		text = "POWER_BLOC_MAP_TEXTURE_SELECT_ITEM"
+	}
+
+	blockoverride "items" {
+
+		widget = {
+			size = { 5 5 }
+		}
+
+		dynamicgridbox = {
+			datamodel = "[PowerBlocMapTextureSelector.GetItems]"
+			datamodel_wrap = 4
+			flipdirection = yes
+
+			item = {
+				power_bloc_map_texture_item = {}
+			}
+		}
+
+		widget = {
+			size = { 10 10 }
+		}
+	}
+}
+
+right_click_menu = {
+	name = "color_picker_right_click_menu"
+	widgetanchor = bottom|left
+
+	blockoverride "title_text" {
+		text = "COLOR_PICKER_HEADER"
+	}
+
+	blockoverride "items" {
+
+		widget = {
+			size = { 5 5 }
+		}
+
+		colorpicker_simple = {
+			color = "[DataColorPicker.GetColor]"
+			oncoloredited = "[DataColorPicker.OnColorEdited]"
+		}
+
+		button = {
+			parentanchor = hcenter
+			size = { 300 50 }
+			using = default_button_action
+			onclick = "[RightClickMenuManager.Close]"
+			text = "DONE"
+		}
+
+		widget = {
+			size = { 10 10 }
 		}
 	}
 }
@@ -3353,7 +5136,9 @@ right_click_menu = {
 				using = zoom_button_sound
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/buttons/button_icons/location_finder.dds"
+			}
 			
 			blockoverride "text" {
 				text = "ZOOM_TO_MARKET_CAPITAL"
@@ -3366,7 +5151,19 @@ right_click_menu = {
 				onclick = "[Market.TogglePinInOutliner]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "icon" {
+				icon = {
+					visible = "[Market.IsPinnedInOutliner]"
+					texture = "gfx/interface/outliner/pinned_icon.dds"
+					size = { 28 28 }
+				}
+
+				icon = {
+					visible = "[Not(Market.IsPinnedInOutliner)]"
+					texture = "gfx/interface/outliner/unpinned_icon.dds"
+					size = { 28 28 }
+				}
+			}
 			
 			blockoverride "text" {
 				text = "MARKET_RIGHT_CLICK_MENU_PIN_IN_OUTLINER"
@@ -3391,7 +5188,9 @@ right_click_menu = {
 				visible = "[Not(Goods.IsTaxed(GetPlayer))]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/trade_icons/consumption_tax_not.dds"
+			}
 			
 			blockoverride "text" {
 				text = "TAX_GOODS"
@@ -3406,7 +5205,9 @@ right_click_menu = {
 				visible = "[Goods.IsTaxed(GetPlayer)]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/trade_icons/consumption_tax.dds"
+			}
 			
 			blockoverride "text" {
 				text = "UNTAX_GOODS"
@@ -3421,7 +5222,9 @@ right_click_menu = {
 				visible = "[Goods.IsTradeable]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/trade_icons/unfocused.dds"
+			}
 			
 			blockoverride "text" {
 				text = "SET_GOODS_TARIFF_NO_PRIORITY"
@@ -3436,7 +5239,9 @@ right_click_menu = {
 				visible = "[Goods.IsTradeable]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/trade_icons/import_focused.dds"
+			}
 			
 			blockoverride "text" {
 				text = "SET_GOODS_TARIFF_IMPORT_PRIORITY"
@@ -3451,7 +5256,9 @@ right_click_menu = {
 				visible = "[Goods.IsTradeable]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/trade_icons/export_focused.dds"
+			}
 			
 			blockoverride "text" {
 				text = "SET_GOODS_TARIFF_EXPORT_PRIORITY"
@@ -3476,7 +5283,9 @@ right_click_menu = {
 				onclick = "[InformationPanelBar.OpenGoodsPanel(Goods.GetMarket, Goods.Self)]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/generic_icons/information.dds"
+			}
 			
 			blockoverride = "text" {
 				text = "INFORMATION"
@@ -3490,7 +5299,9 @@ right_click_menu = {
 				tooltip = "ESTABLISH_IMPORT_ROUTE_TOOLTIP"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_import_lens_option.dds"
+			}
 			
 			blockoverride "text" {
 				text = "ESTABLISH_IMPORT_ROUTE"
@@ -3505,7 +5316,9 @@ right_click_menu = {
 				tooltip = "ESTABLISH_EXPORT_ROUTE_TOOLTIP"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_export_lens_option.dds"
+			}
 			
 			blockoverride "text" {
 				text = "ESTABLISH_EXPORT_ROUTE"
@@ -3520,7 +5333,9 @@ right_click_menu = {
 				tooltip = "ESTABLISH_IMPORT_ROUTE_TO_PLAYER_MARKET_TOOLTIP"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_import_lens_option.dds"
+			}
 			
 			blockoverride "text" {
 				text = "ESTABLISH_IMPORT_ROUTE_TO_PLAYER_MARKET"
@@ -3535,7 +5350,9 @@ right_click_menu = {
 				tooltip = "ESTABLISH_EXPORT_ROUTE_FROM_PLAYER_MARKET_TOOLTIP"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_export_lens_option.dds"
+			}
 			
 			blockoverride "text" {
 				text = "ESTABLISH_EXPORT_ROUTE_FROM_PLAYER_MARKET"
@@ -3549,7 +5366,19 @@ right_click_menu = {
 				onclick = "[Goods.TogglePinInOutliner]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "icon" {
+				icon = {
+					visible = "[Goods.IsPinnedInOutliner]"
+					texture = "gfx/interface/outliner/pinned_icon.dds"
+					size = { 28 28 }
+				}
+
+				icon = {
+					visible = "[Not(Goods.IsPinnedInOutliner)]"
+					texture = "gfx/interface/outliner/unpinned_icon.dds"
+					size = { 28 28 }
+				}
+			}
 			
 			blockoverride = "text" {
 				text = "GOODS_RIGHT_CLICK_MENU_PIN_IN_OUTLINER"
@@ -3564,7 +5393,9 @@ right_click_menu = {
 				visible = "[And(Goods.IsTradeable, ObjectsEqual(Goods.GetMarket.GetOwner, GetPlayer.Self))]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/trade_icons/unfocused.dds"
+			}
 			
 			blockoverride "text" {
 				text = "SET_GOODS_TARIFF_NO_PRIORITY"
@@ -3579,7 +5410,9 @@ right_click_menu = {
 				visible = "[And(Goods.IsTradeable, ObjectsEqual(Goods.GetMarket.GetOwner, GetPlayer.Self))]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/trade_icons/import_focused.dds"
+			}
 			
 			blockoverride "text" {
 				text = "SET_GOODS_TARIFF_IMPORT_PRIORITY"
@@ -3594,7 +5427,9 @@ right_click_menu = {
 				visible = "[And(Goods.IsTradeable, ObjectsEqual(Goods.GetMarket.GetOwner, GetPlayer.Self))]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/trade_icons/export_focused.dds"
+			}
 			
 			blockoverride "text" {
 				text = "SET_GOODS_TARIFF_EXPORT_PRIORITY"
@@ -3620,7 +5455,9 @@ right_click_menu = {
 				visible = "[Not(Goods.IsTaxed(GetPlayer))]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/trade_icons/consumption_tax_not.dds"
+			}
 			
 			blockoverride "text" {
 				text = "TAX_GOODS"
@@ -3635,7 +5472,9 @@ right_click_menu = {
 				visible = "[Goods.IsTaxed(GetPlayer)]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/trade_icons/consumption_tax.dds"
+			}
 			
 			blockoverride "text" {
 				text = "UNTAX_GOODS"
@@ -3660,7 +5499,9 @@ right_click_menu = {
 				visible = "[IsValid( TradeRoute.Cancel )]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/buttons/button_icons/close.dds"
+			}
 			
 			blockoverride "text" {
 				text = "TRADE_ROUTE_CANCEL"
@@ -3675,7 +5516,9 @@ right_click_menu = {
 				visible = "[TradeRoute.IsOwnerOrMarketOwner(GetPlayer)]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/trade_icons/unfocused.dds"
+			}
 			
 			blockoverride "text" {
 				text = "SET_GOODS_TARIFF_NO_PRIORITY"
@@ -3690,7 +5533,9 @@ right_click_menu = {
 				visible = "[TradeRoute.IsOwnerOrMarketOwner(GetPlayer)]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/trade_icons/import_focused.dds"
+			}
 			
 			blockoverride "text" {
 				text = "SET_GOODS_TARIFF_IMPORT_PRIORITY"
@@ -3705,7 +5550,9 @@ right_click_menu = {
 				visible = "[TradeRoute.IsOwnerOrMarketOwner(GetPlayer)]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/trade_icons/export_focused.dds"
+			}
 			
 			blockoverride "text" {
 				text = "SET_GOODS_TARIFF_EXPORT_PRIORITY"
@@ -3717,7 +5564,9 @@ right_click_menu = {
 				onclick = "[InformationPanelBar.OpenMarketPanel( TradeRoute.GetExportingMarket )]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/generic_icons/information.dds"
+			}
 			
 			blockoverride "text" {
 				text = "TRADE_ROUTE_OPEN_EXPORTING_MARKET"
@@ -3729,7 +5578,9 @@ right_click_menu = {
 				onclick = "[InformationPanelBar.OpenMarketPanel( TradeRoute.GetImportingMarket )]"
 			}
 
-			blockoverride "icon" {}
+			blockoverride "texture" {
+				texture = "gfx/interface/icons/generic_icons/information.dds"
+			}
 			
 			blockoverride "text" {
 				text = "TRADE_ROUTE_OPEN_IMPORTING_MARKET"
@@ -3826,4 +5677,190 @@ types right_click_menu {
 			}
 		}
 	}
+
+	type grid_button = widget {
+		size = { -1 120 }
+		min_width = "[GetDefine('NGUI', 'LENS_TOOLBAR_ITEM_WIDTH')]"
+		alwaystransparent = no
+			
+		button = {
+			name = grid_button
+			size = { -1 115 }
+			min_width = "[GetDefine('NGUI', 'LENS_TOOLBAR_ITEM_WIDTH')]"
+			parentanchor = bottom|hcenter
+			using = tooltip_above
+
+			block "default_button" {
+				using = default_button_action
+			}
+
+			#mouse enter position animation
+			onmousehierarchyenter = "[PdxGuiWidget.InterruptThenTriggerAnimation('action_button_mouse_leave','action_button_mouse_enter')]"
+			onmousehierarchyleave = "[PdxGuiWidget.InterruptThenTriggerAnimation('action_button_mouse_enter','action_button_mouse_leave')]"
+
+			block "properties" {
+				onclick = "[RightClickMenuManager.Close]"
+			}
+
+			#mouse enter position
+			state = {
+				name = action_button_mouse_enter
+				duration = 0.15
+				position = { 0 -5 }
+				using = Animation_Curve_Default
+				on_start = "[PdxGuiWidget.FindChild('title').TriggerAnimation('show')]"
+				on_start = "[PdxGuiWidget.FindChild('cost').TriggerAnimation('show')]"
+			}
+			state = {
+				name = action_button_mouse_leave
+				duration = 0.3
+				position = { 0 0 }
+				using = Animation_Curve_Default
+				on_start = "[PdxGuiWidget.FindChild('title').TriggerAnimation('hide')]"
+				on_start = "[PdxGuiWidget.FindChild('cost').TriggerAnimation('hide')]"
+			}
+
+			button = {
+				name = "interaction_icon"
+				size = { 60 60 }
+				position = { 0 5 }
+				gfxtype = buttongfx
+				parentanchor = hcenter
+				alwaystransparent = yes
+
+				block "highlight_glow" {}
+
+				icon = {
+					size = { 50 50 }
+					parentanchor = hcenter
+
+					block "texture" {
+						texture = "gfx/interface/icons/generic_icons/generic_concept_icon.dds"
+					}
+				}
+			}
+
+			textbox = {
+				name = "title"
+				align = hcenter|nobaseline
+				position = { 0 -16 }
+				size = { 100% 50 }
+				parentanchor = hcenter|bottom
+				using = fontsize_small
+				elide = right
+				multiline = yes
+				margin_left = 5
+				margin_right = 5
+				alpha = 0.75
+				
+				block "text_middle" {
+					raw_text = "#v Name of Interaction#!"
+				}
+
+				state = {
+					name = show
+					alpha = 1
+					duration = 0.15
+					using = Animation_Curve_Default
+				}
+				state = {
+					name = hide
+					alpha = 0.75
+					duration = 0.3
+					using = Animation_Curve_Default
+				}
+			}
+			
+			textbox = {
+				name = "cost"
+				align = center|nobaseline
+				position = { 0 -3 }
+				size = { 100% 20 }
+				parentanchor = hcenter|bottom
+				using = fontsize_small
+				elide = right
+				multiline = no
+				margin_left = 5
+				margin_right = 5
+				alpha = 0.75
+
+				block "text_bottom_visibility" {}
+
+				block "text_bottom" {}
+
+				state = {
+					name = show
+					alpha = 1
+					duration = 0.15
+					using = Animation_Curve_Default
+				}
+				state = {
+					name = hide
+					alpha = 0.75
+					duration = 0.3
+					using = Animation_Curve_Default
+				}
+			}
+
+			icon = {
+				block "highlight_visibility" {
+					visible = no
+				}
+
+				using = highlighted_square_selection
+			}
+		}
+	}
+
+	type diplomatic_action_grid_button = grid_button {
+		blockoverride "default_button" {
+			using = default_button
+		}
+
+		blockoverride "properties" {
+			enabled = "[IsValid(DiplomaticAction.ExecuteAction)]"
+			onclick = "[DiplomaticAction.ExecuteWithConfirmation]"
+			onclick = "[RightClickMenuManager.Close]"
+			using = diplomatic_action_tooltip
+
+			block "clicksound" {
+				using = generic_diplomatic_action_sound
+			}
+		}
+
+		blockoverride "highlight_glow" {
+			icon = {
+				visible = "[DiplomaticAction.IsActivePact]"
+				parentanchor = center
+				size = { 200% 200% }
+				using = rotate_glow_animation_02
+			}
+		}
+
+		blockoverride "texture" {
+			texture = "[DiplomaticAction.GetType.GetTexture]"
+		}
+
+		blockoverride "text_middle" {
+			text = "DIPLOMATIC_ACTION_ACTIVE_AND_NON_ACTIVE_NAME"
+			default_format = "#v"
+		}
+
+		blockoverride "text_bottom_visibility" {
+			visible = "[GreaterThan_CFixedPoint(DiplomaticAction.GetMaintenanceCost, '(CFixedPoint)0')]"
+		}
+
+		blockoverride "text_bottom" {
+			raw_text = "#v [DiplomaticAction.GetMaintenanceCostFormatted]#!"
+		}
+
+		blockoverride "highlight_visibility" {
+			visible = "[DiplomaticAction.IsActivePact]"
+		}
+	}
 }
+
+template standard_formation_item_size {
+	size = { 345 80 }
+}
+

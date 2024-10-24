@@ -13,6 +13,37 @@
 #	}
 #
 
+relations_hit_with_power_bloc_leaders = {
+	if = {
+		limit = {
+			has_game_started = yes
+		}
+		
+		every_power_bloc = {
+			limit = { 
+				NOT = { scope:power_bloc ?= this }			
+			}
+			power_bloc_leader = {
+				root = {
+					change_relations = { 
+						country = prev
+						value = {
+							add = -30
+							if = {
+								limit = {
+									is_country_type = unrecognized
+									prev = { is_country_type = recognized }
+								}
+								add = -30
+							}
+						}
+					}
+				}
+			}
+		}		
+	}
+}
+
 save_neighbor_with_state = {
 	random_neighbouring_state = {
 		limit = {
@@ -154,6 +185,53 @@ warlord_setup_effect = {
 	activate_law = law_type:law_autocracy 
 	activate_law = law_type:law_presidential_republic
 	activate_law = law_type:law_peasant_levies
+	if = {
+		limit = {
+			NOR = {
+				c:MGL ?= this
+				c:TUV ?= this
+				c:ALI ?= this
+			}
+		}
+		random_character = {
+			limit = {
+				c:CHI ?= owner
+				OR = {
+					has_role = general
+					AND = {
+						PREV = {
+							any_scope_state = {
+								has_building = building_naval_base
+							}
+						}
+						has_role = admiral
+					}
+				}
+			}
+			transfer_character = PREV
+			set_character_as_ruler = yes
+		}
+		if = {
+			limit = {
+				NOR = {
+					country_has_primary_culture = cu:han
+					country_has_primary_culture = cu:manchu
+				}
+			}
+			add_primary_culture = cu:han
+			if = {
+				limit = {
+					OR = {
+						has_law = law_type:law_ethnostate
+						has_law = law_type:law_national_supremacy
+					}
+				}
+				remove_primary_culture = cu:uighur
+				remove_primary_culture = cu:tibetan
+				remove_primary_culture = cu:mongol
+			}
+		}
+	}
 		
 	every_scope_character = {
 		random_list = {
@@ -822,7 +900,6 @@ clean_up_exile_character_roles = { # scope: character
 		limit = {
 			has_role = politician
 		}
-		set_as_interest_group_leader = no
 		remove_character_role = politician
 	}
 	if = {
