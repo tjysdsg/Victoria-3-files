@@ -1,0 +1,96 @@
+﻿namespace = emu_war
+
+emu_war.1 = {
+	type = country_event
+
+	title = emu_war.1.t
+	desc = emu_war.1.d
+	flavor = emu_war.1.f
+
+	event_image = {
+		video = "ep1_redcoats"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	duration = 3
+
+	trigger = {
+		country_has_primary_culture = cu:australian
+		has_technology_researched = automatic_machine_guns
+		ig:ig_armed_forces = {
+			is_marginal = no
+		}
+		any_scope_state = {
+			state_region = s:STATE_WESTERN_AUSTRALIA
+			any_scope_building = {
+				OR = {
+					is_building_group = bg_agriculture
+					is_building_group = bg_ranching
+					is_building_group = bg_plantations
+				}
+				NOR = {
+					is_building_group = bg_subsistence_agriculture
+					is_building_group = bg_subsistence_ranching
+				}
+				level >= 10
+			}
+		}
+		NOT = {
+			has_variable = emu_war_happened_var
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_WESTERN_AUSTRALIA
+				any_scope_building = {
+					OR = {
+						is_building_group = bg_agriculture
+						is_building_group = bg_ranching
+						is_building_group = bg_plantations
+					}
+					NOR = {
+						is_building_group = bg_subsistence_agriculture
+						is_building_group = bg_subsistence_ranching
+					}
+					level >= 10
+				}
+			}
+			save_scope_as = westralia_state
+		}
+		ig:ig_armed_forces = {
+			save_scope_as = armed_forces_ig
+		}
+		set_variable = emu_war_happened_var
+	}
+
+	option = {
+		name = emu_war.1.a
+        default_option = yes
+		scope:armed_forces_ig = {
+			add_modifier = {
+				name = modifier_emu_war_pointless
+				months = short_modifier_time
+			}
+		}
+	}
+	option = {
+		name = emu_war.1.b
+		scope:armed_forces_ig = {
+			add_modifier = {
+				name = modifier_emu_war_deferred_deployments
+				months = short_modifier_time
+			}
+		}
+		scope:westralia_state = {
+			add_modifier = {
+				name = modifier_emu_war_stampeded_crops
+				months = short_modifier_time
+			}
+		}
+	}
+}

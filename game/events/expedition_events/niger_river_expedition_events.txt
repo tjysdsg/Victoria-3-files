@@ -97,14 +97,6 @@ expedition_events.2 = { #Choose commander
 			save_scope_as = expedition_leader_3
 		}
 		set_variable = niger_river_expedition_var
-		set_variable = {
-			name = expedition_progress
-			value = 1
-		}
-		set_variable = {
-			name = expedition_peril
-			value = 1
-		}
 		niger_river_expedition_location = yes
 	}
 
@@ -212,10 +204,7 @@ expedition_events.11 = { #Successful expedition
     duration = 3
 
 	immediate = {
-		set_variable = {
-			name = on_expedition
-			value = no
-		}
+		remove_variable = on_expedition
 		set_global_variable = niger_river_explored
 		if = {
 			limit = {
@@ -322,8 +311,22 @@ expedition_events.30 = { #Help from locals
     duration = 3
 	
 	trigger = {
-		var:expedition_progress >= 1
+		OR = {
+			je:je_niger_river_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" >= 1
+			}
+			je:je_congo_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" >= 1
+			}
+			je:je_central_africa_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" >= 1
+			}
+		}
 		NOT = { has_variable = help_from_locals }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 
 	immediate = {
@@ -385,6 +388,10 @@ expedition_events.31 = { #Found local guides
 		video = "africa_animism"
 	}
 
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
+
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
@@ -408,6 +415,10 @@ expedition_events.32 = { #Failed to find local guides
 
     event_image = {
 		video = "middleeast_jungle_expedition"
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
@@ -444,13 +455,19 @@ expedition_events.40 = { #Crew member drowns
 	trigger = {
 		trigger_if = {
 			limit = { has_variable = congo_river_expedition_var }
-			var:expedition_progress >= 2
+			je:je_congo_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" >= 2
+			}
 			NOT = { has_variable = crew_member_drowns }
 		}
 		trigger_else_if = {
 			limit = { has_variable = niger_river_expedition_var }
 			NOT = { has_variable = crew_member_drowns }
 		}
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 	
 	immediate = {
@@ -501,6 +518,10 @@ expedition_events.41 = { #Crew ailed with Malaria
 		NOT = { has_technology_researched = malaria_prevention }
 		NOT = { has_variable = crew_gets_malaria }
 		NOT = { has_variable = crew_gets_dysentery }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 	
 	immediate = {
@@ -568,8 +589,19 @@ expedition_events.50 = { #River Attack
     duration = 3
 	
 	trigger = {
-		var:expedition_progress > 1
+		OR = {
+			je:je_niger_river_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" > 1
+			}
+			je:je_congo_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" > 1
+			}
+		}
 		NOT = { has_variable = river_attack }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 
     immediate = {
@@ -624,6 +656,10 @@ expedition_events.51 = { #Sucessful Defense
 
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
 
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
+
     duration = 3
 
 	option = {
@@ -648,6 +684,10 @@ expedition_events.52 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
 
     duration = 3
 
@@ -674,6 +714,10 @@ expedition_events.53 = { #Escaped
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
 
     duration = 3
 
@@ -705,6 +749,10 @@ expedition_events.60 = { #Film
 	trigger = {
 		NOT = { has_variable = expedition_film }
 		has_technology_researched = film
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 	
     immediate = {
@@ -750,6 +798,10 @@ expedition_events.70 = { #Crew ailed with dysentery
 	trigger = {
 		NOT = { has_variable = crew_gets_dysentery }
 		NOT = { has_variable = crew_gets_malaria }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 
 	immediate = {
@@ -804,6 +856,10 @@ expedition_events.80 = { #Hippo Sighted
 		NOT = { has_variable = hippo_sighted }
 	}
 
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
+
     immediate = {
     	set_variable = hippo_sighted
 		niger_river_expedition_location = yes
@@ -844,6 +900,10 @@ expedition_events.81 = { #Hippo attacks
 
 	icon = "gfx/interface/icons/event_icons/event_skull.dds"
 
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
+
     duration = 3
 
 	option = {
@@ -870,6 +930,10 @@ expedition_events.82 = { #Hippo avoided
 
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
 
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
+
     duration = 3
 
 	option = {
@@ -894,6 +958,10 @@ expedition_events.83 = { #Hippo dodged
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
 
     duration = 3
 
@@ -923,11 +991,25 @@ expedition_events.90 = { #Grave of previous explorers
     duration = 3
 	
 	trigger = {
-		var:expedition_progress > 2
+		OR = {
+			je:je_niger_river_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" > 2
+			}
+			je:je_congo_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" > 2
+			}
+			je:je_central_africa_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" > 2
+			}
+		}
 		OR = {
 			has_variable = failed_congo_river_var
 			has_variable = failed_niger_river_var
 		}
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 
 	immediate = {
@@ -973,6 +1055,10 @@ expedition_events.100 = { #Kidnapped
 	
 	trigger = {
 		NOT = { has_variable = expedition_kidnap }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 
 	immediate = {
@@ -1029,6 +1115,10 @@ expedition_events.101 = { #Ransom Paid
 
 	icon = "gfx/interface/icons/event_icons/event_trade.dds"
 
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
+
     duration = 3
 
 	option = {
@@ -1053,6 +1143,10 @@ expedition_events.102 = { #Ransom Ignored
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
 
     duration = 3
 	
@@ -1080,6 +1174,10 @@ expedition_events.110 = { #Leader dies
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
 
     duration = 3
 	
@@ -1176,11 +1274,22 @@ expedition_events.120 = { #DR LIVINGSTONE EVENT
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
 	
 	duration = 3
 	
 	trigger = {
-		var:expedition_progress >= 2
+		OR = {
+			je:je_niger_river_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" >= 2
+			}
+			je:je_congo_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" >= 2
+			}
+		}
 		OR = {
 			has_variable = failed_congo_river_var
 			has_variable = failed_niger_river_var
@@ -1295,7 +1404,17 @@ expedition_events.130 = { #kidnapped ambassador
 	duration = 3
 	
 	trigger = {
-		var:expedition_progress >= 2
+		OR = {
+			je:je_niger_river_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" >= 2
+			}
+			je:je_congo_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" >= 2
+			}
+			je:je_central_africa_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" >= 2
+			}
+		}
 		NOT = { has_variable = kidnapped_ambassador_var }
 		any_country = {
 			relations:root >= relations_threshold:neutral
@@ -1304,6 +1423,10 @@ expedition_events.130 = { #kidnapped ambassador
 				is_country_type = unrecognized
 			}
 		}
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 	
 	immediate = {
@@ -1371,6 +1494,10 @@ expedition_events.140 = { #leader's breakdown
 	trigger = {
 		NOT = { has_variable = leaders_breakdown_var }
 	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
 	
 	immediate = {
 		set_variable = leaders_breakdown_var
@@ -1430,6 +1557,10 @@ expedition_events.150 = { #a thief among us
 	trigger = {
 		NOT = { has_variable = expedition_thief_var }
 	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
 	
 	immediate = {
 		set_variable = expedition_thief_var
@@ -1479,8 +1610,40 @@ expedition_events.160 = { #cancelled expedition
 	duration = 3
 	
 	trigger = {
-		var:expedition_progress <= 3
-		var:expedition_peril >= 6
+		OR = {
+			je:je_antarctica ?= {
+				"scripted_bar_progress(expedition_progress_bar)" <= 3
+			}
+			je:je_central_africa_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" <= 3
+			}
+			je:je_congo_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" <= 3
+			}
+			je:je_niger_river_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" <= 3
+			}
+			je:je_west_america_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" <= 3
+			}
+		}
+		OR = {
+			je:je_antarctica ?= {
+				"scripted_bar_progress(expedition_peril_progress_bar)" >= 6
+			}
+			je:je_central_africa_expedition ?= {
+				"scripted_bar_progress(expedition_peril_progress_bar)" >= 6
+			}
+			je:je_congo_expedition ?= {
+				"scripted_bar_progress(expedition_peril_progress_bar)" >= 6
+			}
+			je:je_niger_river_expedition ?= {
+				"scripted_bar_progress(expedition_peril_progress_bar)" >= 6
+			}
+			je:je_west_america_expedition ?= {
+				"scripted_bar_progress(expedition_peril_progress_bar)" >= 6
+			}
+		}
 		NOT = { has_variable = cancelled_expedition_var }
 	}
 	

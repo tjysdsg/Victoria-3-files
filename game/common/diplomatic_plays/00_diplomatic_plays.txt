@@ -136,10 +136,9 @@ dp_return_state = {
 	possible = {
 		NOT = { is_country_type = decentralized }
 		aggressive_diplomatic_plays_permitted = yes
-		NOT = { is_subject_of = scope:target_country }	
+		NOT = { is_subject_of = scope:target_country }
 		scope:target_country = {
 			NOT = { is_country_type = decentralized }
-			NOT = { is_subject_of = root }
 		}
 		diplomatic_play_has_no_relations_blockers = yes
 	}
@@ -351,6 +350,24 @@ dp_make_tributary = {
 	on_war_end = {}
 }
 
+dp_make_dominion = {	
+	war_goal = make_dominion
+	
+	texture = "gfx/interface/icons/war_goals/make_dominion.dds"
+	
+	possible = {
+		aggressive_diplomatic_plays_permitted = yes	
+	}
+	
+	ai_acceptance_max = 90
+	
+	on_weekly_pulse = {}
+	
+	on_war_begins = {}
+
+	on_war_end = {}
+}
+
 dp_make_protectorate = {
 	war_goal = make_protectorate
 	
@@ -368,6 +385,25 @@ dp_make_protectorate = {
 
 	on_war_end = {}
 }
+
+# TODO PRCAL-36324 - add this diplo play back in when we get rid of Colonial country type
+#dp_make_dominion = {
+#	war_goal = make_dominion
+#	
+#	texture = "gfx/interface/icons/war_goals/make_dominion.dds"
+#	
+#	possible = {	
+#		aggressive_diplomatic_plays_permitted = yes				
+#	}
+#	
+#	ai_acceptance_max = 90
+#	
+#	on_weekly_pulse = {}
+#	
+#	on_war_begins = {}
+#
+#	on_war_end = {}
+#}
 
 dp_transfer_subject = {
 	war_goal = transfer_subject
@@ -401,12 +437,31 @@ dp_annex_subject = {
 	texture = "gfx/interface/icons/war_goals/annex_country.dds"
 	confirmation_sound = "event:/SFX/UI/SubjectInteractions/subject_button_small_annex"
 	possible = {
+		trigger_if = {
+			limit = {
+				is_at_war = no
+				NOT = { has_variable = doctrine_of_lapse_cooldown }
+				NOT = { has_variable = doctrine_of_lapse_ended }
+				scope:target_country = {
+					is_subject_of = ROOT
+					has_variable = princely_state
+					NOT = { country_tier = empire }
+					is_player = no
+				}
+			}
+			custom_tooltip = {
+				text = CAN_USE_DOCTRINE_OF_LAPSE_INSTEAD
+				always = no
+			}
+		}
+		
 		NOT = { is_country_type = decentralized }
 		aggressive_diplomatic_plays_permitted = yes
 		scope:target_country = {
 			NOT = { is_country_type = decentralized }
 			is_direct_subject_of = root
 			OR = {
+				has_diplomatic_pact = { who = root type = colony }
 				has_diplomatic_pact = { who = root type = puppet }
 				has_diplomatic_pact = { who = root type = vassal }
 			}
@@ -419,7 +474,7 @@ dp_annex_subject = {
 					country_has_primary_culture = cu:south_andean
 				}
 			}
-		}			
+		}
 	}
 	
 	ai_acceptance_max = 75
@@ -428,12 +483,11 @@ dp_annex_subject = {
 	
 	on_war_begins = {
 		scope:initiator = {
-			every_subject_or_below = {
+			every_direct_subject = {
 				limit = {
-					is_direct_subject_of = scope:initiator
 					NOT = { this = scope:target_country }
 				}
-				add_liberty_desire = 25
+				add_liberty_desire = annex_subject_base_liberty_desire_change
 				add_modifier = {
 					name = modifier_has_annexed_another_subject
 					months = 60
@@ -444,6 +498,20 @@ dp_annex_subject = {
 	}
 
 	on_war_end = {}
+	
+	on_demand_accepted = {
+		every_direct_subject = {
+			limit = {
+				NOT = { this = scope:target_country }
+			}
+			add_liberty_desire = 25
+			add_modifier = {
+				name = modifier_has_annexed_another_subject
+				months = 60
+				is_decaying = no
+			}
+		}
+	}
 }
 
 dp_revolution = {
@@ -519,26 +587,24 @@ dp_secession = {
 	}		
 	
 	possible = {
-		scope:target_country = {
-			is_secessionist = yes
-		}
+		scope:initiator = { is_secessionist = yes }
 	}
 
 	additional_involvement_trigger = {
 		NOT = { is_country_type = decentralized }
 		aggressive_diplomatic_plays_permitted = yes
 	
-		scope:target_country = {
+		scope:initiator = {
 			capital = {
 				region = {
-					save_temporary_scope_as = target_capital_region
+					save_temporary_scope_as = secession_capital_region
 				}
 			}
 		}
 		
 		OR = {
-			has_interest_marker_in_region = scope:target_capital_region
-			is_home_country_for = scope:target_country
+			has_interest_marker_in_region = scope:secession_capital_region
+			is_home_country_for = scope:initiator
 		}
 	}
 	
@@ -880,7 +946,7 @@ dp_unify_china = {
 	
 	selectable_in_lens = {
 		OR = {
-			has_government_type = gov_warlord_state
+			has_journal_entry = je_reunify_china
 			global_var:chinese_central_government ?= THIS
 		}
 	}
@@ -890,7 +956,7 @@ dp_unify_china = {
 		NOT = { is_country_type = decentralized }
 		is_subject = no
 		OR = {
-			has_government_type = gov_warlord_state
+			has_journal_entry = je_reunify_china
 			global_var:chinese_central_government ?= THIS
 		}
 		
@@ -898,7 +964,7 @@ dp_unify_china = {
 			NOT = { is_country_type = decentralized }
 			aggressive_diplomatic_plays_permitted = yes
 			OR = {
-				has_government_type = gov_warlord_state
+				has_journal_entry = je_reunify_china
 				global_var:chinese_central_government ?= THIS
 			}
 		}

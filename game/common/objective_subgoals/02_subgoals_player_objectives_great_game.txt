@@ -1,0 +1,423 @@
+﻿sg_great_game = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	trigger = {
+		OR = {
+			c:GBR ?= this
+			c:RUS ?= this
+			c:PER ?= this
+			is_afghan_nation = yes
+		}
+		NOT = {
+			has_global_variable = great_game_failed
+		}
+	}
+	
+	on_start = {
+		add_journal_entry = {
+			type = je_great_game_control
+			objective_subgoal = sg_great_game
+		}
+	}
+}
+
+sg_maintain_afghan_protectorate = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	unlocking_subgoals_all = {
+
+	}
+
+	trigger = {
+		NOT = {
+			has_global_variable = gg_afghanistan_protectorate_done
+		}
+		has_interest_marker_in_region = region_persia
+		OR = {
+			c:GBR?= THIS
+			c:RUS ?= THIS
+		}
+		has_journal_entry = je_great_game_control
+	}
+
+	on_start = {
+		add_journal_entry = {
+			type = je_maintain_afghan_protectorate
+			objective_subgoal = sg_maintain_afghan_protectorate
+		}
+	}
+}
+
+sg_disrupt_russian_caucasus = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	trigger = {
+		c:GBR?= THIS
+		exists = c:CIR
+		has_journal_entry = je_great_game_control
+	}
+	
+	on_start = {
+		add_journal_entry = {
+			type = je_disrupt_russian_caucasus
+			objective_subgoal = sg_disrupt_russian_caucasus
+		}
+	}
+}
+
+sg_counter_russian_pacific_influence = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	trigger = {
+		c:GBR?= THIS
+		c:RUS ?= {
+			any_scope_state = {
+				region = sr:region_manchuria
+				OR = {
+					any_scope_building = {
+						is_building_type = building_port
+						level >= 5
+					}
+					any_scope_building = {
+						is_building_type = building_naval_base
+						level >= 15
+					}
+				}
+			}
+		}
+		has_journal_entry = je_great_game_control
+	}
+
+	on_start = {
+		add_journal_entry = {
+			type = je_counter_russian_pacific_influence
+			objective_subgoal = sg_counter_russian_pacific_influence
+		}
+	}
+}
+
+sg_consolidate_british_india = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	trigger = {
+		c:GBR?= THIS
+		c:BIC ?= {
+			is_subject_of = c:GBR
+		}
+		has_journal_entry = je_great_game_control
+	}
+
+	on_start = {
+		add_journal_entry = {
+			type = je_consolidate_british_india
+			objective_subgoal = sg_consolidate_british_india
+		}
+	}
+}
+
+sg_repulse_russian_pamirs = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	trigger = {
+		c:GBR?= THIS
+		c:RUS ?= {
+			OR = {
+				any_scope_state = {
+					state_region = s:STATE_TAJIKISTAN
+				}
+				any_subject_or_below = {
+					any_scope_state = {
+						state_region = s:STATE_TAJIKISTAN
+					}
+				}
+			}
+		}
+		has_journal_entry = je_great_game_control
+		NOT = {
+			has_variable = dismissed_pamir_expedition
+		}
+	}
+
+	on_start = {
+		add_journal_entry = {
+			type = je_pamir_expedition_objective
+			objective_subgoal = sg_repulse_russian_pamirs
+		}
+	}
+}
+
+sg_consolidate_afghanistan = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	unlocking_subgoals_all = {
+
+	}
+
+	trigger = {
+		has_interest_marker_in_region = region_persia
+		OR = {
+			c:GBR?= THIS
+			c:RUS ?= THIS
+		}
+		has_journal_entry = je_great_game_control
+		exists = c:AFG
+	}
+
+	on_start = {
+		add_journal_entry = {
+			type = je_consolidate_afghanistan_objective
+			objective_subgoal = sg_consolidate_afghanistan
+		}
+	}
+}
+
+sg_secure_persian_border = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	trigger = {
+		c:RUS ?= THIS
+		exists = c:CIR
+		has_journal_entry = je_great_game_control
+	}
+	
+	on_start = {
+		add_journal_entry = {
+			type = je_secure_persian_border
+			objective_subgoal = sg_secure_persian_border
+		}
+	}
+}
+
+sg_unify_afghanistan = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	unlocking_subgoals_all = {
+
+	}
+
+	trigger = {
+		is_afghan_nation = yes
+		has_journal_entry = je_great_game_control
+	}
+
+	on_start = {
+		add_journal_entry = {
+			type = je_unify_afghanistan_objective
+			objective_subgoal = sg_unify_afghanistan
+		}
+	}
+}
+sg_pacify_kazakh_steppe = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	trigger = {
+		c:RUS ?= THIS
+		has_journal_entry = je_pacify_the_steppes
+		has_journal_entry = je_great_game_control
+	}
+	
+	on_start = {
+		add_journal_entry = {
+			type = je_pacify_kazakh_steppes
+			objective_subgoal = sg_pacify_kazakh_steppe
+		}
+	}
+}
+
+sg_codify_chinese_border = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	trigger = {
+		c:RUS ?= THIS
+		has_technology_researched = nationalism
+		has_journal_entry = je_great_game_control
+	}
+	
+	on_start = {
+		add_journal_entry = {
+			type = je_codify_chinese_border
+			objective_subgoal = sg_codify_chinese_border
+		}
+	}
+}
+
+sg_consolidate_central_asia = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	trigger = {
+		c:RUS ?= THIS
+		has_technology_researched = nationalism
+		has_journal_entry = je_great_game_control
+	}
+	
+	on_start = {
+		add_journal_entry = {
+			type = je_consolidate_central_asia
+			objective_subgoal = sg_consolidate_central_asia
+		}
+	}
+}
+
+sg_acquire_chinese_concessions = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	trigger = {
+		c:RUS ?= THIS
+		has_technology_researched = railways
+		any_scope_state = {
+			OR = {
+				state_region = s:STATE_OUTER_MANCHURIA
+				state_region = s:STATE_AMUR
+			}
+			is_incorporated = yes
+		}
+		has_journal_entry = je_great_game_control
+	}
+	
+	on_start = {
+		add_journal_entry = {
+			type = je_chinese_concessions
+			objective_subgoal = sg_acquire_chinese_concessions
+		}
+	}
+}
+
+sg_acquire_korean_protectorate = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	trigger = {
+		c:RUS ?= THIS
+        any_neighbouring_state = {
+            owner = c:KOR
+			is_incorporated = yes
+        }
+		c:KOR ?= {
+			is_country_type = unrecognized
+		}
+		has_journal_entry = je_great_game_control
+	}
+	
+	on_start = {
+		set_global_variable = korean_protectorate_started
+		add_journal_entry = {
+			type = je_acquire_korean_protectorate
+			objective_subgoal = sg_acquire_korean_protectorate
+		}
+	}
+}
+
+sg_expand_eastern_frontier = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	trigger = {
+		c:PER ?= this
+		has_journal_entry = je_great_game_control
+	}
+
+	on_start = {
+		add_journal_entry = {
+			type = je_eastern_frontier
+			objective_subgoal = sg_expand_eastern_frontier
+		}
+	}
+}
+
+sg_secure_influence_over_persia = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	trigger = {
+		has_interest_marker_in_region = region_persia
+		OR = {
+			c:GBR?= THIS
+			c:RUS ?= THIS
+		}
+		has_journal_entry = je_great_game_control
+	}
+
+	on_start = {
+		add_journal_entry = {
+			type = je_secure_influence_over_persia
+			objective_subgoal = sg_secure_influence_over_persia
+		}
+	}
+}
+
+sg_consolidate_persia = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	trigger = {
+		c:PER ?= this
+		has_journal_entry = je_great_game_control
+	}
+
+	on_start = {
+		add_journal_entry = {
+			type = je_consolidate_persia
+			objective_subgoal = sg_consolidate_persia
+		}
+	}
+}
+
+sg_achieve_sovereignty = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	trigger = {
+		OR = {
+			c:PER ?= this
+			is_afghan_nation = yes
+		}
+		is_country_type = unrecognized
+		has_journal_entry = je_great_game_control
+	}
+
+	on_start = {
+		add_journal_entry = {
+			type = je_achieve_sovereignty
+			objective_subgoal = sg_achieve_sovereignty
+		}
+	}
+}
+
+sg_secure_tibet = {
+	category = sgcat_great_game
+	is_repeatable = no
+
+	trigger = {
+		NOT = { c:TIB ?= THIS }
+		exists = c:TIB
+		country_rank >= rank_value:great_power
+		OR = {
+			is_country_type = recognized
+			is_country_type = colonial
+		}
+		has_variable = tibet_has_started
+		NOT = { has_global_variable = tibet_expedition_completed }
+		has_interest_marker_in_region = region_himalayas
+		has_journal_entry = je_great_game_control
+	}
+	
+	on_start = {
+		add_journal_entry = {
+			type = je_tibet_expedition
+			objective_subgoal = sg_secure_tibet
+		}
+	}
+}

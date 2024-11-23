@@ -2,7 +2,7 @@
 
 building_railway = {
 	building_group = bg_private_infrastructure	
-	texture = "gfx/interface/icons/building_icons/building_railway.dds"
+	icon = "gfx/interface/icons/building_icons/building_railway.dds"
 	
 	ai_nationalization_desire = 0.5 # AI is reluctant to privatize railways since they are likely to need subsidies anyway
 	
@@ -25,9 +25,6 @@ building_railway = {
 				owner = {
 					has_journal_entry = je_trans_siberian_railway
 				}
-				NOT = {
-					has_building = building_railway
-				}
 				OR = {
 					state_region = s:STATE_MOSCOW
 					state_region = s:STATE_YAROSLAVL
@@ -47,6 +44,74 @@ building_railway = {
 					state_region = s:STATE_OKHOTSK
 					state_region = s:STATE_AMUR
 					state_region = s:STATE_OUTER_MANCHURIA
+				}
+				NOR = {
+					has_building = building_railway
+					any_scope_building = {
+						is_building_type = building_railway
+						is_under_construction = yes
+					}
+				}
+			}
+			add = 10000
+		}
+		else_if = { # Shinkansen, my beloved
+			limit = {
+				owner = {
+					has_journal_entry = je_meiji_economy
+				}
+				is_incorporated = yes # Japan proper
+				NOR = {
+					has_building = building_railway
+					any_scope_building = {
+						is_building_type = building_railway
+						is_under_construction = yes
+					}
+				}
+			}
+			add = 10000
+		}
+		else_if = { # Trans-Continental Railways
+			limit = {
+				owner = {
+					has_journal_entry = je_trans_continental_railway
+				}
+				OR = {
+					state_region = s:STATE_NEBRASKA
+					state_region = s:STATE_WYOMING
+					state_region = s:STATE_UTAH
+					state_region = s:STATE_NEVADA
+					state_region = s:STATE_CALIFORNIA
+				}
+				NOR = {
+					has_building = building_railway
+					any_scope_building = {
+						is_building_type = building_railway
+						is_under_construction = yes
+					}
+				}
+			}
+			add = 10000
+		}
+		else_if = { # Canadian Pacific Highway
+			limit = {
+				owner = {
+					has_journal_entry = je_canada_pacific_railway
+				}
+				OR = {
+					state_region = s:STATE_QUEBEC
+					state_region = s:STATE_BRITISH_COLUMBIA
+					state_region = s:STATE_ONTARIO
+					state_region = s:STATE_ALBERTA
+					state_region = s:STATE_SASKATCHEWAN
+					state_region = s:STATE_MANITOBA
+				}
+				NOR = {
+					has_building = building_railway
+					any_scope_building = {
+						is_building_type = building_railway
+						is_under_construction = yes
+					}
 				}
 			}
 			add = 10000
@@ -100,7 +165,7 @@ building_trade_center = {
 
 	lens = infrastructure
 
-	texture = "gfx/interface/icons/building_icons/building_trade_center.dds"
+	icon = "gfx/interface/icons/building_icons/building_trade_center.dds"
 
 	production_method_groups = {
 		pmg_base_building_trade_center
@@ -111,7 +176,7 @@ building_trade_center = {
 	expandable = no
 	downsizeable = no
 	ownership_type = self
-	cannot_switch_owner = yes
+	can_switch_owner = no
 
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
 }
@@ -123,7 +188,7 @@ building_manor_house = {
 
 	lens = infrastructure
 
-	texture = "gfx/interface/icons/building_icons/building_manor_houses.dds"
+	icon = "gfx/interface/icons/building_icons/building_manor_houses.dds"
 
 	production_method_groups = {
 		pmg_ownership_building_manor_house
@@ -147,6 +212,7 @@ building_manor_house = {
 						OR = {
 							has_law = law_type:law_agrarianism
 							has_law = law_type:law_industry_banned
+							has_law = law_type:law_extraction_economy
 						}						
 					}
 					multiply = 2.0
@@ -163,6 +229,7 @@ building_manor_house = {
 						OR = {
 							has_law = law_type:law_agrarianism
 							has_law = law_type:law_industry_banned
+							has_law = law_type:law_extraction_economy
 						}						
 					}
 					multiply = 2.0
@@ -179,6 +246,7 @@ building_manor_house = {
 						OR = {
 							has_law = law_type:law_agrarianism
 							has_law = law_type:law_industry_banned
+							has_law = law_type:law_extraction_economy
 						}						
 					}
 					multiply = 2.0
@@ -250,7 +318,7 @@ building_financial_district = {
 
 	lens = infrastructure
 
-	texture = "gfx/interface/icons/building_icons/building_financial_district.dds"
+	icon = "gfx/interface/icons/building_icons/building_financial_district.dds"
 
 	production_method_groups = {
 		pmg_ownership_building_financial_district
@@ -270,7 +338,10 @@ building_financial_district = {
 				}				
 				else_if = {
 					limit = {
-						has_law = law_type:law_industry_banned
+						OR = {
+							has_law = law_type:law_industry_banned
+							has_law = law_type:law_extraction_economy
+						}
 					}
 					multiply = 0.5
 				}	
@@ -463,7 +534,10 @@ building_financial_district = {
 				}	
 				else_if = {
 					limit = {
-						has_law = law_type:law_industry_banned
+						OR = {
+							has_law = law_type:law_industry_banned
+							has_law = law_type:law_extraction_economy
+						}
 					}
 					multiply = 0.5
 				}	
@@ -506,6 +580,30 @@ building_financial_district = {
 	expandable = no
 	downsizeable = no
 	ownership_type = other
+
+	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
+}
+
+building_company_headquarter = {
+	building_group = bg_company_headquarter
+	city_type = city
+	levels_per_mesh = 10
+
+	lens = infrastructure
+
+	icon = "gfx/interface/icons/building_icons/building_company_hq.dds"
+
+	production_method_groups = {
+		pmg_ownership_building_company_headquarter
+	}
+	
+	investment_scores = {}
+
+	buildable = no
+	expandable = no
+	downsizeable = no
+	ownership_type = other
+	company_headquarter = yes
 
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
 }

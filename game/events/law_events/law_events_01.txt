@@ -500,6 +500,13 @@ generic_laws.6 = {
 		has_law = law_type:law_monarchy
 		enacting_any_law = yes
 		exists = currently_enacting_law.type
+		NOR = {
+			is_enacting_law = law_type:law_council_republic
+			is_enacting_law = law_type:law_presidential_republic
+			is_enacting_law = law_type:law_parliamentary_republic
+			is_enacting_law = law_type:law_theocracy
+			is_enacting_law = law_type:law_corporate_state
+		}
 		ruler = {
 			OR = {
 				law_stance = {
@@ -560,6 +567,12 @@ generic_laws.6 = {
 						value < neutral
 					}
 				}
+				NOT = {
+					law_stance = {
+						law = owner.currently_enacting_law.type
+						value > neutral
+					}
+				}
 			}
 			add_modifier = {
 				name = royal_prerogative
@@ -586,6 +599,12 @@ generic_laws.6 = {
 					law_stance = {
 						law = owner.currently_enacting_law.type
 						value < neutral
+					}
+				}
+				NOT = {
+					law_stance = {
+						law = owner.currently_enacting_law.type
+						value > neutral
 					}
 				}
 			}
@@ -640,7 +659,10 @@ generic_laws.7 = {
 			is_incorporated = yes
 		}
 		any_political_movement = {
-			is_political_movement_type = movement_to_enact
+			law_enactment_stance = {
+				law = owner.currently_enacting_law.type
+				value > neutral
+			}			
 		}
 	}
 
@@ -666,9 +688,12 @@ generic_laws.7 = {
 		}
 		random_political_movement = {
 			limit = {
-				is_political_movement_type = movement_to_enact
+				law_stance = {
+					law = owner.currently_enacting_law.type
+					value > neutral
+				}	
 			}
-			save_scope_as = enacting_movement
+			save_scope_as = supporting_movement
 		}
 	}
 
@@ -679,18 +704,16 @@ generic_laws.7 = {
 	option = {
 		name = generic_laws.7.a # popular support for law and pro-law IG
         default_option = yes
-
 		if = {
 			limit = {
-				scope:enacting_movement = { desired_law = scope:current_law_scope.type }
+				exists = scope:supporting_movement
 			}
-			scope:enacting_movement = {
+			scope:supporting_movement = {
 				add_modifier = {
 					name = grassroots_support_for_movement
 				}
 			}
 		}
-
 		else = { 
 			add_enactment_modifier = {
 				name = wave_of_popular_support
@@ -708,7 +731,7 @@ generic_laws.7 = {
 
 		scope:grassroots_state_scope = {
 			add_loyalists_in_state = {
-				strata = poor
+				strata = lower
 				value = 0.2
 			}
 		}
@@ -862,8 +885,8 @@ generic_laws.9 = {
 		}
 		any_scope_state = {
 			is_incorporated = yes
-			any_scope_pop = { pop_is_discriminated = yes }
-			any_scope_pop = { pop_is_discriminated = no }
+			any_scope_pop = { pop_acceptance < acceptance_status_4 }
+			any_scope_pop = { pop_acceptance >= acceptance_status_4 }
 		}
 	}
 
@@ -883,15 +906,15 @@ generic_laws.9 = {
 		}
 		random_scope_state = {
 			limit = {
-				any_scope_pop = { pop_is_discriminated = yes }
-				any_scope_pop = { pop_is_discriminated = no }
+				any_scope_pop = { pop_acceptance < acceptance_status_4 }
+				any_scope_pop = { pop_acceptance >= acceptance_status_4 }
 			}
 			random_scope_pop = {
-				limit = { pop_is_discriminated = no }
+				limit = { pop_acceptance >= acceptance_status_4 }
 				save_scope_as = primary_culture_pop_scope
 			}
 			random_scope_pop = {
-				limit = { pop_is_discriminated = yes }
+				limit = { pop_acceptance < acceptance_status_4 }
 				save_scope_as = non_accepted_culture_pop_scope
 				culture = {
 					save_scope_as = non_accepted_culture_scope

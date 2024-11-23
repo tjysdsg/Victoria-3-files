@@ -25,50 +25,15 @@
 
 	fail = {
 		OR = {
-			has_revolution_over_law_type = law_type:law_slavery_banned
-			has_revolution_over_law_type = law_type:law_slave_trade
-			has_revolution_over_law_type = law_type:law_legacy_slavery
-			has_revolution_over_law_type = law_type:law_debt_slavery
-		}		
-	
-		OR = {
-			# CSA
-			custom_tooltip = {
-				text = acw_landowner_revolt
-				any_country = {
-					is_revolutionary = yes
-					country_definition = root.country_definition
-					ig:ig_landowners = {
-						is_in_government = yes
-					}					
-				}
-			}
-			# FSA
-			custom_tooltip = {
-				text = acw_antislaver_revolt
-				ig:ig_landowners = {
-					is_in_government = yes
-				}
-				NOT = { has_law = law_type:law_slavery_banned }
-				NOT = { is_enacting_law = law_type:law_slavery_banned }
-				any_country = {
-					is_revolutionary = yes
-					country_definition = root.country_definition
-				}
-			}
-		}
+			has_civil_war_from_movement_type = movement_type:movement_pro_slavery
+			has_civil_war_from_movement_type = movement_type:movement_anti_slavery
+		}	
 	}
 
 	on_fail = {
 		if = {
 			limit = {
-				any_country = {
-					is_revolutionary = yes
-					country_definition = root.country_definition
-					ig:ig_landowners = {
-						is_in_government = yes
-					}				
-				}
+				has_civil_war_from_movement_type = movement_type:movement_pro_slavery
 			}
 			set_variable = csa_will_spawn_var
 		}
@@ -264,12 +229,7 @@ je_acw_equality = {
 	group = je_group_historical_content
 
 	complete = {
-		custom_tooltip = {
-			text = acw_african_american_culture_complete_tt
-			cu:afro_american = {
-				NOT = { culture_is_discriminated_in = ROOT }
-			}
-		}
+		cultural_acceptance_base = { target = cu:afro_american value >= acceptance_status_4 }
 	}
 
 	on_complete = {

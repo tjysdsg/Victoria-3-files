@@ -210,8 +210,23 @@ types TooltipTypes
 					margin = { 18 15 }
 				}
 				margin_top = 65
+
+				block "tooltip_content_before" {}
 				
 				block "tooltip_content" {
+					DefaultTooltipTextBox = {
+						name = "DebugText"
+						visible = "[InDebugMode]"
+						margin_bottom = 0
+						block "text_debug"
+						{
+						}
+						autoresize = yes
+						multiline = yes
+						maximumsize = { @tooltip_max_width -1 }
+						fonttintcolor = "[TooltipInfo.GetTintColor]"
+					}
+
 					DefaultTooltipTextBox = {
 						name = "BeforeBeforeTooltipText"
 						margin_bottom = 0
@@ -761,19 +776,26 @@ template table_header {
 template table_cell {
 	layoutpolicy_horizontal = expanding
 	layoutpolicy_vertical = expanding
+	elide = right
+	fontsize_min = 12
 
 	block "autoresize_table_cells" {
 		autoresize = yes
 	}
-
-	elide = right
-	fontsize_min = 12
 
 	block "table_style" {
 		margin = { 20 3 }
 		margin_right = 0
 		minimumsize = { -1 30 }
 		maximumsize = { -1 30 }
+	}
+
+	background = {
+		block "table_item_background_visibility" {
+			visible = "[IsOdd_int32(PdxGuiWidget.GetIndexInDataModel)]"
+		}
+
+		block "row_background" {}
 	}
 }
 

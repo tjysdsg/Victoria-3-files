@@ -1,0 +1,467 @@
+### this is an imported file. please make as little changes to this file as possible.
+### when you make a change please mark it very clearly using a pair of comment lines with the text '### v3' and '### to here'
+### texture paths and audio event ids are an exception to this and can be changed without marking
+
+template SDKTextStyle
+{
+	using = Font_Type_Standard
+	using = Font_Size_Small
+	align = left
+	default_format = "#medium"
+
+	block "sdk_text_style"
+	{
+	}
+}
+
+template SDKButtonTextStyle
+{
+	block "sdk_button_text_style"
+	{
+		name = "sdk_button_text"
+		parentanchor = vcenter|hcenter
+		#font = StandardGameFont
+		#fontsize = 15
+		fontcolor = { 0.86 0.86 0.73 1 }
+		autoresize = yes
+		position = { 0 0 }
+		align = center
+	}
+}
+
+template SDKErrorTextStyle
+{
+	block "sdk_error_text_style"
+	{
+		#font = StandardGameFont
+		align = left
+		fontcolor = { 1 0 0 1 }
+		#fontsize = 13
+	}
+}
+
+template SDKButtonStyle
+{
+	block "sdk_button_style"
+	{
+		texture = "gfx/editor_gui/editor_button.dds"
+		gfxtype = framedbuttongfx
+		spriteType = CorneredStretched
+		spriteborder = { 4 4 }
+		effectname = "NoHighlight"
+		framesize = { 16 16 }
+		upframe = 1
+		downframe = 2
+		overframe = 3
+		disableframe = 4
+		intersectionmask = yes
+	}
+}
+
+template SDKDropdownButtonStyle
+{
+	block "sdk_dropdown_button_style"
+	{
+		texture = "gfx/editor_gui/editor_dropdown.dds"
+		spriteType = CorneredStretched
+		gfxtype = framedbuttongfx
+		effectname = "NoHighlight"
+		spriteborder = { 4 4 }
+		spriteborder_right = 24
+		button_trigger = none
+		framesize = { 32 16 }
+		upframe = 1
+		downframe = 2
+		overframe = 3
+		disableframe = 4
+	}
+}
+
+template sdk_dropdown_enum
+{
+	block "sdk_dropdown_enum"
+	{
+		alwaystransparent = no
+		active_item = {
+			widget = {
+				size = { 250 30 }
+				block "active_item"
+				{
+
+				}
+
+				button = {
+					size = { 100% 100% }
+					using = SDKDropdownButtonStyle
+				}
+
+				editor_textbox = {
+					block "item_text"
+					{
+						text = ""
+					}
+					position = { 10 0 }
+					parentanchor = vcenter|left
+					#fontsize = 12
+				}
+			}
+		}
+
+		item = {
+			widget = {
+				size = { 250 20 }
+				block "item"
+				{
+				}
+
+				button = {
+					size = { 100% 100% }
+					texture = "gfx/editor_gui/editor_dropdown_item.dds"
+					spriteType = CorneredTiled
+					spriteborder = { 1 1 }
+					gfxtype = framedbuttongfx
+					framesize = { 8 8 }
+					upframe = 1
+					downframe = 2
+					overframe = 2
+					disableframe = 1
+					button_trigger = none
+				}
+
+				editor_textbox = {
+					block "item_text"
+					{
+						text = ""
+					}
+					position = { 10 8 }
+					#fontsize = 12
+				}
+			}
+		}
+
+		list = {
+			scrollarea = {
+				position = { 2 30 }
+				autoresizescrollarea = yes
+				alwaystransparent = yes
+				maximumsize = { 250 210 }
+				block "scrollarea"
+				{
+				}
+
+				background = {
+					margin = { 2 2 }
+					margin_bottom = 6
+					margin_right = 6
+					texture = "gfx/editor_gui/editor_dropdown_list.dds"
+					spriteType = CorneredStretched
+					spriteborder = { 6 6 }
+					spriteborder_right = 8
+					spriteborder_bottom = 8
+					shaderfile = "gfx/FX/pdxgui_default.shader"
+				}
+
+				scrollwidget = {
+					dynamicgridbox = {
+						alwaystransparent = no
+					}
+				}
+
+				scrollbar_vertical = {
+					using = editor_vertical_scrollbar
+				}
+
+				scrollbar_horizontal = {
+					using = editor_horizontal_scrollbar
+				}
+			}
+		}
+	}
+}
+
+template sdk_vertical_scrollbar
+{
+	block "sdk_vertical_scrollbar"
+	{
+		using = editor_vertical_scrollbar
+	}
+}
+
+template sdk_horizontal_scrollbar
+{
+	block "sdk_horizontal_scrollbar"
+	{
+		using = editor_horizontal_scrollbar
+	}
+}
+
+types SDK
+{
+	type sdk_vertical_spacer = widget {
+		block "sdk_vertical_spacer"
+		{
+			size = { 0 5 }
+		}
+	}
+
+	type sdk_horizontal_spacer = widget {
+		block "sdk_horizontal_spacer"
+		{
+			size = { 5 0 }
+		}
+	}
+
+	type sdk_window = window {
+		block "sdk_window"
+		{
+			shaderfile = "gfx/FX/pdxgui_default.shader"
+			texture = "gfx/editor_gui/editor_window.dds"
+			spriteType = CorneredStretched
+			spriteborder = { 6 6 }
+			spriteborder_top = 30
+			gfxtype = windowgfx
+			alwaystransparent = no
+			resizable = yes
+			scissor = yes
+			size = { 128 64 }
+			movable = yes
+			filter_mouse = none
+			
+			editor_textbox = {
+				position = { 10 4 }
+				size = { 20 20 }
+				autoresize = yes
+
+				block "title_properties" {}
+				block "title"
+				{
+					raw_text = "#BOLD;COLOR:{1.0,1.0,1.0} Untitled #!"
+				}
+			}
+
+			vbox = {
+				block "vbox_properties"
+				{
+					margin = { 4 4 }
+					alwaystransparent = yes
+					restrictparent_min = yes
+				}
+				
+				widget = {
+					size = { 0 29 }
+					layoutpolicy_horizontal = Fixed
+				}
+
+				block "before_content"
+				{
+				}
+				
+				hbox = {
+					block "hbox_properties"
+					{
+						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = Preferred
+					}
+
+					widget = {
+						size = { 5 0 }
+						layoutpolicy_horizontal = Fixed
+					}
+
+					block "content_layout"
+					{
+						vbox = {
+							scissor = yes
+							
+							layoutpolicy_horizontal = expanding
+							layoutpolicy_vertical = preferred
+						
+							block "content" 
+							{
+							}
+							
+							widget = {
+								layoutpolicy_vertical = preferred
+							}
+						}
+					}
+					
+					widget = {
+						size = { 5 0 }
+						layoutpolicy_horizontal = Fixed
+					}
+				}
+				
+				widget = {
+					size = { 0 5 }
+					layoutpolicy_vertical = Fixed
+				}
+			}
+		}
+	}
+
+	type sdk_button = button {
+		block "sdk_button_size"
+		{
+			size = { 150 50 }
+			minimumsize = { 150 50 }
+		}
+
+		using = SDKButtonStyle
+
+		buttonText = {
+			textbox = {
+				using = SDKButtonTextStyle
+			}
+		}
+	}
+
+	type sdk_button_wide = sdk_button {
+		block "sdk_button_size"
+		{
+			size = { 200 50 }
+			minimumsize = { 150 50 }
+		}
+	}
+
+	### v3 replacement ( our cogwheel )
+	type sdk_load_indicator = cogwheel_animation_small
+	{
+		size = { 38 38 }
+		block "load_indicator"
+		{
+			visible = no
+		}
+	}
+	#type sdk_load_indicator = progressbar
+	#{
+	#	# parentanchor = vcenter|hcenter
+	#	size = { 44 44 }
+	#	gfxtype = framedprogressbargfx
+	#	texture = "gfx/interface/loading_progress.dds"
+	#	framesize = { 44 44 }
+	#	loopinterval = 1.5
+	#	max = 0
+	#	block "load_indicator"
+	#	{
+	#		visible = no
+	#	}
+	#}
+	### to here
+
+	type sdk_button_load_indicator = button_standard {
+		sdk_load_indicator = {}
+	}
+
+	type sdk_textbox = textbox {
+		text = ""
+		block "textbox_size"
+		{
+			size = { 200 30 }
+		}
+		using = SDKTextStyle
+		block "textboxstyle"
+		{
+		}
+	}
+
+	type sdk_error_textbox = textbox {
+		text = ""
+		multiline = yes
+		layoutpolicy_vertical = expanding
+		using = SDKErrorTextStyle
+		block "textboxstyle"
+		{
+		}
+	}
+
+	type sdk_required_textbox = textbox {
+		block "required_field"
+		{
+			raw_text = "*"
+		}
+		minimumsize = { 10 -1 }
+		using = SDKTextStyle
+		autoresize = yes
+		block "textboxstyle"
+		{
+		}
+		fontcolor = { 1 0 0 1 }
+	}
+
+	type sdk_dropdown = dropDown {
+		layoutpolicy_horizontal = expanding
+		block "sdk_dropdown_name"
+		{
+			name = "sdk_dropdown"
+		}
+		block "sdk_dropdown"
+		{
+		}
+		using = sdk_dropdown_enum
+	}
+
+	type sdk_textbox_entry = hbox {
+		layoutpolicy_horizontal = expanding
+		restrictparent_min = yes
+		layoutpolicy_vertical = fixed
+		
+		editbox_standard_with_label = {
+			blockoverride "editbox_label"
+			{
+				block "title"
+				{
+					raw_text = "Title:"
+				}
+			}
+			layoutpolicy_horizontal = expanding
+			block "editbox_size"
+			{
+				size = { 130 30 }
+			}
+		}
+	}
+
+	type sdk_dropdown_entry = hbox {
+		layoutpolicy_horizontal = expanding
+		sdk_required_textbox={}
+		sdk_vertical_spacer={}
+		sdk_textbox = {
+			block "title"
+			{
+				raw_text = "Title:"
+			}
+		}
+		sdk_dropdown = {
+		}
+	}
+
+	type sdk_checkbutton = hbox {
+		checkbutton = {
+			gfxtype = checkbuttongfx
+			shaderfile = "gfx/FX/pdxgui_pushbutton.shader"
+			texture = "gfx/editor_gui/editor_checkbox.dds"
+			framesize = { 16 16 }
+			size = { 32 32 }
+
+			block "checkbutton"
+			{
+			}
+		}
+
+		sdk_horizontal_spacer={}
+
+		sdk_textbox = {
+			multiline = yes
+			#size = { 300 100% }
+			maximumsize = { 300 800 }
+			minimumsize = { 200 50 }
+			align = top
+
+			block "label"
+			{
+				raw_text = "Label"
+			}
+		}
+	}
+}

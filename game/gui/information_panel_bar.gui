@@ -13,7 +13,7 @@
 
 @diplomatic_position = 320
 @technology_position = 360
-@culture_position = 400
+@society_position = 400
 @population_position = 440
 @journal_position = 480
 @companies_position = 520
@@ -28,6 +28,7 @@
 types information_panel_bar_types {
 	type information_panel_bar = widget {
 		name = "information_panel_bar"
+		max_update_rate = 8
 		using = hud_visibility
 		allow_outside = yes
 		focuspolicy = all
@@ -242,7 +243,7 @@ types information_panel_bar_types {
 
 						### DEFAULT LAW ENACTMENT PROGRESS
 						animated_progresspie = {
-							visible = "[Not(LessThan_int32(GetPlayer.GetGovernmentLegitimacy, '(int32)25'))]"
+							visible = "[GetPlayer.HasProgressingLawEnactment]"
 							parentanchor = center
 							texture = "gfx/interface/main_hud/sidebar_progress.dds"
 							size = { 100% 100% }
@@ -253,9 +254,9 @@ types information_panel_bar_types {
 							alwaystransparent = yes
 						}
 
-						### IF ILLEGITMATE GOVERNMENT - RED PROGRESS
+						### IF LAW ENACTMENT CAN'T PROGRESS, E.G. BECAUSE OF AN ILLEGITMATE GOVERNMENT - RED PROGRESS
 						animated_progresspie = {
-							visible = "[LessThan_int32(GetPlayer.GetGovernmentLegitimacy, '(int32)25')]"
+							visible = "[Not(GetPlayer.HasProgressingLawEnactment)]"
 							parentanchor = center
 							texture = "gfx/interface/main_hud/sidebar_progress_red.dds"
 							size = { 100% 100% }
@@ -351,7 +352,7 @@ types information_panel_bar_types {
 				sidebar_label_button = {
 					position = { -100 @trade_position }
 					blockoverride "onclick" {
-						onclick = "[InformationPanelBar.OpenMarketPanelCycleTabs(AccessPlayer.AccessFirstMarket, 'market', 'default|trade_routes|trade_suggestions|states')]"
+						onclick = "[InformationPanelBar.OpenMarketPanelCycleTabs(AccessPlayer.AccessFirstMarket, 'market', 'default|trade_routes|food_security|states')]"
 						input_action = "open_market"
 					}
 				}
@@ -375,7 +376,7 @@ types information_panel_bar_types {
 						blockoverride "button_selected" {
 							visible = "[InformationPanelBar.IsPanelOpen('market')]"
 						}
-						onclick = "[InformationPanelBar.OpenMarketPanelCycleTabs(AccessPlayer.AccessFirstMarket, 'market', 'default|trade_routes|trade_suggestions|states')]"
+						onclick = "[InformationPanelBar.OpenMarketPanelCycleTabs(AccessPlayer.AccessFirstMarket, 'market', 'default|trade_routes|food_security|states')]"
 					}
 				}
 				sidebar_tooltip_area = {
@@ -573,43 +574,43 @@ types information_panel_bar_types {
 					input_action = "open_companies"
 				}				
 
-				### CULTURE
+				### SOCIETY
 				sidebar_label_button_small = {
 					enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
-					position = { -100 @culture_position }
+					position = { -100 @society_position }
 					blockoverride "onclick" {
-						onclick = "[InformationPanelBar.OpenPanelCycleTabs('culture', 'default|nation_formation')]"
-						input_action = "open_culture"
+						onclick = "[InformationPanelBar.OpenPanelCycleTabs('society', 'default|cultures|religions')]"
+						input_action = "open_society"
 					}
 				}
 				sidebar_label_text_small = {
-					position = { -100 @culture_position }
-					text = "CULTURE_OVERVIEW"
+					position = { -100 @society_position }
+					text = "SOCIETY_OVERVIEW"
 				}
 				widget = {
-					name = "tutorial_highlight_culture"
+					name = "tutorial_highlight_society"
 					enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
-					position = { 0 @culture_position }
+					position = { 0 @society_position }
 					using = clickthrough_blocker
 					using = sidebar_button_size_small
 					using = selected_sidepanel_animation_small
 					blockoverride "selected_visibility" {
-						visible = "[InformationPanelBar.IsPanelOpen('culture')]"
+						visible = "[InformationPanelBar.IsPanelOpen('society')]"
 					}
 					sidepanel_button_small = {
 						blockoverride "icon" {
-							texture = "gfx/interface/main_hud/culture_overview_btn.dds"
+							texture = "gfx/interface/main_hud/society_btn.dds"
 						}
 						blockoverride "button_selected" {
-							visible = "[InformationPanelBar.IsPanelOpen('culture')]"
+							visible = "[InformationPanelBar.IsPanelOpen('society')]"
 						}
-						onclick = "[InformationPanelBar.OpenPanelCycleTabs('culture', 'default|nation_formation')]"
+						onclick = "[InformationPanelBar.OpenPanelCycleTabs('society', 'default|cultures|religions')]"
 					}
 				}
 				sidebar_tooltip_area_small = {
-					position = { 0 @culture_position }
-					tooltip = "BUTTON_CULTURE_OVERVIEW"
-					input_action = "open_culture"
+					position = { 0 @society_position }
+					tooltip = "BUTTON_SOCIETY_OVERVIEW"
+					input_action = "open_society"
 				}
 
 				### POPULATION

@@ -288,7 +288,7 @@ enslave_discriminated_farm_workers = {
 	every_scope_pop = {
 		limit = {
 			is_pop_type = laborers
-			pop_is_discriminated = yes
+			pop_acceptance < acceptance_status_4
 			OR = {
 				pop_employment_building_group = bg_agriculture
 				pop_employment_building_group = bg_ranching
@@ -308,7 +308,7 @@ save_revolution_scopes = {
 	}
 	random_political_movement = {
 		limit = {
-			is_revolutionary_movement = yes
+			is_revolutionary = yes
 		}
 		save_scope_as = ongoing_revolution_movement
 	}
@@ -323,25 +323,19 @@ save_agitator_law_scopes = {
 			limit = {
 				has_role = agitator
 				OR = {
-					law_stance = {
+					law_enactment_stance = {
 						law = owner.currently_enacting_law.type
 						value > neutral
 					}
 					AND = {	
-						law_stance = {
+						law_enactment_stance = {
 							law = owner.currently_enacting_law.type
-							value > strongly_approve # Equals 'count'
+							value = neutral
 						}
 						interest_group = {
-							law_stance = {
+							law_enactment_stance = {
 								law = owner.currently_enacting_law.type
 								value > neutral
-							}
-							NOT = {
-								law_stance = {
-									law = owner.currently_enacting_law.type
-									value > strongly_approve # Equals 'count'
-								}
 							}
 						}
 					}
@@ -354,11 +348,10 @@ save_agitator_law_scopes = {
 		}
 		random_political_movement = {
 			limit = {
-				OR = {	
-					is_political_movement_type = movement_to_enact
-					is_political_movement_type = movement_to_restore	
+				law_enactment_stance = {
+					law = owner.currently_enacting_law.type
+					value > neutral
 				}
-				this.desired_law = root.currently_enacting_law.type
 			}
 			save_scope_as = supporting_movement
 		}
@@ -372,25 +365,19 @@ save_agitator_law_scopes = {
 			limit = {
 				has_role = agitator
 				OR = {
-					law_stance = {
+					law_enactment_stance = {
 						law = owner.currently_enacting_law.type
 						value < neutral
 					}
 					AND = {	
-						law_stance = {
+						law_enactment_stance = {
 							law = owner.currently_enacting_law.type
-							value > strongly_approve # Equals 'count'
+							value = neutral
 						}
 						interest_group = {
-							law_stance = {
+							law_enactment_stance = {
 								law = owner.currently_enacting_law.type
 								value < neutral
-							}
-							NOT = {
-								law_stance = {
-									law = owner.currently_enacting_law.type
-									value > strongly_approve # Equals 'count'
-								}
 							}
 						}
 					}
@@ -403,7 +390,10 @@ save_agitator_law_scopes = {
 		}
 		random_political_movement = {
 			limit = {
-				is_political_movement_type = movement_to_preserve
+				law_enactment_stance = {
+					law = owner.currently_enacting_law.type
+					value < neutral
+				}
 			}
 			save_scope_as = opposing_movement
 		}
@@ -749,7 +739,7 @@ generate_french_monarch = {
 					}
 					transfer_character = root
 					hidden_effect = {
-						remove_modifier = in_exile_modifier
+						free_from_exile_effect = yes
 					}
 					set_character_as_ruler = yes
 					add_character_role = politician

@@ -19,7 +19,7 @@
 
 	duration = 3
 
-	cooldown = { months = normal_modifier_time }
+	cooldown = { months = short_modifier_time }
 
 	trigger = {
 		has_potential_resource = bg_rubber
@@ -31,10 +31,18 @@
 				amount > 1
 			}
 		}
+		NOT = {
+			owner = {
+				has_variable = rubber_rush_event_var
+			}
+		}
 	}
 
 	immediate = {
 		save_scope_as = rubber_state
+		owner = {
+			set_variable = { name = rubber_rush_event_var months = short_modifier_time }
+		}
 	}
 
 	option = { #plant more rubber here
@@ -53,8 +61,8 @@
 		name = rubber_events.1.b
 		trigger = {
 			any_neighbouring_state = {
-				is_incorporated = yes
 				has_potential_resource = bg_rubber
+				owner = scope:rubber_state.owner
 				state_region = {
 					remaining_undepleted = {
 						type = bg_rubber
@@ -65,7 +73,7 @@
 		}
 		random_neighbouring_state = {
 			limit = {
-				is_incorporated = yes
+				owner = scope:rubber_state.owner
 				has_potential_resource = bg_rubber
 			}
 			force_resource_discovery = bg_rubber

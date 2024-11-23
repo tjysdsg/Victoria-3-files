@@ -1,0 +1,278 @@
+﻿demand_return_of_koh_i_noor = {
+	is_shown = {	
+		has_dlc_feature = ip2_content
+		any_primary_culture = {
+			has_discrimination_trait = south_asian_heritage
+		}
+		is_subject = no	
+		country_rank >= rank_value:unrecognized_major_power
+		any_country = {
+			country_is_in_europe = yes
+			has_variable = koh_i_noor
+		}
+	}
+	
+	possible = {
+		custom_tooltip = {
+			text = koh_i_noor_in_europe_tt
+			any_country = {
+				country_is_in_europe = yes
+				has_variable = koh_i_noor
+			}
+		}
+		custom_tooltip = {
+			text = not_at_war_with_koh_i_noor_owner_tt
+			NOT = {
+				any_country = {
+					custom_tooltip = {
+						text = owns_koh_i_noor_tt
+						has_variable = koh_i_noor
+					}
+					has_war_with = ROOT 
+				}
+			}
+		}
+		custom_tooltip = {
+			text = koh_i_noor_return_requested_too_recently_tt
+			NOT = {
+				has_global_variable = koh_i_noor_decision_return_demanded
+			}
+		}
+	}
+	
+	when_taken = {
+		set_global_variable = { name = koh_i_noor_decision_return_demanded years = 10 }
+		random_country = {
+			limit = {
+				has_variable = koh_i_noor
+			}
+			save_scope_as = diamond_country
+			set_variable = { name = koh_i_noor_decision_user value = prev days = 180 }
+			custom_tooltip = {
+				text = demand_return_of_diamond_tt
+				trigger_event = { id = india_events.4 }
+			}
+		}
+	}
+
+	ai_chance = {
+		base = 0
+		modifier = {
+			trigger = { 
+				any_country = {
+					has_variable = koh_i_noor
+					relations:root <= relations_threshold:cordial
+				}
+			}
+			add = 10
+		}
+		modifier = {
+			trigger = {
+				has_strategy = ai_strategy_armed_isolationism
+			}
+			add = -10
+		}		
+	}
+}
+
+make_delhi_capital = {
+	is_shown = {
+		c:BIC ?= this
+		NOT = {
+			has_variable = made_delhi_capital_var
+		}
+		p:xE0EFA0.state.owner = root
+	}
+	
+	possible = {
+		any_scope_state = {
+			state_region = s:STATE_DELHI
+			is_incorporated = yes
+			any_scope_building = {
+				is_building_type = building_urban_center
+				level >= 5
+			}
+		}
+		OR = {
+		    any_political_movement = { 
+		        is_political_movement_type = movement_muslim_nationalist
+		        political_movement_radicalism >= 0.1
+		    }
+		    any_political_movement = { 
+		        is_political_movement_type = movement_hindu_nationalist
+		        political_movement_radicalism >= 0.1
+		    }
+		    has_technology_researched = political_agitation
+		}
+	}
+	
+	when_taken = {
+		if = {
+			limit = {
+				NOT = {
+					capital = {
+						state_region = s:STATE_DELHI
+					}
+				}
+			}
+			set_capital = STATE_DELHI
+		}
+		set_variable = made_delhi_capital_var
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_DELHI
+			}
+			add_modifier = {
+				name = new_delhi_modifier
+			}
+		}
+		add_modifier = {
+			name = new_delhi_cost_modifier
+			months = normal_modifier_time
+			multiplier = money_amount_multiplier_small
+		}
+		if = {
+			limit = {
+				any_political_movement = {
+					OR = {
+						is_political_movement_type = movement_muslim_nationalist
+						is_political_movement_type = movement_hindu_nationalist
+					}					
+				}
+			}
+			every_political_movement = {
+				limit = {
+					OR = {
+						is_political_movement_type = movement_muslim_nationalist
+						is_political_movement_type = movement_hindu_nationalist
+					}
+				}
+				add_modifier = {
+					name = delhi_made_capital_modifier
+					months = normal_modifier_time
+				}
+			}
+		}
+	}
+
+	ai_chance = {
+		base = 0
+		modifier = {
+			trigger = {
+				has_strategy = ai_strategy_armed_isolationism
+			}
+			add = -10
+		}		
+	}
+}
+
+pressure_to_sell_berar_province = {
+	is_shown = {
+		c:BIC ?= this
+		is_at_war = no
+		NOT = {
+			has_variable = sold_berar_var
+		}
+		any_scope_state = {
+			state_region = s:STATE_CENTRAL_PROVINCES
+		}
+		any_neighbouring_state = {
+			state_region = s:STATE_CENTRAL_PROVINCES
+			owner = {
+				c:HYD ?= this
+				is_subject_of = root
+				is_at_war = no
+			}
+		}
+	}
+	
+	possible = {
+		OR = {
+			c:HYD ?= {
+				any_scope_state = {
+					state_region = s:STATE_CENTRAL_PROVINCES
+					turmoil >= 0.2
+				}
+			}
+			AND = {
+				c:HYD ?= {
+					any_scope_state = {
+						state_region = s:STATE_CENTRAL_PROVINCES
+						is_incorporated = no
+					}
+				}
+				game_date > 1850.1.1
+			}
+			c:HYD ?= {
+				liberty_desire <= 10
+			}
+		}
+	}
+	
+	when_taken = {
+		c:HYD = {
+			trigger_event = { id = india_events.18 }
+		}
+		custom_tooltip = if_they_accept_tt
+		show_as_tooltip = {
+			add_modifier = {
+				name = lease_of_berar_costs
+			}
+			c:HYD ?= {
+				add_modifier = {
+					name = lease_of_berar_income
+				}	
+				random_scope_state = {
+					limit = {
+						state_region = s:STATE_CENTRAL_PROVINCES
+					}
+					set_state_owner = root
+				}			
+			}
+		}
+		set_variable = sold_berar_var
+	}
+
+	ai_chance = {
+		base = 0
+		modifier = {
+			trigger = {
+				game_date > 1850.1.1
+			}
+			add = 5
+		}
+		modifier = {
+			trigger = {
+				game_date > 1860.1.1
+			}
+			add = 5
+		}
+		modifier = {
+			trigger = {
+				any_scope_state = {
+					state_region = s:STATE_CENTRAL_PROVINCES
+					turmoil > 0.1
+				}
+			}
+			add = 10
+		}	
+		modifier = {
+			trigger = {
+				any_scope_state = {
+					state_region = s:STATE_CENTRAL_PROVINCES
+					turmoil > 0.2
+				}
+			}
+			add = 10
+		}
+		modifier = {
+			trigger = {
+				any_scope_state = {
+					state_region = s:STATE_CENTRAL_PROVINCES
+					is_incorporated = no
+				}
+			}
+			add = 10
+		}
+	}
+}

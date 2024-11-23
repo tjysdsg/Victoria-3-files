@@ -1,199 +1,5 @@
 ﻿namespace = famine_events
 
-famine_events.1 = { #there's a great famine
-	type = country_event
-	placement = scope:famine_state
-
-	title = famine_events.1.t
-	desc = famine_events.1.d
-	flavor = famine_events.1.f
-
-	event_image = {
-		video = "europenorthamerica_russian_serfs"
-	}
-
-	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-
-	icon = "gfx/interface/icons/event_icons/event_skull.dds"
-
-	duration = 3
-
-	trigger = {
-		# triggered by JE
-	}
-
-	immediate = {
-		random_scope_state = {
-			limit = { has_variable = famine_var }
-			save_scope_as = famine_state
-		}
-	}
-
-	option = { #there's nothing we can do
-		name = famine_events.1.a
-		default_option = yes
-		ig:ig_industrialists = {
-			add_modifier = {
-				name = thats_life_modifier
-				months = normal_modifier_time
-			}
-		}
-		scope:famine_state = {
-			add_modifier = {
-				name = great_famine_modifier
-				months = short_modifier_time
-			}
-		}
-	}
-
-	option = { #emergency relief
-		name = famine_events.1.b
-		custom_tooltip = emergency_relief_promise_tt
-		scope:famine_state = {
-			add_modifier = {
-				name = great_famine_modifier
-				months = short_modifier_time
-			}
-			add_modifier = {
-				name = emergency_hunger_relief_modifier
-				months = short_modifier_time
-			}
-		}
-	}
-}
-
-famine_events.2 = { #famine spreads
-	type = country_event
-	placement = scope:famine_2_state
-
-	title = famine_events.2.t
-	desc = famine_events.2.d
-	flavor = famine_events.2.f
-
-	event_image = {
-		video = "europenorthamerica_russian_serfs"
-	}
-
-	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-
-	icon = "gfx/interface/icons/event_icons/event_skull.dds"
-
-	duration = 3
-
-	cooldown = { months = short_modifier_time }
-
-	trigger = {
-		any_scope_state = {
-			has_variable = famine_var
-			any_neighbouring_state = {
-				is_incorporated = yes
-				owner = ROOT
-				NOT = { has_variable = famine_var }
-			}
-		}
-		trigger_if = {
-    		limit = { exists = var:famine_spread_var }
-			NOT = { var:famine_spread_var >= 3 }
-		}
-	}
-
-	immediate = {
-		random_scope_state = {
-			limit = {
-				has_variable = famine_var
-				any_neighbouring_state = {
-					is_incorporated = yes
-					owner = ROOT
-					NOT = { has_variable = famine_var }
-				}
-			}
-			save_scope_as = famine_state
-			random_neighbouring_state = {
-				limit = {
-					is_incorporated = yes
-					owner = ROOT
-					NOT = { has_variable = famine_var }
-				}
-				save_scope_as = famine_2_state
-				set_variable = famine_var
-			}
-		}
-		if = {
-			limit = { exists = var:famine_spread_var }
-			change_variable = {
-				name = famine_spread_var
-				add = 1
-			}
-		}
-		else = {
-			set_variable = {
-				name = famine_spread_var
-				value = 1
-			}
-		}
-	}
-
-	option = { #kept our promise
-		name = famine_events.2.a
-		default_option = yes
-		highlighted_option = yes
-		trigger = {
-			scope:famine_state = {
-				has_decree = decree_emergency_relief
-			}
-		}
-		scope:famine_2_state = {
-			add_modifier = {
-				name = emergency_famine_modifier
-				months = short_modifier_time
-			}
-		}
-	}
-
-	option = { #famine gets bigger
-		name = famine_events.2.b
-		custom_tooltip = no_emergency_relief_tt
-		default_option = yes
-		trigger = {
-			scope:famine_state = {
-				NOT = { has_decree = decree_emergency_relief }
-			}
-		}
-		ig:ig_industrialists = {
-			add_modifier = {
-				name = thats_life_modifier
-				months = normal_modifier_time
-			}
-		}
-		scope:famine_2_state = {
-			add_modifier = {
-				name = great_famine_modifier
-				months = short_modifier_time
-			}
-		}
-	}
-
-	option = { #emergency relief again
-		name = famine_events.2.c
-		custom_tooltip = emergency_relief_promise_tt
-		trigger = {
-			scope:famine_state = {
-				NOT = { has_decree = decree_emergency_relief }
-			}
-		}
-		scope:famine_2_state = {
-			add_modifier = {
-				name = great_famine_modifier
-				months = short_modifier_time
-			}
-			add_modifier = {
-				name = emergency_hunger_relief_modifier
-				months = short_modifier_time
-			}
-		}
-	}
-}
-
 famine_events.3 = { #people migrate
 	type = country_event
 	placement = scope:famine_state
@@ -216,7 +22,7 @@ famine_events.3 = { #people migrate
 		any_scope_state = {
 			is_incorporated = yes
 			has_building = building_railway
-			has_variable = famine_var
+			has_famine = yes
 		}
 		trigger_if = {
 			limit = { exists = var:famine_migration_var
@@ -241,7 +47,7 @@ famine_events.3 = { #people migrate
 		}
 		random_scope_state = {
 			limit = {
-				has_variable = famine_var
+				has_famine = yes
 			}
 			save_scope_as = famine_state
 		}
@@ -307,9 +113,16 @@ famine_events.3 = { #people migrate
 				months = short_modifier_time
 			}
 		}
-		add_modifier = {
-			name = emergency_hunger_relief_modifier
-			months = short_modifier_time
+		if = {
+			limit = {
+				NOT = {
+					has_modifier = emergency_hunger_relief_modifier
+				}
+			}
+			add_modifier = {
+				name = emergency_hunger_relief_modifier
+				months = short_modifier_time
+			}
 		}
 	}
 }
@@ -343,6 +156,9 @@ famine_events.4 = { #donations
 		any_interest_group = {
 			is_powerful = yes
 		}
+		any_scope_state = {
+			has_famine = yes
+		}
 	}
 
 	immediate = {
@@ -369,7 +185,7 @@ famine_events.4 = { #donations
 		}
 		random_scope_state = {
 			limit = {
-				has_variable = famine_var
+				has_famine = yes
 			}
 			save_scope_as = famine_state
 		}

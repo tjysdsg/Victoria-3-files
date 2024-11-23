@@ -9,8 +9,9 @@
 @panel_width_plus_30 = 570			# used to be 490
 @panel_width_plus_70 = 610			# used to be 530
 
-@portrait_size = 316
-@portrait_box_height = 276
+
+@portrait_size = 215
+@portrait_box_height = 200
 
 types culture_info_panel_types
 {
@@ -66,182 +67,55 @@ types culture_info_panel_types
 		name = "culture_info_panel"
 		
 		blockoverride "window_header_name" {
-			text = "[CultureInfoPanel.GetCulture.GetName]"
+			text = "[CultureInfoPanel.GetCulture.GetNameNoFormatting]"
 		}
 
 		blockoverride "window_header_name_line_two" {
 			text = "[concept_culture]"
 		}
-
-		blockoverride "fixed_top" {
-			tab_buttons = {
-				blockoverride "first_button" {
-					text = "PLAYER_CULTURE"
-				}
-				blockoverride "first_button_tooltip" {
-					tooltip = "PLAYER_CULTURE"
-				}
-				blockoverride "first_button_click" {
-					onclick = "[InformationPanel.SelectTab('default')]"
-					onclick = "[CultureInfoPanel.ToggleShowNationalOnly]"
-				}
-				blockoverride "first_button_visibility" {
-					visible = "[InformationPanel.IsTabSelected('default')]"
-				}
-				blockoverride "first_button_visibility_checked" {
-					visible = "[Not( InformationPanel.IsTabSelected('default') )]"
-				}
-				blockoverride "first_button_selected" {
-					text = "PLAYER_CULTURE"
-				}
-
-				blockoverride "second_button" {
-					text = "GLOBAL_CULTURE"
-				}
-				blockoverride "second_button_tooltip" {
-					tooltip = "GLOBAL_CULTURE"
-				}
-				blockoverride "second_button_click" {
-					onclick = "[InformationPanel.SelectTab('global')]"
-					onclick = "[CultureInfoPanel.ToggleShowNationalOnly]"
-				}
-				blockoverride "second_button_visibility" {
-					visible = "[InformationPanel.IsTabSelected('global')]"
-				}
-				blockoverride "second_button_visibility_checked" {
-					visible = "[Not( InformationPanel.IsTabSelected('global') )]"
-				}
-				blockoverride "second_button_selected" {
-					text = "GLOBAL_CULTURE"
-				}
-			}
-		}
 		
 		blockoverride "scrollarea_content" {
 
-			empty_state = {
-				datacontext = "[CultureInfoPanel.AccessCulture]"
-				margin_top = 50
-				blockoverride "visible" {
-					visible = "[IsDataModelEmpty(CultureInfoPanel.AccessPopsList.AccessPopList)]"
-				}
-				blockoverride "text" {
-					text = "POP_TYPE_IN_CULTURE_NO_PLAYER_POPULATION"
-				}
-			}
-
 			flowcontainer = {
-				visible = "[Not(IsDataModelEmpty(CultureInfoPanel.AccessPopsList.AccessPopList))]"
 				using = default_content_fade
 
 				using = default_list_position
 				datacontext = "[CultureInfoPanel.AccessCulture]"
 				direction = vertical
-				
-				default_header = {
-					blockoverride "text" {
-						text = "[concept_sol]"
-					}
-				}
 
-				widget = {
-					minimumsize = { @panel_width 380 }
-					datacontext = "[GetPlayer]"
+				margin_top = 10
 
-					vbox = {
-						resizeparent = yes
-						margin_left = 6
-						margin_top = 6
+				spacing = 10
 
-						spacing = 20
+				flowcontainer = {
+					name = "top_info"
+					direction = vertical
+					parentanchor = hcenter
 
-						# All classes in country
-						vbox = {
-							visible = "[InformationPanel.IsTabSelected('default')]"
-							using = default_content_fade
-							layoutpolicy_horizontal = expanding
-							layoutpolicy_vertical = fixed
-							minimumsize = { -1 40 }
-							
-							tooltip = "COUNTRY_AVG_STANDARD_OF_LIVING_TOOLTIP"
+					widget = {
+						name = "portraits_and_info"
+						parentanchor = left
+						size = { @panel_width_plus_14 230 }
 
-							background = {
-								using = entry_bg
-							}
-
-							textbox = {
-								using = fontsize_large
-								align = center|nobaseline
-								text = "CULTURE_COUNTRY_AVG_STANDARD_OF_LIVING"
-							}
+						background = {
+							texture = "gfx/interface/illustrations/top_illus/top_illu_cultures.dds"
+							using = top_illu_properties
 						}
 
-						# All classes globally
-						vbox = {
-							visible = "[InformationPanel.IsTabSelected('global')]"
-							using = default_content_fade
-							layoutpolicy_horizontal = expanding
-							layoutpolicy_vertical = fixed
-							minimumsize = { -1 40 }
-							
-							tooltip = "GLOBAL_AVG_STANDARD_OF_LIVING_TOOLTIP"
+						#background = {
+						#	using = entry_bg
+						#}
 
-							background = {
-								using = entry_bg
-							}
 
-							textbox = {
-								using = fontsize_large
-								align = center|nobaseline
-								text = "CULTURE_GLOBAL_AVG_STANDARD_OF_LIVING"
-							}
-						}
-
-						### POP PORTRAITS AND SoL
+						### Portraits global
 						widget = {
-							layoutpolicy_horizontal = expanding
-							layoutpolicy_vertical = expanding
+							parentanchor = left|bottom
+							size = { 270 @portrait_box_height }
 
-							minimumsize = { -1 @portrait_box_height }
-
-							background = {
-								using = entry_bg
-							}
-
-							background = {
-								texture = "gfx/interface/illustrations/top_illus/top_illu_population.dds"
-								using = top_illu_properties
-								margin = { -2 0 }
-							}
-
-							### Portraits local
-							# Draw these first to prevent the portrait overlaying the group name
 							hbox = {
-								margin_top = 30
-								margin_bottom = -4
+								margin = { 80 0 }
+								spacing = 85
 
-								visible = "[InformationPanel.IsTabSelected('default')]"
-								using = default_content_fade
-								
-								culture_info_pop_portrait = {
-									datacontext = "[GetPlayer.GetSampleLowerStrataPopForCulture( Culture.Self )]"
-								}
-
-								culture_info_pop_portrait = {
-									datacontext = "[GetPlayer.GetSampleMiddleStrataPopForCulture( Culture.Self )]"
-								}
-
-								culture_info_pop_portrait = {
-									datacontext = "[GetPlayer.GetSampleUpperStrataPopForCulture( Culture.Self )]"
-								}
-							}
-
-							### Portraits global
-							hbox = {
-								margin_top = 30
-								margin_bottom = -4
-
-								visible = "[InformationPanel.IsTabSelected('global')]"
 								using = default_content_fade
 
 								culture_info_pop_portrait = {
@@ -256,418 +130,593 @@ types culture_info_panel_types
 									datacontext = "[Culture.GetSampleGlobalUpperStrataPop]"
 								}
 							}
-							
-							### Group name
-							widget = {
-								# Float widget top left
-								size = { 100% 0 }
-								minimumsize = { -1 34 }
-
-								hbox = {
-									margin_top = 10
-
-									culture_info_pop_label = {
-										blockoverride "icon" {
-											texture = "gfx/interface/icons/pops_icons/sol_poor_icon.dds"
-										}
-										blockoverride "label" {
-											text = "LOWER_NO_ICON"
-										}
-									}
-
-									culture_info_pop_label = {
-										blockoverride "icon" {
-											texture = "gfx/interface/icons/pops_icons/sol_middle_icon.dds"
-										}
-										blockoverride "label" {
-											text = "MIDDLE_NO_ICON"
-										}
-									}
-
-									culture_info_pop_label = {
-										blockoverride "icon" {
-											texture = "gfx/interface/icons/pops_icons/sol_upper_icon.dds"
-										}
-										blockoverride "label" {
-											text = "UPPER_NO_ICON"
-										}
-									}
-								}
-							}
-
-							### Avg info
-							widget = {
-								# Float widget bottom left
-								size = { 100% 0 }
-								minimumsize = { -1 34 }
-								parentanchor = bottom
-
-								### Avg info
-								hbox = {
-									margin_bottom = 10
-
-									visible = "[InformationPanel.IsTabSelected('default')]"
-									using = default_content_fade
-									
-									culture_info_avg_sol_label = {
-										text = "CULTURE_COUNTRY_AVG_STANDARD_OF_LIVING_LOWER_CLASS"
-										tooltip = "COUNTRY_AVG_STANDARD_OF_LIVING_LOWER_TOOLTIP"
-									}
-									culture_info_avg_sol_label = {
-										text = "CULTURE_COUNTRY_AVG_STANDARD_OF_LIVING_MIDDLE_CLASS"
-										tooltip = "COUNTRY_AVG_STANDARD_OF_LIVING_MIDDLE_TOOLTIP"
-									}
-									culture_info_avg_sol_label = {
-										text = "CULTURE_COUNTRY_AVG_STANDARD_OF_LIVING_UPPER_CLASS"
-										tooltip = "COUNTRY_AVG_STANDARD_OF_LIVING_UPPER_TOOLTIP"
-									}
-								}
-
-								### Avg info globally
-								hbox = {
-									margin_bottom = 10
-
-									visible = "[InformationPanel.IsTabSelected('global')]"
-									using = default_content_fade
-									
-									culture_info_avg_sol_label = {
-										text = "CULTURE_GLOBAL_AVG_STANDARD_OF_LIVING_LOWER_CLASS"
-										tooltip = "GLOBAL_AVG_STANDARD_OF_LIVING_LOWER_TOOLTIP"
-									}
-									culture_info_avg_sol_label = {
-										text = "CULTURE_GLOBAL_AVG_STANDARD_OF_LIVING_MIDDLE_CLASS"
-										tooltip = "GLOBAL_AVG_STANDARD_OF_LIVING_MIDDLE_TOOLTIP"
-									}
-									culture_info_avg_sol_label = {
-										text = "CULTURE_GLOBAL_AVG_STANDARD_OF_LIVING_UPPER_CLASS"
-										tooltip = "GLOBAL_AVG_STANDARD_OF_LIVING_UPPER_TOOLTIP"
-									}
-								}
-							}
 						}
-
-						spacer = {
-							layoutpolicy_vertical = expanding
-						}
-					}
-				}
-				
-				default_header = {
-					blockoverride "text" {
-						text = "STATISTICS"
-					}
-				}
-
-				container = {
-					parentanchor = hcenter
-					minimumsize = { @panel_width -1 }
-					
-					### LEFT INFO
-					flowcontainer = {
-						direction = vertical
-						position = { 0 0 }
-						minimumsize = { 250 -1 }
-						margin = { 10 10 }
 
 						flowcontainer = {
+							name = "culture_data"
+							parentanchor = right|vcenter
+							position = { -10 0 }
+							margin_left = 20
+							margin_bottom = 15
+							margin_top = 10
 							direction = vertical
+							minimumsize = { 220 -1 }
+							spacing = 2
+
+							background =  {
+								using = entry_bg_fancy_dark
+								alpha = 0.4
+							}
+
+							#CULTURE OBSESSIONS
+							culture_or_religion_labeled_value_flowcontainer = {
+								blockoverride "label"
+								{	
+									text = "CULTURE_OBSESSIONS"
+								}
+
+								blockoverride "value"
+								{
+									raw_text = "[Culture.GetObsessionsDesc]"
+								}
+							}
+
+							divider_clean = {
+								size = { 150 2 }
+							}
+
+							#CULTURE TABOOS
+							culture_or_religion_labeled_value_flowcontainer = {
+								blockoverride "label"
+								{	
+									text = "CULTURE_TABOOS"
+								}
+
+								blockoverride "value"
+								{
+									raw_text = "[Culture.GetTaboosDesc]"
+								}
+							}
+
+							divider_clean = {
+								size = { 150 2 }
+							}
+
+							#TURMOIL
+							culture_or_religion_labeled_value_flowcontainer = {
+								blockoverride "label"
+								{	
+									text = "TURMOIL"
+								}
+
+								blockoverride "value"
+								{
+									raw_text = "[Culture.GetTurmoil|-0%]"
+									tooltip = CULTURAL_TURMOIL_TOOLTIP
+								}
+							}
 							
-							textbox = {
-								autoresize = yes
-								text = "TURMOIL"
-								align = left|nobaseline
-								default_format = "#title"
+							divider_clean = {
+								size = { 150 2 }
 							}
 
-							textbox = {
-								autoresize = yes
-								raw_text = "#variable [Culture.GetTurmoil|-0%]#!"
-								align = left|nobaseline
-								tooltip = CULTURAL_TURMOIL_TOOLTIP
+							#MIGRATION TARGETS
+							culture_or_religion_labeled_value_flowcontainer = {
+								blockoverride "label"
+								{	
+									text = "MIGRATION_TARGETS"
+								}
+
+								blockoverride "value"
+								{
+									raw_text = "[Culture.GetMigrationTargetsDesc]"
+								}
 							}
 						}
-						
-						widget = { size = { 5 5 }}
-						divider_clean = {}
-						widget = { size = { 5 5 }}
-
-						textbox = {
-							autoresize = yes
-							multiline = yes
-							minimumsize = { @panel_width_half -1 }
-							maximumsize = { @panel_width_half -1 }
-							text = "MIGRATION_TARGETS"
-							align = left|nobaseline
-							default_format = "#title"
-						}
-
-						textbox = {
-							name = "tutorial_highlight_culture_migration_targets"
-							autoresize = yes
-							multiline = yes
-							minimumsize = { @panel_width_half -1 }
-							maximumsize = { @panel_width_half -1 }
-							text = "[Culture.GetMigrationTargetsDesc]"
-							align = left|nobaseline
-						}
-						
-						widget = { size = { 5 5 }}
-						divider_clean = {}
-						widget = { size = { 5 5 }}
-						
-						textbox = {
-							autoresize = yes
-							multiline = yes
-							minimumsize = { @panel_width_half -1 }
-							maximumsize = { @panel_width_half -1 }
-							text = "CULTURAL_TRAITS"
-							align = left|nobaseline
-							default_format = "#title"
-						}
-						
-						textbox = {
-							autoresize = yes
-							multiline = yes
-							minimumsize = { @panel_width_half -1 }
-							maximumsize = { @panel_width_half -1 }
-							text = "[Culture.GetCulturalTraitsDesc]"
-							align = left|nobaseline
-						}
-						
-						widget = { size = { 5 5 }}
-						divider_clean = {}
-						widget = { size = { 5 5 }}
 					}
 
+					divider_decorative = {}
 
-					### RIGHT INFO
 					flowcontainer = {
-						direction = vertical
-						position = { 280 0 }
-						minimumsize = { 250 -1 }
-						margin = { 0 10 }
-						
-						textbox = {
-							autoresize = yes
-							multiline = yes
-							minimumsize = { @panel_width_half -1 }
-							maximumsize = { @panel_width_half -1 }
-							text = "CULTURE_OBSESSIONS"
-							align = left|nobaseline
-							default_format = "#title"
-						}
-						textbox = {
-							autoresize = yes
-							multiline = yes
-							minimumsize = { @panel_width_half -1 }
-							maximumsize = { @panel_width_half -1 }
-							text = "[Culture.GetObsessionsDesc]"
-							align = left|nobaseline
-						}
-						
-						widget = { size = { 5 5 }}
-						divider_clean = {}
-						widget = { size = { 5 5 }}
+						parentanchor = hcenter
+						spacing  = 20
 
-						textbox = {
-							autoresize = yes
-							multiline = yes
-							minimumsize = { @panel_width_half -1 }
-							maximumsize = { @panel_width_half -1 }
-							text = "CULTURE_TABOOS"
-							align = left|nobaseline
-							default_format = "#title"
+						### LEFT INFO
+						flowcontainer = {
+							direction = vertical
+							minimumsize = { 250 -1 }
+							maximumsize = { 250 -1 }
+							margin = { 10 10 }
+							spacing = 5
+
+							culture_or_religion_labeled_value_flowcontainer = {
+								blockoverride "label"
+								{	
+									text = "CULTURAL_TRAITS"
+								}
+
+								blockoverride "value"
+								{
+									raw_text = "[Culture.GetCulturalTraitsDesc]"
+								}
+							}							
 						}
-						textbox = {
-							autoresize = yes
-							multiline = yes
-							minimumsize = { @panel_width_half -1 }
-							maximumsize = { @panel_width_half -1 }
-							text = "[Culture.GetTaboosDesc]"
-							align = left|nobaseline
-						}
-						
-						widget = { size = { 5 5 }}
-						divider_clean = {}
-						widget = { size = { 5 5 }}
-							
-						textbox = {
-							autoresize = yes
-							multiline = yes
-							minimumsize = { @panel_width_half -1 }
-							maximumsize = { @panel_width_half -1 }
-							text = "[Culture.GetCountryDiscriminationStatus(GetPlayer.Self)]"
-							align = left|nobaseline
+
+						### RIGHT INFO
+						flowcontainer = {
+							direction = vertical
+							minimumsize = { 250 -1 }
+							maximumsize = { 250 -1 }
+							margin = { 0 10 }
+							spacing = 5
+
+							culture_or_religion_labeled_value_flowcontainer = {
+								blockoverride "label"
+								{	
+									text = "RELIGIONS"
+								}
+
+								blockoverride "value"
+								{
+									raw_text = "[Culture.GetReligionsDesc]"
+								}
+							}
 						}
 					}
 				}
 
-				widget = {
-					 size = { 10 10 }
-				}
 
-				section_header_button = {
-					blockoverride "left_text" {
-						text = "HOMELANDS_HEADER"
-					}
-					
-					blockoverride "onclick" {
-						onclick = "[GetVariableSystem.Toggle('homelands')]"
-					}
-					
-					blockoverride "onclick_showmore" {
-						visible = "[Not(GetVariableSystem.Exists('homelands'))]"
+				flowcontainer = {
+					name = "homelands"
+					direction = vertical
+					parentanchor = hcenter
+
+					section_header_button = {
+						blockoverride "left_text" {
+							text = "HOMELANDS_HEADER"
+						}
+						
+						blockoverride "onclick" {
+							onclick = "[GetVariableSystem.Toggle('homelands')]"
+						}
+						
+						blockoverride "onclick_showmore" {
+							visible = "[Not(GetVariableSystem.Exists('homelands'))]"
+						}
+
+						blockoverride "onclick_showless" {
+							visible = "[GetVariableSystem.Exists('homelands')]"
+						}
 					}
 
-					blockoverride "onclick_showless" {
+					margin_widget = {
+						size = { @panel_width 25 }
+						parentanchor = hcenter
 						visible = "[GetVariableSystem.Exists('homelands')]"
-					}
-				}
+						using = default_content_fade
+						margin = { 10 0 }
+						
+						textbox = {
+							text = "NAME"
+							autoresize = yes
+							align = nobaseline
+							default_format = "#title"
+							parentanchor = left|bottom
+						}
 
-				widget = {
-					size = { @panel_width 23 }
-					parentanchor = hcenter
-					visible = "[GetVariableSystem.Exists('homelands')]"
-					using = default_content_fade
+						textbox = {
+							text = "OWNER"
+							default_format = "#title"
+							autoresize = yes
+							align = nobaseline
+							parentanchor = right|bottom
+							tooltip = "TURMOIL_OF_CULTURE"
+						}
+					}
 					
-					textbox = {
-						text = "NAME"
-						autoresize = yes
-						align = left|nobaseline
-						default_format = "#title"
-					}
+					dynamicgridbox = {
+						datamodel = "[Culture.AccessHomelands]"
+						visible = "[GetVariableSystem.Exists('homelands')]"
+						using = default_content_fade
+						using = default_list_position
+						item = {
+							button = {
+								parentanchor = hcenter
+								using = default_button
+								size = { @panel_width 40 }
+								onclick = "[InformationPanelBar.OpenStatePanel( State.AccessSelf )]"
 
-					textbox = {
-						text = "OWNER"
-						default_format = "#title"
-						autoresize = yes
-						align = left|nobaseline
-						parentanchor = right|top
-						tooltip = "TURMOIL_OF_CULTURE"
-					}
-				}
-				
-				dynamicgridbox = {
-					datamodel = "[Culture.AccessHomelands]"
-					visible = "[GetVariableSystem.Exists('homelands')]"
-					using = default_content_fade
-					using = default_list_position
-					item = {
-						button = {
-							parentanchor = hcenter
-							using = default_button
-							size = { @panel_width 40 }
-							onclick = "[InformationPanelBar.OpenStatePanel( State.AccessSelf )]"
-
-							textbox = {
-								text = "[State.GetName]"
-								parentanchor = left|vcenter
-								align = left|nobaseline
-								autoresize = yes
-								margin_left = 10
+								textbox = {
+									text = "[State.GetName]"
+									parentanchor = left|vcenter
+									align = nobaseline
+									autoresize = yes
+									margin_left = 10
+								}
+								
+								tiny_flag = {
+									datacontext = "[State.GetOwner]"
+									#blockoverride "tooltip" {}
+									parentanchor = right|vcenter
+									position = { -10 0 }
+								}
+								
 							}
-							
-							tiny_flag = {
-								datacontext = "[State.GetOwner]"
-								#blockoverride "tooltip" {}
-								parentanchor = right|vcenter
-								position = { -10 0 }
-							}
-							
 						}
 					}
 				}
 
-				section_header_button = {
-					blockoverride "left_text" {
-						text = "CULTURE_OF_SAME_HERITAGE"
-					}
-					
-					blockoverride "onclick" {
-						onclick = "[GetVariableSystem.Toggle('cultures_of_same_heritage')]"
-					}
-					
-					blockoverride "onclick_showmore" {
-						visible = "[Not(GetVariableSystem.Exists('cultures_of_same_heritage'))]"
-					}
+				
+				flowcontainer = {
+					name = "same_heritage"
+					direction = vertical
+					parentanchor = hcenter
 
-					blockoverride "onclick_showless" {
+					section_header_button = {
+						blockoverride "left_text" {
+							text = "CULTURE_OF_SAME_HERITAGE"
+						}
+						
+						blockoverride "onclick" {
+							onclick = "[GetVariableSystem.Toggle('cultures_of_same_heritage')]"
+						}
+						
+						blockoverride "onclick_showmore" {
+							visible = "[Not(GetVariableSystem.Exists('cultures_of_same_heritage'))]"
+						}
+
+						blockoverride "onclick_showless" {
+							visible = "[GetVariableSystem.Exists('cultures_of_same_heritage')]"
+						}
+					}
+					
+					margin_widget = {
+						size = { @panel_width 25 }
+						parentanchor = hcenter
 						visible = "[GetVariableSystem.Exists('cultures_of_same_heritage')]"
+						using = default_content_fade
+						margin = { 10 0 }
+						
+						textbox = {
+							text = "NAME"
+							autoresize = yes
+							align = nobaseline
+							default_format = "#title"
+							parentanchor = left|bottom
+						}
+
+						textbox = {
+							text = "TURMOIL_TITLE"
+							default_format = "#title"
+							autoresize = yes
+							align = nobaseline
+							parentanchor = right|bottom
+							tooltip = "TURMOIL_OF_CULTURE"
+						}
 					}
-				}
-				
-				widget = {
-					size = { @panel_width 40 }
-					parentanchor = hcenter
-					visible = "[GetVariableSystem.Exists('cultures_of_same_heritage')]"
-					using = default_content_fade
 					
-					textbox = {
-						text = "NAME"
-						autoresize = yes
-						align = left|nobaseline
-						default_format = "#title"
-					}
+					dynamicgridbox = {
+						visible = "[GetVariableSystem.Exists('cultures_of_same_heritage')]"
+						using = default_content_fade
+						datamodel = "[Culture.AccessSameHeritageCultures]"
+						using = default_list_position
+						item = {
+							button = {
+								parentanchor = hcenter
+								using = default_button
+								size = { @panel_width 40 }
+								onclick = "[InformationPanelBar.OpenCultureInfoPanel(Culture.AccessSelf)]"
 
-					textbox = {
-						text = "TURMOIL_TITLE"
-						default_format = "#title"
-						autoresize = yes
-						align = left|nobaseline
-						parentanchor = right|top
-						tooltip = "TURMOIL_OF_CULTURE"
-					}
-				}
-				
-				dynamicgridbox = {
-					visible = "[GetVariableSystem.Exists('cultures_of_same_heritage')]"
-					using = default_content_fade
-					datamodel = "[Culture.AccessSameHeritageCultures]"
-					using = default_list_position
-					item = {
-						button = {
-							parentanchor = hcenter
-							using = default_button
-							size = { @panel_width 40 }
-							onclick = "[InformationPanelBar.OpenCultureInfoPanel(Culture.AccessSelf)]"
+								tooltipwidget = {
+									FancyTooltip_Culture = {}
+								}
 
-							textbox = {
-								text = "[Culture.GetName]"
-								parentanchor = left|vcenter
-								align = left|nobaseline
-								autoresize = yes
-								margin_left = 10
-							}
+								textbox = {
+									text = "[Culture.GetNameNoFormatting]"
+									parentanchor = left|vcenter
+									align = nobaseline
+									autoresize = yes
+									margin_left = 10
+								}
 
-							textbox = {
-								raw_text = "#variable [Culture.GetTurmoil|-0%]#!"
-								parentanchor = right|vcenter
-								align = right|nobaseline
-								autoresize = yes
-								tooltip = "CULTURAL_TURMOIL_TOOLTIP"
-								margin_right = 10
+								textbox = {
+									raw_text = "#variable [Culture.GetTurmoil|-0%]#!"
+									parentanchor = right|vcenter
+									align = right|nobaseline
+									autoresize = yes
+									tooltip = "CULTURAL_TURMOIL_TOOLTIP"
+									margin_right = 10
+								}
 							}
 						}
 					}
+
 				}
 
-				widget = { size = { 10 10 } }
-				divider_clean = {}
-				widget = { size = { 10 10 } }
 
-				pop_list = {
-					using = default_content_fade
-					blockoverride "pop_list_context" {
-						datacontext = "[CultureInfoPanel.AccessPopsList]"
+				culture_or_religion_acceptance_section_flowcontainer = {
+						
+					blockoverride "label"
+					{	
+						text = "ACCEPTANCE_OF_CULTURE"
+					}
+						
+					blockoverride "value"
+					{
+						text = "[Culture.GetAcceptanceIn(GetPlayer)|=]"
+						tooltip = ACCEPTANCE_OF_CULTURE_TOOLTIP
 					}
 
-					blockoverride "tooltipwidget" {
-						tooltipwidget = {
-							FancyTooltip_PopTypeCulture = {}
+					blockoverride "law_datacontext"
+					{
+						datacontext = "[AccessPlayer.AccessActiveLawFromGroup('lawgroup_citizenship')]"
+					}
+
+					blockoverride "distribution_label"
+					{
+						text = "CULTURE_ACCEPTANCE_STATUS_DISTRIBUTION_LABEL"
+					}
+
+					blockoverride "barchart_datamodel" {
+						datamodel = "[Culture.GetAllAcceptanceStatusSegments(GetPlayer)]"
+					}
+
+					blockoverride "acceptance_status_distribution_visible"
+					{
+						visible = "[NotEqualTo_int64(Culture.GetPopulation(GetPlayer), '(int64)0')]"
+					}
+				}
+
+				flowcontainer = {
+					name = "pop_list"
+					parentanchor = hcenter
+					direction = vertical
+
+					spacing = 10
+
+					default_header_2texts = {
+						blockoverride "text1" {
+							text = "CULTURE_INFO_PANEL_POPLIST_HEADING"
+						}
+
+						blockoverride "text2" {
+							text = "SORTED_BY_POPULATION"
+						}
+					}
+
+					flowcontainer = {
+						spacing = 20
+						margin = { 5 0 }
+
+						visible = "[GetPlayer.IsValid]" #not for observers
+
+						poplist_filter_button = {
+							blockoverride "poplist_filter_onclick"
+							{
+								onclick = "[CultureInfoPanel.ToggleShowNationalOnly]"
+								alwaystransparent = "[CultureInfoPanel.IsShowingNationalOnly]"
+							}
+
+							blockoverride "poplist_filter_label"
+							{
+								text = "PLAYER_CULTURE"
+							}
+
+							blockoverride "poplist_filter_selected"
+							{
+								visible = "[CultureInfoPanel.IsShowingNationalOnly]"
+							}
+						}
+
+						poplist_filter_button = {
+							blockoverride "poplist_filter_onclick"
+							{
+								onclick = "[CultureInfoPanel.ToggleShowNationalOnly]"
+								alwaystransparent = "[Not(CultureInfoPanel.IsShowingNationalOnly)]"
+							}
+
+							blockoverride "poplist_filter_label"
+							{
+								text = "GLOBAL_CULTURE"
+							}
+
+
+							blockoverride "poplist_filter_selected"
+							{
+								visible = "[Not(CultureInfoPanel.IsShowingNationalOnly)]"
+							}
+						}
+					}
+
+					pop_list_summary_widget = {
+						parentanchor = hcenter
+						datacontext = "[CultureInfoPanel.AccessPopsList]"
+
+						blockoverride "pop_list_summary_pol_str"
+						{
+							pop_list_summary_section_item_vbox = {
+								visible = "[And(GetPlayer.IsValid, CultureInfoPanel.IsShowingNationalOnly)]"
+
+								blockoverride "sum_item_label"
+								{
+									raw_text = "[concept_political_strength]:"
+								}
+								blockoverride "sum_item_value"
+								{
+									raw_text = "[PopList.GetPoliticalStrengthAsPercentage(GetPlayer)|/%dv] ([PopList.GetTotalPoliticalStrength|D])"
+								}
+							}
+
+							pop_list_summary_section_item_vbox = {
+								visible = "[Not(And(GetPlayer.IsValid, CultureInfoPanel.IsShowingNationalOnly))]"
+
+								blockoverride "sum_item_label"
+								{
+									raw_text = "[concept_political_strength]:"
+								}
+								blockoverride "sum_item_value"
+								{
+									raw_text = "[PopList.GetTotalPoliticalStrength|vD]"
+								}
+							}
+						}
+					}
+
+					
+					container = {
+						using = default_list_position
+						
+						pop_list = {
+							using = default_content_fade
+							blockoverride "pop_list_context" {
+								datacontext = "[CultureInfoPanel.AccessPopsList]"
+							}
+							
+							blockoverride "largest_IGs" {}
+
+							blockoverride "tooltipwidget" {
+								tooltipwidget = {
+									FancyTooltip_PopTypeCulture = {}
+								}
+							}
+						}
+					}
+
+					empty_state = {
+						blockoverride "visible" {
+							visible = "[IsDataModelEmpty(CultureInfoPanel.AccessPopsList.GetItems)]"
+						}
+						blockoverride "text" {
+							text = "POP_TYPE_IN_CULTURE_NO_PLAYER_POPULATION"
 						}
 					}
 				}
 			}
 		}
+	}
+
+	type culture_or_religion_labeled_value_flowcontainer = flowcontainer {
+		direction = vertical
+		
+		textbox = {
+			autoresize = yes
+			block "label"
+			{
+				raw_text = "?"
+			}
+			
+			align = nobaseline
+			default_format = "#title"
+
+			elide = right
+			fontsize_min = 14
+			max_width = 260
+		}
+
+		textbox = {
+			block "value"
+			{
+				raw_text = "?"
+			}
+
+			autoresize = yes
+			multiline = yes
+			max_width = @panel_width
+			
+			default_format = "#variable"
+			align = nobaseline
+		}
+	}
+
+	type culture_or_religion_labeled_value_center = flowcontainer {
+		direction = vertical
+		
+		textbox = {
+			parentanchor = hcenter
+			autoresize = yes
+			block "label"
+			{
+				raw_text = "?"
+			}
+			
+			align = nobaseline
+			default_format = "#title"
+
+			elide = right
+			fontsize_min = 14
+			max_width = 260
+		}
+
+		textbox = {
+			parentanchor = hcenter
+			block "value"
+			{
+				raw_text = "?"
+			}
+
+			autoresize = yes
+			multiline = yes
+			max_width = @panel_width
+			using = fontsize_mega
+			
+			default_format = "#variable"
+			align = nobaseline
+		}
+	}
+
+	type culture_or_religion_acceptance_section_flowcontainer = flowcontainer {
+		using = default_list_position
+		direction = vertical
+		margin_bottom = 5
+		spacing = 5
+
+		visible = "[GetPlayer.IsValid]" #not for observers
+
+		default_header = {
+			parentanchor = hcenter
+			blockoverride "text" {
+				text = "ACCEPTANCE_IN_PLAYER_COUNTRY"
+			}
+		}
+
+		flowcontainer = {
+			parentanchor = hcenter
+			spacing = 20
+			margin = { 7 0 }
+
+			culture_or_religion_labeled_value_center = {
+				minimumsize = { 250 -1 }
+				margin = { 0 10 }
+				parentanchor = vcenter
+
+				# blockoverride "label" <- use this to set label
+			}
+
+			law_item_small = {
+				size = { 260 80 }
+				parentanchor = vcenter
+
+				block "law_datacontext"
+				{
+					# datacontext = ?
+				}								
+			}
+		}
+
+		flowcontainer = {
+			direction = vertical
+			parentanchor = hcenter
+			spacing = 10
+
+			block "acceptance_status_distribution_visible"
+			{
+				visible = yes
+			}
+			
+
+			population_acceptance_status_chart_with_label_flowcontainer = {
+				datacontext = "[GetPlayer]"
+			}
+		}	
 	}
 }

@@ -1,0 +1,373 @@
+﻿je_conference_of_london = {
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	group = je_group_historical_content
+
+	scripted_button = favour_belgium_button
+    scripted_button = favour_netherlands_button
+    scripted_button = partition_compromise_button
+    scripted_button = luxembourg_compromise_button
+    scripted_button = london_conference_approve_button
+    scripted_button = london_conference_disapprove_button
+
+	immediate = {
+		c:BEL ?= {
+			save_scope_as = belgium_scope
+		}
+		c:NET ?= {
+			save_scope_as = netherlands_scope
+		}
+
+		if = {
+			limit = {
+				NOT = {
+					exists = global_var:je_conference_of_london_proposal_1
+				}
+			}
+			set_global_variable = {
+				name = je_conference_of_london_proposal_1
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					exists = global_var:je_conference_of_london_proposal_2
+				}
+			}	
+			set_global_variable = {
+				name = je_conference_of_london_proposal_2
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					exists = global_var:je_conference_of_london_proposal_3
+				}
+			}
+			set_global_variable = {
+				name = je_conference_of_london_proposal_3
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					exists = global_var:je_conference_of_london_proposal_4
+				}
+			}
+			set_global_variable = {
+				name = je_conference_of_london_proposal_4
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					exists = global_var:je_conference_of_london_timer
+				}
+			}
+			set_global_variable = {
+				name = je_conference_of_london_timer
+				value = 6
+			}
+		}
+	}
+
+	complete = {
+		custom_tooltip = {
+			text = je_conference_of_london_tt_1
+			has_global_variable = london_treaty_has_concluded_global_var
+
+		}
+		custom_tooltip = {
+			text = je_conference_of_london_tt_2
+			has_global_variable = london_treaty_signed_bel_global_var
+		}
+		custom_tooltip = {
+			text = je_conference_of_london_tt_4
+			has_global_variable = london_treaty_signed_net_global_var
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = treaty_of_london_events.4 popup = yes }
+	}
+
+	fail = {
+		OR = {
+			custom_tooltip = {
+				text = je_conference_of_london_tt_3
+				OR = {
+					has_global_variable = london_treaty_not_signed_net_global_var
+					has_global_variable = london_treaty_not_signed_bel_global_var
+				}
+			}
+			custom_tooltip = {
+				text = je_conference_of_london_tt_5
+				c:BEL = {
+					has_war_with = c:NET
+				}
+			}
+		}
+	}
+
+	on_fail = {
+		trigger_event = { id = treaty_of_london_events.5 popup = yes }
+	}
+
+	on_monthly_pulse = {
+		effect = {
+			if = {
+				limit = { # Only one country can actually modify this, or the congress will end after one month
+					c:NET ?= this
+					global_var:je_conference_of_london_timer >= 1
+				}
+				change_global_variable = {
+					name = je_conference_of_london_timer
+					add = -1
+				}
+			}
+			if = {
+				limit = {
+					c:NET ?= this
+					global_var:je_conference_of_london_timer <= 0
+				}
+				if = {
+					limit = {
+						NOT = {
+							has_global_variable = london_treaty_has_concluded_global_var
+						}
+					}
+					set_global_variable = london_treaty_has_concluded_global_var
+				}
+				if = {
+					limit = {
+						NOR = {
+							has_global_variable = favour_belgium_global_var
+							has_global_variable = favour_netherlands_global_var
+							has_global_variable = partition_compromise_global_var
+							has_global_variable = luxembourg_compromise_global_var
+						}
+					}
+					# Clear winners
+					if = {
+						limit = {
+							global_var:je_conference_of_london_proposal_1 > global_var:je_conference_of_london_proposal_2
+							global_var:je_conference_of_london_proposal_1 > global_var:je_conference_of_london_proposal_3
+							global_var:je_conference_of_london_proposal_1 > global_var:je_conference_of_london_proposal_4
+						}
+						set_global_variable = favour_belgium_global_var
+					}
+					else_if = {
+						limit = {
+							global_var:je_conference_of_london_proposal_2 > global_var:je_conference_of_london_proposal_1
+							global_var:je_conference_of_london_proposal_2 > global_var:je_conference_of_london_proposal_3
+							global_var:je_conference_of_london_proposal_2 > global_var:je_conference_of_london_proposal_4
+						}
+						set_global_variable = favour_netherlands_global_var
+					}
+					else_if = {
+						limit = {
+							global_var:je_conference_of_london_proposal_3 > global_var:je_conference_of_london_proposal_1
+							global_var:je_conference_of_london_proposal_3 > global_var:je_conference_of_london_proposal_2
+							global_var:je_conference_of_london_proposal_3 > global_var:je_conference_of_london_proposal_4
+						}
+						set_global_variable = partition_compromise_global_var
+					}
+					else_if = {
+						limit = {
+							global_var:je_conference_of_london_proposal_4 > global_var:je_conference_of_london_proposal_2
+							global_var:je_conference_of_london_proposal_4 > global_var:je_conference_of_london_proposal_3
+							global_var:je_conference_of_london_proposal_4 > global_var:je_conference_of_london_proposal_1
+						}
+						set_global_variable = luxembourg_compromise_global_var
+					}
+					# Tiebreakers
+					if = {
+						limit = {
+							global_var:je_conference_of_london_proposal_1 = global_var:je_conference_of_london_proposal_2
+							global_var:je_conference_of_london_proposal_1 > global_var:je_conference_of_london_proposal_3
+							global_var:je_conference_of_london_proposal_1 > global_var:je_conference_of_london_proposal_4
+						}
+						ordered_country = {
+							limit = {
+							    has_journal_entry = je_conference_of_london
+							    OR = {
+							    	has_variable = favour_belgium_button_var # proposal 1
+							    	has_variable = favour_netherlands_button_var #proposal 2
+							    }
+							}
+						    order_by = country_rank
+						    if = {
+						        limit = {
+						            has_variable = favour_belgium_button_var
+						        }
+						        set_global_variable = favour_belgium_global_var
+						    }
+						    else_if = {
+						        limit = {
+						            has_variable = favour_netherlands_button_var
+						        }
+						        set_global_variable = favour_netherlands_global_var
+						    }
+						}
+					}
+					if = {
+						limit = {
+							global_var:je_conference_of_london_proposal_1 = global_var:je_conference_of_london_proposal_3
+							global_var:je_conference_of_london_proposal_1 > global_var:je_conference_of_london_proposal_2
+							global_var:je_conference_of_london_proposal_1 > global_var:je_conference_of_london_proposal_4
+						}
+						ordered_country = {
+							limit = {
+							    has_journal_entry = je_conference_of_london
+							    OR = {
+							    	has_variable = favour_belgium_button_var # proposal 1
+							    	has_variable = partition_compromise_button_var # proposal 3
+							    }
+							}
+						    order_by = country_rank
+						    if = {
+						        limit = {
+						            has_variable = favour_belgium_button_var
+						        }
+						        set_global_variable = favour_belgium_global_var
+						    }
+						    else_if = {
+						        limit = {
+						            has_variable = partition_compromise_button_var
+						        }
+						        set_global_variable = partition_compromise_global_var
+						    }
+						}
+					}
+					if = {
+						limit = {
+							global_var:je_conference_of_london_proposal_1 = global_var:je_conference_of_london_proposal_4
+							global_var:je_conference_of_london_proposal_1 > global_var:je_conference_of_london_proposal_2
+							global_var:je_conference_of_london_proposal_1 > global_var:je_conference_of_london_proposal_3
+						}
+						ordered_country = {
+							limit = {
+							    has_journal_entry = je_conference_of_london
+							    OR = {
+							    	has_variable = favour_belgium_button_var # proposal 1
+							    	has_variable = luxembourg_compromise_button_var # proposal 4
+							    }
+							}
+						    order_by = country_rank
+						    if = {
+						        limit = {
+						            has_variable = favour_belgium_button_var
+						        }
+						        set_global_variable = favour_belgium_global_var
+						    }
+						    else_if = {
+						        limit = {
+						            has_variable = luxembourg_compromise_button_var
+						        }
+						        set_global_variable = luxembourg_compromise_global_var
+						    }
+						}
+					}
+					if = {
+						limit = {
+							global_var:je_conference_of_london_proposal_2 = global_var:je_conference_of_london_proposal_4
+							global_var:je_conference_of_london_proposal_2 > global_var:je_conference_of_london_proposal_3
+							global_var:je_conference_of_london_proposal_2 > global_var:je_conference_of_london_proposal_1
+						}
+						ordered_country = {
+							limit = {
+							    has_journal_entry = je_conference_of_london
+							    OR = {
+							    	has_variable = favour_netherlands_button_var # proposal 2
+							    	has_variable = luxembourg_compromise_button_var # proposal 4
+							    }
+							}
+						    order_by = country_rank
+						    if = {
+						        limit = {
+						            has_variable = favour_netherlands_button_var
+						        }
+						        set_global_variable = favour_netherlands_global_var
+						    }
+						    else_if = {
+						        limit = {
+						            has_variable = luxembourg_compromise_button_var
+						        }
+						        set_global_variable = luxembourg_compromise_global_var
+						    }
+						}
+					}
+					if = {
+						limit = {
+							global_var:je_conference_of_london_proposal_2 = global_var:je_conference_of_london_proposal_3
+							global_var:je_conference_of_london_proposal_2 > global_var:je_conference_of_london_proposal_4
+							global_var:je_conference_of_london_proposal_2 > global_var:je_conference_of_london_proposal_1
+						}
+						ordered_country = {
+							limit = {
+							    has_journal_entry = je_conference_of_london
+							    OR = {
+							    	has_variable = favour_netherlands_button_var # proposal 2
+							    	has_variable = partition_compromise_button_var # proposal 3
+							    }
+							}
+						    order_by = country_rank
+						    if = {
+						        limit = {
+						            has_variable = favour_netherlands_button_var
+						        }
+						        set_global_variable = favour_netherlands_global_var
+						    }
+						    else_if = {
+						        limit = {
+						            has_variable = partition_compromise_button_var
+						        }
+						        set_global_variable = partition_compromise_global_var
+						    }
+						}
+					}
+					if = {
+						limit = {
+							global_var:je_conference_of_london_proposal_3 = global_var:je_conference_of_london_proposal_4
+							global_var:je_conference_of_london_proposal_3 > global_var:je_conference_of_london_proposal_2
+							global_var:je_conference_of_london_proposal_3 > global_var:je_conference_of_london_proposal_1
+						}
+						ordered_country = {
+							limit = {
+							    has_journal_entry = je_conference_of_london
+							    OR = {
+							    	has_variable = favour_netherlands_button_var # proposal 3
+							    	has_variable = luxembourg_compromise_button_var # proposal 4
+							    }
+							}
+						    order_by = country_rank
+						    if = {
+						        limit = {
+						            has_variable = partition_compromise_button_var
+						        }
+						        set_global_variable = partition_compromise_global_var
+						    }
+						    else_if = {
+						        limit = {
+						            has_variable = luxembourg_compromise_button_var
+						        }
+						        set_global_variable = luxembourg_compromise_global_var
+						    }
+						}
+					}
+				}
+			}
+		}
+	}
+	on_yearly_pulse = {
+	}
+
+	weight = 100
+
+	should_be_pinned_by_default = yes
+
+}

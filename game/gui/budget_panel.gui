@@ -42,6 +42,7 @@ types budget
 				blockoverride "illu" {
 					texture = "gfx/interface/illustrations/top_illus/top_illu_budget.dds"
 				}
+
 				textbox = {
 					name = "tutorial_highlight_weekly_balance_budget"
 					parentanchor = center
@@ -50,6 +51,34 @@ types budget
 					autoresize = yes
 					align = center|nobaseline
 					using = money_tooltip_with_graph
+				}
+
+				map_modes_single_button_minimized = {
+					datacontext = "[BudgetPanel.GetMapModeList]"
+					parentanchor = right
+					position = { -10 10 }
+
+					blockoverride "button_click" {
+						onclick = "[RightClickMenuManager.ToggleMapModes(MapModeList.AccessSelf, PdxGuiWidget.AccessSelf)]"
+					}
+
+					blockoverride "button_icon" {
+						texture = "gfx/interface/main_hud/lens_map_info.dds"
+					}
+
+					blockoverride "button_text" {
+						text = "[MapModeList.GetSelectedMapMode.GetName]"
+						margin = { 15 0 }
+						max_width = 160
+					}
+
+					blockoverride "expanded_size" {
+						size = { 190 45 }
+					}
+
+					blockoverride "right_icon_size" {
+						size = { 25 25 }
+					}
 				}
 			}
 
@@ -1038,7 +1067,7 @@ types budget
 										
 										align = right|nobaseline
 										raw_text = "#variable @money![State.GetGovernmentExpenses|+d]#!"
-										tooltip = "[State.GetGovernmentExpensesTooltip]"
+										using = state_government_expenses_with_table
 										alpha = "[TransparentIfZero(State.GetGovernmentExpenses)]"
 									}
 

@@ -1,0 +1,49 @@
+﻿je_mughal_hindustan = {
+    icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	group = je_group_historical_content
+
+    immediate = {
+        c:MUG ?= {
+            save_scope_as = mughal_scope
+        }
+        c:BIC ?= {
+            save_scope_as = bic_scope
+        }
+    }
+    complete = {
+        is_subject = no
+        is_at_war = no
+    }
+
+    on_complete = {
+        trigger_event = { id = mughal.7 }
+        set_variable = completed_mughal_hindustan_je
+    }
+
+    invalid = {
+        NOT = {
+            exists = c:BIC
+        }
+    }
+
+    fail = {
+        OR = {
+            NOT = { has_law = law_type:law_monarchy }
+            is_in_civil_war = yes
+        }
+    }
+
+    on_monthly_pulse = {
+        random_events = {
+            3 = 0
+            1 = mughal.1 # Heiring Grievances
+            2 = mughal.4 # An Appeal to Interlopers (law enactment)
+            1 = mughal.5 # Stipend
+            1 = mughal.6 # The British India Society
+        }
+    }
+
+    weight = 1000
+    should_be_pinned_by_default = yes
+}

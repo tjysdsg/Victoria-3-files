@@ -1,0 +1,335 @@
+﻿namespace = gg_core
+
+gg_core.1 = { # Great Game victory
+	type = country_event
+	placement = ROOT
+
+	title = gg_core.1.t
+	desc = gg_core.1.d
+	flavor = gg_core.1.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "ep1_power_blocs"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	duration = 3
+
+	cooldown = { months = short_modifier_time }
+
+	immediate = {
+		if = {
+			limit = {
+				c:GBR ?= this
+			}
+			c:RUS = {
+				save_scope_as = opponent_scope
+			}
+		}
+		if = {
+			limit = {
+				c:RUS ?= this
+			}
+			c:GBR = {
+				save_scope_as = opponent_scope
+			}
+		}
+	}
+
+	option = {
+		name = gg_core.1.a
+		default_option = yes
+		if = {
+			limit = {
+				OR = {
+					AND = {
+						c:GBR ?= THIS
+						has_global_variable = great_game_gbr_progress
+						global_var:great_game_gbr_progress <= 40
+					}
+					AND = {
+						c:RUS ?= THIS
+						has_global_variable = great_game_gbr_progress
+						global_var:great_game_gbr_progress >= 160
+					}
+				}
+			}
+			add_modifier = {
+				name = modifier_great_game_victor
+				months = very_long_modifier_time
+				is_decaying = yes
+			}
+		}
+		else_if = {
+			limit = {
+				OR = {
+					AND = {
+						c:GBR ?= THIS
+						has_global_variable = great_game_gbr_progress
+						global_var:great_game_gbr_progress <= 80
+					}
+					AND = {
+						c:RUS ?= THIS
+						has_global_variable = great_game_gbr_progress
+						global_var:great_game_gbr_progress >= 120
+					}
+				}
+			}
+			add_modifier = {
+				name = modifier_great_game_victor
+				months = very_long_modifier_time
+				is_decaying = yes
+			}
+		}
+		else = { # Should never happen
+			add_modifier = {
+				name = modifier_great_game_victor
+				months = very_long_modifier_time
+				is_decaying = yes
+				multiplier = 0.5
+			}
+		}
+		if = {
+			limit = {
+				is_player = yes
+			}
+			clear_great_game_variables = yes
+		}
+		scope:opponent_scope ?= {
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_positive
+				target = root
+			}
+		}
+	}
+}
+
+gg_core.2 = { # Great Game defeat
+	type = country_event
+	placement = ROOT
+
+	title = gg_core.2.t
+	desc = gg_core.2.d
+	flavor = gg_core.2.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "ep1_transfer_of_authority"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	duration = 3
+
+	cooldown = { months = short_modifier_time }
+
+	immediate = {
+		if = {
+			limit = {
+				c:GBR ?= this
+			}
+			c:RUS = {
+				save_scope_as = opponent_scope
+			}
+		}
+		if = {
+			limit = {
+				c:RUS ?= this
+			}
+			c:GBR = {
+				save_scope_as = opponent_scope
+			}
+		}
+	}
+
+	option = {
+		name = gg_core.2.a
+		default_option = yes
+		if = {
+			limit = {
+				OR = {
+					AND = {
+						c:GBR ?= THIS
+						has_global_variable = great_game_gbr_progress
+						global_var:great_game_gbr_progress >= 160
+					}
+					AND = {
+						c:RUS ?= THIS
+						has_global_variable = great_game_gbr_progress
+						global_var:great_game_gbr_progress <= 40
+					}
+				}
+			}
+			add_modifier = {
+				name = modifier_great_game_defeated
+				months = very_long_modifier_time
+				is_decaying = yes
+				multiplier = 1.5
+			}
+		}
+		else_if = {
+			limit = {
+				OR = {
+					AND = {
+						c:GBR ?= THIS
+						has_global_variable = great_game_gbr_progress
+						global_var:great_game_gbr_progress >= 120
+					}
+					AND = {
+						c:RUS ?= THIS
+						has_global_variable = great_game_gbr_progress
+						global_var:great_game_gbr_progress <= 80
+					}
+				}
+			}
+			add_modifier = {
+				name = modifier_great_game_defeated
+				months = very_long_modifier_time
+				is_decaying = yes
+			}
+		}
+		else = { # Should never happen
+			add_modifier = {
+				name = modifier_great_game_defeated
+				months = very_long_modifier_time
+				is_decaying = yes
+				multiplier = 0.5
+			}
+		}
+		if = {
+			limit = {
+				is_player = yes
+			}
+			clear_great_game_variables = yes
+		}
+		scope:opponent_scope ?= {
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_negative
+				target = root
+			}
+		}
+	}
+}
+
+gg_core.3 = { # Great Game stalemate
+	type = country_event
+	placement = ROOT
+
+	title = gg_core.3.t
+	desc = gg_core.3.d
+	flavor = gg_core.3.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "ep1_central_asian_city"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	duration = 3
+
+	cooldown = { months = short_modifier_time }
+
+	immediate = {
+		if = {
+			limit = {
+				c:GBR ?= this
+			}
+			c:RUS = {
+				save_scope_as = opponent_scope
+			}
+		}
+		if = {
+			limit = {
+				c:RUS ?= this
+			}
+			c:GBR = {
+				save_scope_as = opponent_scope
+			}
+		}
+	}
+
+	option = {
+		name = gg_core.3.a
+		default_option = yes
+		add_modifier = {
+			name = modifier_great_game_stalemate
+			months = very_long_modifier_time
+			is_decaying = yes
+		}
+		if = {
+			limit = {
+				is_player = yes
+			}
+			clear_great_game_variables = yes
+		}
+		scope:opponent_scope ?= {
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_positive
+				target = root
+			}
+		}
+	}
+}
+
+gg_core.4 = { # Great Game victory as Persia or Afghanistan
+	type = country_event
+	placement = ROOT
+
+	title = gg_core.4.t
+	desc = gg_core.4.d
+	flavor = gg_core.4.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "ep1_central_asian_city"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	duration = 3
+
+	cooldown = { months = short_modifier_time }
+
+	immediate = {
+		ROOT = {
+			save_scope_as = gg_winner_scope
+		}
+		c:RUS = {
+			save_scope_as = russia_scope
+		}
+		c:GBR = {
+			save_scope_as = britain_scope
+		}
+	}
+
+	option = {
+		name = gg_core.4.a
+		default_option = yes
+		add_modifier = {
+			name = modifier_great_game_victor
+			months = very_long_modifier_time
+			is_decaying = yes
+		}
+		if = {
+			limit = {
+				is_player = yes
+			}
+			clear_great_game_variables = yes
+		}
+	}
+}

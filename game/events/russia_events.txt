@@ -53,13 +53,25 @@
 					template = RUS_tsarevich_nicholas_alexandrovich
 				}
 			}
+		}	
+		add_modifier = {
+			name = modifier_alexander_ii
+			months = very_long_modifier_time
 		}
-		ruler = {
-			add_modifier = {
-				name = modifier_alexander_ii
-				months = very_long_modifier_time
+		if = {
+			limit = {
+				NOT = {
+					any_political_movement = {
+						is_political_movement_type = movement_modernizer
+					}
+				}
 			}
+			create_political_movement = { type = movement_modernizer }
 		}
+		add_journal_entry = { type = je_great_reformer }
+		add_journal_entry = { type = je_great_reforms_serfdom }
+		add_journal_entry = { type = je_great_reforms_military }
+		add_journal_entry = { type = je_great_reforms_bureaucratic }
 	}
 }
 
@@ -85,6 +97,7 @@ russia_monarchy.2 = { #Death of Nicholas Tsaraevich
 		c:RUS ?= this
 		heir ?= {
 			has_template = RUS_tsarevich_nicholas_alexandrovich
+			is_immortal = no
 		}
 		game_date >= 1848.1.1
 	}
@@ -93,6 +106,7 @@ russia_monarchy.2 = { #Death of Nicholas Tsaraevich
 		random_scope_character = {
 			limit = {
 				has_template = RUS_tsarevich_nicholas_alexandrovich
+				is_immortal = no
 			}
 			save_scope_as = nicholas_scope
 		}
@@ -159,11 +173,9 @@ russia_monarchy.3 = { #Accession of Nicholas Tsaraevich
 				set_character_as_ruler = yes
 			}
 		}
-		ruler = {
-			add_modifier = {
-				name = modifier_nicholas_tsesarevich
-				months = very_long_modifier_time
-			}
+		add_modifier = {
+			name = modifier_nicholas_tsesarevich
+			months = very_long_modifier_time
 		}
 	}
 }
@@ -212,11 +224,9 @@ russia_monarchy.4 = { #Accession of Alexander III
 		custom_tooltip = {
 			text = alexander_iii_enthroned_tt
 		}
-		ruler = {
-			add_modifier = {
-				name = modifier_alexander_iii
-				months = very_long_modifier_time
-			}
+		add_modifier = {
+			name = modifier_alexander_iii
+			months = very_long_modifier_time
 		}
 		hidden_effect = {
 			if = {
@@ -269,11 +279,9 @@ russia_monarchy.5 = { #Accession of Nicholas II
 				set_character_as_ruler = yes
 			}
 		}
-		ruler = {
-			add_modifier = {
-				name = modifier_nicholas_ii
-				months = very_long_modifier_time
-			}
+		add_modifier = {
+			name = modifier_nicholas_ii
+			months = very_long_modifier_time
 		}
 		hidden_effect = {
 			if = {
@@ -386,6 +394,7 @@ russia_monarchy.7 = { #Nicholas I falls ill
 		c:RUS ?= this
 		ruler = {
 			has_template = RUS_nicholas_i
+			is_immortal = no
 		}
 		OR = {
 			AND = {
@@ -448,6 +457,7 @@ russia_monarchy.8 = { #Death of Georgy
 		c:RUS ?= this
 		heir ?= {
 			has_template = RUS_george_i
+			is_immortal = no
 		}
 		game_date >= 1895.1.1
 	}
@@ -545,11 +555,9 @@ russia_monarchy.9 = { #Accession of Alexei
 		custom_tooltip = {
 			text = alexei_ii_enthroned_tt
 		}
-		ruler = {
-			add_modifier = {
-				name = modifier_alexei_ii
-				months = very_long_modifier_time
-			}
+		add_modifier = {
+			name = modifier_alexei_ii
+			months = very_long_modifier_time
 		}
 	}
 }
@@ -592,11 +600,9 @@ russia_monarchy.10 = { #Accession of Michael
 				set_character_as_ruler = yes
 			}
 		}
-		ruler = {
-			add_modifier = {
-				name = modifier_michael_ii
-				months = very_long_modifier_time
-			}
+		add_modifier = {
+			name = modifier_michael_ii
+			months = very_long_modifier_time
 		}
 	}
 }
@@ -639,15 +645,61 @@ russia_monarchy.11 = { #Accession of George
 				set_character_as_ruler = yes
 			}
 		}
-		ruler = {
-			add_modifier = {
-				name = modifier_george_i
-				months = very_long_modifier_time
-			}
+		add_modifier = {
+			name = modifier_george_i
+			months = very_long_modifier_time
 		}
 	}
 }
 
+namespace = great_reformer
 
+great_reformer.1 = { #Great Reforms completed
+	type = country_event
+	placement = root
 
+	title = great_reformer.1.t
+	desc = great_reformer.1.d
+	flavor = great_reformer.1.f
 
+	event_image = {
+		video = "votp_monarch_holding_court"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+
+	duration = 3
+
+	cooldown = { months = very_long_modifier_time }
+
+	trigger = {
+		#Fired by on_action
+	}
+
+	immediate = {
+		ruler = {
+			save_scope_as = alexander_ii_scope
+		}
+	}
+
+	option = {
+		name = great_reformer.1.a
+		default_option = yes
+		scope:alexander_ii_scope = {
+			add_modifier = {
+				name = modifier_great_reformer
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = great_reformer.1.b
+		add_modifier = {
+			name = modifier_great_reforms_complete
+			months = normal_modifier_time
+		}
+	}
+}

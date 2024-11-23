@@ -238,6 +238,25 @@ template look_at_me_animation {
 	}
 }
 
+### look at me animation - weaker
+template look_at_me_animation_weak {
+	state = {
+		trigger_on_create = yes
+		name = 1
+		next = 2
+		alpha = 0
+		duration = 0.8
+		using = Animation_Curve_Default
+	}
+	state = {
+		name = 2
+		next = 1
+		alpha = 0.5
+		duration = 0.8
+		using = Animation_Curve_Default
+	}
+}
+
 ### default fade in/out
 template default_fade_in_out
 {
@@ -531,6 +550,63 @@ template shimmer {
 		name = shimmer
 		next = pause
 		duration = 2
+
+		start_sound = {
+			soundeffect = "event:/SFX/UI/Global/shimmer"
+		}
+		
+		bezier = { 0 0.9 1 0.4 }
+
+		modify_texture = {
+			name = "glow"
+			translate_uv = { 1 1 }
+		}
+
+		block "shimmer_animation_properties" {}
+	}
+
+	state = {
+		name = pause
+		next = shimmer
+		duration = 0
+		delay = 6
+
+		modify_texture = {
+			name = "glow"
+			translate_uv = { -1 -1 }
+		}
+	}	
+}
+
+template shimmer_notification {
+	modify_texture = {
+		name = "glow"
+		texture = "gfx/interface/animation/shimmer.dds"
+		blend_mode = colordodge
+		translate_uv = { 0 0 }
+
+		block "shimmer_visibility" {
+			visible = "[LessThan_float(PieTimerSlice.GetValue, '(float)0.2')]"
+		}
+	}
+
+	state = {
+		trigger_on_create = yes
+		name = show
+		next = shimmer
+		duration = 1
+
+		modify_texture = {
+			name = "glow"
+			translate_uv = { -1 -1 }
+		}
+	}
+
+	state = {
+		name = shimmer
+		next = pause
+		duration = 2
+		
 		start_sound = {
 			soundeffect = "event:/SFX/UI/Global/shimmer"
 		}
@@ -808,6 +884,138 @@ template rotate_glow_animation_02_with_sound {
 	state = {
 		name = _hide
 		end_sound = { soundeffect = "event:/SFX/UI/SubjectInteractions/principles_button_shimmer_loop_stop" }
+	}
+}
+
+template rotate_glow_animation_red {
+	block "rotate_animation_texture" {
+		texture = "gfx/interface/animation/color_bad.dds"
+	}
+	size = { 100% 100% }
+	alwaystransparent = yes
+	ignore_in_debug_draw = yes
+	
+	modify_texture = {
+		name = mask_left
+		texture = "gfx/interface/animation/rotate_glow_mask3.dds"
+		blend_mode = alphamultiply
+	}
+	modify_texture = {
+		name = mask_right
+		texture = "gfx/interface/animation/rotate_glow_mask3.dds"
+		blend_mode = alphamultiply
+	}
+	
+	### mask rotating left
+	state = {
+		block "trigger" {
+			trigger_on_create = yes
+			name = left
+		}
+		next = left2
+		duration = 0.0
+		modify_texture = {
+			name = mask_left
+			rotate_uv = 0
+		}
+	}
+	state = {
+		name = left2
+		next = left
+		duration = 30.0
+		modify_texture = {
+			name = mask_left
+			rotate_uv = 360
+		}
+	}
+	
+	#### mask rotating right
+	state = {
+		block "trigger" {
+			trigger_on_create = yes
+			name = right
+		}
+		next = right2
+		duration = 0.0
+		modify_texture = {
+			name = mask_right
+			rotate_uv = 0
+		}
+	}
+	state = {
+		name = right2
+		next = right
+		duration = 50.0
+		modify_texture = {
+			name = mask_right
+			rotate_uv = -360
+		}
+	}
+}
+
+template rotate_glow_animation_green {
+	block "rotate_animation_texture" {
+		texture = "gfx/interface/animation/color_good.dds"
+	}
+	size = { 100% 100% }
+	alwaystransparent = yes
+	ignore_in_debug_draw = yes
+	
+	modify_texture = {
+		name = mask_left
+		texture = "gfx/interface/animation/rotate_glow_mask3.dds"
+		blend_mode = alphamultiply
+	}
+	modify_texture = {
+		name = mask_right
+		texture = "gfx/interface/animation/rotate_glow_mask3.dds"
+		blend_mode = alphamultiply
+	}
+	
+	### mask rotating left
+	state = {
+		block "trigger" {
+			trigger_on_create = yes
+			name = left
+		}
+		next = left2
+		duration = 0.0
+		modify_texture = {
+			name = mask_left
+			rotate_uv = 0
+		}
+	}
+	state = {
+		name = left2
+		next = left
+		duration = 30.0
+		modify_texture = {
+			name = mask_left
+			rotate_uv = 360
+		}
+	}
+	
+	#### mask rotating right
+	state = {
+		block "trigger" {
+			trigger_on_create = yes
+			name = right
+		}
+		next = right2
+		duration = 0.0
+		modify_texture = {
+			name = mask_right
+			rotate_uv = 0
+		}
+	}
+	state = {
+		name = right2
+		next = right
+		duration = 50.0
+		modify_texture = {
+			name = mask_right
+			rotate_uv = -360
+		}
 	}
 }
 

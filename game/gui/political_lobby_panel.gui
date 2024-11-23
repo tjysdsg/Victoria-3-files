@@ -1,0 +1,601 @@
+# COPY-PASTED FOR NOW
+@panel_width_minus_10 = 530			# used to be 450
+@panel_width = 540  				# used to be 460
+@panel_width_half = 270				# used to be 230
+@panel_width_plus_10 = 550  		# used to be 470
+@panel_width_plus_14 = 554			# used to be 474
+@panel_width_plus_14_half = 277		# used to be 237
+@panel_width_plus_20 = 560			# used to be 480
+@panel_width_plus_30 = 570			# used to be 490
+@panel_width_plus_70 = 610			# used to be 530
+
+
+@interest_group_grid_width = 108  # = @panel_width / @interest_group_grid_columns
+@interest_group_grid_height = 140
+@interest_group_grid_columns = 5
+
+types political_lobby_panel_types
+{
+	type political_lobby_panel = default_block_window_two_lines {
+		name = "political_lobby_panel"
+		enabled = yes
+
+		datacontext = "[PoliticalLobbyPanel.GetPoliticalLobby]"
+
+		blockoverride "window_header_name"
+		{
+			text = "[PoliticalLobby.GetNameNoIcon]"
+		}
+
+		blockoverride "window_header_name_line_two"
+		{
+			text = "POLITICAL_LOBBY_IN_COUNTRY"
+		}
+
+		blockoverride "goto_button" {
+			button_icon_goto = {
+				size = { 30 30 }
+				datacontext = "[PoliticalLobby.GetCountry]"
+				tooltip = "GO_TO_BUTTON_COUNTRY"
+				onclick = "[InformationPanelBar.OpenCountryPanel(PoliticalLobby.GetCountry.Self)]"
+				input_action = "go_to_details"
+			}
+		}
+
+		blockoverride "pin_visibility" {
+			visible = "[ObjectsEqual(PoliticalLobby.GetCountry.Self, GetPlayer.Self)]"
+		}
+
+		blockoverride "pin_properties" {
+			datacontext = "[PoliticalLobbyPanel.GetPoliticalLobby]"
+			visible = "[PoliticalLobby.IsPinnedInOutliner]"
+			onclick = "[PoliticalLobby.TogglePinInOutliner]"
+			tooltip = "UNPIN_POLITICAL_LOBBY"
+		}
+
+		blockoverride "unpin_properties" {
+			datacontext = "[PoliticalLobbyPanel.GetPoliticalLobby]"
+			visible = "[Not(PoliticalLobby.IsPinnedInOutliner)]"
+			onclick = "[PoliticalLobby.TogglePinInOutliner]"
+			tooltip = "PIN_POLITICAL_LOBBY"
+		}
+
+		blockoverride "fixed_top"
+		{
+			
+		}
+	
+		blockoverride "scrollarea_content"
+		{
+			flowcontainer = {
+				using = default_content_fade
+				using = default_list_position
+				direction = vertical
+				spacing = 5
+				margin_bottom = 15
+
+				background = {
+					texture = "gfx/interface/illustrations/government/government_illustration.dds"
+					alpha = 0.1
+					fittype = center
+					
+					modify_texture = {
+						texture = "gfx/interface/masks/fade_vertical_center.dds"
+						spriteType = Corneredstretched
+						spriteborder = { 0 0 }
+						blend_mode = alphamultiply
+					}
+					modify_texture = {
+						texture = "gfx/interface/masks/fade_horizontal_less_left.dds"
+						spriteType = Corneredstretched
+						spriteborder = { 0 0 }
+						blend_mode = alphamultiply
+					}
+					modify_texture = {
+						texture = "gfx/interface/masks/fade_horizontal_less_right.dds"
+						spriteType = Corneredstretched
+						spriteborder = { 0 0 }
+						blend_mode = alphamultiply
+					}
+				}
+
+				### PRO-LOBBY ###	
+				politics_panel_top = {
+					visible = "[EqualTo_string(PoliticalLobby.GetType.GetCategory,'foreign_pro_country')]"
+
+					blockoverride "illu" {
+						texture = "gfx/interface/illustrations/top_illus/top_illu_lobby_pro.dds"
+					}
+				}
+
+				### ANTI-LOBBY ###	
+				politics_panel_top = {
+					visible = "[EqualTo_string(PoliticalLobby.GetType.GetCategory,'foreign_anti_country')]"
+
+					blockoverride "illu" {
+						texture = "gfx/interface/illustrations/top_illus/top_illu_lobby_anti.dds"
+					}
+				}
+
+				#### SUPPORTERS ####
+				
+				default_header_2texts = {
+					using = default_list_position
+					
+					blockoverride "text1" {
+						datacontext = "[PoliticalLobby]"
+						text = "POLITICAL_LOBBY_SUPPORTERS"
+					}
+
+					blockoverride "text2" {
+						text = "POLITICAL_LOBBY_TOTAL_CLOUT"
+					}
+				}
+				
+				flowcontainer = {
+					margin = { 10 0 }
+					
+					fixedgridbox = {
+						name = "tutorial_highlight_lobby_supporters"
+						datamodel = "[PoliticalLobby.GetMembers]"
+						flipdirection = yes
+
+						addrow = @interest_group_grid_height
+						addcolumn = @interest_group_grid_width
+						datamodel_wrap = @interest_group_grid_columns
+
+						item = {
+							widget = {
+								size = { @interest_group_grid_width @interest_group_grid_height }
+
+								flowcontainer = {
+									parentanchor = center
+									direction = vertical
+									spacing = 5
+									margin = { 10 5 }
+
+									background = {
+										using = entry_bg_simple_solid
+										color = "[InterestGroup.GetColor]"
+										alpha = 0.6
+
+										modify_texture = {
+											using = texture_velvet
+										}
+									}
+
+									ig_button = {
+										size = { 70 70 }
+										parentanchor = hcenter
+									}
+
+									textbox = {
+										name = "approval"
+										parentanchor = hcenter
+										align = nobaseline
+										autoresize = yes
+										raw_text = "#variable [InterestGroup.GetApprovalValue|+=]#!"
+										tooltip = "IG_APPROVAL_BREAKDOWN"
+									}
+
+									textbox = {
+										name = "join_weight"
+										parentanchor = hcenter
+										min_width = 70
+										autoresize = yes
+										align = nobaseline|hcenter
+										text = "POLITICAL_LOBBY_MEMBER_SUPPORT"
+										tooltip = "POLITICAL_LOBBY_MEMBER_SUPPORT_TT"
+									}
+								}
+							}
+						}
+					}
+				}
+
+				textbox = {
+					visible = "[Not(EqualTo_int32(PoliticalLobby.GetAppeasement,'(int32)0'))]"
+					parentanchor = right
+					margin_right = 15
+					align = nobaseline
+					autoresize = yes
+					text = "POLITICAL_LOBBY_APPEASEMENT_IMPACT"
+				}		
+
+				#### APPEASEMENT FACTORS ####
+
+				default_header = {
+					using = default_list_position
+					datacontext = "[PoliticalLobby]"
+					
+					
+					blockoverride "text" {
+						text = "POLITICAL_LOBBY_APPEASEMENT_FACTORS"
+					}
+				}
+
+				flowcontainer = {
+					direction = vertical
+					parentanchor = hcenter
+					datacontext = "[PoliticalLobby]"
+ 
+ 					background = {
+						using = entry_bg
+					}
+
+					textbox = {
+						text = "POLITICAL_LOBBY_APPEASEMENT_INCREASE"
+						minimumsize = { @panel_width -1 }
+						maximumsize = { @panel_width -1 }
+						margin = { 15 5 }
+						autoresize = yes
+						align = nobaseline
+
+						background = {
+							using = dark_area
+
+							alpha = 0.4
+
+							modify_texture = {
+								texture = "gfx/interface/backgrounds/entry_bg_mask.dds"
+								spriteType = Corneredstretched
+								spriteborder = { 45 45 }
+								spriteborder_bottom = 0
+								blend_mode = alphamultiply
+								texture_density = 2
+							}
+
+							modify_texture = {
+								texture = "gfx/interface/masks/fade_horizontal_right.dds"
+								spriteType = Corneredstretched
+								spriteborder = { 0 0 }
+								blend_mode = alphamultiply
+							}
+						}
+					}
+
+					flowcontainer = {
+						name = "tutorial_highlight_actions_to_increase_appeasement"
+						datamodel = "[PoliticalLobby.GetType.GetAppeasementFactorsPro]"
+						direction = vertical
+						margin = { 0 10 }
+
+						background = {
+							texture = "gfx/interface/tooltip/tooltip_title_bg.dds"
+							using = color_green_approval
+							alpha = 0.15
+							
+							modify_texture = {
+								using = texture_velvet
+							}
+						}
+
+						item = {
+							appeasement_factor_item = {}
+						}
+					}
+
+					widget = {
+						size = { 0 10 }
+					}
+
+					textbox = {
+						text = "POLITICAL_LOBBY_APPEASEMENT_DECREASE"
+						minimumsize = { @panel_width -1 }
+						maximumsize = { @panel_width -1 }
+						margin = { 15 3 }
+						autoresize = yes
+						align = nobaseline
+
+						background = {
+							using = dark_area
+							margin_left = -3
+							alpha = 0.4
+
+							modify_texture = {
+								texture = "gfx/interface/masks/fade_horizontal_right.dds"
+								spriteType = Corneredstretched
+								spriteborder = { 0 0 }
+								blend_mode = alphamultiply
+							}
+						}
+					}
+
+					flowcontainer = {
+						name = "tutorial_highlight_actions_to_decrease_appeasement"
+						datamodel = "[PoliticalLobby.GetType.GetAppeasementFactorsAnti]"
+						direction = vertical
+						margin = { 0 10 }
+
+						background = {
+							texture = "gfx/interface/tooltip/tooltip_title_bg.dds"
+							using = color_red_disapproval
+							alpha = 0.15
+							
+							modify_texture = {
+								using = texture_velvet
+							}
+						}
+
+						item = {
+							appeasement_factor_item = {
+								blockoverride "appeasement_factor_icon"
+								{
+									texture = "gfx/interface/icons/generic_icons/trend_down.dds"
+								}
+							}
+						}
+					}
+				}
+			}	
+		}
+	}
+
+	type appeasement_factor_item = flowcontainer {
+		direction = horizontal
+		margin_left = 10
+		spacing = 5
+
+		icon = {
+			size = { 10 10 }
+			parentanchor = vcenter
+			
+			block "appeasement_factor_icon"
+			{
+				texture = "gfx/interface/icons/generic_icons/trend_up.dds"
+			}
+		}
+
+		textbox = {
+			text = [PoliticalLobbyAppeasementFactor.GetDesc]
+			autoresize = yes
+			parentanchor = vcenter
+			align = nobaseline
+		}
+	}
+
+	type politics_panel_top = top_illu {
+		size = { @panel_width_plus_20 120 }
+
+		flowcontainer = {
+			spacing = 5
+			margin_left = 40
+			parentanchor = vcenter
+
+			widget = {
+				size = { 140 125 }
+				parentanchor = vcenter 
+
+				large_flag = {
+					datacontext = "[PoliticalLobby.GetTargetCountry]"
+					parentanchor = vcenter 
+
+					blockoverride "size" {
+						size = { 125 83 }
+					}
+
+					blockoverride "large_flag_framesize" {
+						size = { 148 107 }
+					}
+				}
+
+				icon = {
+					position = { -30 70 }
+					texture = "[PoliticalLobby.GetType.GetTexture]"
+					size = { 48 48 }
+				}
+
+				icon = {
+					visible = "[PoliticalLobby.GetCountry.IsSubjectOf(PoliticalLobby.GetTargetCountry.Self)]"
+					position = { 100 75 }
+					texture = "gfx/interface/icons/lens_toolbar_icons/overlord.dds"
+					size = { 50 50 }
+				}
+			}
+
+			flowcontainer = {
+				name = "tutorial_highlight_appeasemant"
+				direction = vertical
+				parentanchor = vcenter
+				spacing = 5
+
+				textbox = {
+					parentanchor = left
+					raw_text = "[concept_political_lobby_appeasement]"
+					autoresize = yes
+					align = hcenter|nobaseline
+				}
+
+				flowcontainer = {
+					spacing = 5
+					
+					icon = {
+						parentanchor = vcenter
+						texture = "gfx/interface/icons/political_lobby_icons/lobby_appeasement.dds"
+						size = { 32 32 }
+					}
+
+					textbox = {
+						using = fontsize_mega
+						raw_text = "[PoliticalLobby.GetAppeasement|=+0]"
+						tooltip = "POLITICAL_LOBBY_APPEASEMENT_TOOLTIP"
+						autoresize = yes
+						align = nobaseline
+						default_format = "#v"
+					}
+				}
+
+				double_direction_progressbar = {
+					size = { 240 14 }
+					parentanchor = left
+
+					blockoverride "value_left" {
+						value = "[Negate_float(FixedPointToFloat(PoliticalLobby.GetDeficitAppeasementForProgressBar))]" 
+					}
+					blockoverride "value_right" {
+						value = "[FixedPointToFloat(PoliticalLobby.GetExcessAppeasementForProgressBar)]" 
+					}
+
+					tooltip = "POLITICAL_LOBBY_APPEASEMENT_TOOLTIP"
+				}
+			}
+		}
+
+	}
+
+	### POLITICAL LOBBY ITEM
+	type political_lobby_list_item = widget {
+		block "lobby_list_item_size" {
+			size = { 300 60 }
+		}
+
+		tooltipwidget = {
+			FancyTooltip_PoliticalLobby = {}
+		}
+
+		button = {
+			size = { 100% 100% }
+			onclick = "[InformationPanelBar.OpenPoliticalLobbyPanel(PoliticalLobby.AccessSelf)]"
+			using = lobby_hover_highlight
+			using = default_button
+		}
+
+		hbox = {
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+
+			margin = { 10 5 }
+			spacing = 10
+
+			widget = {
+				name = "flag_icon_parent"
+				layoutpolicy_vertical = expanding
+				size = { 70 0 }
+
+				political_lobby_icon_and_flag = {
+					parentanchor = center
+				}
+			}
+			
+			vbox = {
+				name = "main_contents"
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+
+
+				textbox = {
+					layoutpolicy_horizontal = expanding
+					layoutpolicy_vertical = expanding
+					size = { 0 22 }
+					align = nobaseline
+					elide = right
+					fontsize_min = 14
+					text = "[PoliticalLobby.GetNameNoFormatting]"
+
+					background = {
+						using = dark_area
+						alpha = 0.4
+						margin_left = 5
+
+						modify_texture = {
+							texture = "gfx/interface/masks/fade_horizontal_right.dds"
+							spriteType = Corneredstretched
+							spriteborder = { 0 0 }
+							blend_mode = alphamultiply
+						}
+					}
+
+					background = {
+						using = fade_right_rounded_colored
+						color = "[PoliticalLobby.GetTargetCountry.GetMapColor]"
+						margin_left = 5
+						alpha = 0.3
+					}
+				}
+
+				hbox = {
+					name = "appeasement_and_igs"
+
+					layoutpolicy_vertical = expanding
+					layoutpolicy_horizontal = expanding
+
+					hbox = {
+						name = "IGs"
+						datamodel = "[PoliticalLobby.GetMembers]"
+
+						item = {
+							ig_icon = {
+								size = { 25 25 }
+
+								blockoverride "in_government_icon" { }
+							}
+						}
+					}
+
+					expand = {}
+
+					hbox = {
+						name = "appeasement"
+						icon = {
+							texture = "gfx/interface/icons/political_lobby_icons/lobby_appeasement.dds"
+							size = { 25 25 }
+						}
+
+						textbox = {
+							text = "[PoliticalLobby.GetAppeasement|=+0]"
+							autoresize = yes
+							align = nobaseline|right
+							min_width = 20
+						}
+
+						tooltip = "POLITICAL_LOBBY_APPEASEMENT_TOOLTIP"
+					}
+				}
+			}
+		}		
+	}
+
+	type political_lobby_icon_and_flag = widget {
+		size = { 70 56 }
+
+		small_flag_no_interact = {
+			name = "target_country_flag"
+			parentanchor = vcenter|right
+			datacontext = "[PoliticalLobby.GetTargetCountry]"
+			position = { -5 0 }
+		}
+
+		icon = {
+			name = "type_icon"
+			position = { 0 -10 }
+			parentanchor = bottom|left
+			size = { 26 26 }
+			texture = "[PoliticalLobby.GetType.GetTexture]"
+		}
+	}
+
+
+	type political_lobby_icon_and_flag_tiny = widget {
+		size = { 42 24 }
+
+		tiny_flag_no_interact = {
+			name = "target_country_flag"
+			parentanchor = vcenter|right
+			datacontext = "[PoliticalLobby.GetTargetCountry]"
+
+			blockoverride "tooltip" {} #no tooltip
+		}
+
+		icon = {
+			name = "type_icon"
+			parentanchor = vcenter|left
+			size = { 18 18 }
+			texture = "[PoliticalLobby.GetType.GetTexture]"
+		}
+	}
+}
+
+template lobby_hover_highlight {
+	onmousehierarchyenter = "[AccessHighlightManager.HighlightCountry(PoliticalLobby.GetTargetCountry.Self)]"
+	onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
+}

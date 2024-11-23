@@ -64,7 +64,7 @@ cold.102 = { #Choose commander
 					has_role = admiral
 					has_trait = explorer
 					NOT = {
-						this = scope:expedition_leader_1
+						scope:expedition_leader_1 ?= this
 					}
 				}
 				save_scope_as = expedition_leader_2
@@ -77,7 +77,7 @@ cold.102 = { #Choose commander
 					is_ruler = no
 					has_role = admiral
 					NOT = {
-						this = scope:expedition_leader_1
+						scope:expedition_leader_1 ?= this
 					}
 				}
 				save_scope_as = expedition_leader_2
@@ -89,8 +89,8 @@ cold.102 = { #Choose commander
 				is_ruler = no
 				has_role = admiral
 				NOR = {
-					this = scope:expedition_leader_1
-					this = scope:expedition_leader_2
+					scope:expedition_leader_1 ?= this
+					scope:expedition_leader_2 ?= this
 				}
 			}
 			save_scope_as = expedition_leader_3
@@ -101,20 +101,12 @@ cold.102 = { #Choose commander
 				is_ruler = no
 				has_role = admiral
 				NOR = {
-					this = scope:expedition_leader_1
-					this = scope:expedition_leader_2
-					this = scope:expedition_leader_3
+					scope:expedition_leader_1 ?= this
+					scope:expedition_leader_2 ?= this
+					scope:expedition_leader_3 ?= this
 				}
 			}
 			save_scope_as = expedition_leader_4
-		}
-		set_variable = {
-			name = expedition_progress
-			value = 1
-		}
-		set_variable = {
-			name = expedition_peril
-			value = 1
 		}
 	}
 
@@ -130,7 +122,7 @@ cold.102 = { #Choose commander
 			name = modifier_large_expedition_cost
 			multiplier = money_amount_multiplier_medium
 		}
-		scope:expedition_leader_1 = {
+		scope:expedition_leader_1 ?= {
 			set_variable = expedition_leader_var
 			set_character_busy_and_immortal = yes
 		}
@@ -149,7 +141,7 @@ cold.102 = { #Choose commander
 			name = modifier_large_expedition_cost
 			multiplier = money_amount_multiplier_medium
 		}
-		scope:expedition_leader_2 = {
+		scope:expedition_leader_2 ?= {
 			set_variable = expedition_leader_var
 			set_character_busy_and_immortal = yes
 		}
@@ -168,7 +160,7 @@ cold.102 = { #Choose commander
 			name = modifier_large_expedition_cost
 			multiplier = money_amount_multiplier_medium
 		}
-		scope:expedition_leader_3 = {
+		scope:expedition_leader_3 ?= {
 			set_variable = expedition_leader_var
 			set_character_busy_and_immortal = yes
 		}
@@ -188,7 +180,7 @@ cold.102 = { #Choose commander
 			name = modifier_large_expedition_cost
 			multiplier = money_amount_multiplier_medium
 		}
-		scope:expedition_leader_4 = {
+		scope:expedition_leader_4 ?= {
 			set_variable = expedition_leader_var
 			set_character_busy_and_immortal = yes
 		}
@@ -216,8 +208,14 @@ cold.1 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 	
 	trigger = {
-		var:expedition_progress >= 2
+		je:je_antarctica ?= {
+			"scripted_bar_progress(expedition_progress_bar)" >= 2
+		}
 		NOT = { has_variable = mountains_of_madness }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 	
 	immediate = {
@@ -308,8 +306,14 @@ cold.2 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 	
 	trigger = {
-		var:expedition_progress = 1
+		je:je_antarctica ?= {
+			"scripted_bar_progress(expedition_progress_bar)" = 1
+		}
 		NOT = { has_variable = discovery_hut_var }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 	
 	immediate = {
@@ -360,13 +364,17 @@ cold.3 = {
 		first_valid = {
 			triggered_desc = {
 				trigger = {
-					var:expedition_peril >= 7
+					je:je_antarctica ?= {
+						"scripted_bar_progress(expedition_peril_progress_bar)" >= 7
+					}
 				}
 				desc = cold.3.f
 			}
 			triggered_desc = {
 				trigger = {
-					var:expedition_peril < 7
+					je:je_antarctica ?= {
+						"scripted_bar_progress(expedition_peril_progress_bar)" < 7
+					}
 				}
 				desc = cold.3.f2
 			}
@@ -382,8 +390,14 @@ cold.3 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 	
 	trigger = {
-		var:expedition_progress > 3
+		je:je_antarctica ?= {
+			"scripted_bar_progress(expedition_progress_bar)" > 3
+		}
 		NOT = { has_variable = antarctic_got_lost }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 	
 	immediate = {
@@ -482,7 +496,9 @@ cold.5 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 	
 	trigger = {
-		var:expedition_progress >= 6
+		je:je_antarctica ?= {
+			"scripted_bar_progress(expedition_progress_bar)" >= 6
+		}
 		NOT = { has_variable = first_to_reach_south_pole }
 	}
 	
@@ -549,8 +565,14 @@ cold.6 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 	
 	trigger = {	
-		var:expedition_progress >= 3
+		je:je_antarctica ?= {
+			"scripted_bar_progress(expedition_progress_bar)" >= 3
+		}
 		NOT = { has_variable = dog_meat }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 	
 	immediate = {
@@ -678,8 +700,14 @@ cold.8 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 	
 	trigger = {
-		var:expedition_progress <= 1
+		je:je_antarctica ?= {
+			"scripted_bar_progress(expedition_progress_bar)" <= 1
+		}
 		NOT = { has_variable = pack_ice }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 	
 	immediate = {
@@ -748,6 +776,12 @@ cold.9 = {
 		}
 	}
 	flavor = cold.9.f
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
+	
+	cooldown = { months = short_modifier_time }
 	
 	duration = 3
 	
@@ -848,8 +882,14 @@ cold.11 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 	
 	trigger = {
-		var:expedition_progress < 2
+		je:je_antarctica ?= {
+			"scripted_bar_progress(expedition_progress_bar)" < 2
+		}
 		NOT = { has_variable = great_ice_barrier_variable }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 	
 	immediate = {
@@ -894,16 +934,18 @@ cold.12 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 	
 	trigger = {
-		var:expedition_progress >= 3
+		je:je_antarctica ?= {
+			"scripted_bar_progress(expedition_progress_bar)" >= 3
+		}
 		NOT = { has_variable = transantarctic_mountains_var }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 	
 	immediate = {
 		save_scope_as = expedition_country
-		set_variable = {
-			name = transantarctic_mountains_var
-			months = short_modifier_time
-		}
 	}
 	
 	option = { # Find a new route
@@ -919,6 +961,10 @@ cold.12 = {
 			33 = {
 				add_small_peril_effect = yes
 			}
+		}
+		set_variable = {
+			name = transantarctic_mountains_var
+			months = short_modifier_time
 		}
 	}
 	option = { # Take a known approach
@@ -941,13 +987,17 @@ cold.13 = {
 		first_valid = {
 			triggered_desc = {
 				trigger = {
-					var:expedition_peril >= 7
+					je:je_antarctica ?= {
+						"scripted_bar_progress(expedition_peril_progress_bar)" >= 7
+					}
 				}
 				desc = cold.13.f2
 			}
 			triggered_desc = {
 				trigger = {
-					var:expedition_peril < 7
+					je:je_antarctica ?= {
+						"scripted_bar_progress(expedition_peril_progress_bar)" < 7
+					}
 				}
 				desc = cold.13.f
 			}
@@ -963,8 +1013,14 @@ cold.13 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 	
 	trigger = {
-		var:expedition_progress >= 3
+		je:je_antarctica ?= {
+			"scripted_bar_progress(expedition_progress_bar)" >= 3
+		}
 		NOT = { has_variable = strange_rock_var }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 	
 	immediate = {

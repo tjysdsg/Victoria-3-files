@@ -1,0 +1,138 @@
+﻿namespace = fsa_events
+
+# Reconstruction
+fsa_events.1 = {
+	type = country_event
+	
+	event_image = {
+		video = "europenorthamerica_political_extremism"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	title = fsa_events.1.t
+	desc = fsa_events.1.d
+	flavor = fsa_events.1.f
+
+	duration = 3
+
+	trigger = {
+		# Fired via on_action
+	}
+
+	immediate = {
+		save_scope_as = formation_country
+		capital = {
+			region = {
+				save_scope_as = capital_region_scope
+			}
+		}
+		every_country = {
+			limit = {
+				has_diplomatic_relevance = ROOT
+			}
+			post_notification = unification_notification_generic
+		}
+		add_modifier = {
+			name = unification_prestige
+			months = very_long_modifier_time
+		}
+		unification_claims_effect = yes
+	}
+
+	option = {
+		name = fsa_events.1.a
+		default_option = yes
+		if = {
+			limit = {
+				NOT = {
+					has_law = law_type:law_slavery_banned
+				}
+			}
+			activate_law = law_type:law_slavery_banned
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_law = law_type:law_multicultural
+				}
+			}
+			activate_law = law_type:law_multicultural
+		}
+	}
+
+	option = {
+		name = fsa_events.1.b
+		if = {
+			limit = {
+				NOT = {
+					has_law = law_type:law_slavery_banned
+				}
+			}
+			activate_law = law_type:law_slavery_banned
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_law = law_type:law_multicultural
+				}
+			}
+			activate_law = law_type:law_multicultural
+		}
+		add_primary_culture = cu:afro_american
+		every_interest_group = {
+			limit = {
+				OR = {
+					has_ideology = ideology:ideology_reactionary
+					has_ideology = ideology:ideology_paternalistic
+					leader = {
+						has_reactionary_ideology = yes
+					}
+				}
+			}
+			prev = {
+				add_radicals = {
+					value = medium_radicals
+					interest_group = prev
+				}
+			}
+		}
+		every_interest_group = {
+			limit = {
+				OR = {
+					has_ideology = ideology:ideology_anti_slavery
+					has_ideology = ideology:ideology_liberal
+					has_ideology = ideology:ideology_egalitarian
+					has_ideology = ideology:ideology_anarchist # They approve of multiculturalism
+				}
+			}
+			prev = {
+				add_loyalists = {
+					value = medium_radicals
+					interest_group = prev
+				}
+			}
+		}
+		add_loyalists = {
+			value = very_large_radicals
+			culture = cu:afro_american
+		}
+		add_modifier = {
+			name = fsa_reparation_cost
+			months = normal_modifier_time
+		}
+		every_scope_state = {
+			custom = every_yankee_state_in_root
+			limit = {
+				state_region = { is_homeland = cu:yankee }
+			}
+			state_region = { add_homeland = cu:afro_american }
+			add_modifier = {
+				name = fsa_reparation_reward
+				months = normal_modifier_time
+			}
+		}
+	}
+}

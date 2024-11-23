@@ -15,15 +15,17 @@
 		
 	diplomatic_action = protectorate
 	
-    autonomy_level = 3
+    autonomy_level = 2
     category = same_as_puppet
 
 	lower_autonomy_subject_type_alternatives = {
-		subject_type_dominion
+		subject_type_puppet
+		subject_type_colony
 	}
 	
 	same_autonomy_subject_type_alternatives = {
 		subject_type_tributary
+		subject_type_dominion
 	}
 		
 	valid_overlord_country_types = {
@@ -33,7 +35,6 @@
 	
 	valid_subject_country_types = {
 		recognized
-		colonial
 		unrecognized
 	}	
 
@@ -78,11 +79,12 @@ subject_type_puppet = {
     category = same_as_puppet
 
 	higher_autonomy_subject_type_alternatives = {
-		subject_type_dominion
+		subject_type_protectorate
 	}
 	
 	same_autonomy_subject_type_alternatives = {
 		subject_type_vassal
+		subject_type_colony
 	}
 	
 	valid_overlord_country_types = {
@@ -92,7 +94,6 @@ subject_type_puppet = {
 	
 	valid_subject_country_types = {
 		recognized
-		colonial
 		unrecognized
 	}		
 	
@@ -134,7 +135,7 @@ subject_type_tributary = {
 	
 	diplomatic_action = tributary
 	
-    autonomy_level = 3
+    autonomy_level = 2
     category = same_as_vassal
 
 	lower_autonomy_subject_type_alternatives = {
@@ -143,6 +144,7 @@ subject_type_tributary = {
 	
 	same_autonomy_subject_type_alternatives = {
 		subject_type_protectorate
+		subject_type_dominion
 	}	
 	
 	valid_overlord_country_types = {
@@ -199,7 +201,8 @@ subject_type_vassal = {
 	}
 	
 	same_autonomy_subject_type_alternatives = {
-		subject_type_dominion
+		subject_type_colony
+		subject_type_puppet
 	}	
 	
 	valid_overlord_country_types = {
@@ -232,11 +235,11 @@ subject_type_vassal = {
 	}
 }
 
-subject_type_dominion = {
+subject_type_chartered_company = {
 	allow_change_country_flag = yes
 	use_overlord_map_color = yes
 	use_overlord_ruler = no
-	annex_on_country_formation = yes
+	annex_on_country_formation = no
 	can_start_own_diplomatic_plays = yes
 	breaks_if_subject_not_protected = yes
 	join_overlord_wars = yes
@@ -246,21 +249,18 @@ subject_type_dominion = {
 	use_for_release_country = no
 	gives_prestige_to_overlord = yes
 	
-	diplomatic_action = dominion
+	diplomatic_action = chartered_company
 	
 	autonomy_level = 2
 	category = same_as_personal_union
 
-	higher_autonomy_subject_type_alternatives = {
-		subject_type_protectorate
-	}
-	
 	lower_autonomy_subject_type_alternatives = {
-		subject_type_puppet
+		subject_type_colony
 	}	
 	
 	same_autonomy_subject_type_alternatives = {
-		subject_type_vassal
+		subject_type_protectorate
+		subject_type_dominion
 	}		
 	
 	valid_overlord_country_types = {
@@ -269,9 +269,7 @@ subject_type_dominion = {
 	}
 	
 	valid_subject_country_types = {
-		recognized
 		colonial
-		unrecognized
 	}	
 	
 	valid_overlord_ranks = {
@@ -292,6 +290,122 @@ subject_type_dominion = {
 	# Cannot return a value lower than MIN_SUBJECT_TYPE_VALUE
 	ai_value = {
 		value = 1.25
+	}
+}
+
+subject_type_dominion = {
+	allow_change_country_flag = yes
+	use_overlord_map_color = yes
+	use_overlord_ruler = no
+	annex_on_country_formation = no
+	can_start_own_diplomatic_plays = yes
+	breaks_if_subject_not_protected = yes
+	join_overlord_wars = yes
+	can_have_subjects = yes
+	overlord_must_be_higher_rank = yes
+	overlord_must_be_same_country_type = no
+	use_for_release_country = no
+	gives_prestige_to_overlord = yes
+	
+	diplomatic_action = dominion
+	
+	autonomy_level = 2
+	category = same_as_personal_union
+
+	lower_autonomy_subject_type_alternatives = {
+		subject_type_colony
+		subject_type_puppet
+	}	
+	
+	same_autonomy_subject_type_alternatives = {
+		subject_type_protectorate
+	}		
+	
+	valid_overlord_country_types = {
+		recognized
+		colonial
+	}
+	
+	valid_subject_country_types = {
+		colonial
+	}	
+	
+	valid_overlord_ranks = {
+		great_power
+		major_power
+		minor_power	
+	}
+	
+	valid_subject_ranks = {
+		minor_power
+		insignificant_power
+		unrecognized_regional_power
+		unrecognized_power
+	}
+	
+	# Multiplies both subject_value and become_subject_value in AI strategies
+	# Higher value means AI is more interested in having this type of subject but less interested in *being* this type of subject
+	# Cannot return a value lower than MIN_SUBJECT_TYPE_VALUE
+	ai_value = {
+		value = 1.25
+	}
+}
+
+subject_type_colony = {
+	allow_change_country_flag = yes
+	use_overlord_map_color = yes
+	use_overlord_ruler = no
+	annex_on_country_formation = no
+	can_start_own_diplomatic_plays = no
+	breaks_if_subject_not_protected = yes
+	join_overlord_wars = yes
+	can_have_subjects = yes
+	overlord_must_be_higher_rank = yes
+	overlord_must_be_same_country_type = no
+	use_for_release_country = yes
+	gives_prestige_to_overlord = yes
+	
+	diplomatic_action = colony
+	
+    autonomy_level = 1
+    category = same_as_puppet
+
+	higher_autonomy_subject_type_alternatives = {
+		subject_type_dominion
+	}
+	
+	same_autonomy_subject_type_alternatives = {
+		subject_type_vassal
+		subject_type_puppet
+	}
+	
+	valid_overlord_country_types = {
+		recognized
+		colonial
+	}
+	
+	valid_subject_country_types = {
+		colonial
+	}		
+	
+	valid_overlord_ranks = {
+		great_power
+		major_power
+		minor_power
+	}
+	
+	valid_subject_ranks = {
+		minor_power
+		insignificant_power
+		unrecognized_regional_power	
+		unrecognized_power
+	}
+	
+	# Multiplies both subject_value and become_subject_value in AI strategies
+	# Higher value means AI is more interested in having this type of subject but less interested in *being* this type of subject
+	# Cannot return a value lower than MIN_SUBJECT_TYPE_VALUE
+	ai_value = {
+		value = 1.5
 	}
 }
 

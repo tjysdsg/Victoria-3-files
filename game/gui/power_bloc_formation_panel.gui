@@ -1,0 +1,1700 @@
+# COPY-PASTED FOR NOW
+@panel_width_minus_10 = 530			# used to be 450
+@panel_width_minus_20 = 520
+@panel_width = 540  				# used to be 460
+@panel_width_half = 270				# used to be 230
+@panel_width_plus_10 = 550  		# used to be 470
+@panel_width_plus_14 = 554			# used to be 474
+@panel_width_plus_14_half = 277		# used to be 237
+@panel_width_plus_20 = 560			# used to be 480
+@panel_width_plus_30 = 570			# used to be 490
+@panel_width_plus_70 = 610			# used to be 530
+
+power_bloc_customization_popup_type = {
+	name = power_bloc_customization_popup
+}
+
+types power_bloc_formation
+{
+	type power_bloc_formation_panel = default_block_window
+	{
+    	name = "power_bloc_formation_panel"
+		datacontext = "[PowerBlocFormationPanel.GetPowerBlocFormation]"
+
+		blockoverride "window_header_name"
+		{
+			text = "POWER_BLOC_FORMATION_HEADER"
+		}
+
+		blockoverride "header_close_button_visibility"
+		{
+			visible = yes
+		}
+
+		blockoverride "scrollarea_content"
+		{
+			flowcontainer = {
+				using = default_list_position
+				direction = vertical
+				minimumsize = { @panel_width_plus_14 -1 }
+				maximumsize = { @panel_width_plus_14 -1 }
+				datacontext = "[PowerBlocFormationPanel.GetPowerBlocFormation]"
+				margin_top = 10
+				spacing = 10
+
+				flowcontainer = {
+					parentanchor = hcenter
+					spacing = 5
+
+					# "Choose Name" section
+					flowcontainer = {
+						parentanchor = vcenter
+						direction = vertical
+
+						# Set a custom name
+						# todo PRCAL-33612 - We need to make the editbox unfocus itself when you click outside of it, I have no idea how //Aron
+						editbox = {
+							name = "power_bloc_name_edit"
+							visible = "[HasDlcFeature('power_bloc_features')]"
+							parentanchor = hcenter
+							maxcharacters = 30
+							size = { 490 40 }
+							margin_left = 10
+							alwaystransparent = no
+							focuspolicy = click
+							focus_on_visible = no
+							align = nobaseline
+
+							background = {
+								using = text_edit_bg
+							}
+
+
+							text = "[PowerBlocFormation.GetChosenName]"
+							ontextedited = "[PowerBlocFormationPanel.OnEditName]"
+
+							textbox = {
+								visible = "[StringIsEmpty(PowerBlocFormation.GetChosenName)]"
+								parentanchor = vcenter
+								align = nobaseline
+								position = { 10 0 }
+								autoresize = yes
+								default_format = "#title"
+								text = "POWER_BLOC_FORMATION_CLICK_TO_CHANGE_NAME"
+							}
+						}
+
+						# Show a generated name if the DLC is disabled
+						widget = {
+							visible = "[Not(HasDlcFeature('power_bloc_features'))]"
+							size = { 490 40 }
+
+							background = {
+								using = entry_bg_simple
+							}
+
+							textbox = {
+								parentanchor = vcenter
+								margin_left = 10
+								autoresize = yes
+								align = nobaseline
+								text = "[PowerBlocFormation.GetChosenName]"
+							}
+						}
+					}
+
+					button_icon_round_action = {
+						parentanchor = vcenter
+						size = { 40 40 }
+						onclick = "[PowerBlocFormation.RandomizeName]"
+						tooltip = "RANDOMIZE_POWER_BLOC_NAME"
+
+						blockoverride "icon" {
+							texture = "gfx/interface/buttons/button_icons/randomise.dds"
+						}
+
+						blockoverride "icon_size" {
+							size = { 75% 75% }
+						}
+					}
+				}
+
+				flowcontainer = {
+					parentanchor = hcenter
+					spacing = 20
+
+					### EMBLEM CUSTOMIZATION - BUTTON
+					framed_customize_button = {
+						visible = "[HasDlcFeature('power_bloc_features')]"
+
+						blockoverride "onhover" {
+							onmousehierarchyenter = "[GetVariableSystem.Toggle('power_bloc_customize_emblem_hover')]"
+							onmousehierarchyleave = "[GetVariableSystem.Clear('power_bloc_customize_emblem_hover')]"
+						}
+
+						blockoverride "onhover_visibility" {
+							visible = "[GetVariableSystem.Exists('power_bloc_customize_emblem_hover')]"
+						}
+
+						blockoverride "onclick" {
+							onclick = "[PopupManager.TogglePowerBlocCustomizationPopup]"
+							onclick = "[GetVariableSystem.Set('emblem_and_colors_tab', 'true')]"
+							onclick = "[GetVariableSystem.Set('statue_tab', 'false')]"
+						}
+
+						blockoverride "background" {
+							background = {
+								using = fade_top_entry_header_colored
+								color = "[PowerBlocFormation.GetMapColor]"
+								texture = "[PowerBlocFormation.GetMapTexture]"
+								using = frame_small_mask
+								alpha = 0.7
+							}
+						}
+
+						blockoverride "tooltip" {
+							tooltip = "CUSTOMIZE_EMBLEM"
+						}
+
+						blockoverride "icon_texture" {
+							texture = "[PowerBlocFormation.GetConfirmedCustomCoaPreview.GetLargePowerBlocCoaTexture]"
+                            frame = "[PowerBlocFormation.GetConfirmedCustomCoaPreview.GetLargePowerBlocCoaFrame]"
+                            framesize = "[GetLargePowerBlocCoaFrameSize]"
+						}
+
+						blockoverride "bottom_text" {
+							text = "EMBLEM_AND_COLORS"
+						}
+					}
+
+					### EMBLEM - NO DLC - NO BUTTON
+					framed_icon = {
+						visible = "[Not(HasDlcFeature('power_bloc_features'))]"
+
+						blockoverride "background" {
+							background = {
+								using = fade_top_entry_header_colored
+								color = "[PowerBlocFormation.GetMapColor]"
+								texture = "[PowerBlocFormation.GetMapTexture]"
+								using = frame_small_mask
+								alpha = 0.7
+							}
+						}
+
+						blockoverride "icon_texture" {
+							texture = "[PowerBlocFormation.GetConfirmedCustomCoaPreview.GetLargePowerBlocCoaTexture]"
+                            frame = "[PowerBlocFormation.GetConfirmedCustomCoaPreview.GetLargePowerBlocCoaFrame]"
+                            framesize = "[GetLargePowerBlocCoaFrameSize]"
+						}
+
+						blockoverride "bottom_text" {
+							text = "EMBLEM_AND_COLORS"
+						}
+					}
+
+					### STATUE CUSTOMIZATION
+					framed_customize_button = {
+						visible = "[HasDlcFeature('power_bloc_features')]"
+
+						blockoverride "onhover" {
+							onmousehierarchyenter = "[GetVariableSystem.Toggle('power_bloc_customize_statue_hover')]"
+							onmousehierarchyleave = "[GetVariableSystem.Clear('power_bloc_customize_statue_hover')]"
+						}
+
+						blockoverride "onhover_visibility" {
+							visible = "[GetVariableSystem.Exists('power_bloc_customize_statue_hover')]"
+						}
+
+						blockoverride "onclick" {
+							onclick = "[PopupManager.TogglePowerBlocCustomizationPopup]"
+							onclick = "[GetVariableSystem.Set('emblem_and_colors_tab', 'false')]"
+							onclick = "[GetVariableSystem.Set('statue_tab', 'true')]"
+						}
+
+						blockoverride "tooltip" {
+							tooltip = "CUSTOMIZE_STATUE"
+						}
+
+						blockoverride "icon_texture" {
+							gfxtype = jomini_entitygfx_sprite
+							datacontext = "[PowerBlocFormation.GetStatue]"
+							entity_instance = "[PowerBlocStatue.GetEntity(PdxGuiWidget.AccessSelf)]"
+
+							shaderfile = "gfx/FX/pdxgui_default.shader"
+							effectname = "PdxGuiDefault"
+							render_pass = "[GetGuiEntityShaderRenderpass]"
+
+							gfx_environment_file = "gfx/map/environment/ui_power_bloc_statues_environment.txt"
+							enabled_post_effects = luminance
+
+							camera_position = { -13.5 12.5 -12.5 }
+							camera_look_at = { 0.0 1.3 0.0 }
+							camera_fov_y_degrees = 10
+							camera_near_far = { 0.1 300.0 }
+						}
+
+						blockoverride "bottom_text" {
+							text = "STATUE"
+						}
+					}
+				}
+
+				default_header = {
+					using = default_list_position
+
+					blockoverride "text" {
+						text = "POWER_BLOC_IDENTITY_HEADER"
+					}
+				}
+
+				flowcontainer = {
+					parentanchor = hcenter
+					minimumsize = { @panel_width_minus_10 80 }
+					datacontext = "[PowerBlocFormation.GetSelectedIdentity]"
+					direction = vertical
+
+					using = entry_bg_fancy
+
+					### CENTRAL IDENTITY - SELECTED
+					container = {
+						visible = "[PowerBlocFormation.IsAnyIdentitySelected]"
+						parentanchor = hcenter
+						minimumsize = { @panel_width_minus_10 130 }
+						datacontext = "[PowerBlocFormation.GetSelectedIdentity]"
+
+						button = {
+							visible = "[GreaterThan_int32(GetDataModelSize(PowerBlocFormation.GetIdentities), '(int32)1')]"
+							size = { 100% 100% }
+							using = default_button
+							onclick = "[PowerBlocFormationPanel.ToggleSelectPowerBlocIdentityMenu(PdxGuiWidget.AccessSelf)]"
+						}
+
+						background = {
+							visible = "[Not(GreaterThan_int32(GetDataModelSize(PowerBlocFormation.GetIdentities), '(int32)1'))]"
+							size = { 100% 100% }
+							using = entry_bg_simple
+							using = frame_small_mask_top
+						}
+
+						widget = {
+							visible = "[Not(GreaterThan_int32(GetDataModelSize(PowerBlocFormation.GetIdentities), '(int32)1'))]"
+							size = { 100% 100% }
+
+							tooltipwidget = {
+								FancyTooltip_PowerBlocIdentity = {
+									blockoverride "has_principle_visibility_formation" {
+										visible = "[PowerBlocFormation.HasSelectedPrinciple(PowerBlocPrinciple.Self)]"
+									}
+								}
+							}
+						}
+
+						flowcontainer = {
+							parentanchor = top
+							position = { 150 10 }
+							direction = vertical
+							margin_bottom = 10
+							spacing = 5
+
+							textbox = {
+								text = "[PowerBlocIdentity.GetNameNoFormatting]"
+								default_format = "#header"
+								align = nobaseline
+								using = fontsize_xl
+								autoresize = yes
+								max_width = 350
+								elide = right
+								fontsize_min = 14
+							}
+
+							textbox = {
+								text = "[PowerBlocIdentity.GetDesc]"
+								align = nobaseline
+								autoresize = yes
+								multiline = yes
+								max_width = 350
+								elide = right
+								fontsize_min = 14
+							}
+						}
+
+						power_bloc_identity_icon = {
+							position = { 10 5 }
+							alwaystransparent = yes
+
+							button = {
+								size = { 100% 100% }
+								alwaystransparent = yes
+								onclick = "[PowerBlocFormationPanel.ToggleSelectPowerBlocIdentityMenu(PdxGuiWidget.AccessSelf)]"
+							}
+						}
+					}
+
+					flowcontainer = {
+						visible = "[And(PowerBlocFormation.IsAnyIdentitySelected, Not(IsDataModelEmpty(PowerBlocFormation.GetSelectedIdentity.GetPrimaryPrincipleGroups)))]"
+						parentanchor = hcenter
+						direction = vertical
+
+						# Name and info header
+						container = {
+							minimumsize = { @panel_width_minus_10 35 }
+
+							background = {
+								using = fade_top_entry_header_colored
+								color = "[PowerBlocFormation.GetMapColor]"
+							}
+
+							textbox = {
+								position = { 10 0 }
+								parentanchor = vcenter
+								autoresize = yes
+								align = nobaseline
+								elide = right
+								fontsize_min = 14
+								max_width = 230
+								text = "DATA_PRIMARY_PRINCIPLE_GROUPS_CONCEPT"
+							}
+
+							textbox = {
+								position = { -10 0 }
+								parentanchor = vcenter|right
+								autoresize = yes
+								align = nobaseline
+								elide = right
+								fontsize_min = 12
+								max_width = 280
+								text = "PICK_AT_LEAST_ONE_PRIMARY"
+							}
+						}
+
+						widget = {
+							size = { 5 5 }
+						}
+
+						container = {
+							parentanchor = hcenter
+							minimumsize = { @panel_width_minus_10 -1 }
+
+							dynamicgridbox = {
+								parentanchor = hcenter
+								flipdirection = yes
+								datamodel_wrap = 2
+								datamodel = "[PowerBlocIdentity.GetPrimaryPrincipleGroups]"
+
+								item = {
+									container = {
+										minimumsize = { 256 -1 }
+
+										principle_group_no_interact = {
+											parentanchor = hcenter
+											minimumsize = { 250 -1 }
+
+											blockoverride "principle_item_size" {
+												size = { 72 60 }
+											}
+
+											blockoverride "group_name_max_width" {
+												max_width = 240
+											}
+
+											blockoverride "principle_icons_alpha" {
+												alpha = "[TransparentIfFalse(PowerBlocFormation.HasSelectedPrincipleGroup(PowerBlocPrincipleGroup.Self))]"
+											}
+
+											blockoverride "has_principle_visibility" {
+												visible = "[PowerBlocFormation.HasSelectedPrinciple(PowerBlocPrinciple.Self)]"
+											}
+
+											blockoverride "principle_group_tooltip" {
+												tooltipwidget = {
+													FancyTooltip_PowerBlocPrincipleGroup = {
+														blockoverride "text_before" {
+															visible = "[PowerBlocPrincipleGroup.IsPrimaryFor(PowerBlocIdentity.Self)]"
+															text = "DATA_PRIMARY_PRINCIPLE_GROUP"
+															margin_bottom = 15
+														}
+													}
+												}
+											}
+
+											blockoverride "principle_tooltip" {
+												tooltipwidget = {
+													FancyTooltip_PowerBlocPrinciple = {
+														blockoverride "text_before" {
+															visible = "[PowerBlocFormation.HasSelectedPrinciple(PowerBlocPrinciple.Self)]"
+															text = "POWER_BLOC_FORMATION_HAS_THIS_PRINCIPLE"
+															margin_bottom = 15
+														}
+
+														blockoverride "principle_group_info" {
+															custom_tooltip_textbox_with_empty_line = {
+																visible = "[Not(PowerBlocPrincipleGroup.IsPrimaryFor(PowerBlocFormation.GetSelectedIdentity.Self))]"
+																text = "DATA_PRINCIPLE_GROUP_ENTRY"
+															}
+
+															custom_tooltip_textbox_with_empty_line = {
+																visible = "[PowerBlocPrincipleGroup.IsPrimaryFor(PowerBlocFormation.GetSelectedIdentity.Self)]"
+																text = "DATA_PRIMARY_PRINCIPLE_GROUP_ENTRY"
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+
+						widget = {
+							size = { 10 10 }
+						}
+					}
+				}
+
+				### CENTRAL IDENTITY - NOT SELECTED
+				widget = {
+					visible = "[Not(PowerBlocFormation.IsAnyIdentitySelected)]"
+					parentanchor = hcenter
+					size = { @panel_width_minus_10 150 }
+
+					button = {
+						parentanchor = right|vcenter
+						using = default_button
+						size = { 450 140 }
+						onclick = "[PowerBlocFormationPanel.ToggleSelectPowerBlocIdentityMenu(PdxGuiWidget.AccessSelf)]"
+
+						textbox = {
+							parentanchor = center
+							autoresize = yes
+							align = nobaseline
+							using = fontsize_large
+							text = "SELECT_A_CENTRAL_IDENTITY"
+						}
+					}
+
+					add_character_button = {
+						parentanchor = vcenter
+
+						blockoverride "onclick" {
+							onclick = "[PowerBlocFormationPanel.ToggleSelectPowerBlocIdentityMenu(PdxGuiWidget.AccessSelf)]"
+						}
+					}
+				}
+
+				default_header = {
+					using = default_list_position
+					blockoverride "text" {
+						text = "POWER_BLOC_PRINCIPLES_HEADER"
+					}
+				}
+
+				widget = {
+					parentanchor = hcenter
+					size = { 530 80 }
+
+					background = {
+						using = entry_bg_simple
+					}
+
+					### AVAILABLE MANDATES
+					flowcontainer = {
+						parentanchor = vcenter
+						margin = { 10 10 }
+						spacing = 5
+
+						icon = {
+							size = { 60 60 }
+							parentanchor = vcenter
+							texture = "gfx/interface/icons/generic_icons/mandate.dds"
+						}
+
+						textbox = {
+							parentanchor = vcenter
+							autoresize = yes
+							align = nobaseline
+							using = fontsize_xxl
+							raw_text = "#v [PowerBlocFormation.GetPrinciplePointsRemainingRaw]#!"
+						}
+
+						textbox = {
+							parentanchor = vcenter
+							autoresize = yes
+							align = nobaseline
+							text = "AVAILABLE_MANDATES_TITLE_FORMATION"
+						}
+					}
+
+					### RESET PRINCIPLES BUTTON
+					button = {
+						parentanchor = right|vcenter
+						position = { -20 0 }
+						using = default_button_action
+						size = { 155 40 }
+						onclick = "[PowerBlocFormation.ResetPrinciples]"
+						enabled = "[GreaterThan_int32(PowerBlocFormation.GetNumSelectedPrinciples, '(int32)0')]"
+						tooltip = "RESET_PRINCIPLES_TOOLTIP"
+
+						textbox = {
+							parentanchor = center
+							align = nobaseline
+							autoresize = yes
+							text = "RESET"
+						}
+					}
+				}
+
+				### PRINCIPLES
+				flowcontainer = {
+					direction = vertical
+					parentanchor = hcenter
+					spacing = 20
+					allow_outside = yes
+
+					flowcontainer = {
+						spacing = 10
+						parentanchor = hcenter
+						allow_outside = yes
+
+						# PRINCIPLE SLOTS 1 AND 3
+						flowcontainer = {
+							direction = vertical
+							spacing = 10
+							parentanchor = vcenter
+							allow_outside = yes
+
+							principle_slot_formation = {
+								name = "tutorial_highlight_first_principle_slot_during_formation"
+								datacontext = "[PowerBlocFormationPanel.GetPowerBlocFormation.GetPrincipleSlot( '(int32)0' )]"
+
+								blockoverride "tooltip_alignment" {
+									using = tooltip_ne
+								}
+							}
+
+							principle_slot_formation = {
+								visible = "[HasDlcFeature('power_bloc_features')]"
+								datacontext = "[PowerBlocFormationPanel.GetPowerBlocFormation.GetPrincipleSlot( '(int32)2' )]"
+
+								blockoverride "tooltip_alignment" {
+									using = tooltip_se
+								}
+
+								blockoverride "locked_slot_tooltip" {
+									tooltip = "TOOLTIP_LOCKED_PRINCIPLE_SLOT_3_DURING_FORMATION"
+								}
+							}
+						}
+
+						# PRINCIPLE SLOTS 2 AND 4
+						flowcontainer = {
+							direction = vertical
+							spacing = 10
+							parentanchor = vcenter
+							allow_outside = yes
+
+							principle_slot_formation = {
+								visible = "[HasDlcFeature('power_bloc_features')]"
+								datacontext = "[PowerBlocFormationPanel.GetPowerBlocFormation.GetPrincipleSlot( '(int32)1' )]"
+							}
+
+							principle_slot_formation = {
+								visible = "[HasDlcFeature('power_bloc_features')]"
+								datacontext = "[PowerBlocFormationPanel.GetPowerBlocFormation.GetPrincipleSlot( '(int32)3' )]"
+
+								blockoverride "locked_slot_tooltip" {
+									tooltip = "TOOLTIP_LOCKED_PRINCIPLE_SLOT_4_DURING_FORMATION"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		blockoverride "fixed_bottom"
+		{
+			flowcontainer = {
+				direction = vertical
+				spacing = 5
+
+				divider_clean = {
+					size = { @panel_width_plus_14 4 }
+				}
+
+				background = {
+					using = dark_area
+				}
+
+				widget = {
+					size = { 5 5 }
+				}
+
+				# Formation button
+				button = {
+					name = "tutorial_highlight_form_this_power_bloc_button"
+					using = default_button_primary_big_action
+					parentanchor = hcenter
+					size = { 540 50 }
+					using = fontsize_large
+					enabled = "[IsValid(PowerBlocFormation.Confirm)]"
+					onclick = "[PopupManager.AskConfirmationWithSound(PowerBlocFormation.Confirm, 'event:/SFX/UI/SubjectInteractions/power_bloc_formation')]"
+					tooltip = "FORM_POWER_BLOC_CONFIRM_BUTTON_TOOLTIP"
+					using = default_content_fade
+
+					flowcontainer = {
+						parentanchor = center
+
+						textbox = {
+							parentanchor = vcenter
+							autoresize = yes
+							align = hcenter|nobaseline
+							text = "FORM_THIS_POWER_BLOC"
+						}
+					}
+				}
+
+				widget = {
+					size = { 5 5 }
+				}
+			}
+		}
+
+		blockoverride "bottom_spacing" {}
+	}
+
+	type principle_group_no_interact = flowcontainer {
+		direction = vertical
+		margin = { 5 5 }
+		using = tooltip_ne
+
+		background = {
+			using = simple_frame
+		}
+
+		block "principle_group_tooltip" {
+			tooltipwidget = {
+				FancyTooltip_PowerBlocPrincipleGroup = {}
+			}
+		}
+
+		textbox = {
+			parentanchor = hcenter
+			autoresize = yes
+			align = nobaseline
+			elide = right
+			fontsize_min = 12
+			text = "[PowerBlocPrincipleGroup.GetNameNoFormatting]"
+
+			block "group_name_max_width" {
+				max_width = 175
+			}
+		}
+
+		dynamicgridbox = {
+			parentanchor = hcenter
+			flipdirection = yes
+			datamodel = "[PowerBlocPrincipleGroup.GetLevels]"
+			block "principle_icons_alpha" {}
+
+			item = {
+				widget = {
+					using = tooltip_se
+
+					block "principle_item_size" {
+						size = { 60 60 }
+					}
+
+					block "principle_tooltip" {
+						tooltipwidget = {
+							FancyTooltip_PowerBlocPrinciple = {}
+						}
+					}
+					
+					principle_icon_with_bg = {
+						parentanchor = center
+
+						block "principle_icon_size" {
+							size = { 50 50 }
+						}
+					}
+
+					icon = {
+						block "has_principle_visibility" {
+							visible = no
+						}
+
+						size = { 30 30 }
+						position = { 5 0 }
+						texture = "gfx/interface/icons/generic_icons/green_checkmark.dds"
+					}
+				}
+			}
+		}
+	}
+
+	type framed_customize_button = button {
+		size = { 180 180 }
+		using = tooltip_below
+		using = entry_bg_fancy
+
+		block "onclick" {}
+		block "onhover" {}
+		block "tooltip" {}
+
+		widget = {
+			size = { 100% 100% }
+			block "background" {}
+		}
+
+		### Made into a button to get the onhover highlight a button have on the icon too
+		button = {
+			parentanchor = center
+			position = { 0 -10 }
+			size = { 150 150 }
+			alwaystransparent = yes
+
+			block "icon_texture" {}
+			block "onclick" {}
+		}
+
+		### Onhover customize text and background fade
+		button = {
+			parentanchor = center
+			size = { 100% 100% }
+			using = fontsize_xl
+			text = "CUSTOMIZE_WITH_ICON"
+			alwaystransparent = yes
+
+			block "onhover_visibility" {
+				visible = no
+			}
+
+			background = {
+				using = dark_area
+				alpha = 0.5
+				using = frame_small_mask
+			}
+
+			block "onclick" {}
+		}
+
+		textbox = {
+			parentanchor = hcenter|bottom
+			position = { 0 -10 }
+			align = nobaseline
+			autoresize = yes
+
+			block "bottom_text" {
+				raw_text = "Bottom Text"
+			}
+		}
+	}
+
+	type framed_icon = widget {
+		size = { 200 200 }
+		using = tooltip_below
+		using = entry_bg_fancy
+
+		block "background" {}
+		block "tooltip" {}
+
+		icon = {
+			parentanchor = center
+			position = { 0 -10 }
+			size = { 160 160 }
+			alwaystransparent = yes
+
+			block "icon_texture" {}
+		}
+
+		textbox = {
+			parentanchor = hcenter|bottom
+			position = { 0 -10 }
+			align = nobaseline
+			autoresize = yes
+
+			block "bottom_text" {
+				raw_text = "Bottom Text"
+			}
+		}
+	}
+
+	type power_bloc_customization_popup_type = default_popup
+	{
+		blockoverride "window_header_name"
+		{
+			text = "POWER_BLOC_FORMATION_CUSTOMIZATION"
+		}
+
+		blockoverride "header_close_button_visibility"
+		{
+			visible = yes
+		}
+
+		blockoverride "header_close_button"
+		{
+			visible = yes
+			onclick = "[PopupManager.HidePowerBlocCustomizationPopup]"
+		}
+
+		blockoverride "content"
+		{
+			flowcontainer = {
+				direction = vertical
+				resizeparent = yes
+				minimumsize = { 600 300 }
+				margin_top = 90
+				margin_bottom = 30
+				margin_left = 14
+				margin_right = 14
+				spacing = 20
+
+				widget = {
+					size = { 600 44}
+
+					tab_buttons =
+					{
+						blockoverride "first_button"
+						{
+							text = "EMBLEM_AND_COLORS"
+						}
+						blockoverride "first_button_tooltip"
+						{
+							tooltip = "EMBLEM_AND_COLORS"
+						}
+						blockoverride "first_button_click"
+						{
+							onclick = "[GetVariableSystem.Set('emblem_and_colors_tab', 'true')]"
+							onclick = "[GetVariableSystem.Set('statue_tab', 'false')]"
+						}
+						blockoverride "first_button_visibility"
+						{
+							visible = "[GetVariableSystem.HasValue('emblem_and_colors_tab', 'true')]"
+						}
+						blockoverride "first_button_visibility_checked"
+						{
+							visible = "[GetVariableSystem.HasValue('emblem_and_colors_tab', 'false')]"
+						}
+						blockoverride "first_button_selected"
+						{
+							text = "EMBLEM_AND_COLORS"
+						}
+
+						blockoverride "second_button"
+						{
+							text = "STATUE"
+						}
+						blockoverride "second_button_tooltip"
+						{
+							tooltip = "STATUE"
+						}
+						blockoverride "second_button_click"
+						{
+							onclick = "[GetVariableSystem.Set('emblem_and_colors_tab', 'false')]"
+							onclick = "[GetVariableSystem.Set('statue_tab', 'true')]"
+						}
+						blockoverride "second_button_visibility"
+						{
+							visible = "[GetVariableSystem.HasValue('statue_tab', 'true')]"
+						}
+						blockoverride "second_button_visibility_checked"
+						{
+							visible = "[GetVariableSystem.HasValue('statue_tab', 'false')]"
+						}
+						blockoverride "second_button_selected"
+						{
+							text = "STATUE"
+						}
+					}
+				}
+
+				flowcontainer = {
+					visible = "[PowerBlocCustomizationPopup.GetPowerBloc.IsValid]"
+					parentanchor = hcenter
+					spacing = 5
+
+					# Set a custom name
+					editbox = {
+						name = "power_bloc_name_edit"
+						visible = "[HasDlcFeature('power_bloc_features')]"
+						parentanchor = vcenter
+						maxcharacters = 30
+						size = { 465 40 }
+						alwaystransparent = no
+						focuspolicy = click
+						focus_on_visible = no
+						align = nobaseline
+						margin_left = 10
+
+						background = {
+							using = text_edit_bg
+						}
+
+						text = "[PowerBlocCustomizationPopup.GetNewCustomName]"
+						ontextedited = "[PowerBlocCustomizationPopup.OnEditName]"
+
+						textbox = {
+							visible = "[StringIsEmpty(PowerBlocCustomizationPopup.GetNewCustomName)]"
+							parentanchor = vcenter
+							align = nobaseline
+							position = { 10 0 }
+							autoresize = yes
+							default_format = "#title"
+							text = "POWER_BLOC_FORMATION_CLICK_TO_CHANGE_NAME"
+						}
+					}
+
+					button_icon_round_action = {
+						parentanchor = vcenter
+						size = { 40 40 }
+						onclick = "[PowerBlocCustomizationPopup.RandomizeName]"
+						tooltip = "RANDOMIZE_POWER_BLOC_NAME"
+
+						blockoverride "icon" {
+							texture = "gfx/interface/buttons/button_icons/randomise.dds"
+						}
+
+						blockoverride "icon_size" {
+							size = { 75% 75% }
+						}
+					}
+				}
+
+				flowcontainer = {
+					visible = "[GetVariableSystem.HasValue('emblem_and_colors_tab', 'true')]"
+					parentanchor = hcenter
+					spacing = 40
+
+					datamodel = "[PowerBlocCustomizationPopup.GetColorPickers]"
+
+					item = {
+						color_option = {}
+					}
+				}
+
+				flowcontainer = {
+					visible = "[GetVariableSystem.HasValue('emblem_and_colors_tab', 'true')]"
+					parentanchor = hcenter
+					spacing = 20
+
+					widget = {
+						size = { 300 410 }
+						using = entry_bg_fancy
+
+						background = {
+							spriteType = Corneredtiled
+							spriteborder = { 0 0 }
+							using = fade_top_entry_header_colored
+							color = "[PowerBlocCustomizationPopup.GetPrimaryColor]"
+							texture = "[PowerBlocCustomizationPopup.GetMapTexture]"
+							using = frame_small_mask
+							alpha = 0.3
+						}
+
+						flowcontainer = {
+							parentanchor = center
+							direction = vertical
+							spacing = 30
+
+							icon = {
+								parentanchor = hcenter
+								size = { 280 280 }
+
+								texture = "[PowerBlocCustomizationPopup.GetCustomCoaPreview.GetVeryLargePowerBlocCoaTexture]"
+                                frame = "[PowerBlocCustomizationPopup.GetCustomCoaPreview.GetVeryLargePowerBlocCoaFrame]"
+                                framesize = "[GetVeryLargePowerBlocCoaFrameSize]"
+							}
+						}
+					}
+
+					flowcontainer = {
+                        direction = vertical
+                        spacing = 5
+
+                        # COA PIECE SELECTORS
+                        flowcontainer = {
+                            direction = vertical
+                            spacing = 5
+                            datamodel = "[PowerBlocCustomizationPopup.GetCoaPieces]"
+                            item = {
+                                customization_option = {
+                                    blockoverride "option_name" {
+                                        text = "[PowerBlocCoaPieceSelector.GetName]"
+                                    }
+                                    blockoverride "option_right_click_menu_onclick" {
+                                        onclick = "[RightClickMenuManager.TogglePowerBlocCoaPieces(PowerBlocCoaPieceSelector.AccessSelf, PdxGuiWidget.AccessSelf)]"
+                                    }
+                                    blockoverride "option_previous_item_onclick" {
+                                        onclick = "[PowerBlocCoaPieceSelector.OnPreviousClicked]"
+                                    }
+                                    blockoverride "option_next_item_onclick" {
+                                        onclick = "[PowerBlocCoaPieceSelector.OnNextClicked]"
+                                    }
+                                    blockoverride "option_selected_texture" {
+                                        texture = "[PowerBlocCoaPieceSelector.GetSelectedItem.GetCoa.GetSmallPowerBlocCoaTexture]"
+                                        frame = "[PowerBlocCoaPieceSelector.GetSelectedItem.GetCoa.GetSmallPowerBlocCoaFrame]"
+                                        framesize = "[GetSmallPowerBlocCoaFrameSize]"
+                                    }
+                                    blockoverride "option_selected_item_name" {
+                                        text = "[PowerBlocCoaPieceSelector.GetSelectedItem.GetName]"
+                                    }
+                                }
+                            }
+                        }
+
+                        # MAP TEXTURE SELECTOR
+                        customization_option = {
+                            datacontext = "[PowerBlocCustomizationPopup.GetPowerBlocMapTextureSelector]"
+
+                            blockoverride "option_name" {
+                                text = "POWER_BLOC_MAP_TEXTURE_SELECTOR_LABEL"
+                            }
+                            blockoverride "option_right_click_menu_onclick" {
+                                onclick = "[RightClickMenuManager.TogglePowerBlocMapTextureItems(PowerBlocMapTextureSelector.AccessSelf, PdxGuiWidget.AccessSelf)]"
+                            }
+                            blockoverride "option_previous_item_onclick" {
+                                onclick = "[PowerBlocMapTextureSelector.OnPreviousClicked]"
+                            }
+                            blockoverride "option_next_item_onclick" {
+                                onclick = "[PowerBlocMapTextureSelector.OnNextClicked]"
+                            }
+                            blockoverride "option_selected_item_name" {
+                                text = "[PowerBlocMapTextureSelector.GetSelectedItem.GetName]"
+                            }
+                        }
+                    }
+				}
+
+				flowcontainer = {
+					visible = "[GetVariableSystem.HasValue('statue_tab', 'true')]"
+					parentanchor = hcenter
+					spacing = 20
+
+					widget = {
+						size = { 300 470 }
+						using = entry_bg_fancy
+
+						flowcontainer = {
+							parentanchor = hcenter
+							direction = vertical
+							spacing = 10
+
+							widget = {
+								parentanchor = hcenter
+								size = { 300 470 }
+
+								icon = {
+									datacontext = "[PowerBlocCustomizationPopup.GetStatue]"
+									size = { 100% 100% }
+									gfxtype = jomini_entitygfx_sprite
+									entity_instance = "[PowerBlocStatue.GetEntity(PdxGuiWidget.AccessSelf)]"
+									using = frame_small_mask
+
+									shaderfile = "gfx/FX/pdxgui_default.shader"
+									effectname = "PdxGuiDefault"
+									render_pass = "[GetGuiEntityShaderRenderpass]"
+
+									gfx_environment_file = "gfx/map/environment/ui_power_bloc_statues_environment.txt"
+									enabled_post_effects = luminance
+
+									camera_position = "[PowerBlocCustomizationPopup.GetCameraPosition]"
+									camera_look_at = { 0.0 1.6 0.0 }
+									camera_fov_y_degrees = 12
+									camera_near_far = { 0.1 300.0 }
+									alwaystransparent = no
+									filter_mouse = all
+									onmousehierarchyenter = "[PowerBlocCustomizationPopup.EnableStatueMouseRotation]"
+									onmousehierarchyleave = "[PowerBlocCustomizationPopup.DisableStatueMouseRotation]"
+								}
+							}
+						}
+
+						button_icon_round_action = {
+							parentanchor = right|top
+							position = { -15 15 }
+							size = { 40 40 }
+							onclick = "[PowerBlocCustomizationPopup.RandomizeStatue]"
+							tooltip = "RANDOMIZE_POWER_BLOC_NAME"
+
+						blockoverride "icon" {
+							texture = "gfx/interface/buttons/button_icons/randomise.dds"
+						}
+
+							blockoverride "icon_size" {
+							size = { 75% 75% }
+							}
+						}
+
+						icon = {
+							parentanchor = left|top
+							position = { 12 4 }
+							size = { 60	 60 }
+							alpha = 0.3
+							texture = "gfx/interface/icons/generic_icons/rotate_zoom.dds"
+						}
+					}
+
+					flowcontainer = {
+						direction = vertical
+						spacing = 5
+
+						### PEDESTAL
+						customization_option = {
+							blockoverride "option_name" {
+								text = "PEDESTAL"
+							}
+
+							blockoverride "button_visibility" {
+								visible = no
+							}
+
+							blockoverride "widget_visibility" {
+								visible = yes
+							}
+
+							blockoverride "option_right_click_menu_onclick" {
+								#onclick = "[RightClickMenuManager.ToggleCustomizationOptionItems(StatueCustomizationOption.Self)]" # todo PRCAL-33690 - Might need to split this right-click menu in two, one for emblems and one for statues?
+								#onclick = "[RightClickMenuManager.ToggleCustomizationOptionItems(AccessPlayer.AccessSelf, PdxGuiWidget.AccessSelf)]"
+							}
+
+							blockoverride "option_previous_item_onclick" {
+								onclick = "[PowerBlocCustomizationPopup.SetPrevStatuePedestalType]"
+							}
+
+							blockoverride "option_next_item_onclick" {
+								onclick = "[PowerBlocCustomizationPopup.SetNextStatuePedestalType]"
+							}
+
+							blockoverride "option_selected_item_name" {
+								text = "[PowerBlocCustomizationPopup.GetStatuePedestalType.GetName]"
+							}
+						}
+
+						### HERO
+						customization_option = {
+							blockoverride "option_name" {
+								text = "HERO"
+							}
+
+							blockoverride "button_visibility" {
+								visible = no
+							}
+
+							blockoverride "widget_visibility" {
+								visible = yes
+							}
+
+							blockoverride "option_right_click_menu_onclick" {
+								#onclick = "[RightClickMenuManager.ToggleCustomizationOptionItems(StatueCustomizationOption.Self)]" # todo PRCAL-33690 - Might need to split this right-click menu in two, one for emblems and one for statues?
+								#onclick = "[RightClickMenuManager.ToggleCustomizationOptionItems(AccessPlayer.AccessSelf, PdxGuiWidget.AccessSelf)]"
+							}
+
+							blockoverride "option_previous_item_onclick" {
+								onclick = "[PowerBlocCustomizationPopup.SetPrevStatueHeroType]"
+							}
+
+							blockoverride "option_next_item_onclick" {
+								onclick = "[PowerBlocCustomizationPopup.SetNextStatueHeroType]"
+							}
+
+							blockoverride "option_selected_item_name" {
+								text = "[PowerBlocCustomizationPopup.GetStatueHeroType.GetName]"
+							}
+						}
+
+						flowcontainer = {
+							direction = vertical
+							spacing = 5
+
+							datamodel = "[PowerBlocCustomizationPopup.AccessStatueAccessorySelectors]"
+
+							item = {
+								customization_option = {
+									blockoverride "option_name" {
+										text = "[PowerBlocStatueAccessoryTypeSelector.GetName]"
+									}
+
+									blockoverride "button_visibility" {
+										visible = no
+									}
+
+									blockoverride "widget_visibility" {
+										visible = yes
+									}
+
+									blockoverride "option_right_click_menu_onclick" {
+										#onclick = "[RightClickMenuManager.ToggleCustomizationOptionItems(StatueCustomizationOption.Self)]" # todo PRCAL-33690 - Might need to split this right-click menu in two, one for emblems and one for statues?
+										#onclick = "[RightClickMenuManager.ToggleCustomizationOptionItems(AccessPlayer.AccessSelf, PdxGuiWidget.AccessSelf)]"
+									}
+
+									blockoverride "option_previous_item_onclick" {
+										onclick = "[PowerBlocStatueAccessoryTypeSelector.SetPrevStatueAccessoryType]"
+									}
+
+									blockoverride "option_next_item_onclick" {
+										onclick = "[PowerBlocStatueAccessoryTypeSelector.SetNextStatueAccessoryType]"
+									}
+
+									blockoverride "option_selected_item_name" {
+										text = "[PowerBlocStatueAccessoryTypeSelector.GetStatueAccessoryType.GetName]"
+									}
+								}
+							}
+						}
+					}
+				}
+
+				# Confirm button
+				button = {
+					using = default_button_primary_action
+					parentanchor = hcenter
+					size = { 510 50 }
+					using = fontsize_large
+
+					datacontext = "[PowerBlocCustomizationPopup]" # required by the tooltip
+					enabled = "[PowerBlocCustomizationPopup.ConfirmIsValid]"
+					onclick = "[PowerBlocCustomizationPopup.ConfirmClicked]"
+					tooltip = "POWER_BLOC_CUSTOMIZATION_CONFIRM_BUTTON_TOOLTIP"
+
+					onclick = "[PopupManager.HidePowerBlocCustomizationPopup]"
+					input_action = "confirm"
+					using = default_content_fade
+
+					flowcontainer = {
+						parentanchor = center
+
+						textbox = {
+							parentanchor = vcenter
+							autoresize = yes
+							align = hcenter|nobaseline
+							text = "CONFIRM"
+						}
+					}
+				}
+			}
+		}
+	}
+
+	type color_option = flowcontainer {
+		spacing = 5
+
+		button_icon_round = {
+			size = { 36 36 }
+			onclick = "[RightClickMenuManager.ToggleColorPicker(DataColorPicker.AccessSelf, PdxGuiWidget.AccessSelf)]"
+			tooltip = "OPEN_COLOR_PICKER"
+			using = tooltip_above
+
+			blockoverride "icon" {
+				texture = "gfx/interface/backgrounds/colored_header.dds"
+				color = "[DataColorPicker.GetColor]"
+
+				modify_texture = {
+					spriteType = Corneredtiled
+					spriteborder = { 20 20 }
+					texture_density = 2
+					alpha = 1
+				}
+			}
+
+			blockoverride "icon_size" {
+				size = { 50% 50% }
+			}
+		}
+
+		textbox = {
+			parentanchor = vcenter
+			align = nobaseline
+			autoresize = yes
+			elide = right
+			fontsize_min = 12
+			max_width = 120
+			text = "[DataColorPicker.GetName]"
+		}
+	}
+
+	type customization_option = flowcontainer {
+		direction = vertical
+		spacing = 5
+
+		flowcontainer = {
+			direction = vertical
+			spacing = 2
+
+			textbox = {
+				parentanchor = hcenter
+				autoresize = yes
+				align = nobaseline
+				default_format = "#title"
+
+				block "option_name" {
+					raw_text = "Option Name"
+				}
+			}
+
+			flowcontainer = {
+				parentanchor = hcenter
+
+				button_select_arrow = {
+					parentanchor = vcenter
+					mirror = horizontal
+					size = { 30 30 }
+					using = decrease_button_sound
+
+					block "option_previous_item_onclick" {
+						#onclick = "[CustomizationOption.OnClickPreviousItem]"
+					}
+				}
+
+				# BUTTON TO OPEN RIGHT-CLICK MENU WITH OPTIONS
+				button = {
+					parentanchor = vcenter
+					size = { 150 40 }
+					using = default_button
+
+					block "button_visibility" {}
+
+					block "option_right_click_menu_onclick" {
+						#onclick = "[RightClickMenuManager.ToggleCustomizationOptionItems(CustomizationOption.Self)]"
+					}
+
+					flowcontainer = {
+						parentanchor = vcenter|hcenter
+						spacing = 2
+
+						icon = {
+							visible = no
+							parentanchor = vcenter
+							size = { 25 25 }
+
+							block "option_selected_texture" {
+								texture = "gfx/interface/power_blocs/placeholder_emblem.png"
+							}
+						}
+
+						textbox = {
+							parentanchor = vcenter
+							align = nobaseline
+							autoresize = yes
+							max_width = 100
+							elide = right
+							fontsize_min = 12
+
+							block "option_selected_item_name" {
+								raw_text = "Spongebob"
+							}
+						}
+					}
+				}
+
+				# WIDGET USED WHEN NO RIGHT-CLICK MENU EXISTS
+				widget = {
+					parentanchor = vcenter
+					size = { 150 40 }
+					
+					background = {
+						using = entry_bg
+					}
+					
+					block "widget_visibility" {
+						visible = no
+					}
+
+					flowcontainer = {
+						parentanchor = vcenter|hcenter
+						spacing = 2
+
+						icon = {
+							visible = no
+							parentanchor = vcenter
+							size = { 25 25 }
+
+							block "option_selected_texture" {
+								texture = "gfx/interface/power_blocs/placeholder_emblem.png"
+							}
+						}
+
+						textbox = {
+							parentanchor = vcenter
+							align = nobaseline
+							autoresize = yes
+							max_width = 100
+							elide = right
+							fontsize_min = 12
+
+							block "option_selected_item_name" {
+								raw_text = "Spongebob"
+							}
+						}
+					}
+				}
+
+				button_select_arrow = {
+					parentanchor = vcenter
+					size = { 30 30 }
+					using = increase_button_sound
+
+					block "option_next_item_onclick" {
+						#onclick = "[CustomizationOption.OnClickNextItem]"
+					}
+				}
+			}
+		}
+
+	}
+
+	type customization_option_item = widget {
+		size = { 90 90 }
+
+		button = {
+			#visible = "[Not(CustomizationOptionItem.IsSelected)]" # TODO PRCAL-32207: statue customization
+			parentanchor = center
+			size = { 80 80 }
+			using = default_button
+			#onclick = "[CustomizationOptionItem.OnClickSelect]" # TODO PRCAL-32207: statue customization
+			onclick = "[RightClickMenuManager.Close]"
+
+			### Icon made into a button to also highlight the icon when hovered.
+			button = {
+				parentanchor = center
+				size = { 75% 75% }
+				alwaystransparent = yes
+				#onclick = "[CustomizationOptionItem.OnClickSelect]" # TODO PRCAL-32207: statue customization
+				onclick = "[RightClickMenuManager.Close]"
+				#texture = "[CustomizationOptionItem.GetTexture]" # TODO PRCAL-32207: statue customization
+				texture = "gfx/interface/power_blocs/placeholder_emblem.png"
+			}
+
+		}
+
+		widget = {
+			#visible = "[CustomizationOptionItem.IsSelected]" # TODO PRCAL-32207: statue customization
+			visible = no
+			size = { 80 80 }
+
+			background = {
+				using = paper_bg
+			}
+
+			icon = {
+				using = highlighted_square_selection
+			}
+		}
+	}
+
+	type power_bloc_coa_piece_item = widget {
+		size = { 90 90 }
+		tooltip = "POWER_BLOC_COA_PIECE_ITEM_TOOLTIP"
+		using = tooltip_above
+
+		button = {
+			visible = "[Not(PowerBlocCoaPiece.IsSelected)]"
+			parentanchor = center
+			size = { 80 80 }
+			using = default_button
+			onclick = "[PowerBlocCoaPiece.OnClicked]"
+			onclick = "[RightClickMenuManager.Close]"
+
+			### Icon made into a button to also highlight the icon when hovered.
+			button = {
+				parentanchor = center
+				alwaystransparent = yes
+				size = { 75% 75% }
+				texture = "[PowerBlocCoaPiece.GetCoa.GetMediumPowerBlocCoaTexture]"
+				frame = "[PowerBlocCoaPiece.GetCoa.GetMediumPowerBlocCoaFrame]"
+				framesize = "[GetMediumPowerBlocCoaFrameSize]"
+			}
+
+		}
+
+		widget = {
+			visible = "[PowerBlocCoaPiece.IsSelected]"
+			parentanchor = center
+			size = { 80 80 }
+
+			background = {
+				using = paper_bg
+			}
+
+			icon = {
+				parentanchor = center
+				size = { 75% 75% }
+				texture = "[PowerBlocCoaPiece.GetCoa.GetMediumPowerBlocCoaTexture]"
+				frame = "[PowerBlocCoaPiece.GetCoa.GetMediumPowerBlocCoaFrame]"
+				framesize = "[GetMediumPowerBlocCoaFrameSize]"
+			}
+
+			icon = {
+				using = highlighted_square_selection
+			}
+		}
+	}
+
+	type power_bloc_map_texture_item = widget {
+        size = { 90 90 }
+        tooltip = "POWER_BLOC_MAP_TEXTURE_ITEM_TOOLTIP"
+        using = tooltip_above
+
+        button = {
+            visible = "[Not(PowerBlocMapTexture.IsSelected)]"
+            parentanchor = center
+            size = { 80 80 }
+            using = default_button
+            onclick = "[PowerBlocMapTexture.OnClicked]"
+            onclick = "[RightClickMenuManager.Close]"
+
+            ### Icon made into a button to also highlight the icon when hovered.
+            button = {
+                parentanchor = center
+                alwaystransparent = yes
+                size = { 75% 75% }
+                texture = "[PowerBlocMapTexture.GetTexture]"
+                color = "[PowerBlocMapTexture.GetColor]"
+            }
+        }
+
+        widget = {
+            visible = "[PowerBlocMapTexture.IsSelected]"
+            parentanchor = center
+            size = { 80 80 }
+
+            background = {
+                using = paper_bg
+            }
+
+            icon = {
+                parentanchor = center
+                size = { 75% 75% }
+                texture = "[PowerBlocMapTexture.GetTexture]"
+                color = "[PowerBlocMapTexture.GetColor]"
+            }
+
+            icon = {
+                using = highlighted_square_selection
+            }
+        }
+    }
+
+	type power_bloc_identity_right_click_menu_item = container {
+		right_click_menu_item = {
+			visible = "[Not(PowerBlocFormation.IsSelectedIdentity(PowerBlocIdentity.Self))]"
+
+			tooltipwidget = {
+				FancyTooltip_PowerBlocIdentity = {
+					blockoverride "has_principle_visibility_formation" {
+						visible = "[PowerBlocFormation.HasSelectedPrinciple(PowerBlocPrinciple.Self)]"
+					}
+				}
+			}
+
+			blockoverride "size" {
+				size = { 360 66 }
+			}
+
+			blockoverride "properties" {
+				onclick = "[PowerBlocFormation.SelectIdentity(PowerBlocIdentity.AccessSelf)]"
+				onclick = "[PowerBlocFormation.ResetPrinciples]"
+				enabled = "[PowerBlocIdentity.IsPossible]"
+				tooltip = "[PowerBlocIdentity.GetIsPossibleDesc]"
+			}
+
+			blockoverride "icon" {
+				block "item_icon" {
+					icon = {
+						size = { 50 50 }
+
+						block "item_texture" {
+							texture = "[PowerBlocIdentity.GetIcon]"
+						}
+					}
+				}
+			}
+
+			blockoverride "margin" {
+				margin_left = 64
+			}
+
+			blockoverride = "text" {
+				block "item_text" {
+					text = "[PowerBlocIdentity.GetNameNoFormatting]"
+				}
+			}
+		}
+
+		widget = {
+			visible = "[PowerBlocFormation.IsSelectedIdentity(PowerBlocIdentity.Self)]"
+			size = { 360 66 }
+
+			background = {
+				using = paper_bg
+			}
+
+			icon = {
+				using = highlighted_square_selection
+			}
+
+			tooltipwidget = {
+				FancyTooltip_PowerBlocIdentity = {
+					blockoverride "has_principle_visibility_formation" {
+						visible = "[PowerBlocFormation.HasSelectedPrinciple(PowerBlocPrinciple.Self)]"
+					}
+				}
+			}
+
+			hbox = {
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+				margin_left  = 10
+
+				block "item_icon" {
+					icon = {
+						size = { 50 50 }
+
+						block "item_texture" {
+							texture = "[PowerBlocIdentity.GetIcon]"
+						}
+					}
+				}
+
+				textbox = {
+					layoutpolicy_horizontal = expanding
+					layoutpolicy_vertical = expanding
+					align = nobaseline
+					using = fontsize_large
+					fontsize_min = 12
+					elide = right
+					margin = { 5 0 }
+
+					block "item_text" {
+						text = "[PowerBlocIdentity.GetNameNoFormatting]"
+					}
+				}
+
+				block "right_text" {}
+			}
+		}
+	}
+}
+
+right_click_menu = {
+	name = "power_bloc_identities_menu"
+	visible = "[GreaterThan_int32(GetDataModelSize(PowerBlocFormation.GetIdentities), '(int32)0')]"
+
+	onmousehierarchyenter = "[SetCanOpenRightClickContextMenu('(bool)no')]"
+	onmousehierarchyleave = "[SetCanOpenRightClickContextMenu('(bool)yes')]"
+
+	parentanchor = top|right
+	widgetanchor = top|left
+
+	blockoverride "header_text" {}
+
+	blockoverride "list" {
+		dynamicgridbox = {
+			datamodel = "[PowerBlocFormation.GetIdentities]"
+
+			item = {
+				power_bloc_identity_right_click_menu_item = {}
+			}
+		}
+	}
+}

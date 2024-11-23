@@ -38,6 +38,7 @@ coa_undemocratic_monarchy_trigger = {
 
 coa_republic_trigger = {
 	OR = {
+		has_law = law_type:law_corporate_state
 		has_law = law_type:law_presidential_republic
 		has_law = law_type:law_parliamentary_republic
 		has_law = law_type:law_council_republic
@@ -112,13 +113,19 @@ coa_controls_part_of_france = {
 coa_fascist_trigger = {
 	# A fascist can lead a monarchy or a theocracy without the government changing form. The Papal State should retain the same flag even if the Pope's a fascist, for example.
 	# A fascist can also lead a democracy without the democracy immediately becoming fascist. If the fascist successfully implements his wildest dreams and becomes a dictatorship, then sure the government will become Fascist, but while there's still voting the government shouldn't count as (fully) fascist yet.
-	coa_dictatorship_trigger = yes
-	ruler ?= {
-		OR = {
-			has_ideology = ideology:ideology_fascist
-			has_ideology = ideology:ideology_integralist
+	OR = {
+		coa_oligarchy_trigger = yes
+		coa_dictatorship_trigger = yes
+	}
+	OR = {
+		has_law = law_type:law_corporate_state
+		ruler ?= {
+			OR = {
+				has_ideology = ideology:ideology_fascist
+				has_ideology = ideology:ideology_integralist
+			}
 		}
-    }
+	}
 }
 
 coa_nihilist_trigger = {
@@ -159,6 +166,7 @@ coa_def_lesser_subject_trigger = {
 			exists = scope:actor
 			scope:actor ?= { 
 				OR = {
+					is_subject_type = subject_type_colony
 					is_subject_type = subject_type_puppet
 					is_subject_type = subject_type_vassal
 				}

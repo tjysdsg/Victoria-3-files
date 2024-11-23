@@ -1,0 +1,453 @@
+﻿namespace = indian_famines
+
+indian_famines.1 = {
+	type = country_event
+	placement = root
+	title = indian_famines.1.t
+	desc = indian_famines.1.d
+	flavor = indian_famines.1.f
+
+	event_image = {
+		video = "asia_dead_cattle_poor_harvest"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	cooldown = { months = long_modifier_time }
+
+	duration = 3
+
+	trigger = {	
+		OR = {
+			c:BIC ?= this
+			any_primary_culture = {
+				has_discrimination_trait = south_asian_heritage
+			}
+		}
+		any_scope_state = {
+			OR = {
+				region = sr:region_madras
+				region = sr:region_bombay
+				region = sr:region_bengal
+				region = sr:region_central_india
+				region = sr:region_punjab
+			}
+			has_famine = yes
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				OR = {
+					region = sr:region_madras
+					region = sr:region_bombay
+					region = sr:region_bengal
+					region = sr:region_central_india
+					region = sr:region_punjab			
+				}
+				has_famine = yes
+			}
+			save_scope_as = indian_famine_state_scope
+		}
+	}
+
+	option = {
+		name = indian_famines.1.a
+		default_option = yes
+		scope:indian_famine_state_scope = {
+			add_radicals_in_state = {
+				value = small_radicals
+			}
+		}
+	}
+	option = {
+		name = indian_famines.1.b
+		scope:indian_famine_state_scope = {
+			add_modifier = {
+				name = reduced_taxation_due_to_famine
+				months = normal_modifier_time
+			}
+			add_loyalists_in_state = {
+				value = small_radicals
+			}
+		}
+	}
+	option = {
+		name = indian_famines.1.c
+		highlighted_option = yes
+		trigger = {
+			custom_tooltip = {
+				text = not_recently_had_war
+				is_at_war = no
+				NOT = {
+					has_variable = recently_had_war
+				}
+			}
+		}
+		scope:indian_famine_state_scope = {
+			add_modifier = {
+				name = no_taxation_due_to_famine
+				months = normal_modifier_time
+			}
+			add_loyalists_in_state = {
+				value = medium_radicals
+			}
+		}
+		add_modifier = {
+			name = famine_relief_aid_costs
+			months = normal_modifier_time
+			multiplier = money_amount_multiplier_very_small
+		}
+	}
+}
+
+indian_famines.2 = {
+	type = country_event
+	placement = root
+	title = indian_famines.2.t
+	desc = indian_famines.2.d
+	flavor = indian_famines.2.f
+
+	event_image = {
+		video = "asia_dead_cattle_poor_harvest"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	cooldown = { months = long_modifier_time }
+
+	duration = 3
+
+	trigger = {
+		NOT = {
+			has_variable = hunger_strike_var
+		}
+		c:BIC ?= this
+		any_scope_state = {
+			OR = {
+				region = sr:region_madras
+				region = sr:region_bombay
+				region = sr:region_bengal
+				region = sr:region_central_india
+				region = sr:region_punjab
+			}
+			has_famine = yes
+			any_scope_building = {
+				OR = {
+					is_building_type = building_cotton_plantation
+					is_building_type = building_dye_plantation
+				}
+				level >= 5
+			}
+		}
+		any_scope_character = {
+			culture = {
+				has_discrimination_trait = south_asian_heritage
+			}
+			has_role = agitator
+		}
+	}
+
+	immediate = {
+		set_variable = hunger_strike_var
+		random_scope_state = {
+			limit = {
+				OR = {
+					region = sr:region_madras
+					region = sr:region_bombay
+					region = sr:region_bengal
+					region = sr:region_central_india
+					region = sr:region_punjab			
+				}
+				has_famine = yes
+				any_scope_building = {
+					OR = {
+						is_building_type = building_cotton_plantation
+						is_building_type = building_dye_plantation
+					}
+					level >= 5
+				}
+			}
+			save_scope_as = indian_famine_state_scope
+		}
+		random_scope_character = {
+			limit = {
+				culture = {
+					has_discrimination_trait = south_asian_heritage
+				}
+				has_role = agitator
+			}
+			save_scope_as = hunger_strike_agitator_scope
+			set_variable = hunger_striker_var
+		}
+	}
+
+	option = {
+		name = indian_famines.2.a
+		default_option = yes
+		custom_tooltip = indian_famines.2.tt
+		show_as_tooltip = {
+			ordered_scope_state = {
+				limit = {
+					OR = {
+						region = sr:region_madras
+						region = sr:region_bombay
+						region = sr:region_bengal
+						region = sr:region_central_india
+						region = sr:region_punjab			
+					}
+					has_famine = yes
+					any_scope_building = {
+						OR = {
+							is_building_type = building_cotton_plantation
+							is_building_type = building_dye_plantation
+						}
+						level >= 5
+					}			
+				}
+				order_by = gdp
+				add_modifier = {
+					name = temporary_switch_to_food_crops
+					months = normal_modifier_time
+				}
+				add_loyalists_in_state = {
+					value = small_radicals
+				}
+			}
+		}
+		hidden_effect = {
+			every_scope_state = {
+				limit = {
+					OR = {
+						region = sr:region_madras
+						region = sr:region_bombay
+						region = sr:region_bengal
+						region = sr:region_central_india
+						region = sr:region_punjab			
+					}
+					has_famine = yes
+					any_scope_building = {
+						OR = {
+							is_building_type = building_cotton_plantation
+							is_building_type = building_dye_plantation
+						}
+						level >= 5
+					}			
+				}
+				add_modifier = {
+					name = temporary_switch_to_food_crops
+					months = normal_modifier_time
+				}
+				add_loyalists_in_state = {
+					value = small_radicals
+				}
+			}
+		}
+		ig:ig_industrialists = {
+			add_modifier = {
+				name = bowed_to_food_crop_demands
+				months = normal_modifier_time
+			}
+		}
+	}
+	option = {
+		name = indian_famines.2.b
+		random_list = {
+			9 = {
+				trigger_event = { id = indian_famines.3 popup = yes days = 30 }
+			}
+			1 = {
+			}
+		}
+		custom_tooltip = following_applied_to_every_owned_state
+		show_as_tooltip = {
+			ordered_scope_state = {
+				add_radicals_in_state = {
+					value = small_radicals
+				}
+				order_by = gdp
+			}
+		}
+		hidden_effect = {
+			every_scope_state = {
+				add_radicals_in_state = {
+					value = small_radicals
+				}
+			}
+		}
+	}
+}
+
+indian_famines.3 = {
+	type = country_event
+	placement = root
+	title = indian_famines.3.t
+	desc = indian_famines.3.d
+	flavor = indian_famines.3.f
+
+	event_image = {
+		video = "ip2_india_protest"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	duration = 3
+
+	trigger = {
+		# triggered by indian_famines.2
+	}
+
+	immediate = {
+		random_scope_character = {
+			limit = {
+				has_variable = hunger_striker_var
+			}
+			save_scope_as = hunger_strike_agitator_scope
+		}
+	}
+
+	cancellation_trigger = {
+		NOT = {
+			any_scope_character = {
+				culture = {
+					has_discrimination_trait = south_asian_heritage
+				}
+				has_role = agitator
+				has_variable = hunger_striker_var
+			}
+		}
+	}
+
+	option = {
+		name = indian_famines.3.a
+		default_option = yes
+		random_list = {
+			9 = {
+				add_radicals = {
+					value = small_radicals
+				}
+			}
+			1 = {
+				scope:hunger_strike_agitator_scope = {
+					kill_character = yes
+				}
+				add_radicals = {
+					value = medium_radicals
+				}
+			}
+		}
+	}
+	option = {
+		name = indian_famines.3.b
+		ig:ig_industrialists = {
+			add_modifier = {
+				name = bowed_to_hunger_strike
+				months = normal_modifier_time
+			}
+		}
+		add_modifier = {
+			name = food_crop_system_modifier
+			months = normal_modifier_time
+		}
+	}
+}
+
+indian_famines.4 = {
+	type = country_event
+	placement = root
+	title = indian_famines.4.t
+	desc = indian_famines.4.d
+	flavor = indian_famines.4.f
+
+	event_image = {
+		video = "ip2_india_urban_scene"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	cooldown = { months = long_modifier_time }
+
+	duration = 3
+
+	trigger = {
+		OR = {
+			c:BIC ?= this
+			any_primary_culture = {
+				has_discrimination_trait = south_asian_heritage
+			}
+		}
+		any_scope_state = {
+			OR = {
+				region = sr:region_madras
+				region = sr:region_bombay
+				region = sr:region_bengal
+				region = sr:region_central_india
+				region = sr:region_punjab
+			}
+			has_famine = yes
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				OR = {
+					region = sr:region_madras
+					region = sr:region_bombay
+					region = sr:region_bengal
+					region = sr:region_central_india
+					region = sr:region_punjab			
+				}
+				has_famine = yes
+			}
+			save_scope_as = indian_famine_state_scope
+		}
+	}
+
+	option = {
+		name = indian_famines.4.a
+		default_option = yes
+		ig:ig_petty_bourgeoisie = {
+			add_modifier = {
+				name = kept_farmers_out_of_city_modifier
+				months = normal_modifier_time
+			}
+		}
+		scope:indian_famine_state_scope = {
+			add_radicals_in_state = {
+				pop_type = peasants
+				value = small_radicals
+			}
+		}
+	}
+	option = {
+		name = indian_famines.4.b
+		scope:indian_famine_state_scope = {
+			add_modifier = {
+				name = tax_breaks_for_warehouses
+				months = normal_modifier_time
+			}
+			add_radicals_in_state = {
+				strata = middle
+				value = small_radicals
+			}
+		}
+		ig:ig_petty_bourgeoisie = {
+			add_modifier = {
+				name = allowed_farmers_into_cities
+				months = normal_modifier_time
+			}
+		}
+	}
+}

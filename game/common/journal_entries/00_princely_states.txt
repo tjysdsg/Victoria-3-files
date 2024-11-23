@@ -1,0 +1,88 @@
+﻿je_princely_states = {
+    icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+
+	group = je_group_historical_content
+
+    is_shown_when_inactive = {
+
+    }
+
+    possible = {
+        has_dlc_feature = ip2_content
+        hidden_trigger = {
+            NOT = {
+                c:MUG ?= this
+            }
+        }
+    }
+
+    modifiers_while_active = {
+        modifier_increase_autonomy
+    }
+
+    immediate = {
+        ROOT = {
+            save_scope_as = princely_state_scope
+        }
+        top_overlord = {
+            save_scope_as = top_overlord_scope
+        }
+        random_overlord_or_above = {
+            limit = {
+                ROOT = {
+                    is_direct_subject_of = prev
+                }
+            }
+            save_scope_as = overlord_scope
+        }
+        scope:overlord_scope = {
+            post_notification = struggle_for_sovereignty_message
+        }
+        trigger_event = {
+            id = princely_states.1
+            popup = yes
+        }
+    }
+    
+    complete = {
+        is_subject = no
+        is_at_war = no
+    }
+
+    on_complete = {
+        trigger_event = { id = princely_states.2 }
+    }
+
+    invalid = {
+
+    }
+
+    fail = {
+        custom_tooltip = {
+            text = has_been_annexed_tt
+            NOT = { exists = ROOT }
+        }
+    }
+
+    on_fail = {
+        hidden_effect = {
+            set_variable = {
+                    name = princely_states_je_happened
+            }
+        }
+    }
+
+    on_monthly_pulse = {
+        random_events = {
+            100 = 0
+            10 = princely_states.3
+            10 = princely_states.4
+            10 = princely_states.5
+        }
+    }
+
+    weight = 1000
+    can_revolution_inherit = yes
+    should_be_pinned_by_default = yes
+}

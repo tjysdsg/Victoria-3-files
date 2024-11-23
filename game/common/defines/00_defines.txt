@@ -37,6 +37,7 @@ NCountry = {
 	FINANCIAL_DISTRICT_BUILDING = "building_financial_district"
 	RAILWAY_BUILDING = "building_railway"
 	POWER_BLOC_STATUE_BUILDING = "building_power_bloc_statue"
+	COMPANY_HEADQUARTER_BUILDING = "building_company_headquarter"
 	CONSTRUCTION_QUEUE_INCREMENT_SHIFT = 5  # Increment/Decrement used for buildings construction queue when holding down Shift
 	CONSTRUCTION_QUEUE_INCREMENT_CONTROL = 10 # Increment/Decrement used for buildings construction queue when holding down Ctrl
 	WEEKS_TO_STORE_LOYALIST_RADICAL_STATISTICS = 52 # Number of weeks of statistics for loyalists/radicals that is stored and shown
@@ -53,12 +54,61 @@ NPolitics = {
 	DISTRIBUTION_OF_POWER_GROUP = "lawgroup_distribution_of_power"	# Law from this group is used for the power_bloc_worst_progressiveness_difference_government_type trigger to represent the Distribution of Power
 	TARIFF_LAW_GROUP = "lawgroup_trade_policy"	# Law from this group is shown to player as their tariff law
 	TAX_LAW_GROUP = "lawgroup_taxation"	# Law from this group is shown to player as their tax law
+	
+	DEFAULT_IDEOLOGY = "ideology_moderate" # Used as a fallback if an ideology cannot be selected for a character
 
-	POP_APATHY_RANDOM_FACTOR = 0.1		# The higher this is, the more random the fraction of politically apathetic pops will be
-	POP_IG_RANDOM_FACTOR = 0.2			# The higher this is, the more randomly distributed pops will be between valid IGs
-	MIN_POP_NUMBER_LEAVE_IG = 100.0		# Min for maximum amount of pops/support that will change IG in a single update (overrides below max fraction)
-	MAX_POP_FRACTION_LEAVE_IG = 0.05	# Maximum amount of a pop that can change IGs in a single update (for each IG)
+	MIN_POP_NUMBER_JOIN_OR_LEAVE_IG = 10		# Min for maximum amount of pops/support that will change IG in a single update (overrides below max fraction)
+	MAX_POP_FRACTION_JOIN_OR_LEAVE_IG = 0.05	# Maximum amount of a pop that can change IGs in a single update (for each IG)
+	
+	MIN_POP_NUMBER_JOIN_OR_LEAVE_MOVEMENT = 10		# Min for maximum amount of pops/support that will change political movements in a single update (overrides below max fraction)
+	MAX_POP_FRACTION_JOIN_OR_LEAVE_MOVEMENT = 0.1	# Maximum amount of a pop that can change political movements in a single update (for each movement)
+	MOVEMENT_POP_SUPPORT_ATTRACTION_CAP = 0.01 # The fraction of individuals in a pop that will support a movement is capped at ( movement attraction * this ) so that movements with low attraction but no competition won't attract every single pop in the country
+	
+	# For a movement with a cultural/religious identity to spawn, the culture/religion must meet at least one of the two thresholds below:
+	MOVEMENT_IDENTITY_MIN_INDIVIDUALS_ABSOLUTE_THRESHOLD = 200000 # Absolute number of individuals
+	MOVEMENT_IDENTITY_MIN_INDIVIDUALS_RELATIVE_THRESHOLD = 0.2 # Number of individuals relative to country population
+	
+	MOVEMENT_DEFAULT_MIN_SUPPORT_TO_CREATE = 0.025	# Default support (as calculated value) required to create a political movement, can be overriden in database 
+	MOVEMENT_DEFAULT_MIN_SUPPORT_TO_MAINTAIN = 0.01	# Default support (as actual value) required to maintain a political movement, can be overriden in database
+	MOVEMENT_FAILED_MOVEMENT_DURATION_DAYS = 365 # For how long do we remember that a political movement failed to be created and do not try again for that exact same movement
+	MOVEMENT_MIN_SUPPORT_GRACE_MONTHS = 12 # A political movement cannot disband due to low support for this many months after its creation
+	MOVEMENT_AGITATOR_STICKYNESS = 2.0 # Agitators apply this multiplier to the score for a movement they are already backing when considering whether to switch movements
 
+	# The three defines below should add up to 1.0
+	MOVEMENT_SUPPORT_POPULAR_SUPPORT_FRACTION = 0.34 # This fraction a political movement's total support comes from its popular support
+	MOVEMENT_SUPPORT_MILITARY_SUPPORT_FRACTION = 0.33 # This fraction a political movement's total support comes from its military support
+	MOVEMENT_SUPPORT_WEALTH_SUPPORT_FRACTION = 0.33 # This fraction a political movement's total support comes from its wealth support
+	
+	MOVEMENT_WEEKLY_RADICALISM_CHANGE = 0.01 # How much does a movement's radicalism change towards its calculated target each week
+	MOVEMENT_MONTHLY_RADICALS_THRESHOLD = 0.5 # At this level of radicalism, movement supporters start being radicalized each month at an amount scaled by the radicalism value
+	MOVEMENT_MONTHLY_RADICALS_SCALING_MIN = 0.005 # The minimum % of supporters radicalized each month when above the radicalization threshold
+	MOVEMENT_MONTHLY_RADICALS_SCALING_MAX = 0.025 # The maximum % of supporters radicalized each month when above the radicalization threshold 
+	MOVEMENT_LOYALISTS_ON_APPROVED_ENACTMENT = 0.25 # The % of supporters who become more loyal when a law the movement approves of is enacted
+	
+	# Movements with less radicalism than this do not impact law enactment chances
+	# Additionally, movement radicalism won't drop lower than than this when enactment of a law they care about is underway, so lowered radicalism from enactment doesn't end up counterproductive
+	MOVEMENT_MIN_RADICALISM_FOR_LAW_ENACTMENT_IMPACT = 0.25 
+
+	MOVEMENT_IMMEDIATE_RADICALISM_FROM_ENACTMENT = 0.5 # This multiplier of target radicalism impact from law enactment is applied immediately on start of enactment
+	MOVEMENT_IMMEDIATE_RADICALISM_FROM_CANCELLATION = -0.5 # This multiplierof target radicalism impact from law enactment is applied immediately on cancellation of enactment
+	MOVEMENT_RADICALISM_FROM_ACTIVE_LAW_STANCE = -0.05 # Multiplied by a movement's stance on each active law (positive stance = negative radicalism)
+	MOVEMENT_RADICALISM_FROM_ENACTED_LAW_STANCE = -0.25 # Multiplied by a movement's comparative stance on currently or recently enacted law (positive stance = negative radicalism)
+	MOVEMENT_RADICALISM_FROM_RADICAL_SUPPORTERS = 1.0 # Scales against fraction of radicals among movement supporters
+	MOVEMENT_RADICALISM_FROM_LOYALIST_SUPPORTERS = -0.75 # Scales against fraction of loyalists among movement supporters
+	MOVEMENT_RADICALISM_FROM_SUPPRESSION = 0.0 # Suppressed movements become this much more radical 
+	MOVEMENT_RADICALISM_FROM_BOLSTERING = 0.0 # Bolstered movements become this much less radical 
+
+	IG_MAX_INFLUENCING_MOVEMENTS = 3 # An interest group cannot have more than this number of influencing movements
+	IG_SUPPORTING_MOVEMENT_MIN_SUPPORTING_CLOUT = 0.05 # A movement must be supported by at least this % of the clout in an IG to be shown as a supporting IG for the movement
+	IG_INFLUENCING_MOVEMENT_MIN_SUPPORTING_CLOUT = 0.10 # A movement must be supported by at least this % of the clout in an IG to be a influencing movement for the IG
+	IG_INFLUENCING_MOVEMENT_STICKYNESS = 1.25 # Multiply supporting clout of the currently influencing movement in an IG by this for the purposes of determining whether it stays influencing
+
+	# The values below determine how ideologically divergent an IG can be from an insurrectionary political movement and still join on the civil war side, based on their level of approval
+	# Happy/Loyal IGs will never join civil wars
+	IG_MAX_IDEOLOGICAL_DELTA_TO_JOIN_CIVIL_WAR_NEUTRAL = 1
+	IG_MAX_IDEOLOGICAL_DELTA_TO_JOIN_CIVIL_WAR_UNHAPPY = 2
+	IG_MAX_IDEOLOGICAL_DELTA_TO_JOIN_CIVIL_WAR_ANGRY = 3
+	
 	BASE_IG_APPROVAL = 0				# Baseline IG approval
 	MIN_IG_APPROVAL = -20				# Minimum IG approval
 	MAX_IG_APPROVAL = 20				# Maximum IG approval
@@ -70,7 +120,7 @@ NPolitics = {
 	IG_LAW_DESIRE_EXTREME_CHANGE_THRESHOLD = 3 # A difference in positions this or higher is considered extreme
 	IG_APPROVAL_FROM_LAW = 1 		# IG approval/disapproval for laws that are for/against their ideologies
 	IG_APPROVAL_FROM_LAW_STRONG_STANCE = 2 		# IG approval/disapproval for laws that are strongly for/against their ideologies
-	IG_APPROVAL_FROM_LAW_CHANGE = 5 		# IG approval/disapproval for changing to another law
+	IG_APPROVAL_FROM_LAW_CHANGE = 5		# IG approval/disapproval for changing to another law
 	IG_APPROVAL_FROM_RADICAL_LAW_CHANGE = 10 		# IG approval/disapproval for changing to another law, if the change is a major one
 	IG_APPROVAL_FROM_EXTREME_LAW_CHANGE = 20 		# IG approval/disapproval for changing to another law, if the change is extreme
 	IG_IN_GOVERNMENT_APPROVAL = 0		# Added if IG is in government
@@ -82,14 +132,22 @@ NPolitics = {
 	APPROVAL_THRESHOLD_HAPPY = 5		# At this or above approval, IG is considered happy
 	APPROVAL_THRESHOLD_LOYAL = 10		# At this or above approval, IG is considered loyal
 	CHANGED_LAW_APPROVAL_MONTHS = 60 # How many months does the approval/disapproval for a law change linger after said law chain
+	
+	# If the difference in progressiveness between the currently active law and an alternative law is this, then it's considered a radical petition
+	# Radical petitions will only happen if there isn't a less extreme alternative that the government could petition for instead
+	GOVERNMENT_RADICAL_PETITION_THRESHOLD = 100 
 
 	LAW_ENACTMENT_MIN_TOTAL_DAYS = 1		# Minimum number of total days that an enactment checkpoint can take [>=1]
 	LAW_ENACTMENT_DEFAULT_BASE_DAYS = 100	# Default number of base days required to reach an enactment checkpoint [>=1]
 	LAW_ENACTMENT_COOLDOWN_DAYS = 730		# When an enactment fails, or is manually stopped after at least one checkpoint, that law can't be tried to be enacted for this many days [>=0]
 	LAW_ENACTMENT_ADVANCE_FACTOR = 2		# The _base_ advance chance is the success chance multiplied by this factor [>=1]
 	LAW_ENACTMENT_RULER_IDEOLOGY_EFFECT = 0.05 # Ruler ideology has this impact on a law's chance to pass or stall depending on relative approval
-	LAW_ENACTMENT_MOVEMENT_SUPPORT_PASS_EFFECT = 0.01 # Movement support has this impact on a law's chance to pass
-	LAW_ENACTMENT_MOVEMENT_SUPPORT_STALL_EFFECT = 0.01 # Movement support has this impact on a law's chance to stall
+	LAW_ENACTMENT_MOVEMENT_SUPPORT_PASS_EFFECT = 1.0 # Movement support has this impact on a law's chance to pass
+	LAW_ENACTMENT_MOVEMENT_SUPPORT_STALL_EFFECT = 1.0 # Movement support has this impact on a law's chance to stall
+	LAW_ENACTMENT_IG_CLOUT_STALL_EFFECT = 1.0 # Opposing IG clout has this base impact on a law's chance to stall
+	LAW_ENACTMENT_IG_NEUTRAL_MULT = 0.5 # Stall effect of opposing IG is multiplied by this for neutral IGs
+	LAW_ENACTMENT_IG_UNHAPPY_MULT = 1.0 # Stall effect of opposing IG is multiplied by this for unhappy	IGs
+	LAW_ENACTMENT_IG_ANGRY_MULT = 1.5 # Stall effect of opposing IG is multiplied by this for angry IGs
 	LAW_ENACTMENT_MAX_PHASES = 3			# Law enactment is successfully completed when it advances to this phase
 	LAW_MIN_SUCCESS_CHANCE = 0.01			# Law must have at least this minimum chance to be considered.
 	
@@ -113,56 +171,49 @@ NPolitics = {
 	MAX_GOVERNMENT_ALTERNATIVES_TO_CONSIDER_FOR_VALIDATION = 256	# When evaluating government reform options during government validation stage
 
 	DEFAULT_LAW_ACTIVATION_DATE = "1836.1.1"
-
-	MAX_NUM_POLITICAL_MOVEMENTS_WITHOUT_IG_SUPPORT = 1
-	MAX_NUM_POLITICAL_MOVEMENTS = 3
-	POLITICAL_MOVEMENT_START_CHANCE_BASE = 5 # Base chance of a political movement starting each day if selected to be checked (1 = 1%)
-	POLITICAL_MOVEMENT_START_CHANCE_SCALED = 0.05 # Additional chance of a political movement starting scaled with potential support
-	POLITICAL_MOVEMENT_START_CHANCE_NUM_MOVEMENTS_DIVISOR = 2 # If we already have movements, divide start chance of a new movement by ( 1 + this * cur num movements )
-	POLITICAL_MOVEMENT_TO_PRESERVE_CHECK_TO_START_CHANCE = 100 # Chance that a political movement is checked at all on a daily basis if it's a movement to preserve (this can be 100 as movements to preserve are much rarer to check)
-	POLITICAL_MOVEMENT_TO_RESTORE_CHECK_TO_START_CHANCE = 0.4 # Chance that a political movement is checked at all on a daily basis if it's a movement to restore (for performance reasons)
-	POLITICAL_MOVEMENT_TO_ENACT_CHECK_TO_START_CHANCE = 0.1 # Chance that a political movement is checked at all on a daily basis if it's a movement to enact (for performance reasons)
-	POLITICAL_MOVEMENT_MIN_SUPPORT_TO_START = 10 # If a political movement would have less support than this, it can't start
-	POLITICAL_MOVEMENT_MIN_SUPPORT_TO_REMAIN = 5 # If a political movement falls to less support than this, disband it
-	POLITICAL_MOVEMENT_RADICALISM_TARGET_FROM_ANGRY_IG_CLOUT = 300 # At 100% clout of angry IGs supporting this, increase radicalism by this much
-	POLITICAL_MOVEMENT_RADICALISM_TARGET_FROM_RADICALS = 500 # At 100% of total population as supporting radicals, increase radicalism by this much
-	POLITICAL_MOVEMENT_SUPPORT_FROM_POPULATION = 100 # At 100% of population supporting the movement
-	POLITICAL_MOVEMENT_SUPPORT_FROM_CLOUT = 100 # At 100% of political clout supporting the movement
-	POLITICAL_MOVEMENT_APATHY_MULTIPLIER = 0.5 # This % of politically apathetic pops also won't join movements even if it's in their interest to do so
-	POLITICAL_MOVEMENT_LAW_APPROVAL_POP_SUPPORT_BASE_FACTOR = 0.5 # How many pops belonging to an IG that approves of enacting a law supports the movement to enact the law (base)
-	POLITICAL_MOVEMENT_LAW_APPROVAL_POP_SUPPORT_SCALED_FACTOR = 0.25 # How many pops belonging to an IG that approves of enacting a law supports the movement to enact the law (for each approval after 1)
-	POLITICAL_MOVEMENT_LAW_APPROVAL_POP_SUPPORT_RESTORE_FACTOR = 0.25 # How many (extra) pops belonging to an IG that approves of enacting a law supports a movement to restore a law
-	POLITICAL_MOVEMENT_MIN_DURATION = 12
-	POLITICAL_MOVEMENT_MONTHLY_RADICALS = 0.001 				# This fraction of pops backing a non-placated political movement to enact or restore become more radical each month
-	POLITICAL_MOVEMENT_TO_PRESERVE_MONTHLY_RADICALS = 0.003 		# This fraction of pops backing a non-placated political movement to preserve become more radical each month
-	POLITICAL_MOVEMENT_LOYALISTS_AT_SUCCESS = 0.25 	# This fraction of pops backing a political movement become more loyalist if movement succeeds
-	POLITICAL_MOVEMENT_DISBAND_CHANCE = 0.04 # Chance of a political movement that has lasted longer than POLITICAL_MOVEMENT_MIN_DURATION disbanding each day if radicalism for it is below REVOLUTIONARY_PROGRESSION_FROM_RADICALISM - scales with number of months that have passed (1 = 1%)
-	POLITICAL_MOVEMENT_DISBAND_CHANCE_SUPPORT_DIVISOR = 0.01 # Political movement's chance to randomly disband is divided by ( 1 + support * this )
-
-	REVOLUTION_SUPPORT_STATE_MULTIPLIER = 0.015		# A revolution will have the backing of ( support * this fraction of states )
-	REVOLUTION_MAX_STATE_FRACTION = 0.75			# A revolution cannot be supported by more than this fraction of the states in the country
-	REVOLUTION_MAX_PROGRESS_AT_CHECKPOINT = 0.25	# A revolution can advance at most this amount per checkpoint, regardless of radicalism
-	MIN_RADICALISM_FOR_REVOLUTION_PROGRESSION = 50	# A political movement must have this much radicalism for a revolution to start organizing
-	MIN_RADICALISM_FOR_REVOLUTION_START = 100		# Allow a revolution to start at this amount of radicalism or more
-	MAX_PROGRESS_FOR_UNSUPPORTED_REVOLUTIONS = 0.5  # Revolutions from movements that aren't supported by any IGs won't progress further than this
-	REVOLUTIONS_PROGRESS_DECAY = 0.1				# The progress of revolutions with insufficient support decays at this rate
-	REVOLUTIONARY_ADJACENCY_BIAS = 4				# higher state selection bias for adjacent states
-	REVOLUTION_PROGRESS_RADICALISM_WEIGHT = 0.2  # revolutions gain progress based on the movement's radicalism, multiplied by this weight (may be affected by modifiers)
-	REVOLUTION_CHECKPOINT_INTERVAL_BASE_WEEKS = 8   # revolution progress will be updated every this many weeks (may be affected by modifiers)
-	SECESSION_CHECKPOINT_INTERVAL_BASE_WEEKS = 1	# secession progress will be updated every this many weeks (may be affected by modifiers)
+	
+	# The values below are used to calculate the target number of states that rise up when a civil war without an explicit target_fraction_of_states begins
+	# This is just a target value - the end result may end up different based on state weights defined in the civil war scripting
+	CIVIL_WAR_UPRISING_STATES_DEFAULT_CLOUT_FACTOR = 1.0 	# Fraction of total states in country, multiplied by revolutionary IG clout 
+	CIVIL_WAR_UPRISING_STATES_DEFAULT_POPULAR_SUPPORT_FACTOR = 0.5	# Fraction of total states in country, multiplied by movement popular support
+	CIVIL_WAR_UPRISING_STATES_DEFAULT_MILITARY_SUPPORT_FACTOR = 0.25	# Fraction of total states in country, multiplied by movement military support
+	CIVIL_WAR_UPRISING_STATES_DEFAULT_WEALTH_SUPPORT_FACTOR = 0.25	# Fraction of total states in country, multiplied by movement wealth support
+	CIVIL_WAR_UPRISING_STATES_DEFAULT_MIN_FRACTION = 0.10	# Min fraction of total states in country that will try to rise up
+	CIVIL_WAR_UPRISING_STATES_DEFAULT_MAX_FRACTION = 0.75	# Max fraction of total states in country that will try to rise up
+	CIVIL_WAR_POTENTIAL_UPRISING_STATE_MIN_MULTIPLIER = 0.01  # The weight for an uprising state cannot be reduced below this by local clout/identity share of population
+	
+	CIVIL_WAR_UPRISING_STATE_RANDOM_FACTOR = 0.5 # The higher this is, the more random uprising state selection will be
+	CIVIL_WAR_UPRISING_STATE_CONNECTIONS_FACTOR = 1.0 # The score of an uprising state is multiplied by ( 1 + this number * the number of other uprising states it connects to )
+	CIVIL_WAR_UPRISING_STATE_NON_CONNECTED_SECESSION_FACTOR = 0.01 # The score of an uprising state is multiplied by this for seceding states that are not connected to any other rebel states in the same area
+	CIVIL_WAR_UPRISING_ISOLATED_STATE_FACTOR = 100.0 # The score of an uprising state is multiplied by this if it's isolated from the most loyalist state by uprising states 
+	CIVIL_WAR_NON_CONTIGUOUS_UPRISING_STATE_FACTOR = 0.25 # The score of an uprising state is multiplied by this if it would end up cutting off a number of loyalist states greater than the remaining number of states that should rebel 
+	CIVIL_WAR_UPRISING_ARMY_TARGET_DELTA_FACTOR = 10.0 # How heavily are states weighted towards or against rising up based on how their defection will affect the ideal number of army units that should be rebelling
+	CIVIL_WAR_UPRISING_NAVY_TARGET_DELTA_FACTOR = 5.0 # How heavily are states weighted towards or against rising up based on how their defection will affect the ideal number of navy units that should be rebelling
+	
+	# Overseas areas of the country that are considered colonial will either be fully loyal or fully rebellious, as determined by the logic below
+	CIVIL_WAR_UPRISING_STATES_OVERSEAS_HIGH_UNINCORPORATED_FRACTION = 0.5 # At this % of unincorporated states or above in non capital area, it will be considered 'colonial' even if it has a close sea adjancency to capital
+	CIVIL_WAR_COLONIAL_UPRISING_MIN_CHANCE = 0.25 # If the chance for a colonial area to rebel is below this, it will always stay loyal
+	CIVIL_WAR_COLONIAL_UPRISING_CHANCE_WEALTH_SUPPORT_FACTOR = 2.0 # Chance for each colonial area to rebel, multiplied by insurrectionary movement wealth support
+	CIVIL_WAR_COLONIAL_UPRISING_CHANCE_CLOUT_FACTOR = 1.0 # Chance for each colonial area to rebel, multiplied by insurrectionary IG clout in the area
+	
+	CIVIL_WAR_UPRISING_STATE_EXCESSIVE_ARMY_FRACTION = 0.5 # If a state contains at least this much of the area's army
+	CIVIL_WAR_UPRISING_ARMY_FRACTION_MILITARY_SUPPORT_FACTOR = 0.75 # Target fraction of the army that should rebel, multiplied by insurrectionary movement military support
+	CIVIL_WAR_UPRISING_ARMY_FRACTION_CLOUT_FACTOR = 0.25 # Target fraction of the army that should rebel, multiplied by insurrectionary IG clout in the area
+	CIVIL_WAR_UPRISING_NAVY_FRACTION_MILITARY_SUPPORT_FACTOR = 0.75 # Target fraction of the navy that should rebel, multiplied by insurrectionary movement military support
+	CIVIL_WAR_UPRISING_NAVY_FRACTION_CLOUT_FACTOR = 0.25 # Target fraction of the navy that should rebel, multiplied by insurrectionary IG clout in the area
+	
+	CIVIL_WAR_MAX_PROGRESS_AT_CHECKPOINT = 0.25	# A civil war can advance at most this amount per checkpoint, regardless of radicalism
+	MIN_RADICALISM_FOR_CIVIL_WAR_PROGRESSION = 0.75	# A political movement must have this much radicalism for a civil war to start organizing
+	MIN_RADICALISM_FOR_CIVIL_WAR_START = 1.0		# Allow a civil war to start at this amount of radicalism or more
+	CIVIL_WAR_PROGRESS_DECAY = 0.1					# The progress of civil wars with insufficient support decays at this rate
+	CIVIL_WAR_PROGRESS_RADICALISM_WEIGHT = 0.2  	# civil wars gain progress based on the movement's radicalism, multiplied by this weight (may be affected by modifiers)
+	CIVIL_WAR_CHECKPOINT_INTERVAL_BASE_WEEKS = 8   # civil war progress will be updated every this many weeks (may be affected by modifiers)
 	CIVIL_WAR_CHECKPOINT_INTERVAL_MAXIMUM_WEEKS = 52	# This serves as a limit, to protect modifiers from reducing the progress speed to zero
 
-	# Revolutionary states scoring
-	REVOLUTION_STATE_WEIGHT_LOCAL_CLOUT_SHARE = 1.0	 # Local clout weight at the moment of revolution secession
-	REVOLUTION_STATE_WEIGHT_NATIONAL_AVERAGE = 1.0	 # Local national revolutionary share
-	BATTALION_CIVIL_WAR_WEIGHT = 1.0				 # Battalion revolutionary share
-	FLOTILLA_CIVIL_WAR_WEIGHT = 1.0					 # Flotilla revolutionary share
-	REVOLUTION_STATE_WEIGHT_UNIT_MIN = 0.1			 # Min Unit Weight
+	CIVIL_WAR_CONSCRIPTION_RATE_POPULAR_SUPPORT_MULTIPLIER = 0.5 # At 100% popular support, insurrectionary states gain this multiplier of civil_war_conscription modifier
+	CIVIL_WAR_CONSCRIPTION_RATE_CLOUT_MULTIPLIER = 0.25 # At 100% clout from supporting IGs, insurrectionary states gain this multiplier of civil_war_conscription modifier
+	CIVIL_WAR_LOSER_IG_AND_MOVEMENT_DEBUFF_YEARS = 10			# Debuff duration in years for IG that looses in a revolution
 
-	REVOLUTION_LOSER_IG_DEBUFF_YEARS = 10			# Debuff duration in years for IG that looses in a revolution
-	NUM_REVOLUTIONARY_LAW_CHANGES = 2				# In addition to the main reason for the revolution, a revolutionary constitution will contain this many additional law changes
-
-	SECESSION_LOSER_STATE_RADICAL_GAIN_REDUCTION_WEEKS = 52	# Number of weeks to reduce passive radical gain in states that lost a secession (decaying)
 	SECESSION_WON_LOYALISTS_INCREASED_PERCENTAGE = 0.5		# This percentage of pops in the secession country of the seceded culture will become more loyal after a secession is victorious
 	SECESSION_START_RADICALS_REDUCED_PERCENTAGE = 1.0		# The number of radicals of pops of the seceded culture in states that seceded will decrease by this amount when a secession war begins
 	SECESSION_LOST_RADICALS_REDUCED_PERCENTAGE = 1.0		# The number of radicals of pops of the seceded culture in states that seceded will decrease by this amount when a secession is crushed
@@ -178,13 +229,6 @@ NPolitics = {
 	TURMOIL_STATE_EFFECTS_THRESHOLD = 0.25				# How much turmoil a state needs to have before it gets any state-wide effects
 	TURMOIL_STATE_HIGH_EFFECTS_THRESHOLD = 0.50			# Above this turmoil, add a harsher modifier
 	TURMOIL_STATE_EXTREME_EFFECTS_THRESHOLD = 0.75		# Above this turmoil, add the harshest modifier
-	SECESSION_TURMOIL_CUTOFF = 0.5						# Turmoil requires for cultures to start secession
-	SECESSION_WEEKLY_BASE_CHANCE = 0.001				# weekly base chance for culture to start secession movement
-	SECESSION_WEEKLY_CHANCE_EXCESS_DIV = 100			# Excess turmoil is divided by this and used to increase chance for secession movements
-	MIN_POP_SIZE_TO_SECEDE = 100000						# Num pops (including dependents) needed for a secession movement to start
-	SECESSION_STATE_CUTOFF_PERCENT = 0.33				# Required pop percentage in State to be egligble for secession
-	SECESSION_TURMOIL_EXCESS_DIV = 1					# Excess turmoil is divided by this and used to increase secession movements
-	SECESSION_COOLDOWN_YEARS = 5
 
 	MIN_INSTITUTION_INVESTMENT = 1						# Lowest Investment Level for active Institutions (modifier is clamped to this)
 	MAX_INSTITUTION_INVESTMENT = 5						# Highest Investment Level for active Institutions (modifier is clamped to this)
@@ -198,18 +242,15 @@ NPolitics = {
 	REFORM_GOVERNMENT_PERIOD = 6 						# How many months after election you can reform government for free
 	REFORM_GOVERNMENT_RADICALIZATION_RATE = 0.25 		# How many percent of a IG's supporters that will get radicalized when removed from government.
 
-	RADICALISM_MEDIUM_THRESHOLD = 20
-	RADICALISM_HIGH_THRESHOLD = 40
-	RADICALISM_VERY_HIGH_THRESHOLD = 60
-	RADICALISM_EXTREME_THRESHOLD = 80
-	RADICALISM_CRITICAL_THRESHOLD = 100
-
-	SUPPORT_MEDIUM_THRESHOLD = 20
-	SUPPORT_HIGH_THRESHOLD = 40
-	SUPPORT_VERY_HIGH_THRESHOLD = 60
-	SUPPORT_EXTREME_THRESHOLD = 80
-	SUPPORT_CRITICAL_THRESHOLD = 100
-
+	RADICALISM_AGITATING_THRESHOLD = 0.25
+	RADICALISM_PROTESTING_THRESHOLD = 0.50
+	RADICALISM_MILITANT_THRESHOLD = 0.75
+	
+	SUPPORT_RELEVANT_THRESHOLD = 0.05
+	SUPPORT_SIGNIFICANT_THRESHOLD = 0.25
+	SUPPORT_DOMINANT_THRESHOLD = 0.5
+	SUPPORT_UNIVERSAL_THRESHOLD = 0.75
+	
 	INCOHERENCE_FACTOR = 5								# The amount to multiply the approval value with to get an incoherence score for legitimacy
 	INCOHERENCE_FROM_SECONDARY_PARTY_MEMBERS = 0.5		# The amount to multiply the approval value with if the interest group is in a party but is not the party whip
 	LEGITIMACY_PENALTY_FOR_EACH_EXCESS_ENTITY = 20		# How much Legitimacy is lost for each group in government above the allowance determined by country_legitimacy_govt_size_add
@@ -305,6 +346,8 @@ NEconomy = {
     GOODS_SHORTAGE_PENALTY_MIN = 0.05			# Goods shortage penalty can't be lower than this if there is any shortage
 	GOODS_SHORTAGE_PENALTY_MAX = 0.5			# Goods shortage penalty can't be higher than this
 
+	POP_NEED_BASIC_FOOD = "popneed_basic_food"
+
 	# If the delta between a historical trade route's level and its predicted level after gamestate init is at least this, print a debug log entry
 	TRADE_ROUTE_HISTORICAL_LEVEL_DIFF_WARNING = 2
 
@@ -367,14 +410,17 @@ NEconomy = {
 	OWNERSHIP_BUILDING_LOWER_WAGES_TARGET_WEALTH_MULT = 1.1 # Overrides BUILDING_LOWER_WAGES_TARGET_WEALTH_MULT for buildings that own other buildings
 	BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES = 3  # Non-subsidized buildings will not hire if it would result in their annual earnings/employee falling below this threshold (default value, can be overridden for building group)
 	BUILDING_PROFIT_TARGET_TO_RAISE_WAGES = 0.3		# Required profit margin to consider raising wages for SoL or employment reasons, with BUILDING_WEEKS_BETWEEN_PAY_CHANGES weeks cooldown
-	BUILDING_PROFIT_TARGET_TO_LOWER_WAGES = 0.15	# If profit margin is this or below, consider lowering wages for SoL or employment reasons, with BUILDING_WEEKS_BETWEEN_PAY_CHANGES weeks cooldown
-	OWNERSHIP_BUILDING_PROFIT_TARGET_TO_RAISE_WAGES = 0.5	# Overrides BUILDING_PROFIT_TARGET_TO_RAISE_WAGES for buildings that own other buildings and subsistence buildings
-	OWNERSHIP_BUILDING_PROFIT_TARGET_TO_LOWER_WAGES = 0.3	# Overrides OWNERSHIP_BUILDING_PROFIT_TARGET_TO_LOWER_WAGES for buildings that own other buildings and subsistence buildings
-	BUILDING_CASH_RESERVES_WITHDRAW_PROFIT_TARGET = 0.0 # If a building is making less profit than this fraction of its income, withdraw money from cash reserves to boost profits
-	OWNERSHIP_BUILDING_CASH_RESERVES_WITHDRAW_PROFIT_TARGET = 0.2 # Overrides BUILDING_CASH_RESERVES_WITHDRAW_PROFIT_TARGET for buildings that own other buildings
+	BUILDING_PROFIT_TARGET_TO_LOWER_WAGES = 0.15	# If profit margin is this or below, buildings should lower their wages, with BUILDING_WEEKS_BETWEEN_PAY_CHANGES weeks cooldown
+	BUILDING_PROFIT_TARGET_TO_WITHDRAW_CASH = 0.2	# If profit margin is this or below, buildings should withdraw money from the cash reserves to make up the difference
+	OWNERSHIP_BUILDING_PROFIT_TARGET_TO_RAISE_WAGES = 0.5	# Overrides BUILDING_PROFIT_TARGET_TO_RAISE_WAGES for buildings that own other buildings
+	OWNERSHIP_BUILDING_PROFIT_TARGET_TO_LOWER_WAGES = 0.3	# Overrides BUILDING_PROFIT_TARGET_TO_LOWER_WAGES for buildings that own other buildings
+	OWNERSHIP_BUILDING_PROFIT_TARGET_TO_WITHDRAW_CASH = 0.4	# Overrides BUILDING_PROFIT_TARGET_TO_WITHDRAW_CASH for buildings that own other buildings
+	SUBSISTENCE_BUILDING_PROFIT_TARGET_TO_RAISE_WAGES = 5.0	# Overrides BUILDING_PROFIT_TARGET_TO_RAISE_WAGES for subsistence buildings
+	SUBSISTENCE_BUILDING_PROFIT_TARGET_TO_LOWER_WAGES = 3.0	# Overrides BUILDING_PROFIT_TARGET_TO_LOWER_WAGES for subsistence buildings
+	SUBSISTENCE_BUILDING_PROFIT_TARGET_TO_WITHDRAW_CASH = 4.0	# Overrides BUILDING_PROFIT_TARGET_TO_WITHDRAW_CASH for subsistence buildings
 	BUILDING_MAX_EMPLOYMENT_FRACTION_TO_RAISE_WAGES = 0.5 # If the employment fraction of a building is above this, don't raise wages just to try and snipe employees from other buildings
-	BUILDING_WEEKS_BETWEEN_PAY_CHANGES = 12		# Cooldown between changes in pay, so buildings don't overcompensate for a temporary change in circumstances. If the building is unprofitable it uses BUILDING_WEEKS_BETWEEN_PAY_CHANGES_WHEN_UNPROFITABLE instead.
-	BUILDING_WEEKS_BETWEEN_PAY_CHANGES_WHEN_UNPROFITABLE = 4 # Cooldown between changes in pay, so buildings don't overcompensate for a temporary change in circumstances. Only used when unprofitable.
+	BUILDING_WEEKS_BETWEEN_PAY_CHANGES = 0		# Cooldown between changes in pay, so buildings don't overcompensate for a temporary change in circumstances. If the building is unprofitable it uses BUILDING_WEEKS_BETWEEN_PAY_CHANGES_WHEN_UNPROFITABLE instead.
+	BUILDING_WEEKS_BETWEEN_PAY_CHANGES_WHEN_UNPROFITABLE = 0 # Cooldown between changes in pay, so buildings don't overcompensate for a temporary change in circumstances. Only used when unprofitable.
 	MIN_RAISE_TO_HIRE = 0.10					# The minimum required increase in wages for an employee to switch jobs (1.0 = +100% = x2)
 	BASE_RESOURCE_DISCOVER_CHANCE = 0.02 		# Per day (1.0 = 1%)
 	EMPLOYMENT_RESOURCE_DEPLETE_CHANCE = 0.005	# Multiplied by number of fully employed levels of the building
@@ -463,8 +509,8 @@ NEconomy = {
 	OWNERSHIP_BUILDING_CASH_RESERVES_MIN_DEPOSIT_PERCENT = 0.125 # Replaces BUILDING_CASH_RESERVES_MIN_DEPOSIT_PERCENT for buildings that own other buildings
 	OWNERSHIP_BUILDING_CASH_RESERVES_MAX_DEPOSIT_PERCENT = 0.25	# Replaces BUILDING_CASH_RESERVES_MAX_DEPOSIT_PERCENT for buildings that own other buildings
 
-	BUILDING_CASH_RESERVES_STATUS_QUO_THRESHOLD = 0.5	# If cash reserves are above this fraction of max, buildings won't try to reduce expenses even if they are losing money
-	
+	BUILDING_HIGH_CASH_RESERVES_THRESHOLD = 0.5	# If cash reserves are above this fraction of max, buildings won't try to reduce expenses even if they are losing money
+
 	EMPLOYMENT_DIVIDEND_ESTIMATE_MULT = 2.0			# When deciding employment overestimate dividends since they vary a lot and we really dont want to move someone to a job without a dividend that then turns out worse
 
 	SHIPPING_LANE_CONVOY_COST_SCALING = 0.1			# The cost for a shipping lane for each node beyond the first. So at 0.1 it goes 1.0, 1.1, 1.2 and so on.
@@ -476,7 +522,7 @@ NEconomy = {
 	REINVESTMENT_EFFICIENCY_MAX = 3.0					# Maximum conversion of reinvestment to investment pool
 	REINVESTMENT_BASE_EFFICIENCY_THRESHOLD = 10000000	# Below this amount of GDP, increase reinvestment multiplier on a linear scale up to REINVESTMENT_EFFICIENCY_MAX at 0
 
-	COMPANY_COMPETITION_DIVISOR = 0.33					# For each company over one associated with the same building type, the total throughput bonus for the building is divided by ( 1 + number of companies over one * this )
+	COMPANY_OVER_LIMIT_BONUS_PENALTY_MIN = 0.33			# If the number of companies in the country exceeds the limit, all company bonuses get penalty. The penalty is scaled proportionally to the limit (exceeding the limit by 100% reduces bonuses by 100%) and the minimum value is this
 	COMPANY_PRODUCTIVITY_RATIO_HIGH_THRESHOLD = 1.25	# Companies whose productivity exceeds this factor of the global average will be considered high-productivity companies
 	COMPANY_PRODUCTIVITY_RATIO_LOW_THRESHOLD = 0.75		# Companies whose productivity is below this factor of the global average will be considered low-productivity companies
 	COMPANY_PRODUCTIVITY_ABSOLUTE_HIGH_THRESHOLD = 25	# Companies whose productivity exceeds this amount will ALWAYS be considered high-productivity companies
@@ -489,17 +535,18 @@ NEconomy = {
 	PRIVATIZATION_PER_LEVEL_COST = 250					# How much it costs to privatize one level of a building per construction point
 	MIN_FAKE_CONSTRUCTION_COST = 100					# Min construction cost for the matters of nationalization and privatization
 
-	COMPANY_STATE_NAME_WEIGHT_RANDOM_FACTOR = 0.5		# The higher this is, the more random state selection for company names will be
-	COMPANY_STATE_NAME_WEIGHT_PER_BUILDING_LEVEL = 10	# States have their weight increased to be picked as the namesake for a company by this for each level of company-related buildings in the state
-	COMPANY_STATE_NAME_WEIGHT_PER_POTENTIAL_BUILDING_LEVEL = 0.1	# States have their weight increased to be picked as the namesake for a company by this for each level of potential company-related buildings in the state
-	COMPANY_STATE_NAME_WEIGHT_HOMELAND_FACTOR = 5		# States have their weight to be picked as the namesake for a company multiplied by this if it's a homeland of the owning country
-
+	COMPANY_INITIAL_LEVELS = 5							# How many levels of ownership in other buildings required to establish a company
 	COMPANY_ON_ESTABLISH_COOLDOWN_MONTHS = 60			# Cooldown in months after establishing a company before you can disband it
 	COMPANY_ON_DISBAND_COOLDOWN_MONTHS = 48				# Cooldown in months after disbanding a company before you can re-establish it
+	COMPANY_MIN_LEVELS_OWNED = 5							# Min amount of ownerships that company can have, more can't be nationalized or privatized
 
 	BUILDING_LEVEL_BUREAUCRACY_COST = 1					# Cost of owning one level of the goverment building
 	COLLECTIVIZATION_DEBT_RATIO = 0.5					# Ratio of the country max debt can be used for collectivizing
 	MIN_COLLECTIVIZATION_BUDGET = 1000000				# Min size of a collectivizing budget
+
+	# Currently only used in loc, not logic
+	HARVEST_CONDITION_MIN_INTENSITY = 0.0					# Lowest intensity value a harvest condition can roll ( 0 <= this < max)
+	HARVEST_CONDITION_MAX_INTENSITY = 9.0					# Highest intensity value a harvest condition can roll (min < this)
 }
 
 NMilitary = {
@@ -508,6 +555,8 @@ NMilitary = {
 	MANPOWER_DIVISOR = 10000 						# the strategic goods needed by soldiers are counted in sets of
 	MANPOWER_LOST_DUE_TO_ATTRITION_PER_WEEK_MIN = 0.04 	# The minimum percentage of manpower a unit can lose each week due to attrition
 	MANPOWER_LOST_DUE_TO_ATTRITION_PER_WEEK_MAX = 0.12 	# The maximum percentage of manpower a unit can lose each week due to attrition
+	ATTRITION_RECOVERY_RATE_BASE = 0.7				# Base recovery rate for units not participating in battles affected by attrition, e.g. casualties with 0.7 recovery rate would consist of 70% wounded and 30% deaths
+	ATTRITION_RECOVERY_RATE_RANDOM_RANGE = 0.1		# Randomness range for recovery rate for units not participating in battles affected by attrition
 	MIN_VARIABLE_DISTRIBUTION_PER_POP = 0
 	MAX_VARIABLE_DISTRIBUTION_PER_POP = 100
 	BATTLE_LETHALITY_MIN = 0.001
@@ -596,7 +645,7 @@ NMilitary = {
 	MILITARY_FORMATION_WEEKLY_MAX_UNIT_UPGRADES_ARMY = 0.1		# Each week a mobilized army can upgrade this (0.0-1.0) fraction of its total number of units.
 	MILITARY_FORMATION_WEEKLY_MAX_UNIT_UPGRADES_FLEET = 0.05	# Each week a mobilized fleet can upgrade this (0.0-1.0) fraction of its total number of units.
 
-	MANPOWER_RATIO_REQUIRED_TO_CLEAR_DEFEATED_ADMIRALS = 0.5	# A Defeated fleet without at least this ratio of current/max manpower will remain Defeated
+	MANPOWER_RATIO_REQUIRED_TO_CLEAR_DEFEATED_ADMIRALS = 0.75	# A Defeated fleet without at least this ratio of current/max manpower will remain Defeated
 }
 
 NDiplomacy = {
@@ -696,6 +745,7 @@ NDiplomacy = {
 	SWAY_OFFER_WARGOAL_MANEUVERS_COST_REDUCE_AUTONOMY = 5
 	SWAY_OFFER_WARGOAL_MANEUVERS_COST_INCREASE_AUTONOMY = 10
 	SWAY_OFFER_WARGOAL_MANEUVERS_COST_MAKE_TRIBUTARY = 8
+	SWAY_OFFER_WARGOAL_MANEUVERS_COST_MAKE_DOMINION = 8
 	SWAY_OFFER_WARGOAL_MANEUVERS_COST_CONQUER_STATE = 10
 	SWAY_OFFER_WARGOAL_MANEUVERS_COST_RETURN_STATE = 10
 	SWAY_OFFER_WARGOAL_MANEUVERS_COST_TAKE_TREATY_PORT = 10
@@ -721,6 +771,7 @@ NDiplomacy = {
 
 	DEFENSIVE_PACT_ACTION_NAME = "defensive_pact"
 	ALLIANCE_PACT_ACTION_NAME = "alliance"
+	PERSONAL_UNION_ACTION_NAME = "personal_union"
 	INCREASE_AUTONOMY_OF_SELF_NAME = "da_increase_autonomy_of_self"
 	INCREASE_AUTONOMY_OF_SUBJECT_ACTION_NAME = "da_increase_autonomy_of_subject"
 	DECREASE_AUTONOMY_OF_SUBJECT_ACTION_NAME = "da_decrease_autonomy"
@@ -738,6 +789,7 @@ NDiplomacy = {
 	WAR_GOAL_CONTAIN_THREAT_MONTHS = 60	# [>= 0]
 	WAR_GOAL_MAKE_PROTECTORATE_SUBJECT_TYPE = "subject_type_protectorate"
 	WAR_GOAL_MAKE_TRIBUTARY_SUBJECT_TYPE = "subject_type_tributary"
+	WAR_GOAL_MAKE_DOMINION_SUBJECT_TYPE = "subject_type_dominion"
 	WAR_GOAL_TREATY_PORT_BUILDING_LEVEL = 1
 	WAR_GOAL_LIBERATE_COUNTRY_LIBERATOR_START_RELATIONS = 50
 	WAR_GOAL_LIBERATE_COUNTRY_OPPRESSOR_START_RELATIONS = -50
@@ -766,11 +818,12 @@ NDiplomacy = {
 	WAR_GOAL_INFAMY_TAKE_TREATY_PORT = 2.0
 	WAR_GOAL_INFAMY_MAKE_PROTECTORATE = 2.0
 	WAR_GOAL_INFAMY_MAKE_TRIBUTARY = 2.0
+	WAR_GOAL_INFAMY_MAKE_DOMINION = 2.0
 	WAR_GOAL_INFAMY_REDUCE_AUTONOMY = 2.0
 	WAR_GOAL_INFAMY_TRANSFER_SUBJECT = 2.0
 	WAR_GOAL_INFAMY_ANNEX_COUNTRY = 5.0
 	WAR_GOAL_INFAMY_REGIME_CHANGE = 0.5
-	WAR_GOAL_INFAMY_FORCE_NATIONALIZATION = 0.5
+	WAR_GOAL_INFAMY_FORCE_NATIONALIZATION = 5.0
 	WAR_GOAL_INFAMY_FOREIGN_INVESTMENT_RIGHTS = 0.25
 
 	WAR_GOAL_INFAMY_DIPLO_PLAY_BACK_DOWN_REFUND = -0.75 # Refund of infamy for war goals that are dropped due to one side backing down in a diplo play (applied to initiator/target)
@@ -793,8 +846,9 @@ NDiplomacy = {
 	WAR_GOAL_EXECUTION_PRIORITY_JOIN_POWER_BLOC = 12
 	WAR_GOAL_EXECUTION_PRIORITY_MAKE_PROTECTORATE = 13
 	WAR_GOAL_EXECUTION_PRIORITY_MAKE_TRIBUTARY = 14
-	WAR_GOAL_EXECUTION_PRIORITY_REDUCE_AUTONOMY = 15
-	WAR_GOAL_EXECUTION_PRIORITY_INCREASE_AUTONOMY = 16
+	WAR_GOAL_EXECUTION_PRIORITY_MAKE_DOMINION = 15
+	WAR_GOAL_EXECUTION_PRIORITY_REDUCE_AUTONOMY = 16
+	WAR_GOAL_EXECUTION_PRIORITY_INCREASE_AUTONOMY = 17
 	WAR_GOAL_EXECUTION_PRIORITY_CONQUER_STATE = 21
 	WAR_GOAL_EXECUTION_PRIORITY_RETURN_STATE = 22
 	WAR_GOAL_EXECUTION_PRIORITY_TAKE_TREATY_PORT = 23
@@ -817,8 +871,8 @@ NDiplomacy = {
 	DIPLOMATIC_PLAY_ESCALATION_WAR_BREAKOUT = 100
 
 	COLONY_PROVINCE_BASE_SCORE = 10
-	COLONY_PROVINCE_COASTAL_SCORE = 30 # Replaces COLONY_BASE_SCORE for provinces with a coastline
-	COLONY_PROVINCE_ADJACENCY_SCORE = 20 # How much will colonies prioritize adjacency to existing provinces when growing the colony
+	COLONY_PROVINCE_COASTAL_SCORE = 60 # Replaces COLONY_BASE_SCORE for provinces with a coastline
+	COLONY_PROVINCE_ADJACENCY_SCORE = 25 # How much will colonies prioritize adjacency to existing provinces when growing the colony
 	COLONY_PROVINCE_NO_ADJACENCY_MULT = 0.1 # Multiply by this if no adjacencies at all
 	COLONY_PROVINCE_RANDOM_FACTOR = 1.5 # The higher this is, the more random colonization province picking will be
 
@@ -987,14 +1041,25 @@ NPops = {
 	WEALTH_PROGRESS_DECREASE = 0.1				# How fast wealth decrease when a pop can no longer afford its buy package. This factor is modified by how large the difference between income and cost is
 	WEALTH_PROGRESS_DECREASE_DEFICIT_MULT = 5
 
-	LOYALTIES_GAIN_GRACE_PERIOD = "1838.1.1"	# Until this date, only a scaling part of the Radicals and Loyalists gained from SOL changes will be applied
+	LOYALTIES_GAIN_GRACE_PERIOD_SHORT = "1837.1.1"		# Until this date, only a scaling part of the Radicals and Loyalists gained from SOL changes will be applied if the Short game rule is applied
+	LOYALTIES_GAIN_GRACE_PERIOD_LONG = "1841.1.1"		# Until this date, only a scaling part of the Radicals and Loyalists gained from SOL changes will be applied if the Long game rule is applied
+	LOYALTIES_GAIN_GRACE_PERIOD_EXTRA_LONG = "1846.1.1"	# Until this date, only a scaling part of the Radicals and Loyalists gained from SOL changes will be applied if the Extra Long game rule is applied
 	RADICALS_MAX_FROM_LOW_SOL = 0.15				# If pop is already this % radical, don't add more radicals from low SOL (Scales by delta between SoL and expected min SoL)
 	RADICALS_MAX_FROM_DISCRIMINATION = 0.5		# If pop is already this % radical, don't add more radicals from discrimination (Scales by literacy)
 	RADICALS_MONTHLY_FROM_LOW_SOL = 0.002		# Scales by delta between SoL and expected min SoL
 	RADICALS_MONTHLY_FROM_DISCRIMINATION = 0.005 # Scales by literacy
 
+	# Radicals Monthly indicates what fraction of the pop turns radical every month while starving
+	# Radicals max indicates at what max fraction of radicals we stop adding new ones due to starvation
+	# Radical growth/max increases between these values as Food Security decreases
+	RADICALS_MONTHLY_FROM_STARVATION_BASE = 0.002 # Food Security = Mild Threshold
+	RADICALS_MONTHLY_FROM_STARVATION_MILD = 0.008 # Food Security = Severe Threshold
+	RADICALS_MONTHLY_FROM_STARVATION_SEVERE = 0.02 # Food Security = 0
+	RADICALS_MAX_FROM_STARVATION_BASE = 0.15 # Food Security = Mild Threshold
+	RADICALS_MAX_FROM_STARVATION_MILD = 0.5 # Food Security = Severe Threshold
+	RADICALS_MAX_FROM_STARVATION_SEVERE = 0.75 # Food Security = 0
+
 	ASSIMILATION_RATE = 0.002					# Percentage of pops who will Assimilate into a different Culture each month, if eligible
-	ASSIMILATION_UNINCORPORATED_MULT = 0.1 		# ASSIMILATION_RATE is multiplied by this in unincorporated states
 	MIN_ASSIMILATION = 1						# If there is any assmiliation at least this many people will assimilate
 
 	CONVERSION_RATE = 0.002						# Percentage of pops who will Convert into a different Religion each month, if eligible
@@ -1004,10 +1069,10 @@ NPops = {
 	OBSESSION_DEMAND_MIN = 1.0					# The minimum relative demand of an obsession (overrides min demand in buy package goods categories)
 	OBSESSION_DEMAND_MULT = 2.0					# Demand of an obsession is multiplied by this
 	MIN_POPS_FOR_NEW_OBSESSION = 50000			# At least this many pops of a culture must live in a market to get an obsession from its goods
-	MIN_SUPPLY_LEVEL_FOR_NEW_OBSESSION = 0.75	# Supply needs to be at least this times the demand
-	MIN_DEMAND_VALUE_FOR_NEW_OBSESSION = 1000	# At this amount of (number of units * goods base price) needs to be demanded in a market to create a new obsession
+	MIN_SUPPLY_LEVEL_FOR_NEW_OBSESSION = 0.5	# Supply needs to be at least this times the demand
+	MIN_DEMAND_VALUE_FOR_NEW_OBSESSION = 500	# At this amount of (number of units * goods base price) needs to be demanded in a market to create a new obsession
 	MAX_NUM_OBSESSIONS = 3						# A culture can only have this number of obsessions at the same time
-	OBSESSION_SPAWN_CHANCE = 0.1				# Per year (1.0 = 1%), multiplied by goods supply and market size mult
+	OBSESSION_SPAWN_CHANCE = 0.5				# Per year (1.0 = 1%), multiplied by goods supply and market size mult
 	OBSESSION_SPAWN_CHANCE_MAX_SUPPLY_MULT = 3.0		# Supply relative to demand above this isn't factored into spawn chance
 	TABOO_DEMAND_MULT = 0.5						# Demand of a taboo is multiplied by this
 	MAX_DEMAND_ADJUSTMENT_BASE_AMOUNT = 0.01	# Controls how much a pop can change demand of a substituable goods in a single update (base)
@@ -1027,9 +1092,7 @@ NPops = {
 
 	LITERACY_DIEOFF_BIAS = 0.7					# Percentage of literate pops who die of old age compared to the current literacy rate, the higher this value the faster the population becomes illiterate when literacy suffers
 
-	DISCRIMINATION_BASE = 33					# The base value of discrimination for a discriminated pop; maps to the % pay cut they take and the level of Turmoil they get
-	SOL_INCREASE_POP_IMPACT_FACTOR = 0.04		# How large part of a pop become more loyalist as a result of an increase in standard of living
-	SOL_DECREASE_POP_IMPACT_FACTOR = 0.06		# How large part of a pop become more radical as a result of a decrease in standard of living
+	SOL_CHANGE_POP_IMPACT_FACTOR = 0.05			# How large part of a pop become more loyalist or radical as a result of a change in standard of living
 
 	SOL_STARVING_THRESHOLD = 5
 	SOL_STRUGGLING_THRESHOLD = 10
@@ -1049,13 +1112,18 @@ NPops = {
 	MIGRATION_MAX_PER_STATE_UNEMPLOYMENT_TARGET_FRACTION = 0.05					# The amount of unemployed workers in a state * this value is removed from how many people can move to it (after clamping from MIGRATION_MAX_EMIGRATION_AS_POPULATION_FRACTION)
 
 	# Migration Desire #
-	MIGRATION_DESIRE_BASE = 0													# Base desire to migrate
-	MIGRATION_DESIRE_FROM_DISCRIMINATION = 100									# Being discriminated will increase desire to migrate by this much
-	MIGRATION_DESIRE_FROM_JOB_SATISFACTION_FACTOR = -1.0						# A pop's desire to migrate will be affected by its job satisfaction multiplied by this value.
+	MIGRATION_DESIRE_FROM_JOB_SATISFACTION_FACTOR = -1.0						# A pop's desire to migrate will be increased by its job satisfaction multiplied by this value.
+
+	# Acceptance #
+	MIN_ACCEPTANCE_VALUE = 0													# It is both the minimum acceptance value a pop can have as well as the explicit threshold scripted for the first acceptance status [any signed 32 bit value]
+	MAX_ACCEPTANCE_VALUE = 100													# It is both the maximum acceptance value a pop can have as well as the (implied) upper bound of the last acceptance status [> MIN_ACCEPTANCE_VALUE]
+	ACCEPTANCE_FROM_HOMELAND_COMMUNITY = 10										# The amount of acceptance a pop gets from living in their homeland, applied statically on their Cultural Community
 
 	# Cultural Communities #
 	CULTURAL_COMMUNITY_LINGER_TIME_WEEKS = 3									# When the last pop of a given culture leaves a state, the corresponding cultural community will be removed after this long
 	CULTURAL_COMMUNITY_MAX_PER_MONTH_CHANCE = 0.04
+	CULTURAL_COMMUNITY_ACCEPTANCE_DELTA_ON_SPAWN = -0.3							# The percentage of the maximum cultural acceptance that should be added as a delta to the cultural community when it first appears
+	CULTURAL_COMMUNITY_ACCEPTANCE_DELTA_DECAY_PER_MONTH = 0.25					# The amount of acceptance delta that will decay each month
 
 	# Slavery #
 	MIGRATION_MIN_POP_AMOUNT = 1												# No less than this amount of a pop can migrate each week (if any migration at all should happen)
@@ -1116,10 +1184,14 @@ NPops = {
 ##### End Migration #####
 
 	COLONIZATION_RIGHTS_GROWTH_MULTIPLIER = 2.0			# Colonial growth AND max colonial growth are multiplied by this if you have colonization rights
-	COLONIAL_GROWTH_BASE_FACTOR = 0.00001				# Colonial growth generated by a state is ( total pops / 1000 ) * this * modifier from institution
-	MIN_BASE_COLONIAL_GROWTH = 0.01						# Country base colonial growth from population cannot be lower than this
+	COLONIAL_GROWTH_BASE_FACTOR = 0.00001				# Colonial growth generated by a state is this amount per 1000 population, multiplied by the Colonial Growth modifier in the state
+	MIN_BASE_COLONIAL_GROWTH = 0.005					# Country base colonial growth from population cannot be lower than this
 	MAX_BASE_COLONIAL_GROWTH = 0.1						# Country base colonial growth from population cannot be higher than this
 	MAX_COLONIAL_GROWTH = 0.02							# Colonies can grow by this much at most per day
+	COLONY_SPEED_PROVINCE_SIZE_STANDARD = 50			# Sets a baseline for how large (in provinces) a colonizable state region is
+	COLONY_SPEED_PER_PROVINCE_DIFF_FROM_STANDARD = 0.02	# For every province the state region has above or below COLONY_SPEED_PROVINCE_SIZE_STANDARD, increase or decrease colonization speed by this rate (as a percentage)
+	COLONY_SPEED_POPULATION_INCREMENT = 200000			# Determines the number of people across both colonizing and colonized states that should start slowing down the rate of colonization; set to 0 to disable
+	COLONY_SPEED_MALUS_PER_POPULATION_INCREMENT = 0.25	# Starting at COLONY_SPEED_THRESHOLD_FROM_POPULATION inhabitants, increase the number of days to complete by this amount proportional to population in the colony + state of province being colonized above 200K (e.g. at COLONY_SPEED_THRESHOLD_FROM_POPULATION = 200K, this set to 0.5, and at 300K total inhabitants, multiply growth by 1/1.25 = 0.8; at 600K inhabitants, multiply by 0.25)
 
 	INDIVIDUALS_PER_POP_INFRASTRUCTURE = 100000			# Multiply state_infrastructure_from_population_add by this to determine infra from population
 
@@ -1146,6 +1218,16 @@ NPops = {
 	JOB_SATISFACTION_LOSSES_BASE = 50						# Base value to be multiplied by the ratio between losses and wages
 	JOB_SATISFACTION_GOVERNMENT = 50						# Government jobs need a bit more stability
 
+	@starvation_threshold = 0.4
+	@starvation_scaling_factor = @[1/starvation_threshold]
+	
+	FOOD_SECURITY_MODERATE_THRESHOLD = 0.6							# If Food Security is lower than this, the pop is marked as having moderate food security
+	FOOD_SECURITY_STARVATION_THRESHOLD = @starvation_threshold		# If Food Security is lower than this, the pop is considered to be in a starving state
+	FOOD_SECURITY_SEVERE_STARVATION_THRESHOLD = 0.2					# If Food Security is lower than this, the pop is considered to be in a severe starving state
+	STARVATION_EFFECTS_SCALING_FACTOR = @starvation_scaling_factor  # Acts as a scaling factor when converting food security to starvation effects: StarvationValue = CLAMP( (StarvationThreshold - FoodSecurity) * ScalingFactor, 0, 1)
+	FAMINE_POPULATION_SHARE_IN_STARVATION = 0.35					# If at least this % of state population is in starvation, the state is considered to have a famine
+	FAMINE_POPULATION_SHARE_IN_SEVERE_STARVATION = 0.15				# If at least this % of state population is in severe starvation, the state is considered to have a famine
+	
 	### Pop Consolidation defines
 	# Pop Consolidation identifies pops so small their impact on the economy and politics is insignificant, and merges them into other pops in the same building or state.
 	#
@@ -1177,9 +1259,9 @@ NPops = {
 ### Pop Growth Constants
 ## Base Values per month
 @min_birthrate = 0.00055			# Minimum base birthrate per month (at POP_GROWTH_STABLE_SOL)
-@max_birthrate = 0.00450			# Maximum base birthrate per month (at SOL = 0 if not modified by malnourishment)
+@max_birthrate = 0.00450			# Maximum base birthrate per month (at SOL = 0)
 @min_mortality = 0.00045			# Minimum base mortality per month (at POP_GROWTH_STABLE_SOL)
-@max_mortality = 0.00600			# Maximum base mortality per month (at SOL = 0 if not modified by malnourishment)
+@max_mortality = 0.00600			# Maximum base mortality per month (at SOL = 0)
 
 ## SoL Thresholds
 @pop_growth_equilibrium_sol = 5		# Equilibrium is pops stop starving and where growth first becomes positive
@@ -1233,7 +1315,7 @@ NPops = {
 
 ## Birthrate
 # if (sol < POP_GROWTH_EQUILIBRIUM_SOL)
-# { birthrate = (sol * POP_GROWTH_BIRTHRATE_PRETRANSITION_SLOPE + POP_GROWTH_MAX_BIRTHRATE) * (1 - malnourishment * (POP_GROWTH_EQUILIBRIUM_SOL - sol)) }
+# { birthrate = sol * POP_GROWTH_BIRTHRATE_PRETRANSITION_SLOPE + POP_GROWTH_MAX_BIRTHRATE }
 # else if (sol < POP_GROWTH_TRANSITION_SOL)
 # { birthrate = sol * POP_GROWTH_BIRTHRATE_PRETRANSITION_SLOPE + POP_GROWTH_MAX_BIRTHRATE }
 # else if (sol < POP_GROWTH_STABLE_SOL)
@@ -1255,9 +1337,9 @@ NPops = {
 
 	## Base Values
 	POP_GROWTH_MIN_BIRTHRATE = @min_birthrate					# Minimum base birthrate per month (at POP_GROWTH_STABLE_SOL)
-	POP_GROWTH_MAX_BIRTHRATE = @max_birthrate					# Maximum base birthrate per month (at SOL = 0 if not modified by malnourishment)
+	POP_GROWTH_MAX_BIRTHRATE = @max_birthrate					# Maximum base birthrate per month (at SOL = 0)
 	POP_GROWTH_MIN_MORTALITY = @min_mortality					# Minimum base mortality per month (at POP_GROWTH_STABLE_SOL)
-	POP_GROWTH_MAX_MORTALITY = @max_mortality					# Maximum base mortality per month (at SOL = 0 if not modified by malnourishment)
+	POP_GROWTH_MAX_MORTALITY = @max_mortality					# Maximum base mortality per month (at SOL = 0)
 
 	## SoL Thresholds
 	POP_GROWTH_EQUILIBRIUM_SOL = @pop_growth_equilibrium_sol	# Equilibrium is pops stop starving and where growth first becomes positive
@@ -1301,6 +1383,14 @@ NCharacters = {
 	POPULARITY_LIKED_THRESHOLD = 25
 	POPULARITY_LOVED_THRESHOLD = 50
 	POPULARITY_AUTHORITY_FACTOR = 1			# Popularity of ruler is multiplied by this when turned into Authority
+	
+	AGITATOR_MOVEMENT_SUPPORT_LITERACY_WEIGHT = 0.75 # The fraction of the agitator's added support that is scaled by the literacy rating of the pop
+	AGITATOR_MOVEMENT_SUPPORT_IG_MEMBERSHIP_WEIGHT = 0.75 # The fraction of the agitator's added support that is scaled against fraction of members of the same IG in the pop
+	AGITATOR_MOVEMENT_SUPPORT_BASE_FACTOR = 15 # Agitators add this much attraction to their movements (scaled by literacy/ig membership, base)
+	AGITATOR_MOVEMENT_SUPPORT_POPULARITY_FACTOR = 0.15 # Agitators add this much attraction to their movements (scaled by literacy/ig membership and multiplied by popularity) 
+		
+	MIN_YEARS_OF_SERVICE_FOR_COMMANDER_IG_LEADER = 10 # Commanders with less years of service than this will not be considered for IG leadership
+	
 	ADULT_AGE = 16 # Characters under this age have more limited options. For example they cannot become military leaders [>= 0]
 	OLD_AGE = 60 # Characters above this age may get some specific traits and events [>= ADULT_AGE]
 
@@ -1310,8 +1400,6 @@ NCharacters = {
 
 	AGITATOR_EXPECTED_SPAWN_INTERVAL_0_LITERACY = 12 # At 0% literacy, a new agitator is expected to spawn in a given country once every this many years. (supports decimal values)
 	AGITATOR_EXPECTED_SPAWN_INTERVAL_100_LITERACY = 2 # At 100% literacy, a new agitator is expected to spawn in a given country once every this many years. (supports decimal values)
-	AGITATOR_MOVEMENT_SUPPORT_WEIGHT = 0.5 # Political movements will gain support from agitators' popularity multiplied by this weight
-	AGITATOR_MOVEMENT_POPULARITY_THRESHOLD = 15 # Agitators whose popularity is at or lower than this threshold will not be considered when starting/joining political movements
 
 	### TRAIT GENERATION
 	# Every week, a character's Expected Trait Value meter increases by the specified amount below depending on their role and what they're doing (Commanders also gain the Activity Level from their Orders)
@@ -1395,18 +1483,19 @@ NWar = {
 
 	AUTO_CAPITULATE_WAR_SUPPORT = -100 # When war support is this low, the country will auto capitulate
 	DAYS_BETWEEN_WAR_EXHAUSTION = 7 # Every this many days war support will be reduced by the war exhaustion formula
-	WAR_EXHAUSTION_BASE = 0.25
-	WAR_EXHAUSTION_KIA_FACTOR = 5.0 # Scaled by casualties compared to total manpower
+	WAR_EXHAUSTION_BASE = 0.2
+	WAR_EXHAUSTION_KIA_FACTOR = 4.0 # Scaled by casualties compared to total manpower
 	WAR_EXHAUSTION_KIA_BASE_MULTIPLIER = 0.25	# War Exhaustion from casualties is always multiplied by at least this
 	WAR_EXHAUSTION_KIA_BATTLES_LOST_MULTIPLIER = 0.75 	# At 100% of battles lost by our side, War Exhaustion from casualties is further multiplied by this
-	WAR_EXHAUSTION_TURMOIL_FACTOR = 2.0 # At 100% turmoil
+	WAR_EXHAUSTION_TURMOIL_FACTOR = 1.5 # At 100% turmoil
 	WAR_EXHAUSTION_CONTESTED_ENEMY_WARGOALS = 1.0
 	WAR_EXHAUSTION_ANTI_WAR_LOBBY_CLOUT_FACTOR = 1.0 # At 100% lobby clout opposed to the war
 	WAR_EXHAUSTION_PRO_WAR_LOBBY_CLOUT_FACTOR = -1.0 # At 100% lobby clout supporting to the war
+	WAR_EXHAUSTION_MAX = 100 # War Exhaustion can never exceed this
 	OCCUPATION_STATE_BASE_WEIGHT = 1
 	OCCUPATION_STATE_POP_WEIGHT = 1
 	OCCUPATION_STATE_INCORPORATED_WEIGHT = 10
-	OCCUPATION_STATE_DEFENSIVE_BATTLE_VICTORY_SCORE = 100 # How many occupation "points" each country receives after winning a defensive battle
+	OCCUPATION_STATE_DEFENSIVE_BATTLE_VICTORY_SCORE = 50 # How many occupation "points" each country receives after winning a defensive battle
 	OCCUPATION_STATE_CLEAR_OCCUPATION_FRACTION = 0.5 # Fraction of occupation score dedicated to clear occupation from your own States (if any).
 	NAVAL_INVASION_MAX_LAND_BATTLE_DEFEATS_AT_ZERO_OCCUPATION = 3 # At this number of land defeats with zero occupation you fail the naval invasion.
 	NAVAL_INVASION_MIN_POWER_PROJECTION_RATIO_TO_BLOCK_LANDING = 0.25 	# How powerful a fleet must be to be considered as "blocking" a naval invading flee
@@ -1461,6 +1550,11 @@ NTravelNetwork = {
 	FORMATION_REPATH_MAX_DAYS_EXTRA = 60			# Maximum nr of days an automatic formation re-pathing may take (when travel access changes in ongoing travel)
 
 	HARSH_ENVIRONMENT_TERRAIN_LABEL = "label_travel_harsh_environment"	# Terrain label which marks nodes in them as being in harsh environment, triggering 'UNDEVELOPED_HARSH' connection type
+}
+
+NHarvestConditions = {
+	HARVEST_CONDITION_CHANCE_THRESHOLD = 0.2				# If the rolled value is higher than that we early out and skip the chance calculations
+	HARVEST_CONDITION_PERIOD = 3							# At what period in months do we check each state to spawn harvest conditions. 1 = all states are checked every month, 3 = all states are checked over three months 
 }
 
 NText = {

@@ -470,19 +470,33 @@ acw_events.5 = {
 	option = {
 		name = acw_events.5.b
 
-		hidden_effect = {
-			scope:bleeding_kansas = {
-				create_pop = {
-					pop_type = slaves
-					culture = afro_american
-					size = 1000			
+		scope:bleeding_kansas = {
+			ordered_neighbouring_state = {
+				limit = { 
+					owner = ROOT
+					is_slave_state = yes
+				}
+				order_by = state_population
+				ordered_scope_pop = {
+					limit = {
+						is_pop_type = slaves
+					}
+					order_by = total_size
+					move_partial_pop = {
+						state = scope:bleeding_kansas
+						population = {
+							# move in at most 5% of the target state's population, max 5000, or the max size of the pop, whichever is smaller
+							add = scope:bleeding_kansas.state_population
+							multiply = 0.05 
+							max = 5000
+						}
+					}
 				}
 			}
 		}
-
-		custom_tooltip = acw_events_5_slave_state_tt
 	}
 }
+
 
 acw_events.6 = {
 	type = country_event
@@ -518,6 +532,9 @@ acw_events.6 = {
 					has_ideology = ideology:ideology_slaver
 				}
 			}
+			leader = {
+				is_immortal = no
+			}
 		}
 		any_interest_group = {
 			is_revolutionary = no
@@ -528,6 +545,9 @@ acw_events.6 = {
 				leader = {
 					has_ideology = ideology:ideology_abolitionist
 				}
+			}
+			leader = {
+				is_immortal = no
 			}
 		}
 	}
@@ -549,6 +569,9 @@ acw_events.6 = {
 						has_ideology = ideology:ideology_slaver
 					}
 				}
+				leader = {
+					is_immortal = no
+				}
 			}
 			save_scope_as = preston_brooks_ig
 			leader = {
@@ -565,6 +588,9 @@ acw_events.6 = {
 					leader = {
 						has_ideology = ideology:ideology_abolitionist
 					}
+				}
+				leader = {
+					is_immortal = no
 				}
 			}
 			save_scope_as = charles_sumner_ig

@@ -1,0 +1,165 @@
+﻿je_sikh_sovereignty = {
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	group = je_group_historical_content
+
+	scripted_progress_bar = sikh_empire_progress_bar
+	scripted_progress_bar = sikh_empire_intrigue_bar
+
+	immediate = {
+		set_variable = { name = sikh_dead_maharajas_var value = 0 }
+	}
+
+	complete = {
+		is_subject = no
+		legitimacy >= 75
+		custom_tooltip = {
+			text = je_sikh_sovereignty_complete
+			scope:journal_entry = {
+				"scripted_bar_progress(sikh_empire_progress_bar)" >= 300
+			}
+		}
+	}
+
+	is_progressing = {
+		legitimacy >= 50
+	}
+
+	fail = {	
+		OR = {
+			is_subject = yes
+			custom_tooltip = {
+				text = five_deaths_in_a_row_tt
+				var:sikh_dead_maharajas_var >= 5
+			}
+		}
+	}
+
+	invalid = {
+		hidden_trigger = {
+			OR = {
+				NOT = { c:PAN ?= this }
+				has_variable = sikh_empire_je_done
+				NOT = { has_law = law_type:law_monarchy }
+			}
+		}
+	}
+
+	on_monthly_pulse = {
+		effect = {
+			if = {
+				limit = {
+					ig:ig_petty_bourgeoisie = {
+						NOT = {
+							leader = {
+								has_template = pan_dhian_singh
+							}
+						}
+						has_modifier = modifier_favored_by_wazir
+					}
+				}
+				ig:ig_petty_bourgeoisie = {
+					remove_modifier = modifier_favored_by_wazir
+				}
+			}
+			# For the death of Ranjit Singh
+			if = {
+				limit = {
+					c:PAN ?= this
+					ruler = { has_template= pan_ranjit_singh }
+					game_date < 1839.7.1 # Ranjit Singh died June 27, 1839
+				}
+				random_list = {
+					35 = { }
+					1 = {
+						trigger_event = { id = sikh_empire.3 days = 0 popup = yes }
+					}
+				}
+			}
+			else_if = {
+				limit = {
+					c:PAN ?= this
+					ruler = { has_template = pan_ranjit_singh }
+					game_date >= 1839.7.1 # Ranjit Singh died June 27, 1839
+				}
+				trigger_event = { id = sikh_empire.3 days = 0 popup = yes }
+			}
+
+			# For the death of Datar Kaur
+			if = {
+				limit = {
+					c:PAN ?= this
+					any_scope_character = {
+						has_template = pan_datar_kaur
+						game_date > 1838.1.1
+					}
+				}
+				random_list = {
+					9 = {}
+					1 = { 
+						random_scope_character = { 
+							limit = { 
+								has_template = pan_datar_kaur 
+							} 
+							kill_character = yes 
+						} 
+					}
+				}
+			}
+
+			### For intrigue-related deaths
+			if = {
+				limit = {
+					scope:journal_entry = {
+						"scripted_bar_progress(sikh_empire_intrigue_bar)" >= 60
+					}
+				}
+				if = {
+					limit = {
+						ruler = { has_template = pan_kharak_singh }
+					}
+					trigger_event = { id = sikh_empire.5 days = 0 popup = yes }
+				}
+				else_if = {
+					limit = {
+						ruler = { 
+							has_template = pan_nau_nihal_singh 
+							NOT = {
+								has_modifier = nau_nihal_survives
+							}
+						}
+					}
+					trigger_event = { id = sikh_empire.6 days = 0 popup = yes }
+				}
+				else_if = {
+					limit = {
+						ruler = { has_template = pan_sher_singh }
+					}
+					trigger_event = { id = sikh_empire.10 days = 0 popup = yes }
+				}
+				else = {
+					trigger_event = { id = sikh_empire.11 days = 0 popup = yes }
+				}
+			}
+		}
+		random_events = {
+			9 = 0
+			1 = sikh_empire.1
+			1 = sikh_empire.4
+		}
+	}
+
+	on_fail = {
+		trigger_event = { id = sikh_empire.7 popup = yes }
+	}
+
+	on_complete = {
+		trigger_event = { id = sikh_empire.8 popup = yes }
+		set_variable = completed_sikh_sovereignty_je
+	}
+
+	weight = 100
+	
+	should_be_pinned_by_default = yes
+
+}

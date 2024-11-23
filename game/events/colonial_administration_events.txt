@@ -47,14 +47,17 @@ colonial_administration_events.1 = {
 	option = {
 		name = colonial_administration_events.1.a
 		default_option = yes
+		create_diplomatic_pact = {
+			country = scope:newly_formed_colonial_nation_scope
+			type = chartered_company
+		}
 		custom_tooltip = {
 			text = colonial_administration_events.1_tt_1
 			scope:newly_formed_colonial_nation_scope = {
-				set_variable = african_chartered_company_var
 				activate_law = law_type:law_presidential_republic
 				activate_law = law_type:law_oligarchy
-				activate_law = law_type:law_national_supremacy
-				activate_law = law_type:law_laissez_faire
+				activate_law = law_type:law_racial_segregation
+				activate_law = law_type:law_extraction_economy
 				activate_law = law_type:law_colonial_exploitation
 				activate_law = law_type:law_no_schools
 				activate_law = law_type:law_no_health_system
@@ -70,6 +73,15 @@ colonial_administration_events.1 = {
 			add_modifier = {
 				name = resource_extraction_charter_modifier
 				months = very_long_modifier_time
+			}
+			ig:ig_industrialists = {
+				if = {
+					limit = {
+						has_ideology = ideology:ideology_laissez_faire
+					}
+					remove_ideology = ideology_laissez_faire
+					add_ideology = ideology_colonialist
+				}
 			}
 		}
 		every_interest_group = {
@@ -111,8 +123,8 @@ colonial_administration_events.1 = {
 			scope:newly_formed_colonial_nation_scope = {
 				activate_law = law_type:law_presidential_republic
 				activate_law = law_type:law_oligarchy
-				activate_law = law_type:law_national_supremacy
-				activate_law = law_type:law_agrarianism
+				activate_law = law_type:law_racial_segregation
+				activate_law = law_type:law_extraction_economy
 				activate_law = law_type:law_colonial_exploitation
 				activate_law = law_type:law_state_religion
 				activate_law = law_type:law_religious_schools
@@ -129,6 +141,15 @@ colonial_administration_events.1 = {
 			add_modifier = {
 				name = religious_missions_colonial_modifier
 				months = very_long_modifier_time
+			}
+			ig:ig_industrialists = {
+				if = {
+					limit = {
+						has_ideology = ideology:ideology_laissez_faire
+					}
+					remove_ideology = ideology_laissez_faire
+					add_ideology = ideology_colonialist
+				}
 			}
 		}
 		every_interest_group = {
@@ -159,7 +180,7 @@ colonial_administration_events.1 = {
 			scope:newly_formed_colonial_nation_scope = {
 				activate_law = law_type:law_presidential_republic
 				activate_law = law_type:law_oligarchy
-				activate_law = law_type:law_national_supremacy
+				activate_law = law_type:law_racial_segregation
 				activate_law = law_type:law_agrarianism
 				activate_law = law_type:law_colonial_resettlement
 				activate_law = law_type:law_no_schools
@@ -215,8 +236,8 @@ colonial_administration_events.1 = {
 			scope:newly_formed_colonial_nation_scope = {
 				activate_law = law_type:law_presidential_republic
 				activate_law = law_type:law_autocracy
-				activate_law = law_type:law_national_supremacy
-				activate_law = law_type:law_agrarianism
+				activate_law = law_type:law_racial_segregation
+				activate_law = law_type:law_extraction_economy
 				activate_law = law_type:law_colonial_exploitation
 				activate_law = law_type:law_no_schools
 				activate_law = law_type:law_no_health_system
@@ -233,6 +254,15 @@ colonial_administration_events.1 = {
 			add_modifier = {
 				name = resource_extraction_colony_modifier
 				months = very_long_modifier_time
+			}
+			ig:ig_industrialists = {
+				if = {
+					limit = {
+						has_ideology = ideology:ideology_laissez_faire
+					}
+					remove_ideology = ideology_laissez_faire
+					add_ideology = ideology_colonialist
+				}
 			}
 		}
 		every_interest_group = {
@@ -306,7 +336,9 @@ colonial_administration_events.2 = {
 		default_option = yes
 		every_scope_culture = {
 			limit = {
-				culture_is_discriminated_in = root
+				root = {
+					cultural_acceptance_base = { target = prev value <= acceptance_status_4 }
+				}
 			}
 			prev = {
 				add_radicals = {

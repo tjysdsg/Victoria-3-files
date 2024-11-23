@@ -39,10 +39,10 @@ types journal
 		blockoverride "fixed_top" {
 			tab_buttons = {
 				blockoverride "first_button" {
-					text = "JOURNAL"
+					text = "JOURNAL_ENTRIES_CONCEPT"
 				}
 				blockoverride "first_button_tooltip" {
-					tooltip = "JOURNAL"
+					tooltip = "JOURNAL_ENTRIES_CONCEPT"
 				}
 				blockoverride "first_button_click" {
 					onclick = "[InformationPanel.SelectTab('default')]"
@@ -54,17 +54,17 @@ types journal
 					visible = "[Not( InformationPanel.IsTabSelected('default') )]"
 				}
 				blockoverride "first_button_selected" {
-					text = "JOURNAL"
+					text = "JOURNAL_ENTRIES_CONCEPT"
 				}
 				blockoverride "first_button_name" {
 					name = "tutorial_highlight_journal"
 				}
 
 				blockoverride "second_button" {
-					text = "INACTIVE_JOURNAL_ENTRIES"
+					text = "POTENTIAL"
 				}
 				blockoverride "second_button_tooltip" {
-					tooltip = "INACTIVE_JOURNAL_ENTRIES"
+					tooltip = "POTENTIAL"
 				}
 				blockoverride "second_button_click" {
 					onclick = "[InformationPanel.SelectTab('inactive_journal_entries')]"
@@ -76,7 +76,26 @@ types journal
 					visible = "[Not( InformationPanel.IsTabSelected('inactive_journal_entries') )]"
 				}
 				blockoverride "second_button_selected" {
-					text = "INACTIVE_JOURNAL_ENTRIES"
+					text = "POTENTIAL"
+				}
+
+				blockoverride "third_button" {
+					text = "NATION_FORMATION"
+				}
+				blockoverride "third_button_tooltip" {
+					tooltip = "NATION_FORMATION"
+				}
+				blockoverride "third_button_click" {
+					onclick = "[InformationPanel.SelectTab('nation_formation')]"
+				}
+				blockoverride "third_button_visibility" {
+					visible = "[InformationPanel.IsTabSelected('nation_formation')]"
+				}
+				blockoverride "third_button_visibility_checked" {
+					visible = "[Not( InformationPanel.IsTabSelected('nation_formation') )]"
+				}
+				blockoverride "third_button_selected" {
+					text = "NATION_FORMATION"
 				}
 			}
 		}
@@ -116,22 +135,14 @@ types journal
 					}
 
 					flowcontainer = {
-						margin = { 0 10 }
+						visible = "[Not(IsDataModelEmpty(AccessPlayer.AccessActivePlayerObjectiveJournalEntries))]"
 						direction = vertical
 						spacing = 2
 						parentanchor = hcenter
-						visible = "[Not(IsDataModelEmpty(AccessPlayer.AccessActivePlayerObjectiveJournalEntries))]"
 						datamodel = "[AccessPlayer.AccessActivePlayerObjectiveJournalEntries]"
 						
 						item = {
 							journal_entry = {}
-						}
-					}
-
-					### ACTIVE
-					default_header = {
-						blockoverride "text" {
-							text = "ACTIVE_JOURNAL_ENTRIES"
 						}
 					}
 
@@ -145,11 +156,11 @@ types journal
 					}
 
 					flowcontainer = {
-						margin = { 0 10 }
 						direction = vertical
 						parentanchor = hcenter
 						datamodel = "[AccessPlayer.GetGroupsForActiveJournalEntries]"
 						spacing = 10
+						margin_bottom = 10
 
 						item = {
 							flowcontainer = {
@@ -174,7 +185,7 @@ types journal
 							}
 						}
 					}
-
+						
 					### DECISIONS
 					default_header = {
 						blockoverride "text" {
@@ -264,6 +275,43 @@ types journal
 										}
 									}
 								}
+							}
+						}
+					}
+				}
+
+				### NATION FORMATION
+				flowcontainer = {
+					visible = "[InformationPanel.IsTabSelected('nation_formation')]"
+					using = default_list_position
+					direction = vertical
+					using = default_content_fade
+
+					flowcontainer = {
+						using = default_list_position
+						direction = vertical
+						margin_bottom = 10
+						using = default_content_fade
+
+
+						empty_state = {
+							blockoverride "visible" {
+								visible = "[IsDataModelEmpty(AccessPlayer.AccessFormableCountries)]"
+							}
+							blockoverride "text" {
+								text = "NO_FORMABLE_COUNTRIES"
+							}
+						}	
+
+						flowcontainer = {
+							parentanchor = hcenter
+							direction = vertical
+							visible = "[Not(IsDataModelEmpty(AccessPlayer.AccessFormableCountries))]"
+							datamodel = "[AccessPlayer.AccessFormableCountries]"
+							using = default_content_fade
+
+							item = {
+								formable_country_button = {}
 							}
 						}
 					}

@@ -4,19 +4,34 @@
 	group = je_group_foreign_affairs
 
 	is_shown_when_inactive = {
+		c:ALK ?= {
+			is_player = no
+		}
 		OR = {
 			country_is_in_east_asia = yes
 			country_is_in_europe = yes
 		}
-		has_state_in_state_region = STATE_ALASKA
+		OR = {
+			has_state_in_state_region = STATE_ALASKA
+			any_subject_or_below = {
+				has_state_in_state_region = STATE_ALASKA
+			}
+		}
 	}
 	
 	scripted_button = je_sell_alaska_button
 
 	possible = {
 		is_subject = no
-		any_scope_state = {
-			state_region = s:STATE_ALASKA
+		OR = {
+			any_scope_state = {
+				state_region = s:STATE_ALASKA
+			}
+			any_subject_or_below = {
+				any_scope_state = {
+					state_region = s:STATE_ALASKA
+				}
+			}
 		}
 		custom_tooltip = {
 			text = unfriendly_nation_with_interest_in_alaska_tt
@@ -44,9 +59,15 @@
 	}
 
 	immediate = {
-		random_scope_state = {
+		random_state = {
 			limit = {
 				state_region = s:STATE_ALASKA
+				OR = {
+					owner = ROOT
+					owner = {
+						is_subject_of = ROOT
+					}
+				}
 			}
 			save_scope_as = alaska_scope
 			owner = {
@@ -67,7 +88,12 @@
 
 	fail = {
 		NOT = {
-			has_state_in_state_region = STATE_ALASKA
+			OR = {
+				has_state_in_state_region = STATE_ALASKA
+				any_subject_or_below = {
+					has_state_in_state_region = STATE_ALASKA
+				}
+			}
 			custom_tooltip = {
 				text = not_sold_alaska_tt
 				has_variable = successful_sale_of_alaska

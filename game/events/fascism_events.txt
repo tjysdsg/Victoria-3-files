@@ -19,7 +19,19 @@ fascism_events.1 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	trigger = {
-		# triggered by JE
+		any_interest_group = {
+			has_variable = og_fascist_ig
+			is_in_government = yes
+			leader = {
+				OR = {
+					has_ideology = ideology:ideology_fascist
+					has_ideology = ideology:ideology_integralist
+				}
+			}
+		}
+		NOT = {
+			has_variable = long_knives_var
+		}
 	}
 
 	immediate = {
@@ -39,6 +51,7 @@ fascism_events.1 = {
 				has_role = general
 				is_ruler = no
 				is_busy = no
+				is_immortal = no
 			}
 			save_scope_as = general_1
 			set_variable = general_1_var
@@ -51,6 +64,7 @@ fascism_events.1 = {
 				has_role = general
 				is_ruler = no
 				is_busy = no
+				is_immortal = no
 				NOT = { has_variable = general_1_var }
 			}
 			save_scope_as = general_2
@@ -64,6 +78,7 @@ fascism_events.1 = {
 				NOT = { has_role = general }
 				is_ruler = no
 				is_busy = no
+				is_immortal = no
 				NOT = { has_variable = general_1_var }
 				NOT = { has_variable = general_2_var }
 				NOT = { THIS = scope:fascist_leader }
@@ -106,18 +121,13 @@ fascism_events.1 = {
 				ideology = ideology_fascist
 			}
 		}
+		set_variable = long_knives_var
 	}
 
 	option = { #do it secretly
 		name = fascism_events.1.a
 		default_option = yes
 		custom_tooltip = night_of_the_long_knives.tt
-		add_journal_entry = {
-			type = je_fascism_2
-		}
-		add_journal_entry = {
-			type = je_modernization_program
-		}
 		scope:general_1 = {
 			kill_character = yes
 		}
@@ -148,12 +158,6 @@ fascism_events.1 = {
 	option = { #take care of them publicly
 		name = fascism_events.1.b
 		custom_tooltip = night_of_the_long_knives.tt
-		add_journal_entry = {
-			type = je_fascism_2
-		}
-		add_journal_entry = {
-			type = je_modernization_program
-		}
 		scope:general_1 = {
 			kill_character = yes
 		}
@@ -195,12 +199,6 @@ fascism_events.1 = {
 		name = fascism_events.1.c
 		custom_tooltip = fascism_to_jail_tt
 		custom_tooltip = night_of_the_long_knives.tt
-		add_journal_entry = {
-			type = je_fascism_2
-		}
-		add_journal_entry = {
-			type = je_modernization_program
-		}
 		hidden_effect = {
 			scope:general_1 = {
 				kill_character = yes
@@ -262,48 +260,54 @@ fascism_events.2 = { #fascist leader gains popularity
 	cooldown = { months = normal_modifier_time }
 
 	trigger = {
-		any_interest_group = {
-			has_variable = og_fascist_ig
-		}
-		any_interest_group = {
+		any_scope_character = {
 			OR = {
-				is_being_bolstered = yes
-				is_in_government = yes
-			}
-			NOT = { has_variable = og_fascist_ig }
-			leader = {
-				OR = {
-					has_ideology = ideology:ideology_fascist
-					has_ideology = ideology:ideology_integralist
-				}
+				has_ideology = ideology:ideology_fascist
+				has_ideology = ideology:ideology_integralist
 			}
 		}
 	}
 
 	immediate = {
-		random_interest_group = {
-			limit = { has_variable = og_fascist_ig }
-			save_scope_as = fascist_ig
-			leader = {
-				save_scope_as = fascist_leader
-			}
-		}
-		random_interest_group = {
+		random_scope_character = {
 			limit = {
 				OR = {
-					is_being_bolstered = yes
-					is_in_government = yes
-				}
-				NOT = { has_variable = og_fascist_ig }
-				leader = {
-					OR = {
-						has_ideology = ideology:ideology_fascist
-						has_ideology = ideology:ideology_integralist
-					}
+					has_ideology = ideology:ideology_fascist
+					has_ideology = ideology:ideology_integralist
 				}
 			}
-			leader = {
-				save_scope_as = fascist_leader_2
+			save_scope_as = fascist_leader
+		}
+		if = {
+			limit = {
+				scope:fascist_leader = {
+					has_role = politician
+				}
+			}
+			scope:fascist_leader.interest_group = {
+				save_scope_as = fascist_ig
+			}
+		}
+		random_scope_character = {
+			limit = {
+				OR = {
+					has_conservative_ideology = yes
+					has_reactionary_ideology = yes
+				}
+				NOT = {
+					scope:fascist_leader ?= THIS
+				}
+			}
+			save_scope_as = fascist_leader_2
+		}
+		if = {
+			limit = {
+				scope:fascist_leader_2 = {
+					has_role = politician
+				}
+			}
+			scope:fascist_leader.interest_group = {
+				save_scope_as = fascist_ig_2
 			}
 		}
 	}
@@ -317,10 +321,15 @@ fascism_events.2 = { #fascist leader gains popularity
 				months = short_modifier_time
 			}
 		}
-		scope:fascist_ig = {
-			add_modifier = {
-				name = promoted_fascist_leader_ig_modifier
-				months = short_modifier_time
+		if = {
+			limit = {
+				exists = scope:fascist_ig
+			}
+			scope:fascist_ig = {
+				add_modifier = {
+					name = promoted_fascist_leader_ig_modifier
+					months = short_modifier_time
+				}
 			}
 		}
 	}
@@ -333,10 +342,15 @@ fascism_events.2 = { #fascist leader gains popularity
 				months = normal_modifier_time
 			}
 		}
-		scope:fascist_ig = {
-			add_modifier = {
-				name = ignored_fascist_leader_ig_modifier
-				months = normal_modifier_time
+		if = {
+			limit = {
+				exists = scope:fascist_ig
+			}
+			scope:fascist_ig = {
+				add_modifier = {
+					name = ignored_fascist_leader_ig_modifier
+					months = normal_modifier_time
+				}
 			}
 		}
 	}
@@ -344,19 +358,7 @@ fascism_events.2 = { #fascist leader gains popularity
 	option = { #now THIS other guy is a good leader
 		name = fascism_events.2.c
 		trigger = {
-			any_interest_group = {
-				OR = {
-					is_being_bolstered = yes
-					is_in_government = yes
-				}
-				NOT = { has_variable = og_fascist_ig }
-				leader = {
-					OR = {
-						has_ideology = ideology:ideology_fascist
-						has_ideology = ideology:ideology_integralist
-					}
-				}
-			}
+			exists = scope:fascist_leader_2
 		}
 		scope:fascist_leader_2 = {
 			add_modifier = {
@@ -364,10 +366,16 @@ fascism_events.2 = { #fascist leader gains popularity
 				months = short_modifier_time
 			}
 		}
-		scope:fascist_ig = {
-			add_modifier = {
-				name = promoted_fascist_leader_ig_modifier
-				months = short_modifier_time
+		
+		if = {
+			limit = {
+				exists = scope:fascist_ig_2
+			}
+			scope:fascist_ig_2 = {
+				add_modifier = {
+					name = promoted_fascist_leader_ig_modifier
+					months = short_modifier_time
+				}
 			}
 		}
 	}
@@ -440,14 +448,36 @@ fascism_events.4 = { #fascist ideology spread
 
 	trigger = {
 		#triggered by JE
-		NOT = {
-			var:fascist_spread_var >= 3
+		trigger_if = {
+			limit = {
+				has_variable = fascist_spread_var
+			}
+			var:fascist_spread_var < 3
+		}
+		any_interest_group = {
+			has_variable = og_fascist_ig
+			leader = {
+				OR = {
+					has_ideology = ideology:ideology_integralist
+					has_ideology = ideology:ideology_fascist
+				}
+			}
 		}
 		any_interest_group = {
 			NOR = {
 				has_variable = chose_fascism
 				has_variable = chose_conservatism
 				has_variable = chose_ethno_nationalism
+			}
+			OR = {
+				NOT = {
+					c:BRZ ?= owner
+				}
+				is_interest_group_type = ig_rural_folk
+				is_interest_group_type = ig_landowners
+				is_interest_group_type = ig_devout
+				is_interest_group_type = ig_petty_bourgeoisie
+				is_interest_group_type = ig_armed_forces
 			}
 		}
 	}
@@ -467,20 +497,52 @@ fascism_events.4 = { #fascist ideology spread
 			limit = { has_variable = og_fascist_ig }
 			save_scope_as = fascist_ig
 		}
-		create_character = {
-			ig_leader = yes
-			interest_group = scope:new_fascist_ig
-			ideology = ideology_fascist
-			on_created = {
-				set_variable = {
-					name = new_fascist_leader_var
+	}
+
+	option = { #only fascist leaders
+		name = fascism_events.4.a
+		default_option = yes
+		custom_tooltip = fascism_leaders.tt
+		scope:new_fascist_ig = {
+			set_variable = {
+				name = chose_fascism
+			}
+		}
+		if = {
+			limit = {
+				any_political_movement = {
+					is_political_movement_type = movement_fascist
+				}
+			}
+			random_political_movement = {
+				limit = {
+					is_political_movement_type = movement_fascist
+				}
+				remove_character_ideology = ideology_corporatist_leader
+			}
+		}
+		if = {
+			limit = {
+				c:BRZ ?= this
+			}
+			custom_tooltip = {
+				text = generate_integralist_leader_tt
+				create_character = {
+					ig_leader = yes
+					interest_group = scope:new_fascist_ig
+					ideology = ideology_integralist
 				}
 			}
 		}
-		random_scope_character = {
-			limit = { has_variable = new_fascist_leader_var }
-			save_scope_as = new_fascist_leader
-			remove_variable = new_fascist_leader_var
+		else = {
+			custom_tooltip = {
+				text = generate_fascist_leader_tt
+				create_character = {
+					ig_leader = yes
+					interest_group = scope:new_fascist_ig
+					ideology = ideology_fascist
+				}
+			}
 		}
 		if = {
 			limit = { exists = var:fascist_spread_var }
@@ -497,27 +559,6 @@ fascism_events.4 = { #fascist ideology spread
 		}
 	}
 
-	option = { #only fascist leaders
-		name = fascism_events.4.a
-		default_option = yes
-		custom_tooltip = fascism_leaders.tt
-		scope:new_fascist_ig = {
-			set_variable = {
-				name = chose_fascism
-			}
-		}
-		if = {
-			limit = {
-				scope:new_fascist_leader = {
-					NOT = { has_ideology = ideology:ideology_fascist }
-				}
-			}
-			scope:new_fascist_leader = {
-				set_ideology = ideology:ideology_fascist
-			}
-		}
-	}
-
 	option = { #any conservative leader
 		name = fascism_events.4.b
 		custom_tooltip = conservative_leaders.tt
@@ -528,26 +569,84 @@ fascism_events.4 = { #fascist ideology spread
 		}
 		if = {
 			limit = {
-				scope:new_fascist_leader = {
-					NOR = {
-						has_ideology = ideology:ideology_fascist
-						has_ideology = ideology:ideology_traditionalist
-						has_ideology = ideology:ideology_ethno_nationalist
+				c:BRZ ?= this
+			}
+			custom_tooltip = {
+				text = generate_brazilian_generically_chudded_leader_tt
+				random_list = {
+					25 = {
+						create_character = {
+							ig_leader = yes
+							interest_group = scope:new_fascist_ig
+							ideology = ideology_integralist
+						}
+					}
+					25 = {
+						create_character = {
+							ig_leader = yes
+							interest_group = scope:new_fascist_ig
+							ideology = ideology_traditionalist
+						}
+					}
+					25 = {
+						create_character = {
+							ig_leader = yes
+							interest_group = scope:new_fascist_ig
+							ideology = ideology_ethno_nationalist
+						}
 					}
 				}
 			}
-			scope:new_fascist_leader = {
+		}
+		else = {
+			custom_tooltip = {
+				text = generate_generically_chudded_leader_tt
 				random_list = {
-					33 = {
-						set_ideology = ideology:ideology_fascist
+					25 = {
+						create_character = {
+							ig_leader = yes
+							interest_group = scope:new_fascist_ig
+							ideology = ideology_fascist
+						}
 					}
-					33 = {
-						set_ideology = ideology:ideology_traditionalist
+					25 = {
+						create_character = {
+							ig_leader = yes
+							interest_group = scope:new_fascist_ig
+							ideology = ideology_traditionalist
+						}
 					}
-					33 = {
-						set_ideology = ideology:ideology_ethno_nationalist
+					25 = {
+						create_character = {
+							ig_leader = yes
+							interest_group = scope:new_fascist_ig
+							ideology = ideology_ethno_nationalist
+						}
 					}
 				}
+			}
+		}
+		if = {
+			limit = { exists = var:fascist_spread_var }
+			change_variable = {
+				name = fascist_spread_var
+				add = 1
+			}
+		}
+		else = {
+			set_variable = {
+				name = fascist_spread_var
+				value = 1
+			}
+		}
+	}
+	
+	option = { #No.
+		name = fascism_events.4.c
+		scope:new_fascist_ig = {
+			add_modifier = {
+				name = modifier_repressed_by_fascists
+				months = normal_modifier_time
 			}
 		}
 	}
@@ -625,7 +724,7 @@ fascism_events.6 = { #ethno-nationalist reward
 		random_interest_group = {
 			limit = {
 				OR = {
-					is_being_bolstered = yes
+					#is_being_bolstered = yes
 					is_in_government = yes
 				}
 				leader = {
@@ -934,6 +1033,413 @@ fascism_events.8 = { #national anthem
 		add_modifier = {
 			name = national_anthem_modifier
 			months = normal_modifier_time
+		}
+	}
+}
+
+fascism_events.9 = {
+	type = country_event
+	placement = root
+
+	title = fascism_events.9.t
+	desc = fascism_events.9.d
+	flavor = fascism_events.9.f
+
+	duration = 3
+
+	event_image = {
+		video = "ep1_clandestine_meeting"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	trigger = {
+		# Fired by JE on_action
+	}
+
+	immediate = {
+		random_interest_group = {
+			limit = {
+				leader = {
+					OR = {
+						has_ideology = ideology:ideology_fascist
+						has_ideology = ideology:ideology_integralist
+					}
+					NOT = {
+						has_variable = var_fascism_1_char_checked
+					}
+				}
+			}
+			save_scope_as = new_fascist_leader_ig
+			leader = {
+				set_variable = var_fascism_1_char_checked
+				save_scope_as = new_fascist_leader_scope
+			}
+		}
+	}
+
+	option = {
+		name = fascism_events.9.a
+		default_option = yes
+		custom_tooltip = fascism_government_remains_tt
+	}
+
+	option = {
+		name = fascism_events.9.b
+		custom_tooltip = fascism_government_expelled_tt
+		every_interest_group = {
+			limit = {
+				leader = {
+					OR = {
+						has_ideology = ideology:ideology_fascist
+						has_ideology = ideology:ideology_integralist
+					}
+				}
+			}
+			add_modifier = {
+				name = modifier_government_refused_fascist_seat
+				months = normal_modifier_time
+			}
+		}
+		if = {
+			limit = {
+				empty_agitator_slots >= 1
+			}
+			custom_tooltip = {
+				text = fascist_becomes_agitator_tt
+				scope:new_fascist_leader_scope = {
+					add_character_role = agitator
+					remove_character_role = politician
+				}
+			}
+		}
+		else = {
+			scope:new_fascist_leader_scope = {
+				exile_character = yes
+			}
+		}
+		hidden_effect = {
+			create_character = {
+				ig_leader = yes
+				ideology = ideology_moderate
+				interest_group = scope:new_fascist_leader_ig
+			}
+		}
+	}
+}
+
+fascism_events.10 = {
+	type = country_event
+	placement = root
+
+	title = fascism_events.10.t
+	desc = fascism_events.10.d
+	flavor = fascism_events.10.f
+
+	duration = 3
+
+	event_image = {
+		video = "europenorthamerica_rich_and_poor"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	immediate = {
+
+	}
+
+	
+	option = {
+		name = fascism_events.10.a
+		default_option = yes
+		add_loyalists = {
+			value = small_radicals
+			strata = lower
+		}
+		every_scope_character = {
+			limit = {
+				OR = {
+					has_ideology = ideology:ideology_fascist
+					has_ideology = ideology:ideology_integralist
+				}
+			}
+			add_modifier = {
+				name = modifier_fading_fascism_character
+				months = normal_modifier_time
+			}
+		}
+		every_interest_group = {
+			limit = {
+				leader = {
+					OR = {
+						has_ideology = ideology:ideology_fascist
+						has_ideology = ideology:ideology_integralist
+					}
+				}
+			}
+			add_modifier = {
+				name = modifier_fading_fascism
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = fascism_events.10.b
+		add_loyalists = {
+			value = small_radicals
+			strata = middle
+		}
+		every_scope_character = {
+			limit = {
+				OR = {
+					has_ideology = ideology:ideology_fascist
+					has_ideology = ideology:ideology_integralist
+				}
+			}
+			add_modifier = {
+				name = modifier_fading_fascism_character
+				months = normal_modifier_time
+				multiplier = 0.5
+			}
+		}
+		every_interest_group = {
+			limit = {
+				leader = {
+					OR = {
+						has_ideology = ideology:ideology_fascist
+						has_ideology = ideology:ideology_integralist
+					}
+				}
+			}
+			add_modifier = {
+				name = modifier_fading_fascism
+				months = normal_modifier_time
+				multiplier = 0.5
+			}
+		}
+		random_interest_group = {
+			limit = {
+				OR = {
+					has_ideology = ideology:ideology_socialist
+					leader = {
+						OR = {
+							has_socialist_ideology = yes
+							has_progressive_ideology = yes
+						}
+					}
+				}
+			}
+			ROOT = {
+				add_radicals = {
+					value = medium_radicals
+					interest_group = PREV
+				}
+			}
+		}
+	}
+}
+
+fascism_events.11 = { # March on Rome
+	type = country_event
+	placement = root
+
+	title = fascism_events.11.t
+	desc = fascism_events.11.d
+	flavor = fascism_events.11.f
+
+	duration = 3
+
+	event_image = {
+		video = "unspecific_military_parade"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	immediate = {
+		if = {
+			limit = {
+				any_interest_group = {
+					leader = {
+						OR = {
+							has_ideology = ideology:ideology_fascist
+							has_ideology = ideology:ideology_integralist
+						}
+					}
+				}
+			}
+			ordered_interest_group = {
+				limit = {
+					leader = {
+						OR = {
+							has_ideology = ideology:ideology_fascist
+							has_ideology = ideology:ideology_integralist
+						}
+					}
+				}
+				order_by = ig_clout
+	
+				save_scope_as = fascist_ig
+				leader = {
+					save_scope_as = fascist_leader
+					set_character_busy_and_immortal = yes
+				}
+			}
+		}
+		else = {
+			ordered_interest_group = {
+				limit = {
+					any_scope_character = {
+						OR = {
+							has_ideology = ideology:ideology_fascist
+							has_ideology = ideology:ideology_integralist
+						}
+					}
+				}
+				order_by = ig_clout
+	
+				save_scope_as = fascist_ig
+				random_scope_character = {
+					limit = {
+						OR = {
+							has_ideology = ideology:ideology_fascist
+							has_ideology = ideology:ideology_integralist
+						}
+					}
+					save_scope_as = fascist_leader
+					set_character_busy_and_immortal = yes
+				}
+			}
+		}
+	}
+
+	option = {
+		name = fascism_events.11.a
+		trigger = {
+			NOT = {
+				has_law = law_type:law_council_republic
+			}
+		}
+		if = {
+			limit = {
+				OR = {
+					has_law = law_type:law_parliamentary_republic
+					has_law = law_type:law_presidential_republic
+					has_law = law_type:law_theocracy
+				}
+			}
+			scope:fascist_leader = {
+				set_character_as_ruler = yes
+			}
+		}
+		if = {
+			limit = {
+				scope:fascist_ig = {
+					is_in_government = no
+				}
+			}
+			if = {
+				limit = {
+					scope:fascist_ig = {
+						has_party = yes
+					}
+				}
+				scope:fascist_ig.party = {
+					set_ruling_party = yes
+				}
+			}
+			else = {
+				scope:fascist_ig = {
+					add_ruling_interest_group = yes
+				}
+			}
+		}
+		scope:fascist_ig = {
+			add_modifier = {
+				name = modifier_fascists_welcomed_into_government
+				months = normal_modifier_time
+			}
+		}
+		add_radicals = {
+			value = medium_radicals
+			strata = lower
+		}
+		add_journal_entry = {
+			type = je_fascism_2
+		}
+		add_journal_entry = {
+			type = je_modernization_program
+		}
+		hidden_effect = {
+			scope:fascist_leader = {
+				set_character_busy_and_immortal = no
+			}
+		}
+	}
+
+	option = {
+		name = fascism_events.11.b
+		default_option = yes
+		scope:fascist_ig = {
+			add_modifier = {
+				name = modifier_fascists_rebuked
+				months = normal_modifier_time
+			}
+		}
+		add_radicals = {
+			value = very_large_radicals
+			interest_group = scope:fascist_ig
+		}
+		hidden_effect = {
+			scope:fascist_leader = {
+				set_character_busy_and_immortal = no
+			}
+		}
+	}
+	
+	option = {
+		name = fascism_events.11.c
+		trigger = {
+			NOT = {
+				has_law = law_type:law_protected_speech
+			}
+		}
+		hidden_effect = {
+			scope:fascist_leader = {
+				set_character_busy_and_immortal = no
+			}
+		}
+		scope:fascist_leader = {
+			exile_character_with_martyrdom = yes
+		}
+		every_interest_group = {
+			limit = {
+				OR = { 
+					scope:fascist_ig ?= this
+					leader = {
+						OR = {
+							has_ideology = ideology:ideology_fascist
+							has_ideology = ideology:ideology_integralist
+						}
+					}
+				}
+			}
+			add_modifier = {
+				name = modifier_fascists_rebuked
+				months = normal_modifier_time
+			}
+			ROOT = {
+				add_radicals = {
+					value = very_large_radicals
+					interest_group = PREV
+				}
+			}
 		}
 	}
 }

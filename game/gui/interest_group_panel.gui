@@ -1,13 +1,22 @@
 # COPY-PASTED FOR NOW
+@panel_width_minus_60 = 480
 @panel_width_minus_10 = 530			# used to be 450
 @panel_width = 540  				# used to be 460
 @panel_width_half = 270				# used to be 230
+@panel_width_fourth = 135			
+@panel_width_three_fourths = 405	
 @panel_width_plus_10 = 550  		# used to be 470
 @panel_width_plus_14 = 554			# used to be 474
 @panel_width_plus_14_half = 277		# used to be 237
 @panel_width_plus_20 = 560			# used to be 480
 @panel_width_plus_30 = 570			# used to be 490
 @panel_width_plus_70 = 610			# used to be 530
+@gutter = 20
+@column_width = 120 				# ( @panel_width-3*@gutter ) / 4
+@column_width_2 = 260 				# @column_width*2 + @gutter
+@column_width_3 = 400				# @column_width*3 + @gutter*2
+@column_width_2_plus_gutter = 280
+
 
 types interest_group_panel_types
 {
@@ -26,6 +35,73 @@ types interest_group_panel_types
 		}
 
 		blockoverride "fixed_top" {
+
+			### TOP PART
+			top_illu = {
+				datacontext = "[InterestGroupPanel.AccessInterestGroup]"
+				scissor = yes
+
+				blockoverride "illu" {
+					texture = "gfx/interface/illustrations/top_illus/top_illu_diplomacy.dds"
+				}
+
+				ig_heading_pop_portrait = {
+					parentanchor = center
+					position = { -100 20 }
+					visible = "[GreaterThan_int32(GetDataModelSize(InterestGroupPanel.AccessPopsList.GetItems), '(int32)0')]"
+					
+					datacontext = "[InterestGroupPanel.AccessPopsList.GetItem0.GetFirstPop]"
+				}
+
+				ig_heading_pop_portrait = {
+					parentanchor = center
+					position = { -30 20 }
+
+					visible = "[GreaterThan_int32(GetDataModelSize(InterestGroupPanel.AccessPopsList.GetItems), '(int32)1')]"
+
+					datacontext = "[InterestGroupPanel.AccessPopsList.GetItem1.GetFirstPop]"
+				}
+
+				ig_heading_pop_portrait = {
+					parentanchor = center
+					position = { 40 20 }
+
+					visible = "[GreaterThan_int32(GetDataModelSize(InterestGroupPanel.AccessPopsList.GetItems), '(int32)2')]"
+
+					datacontext = "[InterestGroupPanel.AccessPopsList.GetItem2.GetFirstPop]"
+				}
+
+				ig_heading_pop_portrait = {
+					parentanchor = center
+					position = { 110 20 }
+
+					visible = "[GreaterThan_int32(GetDataModelSize(InterestGroupPanel.AccessPopsList.GetItems), '(int32)3')]"
+
+					datacontext = "[InterestGroupPanel.AccessPopsList.GetItem3.GetFirstPop]"
+				}
+
+				character_portrait_medium = {
+					parentanchor = center
+					datacontext = "[InterestGroupPanel.AccessInterestGroup.AccessLeader]"
+					#blockoverride "medium_torso_portrait_frame" {}
+					#blockoverride "medium_torso_portrait_frame_on_top_of_portrait" {}
+
+					blockoverride "show_hat" {}
+					blockoverride "highlight" {}
+							
+					position = { 220 0 }
+				}		
+				
+				ig_icon = {
+					size = { 55 55 }
+
+					blockoverride "in_government_icon" {}
+
+					parentanchor = left|vcenter
+					position = { 20 0 }
+				}
+			}
+
 			tab_buttons = {
 				# Overview
 				blockoverride "first_button" {
@@ -116,368 +192,402 @@ types interest_group_panel_types
 			flowcontainer = {
 				datacontext = "[InterestGroupPanel.AccessInterestGroup]"
 				direction = vertical
-				minimumsize = { @panel_width_plus_20 -1 }
-				
+				minimumsize = { @panel_width -1 }
+
 				flowcontainer = {
 					visible = "[InformationPanel.IsTabSelected('default')]"
 					using = default_content_fade
+					direction = vertical
+					parentanchor = hcenter
+					margin_top = 10
+					margin_bottom = 10
+
 
 					flowcontainer = {
-						minimumsize = { @panel_width 50 }
-						direction = vertical
-						datacontext = "[InterestGroupPanel.AccessInterestGroup]"
+						name = "clout_etc"
+						spacing = @gutter
 						parentanchor = hcenter
+						using = ig_panel_section_margins
 
-						### action buttons
-						flowcontainer = {
-							parentanchor = hcenter
-							spacing = 10
-										
-							button = {
-								using = default_button_action
-								size = { 200 40 }
+						ig_overview_value_box = {
+							name = "tutorial_highlight_ig_clout"
+							size = { 140 76 }
 
-								flowcontainer = {
-									parentanchor = center
+							blockoverride "ig_valuebox_base"
+							{
+								using = clout_tooltip_with_graph
 
-									icon = {
-										parentanchor = vcenter
-										size = { 25 25 }
-										texture = "gfx/interface/icons/generic_icons/ig_suppress.dds"
-									}
 
-									textbox = {
-										maximumsize = { 160 35 }
-										autoresize = yes
-										fontsize_min = 12
-										elide = right
-										text = "SUPPRESS_SHORT"
-										align = nobaseline
-										parentanchor = vcenter	
-									}
-								}
-
-								tooltip = "TOOLTIP_SUPPRESS"
-								visible = "[Not( InterestGroup.IsSuppressed )]"
-								enabled = "[IsValid( InterestGroup.ToggleSuppression )]"
-								onclick = "[Execute( InterestGroup.ToggleSuppression )]"
-								using = suppress_button_sound
+								influential_ig_frame_80 = {}
 							}
-							
-							button = {
-								using = default_button_action
-								size = { 200 40 }
-								textbox = {
-									maximumsize = { 170 35 }
-									autoresize = yes
-									fontsize_min = 12
-									elide = right
-									text = "SUPPRESS_NOT_SHORT"
-									align = nobaseline
-									parentanchor = hcenter|vcenter	
-								}
 
-								tooltip = "TOOLTIP_SUPPRESS_NOT"
-								visible = "[InterestGroup.IsSuppressed]"
-								enabled = "[IsValid( InterestGroup.ToggleSuppression )]"
-								onclick = "[Execute( InterestGroup.ToggleSuppression )]"
-								using = close_button_sound
-								using = shimmer
+							blockoverride "ig_valuebox_label"
+							{
+								text = "CLOUT_HEADER"
 							}
-							
-							button = {
-								name = "tutorial_highlight_promote_button"
-								using = default_button_action
-								size = { 200 40 }
 
-								flowcontainer = {
-									parentanchor = center
-
-									icon = {
-										parentanchor = vcenter
-										size = { 25 25 }
-										texture = "gfx/interface/icons/generic_icons/ig_bolster.dds"
-									}
-
-									textbox = {
-										maximumsize = { 160 35 }
-										autoresize = yes
-										fontsize_min = 12
-										elide = right
-										text = "PROMOTE_SHORT"
-										align = nobaseline
-										parentanchor = vcenter	
-									}
-								}
-
-
-								tooltip = "TOOLTIP_PROMOTE"
-								visible = "[Not( InterestGroup.IsBolstered )]"
-								enabled = "[IsValid( InterestGroup.TogglePromotion )]"
-								onclick = "[Execute( InterestGroup.TogglePromotion )]"
-								using = promote_button_sound
-							}
-										
-							button = {
-								using = default_button_action
-								size = { 200 40 }
-								textbox = {
-									maximumsize = { 170 35 }
-									autoresize = yes
-									fontsize_min = 12
-									elide = right
-									text = "PROMOTE_NOT_SHORT"
-									align = nobaseline
-									parentanchor = hcenter|vcenter	
-								}
-
-								tooltip = "TOOLTIP_PROMOTE_NOT"
-								visible = "[InterestGroup.IsBolstered]"
-								enabled = "[IsValid( InterestGroup.TogglePromotion )]"
-								onclick = "[Execute( InterestGroup.TogglePromotion )]"
-								using = close_button_sound
-								using = shimmer
+							blockoverride "ig_valuebox_value"
+							{
+								raw_text = "#BOLD [InterestGroup.GetClout|1%] #!"
 							}
 						}
-						
-						widget = { size = { 10 10 }}
-						
-						divider_clean = {
-							parentanchor = hcenter
+
+						flowcontainer = {
+							name = "clout_ratings"
+							parentanchor = vcenter
+							direction = vertical
+
+							ig_panel_clout_rating = {
+								blockoverride "clout_rating_text"
+								{
+									raw_text = "[concept_powerful]"
+								}
+
+								blockoverride "clout_rating_active"
+								{
+									visible = "[InterestGroup.IsPowerful]"
+								}
+							}
+
+							ig_panel_clout_rating = {
+								blockoverride "clout_rating_text"
+								{
+									raw_text = "[concept_influential]"
+								}
+
+								blockoverride "clout_rating_active"
+								{
+									visible = "[And( Not(InterestGroup.IsMarginal),Not(InterestGroup.IsPowerful) )]"
+								}
+							}
+
+							ig_panel_clout_rating = {
+								blockoverride "clout_rating_text"
+								{
+									raw_text = "[concept_marginalized]"
+								}
+
+								blockoverride "clout_rating_active"
+								{
+									visible = "[InterestGroup.IsMarginal]"
+								}
+							}
+						}
+
+						flowcontainer = {
+							name = "gov_and_party"
+							parentanchor = vcenter
+							direction = vertical
+							spacing = 5
+							min_width = 200
+
+							ig_panel_icon_label = {
+								name = "in_government"
+								visible = "[InterestGroup.IsInGovernment]"
+
+								blockoverride "ipil_icon"
+								{
+									texture = "gfx/interface/icons/generic_icons/in_government_icon.dds"
+								}
+
+								blockoverride "ipil_label"
+								{
+									text = "IN_GOVERNMENT"
+								}
+							}
+
+							ig_panel_icon_label = {
+								name = "in_opposition"
+								visible = "[Not(InterestGroup.IsInGovernment)]"
+
+								blockoverride "ipil_icon"
+								{
+									texture = "gfx/interface/icons/generic_icons/in_opposition_icon.dds"
+								}
+
+								blockoverride "ipil_label"
+								{
+									text = "IN_OPPOSITION"
+								}
+							}
+
+							ig_panel_icon_label = {
+								name = "party"
+								datacontext = "[InterestGroup.GetParty]"
+								visible = "[InterestGroup.HasParty]"
+								tooltip = "[InterestGroup.GetPartyAffiliationTooltip]"
+
+								blockoverride "ipil_icon"
+								{
+									texture = "[Party.GetIcon]"
+								}
+
+								blockoverride "ipil_label"
+								{
+									raw_text = "[Party.GetNameNoFormatting] ([Party.GetCurrentVotingPowerShare|%0])"
+								}
+							}
+
+
 						}
 					}
-					
-					margin_top = 10
-					margin_left = 10
-					direction = vertical
-					using = default_list_position
-					minimumsize = { @panel_width -1 }
 
 					flowcontainer = {
-						spacing = 5 
-						margin_top = 10
-						margin_bottom = 10
+						name = "approval_and_traits"
+						spacing = @gutter
 						parentanchor = hcenter
-						
-						ig_icon = {
-							size = { 80 80 }
+						using = ig_panel_section_margins
 
-							blockoverride "in_government_icon" {}
+						background = {
+							margin_left = 20
+							margin_right = 20
+							using = ig_panel_section_background
 						}
 
-						widget = {
-							size = { 10 10 }
-						}
+						ig_overview_value_box = {
+							size = { 140 105 }
 
-						flowcontainer = {
-							name = "tutorial_highlight_ig_clout"
+							name = "approval"
 
-							direction = vertical
-							using = clout_tooltip_with_graph
-							parentanchor = vcenter
-
-							textbox = {
-								autoresize = yes
-								text = "CLOUT_HEADER"
-								elide = right
-								fontsize_min = 14
-								align = left|nobaseline
-								minimumsize = { 90 -1 }
-								maximumsize = { 90 -1 }
+							blockoverride "ig_valuebox_base"
+							{
+								tooltip = "IG_APPROVAL_BREAKDOWN"
 							}
-							
-							textbox = {
-								raw_text = "#BOLD [InterestGroup.GetClout|1%] #!"
-								using = fontsize_xxl
-								autoresize = yes
-								align = left|nobaseline
-								minimumsize = { 90 -1 }
-								maximumsize = { 90 -1 }
-							}
-						}
-						flowcontainer = {
-							parentanchor = vcenter
-							direction = vertical
-							tooltip = "IG_APPROVAL_BREAKDOWN"
 
-							textbox = {
-								autoresize = yes
-								align = left|nobaseline
-								elide = right
-								fontsize_min = 14
+							blockoverride "ig_valuebox_label"
+							{
 								text = "IG_STATUS_HEADER"
-								minimumsize = { 160 -1 }
-								maximumsize = { 160 -1 }
 							}
 
-							textbox = {
-								align = left|nobaseline
-								raw_text = "[InterestGroup.GetApprovalRating] (#variable [InterestGroup.GetApprovalValue|+=]#!)"
-								autoresize = yes
-								using = fontsize_xxl
-								minimumsize = { 160 -1 }
-								maximumsize = { 160 -1 }
-								elide = right
-								fontsize_min = 14
+							blockoverride "ig_valuebox_value"
+							{
+								raw_text = "[InterestGroup.GetApprovalValue|+=]"
+							}
+
+							blockoverride "ig_valuebox_rating"
+							{
+								raw_text = "[InterestGroup.GetApprovalRating]"
 							}
 						}
 
-						container = {
-							visible = "[InterestGroup.HasParty]"
-							datacontext = "[InterestGroup.GetParty]"
+						flowcontainer = {
+							name = "traits"
+							datamodel = "[InterestGroup.AccessTraits]"
 							parentanchor = vcenter
 
-							flowcontainer = {
-								direction = vertical
-
-								tooltipwidget = {
-									FancyTooltip_Party = {}
-								}
-								
-								textbox = {
-									autoresize = yes
-									text = "[concept_party]"
-									align = left|nobaseline
-								}
-
+							item = {
 								flowcontainer = {
+									direction = vertical
+									min_width = @column_width
 									spacing = 5
-									icon = {
-										texture = "[Party.GetIcon]"
-										size = { 34 34 }
-										parentanchor = vcenter
+
+									tooltipwidget = {
+										FancyTooltip_InterestGroupTrait = {}
 									}
+
+									using = tooltip_se
+
+									widget = {
+										name = "icon_and_glow"
+										size = { 45 60 }
+										parentanchor = hcenter
+
+										ig_trait_glow = {
+											name = "glow_bad"
+											visible = "[EqualTo_int32(PdxGuiWidget.GetIndexInDataModel, '(int32)0')]"
+
+											blockoverride "rotate_animation_texture" {
+												texture = "gfx/interface/animation/color_bad.dds"
+											}
+										}
+
+										ig_trait_glow = {
+											name = "glow_good"
+											visible = "[EqualTo_int32(PdxGuiWidget.GetIndexInDataModel, '(int32)1')]"
+
+											blockoverride "rotate_animation_texture" {
+												texture = "gfx/interface/animation/color_good.dds"
+											}
+										}
+
+										ig_trait_glow = {
+											name = "glow_best"
+											visible = "[EqualTo_int32(PdxGuiWidget.GetIndexInDataModel, '(int32)2')]"
+										}
+
+										widget = {
+											name = "doubled_effect_icon"
+											visible = "[InterestGroup.IsPowerful]"
+											size = { 100% 100% }
+
+											ig_trait_icon = {
+												position = { -4 -2 }
+											}
+
+											ig_trait_icon = {
+												position = { 4 2 }
+											}
+										}
+
+										ig_trait_icon = {
+											name ="standard_effect_icon"
+											visible = "[Not(InterestGroup.IsPowerful)]"
+											size = { 100% 100% }
+										}
+									}
+
 									textbox = {
-										autoresize = yes
-										text = "[Party.GetNameNoFormatting]"
-										align = left|nobaseline
-										using = fontsize_large 
-										parentanchor = vcenter
-										minimumsize = { 135 -1 }
-										maximumsize = { 135 44 }
+										size = { @column_width 23 }
+										parentanchor = hcenter
+										align = nobaseline|hcenter
+										text = "[InterestGroupTrait.GetNameNoFormatting]"
 										elide = right
 										fontsize_min = 14
-										multiline = yes
-									}
-									button_icon_goto = {
-										visible = no # toggle back on when doing PRCAL-15542
-										size = { 25 25 }
-										parentanchor = vcenter
-										onclick = "[InformationPanelBar.OpenPartyPanel(Party.AccessSelf)]"
 									}
 								}
 							}
 						}
-
 					}
-
-					divider_clean = {
-						parentanchor = hcenter
-					}
-					widget = { size = { 10 10 }}
-
-					### POPULATION
-					flowcontainer = {
-						parentanchor = hcenter
-						spacing = 13
-
-						number_of_pops = {}
-
-						number_of_pops = {
-							blockoverride "tooltip" {
-								using = ig_radicals_tooltip_with_graph
-							}
-							blockoverride "texture" {
-								texture = "gfx/interface/icons/generic_icons/population_radical.dds"
-							}
-							blockoverride "header" {
-								text = "RADICALS_TITLE"
-							}
-							blockoverride "value" {
-								text = "[InterestGroup.GetNumRadicals|-D]"
-							}
-						}
-
-						number_of_pops = {
-							blockoverride "tooltip" {
-								using = ig_loyalists_tooltip_with_graph
-							}
-							blockoverride "texture" {
-								texture = "gfx/interface/icons/generic_icons/population_loyalist.dds"
-							}
-							blockoverride "header" {
-								text = "LOYALISTS_TITLE"
-							}
-							blockoverride "value" {
-								text = "[InterestGroup.GetNumLoyalists|+D]"
-							}
-						}
-						
-						container = {
-							parentanchor = vcenter
-							icon = {
-								texture = "gfx/interface/icons/generic_icons/in_government_icon.dds"
-								size = { 40 40 }
-								visible = "[InterestGroup.IsInGovernment]"
-								tooltip = IN_GOVERNMENT_DESC
-
-								icon = {
-									tooltip = "LEADING_IG"
-									texture = "gfx/interface/icons/generic_icons/leading_interest_group_icon.dds"
-									size = { 30 30 }
-									parentanchor = bottom|right
-									visible = "[InterestGroup.IsLeadingGovernment]"
-									position = { 5 5 }
-								}
-							}
-
-							icon = {
-								tooltip = IN_OPPOSITION_DESC
-								texture = "gfx/interface/icons/generic_icons/in_opposition_icon.dds"
-								size = { 40 40 }
-								visible = "[And(Not( InterestGroup.IsInGovernment ), Not( InterestGroup.IsMarginal ) )]"
-							}
-
-							icon = {
-								tooltip = MARGINAL_DESC
-								texture = "gfx/interface/icons/generic_icons/marginalized.dds"
-								size = { 40 40 }
-								visible = "[InterestGroup.IsMarginal]"
-							}
-						}
-					}
-				
-					widget = { size = { 10 10 }}
-					divider_clean = {
-						parentanchor = hcenter
-					}
-					widget = { size = { 10 10 }}
 
 					flowcontainer = {
-						### IDEOLOGIES
+						name = "population_loyal_radical"
+						spacing = @gutter
+						parentanchor = hcenter
+						using = ig_panel_section_margins
+
+						ig_overview_value_box = {
+							name = "population"
+							size = { 140 70 }
+
+							blockoverride "ig_valuebox_base"
+							{
+								tooltip = "TOOLTIP_POPULATION"
+							}
+
+							blockoverride "ig_valuebox_label"
+							{
+								text = "POPULATION_HEADER"
+							}
+
+							blockoverride "ig_valuebox_value"
+							{
+								text = "[InterestGroup.GetPopulation|v1*]"
+							}
+						}
+
 						flowcontainer = {
+							name = "loyalist_radical"
 							direction = vertical
-							minimumsize = { @panel_width_half -1 }
+							parentanchor = vcenter
 
-							textbox = {
-								autoresize = yes
-								text = "IDEOLOGY_HEADER"
-								align = left|nobaseline
-								margin_bottom = 4
+							ig_loyal_radical_bar = {
+
+								blockoverride "ig_lr_bar_base"
+								{
+									using = ig_loyalists_tooltip_with_graph
+								}
+
+								blockoverride "ig_lr_bar_icon"
+								{
+									texture = "gfx/interface/icons/generic_icons/population_loyalist.dds"
+								}
+
+								blockoverride "ig_lr_text_value"
+								{
+									raw_text = "[InterestGroup.GetNumLoyalists|*+D]"
+								}
+
+								blockoverride "values" {
+									min = 0
+									max = "[InterestGroup.GetPopulation]"
+									value = "[InterestGroup.GetNumLoyalists]"
+								}
+
+								blockoverride "color" 
+								{
+									using = color_green_approval
+								}
 							}
-							
-							flowcontainer = {
-								name = "ideologies_box"
-								datamodel = "[InterestGroup.AccessAllIdeologies]"
-								direction = vertical
-								spacing = 10
 
-								item = {
-									flowcontainer = {
-										spacing = 10
-										tooltipwidget = {
-											FancyTooltip_Ideology = {}
+							ig_loyal_radical_bar = {
+
+								blockoverride "ig_lr_bar_base"
+								{
+									using = ig_radicals_tooltip_with_graph
+								}
+
+								blockoverride "ig_lr_bar_icon"
+								{
+									texture = "gfx/interface/icons/generic_icons/population_radical.dds"
+								}
+
+								blockoverride "ig_lr_text_value"
+								{
+									raw_text = "[InterestGroup.GetNumRadicals|*-D]"
+								}
+
+								blockoverride "values" {
+									min = 0
+									max = "[InterestGroup.GetPopulation]"
+									value = "[InterestGroup.GetNumRadicals]"
+								}
+
+								blockoverride "color" 
+								{
+									using = color_red_disapproval
+								}
+							}
+						}
+
+					}
+						
+					flowcontainer = {
+						name = "movement_and_ideology"
+						direction = vertical
+						parentanchor = hcenter
+
+						using = ig_panel_section_margins
+
+						spacing = @gutter
+
+						background = {
+							margin_left = 20
+							margin_right = 20
+							using = ig_panel_section_background
+						}
+
+						textbox = {
+							autoresize = yes
+							text = "IDEOLOGY_HEADER"
+							align = nobaseline
+							parentanchor = left
+						}
+
+						fixedgridbox = {
+							addrow = 45
+							addcolumn = 260
+							flipdirection = yes
+							datamodel_wrap = 2
+							datamodel = "[InterestGroup.AccessAllIdeologies]"
+
+							item = {
+								widget = {
+									size = { 260 40 }
+
+									hbox = {
+										spacing = 5
+
+										layoutpolicy_horizontal = expanding
+
+										# move a bit to the right on the second column, to align with the rest of the UI elements in this window
+										widget = {
+											name = "second_column_nudge_few_ideologies"
+											#visible = "[Or( And( LessThan_int32( GetDataModelSize(InterestGroup.AccessAllIdeologies), '(int32)5'), GreaterThan_int32(PdxGuiWidget.GetIndexInDataModel, '(int32)1')), And( GreaterThanOrEqualTo_int32(GetDataModelSize(InterestGroup.AccessAllIdeologies), '(int32)5'), GreaterThan_int32(PdxGuiWidget.GetIndexInDataModel, '(int32)2'))) )]"
+											visible = "[Or( And( LessThan_int32( GetDataModelSize(InterestGroup.AccessAllIdeologies), '(int32)5' ) , GreaterThan_int32( PdxGuiWidget.GetIndexInDataModel, '(int32)1' ) ) , And( GreaterThanOrEqualTo_int32( GetDataModelSize(InterestGroup.AccessAllIdeologies), '(int32)5' ), GreaterThan_int32( PdxGuiWidget.GetIndexInDataModel, '(int32)2' ) ) )]"
+
+											size = { 5 0 } #half of @gutter minus the spacing
 										}
+
 										icon = {						
 											texture = "[Ideology.GetTexture]"
 											size = { 40 40 }
@@ -485,362 +595,500 @@ types interest_group_panel_types
 										}
 
 										textbox = {
-											text = "[Ideology.GetNameNoFormatting]"
-											autoresize = yes
-											parentanchor = vcenter
+											layoutpolicy_horizontal = expanding
+											size = { 0 40 }
 											align = nobaseline
-										}
-									}
-								}
-							}
-						}
-						
-						### TRAITS
-						flowcontainer = {
-							direction = vertical
-							margin_right = 10
-							minimumsize = { @panel_width_half -1 }
-							
-							textbox = {
-								autoresize = yes
-								text = "TRAITS_TITLE"
-								align = left|nobaseline
-								margin_bottom = 4
-							}
-
-							flowcontainer = {
-								name = "traits_box"
-								datamodel = "[InterestGroup.AccessTraits]"
-								direction = vertical
-								spacing = 10
-								
-								item = {
-									flowcontainer = {
-										spacing = 10
-										tooltipwidget = {
-											FancyTooltip_InterestGroupTrait = {}
-										}
-										icon = {						
-											texture = "[InterestGroupTrait.GetTexture]"
-											enabled = "[InterestGroupTrait.IsEnabled(InterestGroup.Self)]"
-											size = { 45 60 }
-											alpha = "[TransparentIfFalse(InterestGroupTrait.IsEnabled(InterestGroup.Self))]"
-											using = tooltip_above
-											parentanchor = vcenter
+											elide = right
+											fontsize_min = 14
+											text = "IG_IDEOLOGY_LABEL" 
 										}
 
-										flowcontainer = {
-											direction = vertical
-											parentanchor = vcenter
-											
-											textbox = {
-												text = "[InterestGroupTrait.GetNameNoFormatting]"
-												autoresize = yes
-												align = nobaseline
-												maximumsize = { 190 -1 }
-												multiline = yes
-											}
-											textbox = {
-												alpha = "[TransparentIfFalse(InterestGroupTrait.IsEnabled(InterestGroup.Self))]"
-												text = "[InterestGroupTrait.GetInactiveString(InterestGroup.Self)]"
-												autoresize = yes
-												align = nobaseline
-												maximumsize = { 190 -1 }
-												multiline = yes
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-
-					widget = { size = { 10 10 }}
-					divider_clean = {
-						parentanchor = hcenter
-					}
-					widget = { size = { 10 10 }}
-
-					container = {
-						minimumsize = { @panel_width -1 }
-						parentanchor = hcenter
-
-						flowcontainer = {
-							visible = "[InterestGroup.GetPoliticalMovement.IsValid]"
-							parentanchor = vcenter
-							spacing = 5
-
-							icon = {
-								parentanchor = vcenter
-								texture = "[InterestGroup.GetPoliticalMovement.GetTexture]"
-								size = { 50 50 }
-							}
-
-							flowcontainer = {
-								parentanchor = vcenter
-								direction = vertical
-
-								textbox = {
-									autoresize = yes
-									align = left
-									text = "[concept_political_movement]"
-								}
-
-								textbox = {
-									max_width = 280
-									autoresize = yes
-									align = left|nobaseline
-									text = "[InterestGroup.GetPoliticalMovement.GetName]"
-									using = fontsize_xxl
-									elide = right
-									fontsize_min = 14
-								}
-							}
-						}
-
-						textbox = {
-							visible = "[Not(InterestGroup.GetPoliticalMovement.IsValid)]"
-							parentanchor = left|vcenter
-							autoresize = yes
-							multiline = yes
-							max_width = 330
-							align = left|nobaseline
-							text = "IG_NO_POLITICAL_MOVEMENT"
-							using = empty_state_text_properties
-							using = fontsize_xl
-							elide = right
-							fontsize_min = 14
-						}
-
-						flowcontainer = {
-							visible = "[Not(IsDataModelEmpty(InterestGroup.GetAgitators))]"
-							parentanchor = right
-							direction = vertical
-							margin_right = 5
-
-							textbox = {
-								parentanchor = right
-								autoresize = yes
-								align = right|nobaseline
-								text = "IG_AGITATORS"
-							}
-
-							dynamicgridbox = {
-								datamodel = "[InterestGroup.GetAgitators]"
-								flipdirection = yes
-								parentanchor = right
-								datamodel_wrap = 4
-
-								item = {
-									character_portrait_small = {}
-								}
-							}
-						}
-
-						textbox = {
-							visible = "[IsDataModelEmpty(InterestGroup.GetAgitators)]"
-							parentanchor = right|vcenter
-							autoresize = yes
-							max_width = 200
-							align = right|nobaseline
-							text = "NO_AGITATORS"
-							using = empty_state_text_properties
-							using = fontsize_xl
-							margin_right = 5
-						}
-					}
-
-					widget = {
-						size = { 10 10 }
-					}
-
-					divider_clean = { }
-
-					widget = {
-						size = { 10 10 }
-					}
-
-					### POLITICAL LOBBIES
-
-					textbox = {
-						visible = "[IsDataModelEmpty(InterestGroup.GetPoliticalLobbies)]"
-						parentanchor = hcenter
-						autoresize = yes
-						max_width = 330
-						align = nobaseline
-						text = "NO_POLITICAL_LOBBIES"
-						using = empty_state_text_properties
-						using = fontsize_xl
-						elide = right
-						fontsize_min = 14
-					}
-
-					flowcontainer = {
-						visible = "[Not(IsDataModelEmpty(InterestGroup.GetPoliticalLobbies))]"
-						direction = vertical
-						margin_right = 5
-						spacing = 5
-
-						textbox = {
-							autoresize = yes
-							align = nobaseline
-							text = IG_LOBBIES
-						}
-
-						flowcontainer = {
-							direction = vertical
-							datamodel = "[InterestGroup.GetPoliticalLobbies]"
-
-							item = {
-								political_lobby_list_item = {	
-									using = tooltip_se
-									blockoverride "lobby_list_item_size" {
-										size = { 520 60 }
-									}
-								}
-							}
-						}
-					}
-
-					widget = {
-						size = { 10 10 }
-					}
-
-					### LEADER
-					container = {
-						minimumsize = { @panel_width 180 }
-						parentanchor = hcenter
-						datacontext = "[InterestGroup.AccessLeader]"
-
-						tooltipwidget = {
-							FancyTooltip_Character = {}
-						}
-						
-						background = {
-							using = entry_bg
-						}
-						
-						flowcontainer = {
-							margin_left = 8
-							spacing = 10
-							
-							character_portrait_medium_torso = {
-								parentanchor = vcenter
-								blockoverride "show_hat" {}
-								blockoverride "highlight" {}
-							}
-							
-							### TITLE + NAME
-							flowcontainer = {
-								direction = vertical
-								parentanchor = vcenter
-								
-								textbox = {
-									text = TITLE_LEADER
-									autoresize = yes
-								}
-								
-								textbox = {
-									raw_text = "#BOLD [Character.GetFullNameNoFormatting]#!"
-									maximumsize = { 180 -1 }
-									minimumsize = { 180 -1 }
-									autoresize = yes
-									multiline = yes
-									elide = right
-									align = nobaseline
-									using = fontsize_large
-									margin_bottom = 10
-								}
-								
-								
-								flowcontainer = {
-									spacing = 20
-									
-									flowcontainer = {
-										spacing = 7
-									icon = {
-										size = { 40 40 }		
-										datacontext = "[Character.GetIdeology]"
-										visible = "[Character.IsIGLeader]"						
-										texture = "[Ideology.GetTexture]"
-										using = tooltip_above
 										tooltipwidget = {
 											FancyTooltip_Ideology = {}
 										}
 									}
-										textbox = {
-											minimumsize = { 100 -1 }
-											maximumsize = { 100 -1 }
-											text = "[Character.GetIdeology.GetName]"
-											autoresize = yes
-											parentanchor = vcenter
-											align = nobaseline
-										}
-									}
 								}
 							}
-									
-							### TRAITS
+						}
+					}
+
+					flowcontainer = {
+						parentanchor = hcenter
+						direction = vertical
+
+						background = {
+							using = dropdown_background
+							margin = { 0 -2 }
+						}
+
+						### POSSIBLE LEADER IDEOLOGIES - DROPDOWN
+						section_header_button = {
+							blockoverride "left_text" {
+								text = "POSSIBLE_LEADER_IDEOLOGIES_HEADER"
+								fontsize_min = 12
+								elide = right
+							}
+
+							blockoverride "right_text" {
+								section_header_right_text = {
+									raw_text = "#v [InterestGroup.GetNumPossibleLeaderIdeologies]#!"
+								}
+							}
+
+							blockoverride "onclick" {
+								onclick = "[GetVariableSystem.Toggle( 'interest_group_possible_leader_ideologies' )]"
+							}
+
+							blockoverride "onclick_showmore" {
+								visible = "[Not(GetVariableSystem.Exists( 'interest_group_possible_leader_ideologies' ))]"
+							}
+
+							blockoverride "onclick_showless" {
+								visible = "[GetVariableSystem.Exists( 'interest_group_possible_leader_ideologies' )]"
+							}
+						}
+
+						### POSSIBLE LEADER IDEOLOGIES - CONTENT
+						flowcontainer = {
+							visible = "[GetVariableSystem.Exists( 'interest_group_possible_leader_ideologies' )]"
+							parentanchor = hcenter
+							minimumsize = { 520 -1 }
+							margin_top = 5
+							margin_bottom = 10
+							direction = vertical
+							spacing = 10
+
+							### POSSIBLE CHARACTER LEADERS
 							flowcontainer = {
-								datamodel = "[Character.AccessTraits]"
+								visible = "[Not(IsDataModelEmpty(InterestGroup.GetPossibleCharacterLeaderIdeologies))]"
 								direction = vertical
-								spacing = 10
-								parentanchor = vcenter
-								margin_top = 10
-								margin_bottom = 10
+								spacing = 5
 
-								item = {
-									flowcontainer = {
-										spacing = 7
-										using = tooltip_above
+								textbox = {
+									autoresize = yes
+									align = nobaseline
+									multiline = yes
+									max_width = 500
+									fontsize_min = 14
+									default_format = "#title"
+									text = "INTEREST_GROUP_CHARACTER_LEADER_IDEOLOGIES_HEADER" 
+								}
 
-										tooltipwidget = {
-											FancyTooltip_CharacterTrait = {}
+								flowcontainer = {
+									direction = vertical
+									datamodel = "[InterestGroup.GetPossibleCharacterLeaderIdeologies]"
+									spacing = 5
+
+									item = {
+										flowcontainer = {
+											datacontext = "[PotentialLeaderIdeology.GetIdeology]"
+											minimumsize = { 395 -1 }
+											margin = { 5 5 }
+											spacing = 5
+											tooltip = "INTEREST_GROUP_CHARACTER_LEADER_IDEOLOGY_TOOLTIP"
+
+											background = {
+												using = entry_bg_simple
+											}
+
+											icon = {
+												parentanchor = vcenter
+												size = { 30 30 }
+												texture = "[Ideology.GetTexture]"
+											}
+
+											textbox = {
+												parentanchor = vcenter
+												size = { 150 30 }
+												align = nobaseline
+												multiline = yes
+												fontsize_min = 12
+												raw_text = "#v [PotentialLeaderIdeology.GetChancePercentage|%0]#! [Ideology.GetName]"
+											}
+
+											widget = {
+												size = { 5 5 }
+											}
+
+											textbox = {
+												parentanchor = vcenter
+												autoresize = yes
+												align = nobaseline
+												multiline = yes
+												max_width = 270
+												fontsize_min = 12
+												elide = right
+												text = "[PotentialLeaderIdeology.GetCharacterFullName]"
+											}
 										}
+									}
+								}
+							}
 
-										icon = {
-											parentanchor = left|vcenter
-											size = { 30 42 }
-											texture = "[CharacterTrait.GetTexture]"
-										}
-										textbox = {
-											minimumsize = { 130 -1 }
-											maximumsize = { 130 -1 }
-											text = "[CharacterTrait.GetNameNoFormatting]"
-											autoresize = yes
-											parentanchor = vcenter
-											align = nobaseline
-											multiline = yes
+							### POSSIBLE RANDOM IDEOLOGIES
+							flowcontainer = {
+								direction = vertical
+								spacing = 5
+
+								textbox = {
+									autoresize = yes
+									align = nobaseline
+									multiline = yes
+									max_width = 500
+									fontsize_min = 14
+									default_format = "#title"
+									text = "INTEREST_GROUP_RANDOM_LEADER_IDEOLOGIES_HEADER"
+								}
+
+								flowcontainer = {
+									datamodel = "[InterestGroup.GetPossibleRandomLeaderIdeologies]"
+									spacing = 5
+									wrap_count = 2
+
+									item = {
+										flowcontainer = {
+											datacontext = "[PotentialLeaderIdeology.GetIdeology]"
+											margin = { 5 5 }
+											spacing = 5
+											tooltip = "INTEREST_GROUP_RANDOM_LEADER_IDEOLOGY_TOOLTIP"
+
+											background = {
+												using = entry_bg_simple
+											}
+
+											icon = {
+												parentanchor = vcenter
+												size = { 30 30 }
+												texture = "[Ideology.GetTexture]"
+											}
+
+											textbox = {
+												parentanchor = vcenter
+												size = { 150 30 }
+												align = nobaseline
+												multiline = yes
+												fontsize_min = 12
+												raw_text = "#v [PotentialLeaderIdeology.GetChancePercentage|%0]#! [Ideology.GetName]"
+											}
 										}
 									}
 								}
 							}
 						}
 					}
-				}
+
+					flowcontainer = {
+						parentanchor = hcenter
+						direction = vertical
+
+						background = {
+							using = dropdown_background
+							margin = { 0 -2 }
+						}
+
+						section_header_button = {
+							blockoverride "left_text" {
+								text = "PRESSURING_MOVEMENTS_HEADER"
+								fontsize_min = 12
+								elide = right
+							}
+
+							blockoverride "right_text" {
+								section_header_right_text = {
+									raw_text = "#v [GetDataModelSize(InterestGroup.GetInfluencingMovements)]#!"
+								}
+							}
+
+							blockoverride "onclick" {
+								onclick = "[GetVariableSystem.Toggle( 'interest_group_pressuring_movements' )]"
+							}
+
+							blockoverride "onclick_showmore" {
+								visible = "[Not(GetVariableSystem.Exists( 'interest_group_pressuring_movements' ))]"
+							}
+
+							blockoverride "onclick_showless" {
+								visible = "[GetVariableSystem.Exists( 'interest_group_pressuring_movements' )]"
+							}
+						}
+						
+						flowcontainer = {
+							visible = "[GetVariableSystem.Exists( 'interest_group_pressuring_movements' )]"
+							parentanchor = hcenter
+							direction = vertical
+							spacing = 5
+							margin_top = 5
+							margin_bottom = 10
+							datamodel = "[InterestGroup.GetInfluencingMovements]"	
+
+							empty_state = {
+								blockoverride "visible" {
+									visible = "[IsDataModelEmpty(InterestGroup.GetInfluencingMovements)]"
+								}
+
+								blockoverride "text" {
+									text = "NO_PRESSURING_MOVEMENTS"
+								}
+							}
 		
-				pop_list = {
-					visible = "[InformationPanel.IsTabSelected('ig_pops')]"
-					using = default_content_fade
-					using = default_list_position
-					margin_top = 10
+							item = {
+								politics_panel_political_movement_item = {
+									blockoverride "button_size" {
+										size = { 520 60 }
+									}
 
-					name = "tutorial_highlight_ig_pop_list"
+									blockoverride "button_size_revolutionary" {
+										size = { 520 110 }
+									}
 
-					blockoverride "pop_list_context" {
-						datacontext = [InterestGroupPanel.AccessPopsList]
+									blockoverride "right_text_max_width" {
+										max_width = 220
+									}
+
+									blockoverride "additional_support_label" {
+										textbox = {
+											autoresize = yes
+											margin = { 5 0 }
+											align = nobaseline
+											max_width = 75
+											elide = right
+											fontsize_min = 12
+											text = "POLITICAL_MOVEMENT_SUPPORT_CONCEPT_SHORT_HEADER"
+										}
+									}
+
+									blockoverride "additional_activism_label" {
+										textbox = {
+											autoresize = yes
+											margin = { 5 0 }
+											margin_left = 3
+											align = nobaseline
+											max_width = 75
+											elide = right
+											fontsize_min = 12
+											text = "POLITICAL_MOVEMENT_RADICALISM_CONCEPT_SHORT_HEADER"
+										}
+									}
+
+									blockoverride "tooltip" {
+										tooltipwidget = {
+											FancyTooltip_PoliticalMovement = {
+												blockoverride "top_content" {
+													flowcontainer = {
+														spacing = 5
+
+														custom_tooltip_textbox = {
+															default_format = "#tooltippable"
+															using = tooltip_ne
+															tooltip = "INTEREST_GROUP_MOVEMENT_SUPPORT_CLOUT_TOOLTIP"
+															text = "POLITICAL_MOVEMENT_PRESSURE_ON_INTEREST_GROUP"
+														}
+
+														custom_tooltip_textbox = {
+															text = "POLITICAL_MOVEMENT_PRESSURE_ON_INTEREST_GROUP_LABEL"
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}							
+						}
 					}
 
-					blockoverride "largest_IGs" {}
+					flowcontainer = {
+						name = "linked_items"
+						spacing = 25
+						using = ig_panel_section_margins
+						parentanchor = hcenter
+						margin_left = 50
 
-					blockoverride = "interest_group" {}
+						flowcontainer = {
+							name = "leader"
+							direction = vertical
+							datacontext = "[InterestGroup.AccessLeader]"
+							min_width = @column_width
+							max_width = @column_width
+							margin_bottom = 5
+							
+							tooltipwidget = {
+								FancyTooltip_Character = {}
+							}
+																
+							textbox = {
+								parentanchor = hcenter 
+								raw_text = "[concept_leader]"
+								autoresize = yes
+								align = nobaseline
+							}
 
-					blockoverride "tooltipwidget" {
-						tooltipwidget = {
-							FancyTooltip_PopTypeInterestGroup = {}
+							character_portrait_medium_torso = {
+								parentanchor = hcenter
+								blockoverride "show_hat" {}
+								blockoverride "highlight" {}
+							}
+						}
+
+						flowcontainer = {
+							spacing = 10
+
+							vertical_divider_full = {
+								blockoverride "size" {
+									size = { 0 190 }
+								}
+							}
+
+							flowcontainer = {
+								name = "agitators_lobbies"
+								direction = vertical
+								spacing = 20
+
+								## AGITATORS					
+
+								flowcontainer = {
+									direction = vertical
+									min_width = @column_width_3
+									spacing = 10
+
+									textbox = {
+										text = "IG_AGITATORS"
+										autoresize = yes
+										align = nobaseline
+										
+									}
+
+									textbox = {
+										visible = "[IsDataModelEmpty(InterestGroup.GetAgitators)]"
+										text = "NO_AGITATORS"
+
+										autoresize = yes
+										max_width = @column_width_3
+
+										align = nobaseline
+										using = empty_state_text_properties
+										using = fontsize_xl
+										elide = right
+										fontsize_min = 14
+									}
+
+									flowcontainer = {
+										datamodel = "[InterestGroup.GetAgitators]"							
+
+										item = {
+											button = {
+												size = { 45 45 }
+												datacontext = "[Character]"
+												onclick = "[InformationPanelBar.OpenCommanderPanel(Character.AccessSelf)]"
+												onrightclick = "[RightClickMenuManager.ShowForCharacter(Character.AccessSelf)]"
+
+												character_portrait_small = {}
+											}
+										}
+									}
+								}
+
+								## LOBBIES
+								flowcontainer = {
+									direction = vertical
+									min_width = @column_width_3
+									spacing = 10
+
+									textbox = {
+										text = "IG_LOBBIES"
+										autoresize = yes
+										align = nobaseline
+									}
+
+									textbox = {
+										visible = "[IsDataModelEmpty(InterestGroup.GetPoliticalLobbies)]"
+										text = "NO_POLITICAL_LOBBIES"
+
+										autoresize = yes
+										max_width = @column_width_3
+
+										align = nobaseline
+										using = empty_state_text_properties
+										using = fontsize_xl
+										elide = right
+										fontsize_min = 14
+									}
+
+									flowcontainer = {
+										datamodel = "[InterestGroup.GetPoliticalLobbies]"
+										direction = vertical
+										
+
+										item = {
+											political_lobby_list_item = {	
+												blockoverride "lobby_list_item_size" {
+													size = { 355 60 }
+												}
+											}
+										}
+									}
+								}
+							}						
+						}
+
+					}
+
+
+					textbox = {
+						min_width = 520
+						max_width = 520
+						parentanchor = hcenter
+						align = nobaseline
+						autoresize = yes
+						multiline = yes
+						margin = { 20 15 }
+						text = "[InterestGroup.GetDesc]"
+
+						default_format = "#lore"
+
+						background = {
+							using = entry_bg
 						}
 					}
 				}
+
+				flowcontainer = {
+					visible = "[InformationPanel.IsTabSelected('ig_pops')]"
+					parentanchor = hcenter
+					direction = vertical
+
+					margin_top = 10
+					spacing = 10
+
+					pop_list_summary_widget = {
+						parentanchor = hcenter
+
+						datacontext = "[InterestGroupPanel.AccessPopsList]"
+					}
+							
+					pop_list = {
+						using = default_content_fade
+						using = default_list_position
+
+						name = "tutorial_highlight_ig_pop_list"
+
+						blockoverride "pop_list_context" {
+							datacontext = [InterestGroupPanel.AccessPopsList]
+						}
+
+						blockoverride "largest_IGs" {}
+
+						blockoverride = "interest_group" {}
+
+						blockoverride "tooltipwidget" {
+							tooltipwidget = {
+								FancyTooltip_PopTypeInterestGroup = {}
+							}
+						}
+					}
+				}
+
+				
 
 				flowcontainer = {
 					visible = "[InformationPanel.IsTabSelected('ig_laws')]"
@@ -901,6 +1149,56 @@ types interest_group_panel_types
 		}
 	}
 
+	type bolster_icon = widget {
+		size = { 40 40 }
+
+		block "tooltip" {
+			tooltip = "TOOLTIP_BOLSTERED"
+		}
+
+		widget = {
+			size = { 200% 200% }
+			parentanchor = center
+			#can set visible here without messing with underlying visiblity check
+
+			icon = {
+				parentanchor = center
+				using = rotate_glow_animation_green
+				size = { 100% 100% }
+			}
+		}
+
+		icon = {
+			size = { 100% 100% }
+			texture = "gfx/interface/icons/generic_icons/ig_bolster.dds"
+		}
+	}
+
+	type suppress_icon = widget {
+		size = { 40 40 }
+
+		block "tooltip" {
+			tooltip = "TOOLTIP_SUPPRESSED"
+		}
+
+		widget = {
+			size = { 200% 200% }
+			parentanchor = center
+			#can set visible here without messing with underlying visiblity check
+
+			icon = {
+				parentanchor = center
+				using = rotate_glow_animation_red
+				size = { 100% 100% }
+			}
+		}
+
+		icon = {
+			size = { 100% 100% }
+			texture = "gfx/interface/icons/generic_icons/ig_suppress.dds"
+		}
+	}
+
 	type number_of_pops = flowcontainer {
 		spacing = 5
 		block "tooltip" {
@@ -941,4 +1239,294 @@ types interest_group_panel_types
 			}
 		}
 	}
+
+	type ig_overview_value_box = widget {
+		background = {
+			using = entry_bg
+		}
+
+		block "ig_valuebox_base"
+		{
+			raw_tooltip = "todo"
+		}
+
+		flowcontainer = {
+			direction = vertical
+			
+			parentanchor = center
+
+			textbox = {
+				block "ig_valuebox_label"
+				{
+					visible = no
+				}
+
+				parentanchor = hcenter
+				align = nobaseline
+				autoresize = yes
+				
+				max_width = 160
+				fontsize_min = 14
+				elide = right
+			}
+
+			textbox = {
+				block "ig_valuebox_value"
+				{
+					visible = no
+				}
+
+				
+
+				default_format = "#variable"
+				using = fontsize_xxl
+
+				parentanchor = hcenter
+				align = nobaseline
+				autoresize = yes
+				
+				max_width = 160
+				fontsize_min = 14
+				elide = right
+			}
+
+			textbox = {
+				block "ig_valuebox_rating"
+				{
+					visible = no
+				}
+				
+
+				parentanchor = hcenter
+				align = nobaseline
+				autoresize = yes
+				
+				max_width = 160
+				fontsize_min = 14
+				elide = right
+			}				
+		}
+	}
+
+	type ig_loyal_radical_bar = flowcontainer {
+
+		block "ig_lr_bar_base"
+		{
+
+		}
+
+		spacing = @gutter
+
+		widget = {
+			size = { 120 30 }
+
+			hbox = {
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+
+				icon = {
+					block "ig_lr_bar_icon"
+					{
+						visible = no
+					}
+
+					size = { 30 30 }
+				}
+
+				textbox = {
+					block "ig_lr_text_value"
+					{
+						visible = no
+					}	
+					using = fontsize_large
+					align = nobaseline|right
+
+					default_format = "#v"
+					layoutpolicy_horizontal = expanding
+					layoutpolicy_vertical = expanding
+				}
+			}
+		}
+
+		bar_horizontal_with_background = {
+			size = { 220 20 }
+			parentanchor = vcenter
+		}
+	}
+
+	type ig_heading_pop_portrait = widget {
+
+		tooltip = "IG_PANEL_POP_PORTRAIT_TOOLTIP"
+		using = tooltip_below
+
+		size = { 80 80 }
+
+		pop_portrait_small = {
+			
+			blockoverride "portrait_button" {}
+			parentanchor = hcenter|top
+
+			size = { 100 100 }
+
+			blockoverride "portrait_size" {
+				size = { 150 150 }
+			}
+		}
+
+		icon = {
+			visible = no
+			size = { 30 30 }
+			texture = "[Pop.GetPopType.GetTexture]"
+			parentanchor = hcenter|bottom
+			position = { 0 -5 }
+		}	
+		
+	}
+
+	type influential_ig_frame_80 = widget {
+		name = "influential_ig_frame_80"
+		size = { 100% 100% }
+		visible = "[InterestGroup.IsPowerful]"
+
+		background = {
+			texture = "gfx/interface/icons/ig_icons/influential_ig_frame_80.dds"
+
+			spriteType = CorneredTiled
+			spriteborder = { 30 30 }
+
+			margin = { 1 1 }
+		}
+	}
+
+	type ig_panel_clout_rating = widget {
+		size = { 140 25 }
+
+		background = {
+			using = entry_bg_simple
+			alpha = 0.5
+		}
+
+		icon = {
+			using = highlighted_square_selection
+			block "clout_rating_active"
+			{
+				visible = no
+			}
+		}
+
+		textbox = {
+			name = "inactive_text"
+			size = { 100% 100% }
+			align = nobaseline|hcenter
+			alpha = 0.5
+			fontsize_min = 14
+			elide = right
+
+			block "clout_rating_text"
+			{
+				visible = no
+			}
+		}
+
+		textbox = {
+			name = "active_text" #just place this on top of the inactive text
+			size = { 100% 100% }
+			align = nobaseline|hcenter
+
+			block "clout_rating_text"
+			{
+				visible = no
+			}
+
+			block "clout_rating_active"
+			{
+				visible = no
+			}
+		}
+	}
+
+	type ig_trait_icon = widget {
+		name = "ig_trait_icon"
+		size = { 45 60 }
+
+		icon = {
+			name = "dark_disabled"
+			enabled = no
+			color = { 0.5 0.5 0.6 1 }
+
+			texture = "[InterestGroupTrait.GetTexture]"
+			size = { 100% 100% }
+		}
+
+		icon = {
+			name = "active"
+			visible = "[InterestGroupTrait.IsEnabled(InterestGroup.Self)]"
+
+			texture = "[InterestGroupTrait.GetTexture]"
+			size = { 100% 100% }
+		}
+		
+
+
+	}
+
+	type ig_trait_glow = widget {
+		name = "ig_trait_glow"
+		parentanchor = center
+		size = { 120 120 }
+		#can set visible here without messing with underlying visiblity check
+
+		icon = {
+			visible = "[InterestGroupTrait.IsEnabled(InterestGroup.Self)]"
+			parentanchor = center
+			size = { 100% 100% }
+			using = rotate_glow_animation_02
+		}
+	}
+
+	type ig_panel_icon_label = flowcontainer {		
+		spacing = 5
+
+		icon = {
+			parentanchor = vcenter
+			size = { 30 30 }
+
+			block "ipil_icon" {
+				texture = "gfx/interface/icons/generic_icons/in_government_icon.dds"
+			}
+			
+		}
+
+		textbox = {
+			parentanchor = vcenter
+			autoresize = yes
+			align = nobaseline
+			elide = right
+			fontsize_min = 12
+
+			block "ipil_label" {
+				text = "IN_GOVERNMENT"
+			}
+
+			block "max_width" {
+				max_width = 165
+			}
+		}
+	}
 }
+
+template ig_panel_section_margins {
+	margin = { 0 10 }
+}
+
+template ig_panel_section_background {
+	using = dark_area
+	alpha = 0.2
+	margin = { 6 0 }
+	
+	modify_texture = {
+		using = texture_velvet
+	}
+
+}
+

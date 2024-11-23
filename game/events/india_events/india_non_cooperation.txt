@@ -1,0 +1,649 @@
+﻿namespace = india_non_cooperation
+
+india_non_cooperation.1 = { # The Non-Cooperation Movement
+	type = country_event
+	placement = ROOT
+
+	duration = 3
+
+	title = india_non_cooperation.1.t
+	desc = india_non_cooperation.1.d
+	flavor = india_non_cooperation.1.f
+
+	event_image = {
+		video = "gfx/event_pictures/ip2_india_protest.bk2"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	immediate = {
+		c:BIC ?= {
+			save_scope_as = india_scope
+		}
+		if = {
+			limit = { has_variable = non_cooperation_trade_route }
+			ordered_trade_route = {
+				limit = {
+					is_trade_route_productive = yes
+					exporter.owner = top_overlord
+				}
+				order_by = level
+				save_scope_as = british_trade_route
+				
+				goods = {
+					save_scope_as = british_trade_route_goods
+				}
+			}
+		}
+		else_if = {
+			limit = { has_variable = non_cooperation_common_market }
+			market = {
+				ordered_market_goods = {
+					limit = {
+						is_tradeable = yes
+						market_goods_sell_orders > 500
+					}
+					order_by = market_goods_pricier
+
+					goods = {
+						save_scope_as = british_trade_route_goods	# need a good to be called on for loc in the non-trade-route path
+					}
+				}
+			}
+		}
+		top_overlord = {
+			save_scope_as = probably_britain_scope
+			trigger_event = { id = india_non_cooperation.2 }
+		}
+		random_political_movement = {
+			limit = {
+				is_political_movement_type = movement_india_pan_national
+				political_movement_radicalism >= 0.5
+			}
+			save_scope_as = indian_independence_movement
+
+			if = {
+				limit = {
+					any_supporting_character = {
+						# repeating the requirements for sending someone to jail
+						is_in_exile_pool = no
+						is_in_void = no
+						is_ruler = no
+						is_heir = no
+						has_role = agitator
+						is_immortal = no
+					}
+				}
+				random_supporting_character = {
+					limit = {
+						is_in_exile_pool = no
+						is_in_void = no
+						is_ruler = no
+						is_heir = no
+						has_role = agitator
+						is_immortal = no
+					}
+					save_scope_as = indian_independence_movement_agitator
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = india_non_cooperation.1.a 
+		default_option = yes
+
+		if = {
+			limit = { has_journal_entry = je_india_home_rule }
+			custom_tooltip = {
+				text = india_bar_advance_10_tt
+				je:je_india_home_rule ?= {
+					add_progress = { value = 10 name = je_india_home_rule_progressbar }
+				}
+			}
+		}
+		else = {
+			add_small_indian_radicals = yes	
+		}
+	}
+	
+	option = {
+		name = india_non_cooperation.1.b
+		highlighted_option = yes
+
+		trigger = { 
+			NOT = { has_law = law_type:law_guaranteed_liberties } 
+			exists = scope:indian_independence_movement_agitator
+		}
+
+		scope:indian_independence_movement_agitator = {
+			save_scope_as = prisoner_scope
+		}
+		trigger_event = { id = jail.1 popup = yes }
+	}
+}
+
+india_non_cooperation.2 = { # overlord alert of The Non-Cooperation Movement
+	type = country_event
+	placement = ROOT
+
+	duration = 3
+
+	title = india_non_cooperation.2.t
+	desc = india_non_cooperation.2.d
+	flavor = india_non_cooperation.2.f
+
+	event_image = {
+		video = "gfx/event_pictures/ip2_telegraph_dictate.bk2"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	immediate = {
+		c:BIC ?= {
+			save_scope_as = india_scope
+		}
+		top_overlord = {
+			save_scope_as = probably_britain_scope
+		}
+	}
+
+	option = {
+		name = india_non_cooperation.2.a # Concerning. Looking into this
+		default_option = yes
+	}
+}
+
+india_non_cooperation.3 = { # Hartal!
+	type = country_event
+	placement = scope:hartal_state
+
+	duration = 3
+
+	title = india_non_cooperation.3.t
+	desc = india_non_cooperation.3.d
+	flavor = india_non_cooperation.3.f
+
+	event_image = {
+		video = "gfx/event_pictures/ip2_india_factory.bk2"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+	cooldown = { months = short_modifier_time } # should lead to Hartal modifier being active in more than one state at a time
+
+	trigger = {
+		any_scope_state = {
+			NOT = { has_modifier = hartal_action }
+		}
+	}
+	
+	immediate = {
+		ordered_state = {
+			limit = {
+				NOT = { has_modifier = hartal_action }
+			}
+			order_by = gdp
+			save_scope_as = hartal_state
+		}
+		random_political_movement = {
+			limit = {
+				is_political_movement_type = movement_india_pan_national
+			}
+			save_scope_as = indian_independence_movement
+		}
+	}
+
+	option = {
+		name = india_non_cooperation.3.a 
+		default_option = yes
+
+		scope:hartal_state = {
+			add_modifier = {
+				name = hartal_action
+				months = normal_modifier_time
+			}
+		}
+
+		
+		custom_tooltip = {	# not using the scripted effect because this is targeting a specific state
+			text = add_small_indian_radicals_tt
+			every_scope_culture = {
+				limit = {
+					has_discrimination_trait = south_asian_heritage
+				}
+				scope:hartal_state = {
+					add_radicals = {
+						value = small_radicals
+						culture = prev
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = india_non_cooperation.3.b
+
+		scope:hartal_state = {
+			add_modifier = {
+				name = hartal_action
+				months = short_modifier_time
+				multiplier = 0.5
+			}
+		}
+
+		scope:indian_independence_movement = {
+			add_modifier = {
+				name = hartal_negotiating_with_leaders
+				months = short_modifier_time
+			}
+		}
+	}
+}
+
+india_non_cooperation.4 = { # Swadeshi Production
+	type = country_event
+	placement = scope:swadeshi_state
+
+	duration = 3
+
+	title = india_non_cooperation.4.t
+	desc = india_non_cooperation.4.d
+	flavor = india_non_cooperation.4.f
+
+	event_image = {
+		video = "gfx/event_pictures/ip2_india_protest.bk2"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	cooldown = { months = short_modifier_time } # should lead to Swadeshi modifier potentially being active in more than one state at a time
+
+	trigger = {
+		any_scope_state = {
+			NOT = { has_modifier = swadeshi_agitation }
+		}
+	}
+
+	immediate = {
+		ROOT = {
+			save_scope_as = india_scope
+		}
+		random_scope_state = {
+			save_scope_as = swadeshi_state
+		}
+		random_political_movement = {
+			limit = {
+				is_political_movement_type = movement_india_pan_national
+			}
+			save_scope_as = indian_independence_movement
+		}
+	}
+
+	option = {
+		name = india_non_cooperation.4.a 
+		default_option = yes
+
+		scope:swadeshi_state = {
+			add_modifier = {
+				name = swadeshi_agitation
+				months = normal_modifier_time
+			}
+		}
+
+		scope:indian_independence_movement = {
+			add_modifier = {
+				name = successful_swadeshi_action
+				months = normal_modifier_time
+			}
+		}
+	}
+
+
+	option = {
+		name = india_non_cooperation.4.b
+
+		
+		custom_tooltip = {	# not using the scripted effect because this is targeting a specific state
+			text = add_medium_indian_radicals_tt
+			every_scope_culture = {
+				limit = {
+					has_discrimination_trait = south_asian_heritage
+				}
+				scope:swadeshi_state = {
+					add_radicals = {
+						value = medium_radicals
+						culture = prev
+					}
+				}
+			}
+		}
+
+		scope:indian_independence_movement = {
+			add_modifier = {
+				name = suppressed_swadeshi_action
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+india_non_cooperation.5 = { # The Chauri Chaura Incident / The Blazing Chowki
+	type = country_event
+	placement = scope:chauri_chaura_state
+
+	duration = 3
+
+	title = india_non_cooperation.5.t
+	desc = india_non_cooperation.5.d
+	flavor = india_non_cooperation.5.f
+
+	event_image = {
+		video = "gfx/event_pictures/ip2_intercommunal_tension.bk2"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_fire.dds"
+
+	# triggered by radicalism failure of JE
+
+	immediate = {
+		random_scope_state = {
+			save_scope_as = chauri_chaura_state
+		}
+		random_scope_culture = {
+			limit = {
+				has_discrimination_trait = south_asian_heritage
+				has_homeland = ROOT
+			}
+			save_scope_as = firebrand_movement_leader
+		}
+		random_political_movement = {
+			limit = {
+				is_political_movement_type = movement_india_pan_national
+			}
+			save_scope_as = indian_independence_movement
+
+			ordered_influenced_interest_group = {
+				order_by = ig_clout
+
+				save_scope_as = powerful_movement_ig
+			}
+
+			random_supporting_character = {
+				limit = {
+					is_in_exile_pool = no
+					is_in_void = no
+					is_ruler = no
+					is_heir = no
+					OR = {
+						has_role = agitator
+						has_role = politician
+					}
+					OR = {
+						has_ideology = ideology:ideology_humanitarian
+						has_ideology = ideology:ideology_pacifist
+					}
+					is_immortal = no
+				}
+				save_scope_as = nonviolent_movement_leader
+				interest_group = {
+					save_scope_as = nonviolent_movement_leader_ig
+				}
+			}
+		}
+	}
+
+	option = {
+		name = india_non_cooperation.5.a 
+		default_option = yes
+
+		scope:indian_independence_movement = {
+			add_modifier = {
+				name = failure_of_non_cooperation
+				months = long_modifier_time
+			}
+		}
+
+		scope:chauri_chaura_state = {
+			add_devastation = 10
+		}
+	}
+
+	option = {
+		name = india_non_cooperation.5.b
+		trigger = { exists = scope:nonviolent_movement_leader }
+
+		custom_tooltip = indian_nationalist_leader_retires_tt
+		if = {
+			limit = {
+				scope:nonviolent_movement_leader = { 
+					has_role = agitator 
+					NOT = { has_role = politician }
+				}
+			}
+			scope:nonviolent_movement_leader = {
+				hidden_effect = {
+					kill_character = yes
+				}
+			}
+			if = {
+				limit = { empty_agitator_slots > 0 }
+				custom_tooltip = {
+					text = an_agitator_appears_tt
+					create_character = {
+						interest_group = scope:powerful_movement_ig
+		    			ideology = ideology_sovereignist_leader
+		    			is_agitator = yes
+		    			culture = scope:firebrand_movement_leader
+					    trait_generation = {
+							if = {
+								limit = {
+									trait_value < 3
+								}
+								add_trait = demagogue
+							}
+							if = {
+								limit = {
+									trait_value < 3
+								}
+								add_trait = charismatic
+							}
+							if = {
+								limit = {
+									trait_value < 3
+								}
+								add_trait = ambitious
+							}
+					    }
+					}
+				}
+			}
+		}
+
+		if = {
+			limit = {
+				scope:nonviolent_movement_leader = { 
+					has_role = politician 
+				}
+			}
+			scope:nonviolent_movement_leader = {
+				hidden_effect = {
+					kill_character = yes
+				}
+			}
+			create_character = {
+				ig_leader = yes
+				interest_group = scope:nonviolent_movement_leader_ig
+    			ideology = ideology_sovereignist_leader
+				culture = scope:firebrand_movement_leader
+			    trait_generation = {
+					if = {
+						limit = {
+							trait_value < 3
+						}
+						add_trait = demagogue
+					}
+					if = {
+						limit = {
+							trait_value < 3
+						}
+						add_trait = charismatic
+					}
+					if = {
+						limit = {
+							trait_value < 3
+						}
+						add_trait = ambitious
+					}
+			    }
+    		}
+    	}
+
+		scope:chauri_chaura_state = {
+			add_devastation = 10
+		}
+	}
+}
+
+india_non_cooperation.6 = { # Insufficient Self-Sufficiency
+	type = country_event
+	placement = ROOT
+
+	duration = 3
+
+	title = india_non_cooperation.6.t
+	desc = india_non_cooperation.6.d
+	flavor = india_non_cooperation.6.f
+
+	event_image = {
+		video = "gfx/event_pictures/votp_conspiring.bk2"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	# triggered by timeout failure of JE
+
+	immediate = {
+		random_political_movement = {
+			limit = {
+				is_political_movement_type = movement_india_pan_national
+			}
+			save_scope_as = indian_independence_movement
+		}
+		ROOT = {
+			save_scope_as = india_scope
+		}
+		top_overlord = {
+			save_scope_as = probably_britain_scope
+		}
+	}
+
+	option = {
+		name = india_non_cooperation.6.a 
+		default_option = yes
+
+		scope:indian_independence_movement = {
+			add_modifier = {
+				name = failure_of_non_cooperation
+				months = long_modifier_time
+			}
+		}
+		if = {
+			limit = { has_journal_entry = je_india_home_rule }
+			custom_tooltip = {
+				text = india_bar_retreat_25_tt
+				je:je_india_home_rule ?= {
+					add_progress = { value = -25 name = je_india_home_rule_progressbar }
+				}
+			}
+		}
+	}
+}
+
+india_non_cooperation.7 = { # The Victory of Satyagraha
+	type = country_event
+	placement = ROOT
+
+	duration = 3
+
+	title = india_non_cooperation.7.t
+	desc = india_non_cooperation.7.d
+	flavor = india_non_cooperation.7.f
+
+	event_image = {
+		video = "gfx/event_pictures/ip2_crosscultural_festival.bk2"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	# triggered by completion of JE
+
+	immediate = {
+		ROOT = {
+			save_scope_as = india_scope
+		}
+		top_overlord = {
+			save_scope_as = probably_britain_scope
+		}
+		random_political_movement = {
+			limit = {
+				is_political_movement_type = movement_india_pan_national
+			}
+			save_scope_as = indian_independence_movement
+		}
+	}
+
+	option = {
+		name = india_non_cooperation.7.a 
+		default_option = yes
+
+		scope:indian_independence_movement = {
+			add_modifier = {
+				name = satyagraha_triumphant
+				months = long_modifier_time
+			}
+
+			every_supporting_character = {
+				limit = {
+					OR = {
+						has_ideology = ideology:ideology_humanitarian
+						has_ideology = ideology:ideology_pacifist
+					}
+				}
+				add_modifier = {
+					name = satyagrahi
+					months = -1		# permanent bonus. Well done!
+				}
+			}
+		}
+	}
+}

@@ -28,7 +28,8 @@ types sway_country_types
 			flowcontainer = {
 				direction = vertical
 				using = default_list_position
-						
+				datacontext = "[SwayCountryPanel.AccessDiplomaticPlay]"
+
 				dynamicgridbox = {
 					name = "sway_offer_type_selection_list"
 					visible = "[SwayCountryPanel.IsShowingSwayOfferTypes]"
@@ -36,7 +37,7 @@ types sway_country_types
 				
 					item = {
 						sway_offer_type_item = {}
-					}	
+					}
 				}
 				
 				dynamicgridbox = {
@@ -47,24 +48,132 @@ types sway_country_types
 					item = {
 						sway_offer_wargoal_type_item = {}
 					}
-				}				
+				}
 				
 				dynamicgridbox = {
 					name = "offer_wargoal_selection_list"
 					visible = "[SwayCountryPanel.IsShowingSwayOffers]"
 					datamodel = "[SwayCountryPanel.AccessShownSwayOffers]"
-				
+					
 					item = {
-						sway_offer_item = {}
+						container = {
+							sway_offer_item = {
+								visible = "[Or( DiplomaticPlay.IsPrimaryParticipant(GetPlayer), DiplomaticPlay.IsUndecidedParticipant(GetPlayer) )]"
+								onclick = "[Execute( SwayCountryPanel.AccessDiplomaticPlay.CreateSway( GetPlayer.Self, SwayCountryPanel.GetCountry, SwayOffer.Self ))]"
+								onclick = "[InformationPanelBar.OpenDiplomaticPlayPanel( DiplomaticPlay.AccessSelf )]"
+							}
+
+							sway_offer_item = {
+								visible = "[DiplomaticPlay.IsBacker(GetPlayer)]"
+								onclick = "[PopupManager.AskConfirmation( SwayCountryPanel.AccessDiplomaticPlay.CreateSway( GetPlayer.Self, SwayCountryPanel.GetCountry, SwayOffer.Self ))]"
+								onclick = "[InformationPanelBar.OpenDiplomaticPlayPanel( DiplomaticPlay.AccessSelf )]"
+							}
+						}
 					}
-				}					
-			}			
+				}
+
+				widget = {
+					size = { 10 10 }
+				}
+
+				divider_decorative = {
+					visible = "[DiplomaticPlay.IsTargetOrInitiator(SwayCountryPanel.GetCountry)]"
+				}
+
+				widget = {
+					size = { 10 10 }
+				}
+
+				# DIRECTLY SUPPORT INITIATOR
+				container = {
+					visible = "[DiplomaticPlay.IsInitiator(SwayCountryPanel.GetCountry)]"
+
+					direct_support_button = {
+						visible = "[DiplomaticPlay.IsUndecidedParticipant(GetPlayer)]"
+
+						blockoverride "button_properties" {
+							enabled = "[DiplomaticPlay.CanSupportInitiator(GetPlayer)]"
+							tooltip = "SUPPORT_INITIATOR_DIPLOMATIC_PLAY_TOOLTIP"
+							onclick = "[Execute(DiplomaticPlay.SupportInitiator(GetPlayer))]"
+							onclick = "[InformationPanelBar.OpenDiplomaticPlayPanel( DiplomaticPlay.AccessSelf )]"
+						}
+					}
+
+					direct_support_button = {
+						visible = "[DiplomaticPlay.IsBacker(GetPlayer)]"
+
+						blockoverride "button_properties" {
+							enabled = "[DiplomaticPlay.CanSupportInitiator(GetPlayer)]"
+							tooltip = "SUPPORT_INITIATOR_DIPLOMATIC_PLAY_TOOLTIP"
+							onclick = "[PopupManager.AskConfirmation(DiplomaticPlay.SupportInitiator(GetPlayer))]"
+							onclick = "[InformationPanelBar.OpenDiplomaticPlayPanel( DiplomaticPlay.AccessSelf )]"
+						}
+					}
+				}
+
+				# DIRECTLY SUPPORT TARGET
+				container = {
+					visible = "[DiplomaticPlay.IsTarget(SwayCountryPanel.GetCountry)]"
+
+					direct_support_button = {
+						visible = "[DiplomaticPlay.IsUndecidedParticipant(GetPlayer)]"
+
+						blockoverride "button_properties" {
+							enabled = "[DiplomaticPlay.CanSupportTarget(GetPlayer)]"
+							tooltip = "SUPPORT_TARGET_DIPLOMATIC_PLAY_TOOLTIP"
+							onclick = "[Execute(DiplomaticPlay.SupportTarget(GetPlayer))]"
+							onclick = "[InformationPanelBar.OpenDiplomaticPlayPanel( DiplomaticPlay.AccessSelf )]"
+						}
+					}
+
+					direct_support_button = {
+						visible = "[DiplomaticPlay.IsBacker(GetPlayer)]"
+
+						blockoverride "button_properties" {
+							enabled = "[DiplomaticPlay.CanSupportInitiator(GetPlayer)]"
+							tooltip = "SUPPORT_INITIATOR_DIPLOMATIC_PLAY_TOOLTIP"
+							onclick = "[PopupManager.AskConfirmation(DiplomaticPlay.SupportInitiator(GetPlayer))]"
+							onclick = "[InformationPanelBar.OpenDiplomaticPlayPanel( DiplomaticPlay.AccessSelf )]"
+						}
+					}
+				}
+			}
+		}
+	}
+
+	type direct_support_button = button {
+		size = { 550 60 }
+		using = default_button_action
+
+		block "button_properties" {
+			onclick = "[InformationPanelBar.OpenDiplomaticPlayPanel( DiplomaticPlay.AccessSelf )]"
+		}
+		
+		flowcontainer = {
+			parentanchor = vcenter
+			margin_left = 15
+			spacing = 20
+
+			icon = {
+				parentanchor = vcenter
+				size = { 40 40 }
+				texture = "gfx/interface/icons/diplo_play_icons/stance_supports.dds"
+			}
+		
+			textbox = {
+				parentanchor = vcenter
+				align = nobaseline
+				autoresize = yes
+				max_width = 460
+				elide = right
+				fontsize_min = 14
+				using = fontsize_large
+				text = "SUPPORT_WITHOUT_CONDITION"
+			}
 		}
 	}
 
 	type sway_offer_item = button {
-		onclick = "[Execute( SwayCountryPanel.AccessDiplomaticPlay.CreateSway( GetPlayer.Self, SwayCountryPanel.GetCountry, SwayOffer.Self ))]"
-		onclick = "[InformationPanelBar.ClosePanel]"		
 		enabled = "[IsValid( SwayCountryPanel.AccessDiplomaticPlay.CreateSway( GetPlayer.Self, SwayCountryPanel.GetCountry, SwayOffer.Self ))]"			
 		tooltip = "SWAY_OFFER_TOOLTIP"
 		using = default_button_action
@@ -139,7 +248,7 @@ types sway_country_types
 			}						
 
 			textbox = {
-				position = { 80 0 }
+				position = { 75 0 }
 				using = fontsize_large
 				parentanchor = vcenter
 				text = "[SwayOffer.GetName(GetPlayer.Self, SwayCountryPanel.GetCountry, SwayCountryPanel.GetDiplomaticPlay)]"
@@ -160,40 +269,38 @@ types sway_country_types
 			datacontext = "[SwayCountryPanel.GetCountry]"
 			datacontext = "[SwayCountryPanel.GetDiplomaticPlay]"
 			datacontext = "[SwayOfferType]"
-
 			resizeparent = yes
 			minimumsize = { 550 60 }
 			
 			icon = {
+				parentanchor = vcenter
 				position = { 10 0 }
 				size = { 55 55 }
 				texture = "[SwayOfferType.GetTexture]"
-				parentanchor = left|vcenter
-				widgetanchor = left|vcenter
-			}	
+			}
 
 			textbox = {
-				position = { 80 0 }
 				visible = "[Not(SwayCountryPanel.IsReverseSway)]"
+				parentanchor = vcenter
+				position = { 75 0 }
 				using = fontsize_large
-				parentanchor = left|vcenter
-				text = "SWAY_OFFER_TYPE"
 				autoresize = yes
 				maximumsize = { 440 -1 }
 				multiline = yes
 				align = nobaseline
+				text = "SWAY_OFFER_TYPE"
 			}
 			
 			textbox = {
-				position = { 80 0 }
 				visible = "[SwayCountryPanel.IsReverseSway]"
+				parentanchor = vcenter
+				position = { 75 0 }
 				using = fontsize_large
-				parentanchor = left|vcenter
-				text = "REVERSE_SWAY_OFFER_TYPE"
 				autoresize = yes
 				maximumsize = { 440 -1 }
 				multiline = yes
 				align = nobaseline
+				text = "REVERSE_SWAY_OFFER_TYPE"
 			}			
 			
 			diplo_play_sway_approval = {

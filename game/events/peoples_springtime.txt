@@ -13,7 +13,26 @@ peoples_springtime.1 = {
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
 	title = peoples_springtime.1.t
-	desc = peoples_springtime.1.d
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = peoples_springtime.1.d
+				trigger = {
+					NAND = {
+						c:FRA ?= this
+						has_variable = france_had_revolution
+					}
+				}
+			}
+			triggered_desc = {
+				desc = peoples_springtime.1.d_france
+				trigger = {
+					c:FRA ?= this
+					has_variable = france_had_revolution
+				}
+			}
+		}
+	}
 	flavor = peoples_springtime.1.f
 
 	trigger = {
@@ -21,17 +40,17 @@ peoples_springtime.1 = {
 		NOT = { has_global_variable = peoples_springtime_happened }
 		country_is_in_europe = yes
 		has_technology_researched = egalitarianism
-		any_interest_group = {
-			OR = {
-				ig_approval < -10 # ANGERY
-				is_insurrectionary = yes
-			}
-			OR = {
-				leader = { has_ideology = ideology:ideology_radical }
-				any_scope_character = {
-					has_role = agitator
-					has_ideology = ideology:ideology_radical
+		OR = {
+			any_political_movement = {
+				OR = {
+					is_political_movement_type = movement_liberal
+					is_political_movement_type = movement_radical
 				}
+				is_revolutionary = yes
+			}
+			AND = {
+				c:FRA ?= this
+				has_variable = france_had_revolution
 			}
 		}
 	}
@@ -44,21 +63,21 @@ peoples_springtime.1 = {
 			name = peoples_springtime_recent
 			months = normal_modifier_time
 		}
-		random_interest_group = {
+		random_political_movement = {
 			limit = {
-				OR = {
-					is_insurrectionary = yes
-					ig_approval < -10 # ANGERY
-				}
-				OR = {
-					leader = { has_ideology = ideology:ideology_radical }
-					any_scope_character = {
+				is_political_movement_type = movement_radical
+			}
+			save_scope_as = radical_movement
+		}
+		if ={
+			scope:radical_movement ?= {
+				random_supporting_character = {
+					limit = {
 						has_role = agitator
-						has_ideology = ideology:ideology_radical
 					}
+					save_scope_as = radical_ig_leader
 				}
 			}
-			leader = { save_scope_as = radical_ig_leader }
 		}
 	}
 
@@ -66,10 +85,20 @@ peoples_springtime.1 = {
 
 	option = {
 		name = peoples_springtime.1.a
-		scope:radical_ig_leader = {
-			add_modifier = {
-				name = revolutionary_hero
-				months = normal_modifier_time
+		add_modifier = {
+			name = modifier_radical_movement_enhancement
+			months = normal_modifier_time
+			is_decaying = yes
+		}
+		if = {
+			limit = {
+				exists = scope:radical_ig_leader
+			}
+			scope:radical_ig_leader = {
+				add_modifier = {
+					name = revolutionary_hero
+					months = normal_modifier_time
+				}
 			}
 		}
 	}
@@ -77,12 +106,23 @@ peoples_springtime.1 = {
     option = {
 		name = peoples_springtime.1.b
         default_option = yes
-        scope:radical_ig_leader = {
-        	add_modifier = {
-        		name = treasonous_traitor
-        		months = normal_modifier_time
-        	}
-        }
+		add_modifier = {
+			name = modifier_radical_movement_enhancement
+			months = normal_modifier_time
+			is_decaying = yes
+			multiplier = 0.5
+		}
+        if = {
+			limit = {
+				exists = scope:radical_ig_leader
+			}
+	        scope:radical_ig_leader = {
+	        	add_modifier = {
+	        		name = treasonous_traitor
+	        		months = normal_modifier_time
+	        	}
+	        }
+		}
 	}
 }
 

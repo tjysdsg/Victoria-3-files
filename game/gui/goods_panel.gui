@@ -779,6 +779,16 @@ types "production_method_items" {
 				size = { 100% 45 }
 			}
 
+			widget = {
+				background = {
+					using = paper_bg
+				}
+
+				block "first_button_selected" {}
+
+				size = { 100% 100% }
+			}
+
 			textbox = {
 				block "first_button_text" {}
 				size = { 100% 45 }
@@ -788,6 +798,8 @@ types "production_method_items" {
 				align = nobaseline
 				block "show_map_mode_list_details" {}
 			}
+
+
 
 			icon = {
 				name = "selected_bg"
@@ -801,6 +813,7 @@ types "production_method_items" {
 				}
 			}
 
+
 			button_radio = {
 				frame = 1
 				size = { 25 25 }
@@ -810,14 +823,8 @@ types "production_method_items" {
 				block "show_map_mode_list_details" {}
 			}
 
-			button_radio = {
-				frame = 2
-				size = { 25 25 }
-				parentanchor = vcenter
-				position = { 10 0 }
+			map_modes_fake_static_filled_radiobutton = {
 				block "first_button_selected" {}
-				alwaystransparent = yes
-				block "show_map_mode_list_details" {}
 			}
 
 			block "right_icon" {
@@ -907,6 +914,16 @@ types "production_method_items" {
 				size = { 100% 45 }
 			}
 
+			widget = {
+				background = {
+					using = paper_bg
+				}
+
+				block "second_button_selected" {}
+
+				size = { 100% 100% }
+			}
+
 			textbox = {
 				block "second_button_text" {}
 				size = { 100% 45 }
@@ -938,14 +955,8 @@ types "production_method_items" {
 				block "show_map_mode_list_details" {}
 			}
 
-			button_radio = {
-				frame = 2
-				size = { 25 25 }
-				parentanchor = vcenter
-				position = { 10 0 }
+			map_modes_fake_static_filled_radiobutton = {
 				block "second_button_selected" {}
-				alwaystransparent = yes
-				block "show_map_mode_list_details" {}
 			}
 
 			block "right_icon" {
@@ -979,7 +990,7 @@ types "production_method_items" {
 					
 					icon = {
 						size = { 35 35 }
-								parentanchor = center
+						parentanchor = center
 						block "second_button_icon" {}
 						block "second_button_selected" {}
 
@@ -1003,7 +1014,7 @@ types "production_method_items" {
 					icon = {
 						size = { 30 30 }
 						alpha = 0.7
-								parentanchor = center
+						parentanchor = center
 						block "second_button_icon" {}
 						block "second_button_not_selected" {}
 
@@ -1034,6 +1045,16 @@ types "production_method_items" {
 				block "third_button_click" {}
 				block "map_mode_button_size" {
 					size = { 100% 45 }
+				}
+
+				widget = {
+					background = {
+						using = paper_bg
+					}
+
+					block "third_button_selected" {}
+
+					size = { 100% 100% }
 				}
 
 				textbox = {
@@ -1067,14 +1088,8 @@ types "production_method_items" {
 					block "show_map_mode_list_details" {}
 				}
 
-				button_radio = {
-					frame = 2
-					size = { 25 25 }
-					parentanchor = vcenter
-					position = { 10 0 }
+				map_modes_fake_static_filled_radiobutton = {
 					block "third_button_selected" {}
-					alwaystransparent = yes
-					block "show_map_mode_list_details" {}
 				}
 
 				block "right_icon" {
@@ -1166,6 +1181,16 @@ types "production_method_items" {
 					size = { 100% 45 }
 				}
 
+				widget = {
+					background = {
+						using = paper_bg
+					}
+
+					block "fourth_button_selected" {}
+
+					size = { 100% 100% }
+				}
+
 				textbox = {
 					block "fourth_button_text" {}
 					size = { 100% 45 }
@@ -1197,14 +1222,8 @@ types "production_method_items" {
 					block "show_map_mode_list_details" {}
 				}
 
-				button_radio = {
-					frame = 2
-					size = { 25 25 }
-					parentanchor = vcenter
-					position = { 10 0 }
+				map_modes_fake_static_filled_radiobutton = {
 					block "fourth_button_selected" {}
-					alwaystransparent = yes
-					block "show_map_mode_list_details" {}
 				}
 
 				block "right_icon" {
@@ -1287,6 +1306,99 @@ types "production_method_items" {
 			}
 		}
 	}
+
+	### map modes - signle button with right-click menu minimized
+	type map_modes_single_button_minimized = flowcontainer {
+		direction = vertical
+		onmousehierarchyenter = "[PdxGuiInterruptThenTriggerAllAnimations('hide_map_mode_list','show_map_mode_list')]"
+		onmousehierarchyleave = "[PdxGuiInterruptThenTriggerAllAnimations('show_map_mode_list','hide_map_mode_list')]"
+		
+		# button
+		button = {
+			using = default_button_action
+			block "button_click" {}
+
+			block "map_mode_button_size" {
+				size = { 45 45 }
+			
+				state = {
+					name = show_map_mode_list
+					duration = 0.2
+					using = Animation_Curve_Default
+					
+					block "expanded_size" {
+						size = { 350 45 }
+					}
+				}
+				state = {
+					name = hide_map_mode_list
+					size = { 45 45 }
+					duration = 0.2
+					using = Animation_Curve_Default
+				}
+			}
+
+			textbox = {
+				size = { 100% 45 }
+				elide = right
+				fontsize_min = 12
+				align = nobaseline
+				margin = { 10 0 }
+				block "button_text" {}
+
+				block "show_map_mode_list_details" {
+					alpha = 0
+			
+					state = {
+						name = show_map_mode_list
+						using = default_show_properties
+					}
+					state = {
+						name = hide_map_mode_list
+						using = default_hide_properties
+					}
+				}
+			}
+
+			block "right_icon" {
+				widget = {
+					parentanchor = right|vcenter
+					position = { -10 0 }
+					
+					block "right_icon_size" {
+						size = { 30 30 }
+					}
+
+					icon = {
+						size = { 200% 200% }
+						parentanchor = center
+						using = rotate_glow_animation_02
+					}
+							
+					icon = {
+						size = { 100% 100% }
+						parentanchor = center
+						block "button_icon" {}
+					}
+				}
+			}
+		}
+	}
+
+	type map_modes_fake_static_filled_radiobutton = icon {
+		block "show_map_mode_list_details" {}
+
+		size = { 25 25 }
+		parentanchor = vcenter
+		position = { 10 0 }
+		
+		texture = "gfx/interface/buttons/radio_button.dds"
+		frame = 2
+		framesize = { 80 80 }
+
+			alwaystransparent = yes
+	}
+
 	
 	### production method item
 	type production_method_item = flowcontainer {
@@ -1347,7 +1459,7 @@ types "production_method_items" {
 		icon = {
 			position = { 0 8 }
 			size = { 60 60 }
-			texture = "[BuildingType.GetTexture]"
+			texture = "[BuildingType.GetIcon]"
 			parentanchor = hcenter
 		}
 
@@ -1365,9 +1477,9 @@ types "production_method_items" {
 		}
 
 		textbox = {
-			visible = "[GreaterThan_int32(BuildingType.GetLevelCountInCountry(GetPlayer.Self), '(int32)0')]"
+			visible = "[GreaterThan_int32(BuildingType.GetNumLevelsInCountryRaw(GetPlayer.Self), '(int32)0')]"
 			datacontext = "[BuildingType]"
-			text = "BUILDING_TYPE_COUNT"
+			text = "[BuildingType.GetNumLevelsInCountryFormatted(GetPlayer.Self)]"
 			size = { 50 25 }
 			align = left|nobaseline
 			using = fontsize_large
@@ -1475,7 +1587,7 @@ types "production_method_items" {
 				widget = {
 					size = { @panel_width_half 50 }
 
-					tooltip = "[GoodsPanelValue.GetTooltip]"
+					using = market_goods_orders_with_table
 
 					textbox = {
 						position = { 10 5 }
@@ -1495,34 +1607,6 @@ types "production_method_items" {
 						parentanchor = right|vcenter
 						margin_right = 10
 						margin_bottom = 5
-					}
-
-					### Reduce / increase trade route level
-					container = {
-						visible = "[GoodsPanelValue.HasTradeRouteInfo]"
-						parentanchor = bottom|left
-						position = { 10 -5 }
-
-						widget = {
-							size = { 85 25 }
-
-							visible = "[GoodsPanelValue.GetTradeRoute.GetOwner.IsPlayer]"
-
-							block "interactable_background" {
-								background = {
-									using = entry_bg_simple
-								}
-							}
-
-							### Current trade route level
-							textbox = {
-								parentanchor = center
-								autoresize = yes
-								text = "[GoodsPanelValue.GetTradeRoute.GetLevel|v]"
-								align = hcenter|nobaseline
-								using = fontsize_large
-							}
-						}
 					}
 
 					divider_clean = {

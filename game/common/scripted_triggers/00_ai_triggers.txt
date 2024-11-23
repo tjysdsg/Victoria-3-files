@@ -25,8 +25,11 @@ ai_desires_target_state = {
 		AND = { # AI wants to unify split states
 			scope:target_state = { 
 				is_split_state = yes 
-				state_region = { 
-					any_scope_state = { owner = root }
+				state_region = {
+					any_scope_state = { 
+						owner = root 
+						is_treaty_port = no
+					}
 				}
 			}				
 		}
@@ -55,15 +58,21 @@ ai_desires_target_state = {
 ai_has_reasons_to_not_oppose_law = {
 	OR = {
 		any_political_movement = {
-			desired_law ?= scope:law.type
-			political_movement_radicalism >= 75
+			law_stance = {
+				law = scope:law.type
+				value > neutral
+			}			
+			political_movement_radicalism >= 0.75
 		}
 		AND = {
 			has_journal_entry = je_government_petition
 			var:desired_law_var	?= scope:law			
 		}
 		AND = {
-			has_journal_entry = je_law_imposition
+			OR = {
+				has_journal_entry = je_law_imposition
+				has_journal_entry = je_british_dictate_law
+			}
 			imposed_law	?= scope:law			
 		}
 	}
@@ -77,7 +86,10 @@ ai_has_enact_weight_modifier_journal_entries = {
 			scope:law = var:desired_law_var
 		}
 		AND = {
-			has_journal_entry = je_law_imposition
+			OR = {
+				has_journal_entry = je_law_imposition
+				has_journal_entry = je_british_dictate_law
+			}
 			scope:law = imposed_law
 		}
 		AND = {
@@ -134,10 +146,13 @@ has_je_conquest_reason = {
 				target_is_our_or_fellow_subject = no
 				any_scope_state = {
 					OR = {
-						region = sr:region_north_india
-						region = sr:region_south_india
+						region = sr:region_punjab
+						region = sr:region_bombay
+						region = sr:region_central_india
+						region = sr:region_madras
+						region = sr:region_bengal
 						# himalayas intentionally excluded to make BIC less aggressive against Tibet etc
-						state_region = s:STATE_BURMA
+						state_region = s:STATE_MANDALAY
 						state_region = s:STATE_KACHIN
 						state_region = s:STATE_SHAN_STATES
 						state_region = s:STATE_PEGU						
@@ -149,7 +164,7 @@ has_je_conquest_reason = {
 		AND = {
 			has_strategy = ai_strategy_unify_china
 			$TARGET$ = {
-				has_variable = warlord_state
+				has_journal_entry = je_reunify_china
 			}
 		}
 
@@ -247,7 +262,8 @@ has_je_conquest_reason = {
 					OR = {
 						region = sr:region_persia
 						region = sr:region_central_asia
-						region = sr:region_north_india
+						region = sr:region_bombay
+						region = sr:region_punjab
 					}
 					has_claim_by = ROOT
 				}

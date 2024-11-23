@@ -234,7 +234,7 @@ types country_panel_types
 			spacing = 5		
 
 			item = {
-				country_panel_political_movement_item = {}
+				politics_panel_political_movement_item = {}
 			}
 		}
 		
@@ -515,8 +515,7 @@ types country_panel_types
 			blockoverride "text" {
 				text = "POPULATION"
 			}
-		}	
-		
+		}		
 
 		### Pop statistics
 		flowcontainer = {
@@ -668,6 +667,20 @@ types country_panel_types
 			}
 		}
 
+
+		population_acceptance_status_chart_with_label_flowcontainer = {
+			margin_bottom = 10
+
+			blockoverride "distribution_label" {
+				text = "ACCEPTANCE_STATUS_DISTRIBUTION_LABEL_COUNTRY"
+			}
+
+			blockoverride "barchart_datamodel" {
+				datamodel = "[Country.GetAllAcceptanceStatusSegments]"
+			}
+		}
+
+
 		button = {
 			parentanchor = hcenter
 			using = default_button
@@ -689,10 +702,10 @@ types country_panel_types
 		tooltipwidget = {
 			FancyTooltip_Law = {
 				blockoverride "text_before" {
-   				visible = "[Not(GreaterThan_int32(Law.GetGroup.GetNumImposeOptions( Country.Self ), '(int32)0'))]"
-   				text =  "IMPOSE_LAW_NO_OPTIONS"
-   				margin_bottom = 15
-   			}
+	   				visible = "[Not(GreaterThan_int32(Law.GetGroup.GetNumImposeOptions( Country.Self ), '(int32)0'))]"
+	   				margin_bottom = 15
+	   				text =  "IMPOSE_LAW_NO_OPTIONS"
+	   			}
 			}
 		}
 
@@ -707,23 +720,23 @@ types country_panel_types
 			
 			textbox = {
 				layoutpolicy_horizontal = expanding
-				align = center|nobaseline
+				align = hcenter|nobaseline
 				fontsize_min = 10
 				multiline = yes
-				
 				text = "[Law.GetNameNoFormatting]"
 			}
 		}
 		
 		### Number of impose options available shows in the corner of the button
 		textbox = {
-			raw_text = "#bold [Law.GetGroup.GetNumImposeOptions( Country.Self )]#!"
+			visible = "[GreaterThan_int32(Law.GetGroup.GetNumImposeOptions( Country.Self ), '(int32)0')]"
 			parentanchor = top|right
 			position = { -5 0 }
 			autoresize = yes
 			align = right|nobaseline
-			visible = "[GreaterThan_int32(Law.GetGroup.GetNumImposeOptions( Country.Self ), '(int32)0')]"
 			using = fontsize_small
+			raw_text = "#bold [Law.GetGroup.GetNumImposeOptions( Country.Self )]#!"
+
 			background = {
 				using = default_background
 				margin = { 8 4 }
@@ -784,105 +797,6 @@ types country_panel_types
 			using = highlighted_square_selection
 		}
 
-	}
-	
-	### MOVEMENT ITEM
-	type country_panel_political_movement_item = widget {
-		size = { @panel_width_minus_10 55 }
-		
-		background = {		
-			using = dark_area 	
-		}
-		
-		hbox = {
-			layoutpolicy_horizontal = expanding
-			margin = { 5 0 }
-			spacing = 5
-			
-			law_icon = {
-				datacontext = "[PoliticalMovement.GetLaw]"
-				size = { 50 50 }
-			} 
-		
-			vbox = {
-				layoutpolicy_horizontal = expanding
-				spacing = 2
-				
-				textbox = {
-					layoutpolicy_horizontal = expanding
-					size = { 0 20 }
-					align = center|nobaseline
-					elide = right
-					fontsize_min = 12
-					
-					text = "[PoliticalMovement.GetName]"
-					
-					background = {
-						using = dark_area
-						alpha = 0.3
-						margin_bottom = 4
-						margin_top = 2
-						
-						modify_texture = {
-							texture = "gfx/interface/masks/fade_horizontal_center.dds"
-							blend_mode = alphamultiply
-						}
-					}
-				}
-				
-				hbox = {
-					layoutpolicy_horizontal = expanding
-					
-					hbox = {
-						layoutpolicy_horizontal = preferred
-						layoutpolicy_vertical = preferred
-						visible = "[Not(IsDataModelEmpty(PoliticalMovement.GetSupportingInterestGroups))]"
-						datamodel = "[PoliticalMovement.GetSupportingInterestGroups]"
-
-						item = {
-							ig_button = {
-								size = { 25 25 }
-								tooltip = "CLOUT_PIECHART"
-							}
-						}
-					}
-
-					textbox = {
-						layoutpolicy_horizontal = expanding
-						size = { 0 20 }
-						align = center|nobaseline
-						elide = right
-						fontsize_min = 12
-						
-						text = "POLITICAL_MOVEMENT_SUPPORT_WITH_LABEL"
-						tooltip = "POLITICAL_MOVEMENT_SUPPORT_TOOLTIP"
-					}
-
-					textbox = {
-						layoutpolicy_horizontal = expanding
-						size = { 0 20 }
-						align = center|nobaseline
-						elide = right
-						fontsize_min = 12
-						
-						visible = "[Not(PoliticalMovement.IsPlacated)]"
-						text = "POLITICAL_MOVEMENT_RADICALISM_WITH_LABEL"
-						tooltip = "POLITICAL_MOVEMENT_RADICALISM_TOOLTIP"
-					}
-
-					textbox = {
-						layoutpolicy_horizontal = expanding
-						size = { 0 20 }
-						align = center|nobaseline
-						elide = right
-						fontsize_min = 12
-						
-						visible = "[PoliticalMovement.IsPlacated]"
-						text = "[concept_political_movement_placated]"
-					}
-				}
-			}
-		}
 	}
 	
 	### INSTITUTION ITEM

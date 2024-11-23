@@ -100,13 +100,20 @@ je_meiji_restoration = {
 	}
 
 	on_complete = {
+		trigger_event = {
+			id = meiji.1
+		}
 		set_variable = meiji_restoration_complete
 		if = {
 			limit = { has_modifier = shogun_ig_forced_to_open_market }
 			remove_modifier = shogun_ig_forced_to_open_market
-		}			
-		trigger_event = {
-			id = meiji.1
+		}
+		if = {
+			limit = { has_modifier = hokkaido_colonization_modifier }
+			remove_modifier = hokkaido_colonization_modifier
+		}	
+		s:STATE_SAKHALIN = {
+			add_claim = root
 		}
 	}
 	
@@ -157,6 +164,18 @@ je_meiji_main = {
 	complete = {
 		scope:journal_entry = {
 			is_goal_complete = yes
+		}
+		custom_tooltip = {
+			text = has_completed_meiji_army_je_tt
+			has_variable = completed_je_meiji_army
+		}
+		custom_tooltip = {
+			text = has_completed_meiji_economy_je_tt
+			has_variable = completed_je_meiji_economy
+		}
+		custom_tooltip = {
+			text = has_completed_meiji_diplomacy_je_tt
+			has_variable = completed_je_meiji_diplomacy
 		}
 	}
 
@@ -215,6 +234,7 @@ je_meiji_economy = {
 			name = meiji_var
 			add = 1
 		}
+		set_variable = completed_je_meiji_economy
 	}
 
 	on_monthly_pulse = {
@@ -226,6 +246,7 @@ je_meiji_economy = {
 	}
 
 	transferable = no
+	should_be_pinned_by_default = yes
 
 	weight = 5000
 }
@@ -266,6 +287,7 @@ je_meiji_army = {
 		trigger_event = {
 			id = meiji.3
 		}
+		set_variable = completed_je_meiji_army
 	}
 
 	on_monthly_pulse = {
@@ -277,6 +299,7 @@ je_meiji_army = {
 	}
 
 	transferable = no
+	should_be_pinned_by_default = yes
 
 	weight = 5000
 }
@@ -298,6 +321,7 @@ je_meiji_diplomacy = {
 			name = meiji_var
 			add = 1
 		}
+		set_variable = completed_je_meiji_diplomacy
 	}
 
 	on_monthly_pulse = {
@@ -308,5 +332,6 @@ je_meiji_diplomacy = {
 		}
 	}
 
-	weight = 10000
+	should_be_pinned_by_default = yes
+	weight = 5000
 }

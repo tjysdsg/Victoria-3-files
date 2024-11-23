@@ -16,7 +16,7 @@ types religion_info_panel_types
 		
 		blockoverride "window_header_name"
 		{
-			text = "[ReligionInfoPanel.GetReligion.GetName]"
+			raw_text = "[ReligionInfoPanel.GetReligion.GetNameNoFormatting]"
 		}
 		
 		blockoverride "window_header_name_line_two"
@@ -26,82 +26,275 @@ types religion_info_panel_types
 		
 		blockoverride "fixed_top"
 		{
-			map_modes = {
-				margin = { 0 10 }
-
-				blockoverride "right_icon" {}
-				
-				blockoverride "first_button_text" {
-					text = "RELIGION_INFO_PANEL_SHOW_NATIONAL_ONLY"
-				}
-
-				blockoverride "first_button_click" {
-					onclick = "[ReligionInfoPanel.ToggleShowNationalOnly]"
-				}
 			
-				blockoverride "first_button_selected" {
-					visible = "[ReligionInfoPanel.IsShowingNationalOnly]"
-				}
-				blockoverride "first_button_not_selected" {
-					visible = "[Not(ReligionInfoPanel.IsShowingNationalOnly)]"
-				}
-				blockoverride "second_button_text" {
-					text = "RELIGION_INFO_PANEL_SHOW_GLOBAL"
-				}
-
-				blockoverride "second_button_click" {
-					onclick = "[ReligionInfoPanel.ToggleShowNationalOnly]"
-				}
-
-				blockoverride "second_button_selected" {
-					visible = "[Not(ReligionInfoPanel.IsShowingNationalOnly)]"
-				}
-				blockoverride "second_button_not_selected" {
-					visible = "[ReligionInfoPanel.IsShowingNationalOnly]"
-				}
-
-
-				blockoverride "third_button" {}
-				blockoverride "fourth_button" {}
-			}
 		}
 		
 		blockoverride "scrollarea_content"
 		{
 			flowcontainer = {
 				datacontext = "[ReligionInfoPanel.AccessReligion]"
-				direction = vertical
-				minimumsize = { 480 -1 }
-				
-				container = {
-					using = default_list_position
-					
-					pop_list = {
-						using = default_content_fade
-						blockoverride "pop_list_context" {
-							datacontext = "[ReligionInfoPanel.AccessPopsList]"
-						}
-						
-						blockoverride "largest_IGs" {}
 
-						blockoverride "tooltipwidget" {
-							tooltipwidget = {
-								FancyTooltip_PopTypeReligion = {}
+				using = default_content_fade
+				using = default_list_position
+				direction = vertical
+				parentanchor = hcenter
+				margin_top = 10
+				spacing = 10
+
+				container = {
+					name = "top_info"
+					parentanchor = hcenter
+					minimumsize = { @panel_width -1 }
+
+					background = {
+						texture = "gfx/interface/illustrations/top_illus/top_illu_cultures.dds"
+						using = top_illu_properties
+					}
+					
+					culture_or_religion_labeled_value_flowcontainer = {
+						minimumsize = { 200 -1 }
+						margin = { 20 10 }
+
+						blockoverride "label"
+						{	
+							text = "RELIGION_INFO_PANEL_TRAITS" 
+						}
+
+						blockoverride "value"
+						{
+							raw_text = "[Religion.GetReligiousTraitsDesc]"
+						}
+					}
+		
+					culture_or_religion_labeled_value_flowcontainer = {
+						position = { 300 0 }
+						minimumsize = { 200 -1 }
+						margin = { 0 10 }
+						blockoverride "label"
+						{	
+							text = "RELIGION_INFO_PANEL_TABOOS"
+						}
+
+						blockoverride "value"
+						{
+							raw_text = "[Religion.GetTaboosDesc]"
+						}
+					}				
+				}
+
+				culture_or_religion_acceptance_section_flowcontainer = {
+					blockoverride "label"
+					{	
+						text = "ACCEPTANCE_OF_RELIGION"
+					}
+						
+					blockoverride "value"
+					{
+						text = "[Religion.GetAcceptanceIn(GetPlayer)|=]"
+						tooltip = "ACCEPTANCE_OF_RELIGION_TOOLTIP"
+					}
+
+					blockoverride "law_datacontext"
+					{
+						datacontext = "[AccessPlayer.AccessActiveLawFromGroup('lawgroup_church_and_state')]"
+					}
+
+					blockoverride "distribution_label"
+					{
+						text = "RELIGION_ACCEPTANCE_STATUS_DISTRIBUTION_LABEL"
+					}				
+
+					blockoverride "barchart_datamodel" {
+						datamodel = "[Religion.GetAcceptanceStatusSegmentsIn(GetPlayer)]"
+					}
+
+					blockoverride "acceptance_status_distribution_visible"
+					{
+						visible = "[NotEqualTo_int64(Religion.GetPopulation(GetPlayer), '(int64)0')]"
+					}
+				}		
+
+				flowcontainer = {
+					name = "pop_list"
+					direction = vertical
+					parentanchor = hcenter
+
+					spacing = 10
+
+					default_header_2texts = {
+						blockoverride "text1" {
+							text = "RELIGION_INFO_PANEL_POPLIST_HEADING"
+						}
+
+						blockoverride "text2" {
+							text = "SORTED_BY_POPULATION"
+						}
+					}
+
+					flowcontainer = {
+						spacing = 20
+						margin = { 5 0 }
+
+						visible = "[GetPlayer.IsValid]" #not for observers
+
+						poplist_filter_button = {
+
+							blockoverride "poplist_filter_onclick"
+							{
+								onclick = "[ReligionInfoPanel.ToggleShowNationalOnly]"
+								alwaystransparent = "[ReligionInfoPanel.IsShowingNationalOnly]"
+							}
+
+							blockoverride "poplist_filter_label"
+							{
+								text = "RELIGION_INFO_PANEL_SHOW_NATIONAL_ONLY"
+							}
+
+
+							blockoverride "poplist_filter_selected"
+							{
+								visible = "[ReligionInfoPanel.IsShowingNationalOnly]"
+							}
+						}
+
+						poplist_filter_button = {
+
+							blockoverride "poplist_filter_onclick"
+							{
+								onclick = "[ReligionInfoPanel.ToggleShowNationalOnly]"
+								alwaystransparent = "[Not(ReligionInfoPanel.IsShowingNationalOnly)]"
+							}
+
+							blockoverride "poplist_filter_label"
+							{
+								text = "RELIGION_INFO_PANEL_SHOW_GLOBAL"
+							}
+
+
+							blockoverride "poplist_filter_selected"
+							{
+								visible = "[Not(ReligionInfoPanel.IsShowingNationalOnly)]"
 							}
 						}
 					}
-				}
 
-				empty_state = {
-					datacontext = "[ReligionInfoPanel.AccessReligion]"
-					blockoverride "visible" {
-						visible = "[IsDataModelEmpty(ReligionInfoPanel.AccessPopsList.AccessPopList)]"
+					pop_list_summary_widget = {
+						parentanchor = hcenter
+						datacontext = "[ReligionInfoPanel.AccessPopsList]"
+						datacontext = "[GetPlayer]"
+
+						blockoverride "pop_list_summary_pol_str"
+						{
+							pop_list_summary_section_item_vbox = {
+								visible = "[ReligionInfoPanel.IsShowingNationalOnly]"
+
+								blockoverride "sum_item_label"
+								{
+									raw_text = "[concept_political_strength]:"
+								}
+								blockoverride "sum_item_value"
+								{
+									raw_text = "[PopList.GetPoliticalStrengthAsPercentage(GetPlayer)|/%dv] ([PopList.GetTotalPoliticalStrength|D])"
+								}
+							}
+
+							pop_list_summary_section_item_vbox = {
+								visible = "[Not(ReligionInfoPanel.IsShowingNationalOnly)]"
+
+								blockoverride "sum_item_label"
+								{
+									raw_text = "[concept_political_strength]:"
+								}
+								blockoverride "sum_item_value"
+								{
+									raw_text = "[PopList.GetTotalPoliticalStrength|vD]"
+								}
+							}
+						}	
 					}
-					blockoverride "text" {
-						text = "POP_TYPE_IN_RELIGION_NO_PLAYER_POPULATION"
+
+					
+					container = {
+						using = default_list_position
+						
+						pop_list = {
+							using = default_content_fade
+							blockoverride "pop_list_context" {
+								datacontext = "[ReligionInfoPanel.AccessPopsList]"
+							}
+							
+							blockoverride "largest_IGs" {}
+
+							blockoverride "tooltipwidget" {
+								tooltipwidget = {
+									FancyTooltip_PopTypeReligion = {}
+								}
+							}
+						}
+					}
+
+					empty_state = {
+						datacontext = "[ReligionInfoPanel.AccessReligion]"
+						blockoverride "visible" {
+							visible = "[IsDataModelEmpty(ReligionInfoPanel.AccessPopsList.GetItems)]"
+						}
+						blockoverride "text" {
+							text = "POP_TYPE_IN_RELIGION_NO_PLAYER_POPULATION"
+						}
 					}
 				}
 			}
+		}
+	}
+
+	type poplist_filter_button = widget {
+		
+		size = { 260 44 }
+
+		button = {
+			using = default_button
+			size = { 100% 100% }
+
+			block "poplist_filter_onclick"
+			{
+				#onclick = ?
+			}
+
+			align = nobaseline|hcenter
+		}
+		
+		
+		icon = {
+			size = { 100% 100% }
+
+			block "poplist_filter_selected"
+			{
+				#visible = 
+			}
+			
+			using = paper_bg
+		}
+
+		textbox = {
+			parentanchor = center
+			size = { 100% 100% }
+			align = hcenter|nobaseline
+			elide = right
+			fontsize_min = 14
+
+			block "poplist_filter_label"
+			{
+				raw_text = "#todo todo#!"
+			}
+		}
+
+		icon = {
+    		block "poplist_filter_selected"
+			{
+				#visible = 
+			}
+
+			using = highlighted_square_selection
 		}
 	}
 }

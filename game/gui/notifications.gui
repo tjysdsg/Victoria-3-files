@@ -88,6 +88,13 @@ types notifications {
 						layoutpolicy_horizontal = expanding
 						size = { 0 32 }
 						onclick = "[FeedMessageItem.Expand]"
+
+						datacontext_from_model = {
+						    datamodel = "[FeedMessageItem.GetTimeoutTimer.GetSlicesInverted]"
+						    index = 0
+						}
+
+						using = shimmer_notification
 						
 						rightclick_modifiers = {
 							ondefault = "[FeedMessageItem.MarkToDelete]"
@@ -114,7 +121,6 @@ types notifications {
 							on_start = "[PdxGuiWidget.FindChild('button_message_settings').TriggerAnimation('hover_leave')]"
 							on_start = "[SetCanOpenRightClickContextMenu( '(bool)yes' )]"
 						}
-
 
 						hbox = {
 							margin_right = 3
@@ -245,6 +251,17 @@ types notifications {
 								}
 							}
 						}
+
+						# highlight when first appearing
+						highlight_tutorial_ui = {
+							parentanchor = vcenter
+							size = { 100% 80% }
+							using = default_fade_in_out
+
+							block "highlight_visibility" {
+								visible = "[LessThan_float(PieTimerSlice.GetValue, '(float)0.2')]"
+							}
+						}
 					}
 
 					widget = {
@@ -252,14 +269,6 @@ types notifications {
 						layoutpolicy_horizontal = expanding
 						size = { @message_feed_width 0 }
 						scissor = yes
-
-						state = {
-							name = "hide_text_1"
-							next = "hide_text_2"
-							trigger_when = "[FeedMessageItem.ShouldHide]"
-							duration = 0
-							size = { @message_feed_width @message_feed_height }
-						}
 
 						state = {
 							name = "hide_text_2"
@@ -301,17 +310,6 @@ types notifications {
 						}
 
 						state = {
-							name = "show_text"
-							trigger_when = "[FeedMessageItem.ShouldShow]"
-							on_start = "[FeedMessageItem.StartAnimation]"
-							on_finish = "[FeedMessageItem.EndAnimation]"
-							on_finish = "[FeedMessageItem.ClickedExpandFinished]"
-							size = { @message_feed_width @message_feed_height }
-							alpha = 1
-							duration = @message_feed_animation_duration
-						}
-
-						state = {
 							name = "show_text_expanded"
 							trigger_when = "[FeedMessageItem.IsExpanded]"
 							duration = 0
@@ -320,18 +318,6 @@ types notifications {
 
 						hbox = {
 							name = "text_and_icons"
-							
-							state = {
-								name = appear
-								using = Animation_FadeIn_Quick
-								trigger_when = "[Or(FeedMessageItem.ClickedExpand, FeedMessageItem.ShouldShow)]"
-							}
-
-							state = {
-								name = disappear
-								using = Animation_FadeOut_Quick
-								trigger_when = "[FeedMessageItem.ShouldHide]"
-							}
 
 							text_multi = {
 								layoutpolicy_vertical = growing

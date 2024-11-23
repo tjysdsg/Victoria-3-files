@@ -3,6 +3,10 @@
 
 	group = je_group_historical_content
 
+	modifiers_while_active = {
+		fra_republican_unrest
+	}
+
 	immediate = {
 		fra_set_divided_monarchist_variables = yes
 		random_law = {
@@ -96,10 +100,6 @@
 				}
 			}
 		}
-	}
-
-	modifiers_while_active = {
-		fra_republican_unrest
 	}
 
 	on_weekly_pulse = {
@@ -207,23 +207,19 @@
 	}
 
 	fail = {
-		any_interest_group = {
-			is_marginal = no
-			law_stance = {
-				law = law_type:law_presidential_republic
-				value > neutral
-			}
-		}
-		capital = {
-			turmoil >= 0.5
+		any_political_movement = {
+			is_political_movement_type = movement_radical
+			is_insurrectionary = yes
 		}
 		OR = {
-			has_journal_entry = je_springtime_of_the_peoples
-			radical_fraction = {
-				value >= 0.25
-			}
 			any_civil_war = {
-				civil_war_progress > 0.75
+				is_civil_war_type = revolution
+				civil_war_progress >= 0.75
+			}
+			AND = {
+				capital = {
+					turmoil >= 0.25
+				}
 			}
 		}
 	}

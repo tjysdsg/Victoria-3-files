@@ -11,77 +11,75 @@
 
 types countries_panel_types
 {
-	type countries_panel = fullscreen_block_window {
+	type countries_panel = default_block_window {
 		name = "countries_panel"
 		
 		blockoverride "window_header_name"
 		{
 			text = "COUNTRIES_TITLE"
 		}
+
+		blockoverride "fixed_top"
+		{
+			widget = {
+				size = { @panel_width_plus_14 30 }
+				
+				hbox = {
+					
+					sort_button = {
+						size = { 50 30 }
+						onclick = "[CountriesPanel.Sort('rank')]"
+						button = {
+							texture = "gfx/interface/buttons/sort_button_icons/sort_icon_rank.dds"
+							size = { 25 25 }
+							parentanchor = center
+							alwaystransparent = yes
+						}
+
+						tooltip = "SORT_BY_RANK"
+					}
+
+					sort_button = {
+						layoutstretchfactor_horizontal = 4
+						layoutpolicy_horizontal = preferred
+						size = { 0 30 }
+						text = "COUNTRY_TITLE"
+						onclick = "[CountriesPanel.Sort('name')]"
+					}
+
+					sort_button = {
+						layoutstretchfactor_horizontal = 2
+						layoutpolicy_horizontal = preferred
+						size = { 0 30 }
+						text = "RELATIONS"
+						onclick = "[CountriesPanel.Sort('relations')]"
+					}
+
+					sort_button = {
+						layoutstretchfactor_horizontal = 1
+						layoutpolicy_horizontal = preferred
+						size = { 0 30 }
+						text = "INFAMY"
+						onclick = "[CountriesPanel.Sort('infamy')]"
+					}
+				}
+			}
+		}
 		
 		blockoverride "scrollarea_content"
 		{
 			flowcontainer = {
-				margin_top = 10
 				using = default_list_position
 				direction = vertical
-				minimumsize = { @panel_width -1 }
-				maximumsize = { @panel_width -1 }
-
-				widget = {
-					size = { @panel_width 30 }
-					
-					hbox = {
-						
-						sort_button = {
-							size = { 40 30 }
-							onclick = "[CountriesPanel.Sort('rank')]"
-							button = {
-								texture = "gfx/interface/buttons/sort_button_icons/sort_icon_rank.dds"
-								size = { 25 25 }
-								parentanchor = center
-								alwaystransparent = yes
-							}
-
-							tooltip = "SORT_BY_RANK"
-						}
-
-						sort_button = {
-							layoutstretchfactor_horizontal = 4
-							layoutpolicy_horizontal = preferred
-							size = { 0 30 }
-							text = "COUNTRY_TITLE"
-							onclick = "[CountriesPanel.Sort('name')]"
-						}
-
-						sort_button = {
-							layoutstretchfactor_horizontal = 2
-							layoutpolicy_horizontal = preferred
-							size = { 0 30 }
-							text = "RELATIONS"
-							onclick = "[CountriesPanel.Sort('relations')]"
-						}
-
-						sort_button = {
-							layoutstretchfactor_horizontal = 1
-							layoutpolicy_horizontal = preferred
-							size = { 0 30 }
-							text = "INFAMY"
-							onclick = "[CountriesPanel.Sort('infamy')]"
-						}
-					}
-				}		
 				
 				flowcontainer = {
 					datamodel = "[CountriesPanel.GetCountries]"
-					minimumsize = { @panel_width -1 }
-					maximumsize = { @panel_width -1 }
 					direction = vertical
 					margin_top = 5
 					
 					item = {
 						widget = {
-							size = { @panel_width 35 }
+							size = { @panel_width_plus_14 35 }
 							name = "tutorial_highlight_country"
 							
 							divider_clean = {
@@ -93,7 +91,7 @@ types countries_panel_types
 								spacing = 10
 
 								textbox = {
-									size = { 40 30 }
+									size = { 50 30 }
 									raw_text = "##[Country.GetCountryScorePositionDesc]"
 									align = right|nobaseline
 									tooltip = "[Country.GetRankTooltip]"

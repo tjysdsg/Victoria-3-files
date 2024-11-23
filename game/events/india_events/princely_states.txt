@@ -1,0 +1,533 @@
+﻿namespace = princely_states
+
+
+princely_states.1 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	title = princely_states.1.t
+	desc = princely_states.1.d
+	flavor = princely_states.1.f
+
+	event_image = {
+		video = "ip2_india_protest"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = very_long_modifier_time }
+
+	trigger = {
+		has_dlc_feature = ip2_content
+		NOT = { has_variable = princely_states_je_happened }
+	}
+	
+	immediate = {
+        random_overlord_or_above = {
+            limit = {
+                ROOT = {
+                    is_direct_subject_of = prev
+                }
+            }
+            save_scope_as = overlord_scope
+        }
+
+	}
+
+	cancellation_trigger = {
+		is_princely_state = no
+	}
+	
+	option = {
+		name = princely_states.1.a 
+		default_option = yes
+		add_modifier = {
+			name = liberty_desire_boost
+			months = long_modifier_time
+		}
+	}
+
+	option = {
+		name = princely_states.1.b
+		custom_tooltip = {
+			text = improve_relations_every_princely_state
+			every_princely_state = {
+				change_relations = {
+					country = ROOT
+					value = 10
+				}
+			}
+		}
+
+	}
+}
+
+
+princely_states.2 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	title = princely_states.2.t
+	desc = princely_states.2.d
+	flavor = princely_states.2.f
+
+	event_image = {
+		video = "ip2_cross_cultural_festival"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by JE
+	}
+	
+	immediate = {
+
+	}
+
+	cancellation_trigger = {
+	
+	}
+	
+	option = {
+		name = princely_states.2.a 
+		default_option = yes
+		add_modifier = {
+			name = increase_autonomy_prestige_success
+			months = long_modifier_time
+		}
+		hidden_effect = {
+            set_variable = {
+                    name = princely_states_je_happened
+            }
+        }
+        custom_tooltip = {
+    		text = annex_neighbor_princely_state
+	    	if = {
+	    		limit = {
+					any_neighbouring_state = {
+						state_is_in_india = yes
+						owner = {
+							is_player = no
+							relations:root >= define:NDiplomacy|RELATIONS_THRESHOLD_CORDIAL
+							is_princely_state = yes
+							any_primary_culture = {
+								shares_heritage_trait_with_any_primary_culture = ROOT
+							}
+						}
+					}
+	    		}
+	    	}
+			ordered_country = {
+				limit = {
+					is_player = no
+					relations:root >= define:NDiplomacy|RELATIONS_THRESHOLD_CORDIAL
+					is_princely_state = yes
+					any_primary_culture = {
+						shares_heritage_trait_with_any_primary_culture = ROOT
+					}
+					any_scope_state = {
+						state_is_in_india = yes
+						any_neighbouring_state = {
+							owner = ROOT
+						}
+					}
+				}
+				order_by = gdp
+				save_temporary_scope_as = princely_state_to_be_annexed
+			}
+			if = {
+				limit = { exists = scope:princely_state_to_be_annexed }
+				annex = scope:princely_state_to_be_annexed
+    		}
+	    }
+	}
+
+	option = {
+		name = princely_states.2.b
+		add_modifier = {
+			name = increase_autonomy_auth_success
+			months = long_modifier_time
+		}
+		hidden_effect = {
+            set_variable = {
+                    name = princely_states_je_happened
+            }
+        }
+        custom_tooltip = {
+    		text = annex_neighbor_princely_state
+	    	if = {
+	    		limit = {
+					any_neighbouring_state = {
+						state_is_in_india = yes
+						owner = {
+							is_player = no
+							relations:root >= define:NDiplomacy|RELATIONS_THRESHOLD_CORDIAL
+							is_princely_state = yes
+							any_primary_culture = {
+								shares_heritage_trait_with_any_primary_culture = ROOT
+							}
+						}
+					}
+	    		}
+	    	}
+			ordered_country = {
+				limit = {
+					is_player = no
+					relations:root >= define:NDiplomacy|RELATIONS_THRESHOLD_CORDIAL
+					is_princely_state = yes
+					any_primary_culture = {
+						shares_heritage_trait_with_any_primary_culture = ROOT
+					}
+					any_scope_state = {
+						state_is_in_india = yes
+						any_neighbouring_state = {
+							owner = ROOT
+						}
+					}
+				}
+				order_by = gdp
+				save_temporary_scope_as = princely_state_to_be_annexed
+			}
+			if = {
+				limit = { exists = scope:princely_state_to_be_annexed }
+				annex = scope:princely_state_to_be_annexed
+    		}
+	    }
+	}
+}
+
+# Pack Animal Loan
+princely_states.3 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	title = princely_states.3.t
+	desc = princely_states.3.d
+	flavor = princely_states.3.f
+
+	event_image = {
+		video = "middleeast_jungle_expedition"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		has_dlc_feature = ip2_content
+		is_princely_state = yes
+        OR = {
+            AND = {
+            	AND = { exists = c:GBR is_subject_of = c:GBR }
+		        any_country = {
+		    		is_afghan_nation = yes
+		    		has_war_with = c:GBR
+		        }
+            }
+            AND = {
+            	AND = { exists = c:BIC is_subject_of = c:BIC }
+				any_country = {
+		        	is_afghan_nation = yes
+		        	has_war_with = c:BIC
+		        }
+            }  
+        }
+	}
+	
+	immediate = {
+		ruler = { save_scope_as = ruler_scope }
+		if = {
+			limit = {
+				AND = {
+		        	AND = { exists = c:GBR is_subject_of = c:GBR }
+			        any_country = {
+			        	is_afghan_nation = yes
+			        	has_war_with = c:GBR
+			        }
+		        }
+			}
+			c:GBR ?= {
+				save_scope_as = top_overlord_scope
+			}
+		}
+		else = {
+			limit = {
+				AND = {
+	            	AND = { exists = c:BIC is_subject_of = c:BIC }
+					any_country = {
+			        	is_afghan_nation = yes
+			        	has_war_with = c:BIC
+			        }
+	            } 
+			}
+			c:BIC ?= {
+				save_scope_as = top_overlord_scope
+			}
+		}
+	}
+
+	cancellation_trigger = {
+        OR = {
+        	is_princely_state = no
+        	NOT = {
+        		AND = { exists = c:GBR is_subject_of = c:GBR } 
+        	}
+        	NOT = {
+        		AND = { exists = c:BIC is_subject_of = c:BIC }
+        	}
+        }
+	}
+	
+	option = {
+		name = princely_states.3.a 
+		default_option = yes
+		scope:ruler_scope = {
+			add_modifier = {
+				name = prince_negative_popularity
+				months = normal_modifier_time
+			}
+		}
+		add_modifier = {
+			name = princely_states_camel_stipend
+			months = short_modifier_time
+		}
+		post_notification = pack_animal_loan_message
+		scope:top_overlord_scope = {
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_positive
+				target = root
+			}
+		}
+	}
+
+	option = {
+		name = princely_states.3.b
+		scope:ruler_scope = {
+			add_modifier = {
+				name = prince_positive_popularity
+				months = normal_modifier_time
+			}
+		}
+		add_modifier = {
+			name = princely_states_ld_action
+			months = normal_modifier_time
+		}
+	}
+}
+
+# The Most Exalted Order of the Star of India
+princely_states.4 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	title = princely_states.4.t
+	desc = princely_states.4.d
+	flavor = princely_states.4.f
+
+	event_image = {
+		video = "ep1_transfer_of_authority"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		has_dlc_feature = ip2_content
+		any_scope_character = {
+			OR = {
+				is_ruler = yes
+				has_role = general
+			}
+		}
+		OR = {
+            AND = { exists = c:GBR is_subject_of = c:GBR }
+            AND = { exists = c:BIC is_subject_of = c:BIC }
+        }
+	}
+	
+	immediate = {
+		random_scope_character = {
+			limit = {
+				OR = {
+					is_ruler = yes
+					has_role = general
+				}
+			}
+			save_scope_as = award_winner_scope
+		}
+		top_overlord = {
+			save_scope_as = top_overlord_scope
+		}
+
+	}
+
+	cancellation_trigger = {
+		is_princely_state = no
+	}
+	
+	option = {
+		name = princely_states.4.a 
+		default_option = yes
+		change_relations = {
+			country = scope:top_overlord_scope
+			value = 10
+		}
+		if = {
+			limit = {
+				has_dlc_feature = lobbies
+				any_political_lobby = {
+					is_political_lobby_type = lobby_anti_overlord
+				}
+			}
+			random_political_lobby = {
+				limit = { is_political_lobby_type = lobby_anti_overlord }
+				change_appeasement = {
+					amount = -1
+					factor = appeasement_lobby_loss
+				}
+			}
+		}
+	}
+
+	option = {
+		name = princely_states.4.b
+		scope:award_winner_scope = {
+			add_modifier = {
+				name = prince_positive_popularity
+				months = normal_modifier_time
+			}
+		}
+		add_modifier = {
+			name = rejected_overlord_gesture
+			months = normal_modifier_time
+		}
+		change_relations = {
+			country = scope:top_overlord_scope
+			value = -10
+		}
+	}
+}
+
+princely_states.5 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	title = princely_states.5.t
+	desc = princely_states.5.d
+	flavor = princely_states.5.f
+
+	event_image = {
+		video = "ip2_india_countryside"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		has_dlc_feature = ip2_content
+		AND = {
+			ruler = {
+				OR = {
+					has_trait = direct
+					has_trait = persistent
+					has_trait = tactful
+					has_trait = ambitious
+					has_trait = meticulous
+					has_trait = brave
+					has_trait = innovative
+				}
+			}
+			c:BIC ?= {
+				has_variable = doctrine_of_lapse_cooldown
+			}
+		}
+	}
+	
+	immediate = {
+		ruler = {
+			save_scope_as = ruler_scope
+		}
+		c:BIC ?= {
+			save_scope_as = bic_scope
+		}
+
+	}
+
+	cancellation_trigger = {
+
+	}
+	
+	option = {
+		name = princely_states.5.a 
+		default_option = yes
+		post_notification = doctrine_of_lapse_reaction_message
+		scope:top_overlord_scope = {
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_negative
+				target = root
+			}
+		}
+		add_modifier = {
+			name = doctrine_of_lapse_upset
+			months = normal_modifier_time
+		}
+	}
+
+	option = {
+		name = princely_states.5.b
+		add_modifier = {
+			name = overlord_lackey
+			months = normal_modifier_time
+		}		
+		if = {
+			limit = {
+				has_dlc_feature = lobbies
+				any_political_lobby = {
+					is_political_lobby_type = lobby_pro_overlord
+				}
+			}
+			random_political_lobby = {
+				limit = { is_political_lobby_type = lobby_pro_overlord }
+				change_appeasement = {
+					amount = 1
+					factor = appeasement_lobby_gain
+				}
+			}
+		}
+	}
+}

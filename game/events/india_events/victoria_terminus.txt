@@ -1,0 +1,157 @@
+﻿namespace = victoria_terminus
+
+# A Terminus Like No Other
+victoria_terminus.1 = {
+	type = country_event
+	placement = scope:relevant_bombay_state
+
+	duration = 3
+
+	title = victoria_terminus.1.t
+	desc = victoria_terminus.1.d
+	flavor = victoria_terminus.1.f
+
+	event_image = {
+		video = "ip2_india_urban_scene"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by JE
+		any_scope_state = {
+            state_region = s:STATE_BOMBAY
+        }
+	}
+	
+	immediate = {
+	    random_scope_state = {
+            limit = {
+                state_region = s:STATE_BOMBAY
+            }
+            save_scope_as = relevant_bombay_state
+        }
+        ig:ig_industrialists = {
+        	save_scope_as = relevant_ig
+        }
+	}
+
+	cancellation_trigger = {
+		OR = {
+            NOT = {
+                any_scope_state = {
+                    state_region = s:STATE_BOMBAY
+                }
+            }
+            NOT = { country_has_primary_culture = cu:british }
+            has_variable = rejected_victoria_terminus_project
+        }
+	}
+	
+	option = {
+		name = victoria_terminus.1.a 
+		default_option = yes
+		trigger = {
+			NOR = {
+				has_law = law_type:law_command_economy
+				investment_pool_gross_income < 1000
+			}
+		}
+		custom_tooltip = victoria_terminus_construct_tt
+		ig:ig_industrialists = {
+			add_modifier = {
+				name = victoria_terminus_accepted
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = victoria_terminus.1.b
+		ig:ig_industrialists = {
+			add_modifier = {
+				name = victoria_terminus_rejected
+				months = normal_modifier_time
+			}
+		}
+		custom_tooltip = {
+			text = dismissed_victoria_terminus_je_tt
+			set_variable = rejected_victoria_terminus_project
+		}
+	}
+}
+
+# An Architectural Marvel
+victoria_terminus.2 = {
+	type = country_event
+	placement = scope:relevant_bombay_state
+
+	duration = 3
+
+	title = victoria_terminus.2.t
+	desc = victoria_terminus.2.d
+	flavor = victoria_terminus.2.f
+
+	event_image = {
+		video = "ip2_india_urban_scene"
+	}
+
+	dlc = dlc011
+	
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by JE
+	}
+	
+	immediate = {
+		random_scope_state = {
+            limit = {
+                state_region = s:STATE_BOMBAY
+            }
+            save_scope_as = relevant_bombay_state
+        }
+
+	}
+
+	cancellation_trigger = {
+		OR = {
+            NOT = {
+                any_scope_state = {
+                    state_region = s:STATE_BOMBAY
+                }
+            }
+            NOT = { country_has_primary_culture = cu:british }
+            has_variable = rejected_victoria_terminus_project
+        }
+	}
+	
+	option = {
+		name = victoria_terminus.2.a 
+		default_option = yes
+		scope:relevant_bombay_state = {
+			add_modifier = {
+				name = victoria_terminus_reward_loc
+				months = long_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = victoria_terminus.2.b
+		add_modifier = {
+			name = victoria_terminus_reward_int
+			months = long_modifier_time
+		}
+	}
+}

@@ -27,7 +27,7 @@ exiles_more_events.1 = {
 		}
 
 		any_character_in_exile_pool = {
-			home_country = ROOT
+			home_country ?= ROOT
 			save_temporary_scope_as = ex_ig
 		}
 		any_interest_group = {
@@ -38,7 +38,7 @@ exiles_more_events.1 = {
 	immediate = {
 		random_character_in_exile_pool  = {	
 			limit = {
-				home_country = ROOT
+				home_country ?= ROOT
 			}
 			save_temporary_scope_as = ex_ig
 			save_scope_as = patriotic_exile_scope
@@ -72,7 +72,7 @@ exiles_more_events.1 = {
 		scope:patriotic_exile_scope = { 
 			transfer_character = ROOT 
 			hidden_effect = {
-				remove_modifier = in_exile_modifier
+				free_from_exile_effect = yes
 			}
 		}
 
@@ -90,7 +90,7 @@ exiles_more_events.1 = {
 		scope:patriotic_exile_scope = { 
 			transfer_character = ROOT 
 			hidden_effect = {
-				remove_modifier = in_exile_modifier
+				free_from_exile_effect = yes
 			}
 		}
 
@@ -159,7 +159,7 @@ exiles_more_events.2 = {
 					save_temporary_scope_as = ex_ig
 				}
 				any_character_in_exile_pool = {
-					home_country = ROOT
+					home_country ?= ROOT
 					ig_type_matches_former = yes
 					law_stance = {
 						law = root.currently_enacting_law.type
@@ -181,7 +181,7 @@ exiles_more_events.2 = {
 					save_temporary_scope_as = ex_ig
 				}
 				any_character_in_exile_pool = {
-					home_country = ROOT
+					home_country ?= ROOT
 					ig_type_matches_former = yes
 					law_stance = {
 						law = root.currently_enacting_law.type
@@ -199,7 +199,7 @@ exiles_more_events.2 = {
 
 		random_character_in_exile_pool = {
 			limit = {
-				home_country = root
+				home_country ?= root
 				OR = {
 					AND = {
 						law_stance = {
@@ -275,7 +275,7 @@ exiles_more_events.2 = {
 		scope:interventionist_exile_scope = { 
 			transfer_character = ROOT 
 			hidden_effect = {
-				remove_modifier = in_exile_modifier
+				free_from_exile_effect = yes
 			}
 		}
 	}
@@ -530,7 +530,7 @@ exiles_more_events.4 = {
 	trigger = {
 		is_major_unifier = yes
 		any_character_in_exile_pool = {
-			NOT = { home_country = ROOT }
+			NOT = { home_country ?= ROOT }
 			culture = {
 				is_primary_culture_of = ROOT
 			}
@@ -540,13 +540,13 @@ exiles_more_events.4 = {
 	immediate = {
 		random_character_in_exile_pool  = {	
 			limit = {
-				NOT = { home_country = ROOT }
+				NOT = { home_country ?= ROOT }
 				culture = {
 					is_primary_culture_of = ROOT
 				}
 			}
 			save_scope_as = post_unification_agitator
-			home_country = {
+			home_country ?= {
 				save_scope_as = post_unification_agitator_home
 			}
 			ideology = {
@@ -576,7 +576,7 @@ exiles_more_events.4 = {
 		scope:post_unification_agitator = { 
 			transfer_character = ROOT 
 			hidden_effect = {
-				remove_modifier = in_exile_modifier
+				free_from_exile_effect = yes
 			}
 		}
 
@@ -943,7 +943,7 @@ exiles_more_events.6 = {
 
 	trigger = {
 		any_character_in_exile_pool = {
-			home_country = ROOT
+			home_country ?= ROOT
 			OR = {
 				has_trait = arrogant
 				has_trait = reckless
@@ -964,7 +964,7 @@ exiles_more_events.6 = {
 	immediate = {
 		random_character_in_exile_pool  = {	
 			limit = {
-				home_country = ROOT
+				home_country ?= ROOT
 				OR = {
 					has_trait = arrogant
 					has_trait = reckless
@@ -1018,7 +1018,7 @@ exiles_more_events.6 = {
 			transfer_character = ROOT 
 			remove_variable = THE_NEFARIOUS_TOP_HAT
 			hidden_effect = {
-				remove_modifier = in_exile_modifier
+				free_from_exile_effect = yes
 			}
 		}
 
@@ -1086,7 +1086,7 @@ exiles_more_events.6 = {
 				scope:melodrama_villain = { 
 					transfer_character = ROOT 
 					hidden_effect = {
-						remove_modifier = in_exile_modifier
+						free_from_exile_effect = yes
 					}
 				}
 
@@ -1159,7 +1159,7 @@ exiles_more_events.7 = {
 
 	trigger = {
 		any_scope_character = {
-			NOT = { home_country = ROOT }
+			NOT = { home_country ?= ROOT }
 			was_exiled = yes
 			count >= 2
 		}
@@ -1168,14 +1168,14 @@ exiles_more_events.7 = {
 	immediate = {
 		random_scope_character = {
 			limit = {
-				NOT = { home_country = ROOT }
+				NOT = { home_country ?= ROOT }
 				was_exiled = yes
 			}
 			save_scope_as = first_ex_exile
 		}
 		random_scope_character = {
 			limit = {
-				NOT = { home_country = ROOT }
+				NOT = { home_country ?= ROOT }
 				was_exiled = yes
 				NOT = { scope:first_ex_exile = this }
 			}
@@ -1218,7 +1218,11 @@ exiles_more_events.7 = {
 
 	option = {
 		name = exiles_more_events.7.b
-
+		trigger = {
+			scope:first_ex_exile = {
+				is_ruler = no
+			}
+		}
 		scope:first_ex_exile = {
 			exile_character_with_martyrdom = yes
 		}
@@ -1226,7 +1230,11 @@ exiles_more_events.7 = {
 
 	option = {
 		name = exiles_more_events.7.c
-
+		trigger = {
+			scope:second_ex_exile = {
+				is_ruler = no
+			}
+		}
 		scope:second_ex_exile = {
 			exile_character_with_martyrdom = yes
 		}
@@ -1258,7 +1266,7 @@ exiles_more_events.8 = {
 		empty_agitator_slots >= 1
 		government_legitimacy < 25
 		any_character_in_exile_pool = {
-			home_country = ROOT
+			home_country ?= ROOT
 			save_temporary_scope_as = ex_ig
 		}
 		any_interest_group = {
@@ -1270,7 +1278,7 @@ exiles_more_events.8 = {
 	immediate = {
 		random_character_in_exile_pool  = {	
 			limit = {
-				home_country = ROOT
+				home_country ?= ROOT
 			}
 			save_temporary_scope_as = ex_ig
 			save_scope_as = dgaf_exile_scope
@@ -1305,7 +1313,7 @@ exiles_more_events.8 = {
 		scope:dgaf_exile_scope = { 
 			transfer_character = ROOT 
 			hidden_effect = {
-				remove_modifier = in_exile_modifier
+				free_from_exile_effect = yes
 			}
 		}
 	}
@@ -1366,11 +1374,13 @@ exiles_more_events.9 = {
 	trigger = {
 		empty_agitator_slots >= 1
 		any_character_in_exile_pool = {
-			NOT = { home_country = ROOT }
+			NOT = { home_country ?= ROOT }
 			culture = { 
 				NOR = { 
 					is_primary_culture_of = ROOT
-					culture_is_discriminated_in = ROOT
+					ROOT = {
+						cultural_acceptance_base = { target = prev value < acceptance_status_5 }
+					}
 				} 
 			}
 			interest_group_type = {
@@ -1386,22 +1396,25 @@ exiles_more_events.9 = {
 	immediate = {
 		random_character_in_exile_pool  = {	
 			limit = {
-				NOT = { home_country = ROOT }
+				NOT = { home_country ?= ROOT }
 				culture = { 
 					NOR = { 
 						is_primary_culture_of = ROOT
-						culture_is_discriminated_in = ROOT
+						ROOT = {
+							cultural_acceptance_base = { target = prev value < acceptance_status_5 }
+						}
 					} 
 				}
 			}
 			interest_group_type = {
-				save_temporary_scope_as = exile_ig_type
+				save_scope_as = exile_ig_type
 			}
 			save_scope_as = fertile_ground_exile_scope
 		}
 		random_interest_group = {
 			limit = {
-				scope:exile_ig_type = this.type
+				scope:exile_ig_type ?= this.type
+				is_powerful = yes
 			}
 			save_scope_as = fertile_ground_ig
 		}
@@ -1431,7 +1444,7 @@ exiles_more_events.9 = {
 		scope:fertile_ground_exile_scope = { 
 			transfer_character = ROOT 
 			hidden_effect = {
-				remove_modifier = in_exile_modifier
+				free_from_exile_effect = yes
 			}
 		}
 	}

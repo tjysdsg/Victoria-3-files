@@ -1,0 +1,95 @@
+﻿russia_offer_circassia_recognition = {
+	is_shown = {
+		exists = c:CIR
+		has_variable = circassia_recognition_seeking
+		country_rank >= rank_value:major_power
+		is_subject = no
+		c:CIR = {
+			has_journal_entry = je_caucasian_war_circassia
+		}
+		NOT = {
+			any_country = {
+				has_variable = circassia_recognizer
+			}
+		}
+	}
+
+	possible = {
+		exists = c:CIR
+		country_rank >= rank_value:major_power
+		is_subject = no
+		c:CIR = {
+			has_journal_entry = je_caucasian_war_circassia
+		}
+		custom_tooltip = {
+			text = no_country_recognised_circassia_tt
+			NOT = {
+				any_country = {
+					has_variable = circassia_recognizer
+				}
+			}
+		}
+		has_interest_marker_in_region = region_caucasus
+		can_create_diplomatic_pact = { target = c:CIR type = military_assistance }
+	}
+
+	when_taken = {
+		custom_tooltip = {
+			text = circassia_recognition_tt
+		}
+		c:RUS = {
+			change_relations = {
+				country = root
+				value = -30
+			}
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_negative
+				target = root
+			}
+		}
+		set_variable = circassia_recognizer
+		create_diplomatic_pact = {
+			country = c:CIR
+			type = military_assistance
+		}
+		c:CIR = {
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_positive
+				target = root
+			}
+			root.power_bloc = {
+				add_leverage = { target = c:CIR value = 25 }
+			}
+		}
+
+		every_country = {
+			limit = {
+				has_variable = circassia_recognition_seeking
+			}
+			remove_variable = circassia_recognition_seeking
+		}
+	}  
+
+	ai_chance = {
+		base = 0
+		modifier = {
+			trigger = {
+				OR = {
+					has_attitude = { who = c:RUS attitude = antagonistic }
+					has_attitude = { who = c:RUS attitude = belligerent }
+					has_attitude = { who = c:RUS attitude = domineering }
+				}
+			}
+			add = 30
+		}
+		modifier = {
+			trigger = {
+				OR = {
+					has_attitude = { who = c:RUS attitude = wary }
+					has_attitude = { who = c:RUS attitude = cautious }
+				}
+			}
+			add = 15
+		}
+	}
+}

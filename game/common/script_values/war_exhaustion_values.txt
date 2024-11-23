@@ -45,7 +45,25 @@ war_exhaustion_from_country_turmoil = {
 }
 
 war_exhaustion = {
-	add = {
+	# save all values that make up the war exhaustion calculation since we frequently refer to them numerous times below
+	value = enemy_occupation
+	save_temporary_value_as = temp_enemy_occupation
+	value = war_exhaustion_from_casualties 
+	save_temporary_value_as = temp_war_exhaustion_from_casualties
+	value = war_exhaustion_from_enemy_contested_wargoals
+	save_temporary_value_as = temp_war_exhaustion_from_enemy_contested_wargoals
+	value = "scope:war.war_exhaustion_from_acceptance_of_dead(root)"
+	save_temporary_value_as = temp_war_exhaustion_from_acceptance_of_dead
+	value = war_exhaustion_from_country_turmoil
+	save_temporary_value_as = temp_war_exhaustion_from_country_turmoil
+	value = war_exhaustion_from_lobby_clout
+	save_temporary_value_as = temp_war_exhaustion_from_lobby_clout
+	value = war_support_from_lobby_clout
+	save_temporary_value_as = temp_war_support_from_lobby_clout
+	# end save temp values
+
+	# reset the calculation to the base
+	value = {
 		add = define:NWar|WAR_EXHAUSTION_BASE
 		desc = "WAR_EXHAUSTION_BASE"
 	}
@@ -53,7 +71,7 @@ war_exhaustion = {
 	add = {
 		if = {
 			limit = {
-				enemy_occupation <= 0.0
+				scope:temp_enemy_occupation <= 0.0
 			}
 			add = {
 				add = 0.0
@@ -62,7 +80,7 @@ war_exhaustion = {
 		}
 		else_if = {
 			limit = {
-				enemy_occupation < 0.1
+				scope:temp_enemy_occupation < 0.1
 			}
 			add = {
 				add = 0.1
@@ -71,7 +89,7 @@ war_exhaustion = {
 		}
 		else_if = {
 			limit = {
-				enemy_occupation < 0.25
+				scope:temp_enemy_occupation < 0.25
 			}
 			add = {
 				add = 0.5
@@ -80,7 +98,7 @@ war_exhaustion = {
 		}
 		else_if = {
 			limit = {
-				enemy_occupation < 0.5
+				scope:temp_enemy_occupation < 0.5
 			}
 			add = {
 				add = 1.0
@@ -89,7 +107,7 @@ war_exhaustion = {
 		}
 		else_if = {
 			limit = {
-				enemy_occupation < 0.75
+				scope:temp_enemy_occupation < 0.75
 			}
 			add = {
 				add = 2.0
@@ -98,7 +116,7 @@ war_exhaustion = {
 		}
 		else_if = {
 			limit = {
-				enemy_occupation < 0.9
+				scope:temp_enemy_occupation < 0.9
 			}
 			add = {
 				add = 3.0
@@ -107,7 +125,7 @@ war_exhaustion = {
 		}
 		else_if = {
 			limit = {
-				enemy_occupation <= 1.0
+				scope:temp_enemy_occupation <= 1.0
 			}
 			add = {
 				add = 10.0
@@ -117,17 +135,17 @@ war_exhaustion = {
 	}
 
 	if = {
-		limit = { war_exhaustion_from_enemy_contested_wargoals >= 0.01 }
+		limit = { scope:temp_war_exhaustion_from_enemy_contested_wargoals >= 0.01 }
 		add = {
-			add = war_exhaustion_from_enemy_contested_wargoals
+			add = scope:temp_war_exhaustion_from_enemy_contested_wargoals
 			desc = "WAR_EXHAUSTION_FROM_ENEMY_CONTESTED_WARGOALS"
 		}
 	}
 	
 	if = {
-		limit = { war_exhaustion_from_casualties >= 0.01 }
+		limit = { scope:temp_war_exhaustion_from_casualties >= 0.01 }
 		add = {
-			add = war_exhaustion_from_casualties
+			add = scope:temp_war_exhaustion_from_casualties
 			desc = "WAR_EXHAUSTION_FROM_CASUALTIES"
 			multiply = {
 				add = 1
@@ -139,25 +157,33 @@ war_exhaustion = {
 	}
 	
 	if = {
-		limit = { war_exhaustion_from_country_turmoil >= 0.01 }
+		limit = { scope:temp_war_exhaustion_from_acceptance_of_dead >= 0.01 }
 		add = {
-			add = war_exhaustion_from_country_turmoil
+			add = scope:temp_war_exhaustion_from_acceptance_of_dead
+			desc = "WAR_EXHAUSTION_FROM_ACCEPTANCE_OF_DEAD"
+		}
+	}
+	
+	if = {
+		limit = { scope:temp_war_exhaustion_from_country_turmoil >= 0.01 }
+		add = {
+			add = scope:temp_war_exhaustion_from_country_turmoil
 			desc = "WAR_EXHAUSTION_FROM_TURMOIL"
 		}
 	}	
 	
 	if = {
-		limit = { war_exhaustion_from_lobby_clout >= 0.01 }
+		limit = { scope:temp_war_exhaustion_from_lobby_clout >= 0.01 }
 		add = {
-			add = war_exhaustion_from_lobby_clout
+			add = scope:temp_war_exhaustion_from_lobby_clout
 			desc = "WAR_OPPOSITION_FROM_LOBBIES"
 		}
 	}	
 	
 	if = {
-		limit = { war_support_from_lobby_clout <= -0.01 }
+		limit = { scope:temp_war_support_from_lobby_clout <= -0.01 }
 		add = {
-			add = war_support_from_lobby_clout
+			add = scope:temp_war_support_from_lobby_clout
 			desc = "WAR_SUPPORT_FROM_LOBBIES"
 		}
 	}		
@@ -166,4 +192,6 @@ war_exhaustion = {
 		add = "additional_war_exhaustion(scope:war.diplomatic_play)"
 		desc = "WAR_EXHAUSTION_FROM_EVENTS"
 	}
+	
+	max = define:NWar|WAR_EXHAUSTION_MAX
 }

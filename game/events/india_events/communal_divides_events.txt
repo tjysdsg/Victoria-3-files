@@ -1,0 +1,721 @@
+﻿namespace = communal_divides_events
+
+communal_divides_events.1 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	title = communal_divides_events.1.t
+	desc = communal_divides_events.1.d
+	flavor = communal_divides_events.1.f
+
+	event_image = {
+		video = "ip2_cross_cultural_festival"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	trigger = {
+		# triggered by JE
+	}
+
+	immediate = {
+	}
+	
+	option = {
+		name = communal_divides_events.1.a 
+		default_option = yes
+		ai_chance = {
+			base = 50
+		}
+		add_modifier = {
+			name = united_in_diversity_modifier
+		}
+		custom_tooltip = {
+			text = communal_divides_events.1_tt
+			set_variable = religious_nationalism_decrease_var
+		}
+	}
+
+	option = {
+		name = communal_divides_events.1.b
+		ai_chance = {
+			base = 50
+		}
+		add_modifier = {
+			name = marching_as_one_modifier
+		}
+	}
+}
+
+communal_divides_events.2 = {
+	type = country_event
+	placement = root
+
+	duration = 3
+
+	title = communal_divides_events.2.t
+	desc = communal_divides_events.2.d
+	flavor = communal_divides_events.2.f
+
+	event_image = {
+		video = "ip2_intercommunal_tensions"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	trigger = {
+		# triggered by JE
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				any_country = {
+					country_is_in_india = yes
+					OR = {
+						country_has_state_religion = rel:sunni
+						country_has_state_religion = rel:shiite
+					}
+					NOT = {
+						is_subject_of = root
+					}
+				}
+			}
+			ordered_country = {
+				limit = {
+					country_is_in_india = yes
+					OR = {
+						country_has_state_religion = rel:sunni
+						country_has_state_religion = rel:shiite
+					}
+					NOT = {
+						is_subject_of = root
+					}
+				}
+				order_by = gdp
+				save_scope_as = muslim_indian_country_scope
+			}
+		}
+	}
+	
+	option = {
+		name = communal_divides_events.2.a 
+		default_option = yes
+		ai_chance = {
+			base = 50
+		}
+		if = {
+			limit = {
+				any_country = {
+					country_is_in_india = yes
+					OR = {
+						country_has_state_religion = rel:sunni
+						country_has_state_religion = rel:shiite
+					}
+					NOT = {
+						is_subject_of = root
+					}
+				}
+			}
+			every_country = {
+				limit = {
+					country_is_in_india = yes
+					OR = {
+						country_has_state_religion = rel:sunni
+						country_has_state_religion = rel:shiite
+					}
+					NOT = {
+						is_subject_of = root
+					}
+				}
+				change_relations = {
+					country = root
+					value = -30
+				}
+				create_diplomatic_catalyst = {  
+					type = catalyst_event_negative
+					target = root
+				}
+			}
+		}
+		add_modifier = {
+			name = modifier_intercommunal_violence
+			months = long_modifier_time
+		}
+	}
+
+	option = {
+		name = communal_divides_events.2.b
+		ai_chance = {
+			base = 50
+		}
+		add_modifier = {
+			name = modifier_intercommunal_violence
+			months = long_modifier_time
+			multiplier = 1.5
+		}
+	}
+}
+
+communal_divides_events.3 = {
+	type = country_event
+	placement = scope:relevant_state
+
+	duration = 3
+
+	title = communal_divides_events.3.t
+	desc = communal_divides_events.3.d
+	flavor = communal_divides_events.3.f
+
+	event_image = {
+		video = "ip2_intercommunal_tensions"
+	}
+
+	dlc = dlc011
+
+	cooldown = { months = normal_modifier_time }
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	trigger = {
+		any_political_movement = { 
+		    is_political_movement_type = movement_india_pan_national
+		}
+		any_political_movement = { 
+		    is_political_movement_type = movement_muslim_nationalist
+		}
+		any_scope_state = {
+			any_scope_pop = {
+				religion = rel:sunni
+			}
+			any_scope_pop = {
+				religion = rel:hindu
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				any_scope_pop = {
+					religion = rel:sunni
+				}
+				any_scope_pop = {
+					religion = rel:hindu
+				}				
+			}
+			save_scope_as = relevant_state
+		}
+		random_political_movement = {
+			limit = {
+				is_political_movement_type = movement_india_pan_national
+			}
+			save_scope_as = india_congress_scope
+		}
+		random_political_movement = {
+			limit = {
+				is_political_movement_type = movement_muslim_nationalist
+			}
+			save_scope_as = muslim_league_scope
+		}
+	}
+	
+	option = {
+		name = communal_divides_events.3.a 
+		default_option = yes
+		ai_chance = {
+			base = 50
+		}
+		scope:relevant_state = {
+			add_radicals_in_state = {
+				religion = rel:sunni
+				value = medium_radicals
+			}
+			add_radicals_in_state = {
+				religion = rel:hindu
+				value = medium_radicals
+			}
+			random_list = {
+				1 = {
+					add_modifier = {
+						name = mob_violence_modifier
+						months = short_modifier_time
+					}
+				}
+				1 = {
+				}
+			}
+		}
+		scope:india_congress_scope = {
+			add_modifier = {
+				name = exploiting_sectarian_divisions
+				months = normal_modifier_time
+			}
+		}
+		scope:muslim_league_scope = {
+			add_modifier = {
+				name = exploiting_sectarian_divisions
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = communal_divides_events.3.b
+		ai_chance = {
+			base = 50
+		}
+		scope:relevant_state = {
+			add_radicals_in_state = {
+				religion = rel:sunni
+				value = small_radicals
+			}
+			add_radicals_in_state = {
+				religion = rel:hindu
+				value = small_radicals
+			}
+		}
+		scope:india_congress_scope = {
+			add_modifier = {
+				name = sectarian_infighting_modifier
+				months = normal_modifier_time
+			}
+		}
+		scope:muslim_league_scope = {
+			add_modifier = {
+				name = inc_congress_influx
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+communal_divides_events.4 = {
+	type = country_event
+	placement = scope:relevant_state
+
+	duration = 3
+
+	title = communal_divides_events.4.t
+	desc = communal_divides_events.4.d
+	flavor = communal_divides_events.4.f
+
+	event_image = {
+		video = "ip2_intercommunal_tensions"
+	}
+
+	dlc = dlc011
+
+	cooldown = { months = normal_modifier_time }
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	trigger = {
+		any_political_movement = { 
+		    is_political_movement_type = movement_hindu_nationalist
+		}
+		any_political_movement = { 
+		    is_political_movement_type = movement_muslim_nationalist
+		}
+		any_scope_state = {
+			any_scope_pop = {
+				religion = rel:sunni
+			}
+			any_scope_pop = {
+				religion = rel:hindu
+			}
+		}
+	}
+
+	immediate = {
+		random_political_movement = {
+			limit = {
+				is_political_movement_type = movement_hindu_nationalist
+			}
+			save_scope_as = hindu_mahasabha_scope
+		}
+		random_political_movement = {
+			limit = {
+				is_political_movement_type = movement_muslim_nationalist
+			}
+			save_scope_as = muslim_league_scope
+		}
+		random_scope_state = {
+			limit = {
+				any_scope_pop = {
+					religion = rel:sunni
+				}
+				any_scope_pop = {
+					religion = rel:hindu
+				}				
+			}
+			save_scope_as = relevant_state
+		}
+	}
+	
+	option = {
+		name = communal_divides_events.4.a 
+		default_option = yes
+		ai_chance = {
+			base = 50
+		}
+		scope:hindu_mahasabha_scope = {
+			add_modifier = {
+				name = influx_of_recruits
+				months = normal_modifier_time
+			}
+		}
+		scope:relevant_state = {
+			add_modifier = {
+				name = mob_violence_modifier
+				months = short_modifier_time
+			}
+			add_radicals_in_state = {
+				religion = rel:sunni
+				value = small_radicals
+			}
+			add_radicals_in_state = {
+				religion = rel:hindu
+				value = medium_radicals
+			}
+		}
+	}
+
+	option = {
+		name = communal_divides_events.4.b
+		ai_chance = {
+			base = 50
+		}
+		scope:muslim_league_scope = {
+			add_modifier = {
+				name = safety_in_numbers
+				months = normal_modifier_time
+			}
+		}
+		scope:relevant_state = {
+			add_modifier = {
+				name = mob_violence_modifier
+				months = short_modifier_time
+			}
+			add_radicals_in_state = {
+				religion = rel:sunni
+				value = medium_radicals
+			}
+			add_radicals_in_state = {
+				religion = rel:hindu
+				value = small_radicals
+			}
+		}
+	}
+}
+
+communal_divides_events.5 = {
+	type = country_event
+	placement = scope:relevant_state
+
+	duration = 3
+
+	title = communal_divides_events.5.t
+	desc = communal_divides_events.5.d
+	flavor = communal_divides_events.5.f
+
+	event_image = {
+		video = "ip2_intercommunal_tensions"
+	}
+
+	dlc = dlc011
+
+	cooldown = { months = normal_modifier_time }
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	trigger = {
+		any_scope_state = {
+			any_scope_pop = {
+				religion = rel:sunni
+			}
+			any_scope_pop = {
+				religion = rel:hindu
+			}
+		}
+		any_political_movement = { 
+		    is_political_movement_type = movement_muslim_nationalist
+		}
+		any_political_movement = { 
+		    is_political_movement_type = movement_hindu_nationalist
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				any_scope_pop = {
+					religion = rel:sunni
+				}
+				any_scope_pop = {
+					religion = rel:hindu
+				}				
+			}
+			save_scope_as = relevant_state
+		}
+		random_political_movement = {
+			limit = {
+				is_political_movement_type = movement_muslim_nationalist
+			}
+			save_scope_as = muslim_league_scope
+		}
+		random_political_movement = {
+			limit = {
+				is_political_movement_type = movement_hindu_nationalist
+			}
+			save_scope_as = hindu_mahasabha_scope
+		}
+	}
+	
+	option = {
+		name = communal_divides_events.5.a 
+		ai_chance = {
+			base = 33
+		}
+		default_option = yes
+		scope:relevant_state = {
+			add_modifier = {
+				name = mob_violence_modifier
+				months = short_modifier_time
+			}
+			add_radicals_in_state = {
+				religion = rel:sunni
+				value = medium_radicals
+			}
+			add_radicals_in_state = {
+				religion = rel:hindu
+				value = medium_radicals
+			}
+		}
+		scope:hindu_mahasabha_scope = {
+			add_modifier = {
+				name = governmental_overreach_modifier
+				months = normal_modifier_time
+			}
+		}
+		scope:muslim_league_scope = {
+			add_modifier = {
+				name = governmental_overreach_modifier
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = communal_divides_events.5.b
+		ai_chance = {
+			base = 33
+		}
+		scope:relevant_state = {
+			add_modifier = {
+				name = mob_violence_modifier
+				months = short_modifier_time
+				multiplier = 1.5
+			}
+			add_radicals_in_state = {
+				religion = rel:sunni
+				value = small_radicals
+			}
+			add_radicals_in_state = {
+				religion = rel:hindu
+				value = small_radicals
+			}
+		}
+		scope:muslim_league_scope = {
+			add_modifier = {
+				name = outraged_over_power_sharing
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = communal_divides_events.5.c
+		ai_chance = {
+			base = 33
+		}
+		scope:relevant_state = {
+			add_modifier = {
+				name = mob_violence_modifier
+				months = short_modifier_time
+			}
+			add_loyalists_in_state = {
+				religion = rel:sunni
+				value = small_radicals
+			}
+			add_radicals_in_state = {
+				religion = rel:hindu
+				value = medium_radicals
+			}
+		}
+		scope:hindu_mahasabha_scope = {
+			add_modifier = {
+				name = outraged_over_favouritism
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+communal_divides_events.6 = {
+	type = country_event
+	placement = scope:relevant_state
+
+	duration = 3
+
+	title = communal_divides_events.6.t
+	desc = communal_divides_events.6.d
+	flavor = communal_divides_events.6.f
+
+	event_image = {
+		video = "ip2_intercommunal_tensions"
+	}
+
+	dlc = dlc011
+
+	cooldown = { months = normal_modifier_time }
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	trigger = {
+		any_scope_state = {
+			any_scope_pop = {
+				religion = rel:sunni
+			}
+			any_scope_pop = {
+				religion = rel:hindu
+			}
+		}
+		any_political_movement = { 
+		    is_political_movement_type = movement_muslim_nationalist
+		}
+		any_political_movement = { 
+		    is_political_movement_type = movement_hindu_nationalist
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				any_scope_pop = {
+					religion = rel:sunni
+				}
+				any_scope_pop = {
+					religion = rel:hindu
+				}				
+			}
+			save_scope_as = relevant_state
+		}
+		random_political_movement = {
+			limit = {
+				is_political_movement_type = movement_muslim_nationalist
+			}
+			save_scope_as = muslim_league_scope
+		}
+		random_political_movement = {
+			limit = {
+				is_political_movement_type = movement_hindu_nationalist
+			}
+			save_scope_as = hindu_mahasabha_scope
+		}
+	}
+	
+	option = {
+		name = communal_divides_events.6.a 
+		default_option = yes
+		ai_chance = {
+			base = 33
+		}
+		scope:relevant_state = {
+			add_radicals_in_state = {
+				religion = rel:sunni
+				value = medium_radicals
+			}
+			add_loyalists_in_state = {
+				religion = rel:hindu
+				value = small_radicals
+			}
+		}
+		scope:muslim_league_scope = {
+			add_modifier = {
+				name = losing_grip_over_urban_administrations
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = communal_divides_events.6.b
+		ai_chance = {
+			base = 33
+		}
+		scope:relevant_state = {
+			add_radicals_in_state = {
+				religion = rel:sunni
+				value = small_radicals
+			}
+			add_loyalists_in_state = {
+				religion = rel:hindu
+				value = small_radicals
+			}
+		}
+		scope:hindu_mahasabha_scope = {
+			add_modifier = {
+				name = unsatisfactory_compromises_over_city_administrations
+				months = normal_modifier_time
+			}
+		}
+		scope:muslim_league_scope = {
+			add_modifier = {
+				name = unsatisfactory_compromises_over_city_administrations
+				months = normal_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = communal_divides_events.6.c
+		ai_chance = {
+			base = 33
+		}
+		scope:relevant_state = {
+			add_radicals_in_state = {
+				religion = rel:sunni
+				value = large_radicals
+			}
+			add_loyalists_in_state = {
+				religion = rel:hindu
+				value = medium_radicals
+			}
+		}
+		scope:muslim_league_scope = {
+			add_modifier = {
+				name = upended_urban_administrations
+				months = normal_modifier_time
+			}
+		}
+	}
+}

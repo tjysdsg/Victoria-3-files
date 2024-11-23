@@ -100,16 +100,20 @@ dei_breakup.1 = {
 				make_independent = yes
 			}
 		}
+		ig:ig_industrialists = {
+			remove_ideology = ideology_colonialist
+			add_ideology = ideology_laissez_faire
+		}
 		change_tag = JAV
 		hidden_effect = {
 			remove_primary_culture = cu:dutch
 			add_primary_culture = cu:javan
 			set_state_religion = rel:sunni
+			state_religion_switch_effect = yes
 			every_scope_character = {
 				limit = {
-					OR = {
-						culture = cu:dutch
-					}
+					culture = cu:dutch
+					is_immortal = no
 				}
 				kill_character = yes
 			}
@@ -126,6 +130,10 @@ dei_breakup.1 = {
 			factor = 1
 		}
 		change_tag = IDN
+		ig:ig_industrialists = {
+			remove_ideology = ideology_colonialist
+			add_ideology = ideology_laissez_faire
+		}
 		hidden_effect = {
 			remove_primary_culture = cu:dutch
 			add_primary_culture = cu:balinese
@@ -139,6 +147,7 @@ dei_breakup.1 = {
 			every_scope_character = {
 				limit = {
 					culture = cu:dutch
+					is_immortal = no
 				}
 				kill_character = yes
 			}
@@ -152,6 +161,320 @@ dei_breakup.1 = {
 		default_option = yes
 		add_radicals = {
 			value = very_large_radicals
+		}
+	}
+}
+
+namespace = alk_breakup
+
+# Independent Russian American Company
+alk_breakup.1 = {
+	type = country_event
+	placement = root
+	
+	title = alk_breakup.1.t
+	desc = alk_breakup.1.d
+	flavor = alk_breakup.1.f
+	
+	event_image = {
+		video = "unspecific_iceberg"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+	
+	duration = 3
+	
+	cooldown = { months = very_long_modifier_time }
+
+	trigger = {
+		c:ALK ?= this
+		is_subject = no
+		is_at_war = no
+		NOT = {
+			has_variable = alk_collapse_var
+		}
+	}
+
+	immediate = {
+		set_variable = alk_collapse_var
+		capital = {
+			save_scope_as = capital_scope
+		}
+		ordered_state = {
+			limit = {
+				owner = {
+					any_primary_culture = {
+						has_discrimination_trait = east_slavic
+					}
+				}
+				OR = {
+					region = sr:region_manchuria
+					region = sr:region_east_siberia
+				}
+			}
+			order_by = gdp
+			save_scope_as = russian_evacuation_state
+		}
+		random_state = {
+			limit = {
+				region = sr:region_pacific_coast
+				NOT = {
+					state_region = s:STATE_ALASKA
+				}
+			}
+			save_scope_as = fallback_evacuation_state
+		}
+	}
+
+	option = {
+		name = alk_breakup.1.a
+		ai_chance = {
+			base = 8 # this is the default pick for the AI
+		}
+		trigger = {
+			any_neighbouring_state = {
+				owner = {
+					NOT = {
+						this = ROOT
+					}
+				}
+			}
+		}
+		custom_tooltip = {
+			text = most_european_pops_abandon_alaska_tt
+			every_scope_pop = {
+				limit = {
+					culture = {
+						has_discrimination_trait = european_heritage
+					}
+				}
+				if = {
+					limit = {
+						exists = scope:russian_evacuation_state
+						this.culture = {
+							has_discrimination_trait = east_slavic
+						}
+					}
+					random_list = {
+						75 = {
+							move_pop = scope:russian_evacuation_state
+						}
+						25 = {
+
+						}
+					}
+				}
+				else = {
+					random_list = {
+						75 = {
+							move_pop = scope:fallback_evacuation_state
+						}
+						25 = {
+
+						}
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				exists = scope:russian_evacuation_state
+			}
+			play_as = scope:russian_evacuation_state.owner
+		}
+		else = {
+			play_as = scope:fallback_evacuation_state.owner
+		}
+		random_neighbouring_state = {
+			limit = {
+				owner = {
+					NOT = {
+						this = ROOT
+					}
+					NOT = {
+						is_country_type = decentralized
+					}
+				}
+			}
+			owner = {
+				annex = c:ALK
+			}
+		}
+	}
+	option = {
+		name = alk_breakup.1.b
+		ai_chance = {
+			base = 0
+		}
+		default_option = yes
+		custom_tooltip = {
+			text = some_european_pops_abandon_alaska_tt
+			every_scope_pop = {
+				limit = {
+					culture = {
+						has_discrimination_trait = european_heritage
+					}
+				}
+				if = {
+					limit = {
+						exists = scope:russian_evacuation_state
+						this.culture = {
+							has_discrimination_trait = east_slavic
+						}
+					}
+					random_list = {
+						25 = {
+							move_pop = scope:russian_evacuation_state
+						}
+						75 = {
+
+						}
+					}
+				}
+				else = {
+					random_list = {
+						25 = {
+							move_pop = scope:fallback_evacuation_state
+						}
+						75 = {
+
+						}
+					}
+				}
+			}
+		}
+		add_radicals = {
+			value = very_large_radicals
+		}
+	}
+
+	option = {
+		name = alk_breakup.1.c
+		highlighted_option = yes
+		trigger = {
+			has_technology_researched = nationalism
+		}
+		ai_chance = {
+			factor = 1
+		}
+		custom_tooltip = alaskan_declaration_of_independence_tt
+		add_modifier = {
+			name = modifier_alyaska_republic
+			months = long_modifier_time
+		}
+		ig:ig_industrialists = {
+			remove_ideology = ideology_colonialist
+			add_ideology = ideology_laissez_faire
+		}
+		s:STATE_ALASKA = {
+			add_homeland = cu:russian
+		}
+		custom_tooltip = {
+			text = some_european_pops_abandon_alaska_tt
+			every_scope_pop = {
+				limit = {
+					culture = {
+						has_discrimination_trait = european_heritage
+					}
+				}
+				if = {
+					limit = {
+						exists = scope:russian_evacuation_state
+						this.culture = {
+							has_discrimination_trait = east_slavic
+						}
+					}
+					random_list = {
+						25 = {
+							move_pop = scope:russian_evacuation_state
+						}
+						75 = {
+
+						}
+					}
+				}
+				else = {
+					random_list = {
+						25 = {
+							move_pop = scope:fallback_evacuation_state
+						}
+						75 = {
+
+						}
+					}
+				}
+			}
+		}
+		add_radicals = {
+			value = medium_radicals
+		}
+	}
+
+	option = {
+		name = alk_breakup.1.e
+		highlighted_option = yes
+		trigger = {
+			has_technology_researched = nationalism
+			has_law = law_type:law_no_colonial_affairs
+			OR = {
+				has_law = law_type:law_multicultural
+				has_law = law_type:law_council_republic
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+		if = {
+			limit = {
+				exists = c:ATB
+			}
+			set_country_type = recognized
+			play_as = c:ATB
+			c:ATB ?= {
+				annex = c:ALK
+			}
+		}
+		else = {
+			change_tag = ATB
+			add_primary_culture = cu:athabaskan
+		}
+		custom_tooltip = {
+			text = some_european_pops_abandon_alaska_tt
+			every_scope_pop = {
+				limit = {
+					culture = {
+						has_discrimination_trait = european_heritage
+					}
+				}
+				if = {
+					limit = {
+						exists = scope:russian_evacuation_state
+						this.culture = {
+							has_discrimination_trait = east_slavic
+						}
+					}
+					random_list = {
+						25 = {
+							move_pop = scope:russian_evacuation_state
+						}
+						75 = {
+
+						}
+					}
+				}
+				else = {
+					random_list = {
+						25 = {
+							move_pop = scope:fallback_evacuation_state
+						}
+						75 = {
+
+						}
+					}
+				}
+			}
 		}
 	}
 }

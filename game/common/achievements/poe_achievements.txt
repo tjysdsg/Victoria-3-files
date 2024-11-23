@@ -1,0 +1,295 @@
+﻿# possible - filters out achivements on game start so we dont have to check everything all the time
+# happened - checks if achivement happened
+
+achievement_prolecorp = {
+	possible = {
+		always = yes
+	}
+	happened = {
+		has_law = law_type:law_council_republic
+		has_law = law_type:law_command_economy
+		custom_tooltip = {
+			text = achievement_prolecorp_tt
+			any_company = {
+				prosperity >= 200
+			}
+		}
+	}
+}
+
+
+achievement_azadi = {
+	possible = {
+		c:MUG ?= this
+		has_dlc_feature = ip2_content
+	}
+	happened = {
+		custom_tooltip = {
+			text = achievement_azadi_tt
+			has_variable = completed_mughal_hindustan_je
+	    }
+		custom_tooltip = {
+			text = achievement_azadi_2_tt
+			NOT = {
+				c:GBR ?= {
+					AND = {
+						is_power_bloc_leader = yes
+						is_in_same_power_bloc = root
+					}
+				}
+			}
+		}
+		custom_tooltip = {
+			text = achievement_azadi_bengal_tt
+			sr:region_bengal = {
+				any_scope_state = {
+					percent = 1
+					OR = {
+						owner = root
+						owner = { is_subject_of = ROOT }
+					}
+				}
+			}
+		}
+		custom_tooltip = {
+			text = achievement_azadi_bombay_tt
+			sr:region_bombay = {
+				any_scope_state = {
+					percent = 1
+					OR = {
+						owner = root
+						owner = { is_subject_of = ROOT }
+					}
+				}
+			}
+		}
+		custom_tooltip = {
+			text = achievement_azadi_madras_tt
+			sr:region_madras = {
+				any_scope_state = {
+					percent = 1
+					OR = {
+						owner = root
+						owner = { is_subject_of = ROOT }
+					}
+				}
+			}
+		}
+		custom_tooltip = {
+			text = achievement_azadi_central_india_tt
+			sr:region_central_india = {
+				any_scope_state = {
+					percent = 1
+					OR = {
+						owner = root
+						owner = { is_subject_of = ROOT }
+					}
+				}
+			}
+		}
+		custom_tooltip = {
+			text = achievement_azadi_punjab_tt
+			sr:region_punjab = {
+				any_scope_state = {
+					percent = 1
+					OR = {
+						owner = root
+						owner = { is_subject_of = ROOT }
+					}
+				}
+			}
+		}
+	}
+}
+
+achievement_be_prepared = {
+	possible = {
+		always = yes
+	}
+	happened = {
+		custom_tooltip = {
+			text = achievement_be_prepared_tt
+			any_scope_state = {
+				any_harvest_condition = {
+					harvest_condition_intensity = { target = prev.owner value > 5 }
+				}
+				state_region = {
+					NOR = {
+						has_harvest_condition = pollinator_surge
+						has_harvest_condition = optimal_sunlight
+						has_harvest_condition = moderate_rainfall
+					}
+				}
+			}
+		}
+		custom_tooltip = {
+			text = achievement_be_prepared_2_tt
+			NOT = {
+				any_scope_state = {
+					has_famine = yes
+				}
+			}
+		}
+		custom_tooltip = {
+			text = achievement_be_prepared_3_tt
+			OR = {
+				AND = {
+					institution_investment_level = {
+						institution = institution_home_affairs
+						value >= 3
+					}
+					has_law = law_type:law_national_guard
+				}
+				AND = {
+					institution_investment_level = {
+						institution = institution_health_system
+						value >= 3
+					}
+					has_law = law_type:law_charitable_health_system
+				}
+				AND = {
+					institution_investment_level = {
+						institution = institution_social_security
+						value >= 3
+					}
+				}
+			}
+		}
+	}
+}
+
+achievement_on_the_edge = {
+	possible = {
+		c:PAN ?= this
+		has_dlc_feature = ip2_content
+	}
+	happened = {
+		custom_tooltip = {
+			text = four_deaths_in_a_row_tt
+			has_variable = sikh_dead_maharajas_var
+			var:sikh_dead_maharajas_var >= 4
+		}
+		custom_tooltip = {
+			text = achievement_on_the_edge_tt
+			has_variable = completed_sikh_sovereignty_je
+		}
+	}
+}
+
+achievement_caste_away = {
+	possible = {
+		OR = {
+			has_law = law_type:law_hindu_caste_enforced
+			has_law = law_type:law_hindu_caste_codified
+			has_law = law_type:law_hindu_caste_not_enforced
+		}
+	}
+	happened = {
+		has_law = law_type:law_affirmative_action
+	}
+}
+
+achievement_the_real_movement = {
+	possible = {
+		always = yes
+	}
+	happened = {
+		custom_tooltip = {
+			text = real_movement_achievement_tt
+			any_political_movement = {
+				is_political_movement_type = movement_communist
+				political_movement_support > 0.5
+			}
+		}
+	}
+}
+
+achievement_folkhemmet = {
+	possible = {
+		OR = {
+			c:SWE ?= this
+			AND = {
+				c:SCA ?= this
+				was_formed_from = SWE
+			}
+		}
+	}
+	happened = {
+		has_law = law_type:law_corporate_state
+        institution_investment_level = {
+            institution = institution_social_security
+            value = 5
+        }
+        institution_investment_level = {
+            institution = institution_health_system
+            value = 5
+        }
+        institution_investment_level = {
+            institution = institution_workplace_safety
+            value = 5
+        }
+	}
+}
+
+achievement_cosmopolitan = {
+	possible = {
+		always = yes
+	}
+	happened = {
+		custom_tooltip = {
+			text = at_least_ten_acceptance_5_pops_tt
+			any_scope_culture = {
+				NOT = {
+					is_primary_culture_of = root
+				}
+				any_scope_pop = {
+					filter = { state.owner = root }
+					pop_acceptance >= acceptance_status_5
+					percent >= 1
+				}
+				count >= 10
+			}
+		}
+	}
+}
+
+achievement_our_words_are_backed = {
+	possible = {
+		has_dlc_feature = ip2_content
+	}
+	happened = {
+		custom_tooltip = {
+			text = achievement_our_words_are_backed_1_tt
+			ruler = {
+				has_template = BIC_mohandas_karamchand_gandhi
+			}
+		}
+		infamy >= 100
+	}
+}
+
+achievement_the_man_who_would_be_king = {
+	possible = {
+		has_dlc_feature = ep1_content
+		OR = {
+			c:KAF ?= this
+			AND = {
+				c:AFG ?= this
+				was_formed_from = KAF
+			}
+		}
+	}
+	happened = {
+		custom_tooltip = {
+			text = achievement_the_man_who_would_be_king_1_tt
+			ruler = {
+				has_template = KAB_josiah_harlan
+			}
+		}
+		custom_tooltip = {
+			text = achievement_the_man_who_would_be_king_2_tt
+			c:AFG ?= this
+			was_formed_from = KAF
+		}
+	}
+}

@@ -1,0 +1,216 @@
+﻿je_india_home_rule = {
+	should_be_pinned_by_default = yes
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	group = je_group_historical_content
+
+	scripted_progress_bar = je_india_home_rule_progressbar
+
+	scripted_button = je_india_home_rule_request_democracy_permission
+
+	is_shown_when_inactive = {
+		has_dlc_feature = ip2_content
+		c:BIC ?= this
+		is_subject = yes
+		has_technology_researched = pan-nationalism
+	}
+
+	possible = {
+		any_political_movement = { 
+			is_political_movement_type = movement_india_pan_national
+		}
+		is_subject = yes
+		custom_tooltip = {
+			text = no_south_asian_primary_cultures_tt
+			NOT = {
+				any_primary_culture = {
+					has_discrimination_trait = south_asian_heritage
+				}
+			}
+		}
+	}
+
+	immediate = {
+		top_overlord = {
+			save_scope_as = overlord_scope
+			add_journal_entry = {
+				type = je_india_nationalism_britain
+			}
+		}
+		ig:ig_industrialists = {
+			save_scope_as = government_scope
+		}
+		ROOT = {
+			save_scope_as = india_scope
+		}
+		trigger_event = { id = india_home_rule_events.7 popup = yes }
+	}
+
+	complete = {
+		custom_tooltip = {
+			text = is_dominion_or_protectorate_tt
+			OR = {
+				has_diplomatic_pact = {
+					who = overlord
+					type = dominion
+					is_initiator = no
+				}
+				has_diplomatic_pact = {
+					who = overlord
+					type = protectorate
+					is_initiator = no
+				}
+			}
+		}
+		country_has_voting_franchise = yes
+		has_law = law_type:law_elected_bureaucrats
+		custom_tooltip = {
+			text = accepts_south_asian_culture_tt
+			any_scope_culture = {
+				has_discrimination_trait = south_asian_heritage
+				root = {
+					cultural_acceptance_base = { 
+						target = prev 
+						value >= acceptance_status_4 
+					}
+				}
+			}
+		}
+	}
+
+	fail = {
+		OR = {
+			has_any_secessionists_broken_out = yes
+			any_political_movement = { 
+				is_political_movement_type = movement_india_pan_national
+				political_movement_radicalism >= 0.5
+			}
+			any_civil_war = {
+				civil_war_progress >= 0.75
+				is_civil_war_type = revolution
+			}
+		}
+	}
+
+	on_fail = {
+		trigger_event = { id = india_home_rule_events.3 popup = yes}
+		set_global_variable = india_home_rule_failed
+	}
+
+	on_complete = {
+		custom_tooltip = {
+			text = indian_home_rule_granted_tt
+			set_global_variable = india_home_rule
+		}
+		trigger_event = { id = india_home_rule_events.1 popup = yes }
+	}
+
+	invalid = {
+		OR = {
+			NOT = {
+				exists = scope:overlord_scope
+			}
+			scope:india_scope ?= {
+				NOT = {
+					is_subject_of = scope:overlord_scope
+				}
+			}
+		}
+	}
+
+	weight = 1000
+}
+
+je_india_nationalism_britain = {
+	should_be_pinned_by_default = yes
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	group = je_group_historical_content
+	
+	scripted_progress_bar = je_india_home_rule_progressbar
+
+	scripted_button = je_india_nationalism_britain_indian_self_governance
+	scripted_button = je_india_nationalism_britain_dispatch_simon_commission
+
+	immediate = { # Activated by this popping up for India.
+		c:BIC = {
+			save_scope_as = india_scope
+		}
+		ROOT = {
+			save_scope_as = overlord_scope
+		}
+		trigger_event = { id = india_home_rule_events.8 popup = yes }
+	}
+
+	complete = {
+		trigger_if = {
+			limit = {
+				c:BIC ?= {
+					has_journal_entry = je_india_home_rule
+				}
+			}
+			custom_tooltip = {
+				text = granted_india_home_rule_tt
+				has_global_variable = india_home_rule
+			}
+		}
+		trigger_else = {
+			custom_tooltip = {
+				text = preserve_british_rule_forever_tt
+				always = no
+			}
+		}
+	}
+
+	fail = {
+		c:BIC ?= {
+			has_revolution = yes
+		}
+	}
+
+	on_monthly_pulse = {
+		effect = {
+			if = {
+				limit = {
+					has_variable = simon_commission_timer_var
+				}
+				change_variable = { name = simon_commission_timer_var subtract = 1 }
+				if = {
+					limit = {
+						var:simon_commission_timer_var = 0
+					}
+					trigger_event = { id = india_home_rule_events.10 popup = yes }
+					remove_variable = simon_commission_timer_var
+				}
+			}
+		}
+		random_events = {
+			200 = 0
+			10 = india_nationalism_events.6
+			10 = india_nationalism_events.7
+		}
+	}
+
+	on_fail = {
+
+	}
+
+	on_complete = {
+
+	}
+
+	invalid = {
+		OR = {
+			NOT = {
+				exists = scope:india_scope
+			}
+			scope:india_scope ?= {
+				NOT = {
+					is_subject_of = ROOT
+				}
+			}
+		}
+	}
+
+	weight = 1000
+}
