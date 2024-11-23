@@ -1,0 +1,490 @@
+﻿namespace = india_railway
+
+# Train Robbery
+india_railway.1 = {
+	type = country_event
+	placement = scope:relevant_state
+	title = india_railway.1.t
+	desc = india_railway.1.d
+	flavor = india_railway.1.f
+
+	event_image = {
+		video = "unspecific_trains"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_fire.dds"
+
+	duration = 3
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by Purveyor of Progres JE
+		is_subject = yes
+		liberty_desire >= 25
+		any_scope_state = {
+			has_building = building_railway
+			NOT = { has_variable = railway_robbery_happened }
+			NOT = { has_variable = railway_trial_completed }
+			any_scope_pop = {
+				pop_acceptance < acceptance_status_4
+			}
+			any_scope_pop = {
+				pop_acceptance >= acceptance_status_4
+				culture = {
+					has_discrimination_trait = anglophone 
+				}
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				has_building = building_railway
+				NOT = { has_variable = railway_robbery_happened }
+				NOT = { has_variable = railway_trial_completed }
+				any_scope_pop = {
+					pop_acceptance < acceptance_status_4
+				}
+				any_scope_pop = {
+					pop_acceptance >= acceptance_status_4
+					culture = {
+						has_discrimination_trait = anglophone 
+					}
+				}
+			}
+			random_scope_pop = {
+				limit = {
+					pop_acceptance < acceptance_status_4
+				}
+				save_scope_as = discriminated_pop
+				culture = { save_scope_as = discriminated_culture }
+			}
+			random_scope_pop = {
+				limit = {
+					pop_acceptance < acceptance_status_4
+					culture = {
+						has_discrimination_trait = anglophone
+					}
+				}
+				save_scope_as = not_discriminated_pop
+					culture = { save_scope_as = not_discriminated_culture }
+			}
+			save_scope_as = relevant_state
+		}
+	}
+
+	cancellation_trigger = {
+		is_subject = no
+	}
+
+	option = {
+		name = india_railway.1.a
+		default_option = yes
+		add_modifier = {
+			name = do_control_the_press
+			months = normal_modifier_time
+			multiplier = money_amount_multiplier_very_small
+		}
+		scope:relevant_state = {
+			add_loyalists_in_state = {
+				value = medium_radicals
+				culture = scope:not_discriminated_culture
+			}
+			hidden_effect = {
+				set_variable = railway_robbery_happened
+			}
+		}
+
+	}
+	option = {
+		name = india_railway.1.b
+		add_modifier = {
+			name = not_control_the_press
+			months = short_modifier_time
+		}
+		scope:relevant_state = {
+			hidden_effect = {
+				set_variable = railway_robbery_happened
+			}
+		}
+	}
+}
+
+# Stealing From The Crown
+india_railway.2 = {
+	type = country_event
+	placement = root
+	title = india_railway.2.t
+	desc = india_railway.2.d
+	flavor = india_railway.2.f
+
+	event_image = {
+		video = "votp_hostile_court"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+
+	duration = 3
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by Purveyor of Progres JE
+		any_scope_state = {
+			has_building = building_railway
+			has_variable = railway_robbery_happened
+			NOT = { has_variable = railway_trial_completed }
+			any_scope_pop = {
+				pop_acceptance < acceptance_status_4
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				has_building = building_railway
+				has_variable = railway_robbery_happened
+				NOT = { has_variable = railway_trial_completed }
+				any_scope_pop = {
+					pop_acceptance < acceptance_status_4
+				}
+			}
+			random_scope_pop = {
+				limit = {
+					pop_acceptance < acceptance_status_4
+				}
+				save_scope_as = discriminated_pop
+			}
+			save_scope_as = relevant_state
+		}
+
+	}
+
+	cancellation_trigger = {
+		is_subject = no
+	}
+
+	option = { # Interrogate for more evidence
+		name = india_railway.2.a
+		default_option = yes
+		add_modifier = {
+			name = railway_trial_authority
+			months = normal_modifier_time
+		}
+		scope:relevant_state = {
+			add_radicals_in_state = {
+				value = large_radicals
+				culture = scope:discriminated_pop.culture
+			}
+			hidden_effect = {
+				remove_variable = railway_robbery_happened
+				set_variable = railway_trial_completed
+			}
+		}
+	}
+	option = { 
+		name = india_railway.2.b
+		add_modifier = {
+			name = railway_trial_legit
+			months = normal_modifier_time
+		}
+		scope:relevant_state = {
+			add_radicals_in_state = {
+				value = medium_radicals
+				culture = scope:discriminated_pop.culture
+			}
+			hidden_effect = {
+				remove_variable = railway_robbery_happened
+				set_variable = railway_trial_completed
+			}
+		}
+	}
+}
+
+# A Regional Famine
+india_railway.3 = {
+	type = country_event
+	placement = scope:relevant_state
+	title = india_railway.3.t
+	desc = india_railway.3.d
+	flavor = india_railway.3.f
+
+	event_image = {
+		video = "ip2_india_countryside"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	duration = 3
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by Purveyor of Progres JE
+		is_subject = yes
+		any_scope_state = {
+			has_building = building_railway
+			any_scope_pop = {
+				pop_acceptance < acceptance_status_4
+			}
+			has_famine = yes
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				has_building = building_railway
+				any_scope_pop = {
+					pop_acceptance < acceptance_status_4
+				}
+				has_famine = yes
+			}
+			save_scope_as = relevant_state
+		}
+
+	}
+
+	cancellation_trigger = {
+		is_subject = no
+	}
+
+	option = {
+		name = india_railway.3.a
+		default_option = yes
+		scope:relevant_state = {
+			add_modifier = {
+				name = railway_famine
+				months = short_modifier_time
+			}
+			add_modifier = {
+				name = railway_hunger_relief
+				months = normal_modifier_time
+			}
+		}
+		every_interest_group = {
+			limit = {
+				OR = {
+					has_ideology = ideology:ideology_individualist
+					leader = { has_ideology = ideology:ideology_market_liberal }
+				}
+			}
+			add_modifier = {
+				name = railway_ig_disapproval
+				months = normal_modifier_time
+			}
+		}
+
+	}
+	option = {
+		name = india_railway.3.b
+		scope:relevant_state = {
+			add_modifier = {
+				name = railway_famine
+				months = short_modifier_time
+			}
+			add_modifier = {
+				name = railway_hunger_no_relief
+				months = normal_modifier_time
+			}
+		}
+		every_interest_group = {
+			limit = {
+				OR = {
+					has_ideology = ideology:ideology_individualist
+					leader = { has_ideology = ideology:ideology_market_liberal }
+				}
+			}
+			add_modifier = {
+				name = railway_ig_approval
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+# First-Class Accoutrements
+india_railway.4 = {
+	type = country_event
+	placement = root
+	title = india_railway.4.t
+	desc = india_railway.4.d
+	flavor = india_railway.4.f
+
+	event_image = {
+		video = "ip2_intercommunal_tensions"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	duration = 3
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by Purveyor of Progres JE
+		is_subject = yes
+		any_scope_state = {
+			has_building = building_railway
+			any_scope_pop = {
+				pop_acceptance < acceptance_status_4
+			}
+			any_scope_pop = {
+				pop_acceptance >= acceptance_status_4
+				culture = {
+					has_discrimination_trait = anglophone 
+				}
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				has_building = building_railway
+			}
+			random_scope_pop = {
+				limit = {
+					pop_acceptance < acceptance_status_4
+				}
+				save_scope_as = discriminated_pop
+				culture = { save_scope_as = discriminated_culture }
+			}
+			random_scope_pop = {
+				limit = {
+					pop_acceptance >= acceptance_status_4
+					culture = {
+						has_discrimination_trait = anglophone 
+					}
+				}
+				save_scope_as = not_discriminated_pop
+				culture = { save_scope_as = not_discriminated_culture }
+			}
+			save_scope_as = relevant_state
+		}
+	}
+
+	cancellation_trigger = {
+		is_subject = no
+	}
+
+	option = {
+		name = india_railway.4.a
+		default_option = yes
+		scope:relevant_state = {
+			add_loyalists_in_state = {
+				value = medium_radicals
+				culture = scope:not_discriminated_pop.culture
+			}
+		}
+		add_modifier = {
+			name = rising_intracommunal_tension
+			months = normal_modifier_time
+		}
+	}
+	option = {
+		name = india_railway.4.b
+		scope:relevant_state = {
+			add_loyalists_in_state = {
+				value = medium_radicals
+				culture = scope:discriminated_pop.culture
+			}
+			add_radicals_in_state = {
+				value = medium_radicals
+				culture = scope:not_discriminated_pop.culture
+			}
+		}
+	}
+}
+
+# Railways for Prosperity
+india_railway.5 = {
+	type = country_event
+	placement = root
+	title = india_railway.5.t
+	desc = india_railway.5.d
+	flavor = {
+		first_valid = {
+			triggered_desc = {
+				desc = india_railway.5.f
+				trigger = {
+					is_subject = yes
+				}
+			}
+			triggered_desc = { 
+				desc = india_railway.5.f2
+				trigger = {
+					is_subject = no
+				}
+			}
+		}
+	}
+
+	event_image = {
+		video = "unspecific_trains"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	duration = 3
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		# Triggered by Purveyor of Progres JE
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_BOMBAY
+			}
+			save_scope_as = relevant_state
+		}
+		if = {
+			limit = {
+				is_subject = yes
+			}
+			top_overlord = {
+				save_scope_as = relevant_overlord
+			}
+		}
+	}
+
+	cancellation_trigger = {
+	}
+
+	option = {
+		name = india_railway.5.a
+		default_option = yes
+		scope:relevant_state = {
+			add_modifier = {
+				name = india_railway_reward
+				months = long_modifier_time
+			}
+		}
+	}
+}

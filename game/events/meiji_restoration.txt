@@ -184,7 +184,23 @@ meiji.1 = {
 				months = very_long_modifier_time
 			}
 		}
-		set_capital = STATE_KANTO
+		if = {
+			limit = {
+				any_scope_state = {
+					state_region = s:STATE_KANTO
+				}
+			}
+			set_capital = STATE_KANTO
+
+			s:STATE_KANTO = {
+				random_scope_state = {
+			        set_hub_name = {
+			            type = city
+			            name = HUB_NAME_STATE_KANTO_city_meiji
+			        }
+		        }
+			}
+        }
 		custom_tooltip = shogunate_rename.tt
 		hidden_effect = {
 			scope:shogunate_ig = {
@@ -196,6 +212,17 @@ meiji.1 = {
 		}
 		if = {
 			limit = {
+				NOT = {
+					any_political_movement = {
+						is_political_movement_type = movement_modernizer
+					}
+				}
+			}
+			create_political_movement = { type = movement_modernizer }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = completed_je_meiji_economy }
 				in_default = no
 				any_scope_state = {
 					filter = {
@@ -213,6 +240,7 @@ meiji.1 = {
 				name = meiji_var
 				add = 1
 			}
+			set_variable = completed_je_meiji_economy # If the player manages to skip je_meiji_economy we still need to set the variable
 		}
 		else = {
 			add_journal_entry = {
@@ -253,6 +281,7 @@ meiji.1 = {
 		}
 		if = {
 			limit = {
+				NOT = { has_variable = completed_je_meiji_diplomacy }
 				NOT = { is_country_type = unrecognized }
 				NOT = { has_law = law_type:law_isolationism }
 			}
@@ -260,6 +289,7 @@ meiji.1 = {
 				name = meiji_var
 				add = 1
 			}
+			set_variable = completed_je_meiji_diplomacy # If the player manages to skip je_meiji_diplomacy we still need to set the variable
 		}
 		else = {
 			add_journal_entry = {
@@ -275,7 +305,21 @@ meiji.1 = {
 				months = very_long_modifier_time
 			}
 		}
-		set_capital = STATE_KANTO
+		if = {
+			limit = {
+				any_scope_state = {
+					state_region = s:STATE_KANTO
+				}
+			}
+			set_capital = STATE_KANTO
+			random_scope_state = {
+				limit = { state_region = s:STATE_KANTO }
+				set_hub_name = {
+		            type = city
+		            name = HUB_NAME_STATE_KANTO_city_meiji
+		        }
+		    }
+        }
 		custom_tooltip = shogunate_rename.tt
 		hidden_effect = {
 			scope:shogunate_ig = {
@@ -287,6 +331,17 @@ meiji.1 = {
 		}
 		if = {
 			limit = {
+				NOT = {
+					any_political_movement = {
+						is_political_movement_type = movement_modernizer
+					}
+				}
+			}
+			create_political_movement = { type = movement_modernizer }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = completed_je_meiji_economy }
 				in_default = no
 				any_scope_state = {
 					filter = {
@@ -304,6 +359,7 @@ meiji.1 = {
 				name = meiji_var
 				add = 1
 			}
+			set_variable = completed_je_meiji_economy # If the player manages to skip je_meiji_economy we still need to set the variable
 		}
 		else = {
 			add_journal_entry = {
@@ -344,6 +400,7 @@ meiji.1 = {
 		}
 		if = {
 			limit = {
+				NOT = { has_variable = completed_je_meiji_diplomacy }
 				NOT = { is_country_type = unrecognized }
 				NOT = { has_law = law_type:law_isolationism }
 			}
@@ -351,6 +408,7 @@ meiji.1 = {
 				name = meiji_var
 				add = 1
 			}
+			set_variable = completed_je_meiji_diplomacy # If the player manages to skip je_meiji_diplomacy we still need to set the variable
 		}
 		else = {
 			add_journal_entry = {
@@ -480,6 +538,12 @@ meiji.3 = {
 			leader = {
 				save_scope_as = samurai_ig_leader
 			}
+		}
+		if = { # If the player manages to skip the JE we still need to set the variable or else the Meiji Restoration cant be finished
+			limit = {
+				NOT = { has_variable = completed_je_meiji_army }
+			}
+			set_variable = completed_je_meiji_army
 		}
 	}
 
@@ -1188,7 +1252,7 @@ meiji.9 = {
 			value = large_radicals
 		}
 		add_loyalists = {
-			strata = rich
+			strata = upper
 			value = medium_radicals
 		}
 	}

@@ -1,0 +1,389 @@
+﻿window = {
+	name = "principle_selection_window"
+
+	size = { 100% 100% }
+	movable = no
+	layer = popups
+
+	using = Animation_ShowHide_Quick
+	using = Background_Full_Dim
+
+	button_normal = {
+		size = { 100% 100% }
+
+		onclick = "[PopupManager.HidePowerBlocPrincipleSelectionWindow]"
+		using = close_button_sound
+	}
+
+	widget = {
+		parentanchor = center
+		size = { 1200 700 }
+		alwaystransparent = no
+		
+		using = Window_Background
+		using = Window_Decoration_Spike
+
+		vbox = {
+			using = Window_Margins
+
+			header_pattern = {
+				layoutpolicy_horizontal = expanding
+
+				blockoverride "header_text" {
+					text = "PRINCIPLE_SELECTION_HEADER"
+					using = fontsize_xxl
+				}
+
+				blockoverride "maximumsize" {
+					maximumsize = { 900 -1 }
+				}
+
+				blockoverride "button_close"
+				{
+					onclick = "[PopupManager.HidePowerBlocPrincipleSelectionWindow]"
+				}
+			}
+
+			## CONTENT WINDOW ##
+			vbox = {
+				layoutpolicy_vertical = expanding
+				layoutpolicy_horizontal = expanding
+
+				### PRINCIPLE GROUPS
+				scrollarea = {
+					layoutpolicy_horizontal = preferred
+					layoutpolicy_vertical = preferred
+					scrollbaralign_vertical = right
+					size = { 1000 500 }
+
+					scrollwidget = {
+
+						vbox = {
+							layoutpolicy_horizontal = expanding
+							layoutpolicy_vertical = preferred
+							spacing = 5
+							parentanchor = hcenter
+
+							textbox = {
+								layoutpolicy_horizontal = expanding
+								margin_left = 35
+								margin_top = 20
+								margin_bottom = 10
+								size = { 0 40 }
+								align = nobaseline
+								text = "AVAILABLE_PRINCIPLE_GROUPS"
+								using = fontsize_large
+							}
+
+							divider_decorative = {
+								layoutpolicy_horizontal = expanding
+
+								blockoverride "size" {
+									size =  { 0 6 }
+								}
+							}
+
+							dynamicgridbox = {
+								name = "tutorial_highlight_available_principles"
+								flipdirection = yes
+								datamodel_wrap = 3
+
+								datamodel = "[PowerBlocPrincipleSelectionWindow.GetAvailableGroups]"
+
+								item = {
+									principle_group = {}
+								}
+							}
+
+							widget = {
+								size = { 10 10 }
+							}
+
+							section_header_button = {
+								layoutpolicy_horizontal = expanding
+								size = { 0 38 }
+
+								blockoverride "layout" {}
+								
+								blockoverride "left_text" {
+									text = "POTENTIAL_PRINCIPLE_GROUPS"
+								}
+								
+								blockoverride "onclick" {
+									onclick = "[GetVariableSystem.Toggle('potential_principle_groups_drop_down')]"
+								}
+								
+								blockoverride "onclick_showmore" {
+									visible = "[Not(GetVariableSystem.Exists('potential_principle_groups_drop_down'))]"
+								}
+
+								blockoverride "onclick_showless" {
+									visible = "[GetVariableSystem.Exists('potential_principle_groups_drop_down')]"
+								}
+							}
+
+							dynamicgridbox = {
+								visible = "[GetVariableSystem.Exists('potential_principle_groups_drop_down')]"
+								flipdirection = yes
+								datamodel_wrap = 3
+
+								background = {
+									using = dropdown_background
+								}
+
+								datamodel = "[PowerBlocPrincipleSelectionWindow.GetPotentialGroups]"
+
+								item = {
+									principle_group = {}
+								}
+							}
+
+							widget = {
+								size = { 20 20 }
+							}
+
+							expand = {}
+						}
+					}
+
+					scrollbar_vertical = {
+						using = vertical_scrollbar
+					}
+
+					scrollbar_horizontal = {
+						using = horizontal_scrollbar
+					}
+				}
+
+				hbox = {
+					layoutpolicy_horizontal = expanding
+					minimumsize = { 0 100 }
+
+					background = {
+						using = dark_area
+					}
+
+					widget = {
+						size = { 350 80 }
+
+						background = {
+							using = dark_area
+						}
+
+						flowcontainer = {
+							direction = vertical
+							parentanchor = center
+						
+							flowcontainer = {
+								parentanchor = hcenter
+								spacing = 5
+
+								icon = {
+									size = { 40 40 }
+									parentanchor = vcenter
+									texture = "gfx/interface/icons/generic_icons/mandate.dds"
+								}
+
+								textbox = {
+									parentanchor = vcenter
+									autoresize = yes
+									align = nobaseline
+									using = fontsize_xxl
+									max_width = 300
+									elide = right
+									fontsize_min = 14
+									text = "AVAILABLE_MANDATES_VALUE"
+									tooltip = "AVAILABLE_MANDATES_VALUE_TOOLTIP"
+								}
+							}
+
+							textbox = {
+								parentanchor = hcenter
+								autoresize = yes
+								align = nobaseline
+								using = fontsize_large
+								max_width = 340
+								elide = right
+								fontsize_min = 14
+								text = "AVAILABLE_MANDATES_TITLE"
+							}
+						}
+					}
+
+					widget = {
+						size = { 350 80 }
+
+						background = {
+							using = dark_area
+						}
+
+						### NO PRINCIPLE SELECTED
+						textbox = {
+							visible = "[And(Not(PowerBlocPrincipleSelectionWindow.HasSelectedPrinciple), Not(PowerBlocPrincipleSelectionWindow.IsReplacingPrinciple))]"
+							parentanchor = center
+							autoresize = yes
+							align = nobaseline
+							max_width = 300
+							elide = right
+							fontsize_min = 14
+							text = "PRINCIPLE_SELECTION_NO_SELECTION"
+							using = fontsize_large
+						}
+
+						### REPLACE OR UPGRADE ACTIVE PRINCIPLE WITH SELECTED PRINCIPLE
+						flowcontainer = {
+							visible = "[And(PowerBlocPrincipleSelectionWindow.HasSelectedPrinciple, PowerBlocPrincipleSelectionWindow.IsReplacingPrinciple)]"
+							direction = vertical
+							parentanchor = center
+							spacing = 2
+
+							flowcontainer = {
+								spacing = 10
+								parentanchor = right
+
+								datacontext = "[PowerBlocPrincipleSelectionWindow.GetReplacedPrinciple]"
+
+								textbox = {
+									parentanchor = vcenter
+									autoresize = yes
+									align = nobaseline
+									max_width = 260
+									elide = right
+									fontsize_min = 14
+									text = "PRINCIPLE_SELECTION_UPGRADE_REPLACE_ACTIVE_PRINCIPLE"
+									using = fontsize_large
+								}
+
+								principle_icon_with_bg = {
+									size = { 36 36 }
+									parentanchor = vcenter
+								}
+							}
+
+							flowcontainer = {
+								spacing = 10
+								parentanchor = right
+
+								datacontext = "[PowerBlocPrincipleSelectionWindow.GetSelectedPrinciple]"
+
+								textbox = {
+									parentanchor = vcenter
+									autoresize = yes
+									align = nobaseline
+									max_width = 260
+									elide = right
+									fontsize_min = 14
+									text = "PRINCIPLE_SELECTION_WITH_SELECTED_PRINCIPLE"
+									using = fontsize_large
+								}
+
+								principle_icon_with_bg = {
+									size = { 36 36 }
+									parentanchor = vcenter
+								}
+
+							}
+						}
+
+						### ADD PRINCIPLE TO EMPTY PRINCIPLE SLOT
+						flowcontainer = {
+							visible = "[And(PowerBlocPrincipleSelectionWindow.HasSelectedPrinciple, Not(PowerBlocPrincipleSelectionWindow.IsReplacingPrinciple))]"
+							spacing = 10
+							parentanchor = center
+
+							datacontext = "[PowerBlocPrincipleSelectionWindow.GetSelectedPrinciple]"
+
+							textbox = {
+								parentanchor = vcenter
+								autoresize = yes
+								align = nobaseline
+								max_width = 260
+								elide = right
+								fontsize_min = 14
+								text = "PRINCIPLE_SELECTION_ADD_SELECTED_PRINCIPLE"
+								using = fontsize_xl
+							}
+
+							principle_icon_with_bg = {
+								size = { 65 65 }
+								parentanchor = vcenter
+							}
+						}
+					}
+
+					# SUBMIT POWER BLOC PRINCIPLE CHANGES
+					button = {
+						visible = "[Not(PowerBlocPrincipleSelectionWindow.IsPowerBlocFormation)]"
+						size = { 350 80 }
+						using = default_button_action
+						tooltip = "PRINCIPLE_SELECTION_SUBMIT_BUTTON_TOOLTIP"
+						enabled = "[IsValid(PowerBlocPrincipleSelectionWindow.SubmitPrincipleSelection)]"
+						onclick = "[Execute(PowerBlocPrincipleSelectionWindow.SubmitPrincipleSelection)]"
+						onclick = "[PopupManager.HidePowerBlocPrincipleSelectionWindow]"
+						using = principles_button_submit_sound
+
+						flowcontainer = {
+							direction = vertical
+							parentanchor = center
+
+							textbox = {
+								parentanchor = hcenter
+								autoresize = yes
+								align = hcenter|nobaseline
+								text = "PRINCIPLE_SELECTION_SUBMIT_BUTTON_LABEL"
+								using = fontsize_xxl
+							}
+
+							textbox = {
+								visible = "[PowerBlocPrincipleSelectionWindow.HasSelectedPrinciple]"
+								parentanchor = hcenter
+								autoresize = yes
+								align = hcenter|nobaseline
+								max_width = 330
+								fontsize_min = 14
+								elide = right
+								text = "PRINCIPLE_SELECTION_SUBMIT_BUTTON_COST"
+							}
+						}
+					}
+
+					# SUBMIT POWER BLOC FORMATION PRINCIPLE CHANGES
+					button = {
+						visible = "[PowerBlocPrincipleSelectionWindow.IsPowerBlocFormation]"
+						size = { 350 80 }
+						using = default_button_action
+						tooltip = "FORMATION_PRINCIPLE_SELECTION_SUBMIT_BUTTON_TOOLTIP"
+						enabled = "[PowerBlocPrincipleSelectionWindow.CanAffordPrinciple(PowerBlocPrincipleSelectionWindow.GetSelectedPrinciple.Self)]"
+						onclick = "[PowerBlocPrincipleSelectionWindow.SubmitFormationPrincipleSelection]"
+						onclick = "[PopupManager.HidePowerBlocPrincipleSelectionWindow]"
+						using = principles_button_submit_sound
+
+						flowcontainer = {
+							direction = vertical
+							parentanchor = center
+
+							textbox = {
+								parentanchor = hcenter
+								autoresize = yes
+								align = hcenter|nobaseline
+								text = "PRINCIPLE_SELECTION_SUBMIT_BUTTON_LABEL"
+								using = fontsize_xxl
+							}
+
+							textbox = {
+								visible = "[PowerBlocPrincipleSelectionWindow.HasSelectedPrinciple]"
+								parentanchor = hcenter
+								autoresize = yes
+								align = hcenter|nobaseline
+								max_width = 330
+								fontsize_min = 14
+								elide = right
+								text = "PRINCIPLE_SELECTION_SUBMIT_BUTTON_COST"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

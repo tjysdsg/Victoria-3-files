@@ -4,6 +4,7 @@
 types outliner_framework {
 	type outliner_type = widget {
 		name = "outliner"
+		max_update_rate = 10
 		visible = "[And( IsInGame, And( Not( IsPauseMenuShown ), Not( IsGameOverScreenShown )))]"
 		using = default_fade_in_out
 
@@ -221,7 +222,9 @@ types outliner_framework {
 	}
 
 	type expandable_outliner_entry = outliner_entry {
-		visible = "[GreaterThan_int32(OutlinerEntry.GetNumSubEntries, '(int32)0')]"
+		block "entry_visibility" {
+			visible = "[GreaterThan_int32(OutlinerEntry.GetNumSubEntries, '(int32)0')]"
+		}
 				
 		blockoverride "expand_buttons" {
 			block "pinnable_expand_buttons" {
@@ -238,10 +241,16 @@ types outliner_framework {
 			parentanchor = right|vcenter
 			
 			textbox = {
-				visible = "[GreaterThan_int32(OutlinerEntry.GetNumSubEntries, '(int32)0')]"
-				text = "[OutlinerEntry.GetNumSubEntries]"
 				autoresize = yes
 				align = nobaseline
+
+				block "number_of_entries_visibility" {
+					visible = "[GreaterThan_int32(OutlinerEntry.GetNumSubEntries, '(int32)0')]"
+				}
+
+				block "number_of_entries_text" {
+					text = "[OutlinerEntry.GetNumSubEntries]"
+				}
 			}
 		}
 	}

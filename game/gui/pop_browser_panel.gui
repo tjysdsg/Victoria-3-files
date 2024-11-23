@@ -1,0 +1,2509 @@
+# The spreadsheet cells are a fixed size in order to be optimized
+@spreadsheet_width = 1381
+@spreadsheet_height = 32
+
+types pop_browser_panel_types
+{
+	type pop_browser_panel = fullscreen_block_window {
+		name = "pop_browser_panel"
+		datacontext = "[PopBrowserPanel.GetCountry]"
+		
+		blockoverride "window_header_name" {
+			text = "POP_BROWSER"
+		}
+
+		blockoverride "animation_state_block" {
+			state = {
+				name = _show
+				start_sound = {
+					soundeffect = "event:/SFX/UI/Population/population_census_data"
+				}
+				start_sound = {
+					soundeffect = "snapshot:/Dynamic/mute_world_80"
+				}
+				start_sound = {
+					soundeffect = "snapshot:/Dynamic/mute_vfx_war_100"
+
+				}
+			}
+		}
+
+		blockoverride "scrollarea_content" {
+			vbox = {
+				layoutpolicy_vertical = expanding
+				layoutpolicy_horizontal = expanding
+
+				hbox = {
+					layoutpolicy_vertical = preferred
+					layoutpolicy_horizontal = expanding
+					margin_top = -3
+					margin_bottom = 1
+
+					background = {
+						using = dark_area
+						margin_top = 2
+						margin_right = 100
+						margin_left = -434
+						margin_bottom = -2
+						visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filters' ))]"
+					}
+
+					section_header_button = {
+						visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filters' ))]"
+						
+						blockoverride "layout" {
+							size = { 429 38 }
+						}
+
+						blockoverride "background" {
+							using = expand_button_bg_no_fade
+						}
+
+						blockoverride "left_text" {
+							text = "FILTERS"
+						}
+
+						blockoverride "onclick" {
+							onclick = "[GetVariableSystem.Toggle( 'pop_browser_filters' )]"
+						}
+						
+						blockoverride "onclick_showmore" {
+							visible = "[GetVariableSystem.Exists( 'pop_browser_filters' )]"
+						}
+
+						blockoverride "onclick_showless" {
+							visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filters' ))]"
+						}
+					}
+
+					section_header_button = {
+						visible = "[GetVariableSystem.Exists( 'pop_browser_filters' )]"
+
+						blockoverride "layout" {
+							size = { 220 38 }
+						}
+
+						blockoverride "background" {
+							using = expand_button_bg_no_fade
+						}
+
+						blockoverride "left_text" {
+							text = "FILTERS"
+						}
+
+						blockoverride "onclick" {
+							onclick = "[GetVariableSystem.Toggle( 'pop_browser_filters' )]"
+						}
+						
+						blockoverride "onclick_showmore" {
+							visible = "[GetVariableSystem.Exists( 'pop_browser_filters' )]"
+						}
+
+						blockoverride "onclick_showless" {
+							visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filters' ))]"
+						}
+					}
+
+					section_header_button = {
+						blockoverride "layout" {
+							size = { -1 38 }
+							layoutpolicy_horizontal = expanding
+						}
+
+						blockoverride "background" {
+							using = expand_button_bg_no_fade
+						}
+
+						blockoverride "left_text" {
+							text = "CHARTS"
+						}
+
+						blockoverride "onclick" {
+							onclick = "[GetVariableSystem.Toggle( 'pop_browser_charts' )]"
+						}
+						
+						blockoverride "onclick_showmore" {
+							visible = "[GetVariableSystem.Exists( 'pop_browser_charts' )]"
+						}
+
+						blockoverride "onclick_showless" {
+							visible = "[Not(GetVariableSystem.Exists( 'pop_browser_charts' ))]"
+						}
+					}
+				}
+
+				hbox = {
+					layoutpolicy_vertical = expanding
+					layoutpolicy_horizontal = expanding
+					spacing = 10
+
+					# FILTERS
+					vbox = {
+						size = { 434 -1 }
+						layoutpolicy_vertical = expanding
+						spacing = 10
+						margin_top = 10
+						visible = "[Not(GetVariableSystem.Exists('pop_browser_filters'))]"
+
+						# RESET BUTTON
+						button = {
+							size = { 404 50 }
+							using = default_button_primary
+
+							textbox = {
+								size = { 100% 100% }
+								text = "RESET"
+								using = fontsize_large
+								align = center|nobaseline
+							}
+
+							enabled = "[PopBrowserPanel.IsAnyFilterActive]"
+
+							onclick = "[PopBrowserPanel.ResetAllFilters]"
+						}
+
+						scrollarea = {
+							layoutpolicy_vertical = expanding
+							size = { 434 -1 }
+
+							scrollbar_horizontal = {
+								using = horizontal_scrollbar
+							}
+
+							scrollbar_vertical = {
+								using = vertical_scrollbar
+							}
+
+							scrollwidget = {
+								flowcontainer = {
+									direction = vertical
+									parentanchor = hcenter
+
+									# POP TYPE FILTER
+									flowcontainer = {
+										direction = vertical
+
+										section_header_button = {
+											blockoverride "layout" {
+												using = pop_browser_section_header_size
+											}
+
+											blockoverride "left_text" {
+												text = "POP_TYPE"
+											}
+
+											blockoverride "onclick" {
+												onclick = "[GetVariableSystem.Toggle( 'pop_browser_filter_pop_type' )]"
+											}
+											
+											blockoverride "onclick_showmore" {
+												visible = "[GetVariableSystem.Exists( 'pop_browser_filter_pop_type' )]"
+											}
+
+											blockoverride "onclick_showless" {
+												visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filter_pop_type' ))]"
+											}
+										}
+
+										flowcontainer = {
+											visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filter_pop_type' ))]"						
+											using = pop_browser_filter_section
+
+											spacing = 10
+
+											flowcontainer = {
+												direction = horizontal
+
+												button = {
+													size = { 200 35 }
+													using = default_button
+													onclick = "[PopBrowserPanel.PopTypeFilterShowAll]"
+
+													textbox = {
+														size = { 100% 100% }
+														align = hcenter|nobaseline
+														text = "ALL"
+													}
+
+													icon = {
+														visible = "[PopBrowserPanel.PopTypeFilterAreAllShown]"
+														using = highlighted_square_selection
+													}
+												}
+
+												button = {
+													size = { 200 35 }
+													using = default_button
+													onclick = "[PopBrowserPanel.PopTypeFilterHideAll]"
+
+													textbox = {
+														size = { 100% 100% }
+														align = hcenter|nobaseline
+														text = "NONE"
+													}
+
+													icon = {
+														visible = "[PopBrowserPanel.PopTypeFilterAreNoneShown]"
+														using = highlighted_square_selection
+													}
+												}
+											}
+
+											dynamicgridbox = {
+												datamodel = "[PopBrowserPanel.GetAllPopTypes]"
+												flipdirection = yes
+												datamodel_wrap = 8
+
+												item = {
+													button = {
+														size = { 50 70 }
+														using = default_button
+														onclick = "[PopBrowserPanel.PopTypeFilterToggleShown(PopType.AccessSelf)]"
+														
+														tooltipwidget = {
+															FancyTooltip_PopType = {}
+														}
+
+														icon = {
+															parentanchor = hcenter
+															position = { 0 5 }
+															size = { 40 40 }
+															texture = "[PopType.GetTexture]"
+															alpha = "[TransparentIfZero_int64(PopBrowserPanel.GetFilteredTotalSizeForPopType(PopType.Self))]"
+														}
+
+														icon = {
+															visible = "[PopBrowserPanel.PopTypeFilterIsShown(PopType.Self)]"
+															using = highlighted_square_selection
+														}
+
+														textbox = {
+															parentanchor = bottom|hcenter
+															autoresize = yes
+															align = nobaseline
+															text = "[PopBrowserPanel.GetFilteredTotalSizeForPopType(PopType.Self)|Dv]"
+															using = fontsize_small
+															margin_bottom = 3
+															visible = "[NotZero_int64(PopBrowserPanel.GetFilteredTotalSizeForPopType(PopType.Self))]"
+														}
+
+														textbox = {
+															parentanchor = bottom|hcenter
+															autoresize = yes
+															align = nobaseline
+															text = "[PopType.GetPopulation(PopBrowserPanel.GetCountry.Self)|Dv]"
+															using = fontsize_small
+															margin_bottom = 3
+															visible = "[IsZero_int64(PopBrowserPanel.GetFilteredTotalSizeForPopType(PopType.Self))]"
+															alpha = "[TransparentIfTrue('(bool)yes')]"
+														}
+													}
+												}
+											}
+										}
+									}
+
+									# STATE FILTER
+									section_header_button = {
+										blockoverride "layout" {
+											using = pop_browser_section_header_size
+										}
+
+										blockoverride "left_text" {
+											text = "STATE"
+										}
+
+										blockoverride "onclick" {
+											onclick = "[GetVariableSystem.Toggle( 'pop_browser_filter_state' )]"
+										}
+										
+										blockoverride "onclick_showmore" {
+											visible = "[GetVariableSystem.Exists( 'pop_browser_filter_state' )]"
+										}
+
+										blockoverride "onclick_showless" {
+											visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filter_state' ))]"
+										}
+									}
+
+									flowcontainer = {
+										visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filter_state' ))]"							
+										using = pop_browser_filter_section
+
+										spacing = 10
+
+										flowcontainer = {
+											direction = horizontal
+
+											button = {
+												size = { 200 35 }
+												using = default_button
+												onclick = "[PopBrowserPanel.StateFilterShowAllStates]"
+
+												textbox = {
+													size = { 100% 100% }
+													align = hcenter|nobaseline
+													text = "ALL"
+												}
+
+												icon = {
+													visible = "[PopBrowserPanel.StateFiltersAreAllStatesShown]"
+													using = highlighted_square_selection
+												}
+											}
+
+											button = {
+												size = { 200 35 }
+												using = default_button
+												onclick = "[PopBrowserPanel.StateFilterHideAllStates]"
+
+												textbox = {
+													size = { 100% 100% }
+													align = hcenter|nobaseline
+													text = "NONE"
+												}
+
+												icon = {
+													visible = "[PopBrowserPanel.StateFilterAreNoStatesShown]"
+													using = highlighted_square_selection
+												}
+											}
+										}
+
+										dynamicgridbox = {
+											datamodel = "[PopBrowserPanel.GetAllStates]"
+											datamodel_wrap = 2
+											flipdirection = yes
+
+											item = {
+												button = {
+													size = { 200 35 }
+													using = default_button
+													onclick = "[PopBrowserPanel.StateFilterToggleShown(State.AccessSelf)]"
+
+													tooltipwidget = {
+														FancyTooltip_State = {}
+													}
+
+													textbox = {
+														parentanchor = vcenter
+														size = { 150 35 }
+														text = "[State.GetNameNoFormatting]"
+														multiline = yes
+														fontsize_min = 12
+														elide = right
+														align = nobaseline
+														alpha = "[TransparentIfZero_int64(PopBrowserPanel.GetFilteredTotalSizeForState(State.Self))]"
+														margin_left = 10
+													}
+
+													icon = {
+														visible = "[PopBrowserPanel.StateFilterIsStateShown(State.Self)]"
+														alpha = 0.5
+														using = highlighted_square_selection
+													}
+
+													container = {
+														parentanchor = right|vcenter
+														position = { -10 0 }
+
+														textbox = {
+															autoresize = yes
+															align = nobaseline
+															text = "[PopBrowserPanel.GetFilteredTotalSizeForState(State.Self)|Dv]"
+															using = fontsize_small
+															visible = "[NotZero_int64(PopBrowserPanel.GetFilteredTotalSizeForState(State.Self))]"
+														}
+														
+														textbox = {
+															autoresize = yes
+															align = nobaseline
+															text = "[State.GetPopulationSize|Dv]"
+															using = fontsize_small
+															visible = "[IsZero_int64(PopBrowserPanel.GetFilteredTotalSizeForState(State.Self))]"
+															alpha = "[TransparentIfTrue('(bool)yes')]"
+														}
+													}
+												}
+											}
+										}
+									}
+
+									# INCORPORATION FILTER
+									section_header_button = {
+										blockoverride "layout" {
+											using = pop_browser_section_header_size
+										}
+
+										blockoverride "left_text" {
+											text = "INCORPORATION"
+										}
+
+										blockoverride "onclick" {
+											onclick = "[GetVariableSystem.Toggle( 'pop_browser_filter_incorporation' )]"
+										}
+										
+										blockoverride "onclick_showmore" {
+											visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filter_incorporation' ))]"
+										}
+
+										blockoverride "onclick_showless" {
+											visible = "[GetVariableSystem.Exists( 'pop_browser_filter_incorporation' )]"
+										}
+									}
+
+									flowcontainer = {
+										visible = "[GetVariableSystem.Exists( 'pop_browser_filter_incorporation' )]"
+										using = pop_browser_filter_section
+
+										button = {
+											text = "ALL"
+											onclick = "[PopBrowserPanel.SetFilterMode('lives_in_incorporated_state', 'off')]"
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												visible = "[Not(PopBrowserPanel.IsFiltered('lives_in_incorporated_state'))]"
+												using = highlighted_square_selection
+											}
+										}
+
+										button = {
+											text = "LIVES_IN_INCORPORATED_STATE"
+											onclick = "[PopBrowserPanel.SetFilterMode('lives_in_incorporated_state', 'yes')]"
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												using = pop_browser_filter_button_icon
+												texture = "gfx/interface/icons/state_status_icons/incorporated_state.dds"
+											}
+
+											icon = {
+												visible = "[PopBrowserPanel.IsFilterYes('lives_in_incorporated_state')]"
+												using = highlighted_square_selection
+											}
+										}
+
+										button = {
+											text = "DOES_NOT_LIVE_IN_INCORPORATED_STATE"
+											onclick = "[PopBrowserPanel.SetFilterMode('lives_in_incorporated_state', 'no')]"
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												using = pop_browser_filter_button_icon
+												texture = "gfx/interface/icons/state_status_icons/unincorporated_state.dds"
+											}
+
+											icon = {
+												visible = "[PopBrowserPanel.IsFilterNo('lives_in_incorporated_state')]"
+												using = highlighted_square_selection
+											}
+										}
+									}
+
+									# LOYALTY FILTER
+									section_header_button = {
+										blockoverride "layout" {
+											using = pop_browser_section_header_size
+										}
+
+										blockoverride "left_text" {
+											text = "LOYALTY"
+										}
+
+										blockoverride "onclick" {
+											onclick = "[GetVariableSystem.Toggle( 'pop_browser_filter_loyalty' )]"
+										}
+										
+										blockoverride "onclick_showmore" {
+											visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filter_loyalty' ))]"
+										}
+
+										blockoverride "onclick_showless" {
+											visible = "[GetVariableSystem.Exists( 'pop_browser_filter_loyalty' )]"
+										}
+									}
+
+									flowcontainer = {
+										visible = "[GetVariableSystem.Exists( 'pop_browser_filter_loyalty' )]"
+										using = pop_browser_filter_section
+
+										button = {
+											text = "ALL"
+											onclick = "[PopBrowserPanel.SetFilterMode('has_loyalists', 'off')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('has_radicals', 'off')]"
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												visible = "[And(Not(PopBrowserPanel.IsFiltered('has_loyalists')), Not(PopBrowserPanel.IsFiltered('has_radicals')))]"
+												using = highlighted_square_selection
+											}
+										}
+
+										button = {
+											text = "HAS_LOYALISTS"
+											onclick = "[PopBrowserPanel.SetFilterMode('has_loyalists', 'yes')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('has_radicals', 'off')]"
+
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												using = pop_browser_filter_button_icon
+												texture = "gfx/interface/icons/generic_icons/population_loyalist.dds"
+											}
+
+											icon = {
+												visible = "[PopBrowserPanel.IsFilterYes('has_loyalists')]"
+												using = highlighted_square_selection
+											}
+										}
+
+										button = {
+											text = "HAS_RADICALS"
+											onclick = "[PopBrowserPanel.SetFilterMode('has_radicals', 'yes')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('has_loyalists', 'off')]"
+
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												using = pop_browser_filter_button_icon
+												texture = "gfx/interface/icons/generic_icons/population_radical.dds"
+											}
+
+											icon = {
+												visible = "[PopBrowserPanel.IsFilterYes('has_radicals')]"
+												using = highlighted_square_selection
+											}
+										}
+									}
+
+									widget = { size = { 10 10 }}
+
+
+									# ACCEPTANCE STATUS FILTER
+
+									section_header_button = {
+									
+										blockoverride "left_text" {
+											text = "concept_acceptance_status"
+										}
+
+										blockoverride "layout" {
+											using = pop_browser_section_header_size
+										}
+
+										blockoverride "onclick" {
+											onclick = "[GetVariableSystem.Toggle( 'pop_browser_filter_acceptance' )]"
+										}
+										
+										blockoverride "onclick_showmore" {
+											visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filter_acceptance' ))]"
+										}
+
+										blockoverride "onclick_showless" {
+											visible = "[GetVariableSystem.Exists( 'pop_browser_filter_acceptance' )]"
+										}
+									}
+
+									flowcontainer = {
+										visible = "[GetVariableSystem.Exists( 'pop_browser_filter_acceptance' )]" 
+										using = pop_browser_filter_section
+
+										spacing = 5
+
+										flowcontainer = {
+											
+											direction = horizontal
+
+											flowcontainer = {
+												
+												direction = horizontal
+
+												button = {
+													size = { 200 35 }
+													using = default_button
+													onclick = "[PopBrowserPanel.AcceptanceFilterShowAllStatuses]"	
+
+													textbox = {
+														size = { 100% 100% }
+														align = hcenter|nobaseline
+														text = "ALL"
+													}
+
+													icon = {
+														visible = "[PopBrowserPanel.AcceptanceFiltersAreAllStasusesShown]"
+														using = highlighted_square_selection
+													}
+												}
+
+												button = {
+													size = { 200 35 }
+													using = default_button
+													onclick = "[PopBrowserPanel.AcceptanceFilterHideAllStatuses]"
+
+													textbox = {
+														size = { 100% 100% }
+														align = hcenter|nobaseline
+														text = "NONE"
+													}
+
+													icon = {
+														visible = "[PopBrowserPanel.AcceptanceFilterAreNoStatusesShown]"
+														using = highlighted_square_selection
+													}
+												}
+											}
+										}
+
+										dynamicgridbox = {
+											name = "acceptance_status_filters"
+
+											datamodel = "[PopBrowserPanel.GetAllAcceptanceStatuses]"
+											flipdirection = yes
+
+											parentanchor = hcenter
+
+											item = {
+												button = {
+													size = { 80 80 }
+													using = default_button
+													onclick = "[PopBrowserPanel.AcceptanceFilterToggleShown(AcceptanceStatus.AccessSelf)]"
+
+													tooltip = "[AcceptanceStatus.GetName]"
+													using = tooltip_below
+
+													acceptance_status_large_icon = {
+														parentanchor = center
+													}
+
+													icon = {
+														visible = "[PopBrowserPanel.AcceptanceFilterIsStatusShown(AcceptanceStatus.Self)]"
+														using = highlighted_square_selection
+														alpha = 0.5
+													}													
+												}
+											}
+										}
+									}
+
+
+									# CULTURE FILTER
+									section_header_button = {
+										blockoverride "layout" {
+											using = pop_browser_section_header_size
+										}
+
+										blockoverride "left_text" {
+											text = "CULTURE"
+										}
+
+										blockoverride "onclick" {
+											onclick = "[GetVariableSystem.Toggle( 'pop_browser_filter_culture' )]"
+										}
+										
+										blockoverride "onclick_showmore" {
+											visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filter_culture' ))]"
+										}
+
+										blockoverride "onclick_showless" {
+											visible = "[GetVariableSystem.Exists( 'pop_browser_filter_culture' )]"
+										}
+									}
+
+									flowcontainer = {
+										visible = "[GetVariableSystem.Exists( 'pop_browser_filter_culture' )]"						
+										using = pop_browser_filter_section
+
+										spacing = 10
+
+										flowcontainer = {
+											direction = horizontal
+
+											button = {
+												size = { 200 35 }
+												using = default_button
+												onclick = "[PopBrowserPanel.CultureFilterShowAll]"
+
+												textbox = {
+													size = { 100% 100% }
+													align = hcenter|nobaseline
+													text = "ALL"
+												}
+
+												icon = {
+													visible = "[PopBrowserPanel.CultureFilterAreAllShown]"
+													using = highlighted_square_selection
+												}
+											}
+
+											button = {
+												size = { 200 35 }
+												using = default_button
+												onclick = "[PopBrowserPanel.CultureFilterHideAll]"
+
+												textbox = {
+													size = { 100% 100% }
+													align = hcenter|nobaseline
+													text = "NONE"
+												}
+
+												icon = {
+													visible = "[PopBrowserPanel.CultureFilterAreNoneShown]"
+													using = highlighted_square_selection
+												}
+											}
+										}
+
+										dynamicgridbox = {
+											datamodel = "[Country.AccessPopCulturesSortedByPopulation]"
+											datamodel_wrap = 2
+											flipdirection = yes
+
+											item = {
+												button = {
+													size = { 200 35 }
+													using = default_button
+													onclick = "[PopBrowserPanel.CultureFilterToggleShown(Culture.AccessSelf)]"
+
+													tooltipwidget = {
+														FancyTooltip_Culture = {}
+													}
+
+													textbox = {
+														parentanchor = vcenter
+														size = { 150 35 }
+														text = "[Culture.GetNameNoFormatting]"
+														multiline = yes
+														fontsize_min = 12
+														elide = right
+														align = nobaseline
+														alpha = "[TransparentIfZero_int64(PopBrowserPanel.GetFilteredTotalSizeForCulture(Culture.Self))]"
+														margin_left = 10
+													}
+
+													icon = {
+														visible = "[PopBrowserPanel.CultureFilterIsShown(Culture.Self)]"
+														alpha = 0.5
+														using = highlighted_square_selection
+													}
+
+													container = {
+														position = { -10 0 }
+														parentanchor = right|vcenter
+
+														textbox = {
+															autoresize = yes
+															align = nobaseline
+															text = "[PopBrowserPanel.GetFilteredTotalSizeForCulture(Culture.Self)|Dv]"
+															using = fontsize_small
+															visible = "[NotZero_int64(PopBrowserPanel.GetFilteredTotalSizeForCulture(Culture.Self))]"
+														}
+
+														textbox = {
+															autoresize = yes
+															align = nobaseline
+															text = "[Culture.GetPopulation(Country.Self)|Dv]"
+															using = fontsize_small
+															visible = "[IsZero_int64(PopBrowserPanel.GetFilteredTotalSizeForCulture(Culture.Self))]"
+															alpha = "[TransparentIfTrue('(bool)yes')]"
+														}
+													}
+												}
+											}
+										}
+									}
+
+									# RELIGION FILTER
+									section_header_button = {
+										blockoverride "layout" {
+											using = pop_browser_section_header_size
+										}
+
+										blockoverride "left_text" {
+											text = "concept_religion"
+										}
+
+										blockoverride "onclick" {
+											onclick = "[GetVariableSystem.Toggle( 'pop_browser_filter_religion' )]"
+										}
+										
+										blockoverride "onclick_showmore" {
+											visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filter_religion' ))]"
+										}
+
+										blockoverride "onclick_showless" {
+											visible = "[GetVariableSystem.Exists( 'pop_browser_filter_religion' )]"
+										}
+									}
+
+									flowcontainer = {
+										visible = "[GetVariableSystem.Exists( 'pop_browser_filter_religion' )]"											
+										using = pop_browser_filter_section
+
+										spacing = 10
+
+										flowcontainer = {
+											direction = horizontal
+
+											button = {
+												size = { 200 35 }
+												using = default_button
+												onclick = "[PopBrowserPanel.ReligionFilterShowAll]"
+
+												textbox = {
+													size = { 100% 100% }
+													align = hcenter|nobaseline
+													text = "ALL"
+												}
+
+												icon = {
+													visible = "[PopBrowserPanel.ReligionFilterAreAllShown]"
+													using = highlighted_square_selection
+												}
+											}
+
+											button = {
+												size = { 200 35 }
+												using = default_button
+												onclick = "[PopBrowserPanel.ReligionFilterHideAll]"
+
+												textbox = {
+													size = { 100% 100% }
+													align = hcenter|nobaseline
+													text = "NONE"
+												}
+
+												icon = {
+													visible = "[PopBrowserPanel.ReligionFilterAreNoneShown]"
+													using = highlighted_square_selection
+												}
+											}
+										}
+
+										dynamicgridbox = {
+											datamodel = "[Country.AccessPopReligionsSortedByPopulation]"
+											datamodel_wrap = 2
+											flipdirection = yes
+
+											item = {
+												button = {
+													size = { 200 35 }
+													using = default_button
+													onclick = "[PopBrowserPanel.ReligionFilterToggleShown(Religion.AccessSelf)]"
+
+													icon = {
+														size = { 28 28 }
+														texture = "[Religion.GetTexture]"
+														parentanchor = vcenter
+														position = { 8 0 }
+													}
+
+													tooltipwidget = {
+														FancyTooltip_Religion = {}
+													}
+
+													textbox = {
+														position = { 40 0 }
+														size = { 110 35 }
+														text = "[Religion.GetNameNoFormatting]"
+														multiline = yes
+														fontsize_min = 12
+														elide = right
+														align = nobaseline
+														alpha = "[TransparentIfZero_int64(PopBrowserPanel.GetFilteredTotalSizeForReligion(Religion.Self))]"
+													}
+
+													icon = {
+														visible = "[PopBrowserPanel.ReligionFilterIsShown(Religion.Self)]"
+														using = highlighted_square_selection
+														alpha = 0.5
+													}
+
+													container = {
+														parentanchor = right|vcenter
+														position = { -10 0 }
+
+														textbox = {
+															autoresize = yes
+															align = nobaseline
+															text = "[PopBrowserPanel.GetFilteredTotalSizeForReligion(Religion.Self)|Dv]"
+															using = fontsize_small
+															visible = "[NotZero_int64(PopBrowserPanel.GetFilteredTotalSizeForReligion(Religion.Self))]"
+														}
+
+														textbox = {
+															autoresize = yes
+															align = nobaseline
+															text = "[Religion.GetPopulation(Country.Self)|Dv]"
+															using = fontsize_small
+															visible = "[IsZero_int64(PopBrowserPanel.GetFilteredTotalSizeForReligion(Religion.Self))]"
+															alpha = "[TransparentIfTrue('(bool)yes')]"
+														}
+													}
+												}
+											}
+										}
+									}
+
+									widget = { size = { 10 10 }}
+
+									# EMPLOYMENT FILTER
+									section_header_button = {
+										blockoverride "layout" {
+											using = pop_browser_section_header_size
+										}
+
+										blockoverride "left_text" {
+											text = "EMPLOYMENT"
+										}
+
+										blockoverride "onclick" {
+											onclick = "[GetVariableSystem.Toggle( 'pop_browser_filter_employment' )]"
+										}
+										
+										blockoverride "onclick_showmore" {
+											visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filter_employment' ))]"
+										}
+
+										blockoverride "onclick_showless" {
+											visible = "[GetVariableSystem.Exists( 'pop_browser_filter_employment' )]"
+										}
+									}
+
+									flowcontainer = {
+										visible = "[GetVariableSystem.Exists( 'pop_browser_filter_employment' )]"
+										using = pop_browser_filter_section
+
+										button = {
+											using = pop_browser_filter_button
+											text = "ALL"
+											onclick = "[PopBrowserPanel.SetFilterMode('employed', 'off')]"
+											using = default_button
+											icon = {
+												visible = "[Not(PopBrowserPanel.IsFiltered('employed'))]"
+												using = highlighted_square_selection
+											}
+										}
+
+										button = {
+											text = "IS_EMPLOYED"
+											onclick = "[PopBrowserPanel.SetFilterMode('employed', 'yes')]"
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												using = pop_browser_filter_button_icon
+												texture = "gfx/interface/icons/generic_icons/employed.dds"
+											}
+
+											icon = {
+												visible = "[PopBrowserPanel.IsFilterYes('employed')]"
+												using = highlighted_square_selection
+											}
+										}
+
+										button = {
+											text = "IS_UNEMPLOYED"
+											onclick = "[PopBrowserPanel.SetFilterMode('employed', 'no')]"
+											using = pop_browser_filter_button
+											using = default_button
+
+											icon = {
+												using = pop_browser_filter_button_icon
+												texture = "gfx/interface/icons/generic_icons/employed_not.dds"
+											}
+
+											icon = {
+												visible = "[PopBrowserPanel.IsFilterNo('employed')]"
+												using = highlighted_square_selection
+											}
+										}
+									}
+
+									# JOB SATISFACTION
+									section_header_button = {
+										blockoverride "layout" {
+											using = pop_browser_section_header_size
+										}
+
+										blockoverride "left_text" {
+											text = "JOB_SATISFACTION"
+										}
+
+										blockoverride "onclick" {
+											onclick = "[GetVariableSystem.Toggle( 'pop_browser_filter_job_satisfaction' )]"
+										}
+										
+										blockoverride "onclick_showmore" {
+											visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filter_job_satisfaction' ))]"
+										}
+
+										blockoverride "onclick_showless" {
+											visible = "[GetVariableSystem.Exists( 'pop_browser_filter_job_satisfaction' )]"
+										}
+									}
+
+									flowcontainer = {
+										visible = "[GetVariableSystem.Exists( 'pop_browser_filter_job_satisfaction' )]"
+										using = pop_browser_filter_section
+
+										button = {
+											text = "ALL"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_jobseeker', 'off')]"
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												visible = "[Not(PopBrowserPanel.IsFiltered('is_jobseeker'))]"
+												using = highlighted_square_selection
+											}
+										}
+
+										button = {
+											text = "IS_JOBSEEKER"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_jobseeker', 'yes')]"
+
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												visible = "[PopBrowserPanel.IsFilterYes('is_jobseeker')]"
+												using = highlighted_square_selection
+											}
+										}
+
+										button = {
+											text = "IS_NOT_JOBSEEKER"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_jobseeker', 'no')]"
+
+
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												visible = "[PopBrowserPanel.IsFilterNo('is_jobseeker')]"
+												using = highlighted_square_selection
+											}
+										}
+									}
+
+									# IS BELOW EXPECTED SOL
+									section_header_button = {
+										blockoverride "layout" {
+											using = pop_browser_section_header_size
+										}
+
+										blockoverride "left_text" {
+											text = "STANDARD_OF_LIVING"
+										}
+
+										blockoverride "onclick" {
+											onclick = "[GetVariableSystem.Toggle( 'pop_browser_filter_sol' )]"
+										}
+										
+										blockoverride "onclick_showmore" {
+											visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filter_sol' ))]"
+										}
+
+										blockoverride "onclick_showless" {
+											visible = "[GetVariableSystem.Exists( 'pop_browser_filter_sol' )]"
+										}
+									}
+
+									flowcontainer = {
+										visible = "[GetVariableSystem.Exists( 'pop_browser_filter_sol' )]"
+										using = pop_browser_filter_section
+
+										button = {
+											text = "ALL"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_above_expected_sol', 'off')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_below_expected_sol', 'off')]"
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												visible = "[And(Not(PopBrowserPanel.IsFiltered('is_above_expected_sol')), Not(PopBrowserPanel.IsFiltered('is_below_expected_sol')))]"
+												using = highlighted_square_selection
+											}
+										}
+
+										button = {
+											text = "IS_ABOVE_EXPECTED_SOL"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_above_expected_sol', 'yes')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_below_expected_sol', 'off')]"
+
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												using = pop_browser_filter_button_icon
+												texture = "gfx/interface/icons/generic_icons/green_checkmark.dds"
+											}
+
+											icon = {
+												visible = "[PopBrowserPanel.IsFilterYes('is_above_expected_sol')]"
+												using = highlighted_square_selection
+											}
+										}
+
+										button = {
+											text = "IS_BELOW_EXPECTED_SOL"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_below_expected_sol', 'yes')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_above_expected_sol', 'off')]"
+
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												using = pop_browser_filter_button_icon
+												texture = "gfx/interface/icons/generic_icons/warning.dds"
+											}
+
+											icon = {
+												visible = "[PopBrowserPanel.IsFilterYes('is_below_expected_sol')]"
+												using = highlighted_square_selection
+											}
+										}
+									}
+
+									# HAS INCREASING / DECREASING SOL
+									section_header_button = {
+										blockoverride "layout" {
+											using = pop_browser_section_header_size
+										}
+
+										blockoverride "left_text" {
+											text = "WEALTH_PROGRESSION"
+										}
+
+										blockoverride "onclick" {
+											onclick = "[GetVariableSystem.Toggle( 'pop_browser_filter_wealth_progression' )]"
+										}
+										
+										blockoverride "onclick_showmore" {
+											visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filter_wealth_progression' ))]"
+										}
+
+										blockoverride "onclick_showless" {
+											visible = "[GetVariableSystem.Exists( 'pop_browser_filter_wealth_progression' )]"
+										}
+									}
+
+									flowcontainer = {
+										visible = "[GetVariableSystem.Exists( 'pop_browser_filter_wealth_progression' )]"
+										using = pop_browser_filter_section
+
+										button = {
+											text = "ALL"
+											onclick = "[PopBrowserPanel.SetFilterMode('has_increasing_sol', 'off')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('has_decreasing_sol', 'off')]"
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												visible = "[And(Not(PopBrowserPanel.IsFiltered('has_increasing_sol')), Not(PopBrowserPanel.IsFiltered('has_decreasing_sol')))]"
+												using = highlighted_square_selection
+											}
+										}
+
+										button = {
+											text = "SOL_IS_GROWING"
+											onclick = "[PopBrowserPanel.SetFilterMode('has_increasing_sol', 'yes')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('has_decreasing_sol', 'off')]"
+
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												using = pop_browser_filter_button_icon
+												texture = "gfx/interface/icons/generic_icons/trend_up.dds"
+											}
+
+											icon = {
+												visible = "[PopBrowserPanel.IsFilterYes('has_increasing_sol')]"
+												using = highlighted_square_selection
+											}
+										}
+
+										button = {
+											text = "SOL_IS_SHRINKING"
+											onclick = "[PopBrowserPanel.SetFilterMode('has_decreasing_sol', 'yes')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('has_increasing_sol', 'off')]"
+
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												using = pop_browser_filter_button_icon
+												texture = "gfx/interface/icons/generic_icons/trend_down.dds"
+											}
+
+											icon = {
+												visible = "[PopBrowserPanel.IsFilterYes('has_decreasing_sol')]"
+												using = highlighted_square_selection
+											}
+										}
+									}
+
+									widget = { size = { 10 10 }}
+
+									# IS GROWING / SHRINKING
+									section_header_button = {
+										blockoverride "layout" {
+											using = pop_browser_section_header_size
+										}
+
+										blockoverride "left_text" {
+											text = "POP_GROWTH"
+										}
+
+										blockoverride "onclick" {
+											onclick = "[GetVariableSystem.Toggle( 'pop_browser_filter_growth' )]"
+										}
+										
+										blockoverride "onclick_showmore" {
+											visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filter_growth' ))]"
+										}
+
+										blockoverride "onclick_showless" {
+											visible = "[GetVariableSystem.Exists( 'pop_browser_filter_growth' )]"
+										}
+									}
+
+									flowcontainer = {
+										visible = "[GetVariableSystem.Exists( 'pop_browser_filter_growth' )]"
+										using = pop_browser_filter_section
+
+										button = {
+											text = "ALL"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_growing', 'off')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_shrinking', 'off')]"
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												visible = "[And(Not(PopBrowserPanel.IsFiltered('is_growing')), Not(PopBrowserPanel.IsFiltered('is_shrinking')))]"
+												using = highlighted_square_selection
+											}
+										}
+
+										button = {
+											text = "IS_GROWING"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_growing', 'yes')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_shrinking', 'off')]"
+
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												using = pop_browser_filter_button_icon
+												texture = "gfx/interface/icons/generic_icons/trend_up.dds"
+											}
+
+											icon = {
+												visible = "[PopBrowserPanel.IsFilterYes('is_growing')]"
+												using = highlighted_square_selection
+											}
+										}
+
+										button = {
+											text = "IS_SHRINKING"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_shrinking', 'yes')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_growing', 'off')]"
+
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												using = pop_browser_filter_button_icon
+												texture = "gfx/interface/icons/generic_icons/trend_down.dds"
+											}
+
+											icon = {
+												visible = "[PopBrowserPanel.IsFilterYes('is_shrinking')]"
+												using = highlighted_square_selection
+											}
+										}
+									}
+
+									# SIZE
+									section_header_button = {
+										blockoverride "layout" {
+											using = pop_browser_section_header_size
+										}
+
+										blockoverride "left_text" {
+											text = "POP_SIZE"
+										}
+
+										blockoverride "onclick" {
+											onclick = "[GetVariableSystem.Toggle( 'pop_browser_filter_size' )]"
+										}
+										
+										blockoverride "onclick_showmore" {
+											visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filter_size' ))]"
+										}
+
+										blockoverride "onclick_showless" {
+											visible = "[GetVariableSystem.Exists( 'pop_browser_filter_size' )]"
+										}
+									}
+
+									flowcontainer = {
+										visible = "[GetVariableSystem.Exists( 'pop_browser_filter_size' )]"
+										using = pop_browser_filter_section
+
+										button = {
+											text = "ALL"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_10_or_larger', 'off')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_100_or_larger', 'off')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_1000_or_larger', 'off')]"
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												visible = "[And(And(Not(PopBrowserPanel.IsFiltered('is_10_or_larger')), Not(PopBrowserPanel.IsFiltered('is_100_or_larger'))), Not(PopBrowserPanel.IsFiltered('is_1000_or_larger')))]"
+												using = highlighted_square_selection
+											}
+										}
+
+										button = {
+											text = "IS_TEN_OR_LARGER"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_10_or_larger', 'yes')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_100_or_larger', 'off')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_1000_or_larger', 'off')]"
+
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												visible = "[PopBrowserPanel.IsFilterYes('is_10_or_larger')]"
+												using = highlighted_square_selection
+											}
+										}
+
+										button = {
+											text = "IS_A_HUNDRED_OR_LARGER"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_100_or_larger', 'yes')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_10_or_larger', 'off')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_1000_or_larger', 'off')]"
+
+
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												visible = "[PopBrowserPanel.IsFilterYes('is_100_or_larger')]"
+												using = highlighted_square_selection
+											}
+										}
+
+										button = {
+											text = "IS_A_THOUSAND_OR_LARGER"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_1000_or_larger', 'yes')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_10_or_larger', 'off')]"
+											onclick = "[PopBrowserPanel.SetFilterMode('is_100_or_larger', 'off')]"
+
+											using = default_button
+											using = pop_browser_filter_button
+
+											icon = {
+												visible = "[PopBrowserPanel.IsFilterYes('is_1000_or_larger')]"
+												using = highlighted_square_selection
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+
+					# CHARTS + SPREADSHEET
+					vbox = {
+						layoutpolicy_vertical = preferred
+						layoutpolicy_horizontal = preferred
+						margin_top = 10
+						visible = "[Not(IsDataModelEmpty(PopBrowserPanel.GetSortedAndFilteredPops))]"
+
+						background = {
+							using = dark_area
+							margin_top = 2
+							margin_left = 14
+							margin_right = 100
+							visible = "[Not(GetVariableSystem.Exists( 'pop_browser_filters' ))]"
+						}
+
+						# CHARTS
+						hbox = {
+							layoutpolicy_vertical = preferred
+							layoutpolicy_horizontal = preferred
+							margin_bottom = 15
+							spacing = 10
+							maximumsize = { @spreadsheet_width -1 }
+							visible = "[Not(GetVariableSystem.Exists('pop_browser_charts'))]"
+
+							filtered_pop_type_population_piechart = {}
+							filtered_pop_type_pol_str_piechart = {}
+							filtered_state_population_piechart = {}
+							filtered_culture_population_piechart = {}
+							filtered_religion_population_piechart = {}
+						}
+
+						# SPREADSHEET HEADERS
+						vbox = {
+							layoutpolicy_vertical = preferred
+							layoutpolicy_horizontal = preferred
+							
+							# SORT BUTTONS
+							flowcontainer = {
+								sort_button = {
+									size = { 90 30 }
+									text = "concept_population"
+									tooltip = "SORT_BY_POPULATION"
+									align = nobaseline
+									onclick = "[PopBrowserPanel.Sort('total_population')]"
+								}
+
+								sort_button = {
+									size = { 160 30 }
+									text = "POP_TYPE"
+									tooltip = "SORT_BY_POP_TYPE"
+									align = nobaseline
+									onclick = "[PopBrowserPanel.Sort('pop_type')]"
+								}
+
+								sort_button = {
+									size = { 40 30 }
+									tooltip = "SORT_BY_ACCEPTANCE"
+
+									onclick = "[PopBrowserPanel.Sort('acceptance')]"
+									
+									button = {
+										texture = "gfx/interface/buttons/sort_button_icons/sort_icon_acceptance.dds"
+										size = { 25 25 }
+										parentanchor = center
+										alwaystransparent = yes
+									}
+								}
+
+								sort_button = {
+									size = { 90 30 }
+									text = "concept_culture"
+									tooltip = "SORT_BY_CULTURE"
+									align = nobaseline
+									onclick = "[PopBrowserPanel.Sort('culture')]"
+								}
+
+								sort_button = {
+									size = { 80 30 }
+									text = "concept_religion"
+									tooltip = "SORT_BY_RELIGION"
+									align = nobaseline
+									onclick = "[PopBrowserPanel.Sort('religion')]"
+								}
+
+								sort_button = {
+									size = { 110 30 }
+									text = "concept_state"
+									tooltip = "SORT_BY_STATE"
+									align = nobaseline
+									onclick = "[PopBrowserPanel.Sort('state')]"
+								}
+
+								sort_button = {
+									size = { 145 30 }
+									text = "concept_building_workplace"
+									tooltip = "SORT_BY_BUILDING"
+									align = nobaseline
+									onclick = "[PopBrowserPanel.Sort('building')]"
+								}
+
+
+								# PAGE 1
+								flowcontainer = {
+									visible = "[Not(GetVariableSystem.Exists('pop_browser_page_2'))]"
+
+									widget = {
+										size = { 5 5 }
+									}
+
+									widget = {
+										size = { 30 30 }
+
+										button_select_arrow = {
+											mirror = horizontal
+											size = { 24 24 }
+											align = nobaseline
+											onclick = "[GetVariableSystem.Toggle('pop_browser_page_2')]"
+											parentanchor = center
+										}
+									}
+
+									sort_button = {
+										size = { 90 30 }
+										text = "RADICALS"
+										tooltip = "SORT_BY_RADICALS"
+										align = nobaseline
+										onclick = "[PopBrowserPanel.Sort('radicals')]"
+									}
+
+									sort_button = {
+										size = { 90 30 }
+										text = "LOYALISTS"
+										tooltip = "SORT_BY_LOYALISTS"
+										align = nobaseline
+										onclick = "[PopBrowserPanel.Sort('loyalists')]"
+									}
+
+									sort_button = {
+										size = { 200 30 }
+										text = "concept_sol"
+										tooltip = "SORT_BY_SOL"
+										align = nobaseline
+										onclick = "[PopBrowserPanel.Sort('standard_of_living')]"
+									}
+
+									sort_button = {
+										size = { 100 30 }
+										text = "concept_political_strength"
+										tooltip = "SORT_BY_POLITICAL_STRENGTH"
+										align = nobaseline
+										onclick = "[PopBrowserPanel.Sort('political_strength')]"
+									}
+
+									sort_button = {
+										size = { 100 30 }
+										text = "concept_interest_group"
+										tooltip = "SORT_BY_INTEREST_GROUP"
+										align = nobaseline
+										onclick = "[PopBrowserPanel.Sort('political_strength')]"
+									}
+
+									widget = {
+										size = { 5 5 }
+									}
+
+									widget = {
+										size = { 30 30 }
+
+										button_select_arrow = {
+											size = { 24 24 }
+											align = nobaseline
+											onclick = "[GetVariableSystem.Toggle('pop_browser_page_2')]"
+											parentanchor = center
+										}
+									}
+								}
+
+								# PAGE 2
+								flowcontainer = {
+									visible = "[GetVariableSystem.Exists('pop_browser_page_2')]"
+
+									widget = {
+										size = { 5 5 }
+									}
+
+									widget = {
+										size = { 30 30 }
+
+										button_select_arrow = {
+											mirror = horizontal
+											size = { 24 24 }
+											align = nobaseline
+											onclick = "[GetVariableSystem.Toggle('pop_browser_page_2')]"
+											parentanchor = center
+										}
+									}
+
+									sort_button = {
+										size = { 90 30 }
+										text = "LITERACY"
+										tooltip = "SORT_BY_LITERACY"
+										align = nobaseline
+										onclick = "[PopBrowserPanel.Sort('literacy')]"
+									}
+
+									sort_button = {
+										size = { 90 30 }
+										text = "concept_job_satisfaction"
+										tooltip = "SORT_BY_JOB_SATISFACTION"
+										align = nobaseline
+										onclick = "[PopBrowserPanel.Sort('job_satisfaction')]"
+									}
+
+									sort_button = {
+										size = { 400 30 }
+										text = "NEEDS"
+										align = nobaseline
+										enabled = no
+										#onclick = "[PopBrowserPanel.Sort('needs')]"
+									}
+
+									widget = {
+										size = { 5 5 }
+									}
+
+									widget = {
+										size = { 30 30 }
+
+										button_select_arrow = {
+											size = { 24 24 }
+											align = nobaseline
+											onclick = "[GetVariableSystem.Toggle('pop_browser_page_2')]"
+											parentanchor = center
+										}
+									}
+								}
+
+								widget = {
+									size = { 16 5 }
+								}
+							}
+
+							# FILTERED TOTALS
+							flowcontainer = {
+								margin_top = 7
+								margin_bottom = 7
+
+								textbox = {
+									text = "[PopBrowserPanel.GetFilteredTotalSize|Dv]"
+									align = nobaseline
+									size = { 150 26 }
+									margin_right = 5
+									using = fontsize_large
+									margin_left = 3
+								}
+
+								# PAGE 1
+								flowcontainer = {
+									visible = "[Not(GetVariableSystem.Exists('pop_browser_page_2'))]"
+									max_update_rate = 10 # Expensive data functions but don't need to update that often
+									textbox = {
+										text = "[PopBrowserPanel.GetFilteredNumRadicals|Dv]"
+										align = right|nobaseline
+										size = { 690 26 }
+										margin_right = 5
+										using = fontsize_large
+									}
+
+									textbox = {
+										text = "[PopBrowserPanel.GetFilteredNumLoyalists|Dv]"
+										align = right|nobaseline
+										size = { 90 26 }
+										margin_right = 5
+										using = fontsize_large
+									}
+									
+									textbox = {
+										raw_text = "[LabelingHelper.GetLabelForStandardOfLivingCFixedPoint(PopBrowserPanel.GetFilteredAverageStandardOfLiving)|v] ([PopBrowserPanel.GetFilteredAverageStandardOfLiving|v1])"
+										align = nobaseline
+										size = { 200 26 }
+										margin_right = 5
+										margin_left = 10
+										using = fontsize_large
+										fontsize_min = 12
+										elide = right
+									}
+									
+									textbox = {
+										text = "[PopBrowserPanel.GetFilteredPoliticalStrength|Kv]"
+										align = right|nobaseline
+										size = { 100 26 }
+										margin_right = 5
+										using = fontsize_large
+									}
+
+									widget = {
+										size = { 151 26 }
+									}
+								}
+
+								# PAGE 2
+								flowcontainer = {
+									visible = "[GetVariableSystem.Exists('pop_browser_page_2')]"
+
+									textbox = {
+										align = nobaseline
+										size = { 600 26 }
+										margin_right = 5
+										using = fontsize_large
+									}
+
+									textbox = {
+										text = "[PopBrowserPanel.GetFilteredAverageLiteracy|%1v]"
+										align = nobaseline
+										size = { 90 26 }
+										margin_left = 5
+										using = fontsize_large
+									}
+
+									textbox = {
+										text = "[PopBrowserPanel.GetFilteredAverageJobSatisfaction|0+=]"
+										align = nobaseline
+										size = { 90 26 }
+										margin_left = 5
+										using = fontsize_large
+									}
+
+									widget = {
+										size = { 451 26 }
+									}
+								}
+							}
+
+							divider_clean = {
+								layoutpolicy_horizontal = growing
+								size = { 100 2 }
+								maximumsize = { @spreadsheet_width 2 }
+							}
+						}
+
+						# SPREADSHEET
+						hbox = {
+							layoutpolicy_vertical = expanding
+							layoutpolicy_horizontal = expanding
+							
+							scrollarea = {
+								layoutpolicy_vertical = expanding
+								layoutpolicy_horizontal = expanding
+							
+								scrollbar_horizontal = {
+									using = horizontal_scrollbar
+								}
+
+								scrollbar_vertical = {
+									using = vertical_scrollbar
+								}
+
+								scrollwidget = {
+									fixedgridbox = {
+										addrow = @spreadsheet_height
+										addcolumn = @spreadsheet_width
+										datamodel = "[PopBrowserPanel.GetSortedAndFilteredPops]"
+										max_update_rate = 10 # GetSortedAndFilteredPops() builds a list of all pops in country and is very expensive 
+										parentanchor = hcenter
+
+										item = {
+											widget = {
+												size = { @spreadsheet_width @spreadsheet_height }
+												
+												flowcontainer = {
+													tooltipwidget = {
+														FancyTooltip_Pop = {}
+													}
+
+													textbox = {
+														text = "[Pop.GetTotalSize|Dv][GetArrowIcon_CFixedPoint(Pop.GetNetGrowthRate)]"
+														using = pop_population_tooltip_with_graph
+														size = { 90 @spreadsheet_height }
+														align = nobaseline
+														margin_right = 5
+														margin_left = 3
+													}
+
+													widget = {
+														size = { 40 @spreadsheet_height }
+
+														### POP PORTRAIT
+														flowcontainer = {
+															parentanchor = center
+															scale = 0.3
+															spacing = -30
+															pop_portrait_simple_male = {}
+															pop_portrait_simple_female = { }
+														}
+													}
+
+													button = {
+														text = "[Pop.GetPopType.GetName]"
+														onclick = "[PopBrowserPanel.PopTypeFilterHideAll]" 
+														onclick = "[PopBrowserPanel.PopTypeFilterToggleShown(Pop.AccessPopType)]"
+														align = nobaseline
+														size = { 120 @spreadsheet_height }
+														elide = right
+														margin_right = 5
+														margin_left = 3
+													}
+
+
+													widget = {
+														size = { 40 @spreadsheet_height }
+
+														pop_acceptance_icon = {
+															parentanchor = center
+															size = { 30 30 }
+														}
+													}
+
+													button = {
+														datacontext = "[Pop.AccessCulture]"
+														text = "[Culture.GetNameNoFormatting]"
+														onclick = "[PopBrowserPanel.CultureFilterHideAll]" 
+														onclick = "[PopBrowserPanel.CultureFilterToggleShown(Pop.AccessCulture)]" 
+														align = nobaseline
+														size = { 90 @spreadsheet_height }
+														elide = right
+														margin_right = 5
+
+														tooltipwidget = {
+															FancyTooltip_Culture = {}
+														}
+													}
+													
+													button = {
+														size = { 80 @spreadsheet_height }
+														onclick = "[PopBrowserPanel.ReligionFilterHideAll]" 
+														onclick = "[PopBrowserPanel.ReligionFilterToggleShown(Pop.AccessReligion)]" 
+														datacontext = "[Pop.GetReligion]"
+
+														tooltipwidget = {
+															FancyTooltip_Religion = {}
+														}		
+
+														icon = {
+															size = { 30 @spreadsheet_height }
+															parentanchor = center|vcenter
+															texture = "[Religion.GetTexture]"
+														}
+													}
+
+													button = {
+														text = "[Pop.GetState.GetName]"
+														onclick = "[PopBrowserPanel.StateFilterHideAllStates]"
+														onclick = "[PopBrowserPanel.StateFilterToggleShown(Pop.AccessState)]"
+														align = nobaseline
+														size = { 110 @spreadsheet_height }
+														elide = right
+														margin_right = 5
+														margin_left = 3
+													}
+
+													widget = {
+														size = { 180 @spreadsheet_height }
+
+														icon = {
+															size = { 28 28 }
+															texture = "[Pop.GetBuilding.GetIcon]"
+															visible = "[Pop.IsEmployed]"
+															parentanchor = vcenter
+														}
+
+														icon = {
+															size = { 28 28 }
+															texture = "gfx/interface/icons/generic_icons/employed_not.dds"
+															visible = "[Not(Pop.IsEmployed)]"
+															parentanchor = vcenter
+														}
+
+														textbox = {
+															position = { 30 0 }
+															text = "[Pop.GetWorksAt]"
+															size = { 140 @spreadsheet_height }
+															align = nobaseline
+															elide = right
+															margin_right = 5
+															margin_left = 5
+														}
+													}
+
+													# PAGE 1
+													flowcontainer = {
+														visible = "[Not(GetVariableSystem.Exists('pop_browser_page_2'))]"
+
+														textbox = {
+															raw_text = "#variable [Pop.GetNumRadicals|D]#!"
+															tooltip = "RADICALS_TOOLTIP_POP"
+															alpha = "[TransparentIfZero_int64(Pop.GetNumRadicals)]"
+															align = right|nobaseline
+															size = { 90 @spreadsheet_height }
+															margin_right = 5
+														}
+
+														textbox = {
+															raw_text = "#variable [Pop.GetNumLoyalists|D]#!"
+															tooltip = "LOYALISTS_TOOLTIP_POP"
+															alpha = "[TransparentIfZero_int64(Pop.GetNumLoyalists)]"
+															align = right|nobaseline
+															size = { 90 @spreadsheet_height }
+															margin_right = 5
+														}
+
+														textbox = {
+															raw_text = "POP_BROWSER_POP_SOL"
+															using = pop_sol_tooltip_with_graph
+															align = nobaseline
+															size = { 200 @spreadsheet_height }
+															margin_right = 5
+															margin_left = 10
+														}
+
+														textbox = {
+															text = "[Pop.GetPoliticalStrength|Dv]"
+															alpha = "[TransparentIfZero_int64(Pop.GetPoliticalStrength)]"
+															using = pop_pol_str_tooltip_with_graph
+															align = right|nobaseline
+															size = { 100 @spreadsheet_height }
+															margin_right = 5
+														}
+
+														widget = { 
+															size = { 100 @spreadsheet_height }
+															alpha = "[TransparentIfZero_int64(Pop.GetPoliticalStrength)]"
+															
+															ig_button = {
+																visible = "[And(IsDataModelEmpty(Pop.AccessSupportedInterestGroups),Pop.GetLargestInterestGroup.IsValid)]"
+																size = { 30 30 }
+																texture = "[InterestGroup.GetTexture]"
+																using = tooltip_above
+																blockoverride "tooltip" {}
+																tooltip = "POP_IG_ATTRACTION_HEADER"
+																position = { 6 0 }
+															}
+
+															icon = {
+																visible = "[And(IsDataModelEmpty(Pop.AccessSupportedInterestGroups),Not(Pop.GetLargestInterestGroup.IsValid))]"
+																size = { 30 30 }
+																texture = "gfx/interface/icons/ig_icons/politically_unaligned.dds"
+																using = tooltip_above
+																tooltipwidget = {
+																	FancyTooltip_PoliticallyUnaligned = {}
+																}
+																position = { 6 0 }
+															}
+
+															# Henriks favourite hack to only show X number of items in a datamodel
+															container = {
+																maximumsize = { 100 30 }
+																scissor = yes
+
+																flowcontainer = {
+																	margin_left = 6
+																	spacing = 2
+																	datamodel = "[Pop.AccessSupportedInterestGroups]"
+
+																	item = {
+																		ig_button = {
+																			parentanchor = vcenter
+																			size = { 30 30 }
+																			texture = "[InterestGroup.GetTexture]"
+																			using = tooltip_above
+																			blockoverride "tooltip" {}
+																			tooltip = "POP_IG_ATTRACTION_HEADER"
+																		}
+																	}
+																}
+															}
+														}
+													}
+
+													# PAGE 2
+													flowcontainer = {
+														visible = "[GetVariableSystem.Exists('pop_browser_page_2')]"
+
+														textbox = {
+															text = "POP_BROWSER_LITERACY"
+															tooltip = "POP_POPULATION_LITERACY"
+															align = nobaseline
+															size = { 90 @spreadsheet_height }
+															margin_left = 5
+														}
+
+														textbox = {
+															visible = "[Not(Pop.IsSlave)]"
+															raw_text = "POP_BROWSER_JOB_SATISFACTION"
+															tooltip = "TOOLTIP_JOB_SATISFACTION"
+															align = nobaseline
+															size = { 90 @spreadsheet_height }
+															margin_right = 5
+															margin_left = 5
+														}
+
+														textbox = {
+															visible = "[Pop.IsSlave]"
+															text = "NOT_AVAILABLE"
+															align = nobaseline
+															size = { 90 @spreadsheet_height }
+															margin_right = 5
+															margin_left = 5
+														}
+
+														v3_stacked_barchart = {
+															parentanchor = vcenter
+															size = { 400 30 }
+
+															blockoverride "barchart_datamodel" {
+																datamodel = "[Pop.GetTopGoodsConsumption]"
+															}
+
+															blockoverride "barchart_item_stretchfactor" {
+																# This is what is actually setting the size of the item
+																layoutstretchfactor_horizontal = "[FixedPointToInt(Multiply_CFixedPoint(PopConsumptionGoods.GetConsumptionRatio, '(CFixedPoint)100'))]"
+															}
+
+															blockoverride "barchart_item_datacontext" {
+																datacontext = "[PopConsumptionGoods.GetGoods]"
+															}
+
+															blockoverride "barchart_item_tooltip" {
+																tooltipwidget = {
+																	FancyTooltip_Goods_Pop_Consumption = {}
+																}
+															}
+
+															blockoverride "barchart_item_color" {
+																color = "[Goods.GetCategoryColor]"
+															}
+
+															blockoverride "barchart_item_margins" {}
+
+															blockoverride "barchart_item_icon" {
+																widget = {
+																	size = { 34 30 }
+																	icon = {
+																		texture = "[Goods.GetTexture]"
+																		tooltip = "[Goods.GetStatePriceDesc]"
+																		size = { 26 26 }
+																		parentanchor = center
+																		position = { -2 0 }
+
+																		textbox = {
+																			using = fontsize_small
+																			text = "[Goods.GetCompareIconAgainstBasePriceNoTooltip( Goods.GetStatePrice )]"
+																			parentanchor = bottom|right
+																			autoresize = yes
+																			align = nobaseline
+																			position = { 5 0 }
+																		}
+																	}
+																}
+															}
+
+															blockoverride "barchart_plus_others_info" {
+																text = "AND_X_MORE_NEEDS"
+																tooltip = "NEEDS_BREAKDOWN"
+																size = { 28 -1 }
+															}
+														}
+													}
+
+													widget = {
+														size = { 51 @spreadsheet_height }
+
+														button_icon_goto = {
+															position = { 10 0 }
+															size = { 26 26 }
+															parentanchor = vcenter
+															onclick = "[InformationPanelBar.OpenPopDetailsPanel(Pop.AccessSelf)]"
+														}
+													}
+												}
+
+												divider_clean = {
+													size = { 100% 1 } 
+													parentanchor = bottom
+													alpha = 0.15
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+
+					# EMPTY STATE
+					textbox = {
+						text = "NO_POPS_MATCHES_THE_CURRENT_FILTER"
+						visible = "[IsDataModelEmpty(PopBrowserPanel.GetSortedAndFilteredPops)]"
+
+						layoutpolicy_horizontal = expanding
+						layoutpolicy_vertical = expanding
+						using = fontsize_xxl
+						using = empty_state_text_properties
+						align = hcenter|nobaseline
+
+						background = {
+							using = dark_area
+							margin_top = 2
+							margin_left = 14
+							margin_right = 100
+						}
+					}
+				}
+			}
+		}
+	}
+
+	type filtered_pop_type_pol_str_piechart = browser_chart {
+		blockoverride "datamodel" {
+			datamodel = "[PopBrowserPanel.GetFilteredPopTypesSortedByPolStr]"
+		}
+
+		blockoverride "heading" {
+			text = "[concept_political_strength]"
+		}
+
+		blockoverride "tooltip" {
+			tooltip = "POP_TYPE_POL_STR_PIECHART"
+		}
+
+		blockoverride "pieslice" {
+			value = "[PopBrowserPanel.GetFilteredPolStrForPopType(PopType.Self)]"
+		}
+
+		blockoverride "color" {
+			color = "[PopType.GetColor]"
+		}
+
+		blockoverride "leftside_info" {
+			text = "[PopType.GetName]"
+			onclick = "[PopBrowserPanel.PopTypeFilterHideAll]" 
+			onclick = "[PopBrowserPanel.PopTypeFilterToggleShown(PopType.AccessSelf)]"
+		}
+
+		blockoverride "area_onclick" {
+			onclick = "[PopBrowserPanel.PopTypeFilterHideAll]" 
+			onclick = "[PopBrowserPanel.PopTypeFilterToggleShown(PopType.AccessSelf)]"
+		}
+
+		blockoverride "rightside_info" {
+			raw_text = "[PopBrowserPanel.GetFilteredPolStrForPopType(PopType.Self)|Dv]"
+		}
+	}
+
+	type filtered_pop_type_population_piechart = browser_chart {
+		blockoverride "datamodel" {
+			datamodel = "[PopBrowserPanel.GetFilteredPopTypes]"
+		}
+
+		blockoverride "heading" {
+			text = "POPULATION_PIECHART_HEADER"
+		}
+
+		blockoverride "tooltip" {
+			tooltip = "FILTERED_POP_TYPE_PIECHART"
+		}
+
+		blockoverride "pieslice" {
+			value = "[PopBrowserPanel.GetFilteredTotalSizeForPopType(PopType.Self)]"
+		}
+
+		blockoverride "color" {
+			color = "[PopType.GetColor]"
+		}
+
+		blockoverride "leftside_info" {
+			text = "[PopType.GetName]"
+			onclick = "[PopBrowserPanel.PopTypeFilterHideAll]" 
+			onclick = "[PopBrowserPanel.PopTypeFilterToggleShown(PopType.AccessSelf)]"
+		}
+
+		blockoverride "area_onclick" {
+			onclick = "[PopBrowserPanel.PopTypeFilterHideAll]" 
+			onclick = "[PopBrowserPanel.PopTypeFilterToggleShown(PopType.AccessSelf)]"
+		}
+
+
+		blockoverride "rightside_info" {
+			raw_text = "[PopBrowserPanel.GetFilteredTotalSizeForPopType(PopType.Self)|Dv]"
+		}
+	}
+
+	type filtered_state_population_piechart = browser_chart {
+		blockoverride "datamodel" {
+			datamodel = "[PopBrowserPanel.GetFilteredStates]"
+		}
+
+		blockoverride "heading" {
+			text = "STATE_PIECHART_HEADER"
+		}
+
+		blockoverride "tooltip" {
+			tooltip = "FILTERED_STATE_PIECHART"
+		}
+
+		blockoverride "pieslice" {
+			value = "[PopBrowserPanel.GetFilteredTotalSizeForState(State.Self)]"
+		}
+
+		blockoverride "color" {
+			color = "[State.GetColor]"
+		}
+
+		blockoverride "leftside_info" {
+			text = "[State.GetName]"
+			onclick = "[PopBrowserPanel.StateFilterHideAllStates]"
+			onclick = "[PopBrowserPanel.StateFilterToggleShown(State.AccessSelf)]"
+		}
+
+		blockoverride "area_onclick" {
+			onclick = "[PopBrowserPanel.StateFilterHideAllStates]"
+			onclick = "[PopBrowserPanel.StateFilterToggleShown(State.AccessSelf)]"
+		}
+
+		blockoverride "rightside_info" {
+			raw_text = "[PopBrowserPanel.GetFilteredTotalSizeForState(State.Self)|Dv]"
+		}
+	}
+
+	type filtered_culture_population_piechart = browser_chart {
+		blockoverride "datamodel" {
+			datamodel = "[PopBrowserPanel.GetFilteredCultures]"
+		}
+
+		blockoverride "heading" {
+			text = "CULTURE_PIECHART_HEADER"
+		}
+
+		blockoverride "tooltip" {
+			tooltip = "FILTERED_CULTURE_PIECHART"
+		}
+
+		blockoverride "pieslice" {
+			value = "[PopBrowserPanel.GetFilteredTotalSizeForCulture(Culture.Self)]"
+		}
+
+		blockoverride "color" {
+			color = "[Culture.GetColor]"
+		}
+
+		blockoverride "leftside_info" {
+			text = "[Culture.GetName]"
+			onclick = "[PopBrowserPanel.CultureFilterHideAll]" 
+			onclick = "[PopBrowserPanel.CultureFilterToggleShown(Culture.AccessSelf)]"
+		}
+
+		blockoverride "area_onclick" {
+			onclick = "[PopBrowserPanel.CultureFilterHideAll]" 
+			onclick = "[PopBrowserPanel.CultureFilterToggleShown(Culture.AccessSelf)]"
+		}
+
+		blockoverride "rightside_info" {
+			raw_text = "[PopBrowserPanel.GetFilteredTotalSizeForCulture(Culture.Self)|Dv]"
+		}
+	}
+
+	type filtered_religion_population_piechart = browser_chart {
+		blockoverride "datamodel" {
+			datamodel = "[PopBrowserPanel.GetFilteredReligions]"
+		}
+
+		blockoverride "heading" {
+			text = "RELIGION_PIECHART_HEADER"
+		}
+
+		blockoverride "tooltip" {
+			tooltip = "FILTERED_RELIGION_PIECHART"
+		}
+
+		blockoverride "pieslice" {
+			value = "[PopBrowserPanel.GetFilteredTotalSizeForReligion(Religion.Self)]"
+		}
+
+		blockoverride "color" {
+			color = "[Religion.GetColor]"
+		}
+
+		blockoverride "leftside_info" {
+			text = "[Religion.GetName]"
+			onclick = "[PopBrowserPanel.ReligionFilterHideAll]" 
+			onclick = "[PopBrowserPanel.ReligionFilterToggleShown(Religion.AccessSelf)]" 
+		}
+
+		blockoverride "area_onclick" {
+			onclick = "[PopBrowserPanel.ReligionFilterHideAll]" 
+			onclick = "[PopBrowserPanel.ReligionFilterToggleShown(Religion.AccessSelf)]" 
+		}
+
+		blockoverride "rightside_info" {
+			raw_text = "[PopBrowserPanel.GetFilteredTotalSizeForReligion(Religion.Self)|Dv]"
+		}
+	}
+
+	type browser_chart = container {
+		onmousehierarchyenter = "[PdxGuiWidget.FindChild('chart_button').InterruptThenTriggerAnimation('hide_chart_button','show_chart_button')]"
+		onmousehierarchyleave = "[PdxGuiWidget.FindChild('chart_button').InterruptThenTriggerAnimation('show_chart_button','hide_chart_button')]"
+		alwaystransparent = no
+
+		flowcontainer = {
+			direction = vertical
+			spacing = 10
+			margin = { 8 10 }
+			minimumsize = { 262 -1 }
+
+			background = {
+				using = entry_bg
+			}
+
+			textbox = {
+				using = default_list_position
+				size = { 120 20 }
+				align = hcenter|nobaseline
+				default_format = "#title"
+
+				block "heading" {
+					raw_text = "#todo heading#!"
+				}
+			}
+
+			v3_piechart = {
+				visible = "[GetVariableSystem.Exists('piecharts')]"
+
+				blockoverride "piechartsize" {
+					size = { 160 160 }
+				}
+			}
+
+			v3_treemapchart  = {
+				visible = "[Not(GetVariableSystem.Exists('piecharts'))]"
+
+				blockoverride "piechartsize" {
+					size = { 160 160 }
+				}
+			}
+
+			# Labels
+			scrollarea = {
+				layoutpolicy_vertical = expanding
+				size = { 250 92 }
+
+				scrollbar_horizontal = {
+					using = horizontal_scrollbar
+				}
+
+				scrollbar_vertical = {
+					using = vertical_scrollbar
+				}
+
+				scrollwidget = {
+					fixedgridbox = {
+						parentanchor = hcenter
+						addrow = 23
+						minimumsize = { -1 92 }
+						addcolumn = 250
+
+						block "datamodel" {}
+
+						item = {
+							widget = {
+								size = { 250 23 }
+
+								block "tooltip" {
+									tooltip = "CLOUT_PIECHART"
+								}
+
+								hbox = {
+									margin = { 6 0 }
+
+									icon = {
+										texture = "/gfx/interface/piechart/piechart_legend.dds"
+										size = { 18 18 }
+										block "color" {}
+									}
+
+									button = {
+										layoutpolicy_horizontal = expanding
+										size = { 0 18 }
+										align = nobaseline
+										block "leftside_info" {
+											raw_text = "#todo leftside_info#!"
+										}
+										margin_left = 8
+										elide = right
+									}
+									textbox = {
+										layoutpolicy_horizontal = preferred
+										autoresize = yes
+										align = nobaseline
+										margin_right = 8
+										block "rightside_info" {
+											raw_text = "#todo rightside_info#!"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		widget = {
+			name = "chart_button"
+			parentanchor = right|top
+			size = { 30 30 }
+			position = { -5 5 }
+
+			state = {
+				name = hide_chart_button
+				trigger_on_create = yes
+				alpha = 0
+				duration = 0.2
+			}
+
+			state = {
+				name = show_chart_button
+				alpha = 1
+				duration = 0.15
+			}
+
+			# grid/list toggle
+			button_icon_round_toggle = {
+				size = { 29 29 }
+				parentanchor = right|vcenter
+				position = { -10 0 }
+				
+				blockoverride "on_click" {
+					onclick = "[GetVariableSystem.Toggle('piecharts')]"
+				}
+				blockoverride "view_1" {
+					visible = "[Not(GetVariableSystem.Exists('piecharts'))]"
+				}
+				blockoverride "view_2" {
+					visible = "[GetVariableSystem.Exists('piecharts')]"
+				}
+				blockoverride "icon_1" {
+					texture = "gfx/interface/buttons/button_icons/piecharts.dds"
+				}
+				blockoverride "icon_2" {
+					texture = "gfx/interface/buttons/button_icons/areacharts.dds"
+				}
+				blockoverride "tooltip_1" {
+					tooltip = "TOOLTIP_PIE_CHART"
+				}
+				blockoverride "tooltip_2" {
+					tooltip = "TOOLTIP_AREA_CHART"
+				}
+			}
+		}
+	}
+}
+
+template pop_browser_filter_section {
+	margin_top = 5
+	margin_bottom = 15
+	parentanchor = hcenter
+	direction = vertical
+}
+
+template pop_browser_filter_button {
+	size = { 404 35 }
+	align = nobaseline
+	margin_left = 40
+}
+
+template pop_browser_filter_button_icon {
+	size = { 25 25 }
+	parentanchor = vcenter
+	position = { 10 0 }
+}
+
+template pop_browser_section_header_size {
+	size = { 404 38 }
+}
+

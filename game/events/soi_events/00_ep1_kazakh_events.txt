@@ -1,0 +1,1461 @@
+﻿namespace = kazakhstan_events
+
+kazakhstan_events.1 = {
+	type = country_event
+	placement = ROOT
+	event_image = {
+		video = "gfx/event_pictures/europenorthamerica_springtime_of_nations.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	title = kazakhstan_events.1.t
+	desc = kazakhstan_events.1.d
+	flavor = kazakhstan_events.1.f
+
+	dlc = dlc010
+
+	duration = 3
+
+	trigger = {
+
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				exists = c:UZH
+				c:UZH = {	
+					is_subject_of = c:RUS
+				}
+			}
+			c:UZH = {
+				change_tag = KAZ
+				make_independent = yes
+				end_truce = c:RUS
+				random_scope_state = {
+					save_scope_as = kenesary_state
+				}
+				save_scope_as = kenesary_country
+			}
+		}
+		else = {
+			random_state = {
+				limit = {
+					state_region = s:STATE_SYRDARYA
+					this.state_region = {
+						is_homeland = cu:kazak
+					}
+					owner = {
+						OR = {
+							this = c:RUS
+							is_subject_of = c:RUS
+						}
+					}
+				}
+				save_scope_as = kenesary_state
+				owner = {
+					save_scope_as = kenesary_country
+				}
+			}
+			create_country = {
+				tag = KAZ
+				origin = scope:kenesary_country
+				state = scope:kenesary_state
+				on_created = {
+
+				}
+			}
+		}	
+		
+		c:KAZ = {
+			save_scope_as = kazakh_scope
+			create_character = {
+				template = kaz_kenesary_khan
+			}
+			ruler = {
+				save_scope_as = kenesary_scope
+			}
+			activate_law = law_type:law_oligarchy
+			activate_law = law_type:law_peasant_levies
+			set_ruling_interest_groups = { ig_landowners ig_devout }
+			add_modifier = {
+				name = modifier_kenesary_revolt
+				months = normal_modifier_time
+				is_decaying = yes
+			}
+			create_military_formation = {
+				type = army
+				hq_region = scope:kazakh_scope.capital.region
+	
+				combat_unit = {
+					type = unit_type:combat_unit_type_irregular_infantry
+					state_region = scope:kazakh_scope.capital.state_region
+					count = 5
+				}
+				
+				combat_unit = {
+					type = unit_type:combat_unit_type_hussars
+					state_region = scope:kazakh_scope.capital.state_region
+					count = 5
+				}
+			}
+		}
+		s:STATE_AKMOLINSK = {
+			add_claim = c:KAZ
+		}
+		s:STATE_URALSK = {
+			add_claim = c:KAZ
+		}
+		s:STATE_KHIVA = {
+			add_claim = c:KAZ
+		}
+		s:STATE_AKTOBE = {
+			add_claim = c:KAZ
+		}
+		s:STATE_SYRDARYA = {
+			add_claim = c:KAZ
+		}
+	}
+
+	option = {
+		name = kazakhstan_events.1.a
+		add_journal_entry = { type = je_the_last_kazakh_khan }
+        default_option = yes
+		every_state = {
+			limit = {
+				state_region = s:STATE_SEMIRECHE
+				owner = {
+					OR = {
+						is_subject_of = c:RUS
+						this = c:RUS
+					}
+				}
+			}
+			set_state_owner = c:KAZ
+			set_state_type = incorporated
+		}
+		every_state = {
+			limit = {
+				state_region = s:STATE_SYRDARYA
+				owner = {
+					OR = {
+						is_subject_of = c:RUS
+						this = c:RUS
+					}
+				}
+			}
+			set_state_owner = c:KAZ
+			set_state_type = incorporated
+		}
+		if = {
+			limit = {
+				c:OZH ?= {
+					liberty_desire > 60
+				}
+			}
+			if = {
+				limit = {
+					c:OZH ?= {
+						is_player = yes
+					}
+				}
+				c:OZH = {
+					play_as = c:KAZ
+				}
+			}
+			c:KAZ = {
+				annex = c:OZH
+			}
+		}
+		if = {
+			limit = {
+				c:KZH ?= {
+					liberty_desire > 60
+				}
+			}
+			if = {
+				limit = {
+					c:KZH ?= {
+						is_player = yes
+					}
+				}
+				c:KZH = {
+					play_as = c:KAZ
+				}
+			}
+			c:KAZ = {
+				annex = c:KZH
+			}
+		}
+		if = {
+			limit = {
+				c:UZH ?= {
+					liberty_desire > 60
+				}
+			}
+			if = {
+				limit = {
+					c:UZH ?= {
+						is_player = yes
+					}
+				}
+				c:UZH = {
+					play_as = c:KAZ
+				}
+			}
+			c:KAZ = {
+				annex = c:UZH
+			}
+		}
+		if = {
+			limit = {
+				exists = c:OZH
+				exists = c:KZH
+			}	
+			c:KAZ = {
+				create_diplomatic_play = {
+					name = annex_war
+					target_country = c:OZH
+					type = dp_annex_war
+
+					add_target_backers = { c:KZH }
+					add_war_goal = { holder = c:KAZ target_country = c:KZH type = annex_country }
+					add_war_goal = { holder = c:RUS target_country = c:KAZ type = make_protectorate }
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				exists = c:OZH
+				NOT = {
+					exists = c:KZH
+				}
+			}	
+			c:KAZ = {
+				create_diplomatic_play = {
+					name = annex_war
+					target_country = c:OZH
+					type = dp_annex_war
+
+					add_war_goal = { holder = c:KAZ target_state = s:STATE_URALSK.region_state:RUS type = return_state }
+					add_war_goal = { holder = c:RUS target_country = c:KAZ type = make_protectorate }
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				exists = c:KZH
+				NOT = {
+					exists = c:OZH
+				}
+			}	
+			c:KAZ = {
+				create_diplomatic_play = {
+					name = annex_war
+					target_country = c:KZH
+					type = dp_annex_war
+
+					add_war_goal = { holder = c:KAZ target_country = c:KZH type = annex_country }
+					add_war_goal = { holder = c:KAZ target_state = s:STATE_AKMOLINSK.region_state:RUS type = return_state }
+					add_war_goal = { holder = c:RUS target_country = c:KAZ type = make_protectorate }
+				}
+			}
+		}
+		else = {
+			c:KAZ = {
+				create_diplomatic_play = {
+					name = annex_war
+					target_country = c:RUS
+					type = dp_return_state
+					target_state = s:STATE_AKMOLINSK.region_state:RUS
+
+					add_war_goal = { holder = c:KAZ target_state = s:STATE_URALSK.region_state:RUS type = return_state }
+					add_war_goal = { holder = c:RUS target_country = c:KAZ type = make_protectorate }
+				}
+			}
+		}
+		every_state = {
+			limit = {
+				owner = {
+					OR = {	
+						this = c:RUS
+						this = {
+							is_subject_of = c:RUS
+						}
+					}
+				}
+				this.state_region = {
+					is_homeland = cu:kazak
+				}
+			}
+		}
+		every_country = {
+			limit = {
+				has_variable = kenesary_recognizer_var
+			}
+			change_relations = {
+				country = c:KAZ
+				value = 50
+			}
+			random_diplomatic_play = {
+				limit = {
+					initiator = {
+						this = c:KAZ
+					}
+				}
+				add_initiator_backers = { prev }
+			}
+		}
+		every_country = {
+			limit = {
+				is_subject_of = c:RUS
+				country_has_primary_culture = cu:kazak
+			}
+			add_radicals = {
+				value = large_radicals
+				culture = cu:kazak
+			}
+			add_modifier = { name = modifier_kazakh_ungovernable_provinces months = long_modifier_time is_decaying = yes }
+		}
+		hidden_effect = {
+			every_state = {
+				limit = {
+					owner = c:KAZ
+				}
+				add_modifier = {
+					name = modifier_taiping_hiring_bonus # Temporary bonus to fill their barracks
+					months = 6
+				}
+			}
+		}
+	}
+
+    option = {
+		name = kazakhstan_events.1.b
+		add_journal_entry = { type = je_the_last_kazakh_khan }
+		every_state = {
+			limit = {
+				state_region = s:STATE_SEMIRECHE
+				owner = {
+					OR = {
+						is_subject_of = c:RUS
+						this = c:RUS
+					}
+				}
+			}
+			set_state_owner = c:KAZ
+			set_state_type = incorporated
+		}
+		every_state = {
+			limit = {
+				state_region = s:STATE_SYRDARYA
+				owner = {
+					OR = {
+						is_subject_of = c:RUS
+						this = c:RUS
+					}
+				}
+			}
+			set_state_owner = c:KAZ
+			set_state_type = incorporated
+		}
+		if = {
+			limit = {
+				c:OZH ?= {
+					liberty_desire > 60
+				}
+			}
+			if = {
+				limit = {
+					c:OZH ?= {
+						is_player = yes
+					}
+				}
+				c:OZH = {
+					play_as = c:KAZ
+				}
+			}
+			c:KAZ = {
+				annex = c:OZH
+			}
+		}
+		if = {
+			limit = {
+				c:KZH ?= {
+					liberty_desire > 60
+				}
+			}
+			if = {
+				limit = {
+					c:KZH ?= {
+						is_player = yes
+					}
+				}
+				c:KZH = {
+					play_as = c:KAZ
+				}
+			}
+			c:KAZ = {
+				annex = c:KZH
+			}
+		}
+		if = {
+			limit = {
+				c:UZH ?= {
+					liberty_desire > 60
+				}
+			}
+			if = {
+				limit = {
+					c:UZH ?= {
+						is_player = yes
+					}
+				}
+				c:UZH = {
+					play_as = c:KAZ
+				}
+			}
+			c:KAZ = {
+				annex = c:UZH
+			}
+		}
+		if = {
+			limit = {
+				exists = c:OZH
+				exists = c:KZH
+			}	
+			c:KAZ = {
+				create_diplomatic_play = {
+					name = annex_war
+					target_country = c:OZH
+					type = dp_annex_war
+
+					add_target_backers = { c:KZH }
+					add_war_goal = { holder = c:KAZ target_country = c:KZH type = annex_country }
+					add_war_goal = { holder = c:RUS target_country = c:KAZ type = make_protectorate }
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				exists = c:OZH
+				NOT = {
+					exists = c:KZH
+				}
+			}	
+			c:KAZ = {
+				create_diplomatic_play = {
+					name = annex_war
+					target_country = c:OZH
+					type = dp_annex_war
+
+					add_war_goal = { holder = c:KAZ target_state = s:STATE_URALSK.region_state:RUS type = return_state }
+					add_war_goal = { holder = c:RUS target_country = c:KAZ type = make_protectorate }
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				exists = c:KZH
+				NOT = {
+					exists = c:OZH
+				}
+			}	
+			c:KAZ = {
+				create_diplomatic_play = {
+					name = annex_war
+					target_country = c:KZH
+					type = dp_annex_war
+
+					add_war_goal = { holder = c:KAZ target_country = c:KZH type = annex_country }
+					add_war_goal = { holder = c:KAZ target_state = s:STATE_AKMOLINSK.region_state:RUS type = return_state }
+					add_war_goal = { holder = c:RUS target_country = c:KAZ type = make_protectorate }
+				}
+			}
+		}
+		else = {
+			c:KAZ = {
+				create_diplomatic_play = {
+					name = annex_war
+					target_country = c:RUS
+					type = dp_return_state
+					target_state = s:STATE_AKMOLINSK.region_state:RUS
+
+					add_war_goal = { holder = c:KAZ target_state = s:STATE_URALSK.region_state:RUS type = return_state }
+					add_war_goal = { holder = c:RUS target_country = c:KAZ type = make_protectorate }
+				}
+			}
+		}
+		every_country = {
+			limit = {
+				has_variable = kenesary_recognizer_var
+			}
+			change_relations = {
+				country = c:KAZ
+				value = 50
+			}
+			random_diplomatic_play = {
+				limit = {
+					initiator = {
+						this = c:KAZ
+					} 
+				}
+				add_initiator_backers = { prev }
+			}
+		}
+		every_country = {
+			limit = {
+				is_subject_of = c:RUS
+				country_has_primary_culture = cu:kazak
+			}
+			add_radicals = {
+				value = large_radicals
+				culture = cu:kazak
+			}
+			add_modifier = { name = modifier_kazakh_ungovernable_provinces months = long_modifier_time is_decaying = yes }
+		}
+		play_as = c:KAZ
+		hidden_effect = {
+			every_state = {
+				limit = {
+					owner = c:KAZ
+				}
+				add_modifier = {
+					name = modifier_taiping_hiring_bonus # Temporary bonus to fill their barracks
+					months = 6
+				}
+			}
+		}
+	}
+}
+
+kazakhstan_events.2 = {
+	type = country_event
+	placement = ROOT
+	event_image = {
+		video = "gfx/event_pictures/ep1_cossacks.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	title = kazakhstan_events.2.t
+	desc = kazakhstan_events.2.d
+	flavor = kazakhstan_events.2.f
+
+	dlc = dlc010
+
+	duration = 3
+
+	trigger = {
+
+	}
+
+	immediate = { 
+		c:RUS = {
+        	save_scope_as = russia_scope
+        }
+		random_state = {
+			limit = {
+				state_region = s:STATE_AKMOLINSK
+			}
+			save_scope_as = akmolinsk_state
+		}
+		random_country = {
+			limit = {
+				country_has_primary_culture = cu:kazak
+			}
+			create_character = {
+				template = kaz_kenesary_khan
+				on_created = {
+					set_variable = kenesary_variable
+				}
+			}
+			random_scope_character = {
+				limit = {
+					has_variable = kenesary_variable
+				}
+				place_character_in_void = 1200
+			}
+		}
+		random_character_in_void = {
+			limit = {
+				has_variable = kenesary_variable
+			}
+			save_scope_as = kenesary_scope
+		}
+	}
+
+	option = {
+		name = kazakhstan_events.2.a
+        default_option = yes
+        add_journal_entry = { type = je_pacify_the_steppes }
+        every_country = {
+        	limit = {
+        		country_has_primary_culture = cu:kazak
+        	}
+        	post_notification = kazakhstan_ride_of_kenesary_notification
+        }
+	}
+}
+
+kazakhstan_events.3 = {
+	type = country_event
+	placement = ROOT
+	event_image = {
+		video = "gfx/event_pictures/ep1_central_asian_city.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	title = kazakhstan_events.3.t
+	desc = kazakhstan_events.3.d
+	flavor = kazakhstan_events.3.f
+
+	dlc = dlc010
+
+	duration = 3
+
+	trigger = {
+
+	}
+
+	immediate = {
+
+	}
+
+	option = {
+		name = kazakhstan_events.3.a
+        default_option = yes
+        every_country = {
+        	limit = {
+        		this = {
+        			country_has_primary_culture = cu:kazak
+        			is_subject_of = ROOT
+        		}
+        	}
+        	ROOT = {
+       			annex = prev
+        	}
+        }
+        s:STATE_UZBEKIA = {
+        	add_claim = c:RUS
+        }
+        s:STATE_KHIVA = {
+        	add_claim = c:RUS
+        }
+        s:STATE_TURKMENIA = {
+        	add_claim = c:RUS
+        }
+        s:STATE_KIRGHIZIA = {
+        	add_claim = c:RUS
+        }
+        s:STATE_TAJIKISTAN = {
+        	add_claim = c:RUS
+        }
+	}
+	option = {
+		name = kazakhstan_events.3.b
+        every_country = {
+        	limit = {
+        		this = {
+        			country_has_primary_culture = cu:kazak
+        			is_subject_of = ROOT
+        		}
+        	}
+        	ROOT = {
+       			annex = prev
+        	}
+        }
+        every_scope_state = {
+        	limit = {
+        		state_region = {
+        			is_homeland = cu:kazak
+        		}
+        	}
+        	add_modifier = {
+        		name = modifier_defeat_of_kenesary_khan
+        		months = normal_modifier_time
+        	}
+        }
+	}
+}
+
+kazakhstan_events.4 = { #Raid on Russian convoy
+	type = country_event
+	placement = scope:raid_state
+	event_image = {
+		video = "gfx/event_pictures/ep1_cossacks.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	title = kazakhstan_events.4.t
+	desc = kazakhstan_events.4.d
+	flavor = kazakhstan_events.4.f
+
+	dlc = dlc010
+
+	duration = 3
+
+	cooldown = { months = short_modifier_time }
+
+	trigger = {
+		any_state = {
+			owner = {
+				country_has_primary_culture = cu:kazak
+				is_subject_of = root
+			}
+		}
+	}
+
+	immediate = {
+		random_character_in_void = {
+            limit = {
+                has_variable = kenesary_variable
+            }
+            save_scope_as = kenesary_scope
+        }
+		random_state = {
+			limit = {
+				owner = {
+					country_has_primary_culture = cu:kazak
+					is_subject_of = root
+				}
+			}
+			save_scope_as = raid_state
+		}
+        c:RUS = {
+        	save_scope_as = russia_scope
+        }
+		scope:raid_state = {
+			owner = {
+				save_scope_as = kazakh_scope
+			}
+		}
+	}
+
+	option = {
+		name = kazakhstan_events.4.a
+        default_option = yes
+        add_modifier = {
+			name = modifier_recompense_for_supply_convoy_raid
+			months = short_modifier_time
+		}
+		scope:raid_state.owner = {
+			add_modifier = {
+				name = modifier_raids_on_supply_convoys
+				months = normal_modifier_time
+				multiplier = 0.5
+			}
+			add_liberty_desire = -5
+			post_notification = kazakhstan_cossack_patrol_attacked_notification
+		}
+	}
+	option = {
+		name = kazakhstan_events.4.b
+		scope:raid_state.owner = {
+			add_modifier = {
+				name = modifier_raids_on_supply_convoys
+				months = normal_modifier_time
+			}
+			add_liberty_desire = 15
+			post_notification = kazakhstan_cossack_patrol_attacked_notification
+		}
+	}
+}
+
+kazakhstan_events.5 = { #Raid on Russian fortress
+	type = country_event
+	placement = scope:raid_state
+	event_image = {
+		video = "gfx/event_pictures/asia_sepoy_mutiny.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	title = kazakhstan_events.5.t
+	desc = kazakhstan_events.5.d
+	flavor = kazakhstan_events.5.f
+
+	dlc = dlc010
+
+	duration = 3
+
+	cooldown = { months = short_modifier_time }
+
+	trigger = {
+		any_state = {
+			owner = {
+				country_has_primary_culture = cu:kazak
+				is_subject_of = root
+			}
+		}
+	}
+
+	immediate = {
+        random_character_in_void = {
+            limit = {
+                has_variable = kenesary_variable
+            }
+            save_scope_as = kenesary_scope
+        }
+        c:RUS = {
+        	save_scope_as = russia_scope
+        }
+		random_state = {
+			limit = {
+				owner = {
+					country_has_primary_culture = cu:kazak
+					is_subject_of = root
+				}
+			}
+			save_scope_as = raid_state
+		}
+	}
+
+	option = {
+		name = kazakhstan_events.5.a
+        default_option = yes
+		scope:raid_state.owner = {
+			add_liberty_desire = 15
+		}
+		scope:raid_state = {
+			add_modifier = {
+				name = modifier_fortress_raid_kazakhstan
+				months = normal_modifier_time
+			}
+			owner = {
+				post_notification = kazakhstan_fortress_raid_notification
+			}
+		}
+	}
+
+	option = {
+		name = kazakhstan_events.5.b
+		add_modifier = {
+			name = modifier_shoring_up_kazakhstan
+			months = normal_modifier_time
+		}
+		scope:raid_state = {
+			add_modifier = {
+				name = modifier_fortress_raid_kazakhstan
+				months = normal_modifier_time
+				multiplier = 0.5
+			}
+			owner = {
+				post_notification = kazakhstan_fortress_raid_notification
+			}
+		}
+	}
+}
+
+kazakhstan_events.6 = { #Raid on Kazakh aul
+	type = country_event
+	placement = scope:raid_state
+	event_image = {
+		video = "gfx/event_pictures/unspecific_fire.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	title = kazakhstan_events.6.t
+	desc = kazakhstan_events.6.d
+	flavor = kazakhstan_events.6.f
+
+	dlc = dlc010
+
+	duration = 3
+
+	cooldown = { months = short_modifier_time }
+
+	trigger = {
+		any_subject_or_below = {
+			country_has_primary_culture = cu:kazak
+		}
+	}
+
+	immediate = {
+        random_character_in_void = {
+            limit = {
+                has_variable = kenesary_variable
+            }
+            save_scope_as = kenesary_scope
+        }
+        c:RUS = {
+        	save_scope_as = russia_scope
+        }
+		random_subject_or_below = {
+			limit = {
+				country_has_primary_culture = cu:kazak
+			}
+			random_scope_state = {
+				save_scope_as = raid_state
+				owner = {
+					ruler = {
+						save_scope_as = senior_sultan_scope
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = kazakhstan_events.6.a
+        default_option = yes
+        scope:raid_state = {
+			add_modifier = {
+				name = modifier_auls_raided
+				months = normal_modifier_time
+			}
+		}
+		c:RUS = {
+			owner = {
+				post_notification = kazakhstan_auls_slaughtered_notification
+			}
+		}
+	}
+	option = {
+		name = kazakhstan_events.6.b
+		scope:raid_state = {
+			add_modifier = {
+				name = modifier_auls_raided
+				months = normal_modifier_time
+				multiplier = 0.5
+			}
+		}
+		add_modifier = {
+			name = modifier_excessive_russian_reliance
+			months = normal_modifier_time
+		}
+		add_liberty_desire = -5
+		c:RUS = {
+			owner = {
+				post_notification = kazakhstan_auls_slaughtered_notification
+			}
+		}
+	}
+}
+
+kazakhstan_events.7 = { #Central Asian khanate recognises Kenesary
+	type = country_event
+	placement = scope:country_kenesary_recognizer
+	event_image = {
+		video = "gfx/event_pictures/ep1_persian_court.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	title = kazakhstan_events.7.t
+	desc = kazakhstan_events.7.d
+	flavor = kazakhstan_events.7.f
+
+	dlc = dlc010
+
+	duration = 3
+
+	cooldown = { months = normal_modifier_time }
+
+	trigger = {
+		OR = {
+			country_has_primary_culture = cu:kirgiz	
+			country_has_primary_culture = cu:uzbek	
+			country_has_primary_culture = cu:turkmen	
+			country_has_primary_culture = cu:uighur	
+		}
+		has_interest_marker_in_region = region_central_asia
+		c:RUS.relations:root <= relations_threshold:poor
+		NOT = {
+			has_variable = kenesary_recognizer_var
+		}
+	}
+
+	immediate = {
+		c:RUS = {
+			save_scope_as = russia_scope
+		} 
+		random_character_in_void = {
+            limit = {
+                has_variable = kenesary_variable
+            }
+            save_scope_as = kenesary_scope
+        }
+		save_scope_as = country_kenesary_recognizer
+		ruler = {
+			save_scope_as = ruler_scope
+		}
+	}
+
+	option = {
+		name = kazakhstan_events.7.a
+        default_option = yes
+        scope:country_kenesary_recognizer = {
+        	set_variable = kenesary_recognizer_var
+        }
+        custom_tooltip = {
+        	text = kenesary_recognition_tt
+        }
+	}
+
+	option = {
+		name = kazakhstan_events.7.b
+        default_option = yes
+       	change_relations = {
+			country = c:RUS
+			value = 5
+		}
+	}
+}
+
+kazakhstan_events.8 = { #Raid Repelled
+	type = country_event
+	placement = scope:raid_state
+	event_image = {
+		video = "gfx/event_pictures/middleeast_battlefield_trenches.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	title = kazakhstan_events.8.t
+	desc = kazakhstan_events.8.d
+	flavor = kazakhstan_events.8.f
+
+	dlc = dlc010
+
+	duration = 3
+
+	cooldown = { months = short_modifier_time }
+
+	trigger = {
+		any_state = {
+			owner = {
+				country_has_primary_culture = cu:kazak
+				is_subject_of = root
+			}
+		}
+		any_military_formation = {
+			is_army = yes
+			any_scope_character = {
+                has_role = general
+            }
+			current_hq ?= p:x86A90A.land_hq
+		}
+	}
+
+	immediate = {
+		random_character_in_void = {
+            limit = {
+                has_variable = kenesary_variable
+            }
+            save_scope_as = kenesary_scope
+        }
+		random_state = {
+			limit = {
+				owner = {
+					country_has_primary_culture = cu:kazak
+					is_subject_of = root
+				}
+			}
+			save_scope_as = raid_state
+			owner = {
+				ruler = {
+					save_scope_as = senior_sultan_scope
+				}
+			}
+		}
+        c:RUS = {
+        	save_scope_as = russia_scope
+        }
+		random_military_formation = {
+			limit = {
+				is_army = yes
+				any_scope_character = {
+					has_role = general
+				}
+				current_hq ?= p:x86A90A.land_hq
+			}
+			random_scope_character = {
+				limit = {
+					has_role = general
+				}
+				save_scope_as = casia_general
+			}
+		}
+	}
+
+	option = {
+		name = kazakhstan_events.8.a
+        default_option = yes
+        ig:ig_armed_forces = {
+        	add_modifier = {
+        		name = modifier_supported_soldiers_in_casia
+        		months = normal_modifier_time
+        	}
+        }
+        scope:raid_state.owner = {
+        	add_modifier = {
+        		name = modifier_increased_authority_kazakhstan
+        		months = short_modifier_time
+        	}
+        	post_notification = kazakhstan_raid_repelled_notification
+        }
+	}
+
+	option = {
+		name = kazakhstan_events.8.b
+		scope:casia_general = {
+			if = {
+				limit = {
+					NOT = {
+						has_trait = plains_commander
+					}
+				}
+				add_trait = plains_commander
+			}
+			add_modifier = {
+				name = modifier_hero_against_kenesary
+				months = normal_modifier_time
+			}
+		}
+		scope:raid_state.owner = {	
+        	post_notification = kazakhstan_raid_repelled_notification
+		}
+	}
+}
+
+namespace = russian_central_asia
+
+
+russian_central_asia.1 = {
+	type = country_event
+	placement = ROOT
+	event_image = {
+		video = "gfx/event_pictures/ep1_ca_mountain_pass_military.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	title = russian_central_asia.1.t
+	desc = russian_central_asia.1.d
+	flavor = russian_central_asia.1.f
+
+	dlc = dlc010
+
+	duration = 3
+
+	cooldown = { months = long_modifier_time }
+
+	trigger = {
+		#Triggered by JE
+	}
+
+	immediate = {
+		
+	}
+
+	option = {
+		name = russian_central_asia.1.a
+        default_option = yes
+		custom_tooltip = {
+			text = central_asia_influence_tt
+		}
+		add_modifier = {
+			name = modifier_central_asian_influence 
+			months = normal_modifier_time
+			multiplier = money_amount_multiplier_medium
+		}
+        every_country = {
+			limit = {
+				capital = {
+					region = sr:region_central_asia
+				}
+			}
+			change_relations = {
+				country = c:RUS
+				value = 10
+			}
+			add_modifier = {
+				name = modifier_central_asian_bribe_payments 
+				months = normal_modifier_time
+			}
+			post_notification = central_asia_bribes_notification
+		}
+	}
+
+	option = {
+		name = russian_central_asia.1.b
+		every_country = {
+			limit = {
+				capital = {
+					region = sr:region_central_asia
+				}
+				NOT = {
+					is_subject_of = c:RUS
+				}
+			}
+			change_relations = {
+				country = c:RUS
+				value = -20
+			}
+		}
+	}
+}
+
+russian_central_asia.2 = {
+	type = country_event
+	placement = ROOT
+	event_image = {
+		video = "gfx/event_pictures/ep1_octopus.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	title = russian_central_asia.2.t
+	desc = russian_central_asia.2.d
+	flavor = russian_central_asia.2.f
+
+	dlc = dlc010
+
+	duration = 3
+
+	cooldown = { months = long_modifier_time }
+
+	trigger = {
+		#Triggered by JE
+	}
+
+	immediate = {
+		ordered_country = {
+        	limit = {
+        		country_is_in_europe = yes
+        		OR = {
+        			any_scope_state = {
+        				OR = {
+							region = sr:region_punjab
+							region = sr:region_bombay
+							region = sr:region_madras
+							region = sr:region_central_india
+							region = sr:region_bengal
+    					}
+						count >= 3
+        			}
+        			any_country = {
+        				is_subject_of = prev
+        				any_scope_state = {
+        					OR = {
+ 								region = sr:region_punjab
+								region = sr:region_bombay
+								region = sr:region_madras
+								region = sr:region_central_india
+								region = sr:region_bengal
+        					}
+							count >= 3
+	        			}
+        			}
+        		}
+        	}
+        	order_by = country_rank
+        	save_scope_as = india_overlord
+		}
+		random_state = {
+        	limit = {
+        		state_region = s:STATE_KABUL
+        	}
+        	save_scope_as = kabul_state
+        	owner = {
+        		save_scope_as = afghan_scope
+        	}
+        }
+        if = {
+        	limit = {
+        		any_interest_group = {
+		        	NOR = {
+	        			leader = {
+	        				has_ideology = ideology:ideology_pacifist
+	        			}
+	        			has_ideology = ideology:ideology_isolationist
+	        		}
+	        		law_stance = {
+						law = law_type:law_no_colonial_affairs
+						value <= neutral
+					}
+		        }
+        	}
+        	random_interest_group = {
+        		limit = {
+        			NOR = {
+	        			leader = {
+	        				has_ideology = ideology:ideology_pacifist
+	        			}
+	        			has_ideology = ideology:ideology_isolationist
+	        		}
+	        		law_stance = {
+						law = law_type:law_no_colonial_affairs
+						value <= neutral
+					}
+        		}
+        		save_scope_as = hawkish_ig
+        	}
+        }
+        else = {
+        	ig:ig_armed_forces = {
+        		save_scope_as = hawkish_ig
+        	}
+        }
+	}
+
+	option = {
+		name = russian_central_asia.2.a
+        default_option = yes
+        trigger = {
+        	exists = c:AFG
+        }
+        every_country = {
+        	limit = {
+        		country_is_in_europe = yes
+        		OR = {
+        			any_scope_state = {
+        				OR = {
+							region = sr:region_punjab
+							region = sr:region_bombay
+							region = sr:region_madras
+							region = sr:region_central_india
+							region = sr:region_bengal
+    					}
+						count >= 3
+        			}
+        			any_country = {
+        				is_subject_of = prev
+        				any_scope_state = {
+        					OR = {
+  								region = sr:region_punjab
+								region = sr:region_bombay
+								region = sr:region_madras
+								region = sr:region_central_india
+								region = sr:region_bengal
+        					}
+							count >= 3
+	        			}
+        			}
+        		}
+        	}
+        	change_relations = {
+        		country = c:RUS
+        		value = -20
+        	}
+		}
+		create_incident = {
+			country = c:AFG
+			value = 20
+		}
+		s:STATE_KANDAHAR = {
+			add_claim = c:RUS
+		}
+		s:STATE_KABUL = {
+			add_claim = c:RUS
+		}
+	}
+
+	option = {
+		name = russian_central_asia.2.b
+        default_option = yes
+        add_modifier = {
+        	name = modifier_suzerain_of_central_asia
+        	months = long_modifier_time
+        }
+    	change_relations = {
+    		country = scope:afghan_scope
+    		value = 20
+    	}
+	}
+}
+
+russian_central_asia.3 = {
+	type = country_event
+
+	title = russian_central_asia.3.t
+	desc = russian_central_asia.3.d
+	flavor = russian_central_asia.3.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "ep1_ca_mountain_pass_military"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	duration = 3
+
+	trigger = {
+		# triggered by JE
+	}
+
+	immediate = {
+		c:TRM ?= {
+			save_scope_as = turkmenia_scope
+		}
+	}
+
+	option = {
+		name = russian_central_asia.3.a
+        default_option = yes
+		if = {
+			limit = {
+				NOT = {
+					has_law = law_type:law_frontier_colonization
+				}
+			}
+			activate_law = law_type:law_frontier_colonization
+			add_modifier = {
+				name = modifier_turkmen_subjugation
+				months = normal_modifier_time
+			}
+		}
+		else = {
+			add_modifier = {
+				name = modifier_turkmen_subjugation
+				months = normal_modifier_time
+				multiplier = 2
+			}
+		}
+		add_modifier = {
+			name = modifier_turkmen_logistics
+			months = normal_modifier_time
+			multiplier = money_amount_multiplier_very_large
+		}
+		add_radicals = {
+			culture = cu:turkmen
+			value = medium_radicals
+		}
+		every_scope_state = {
+			limit = { region = sr:region_central_asia }
+			add_loyalists_in_state = {
+				culture = cu:russian
+				value = small_radicals
+			}
+		}
+	}
+}

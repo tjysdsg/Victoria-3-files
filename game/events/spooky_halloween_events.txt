@@ -1,0 +1,387 @@
+﻿namespace = spooky_halloween_events
+
+spooky_halloween_events.1 = {
+	type = country_event
+	placement = root
+	
+	title = spooky_halloween_events.1.t
+	desc = spooky_halloween_events.1.d
+	flavor = spooky_halloween_events.1.f
+
+	cooldown = { months = normal_modifier_time }
+	
+	gui_window = event_window_1char_tabloid_halloween
+	left_icon = scope:dracula_scope
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/misc/1Character_Banner"
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+	
+	duration = 3
+
+	trigger = {
+		NOR = {
+			has_game_rule = no_fantastical_content
+			has_global_variable = count_dracula_global_var
+		}
+		OR = {
+			real_month = 10
+			real_month = 11
+		}
+		country_has_primary_culture = cu:romanian
+		any_scope_state = {
+			state_region = s:STATE_NORTHERN_TRANSYLVANIA
+		}
+		game_date < 1890.1.1
+	}
+
+	cancellation_trigger = {
+		scope:dracula_scope ?= {
+			is_character_alive = no
+		}
+	}
+
+
+	immediate = {
+		create_character = {
+			template = canonic_count_dracula
+			on_created = {
+				set_character_immortal = yes
+			}
+			save_scope_as = dracula_scope
+		}
+		set_global_variable = count_dracula_global_var
+		set_global_variable = {
+			name = dracula_timer_global_var
+			months = normal_modifier_time
+		}
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_NORTHERN_TRANSYLVANIA
+			}
+			create_building={
+				building="building_halloween_castledracula"
+				level = 1
+			}
+		}
+	}
+
+	option = {
+		name = spooky_halloween_events.1.a
+		default_option = yes
+		ai_chance = {
+			base = 1
+		}
+		show_as_tooltip = {
+			create_character = {
+				template = canonic_count_dracula
+			}
+		}
+		scope:dracula_scope = {
+			set_as_interest_group_leader = yes
+		}
+	}
+	option = {
+		name = spooky_halloween_events.1.b
+		highlighted_option = yes
+		trigger = {
+			has_law = law_type:law_autocracy
+		}
+		ai_chance = {
+			base = 1
+		}
+		ruler = {
+			add_modifier = {
+				name = feeling_drained_2
+				months = normal_modifier_time
+			}
+		}
+		custom_tooltip = dracula_coup_tt
+		scope:dracula_scope = {
+			set_character_as_ruler = yes
+		}
+		add_radicals = {
+			value = very_large_radicals
+		}
+		every_interest_group = {
+			limit = {
+				is_marginal = no
+			}
+			add_modifier = {
+				name = umbral_coup_modifier
+				months = normal_modifier_time
+			}
+		}
+	}
+	option = {
+		name = spooky_halloween_events.1.c
+		ai_chance = {
+			base = 8
+		}
+		custom_tooltip = {
+			text = dracula_leaves_tt
+			scope:dracula_scope = {
+				kill_character = {
+					hidden = yes
+				}
+			}
+			create_character = {
+				template = exile_count_dracula
+				on_created = {
+					set_character_immortal = yes
+					exile_character = yes
+					add_character_role = agitator
+				}
+			}
+		}
+	}
+}
+
+spooky_halloween_events.2 = {
+	type = country_event
+	placement = ROOT
+	
+	title = spooky_halloween_events.2.t
+	desc = spooky_halloween_events.2.d
+	flavor = spooky_halloween_events.2.f
+
+	cooldown = { months = normal_modifier_time }
+	
+	gui_window = event_window_2char_halloween
+
+	left_icon = scope:dracula_scope
+	right_icon = scope:fair_maiden_scope
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/misc/2Characters"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+	
+	duration = 3
+
+	trigger = {
+		NOT = {
+			has_game_rule = no_fantastical_content
+		}
+		any_scope_character = {
+			OR = {
+				has_template = canonic_count_dracula
+				has_template = exile_count_dracula
+			}
+		}
+		any_scope_character = {
+			is_female = yes
+		}
+	}
+
+	immediate = {
+		random_scope_character = {
+			limit = {
+				OR = {
+					has_template = canonic_count_dracula
+					has_template = exile_count_dracula
+				}
+			}
+			save_scope_as = dracula_scope
+		}
+		random_scope_character = {
+			limit = {
+				is_female = yes
+			}
+			save_scope_as = fair_maiden_scope
+		}
+	}
+
+	cancellation_trigger = {
+		OR = {
+			scope:dracula_scope ?= {
+				is_character_alive = no
+			}
+			scope:fair_maiden_scope ?= {
+				is_character_alive = no
+			}
+		}
+	}
+
+	option = {
+		name = spooky_halloween_events.2.a
+		default_option = yes
+		ai_chance = {
+			base = 95
+		}
+		custom_tooltip = spooky_halloween_events.2_tt
+		scope:fair_maiden_scope = {
+			if = {
+				limit = {
+					NOT = {
+						has_modifier = feeling_drained_2
+					}
+				}
+				random_list = {
+					75 = {
+						if = {
+							limit = {
+								NOT = {
+									has_modifier = feeling_drained_1
+								}
+							}
+							add_modifier = {
+								name = feeling_drained_1
+								months = long_modifier_time
+							}
+						}
+						else_if = {
+							limit = {
+								has_modifier = feeling_drained_1
+							}
+							hidden_effect = {
+								remove_modifier = feeling_drained_1
+							}
+							add_modifier = {
+								name = feeling_drained_2
+								months = long_modifier_time
+							}						
+						}
+					}
+					25 = {
+						kill_character = yes
+					}
+				}
+			}
+			else_if = {
+				limit = {
+					has_modifier = feeling_drained_2
+				}
+				kill_character = yes		
+			}
+		}
+		scope:dracula_scope = {
+			add_modifier = {
+				name = feeling_invigorated
+				months = normal_modifier_time
+			}
+		}
+	}
+	option = {
+		name = spooky_halloween_events.2.b
+		highlighted_option = yes
+		trigger = {
+			scope:fair_maiden_scope = {
+				NOT = {
+					has_trait = reserved
+				}
+			}
+		}
+		scope:fair_maiden_scope = {
+			random_list = {
+				50 = {
+					custom_tooltip = fair_maiden_fail
+					kill_character = yes
+				}
+				50 = {
+					custom_tooltip = fair_maiden_success
+				}
+			}
+		}		
+		ai_chance = {
+			base = 5
+		}
+	}
+}
+
+spooky_halloween_events.3 = {
+	type = country_event
+	placement = ROOT
+	
+	title = spooky_halloween_events.3.t
+	desc = spooky_halloween_events.3.d
+	flavor = spooky_halloween_events.3.f
+
+	cooldown = { months = normal_modifier_time }
+	
+	gui_window = event_window_1char_tabloid_halloween
+	left_icon = scope:dracula_scope
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/misc/1Character_Banner"
+
+	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+	
+	duration = 3
+
+	trigger = {
+		NOT = {
+			has_game_rule = no_fantastical_content
+		}
+		any_scope_character = {
+			OR = {
+				has_template = canonic_count_dracula
+				has_template = exile_count_dracula
+			}
+		}
+		NOR = {
+			has_global_variable = dracula_ideology_global_var
+			has_global_variable = dracula_timer_global_var # Ensures the event can only fire after a certain period of time
+		}
+	}
+
+	immediate = {
+		random_scope_character = {
+			limit = {
+				OR = {
+					has_template = canonic_count_dracula
+					has_template = exile_count_dracula
+				}
+			}
+			save_scope_as = dracula_scope
+		}
+		set_global_variable = dracula_ideology_global_var
+	}
+
+	cancellation_trigger = {
+		scope:dracula_scope ?= {
+			is_character_alive = no
+		}
+	}
+
+	option = {
+		name = spooky_halloween_events.3.a
+		default_option = yes
+		ai_chance = {
+			base = 3
+		}
+		scope:dracula_scope = {
+			set_ideology = ideology:ideology_market_liberal
+		}
+	}
+	option = {
+		name = spooky_halloween_events.3.b	
+		ai_chance = {
+			base = 3
+		}
+		scope:dracula_scope = {
+			set_ideology = ideology:ideology_authoritarian
+		}
+	}
+	option = {
+		name = spooky_halloween_events.3.c
+		ai_chance = {
+			base = 3
+		}
+	}
+	option = {
+		name = spooky_halloween_events.3.e
+		highlighted_option = yes
+		ai_chance = {
+			base = 3
+		}
+		trigger = {
+			has_technology_researched = realism
+		}
+		scope:dracula_scope = {
+			set_ideology = ideology:ideology_atheist
+			change_character_religion = rel:atheist
+		}
+	}
+}

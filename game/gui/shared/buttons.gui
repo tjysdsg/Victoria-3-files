@@ -13,7 +13,7 @@ types default_buttons
 {
 	type sort_button = button {
 		block "tooltip_placement"{
-			using = tooltip_above
+			using = tooltip_ne
 		}
 
 		block "sound" {
@@ -39,6 +39,47 @@ types default_buttons
 		margin_left = 10
 		margin_right = 10
 		elide = right
+	}
+
+	type sort_button_with_textbox = button {
+		minimumsize = { -1 30 }
+		maximumsize = { -1 30 }
+		margin_left = 10
+		margin_right = 10
+
+		block "tooltip_placement"{
+			using = tooltip_ne
+		}
+
+		block "sound" {
+			using = sort_button_sound
+		}
+
+		block "background" {
+			using = sort_button_bg
+		}
+
+		### HIGHLIGHT
+		icon = {
+			block "selected_visibility" {
+				visible = no
+			}
+
+			using = highlighted_square_selection
+		}
+
+		textbox = {
+			parentanchor = center
+			size = { 100% 100% }
+			margin = { 3 0 }
+			align = hcenter|nobaseline
+			elide = right
+			fontsize_min = 12
+
+			block "label_text" {
+				raw_text = "#todo Label#!"
+			}
+		}
 	}
 	
 	type tab_button = button {
@@ -99,28 +140,8 @@ types default_buttons
 		widget = {
 			name = "expand_button"
 			block "onclick_showmore" {}
-			
-		
-			state = {
-				name = _show
-		
-				start_sound = {
-					using = ui_sfx_increment
-				}
-			}
 		}
-		widget = {
-			name = "expanded_button"
-			block "onclick_showless" {}
-		
-			state = {
-				name = _show
-		
-				start_sound = {
-					using = ui_sfx_decrement
-				}
-			}
-		}
+		clicksound = "[SelectSound(PdxGuiWidget.FindChild('expand_button').IsVisible, 'event:/SFX/UI/Global/increment', 'event:/SFX/UI/Global/decrement')]"
 		blockoverride  "sound" {
 			using = ui_pointer_over
 		}

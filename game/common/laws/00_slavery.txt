@@ -10,6 +10,11 @@ law_slavery_banned = {
 	icon = "gfx/interface/icons/law_icons/slavery_banned.dds"
 	
 	on_activate = {
+		if = {
+			limit = { has_variable = slavery_recently_enacted }
+			remove_variable = slavery_recently_enacted			
+		}	
+	
 		set_variable = {
 			name = slavery_recently_abolished
 			value = yes
@@ -31,83 +36,6 @@ law_slavery_banned = {
 			text = liberate_slaves_tt
 			liberate_slaves = yes
 		}		
-	}
-	
-	pop_support = {
-		value = 0
-		
-		add = {
-			desc = "POP_SLAVES"
-			if = {
-				limit = { 
-					is_pop_type = slaves
-				}
-				value = 1
-			}
-		}
-		add = {
-			desc = "POP_ACADEMICS"
-			if = {
-				limit = {
-					is_pop_type = academics
-				}
-				value = 0.1
-			}
-		}
-		add = {
-			desc = "POP_CLERGYMEN"
-			if = {
-				limit = {
-					is_pop_type = clergymen
-				}
-				value = 0.05
-			}
-		}
-		
-		# Human rights makes literate pops support abolition
-		add = {
-			desc = "human_rights"
-			
-			if = {
-				limit = { 
-					owner = { has_technology_researched = human_rights }
-				}
-				add = {
-					value = literacy_rate
-					divide = 2
-				}
-			}
-		}
-	}
-	
-	revolution_state_weight = {
-		value = 1
-		if = {
-		   limit = { 
-			OR = {
-			   is_slave_state = yes 
-			   has_variable = former_slave_state			
-			}
-		   }
-		   if = {
-		      limit = { 
-				owner = { # special logic for ACW to try and force a historical split of states
-					OR = {
-						has_law = law_type:law_legacy_slavery
-						has_variable = slavery_recently_abolished
-					}				
-					any_scope_state = {
-						is_slave_state = no 
-						NOT = { has_variable = former_slave_state }					
-					}
-				}	
-			 }
-			  multiply = 0.0
-		   }
-		   else = {
-			  multiply = 0.25
-		   }	
-		}	
 	}
 
 	ai_enact_weight_modifier = {
@@ -152,7 +80,13 @@ law_slavery_banned = {
 				NOT = { has_strategy = ai_strategy_reactionary_agenda }
 				OR = {
 					NOT = { has_strategy = ai_strategy_conservative_agenda }
-					any_political_movement = { desired_law = law_type:law_slavery_banned }				
+					any_political_movement = {
+						law_stance = {
+							law = law_type:law_slavery_banned
+							value > neutral
+						}	
+						political_movement_support >= 0.10
+					}			
 				}	
 			}
 			add = 1000
@@ -180,6 +114,20 @@ law_slavery_banned = {
 				multiply = 5
 			}			
 		}
+			
+		if = {
+			limit = {
+				scope:target_country = {
+					c:BIC ?= this
+					OR = {	
+						has_journal_entry = je_british_dictate_plantations
+						has_journal_entry = je_british_dictate_military
+						has_journal_entry = je_british_dictate_universities
+					}
+				}
+			}
+			multiply = 0
+		}
 	}
 }
 
@@ -192,9 +140,29 @@ law_debt_slavery = {
 	
 	disallowing_laws = {
 		law_multicultural
+		law_affirmative_action
 	}
 
 	on_activate = {
+		set_variable = {
+			name = slavery_recently_enacted
+			value = yes
+			days = 1825
+		}	
+		every_scope_state = {
+			limit = { 
+				NOT = {
+					any_scope_pop = {
+						is_pop_type = slaves
+					}
+				}
+			}
+			set_variable = {
+				name = former_free_state
+				value = yes
+				days = 1825
+			}			
+		}	
 		ig:ig_landowners ?= { 
 			if = {
 				limit = {
@@ -209,79 +177,11 @@ law_debt_slavery = {
 		interest_group_ig_landowners_pol_str_mult = 0.25
 	}
 	
-	pop_support = {
-		value = 0
-		
-		add = {
-			desc = "POP_SLAVES"
-			if = {
-				limit = { 
-					is_pop_type = slaves
-				}
-				value = 1
-			}
-		}	
-		add = {
-			desc = "POP_ACADEMICS"
-			if = {
-				limit = {
-					is_pop_type = academics
-				}
-				value = 0.1
-			}
-		}
-		add = {
-			desc = "POP_CLERGYMEN"
-			if = {
-				limit = {
-					is_pop_type = clergymen
-				}
-				value = 0.05
-			}
-		}
-	}
-	
-	possible_political_movements = {
-		law_slavery_banned
-		law_legacy_slavery
-	}
-	
 	# AI should never enact debt slavery
 	ai_will_do = {
 		always = no
 	}
 	
-	revolution_state_weight = {
-		value = 1
-		if = {
-		   limit = { 
-			  is_slave_state = no 
-			  NOT = { has_variable = former_slave_state }
-		   }	
-		   if = {
-		      limit = { 
-				owner = { # special logic for ACW to try and force a historical split of states 					
-					has_journal_entry = je_acw_countdown
-					OR = {
-						has_law = law_type:law_legacy_slavery
-						has_variable = slavery_recently_abolished
-					}
-					any_scope_state = {
-						OR = {
-						   is_slave_state = yes 
-						   has_variable = former_slave_state			
-						}				
-					}					
-				} 
-			  }	  
-			  multiply = 0.0
-		   }
-		   else = {
-			  multiply = 0.25
-		   }
-		}
-	}
-
 	ai_enact_weight_modifier = { #Petitions
 		value = 0
 		
@@ -302,9 +202,29 @@ law_slave_trade = {
 	disallowing_laws = {
 		law_cultural_exclusion
 		law_multicultural
+		law_affirmative_action
 	}
 	
 	on_activate = {
+		set_variable = {
+			name = slavery_recently_enacted
+			value = yes
+			days = 1825
+		}	
+		every_scope_state = {
+			limit = { 
+				NOT = {
+					any_scope_pop = {
+						is_pop_type = slaves
+					}
+				}
+			}
+			set_variable = {
+				name = former_free_state
+				value = yes
+				days = 1825
+			}			
+		}		
 		if = {
 			limit = { has_variable = slavery_recently_abolished }
 			custom_tooltip = {
@@ -329,26 +249,7 @@ law_slave_trade = {
 			}
 		}
 	}
-	
-	possible_political_movements = {
-		law_slavery_banned
-		law_legacy_slavery
-	}
 
-	pop_support = {
-		value = 0
-		
-		add = {
-			desc = "POP_ARISTOCRATS"
-			if = {
-				limit = { 
-					is_pop_type = aristocrats
-				}
-				value = 0.1
-			}
-		}
-	}
-	
 	modifier = {
 		interest_group_ig_landowners_pol_str_mult = 0.5
 	}	
@@ -357,37 +258,6 @@ law_slave_trade = {
 		exists = ruler
 		ruler = {
 			has_ideology = ideology:ideology_slaver
-		}
-	}
-	
-	revolution_state_weight = {
-		value = 1
-		if = {
-		   limit = { 
-			  is_slave_state = no 
-			  NOT = { has_variable = former_slave_state }
-		   }	
-		   if = {
-		      limit = { 
-				owner = { # special logic for ACW to try and force a historical split of states					
-					has_journal_entry = je_acw_countdown
-					OR = {
-						has_law = law_type:law_legacy_slavery
-						has_variable = slavery_recently_abolished
-					}
-					any_scope_state = {
-						OR = {
-						   is_slave_state = yes 
-						   has_variable = former_slave_state			
-						}				
-					}						
-				} 
-			  }	  
-			  multiply = 0.0
-		   }
-		   else = {
-			  multiply = 0.25
-		   }
 		}
 	}
 
@@ -444,74 +314,6 @@ law_legacy_slavery = {
 		interest_group_ig_landowners_pol_str_mult = 0.25
 	}	
 
-	possible_political_movements = {
-		law_slavery_banned
-	}
-
-	pop_support = {
-		value = 0
-		add = {
-			desc = "POP_ACADEMICS"
-			if = {
-				limit = {
-					is_pop_type = academics
-				}
-				value = 0.1
-			}
-		}
-		add = {
-			desc = "POP_CLERGYMEN"
-			if = {
-				limit = {
-					is_pop_type = clergymen
-				}
-				value = 0.05
-			}
-		}
-		# Brazilian pops are more likely to pursue legacy slavery if the Aberdeen Act is being enforced
-		if = {
-			desc = "aberdeen_act_pop_support"
-			limit = {
-				c:BRZ ?= owner
-				owner = { 
-					has_law = law_type:law_slave_trade 
-					has_modifier = aberdeen_act_enforced_brz
-				}
-			}
-			value = 0.1
-		}
-	}
-
-	revolution_state_weight = {
-		value = 1
-		if = {
-		   limit = { 
-			  is_slave_state = no 
-			  NOT = { has_variable = former_slave_state }
-		   }	
-		   if = {
-		      limit = { 
-				owner = { # special logic for ACW to try and force a historical split of states					
-					has_journal_entry = je_acw_countdown
-					OR = {
-						has_law = law_type:law_legacy_slavery
-						has_variable = slavery_recently_abolished
-					}
-					any_scope_state = {
-						OR = {
-						   is_slave_state = yes 
-						   has_variable = former_slave_state			
-						}				
-					}						
-				} 
-			  } 
-			  multiply = 0.0
-		   }
-		   else = {
-			  multiply = 0.25
-		   }
-		}
-	}
 	ai_enact_weight_modifier = {
 		value = 0
 		#Brazilian AI is more likely to pursue legacy slavery if there are no abolitionists in power.
@@ -548,4 +350,5 @@ law_legacy_slavery = {
 			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
+	}
 }

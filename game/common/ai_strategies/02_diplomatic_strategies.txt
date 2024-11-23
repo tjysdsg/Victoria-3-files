@@ -106,25 +106,12 @@
 		}
 
 		# More aggressive against ideological enemies, a bit less aggressive against ideological allies
-		if = {
-			limit = {
-				"ai_ideological_opinion(scope:target_country)" < 0
-			}
-			
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.2
-				add = 1
-				max = 4.0
-			}				
-		}	
-		else = {
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.05
-				add = 1
-				min = 0.5
-			}			
+		multiply = {
+			value = "ai_ideological_opinion(scope:target_country)"
+			multiply = -0.1
+			add = 1
+			max = 2.0
+			min = 0.5
 		}		
 	}
 	 
@@ -250,25 +237,12 @@ ai_strategy_territorial_expansion = {
 		}	
 
 		# More aggressive against ideological enemies, a bit less aggressive against ideological allies
-		if = {
-			limit = {
-				"ai_ideological_opinion(scope:target_country)" < 0
-			}
-			
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.2
-				add = 1
-				max = 4.0
-			}				
-		}	
-		else = {
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.05
-				add = 1
-				min = 0.5
-			}			
+		multiply = {
+			value = "ai_ideological_opinion(scope:target_country)"
+			multiply = -0.1
+			add = 1
+			max = 2.0
+			min = 0.5
 		}			
 	}
 
@@ -468,6 +442,18 @@ ai_strategy_colonial_expansion = {
 			}			
 		}
 
+		if = {
+			limit = {
+				scope:target_country = {
+					is_subject = yes
+					top_overlord ?= {
+						NOT = { is_country_type = unrecognized }
+					}
+				}
+			}
+			multiply = 0.1
+		}
+
 		# Less aggressive against countries we're just antagonistic against, rather than belligerent/domineering
 		if = {
 			limit = {
@@ -480,26 +466,13 @@ ai_strategy_colonial_expansion = {
 		}	
 
 		# More aggressive against ideological enemies, a bit less aggressive against ideological allies
-		if = {
-			limit = {
-				"ai_ideological_opinion(scope:target_country)" < 0
-			}
-			
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.2
-				add = 1
-				max = 4.0
-			}				
+		multiply = {
+			value = "ai_ideological_opinion(scope:target_country)"
+			multiply = -0.1
+			add = 1
+			max = 2.0
+			min = 0.5
 		}	
-		else = {
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.05
-				add = 1
-				min = 0.5
-			}			
-		}		
 	}
 	
 	building_group_weights = {
@@ -907,6 +880,18 @@ ai_strategy_economic_imperialism = {
 			add = 20
 		}
 
+		if = {
+			limit = {
+				scope:target_country = {
+					is_subject = yes
+					top_overlord ?= {
+						NOT = { is_country_type = unrecognized }
+					}
+				}
+			}
+			multiply = 0.1
+		}		
+
 		# Less aggressive against countries we're just antagonistic against, rather than belligerent/domineering
 		if = {
 			limit = {
@@ -916,28 +901,15 @@ ai_strategy_economic_imperialism = {
 				}					
 			}
 			multiply = 0.25
-		}	
+		}
 
 		# More aggressive against ideological enemies, a bit less aggressive against ideological allies
-		if = {
-			limit = {
-				"ai_ideological_opinion(scope:target_country)" < 0
-			}
-			
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.2
-				add = 1
-				max = 4.0
-			}				
-		}	
-		else = {
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.05
-				add = 1
-				min = 0.5
-			}			
+		multiply = {
+			value = "ai_ideological_opinion(scope:target_country)"
+			multiply = -0.1
+			add = 1
+			max = 2.0
+			min = 0.5
 		}			
 	}
 	
@@ -1068,6 +1040,7 @@ ai_strategy_economic_imperialism = {
 	wargoal_weights = {
 		make_protectorate = 1.5	
 		make_tributary = 1.5
+		make_dominion = 1.5
 		force_nationalization = 1.5		
 	}	
 	
@@ -1283,18 +1256,32 @@ ai_strategy_unify_germany = {
 
 	recklessness = {
 		value = 0.5
+
+		if = {
+			limit = {
+				has_technology_researched = enlistment_offices
+			}
+			add = 0.25
+		}		
 	}
 	
 	aggression = {
 		value = 0.25
 		
 		if = {
-			limit = { 
+			limit = {
 				scope:target_country = {			
 					is_unification_candidate = GER
 				}
 			}
-			add = 10
+			add = 0.5
+
+			if = {
+				limit = {
+					has_technology_researched = enlistment_offices
+				}
+				add = 5
+			}	
 		}
 		else_if = {
 			limit = { 
@@ -1305,8 +1292,17 @@ ai_strategy_unify_germany = {
 					}
 				}
 			}
-			add = 2.75
-		}		
+			add = 0.25
+
+			if = {
+				limit = {
+					has_technology_researched = enlistment_offices
+				}
+				add = 2
+			}				
+		}
+
+
 
 		# Less aggressive against countries we're just antagonistic against, rather than belligerent/domineering
 		if = {
@@ -1320,30 +1316,20 @@ ai_strategy_unify_germany = {
 		}	
 
 		# More aggressive against ideological enemies, a bit less aggressive against ideological allies
-		if = {
-			limit = {
-				"ai_ideological_opinion(scope:target_country)" < 0
-			}
-			
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.2
-				add = 1
-				max = 4.0
-			}				
+		multiply = {
+			value = "ai_ideological_opinion(scope:target_country)"
+			multiply = -0.1
+			add = 1
+			max = 2.0
+			min = 0.5
 		}	
-		else = {
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.05
-				add = 1
-				min = 0.5
-			}			
-		}		
 	}
 
 	building_group_weights = {
 		bg_army = 1.5
+		bg_artillery_foundaries = 1.5
+		bg_arms_industries = 1.5
+		bg_munition_plants = 1.5
 	}
 	
 	state_value = {
@@ -1412,7 +1398,7 @@ ai_strategy_unify_germany = {
 			if = {
 				limit = {
 					scope:target_country = {				
-						is_unification_candidate =GER
+						is_unification_candidate = GER
 					}
 				}
 				add = 1000
@@ -1511,26 +1497,13 @@ ai_strategy_unify_italy = {
 		}	
 
 		# More aggressive against ideological enemies, a bit less aggressive against ideological allies
-		if = {
-			limit = {
-				"ai_ideological_opinion(scope:target_country)" < 0
-			}
-			
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.2
-				add = 1
-				max = 4.0
-			}				
+		multiply = {
+			value = "ai_ideological_opinion(scope:target_country)"
+			multiply = -0.1
+			add = 1
+			max = 2.0
+			min = 0.5
 		}	
-		else = {
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.05
-				add = 1
-				min = 0.5
-			}			
-		}		
 	}
 
 	building_group_weights = {
@@ -1854,7 +1827,7 @@ ai_strategy_unify_china = {
 	
 		if = {
 			limit = { 
-				scope:target_country = { has_variable = warlord_state }
+				scope:target_country = { has_journal_entry = je_reunify_china }
 			}
 			add = 25
 		}
@@ -1869,7 +1842,7 @@ ai_strategy_unify_china = {
 		
 		if = {
 			limit = { 
-				scope:target_country = { has_variable = warlord_state }
+				scope:target_country = { has_journal_entry = je_reunify_china }
 			}
 			add = 5.0
 		}
@@ -1912,7 +1885,7 @@ ai_strategy_unify_china = {
 			if = {
 				limit = {
 					scope:target_country = {
-						has_variable = warlord_state
+						has_journal_entry = je_reunify_china
 					}
 					can_reach_target_country = yes
 				}
@@ -1927,7 +1900,7 @@ ai_strategy_unify_china = {
 				limit = {
 					NOT = { scope:target_country = { is_subject_of = root } }
 					scope:target_country = {
-						has_variable = warlord_state
+						has_journal_entry = je_reunify_china
 					}
 				}
 				add = 150
@@ -1945,7 +1918,7 @@ ai_strategy_unify_china = {
 				limit = {
 					NOT = { scope:target_country = { is_subject_of = root } }
 					scope:target_country = {
-						has_variable = warlord_state
+						has_journal_entry = je_reunify_china
 					}
 					can_reach_target_country = yes
 				}
@@ -1956,7 +1929,7 @@ ai_strategy_unify_china = {
 
 	possible = {
 		is_subject = no
-		has_variable = warlord_state		
+		has_journal_entry = je_reunify_china	
 	}
 
 	weight = {
@@ -2089,6 +2062,7 @@ ai_strategy_socialism_in_one_country = {
 		make_protectorate = 0.0
 		reduce_autonomy = 0.0
 		make_tributary = 0.0
+		make_dominion = 0.0
 		force_nationalization = 5.0
 	}	
 	
@@ -2215,25 +2189,12 @@ ai_strategy_world_revolution = {
 		}	
 
 		# More aggressive against ideological enemies, a bit less aggressive against ideological allies
-		if = {
-			limit = {
-				"ai_ideological_opinion(scope:target_country)" < 0
-			}
-			
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.2
-				add = 1
-				max = 4.0
-			}				
-		}	
-		else = {
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.05
-				add = 1
-				min = 0.5
-			}			
+		multiply = {
+			value = "ai_ideological_opinion(scope:target_country)"
+			multiply = -0.1
+			add = 1
+			max = 2.0
+			min = 0.5
 		}			
 	}
 
@@ -2301,9 +2262,6 @@ ai_strategy_world_revolution = {
 
 	wargoal_weights = {
 		regime_change = 3.0
-		make_protectorate = 1.0
-		reduce_autonomy = 1.0
-		make_tributary = 1.0
 		force_nationalization = 1.0
 	}	
 		
@@ -2506,25 +2464,12 @@ ai_strategy_anti_imperialism = {
 		}
 
 		# More aggressive against ideological enemies, a bit less aggressive against ideological allies
-		if = {
-			limit = {
-				"ai_ideological_opinion(scope:target_country)" < 0
-			}
-			
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.2
-				add = 1
-				max = 4.0
-			}				
-		}	
-		else = {
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.05
-				add = 1
-				min = 0.5
-			}			
+		multiply = {
+			value = "ai_ideological_opinion(scope:target_country)"
+			multiply = -0.1
+			add = 1
+			max = 2.0
+			min = 0.5
 		}		
 	}
 	 
@@ -2720,26 +2665,13 @@ ai_strategy_restore_natural_borders = {
 		}	
 
 		# More aggressive against ideological enemies, a bit less aggressive against ideological allies
-		if = {
-			limit = {
-				"ai_ideological_opinion(scope:target_country)" < 0
-			}
-			
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.2
-				add = 1
-				max = 4.0
-			}				
-		}	
-		else = {
-			multiply = {
-				value = "ai_ideological_opinion(scope:target_country)"
-				multiply = -0.05
-				add = 1
-				min = 0.5
-			}			
-		}			
+		multiply = {
+			value = "ai_ideological_opinion(scope:target_country)"
+			multiply = -0.1
+			add = 1
+			max = 2.0
+			min = 0.5
+		}				
 	}
 
 	building_group_weights = {

@@ -49,13 +49,19 @@
 			any_country = {
 				custom_tooltip = {
 					text = opiumwars_fail_tt
-					has_variable = opium_wars_aggressor
+					has_journal_entry = je_opium_wars
 				}
-				any_scope_state = {
-					is_treaty_port = yes
-					state_region = {
-						any_scope_state = {
-							owner = ROOT
+				OR = {
+					has_diplomatic_pact = {
+						who = root
+						type = foreign_investment_rights
+					}
+					any_scope_state = {
+						is_treaty_port = yes
+						state_region = {
+							any_scope_state = {
+								owner = ROOT
+							}
 						}
 					}
 				}
@@ -94,6 +100,7 @@
     }	
 
 	progressbar = yes
+	display_progressbar_as_months = yes
 
 	weight = 10000
 	should_be_pinned_by_default = yes
@@ -105,11 +112,17 @@ je_opium_wars = {
 	group = je_group_foreign_affairs
 	
 	complete = {
-		any_scope_state = {
-			is_treaty_port = yes
-			state_region = {
-				any_scope_state = {
-					owner = scope:target
+		OR = {
+			has_diplomatic_pact = {
+				who = scope:target
+				type = foreign_investment_rights
+			}
+			any_scope_state = {
+				is_treaty_port = yes
+				state_region = {
+					any_scope_state = {
+						owner = scope:target
+					}
 				}
 			}
 		}

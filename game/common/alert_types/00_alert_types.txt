@@ -73,6 +73,19 @@ can_establish_company = {
 	color = green
 }
 
+above_company_limit = {
+	script_context = player_country
+	texture = "gfx/interface/icons/alert_icons/can_establish_company.dds"
+
+	valid = {
+		num_companies > max_num_companies
+	}
+
+	open_panel = companies|potential_companies
+	type = alert
+	color = red
+}
+
 free_government_reform = {
 	script_context = player_country
 	texture = "gfx/interface/icons/alert_icons/reform_government.dds"
@@ -87,30 +100,43 @@ free_government_reform = {
 }
 
 revolution_alert = {
-	script_context = player_country
+	script_context = player_diplomatic_play
 	texture = "gfx/interface/icons/alert_icons/revolution.dds"
 
 	valid = {
+		is_diplomatic_play_type = dp_revolution
 		OR = {
-			has_revolution = yes
-			is_revolutionary = yes
+			initiator = {
+				is_local_player = yes
+			}
+			target = {
+				is_local_player = yes
+			}
 		}
 	}
 
-	open_panel = politics|default
+	open_panel = diplomatic_play
 	type = alert
 	color = red
 }
 
 secession_alert = {
-	script_context = player_country
+	script_context = player_diplomatic_play
 	texture = "gfx/interface/icons/alert_icons/secession.dds"
 
 	valid = {
-		has_any_secessionists_broken_out = yes
+		is_diplomatic_play_type = dp_secession
+		OR = {
+			initiator = {
+				is_local_player = yes
+			}
+			target = {
+				is_local_player = yes
+			}
+		}
 	}
 
-	open_panel = politics
+	open_panel = diplomatic_play
 	type = alert
 	color = red
 }
@@ -230,6 +256,24 @@ market_goods_shortage_alert = {
 	}
 
 	open_panel = goods_panel
+	type = alert
+	color = red
+}
+
+famine_alert = {
+	script_context = player_market
+	texture = "gfx/interface/icons/alert_icons/famine.dds"
+
+	valid = {
+		any_scope_country = {
+			AND = {
+				is_player = yes
+				has_famine = yes
+			}
+		}
+	}
+
+	open_panel = market|food_security
 	type = alert
 	color = red
 }
@@ -358,6 +402,21 @@ low_organization_active = { # Formation is at front
 	color = red
 	open_panel = military_formation
 	alert_group = formation_low_organization
+}
+
+isolated_colony_alert = {
+	texture = "gfx/interface/icons/generic_icons/market_isolated.dds"
+	script_context = player_state
+
+	valid = {
+		is_isolated_from_market = yes
+		is_under_colonization = yes
+	}
+
+	open_panel = states_panel
+	type = alert
+	color = red
+	alert_group = isolated_colony
 }
 
 ### ANGRY IMPORTANT ACTIONS
@@ -515,9 +574,10 @@ market_goods_shortage = {
 	alert_group = market_goods_shortages
 }
 
+# Only affect local goods (electricity, services, etc) for other goods see market_goods_shortage
 state_goods_shortage = {
 	texture = "gfx/interface/icons/alert_icons/goods_shortage.dds"
-	script_context = player_state_goods
+	script_context = player_state_local_goods
 
 	valid = {
 		state_goods_has_local_goods_shortage = yes
@@ -527,21 +587,6 @@ state_goods_shortage = {
 	type = angry_important_action
 	color = yellow
 	alert_group = state_goods_shortages
-}
-
-isolated_colony_alert = {
-	texture = "gfx/interface/icons/generic_icons/market_isolated.dds"
-	script_context = player_state
-
-	valid = {
-		is_isolated_from_market = yes
-		is_under_colonization = yes
-	}
-
-	open_panel = states_panel
-	type = angry_important_action
-	color = red
-	alert_group = isolated_colony
 }
 
 ### IMPORTANT ACTIONS
@@ -597,6 +642,64 @@ stockpiling_gold_alert = {
 	}
 
 	open_panel = budget|default
+	type = important_action
+	color = yellow
+}
+
+can_abdicate_alert = {
+	script_context = player_country
+	texture = "gfx/interface/icons/alert_icons/radicalized.dds"
+
+	valid = {
+		has_dlc_feature = voice_of_the_people_content
+		has_law = law_type:law_monarchy
+		exists = heir
+		ruler = {
+			is_immortal = no
+		}
+		owner = {
+			any_political_movement = {
+				movement_supports_enaction = yes
+				is_insurrectionary = yes
+				civil_war ?= {
+					civil_war_progress >= 0.5
+					civil_war_progress < 1.0
+				}
+			}
+		}
+	}
+
+	open_panel = politics|default
+	type = important_action
+	color = yellow
+}
+
+can_resign_alert = {
+	script_context = player_country
+	texture = "gfx/interface/icons/alert_icons/radicalized.dds"
+
+	valid = {
+		has_dlc_feature = voice_of_the_people_content
+		NOR = {
+			has_law = law_type:law_monarchy
+			has_law = law_type:law_theocracy
+		}
+		ruler = {
+			is_immortal = no
+		}
+		owner = {
+			any_political_movement = {
+				movement_supports_enaction = yes
+				is_insurrectionary = yes
+				civil_war ?= {
+					civil_war_progress >= 0.5
+					civil_war_progress < 1.0
+				}
+			}
+		}
+	}
+
+	open_panel = politics|default
 	type = important_action
 	color = yellow
 }

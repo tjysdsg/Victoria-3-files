@@ -1,0 +1,2694 @@
+﻿namespace = sepoy_mutiny_events
+
+sepoy_mutiny_events.1 = {
+	type = country_event
+	placement = root
+	event_image = {
+		video = "ep1_redcoats"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	title = sepoy_mutiny_events.1.t
+	desc = sepoy_mutiny_events.1.d
+	flavor = sepoy_mutiny_events.1.f
+
+	duration = 3
+
+	immediate = {
+		create_character = {
+			template = SAT_nana_saheb_template
+			save_scope_as = nana_saheb_scope
+		}
+		if = {
+			limit = {
+				any_country = {
+					has_variable = sepoy_mutiny_revolter_var
+					NOT = {
+						root ?= this
+					}
+				}
+			}
+			random_country = {
+				limit = {
+					has_variable = sepoy_mutiny_revolter_var
+				}
+				save_scope_as = other_revolter_nation_scope
+			}
+		}
+	}
+	
+	trigger = {
+	}
+
+	option = {
+		name = sepoy_mutiny_events.1.a
+		default_option = yes
+		show_as_tooltip = {
+			create_character = {
+				template = SAT_nana_saheb_template
+			}
+		}
+		random_scope_character = {
+			limit = {
+				has_template = SAT_nana_saheb_template
+			}
+			set_as_interest_group_leader = yes
+		}
+		add_modifier = {
+			name = sepoy_mutiny_peshwa_power
+			months = normal_modifier_time
+		}
+		ig:ig_landowners = {
+			add_modifier = {
+				name = sepoy_mutiny_reinstated_peshwa
+				months = long_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = sepoy_mutiny_events.1.b
+		show_as_tooltip = {
+			create_character = {
+				template = SAT_nana_saheb_template
+			}
+		}
+		add_modifier = {
+			name = sepoy_mutiny_bhat_family_generals
+			months = normal_modifier_time
+		}
+	}
+
+	option = {
+		name = sepoy_mutiny_events.1.c
+		ig:ig_landowners = {
+			add_modifier = {
+				name = sepoy_mutiny_turned_away_peshwa
+				months = normal_modifier_time
+			}
+		}
+		if = {
+			limit = {
+				exists = scope:other_revolter_nation_scope
+			}
+			random_scope_character = {
+				limit = {
+					has_template = SAT_nana_saheb_template
+				}
+				transfer_character = scope:other_revolter_nation_scope
+			}
+		}
+		else = {
+			random_scope_character = {
+				limit = {
+					has_template = SAT_nana_saheb_template
+				}
+				kill_character = {
+					hidden = yes
+				}
+			}
+		}
+	}
+
+	option = {
+		trigger = {
+			game_date < 1851.1.28
+		}
+		name = sepoy_mutiny_events.1.e
+		create_character = {
+			template = SAT_baji_rao_template
+		}
+		show_as_tooltip = {
+			create_character = {
+				template = SAT_nana_saheb_template
+			}
+		}
+		add_modifier = {
+			name = sepoy_mutiny_peshwa_power
+			months = normal_modifier_time
+			multiplier = 1.5
+		}
+		ig:ig_landowners = {
+			add_modifier = {
+				name = sepoy_mutiny_reinstated_peshwa
+				months = long_modifier_time
+				multiplier = 1.5
+			}
+		}
+	}
+}
+
+sepoy_mutiny_events.2 = {
+	type = country_event
+	placement = root
+	
+	title = sepoy_mutiny_events.2.t
+	desc = sepoy_mutiny_events.2.d
+	flavor = sepoy_mutiny_events.2.f
+	
+	event_image = {
+		video = "ip2_india_urban_scene"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+	
+	duration = 3
+	
+	trigger = {
+	}
+
+	immediate = {
+	}
+
+	option = {
+		name = sepoy_mutiny_events.2.a
+		default_option = yes
+		ai_chance = {
+			base = 5
+		}
+		if = {
+			limit = {
+				any_subject_or_below ?= {
+					OR = {
+						capital.region = sr:region_bombay
+						capital.region = sr:region_madras
+						capital.region = sr:region_bengal
+						capital.region = sr:region_punjab
+						capital.region = sr:region_central_india
+						capital.state_region = s:STATE_PASHTUNISTAN
+						capital.state_region = s:STATE_QUETTA
+					}				
+				}
+			}
+			custom_tooltip = {
+				text = india_princes_independent_tt
+				every_country = {
+					limit = {
+						is_subject_of = root 
+						OR = {
+							capital.region = sr:region_bombay
+							capital.region = sr:region_madras
+							capital.region = sr:region_bengal
+							capital.region = sr:region_punjab
+							capital.region = sr:region_central_india
+							capital.state_region = s:STATE_PASHTUNISTAN
+							capital.state_region = s:STATE_QUETTA
+						}
+					}
+					make_independent = yes
+					c:GBR.power_bloc ?= {
+						add_leverage = { target = PREV value = -500 }
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_scope_state = {
+					OR = {
+						region = sr:region_bengal
+						region = sr:region_punjab
+						region = sr:region_central_india
+						region = sr:region_bombay
+						region = sr:region_madras
+						region = sr:region_himalayas
+						state_region = s:STATE_PASHTUNISTAN
+						state_region = s:STATE_QUETTA
+					}
+				}
+			}
+			hidden_effect = { # Sensible prioritzed snatches
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_MADRAS
+						}
+						NOT = {
+							exists = c:CAR
+						}
+					}
+					create_country = {  
+						tag = CAR
+						origin = root
+						state = s:STATE_MADRAS.region_state:BIC
+						on_created = {
+							activate_law = law_type:law_monarchy
+							activate_law = law_type:law_oligarchy						
+						}
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_MANDALAY
+						}
+						NOT = {
+							exists = c:BUR
+						}
+					}
+					create_country = {  
+						tag = BUR
+						origin = root
+						state = s:STATE_MANDALAY.region_state:BIC
+						on_created = {
+							activate_law = law_type:law_monarchy
+							activate_law = law_type:law_oligarchy
+							if = {
+								limit = {
+									c:BIC ?= {
+										any_scope_state = {
+											state_region = s:STATE_PEGU
+										}
+									}
+								}
+								s:STATE_PEGU.region_state:BIC = {
+									set_state_owner = c:BUR
+								}
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_GUJARAT
+						}
+						c:BER ?= {
+							any_scope_state = {
+								state_region = s:STATE_GUJARAT
+							}
+						}
+					}
+					s:STATE_GUJARAT.region_state:BIC = {
+						set_state_owner = c:BER
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_TENASSERIM
+						}
+					}
+					if = {
+						limit = {
+							c:BUR ?= {
+								any_scope_state = {
+									state_region = s:STATE_PEGU
+								}
+							}
+						}
+						s:STATE_TENASSERIM.region_state:BIC = {
+							set_state_owner = c:BUR
+						}		
+					}
+					else_if = {
+						limit = {
+							c:SIA ?= {
+								any_scope_state = {
+									state_region = s:STATE_TENASSERIM
+								}
+							}
+						}
+						s:STATE_TENASSERIM.region_state:BIC = {
+							set_state_owner = c:SIA
+						}	
+					}
+					else_if = {
+						limit = {
+							NOT = {
+								exists = c:KRN
+							}
+						}
+						create_country = {  
+							tag = KRN
+							origin = root
+							state = s:STATE_TENASSERIM.region_state:BIC
+							on_created = {
+								activate_law = law_type:law_monarchy
+								activate_law = law_type:law_oligarchy						
+							}
+						}					
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_TRAVANCORE
+						}
+						OR = {
+							c:COC ?= {
+								any_scope_state = {
+									state_region = s:STATE_TRAVANCORE
+								}
+							}
+							c:TRA ?= {
+								any_scope_state = {
+									state_region = s:STATE_TRAVANCORE
+								}
+							}
+						}
+					}
+					if = {
+						limit = {
+							c:COC ?= {
+								any_scope_state = {
+									state_region = s:STATE_TRAVANCORE
+								}
+							}
+						}
+						s:STATE_TRAVANCORE.region_state:BIC = {
+							set_state_owner = c:COC
+						}		
+					}
+					else_if = {
+						limit = {
+							c:TRA ?= {
+								any_scope_state = {
+									state_region = s:STATE_TRAVANCORE
+								}
+							}
+						}
+						s:STATE_TRAVANCORE.region_state:BIC = {
+							set_state_owner = c:TRA
+						}	
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_CIRCARS
+						}
+						c:HYD ?= {
+							owns_entire_state_region = STATE_HYDERABAD
+						}
+					}
+					s:STATE_CIRCARS.region_state:BIC = {
+						set_state_owner = c:HYD
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_KURNOOL
+						}
+						c:HYD ?= {
+							owns_entire_state_region = STATE_HYDERABAD
+						}
+					}
+					s:STATE_KURNOOL.region_state:BIC = {
+						set_state_owner = c:HYD
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_DELHI
+						}
+						c:MUG ?= {
+							any_scope_state = {
+								state_region = s:STATE_DELHI
+							}
+						}
+					}
+					s:STATE_DELHI.region_state:BIC = {
+						set_state_owner = c:MUG
+					}
+				}
+				else_if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_DELHI
+						}
+						NOT = {
+							exists = c:MUG
+						}
+					}
+					create_country = {  
+						tag = MUG
+						origin = root
+						state = s:STATE_DELHI.region_state:BIC
+						on_created = {
+							activate_law = law_type:law_monarchy
+							activate_law = law_type:law_oligarchy						
+						}
+					}			
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_AGRA
+						}
+						exists = c:MUG
+					}
+					s:STATE_AGRA.region_state:BIC = {
+						set_state_owner = c:MUG
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_AWADH
+						}
+						NOT = {
+							exists = c:AWA
+						}
+					}
+					create_country = {  
+						tag = AWA
+						origin = root
+						state = s:STATE_AWADH.region_state:BIC
+						on_created = {
+							activate_law = law_type:law_monarchy
+							activate_law = law_type:law_oligarchy						
+						}
+					}
+				}
+				else_if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_AWADH
+						}
+						exists = c:MUG
+					}
+					s:STATE_AWADH.region_state:BIC = {
+						set_state_owner = c:MUG
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_CENTRAL_PROVINCES
+						}
+						c:NAG ?= {
+							any_scope_state = {
+								state_region = s:STATE_CENTRAL_PROVINCES
+							}
+						}
+					}
+					s:STATE_CENTRAL_PROVINCES.region_state:BIC = {
+						set_state_owner = c:NAG
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_BOMBAY
+						}
+						c:SAT ?= {
+							any_scope_state = {
+								state_region = s:STATE_BOMBAY
+							}
+						}
+					}
+					s:STATE_BOMBAY.region_state:BIC = {
+						set_state_owner = c:SAT
+					}
+				}
+				else_if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_BOMBAY
+						}
+						c:KHP ?= {
+							any_scope_state = {
+								state_region = s:STATE_BOMBAY
+							}
+						}
+					}
+					s:STATE_BOMBAY.region_state:BIC = {
+						set_state_owner = c:KHP
+					}
+				}
+			}
+		}
+		while = {
+			limit = {
+				any_scope_state = {
+					OR = {
+						region = sr:region_bengal
+						region = sr:region_punjab
+						region = sr:region_central_india
+						region = sr:region_bombay
+						region = sr:region_madras
+						region = sr:region_himalayas
+						state_region = s:STATE_PASHTUNISTAN
+						state_region = s:STATE_QUETTA
+					}
+					any_neighbouring_state = {
+						owner = {
+							any_primary_culture = {
+								has_discrimination_trait = south_asian_heritage
+							}
+							OR = {
+								capital.region = sr:region_bombay
+								capital.region = sr:region_madras
+								capital.region = sr:region_bengal
+								capital.region = sr:region_punjab
+								capital.region = sr:region_central_india
+								capital.state_region = s:STATE_PASHTUNISTAN
+								capital.state_region = s:STATE_QUETTA
+							}				
+						}
+					}
+				}
+			}
+			every_country = {
+				limit = {
+					any_primary_culture = {
+						has_discrimination_trait = south_asian_heritage
+					}
+					OR = {
+						capital.region = sr:region_bombay
+						capital.region = sr:region_madras
+						capital.region = sr:region_bengal
+						capital.region = sr:region_punjab
+						capital.region = sr:region_central_india
+						capital.state_region = s:STATE_PASHTUNISTAN
+						capital.state_region = s:STATE_QUETTA
+					}
+				}
+				save_scope_as = prince_scope
+				root = {
+					random_scope_state = {
+						limit = {
+							OR = {
+								region = sr:region_bengal
+								region = sr:region_punjab
+								region = sr:region_central_india
+								region = sr:region_bombay
+								region = sr:region_madras
+								region = sr:region_himalayas
+								state_region = s:STATE_PASHTUNISTAN
+								state_region = s:STATE_QUETTA
+							}
+							any_neighbouring_state = {
+								scope:prince_scope ?= owner
+							}
+						}
+						set_state_owner = scope:prince_scope
+					}
+				}
+			}
+			clear_saved_scope = prince_scope
+		}
+		if = {
+			limit = {
+				root = {
+					is_subject_of = c:GBR
+				}
+			}
+			play_as = c:GBR
+			c:GBR ?= {
+				annex = root
+			}
+		}
+	}
+
+	option = {
+		name = sepoy_mutiny_events.2.b
+		highlighted_option = yes
+		ai_chance = {
+			base = 50
+			modifier = {
+				trigger = {
+					NOT = {
+						has_state_in_state_region = STATE_EAST_BENGAL
+					}
+				}
+				add = -40
+			}
+		}
+		trigger = {
+			any_scope_state = {
+				state_region = s:STATE_WEST_BENGAL
+			}
+		}
+		if = {
+			limit = {
+				any_subject_or_below ?= {
+					OR = {
+						capital.region = sr:region_bombay
+						capital.region = sr:region_madras
+						capital.region = sr:region_punjab
+						capital.region = sr:region_central_india
+						capital.state_region = s:STATE_PASHTUNISTAN
+						capital.state_region = s:STATE_QUETTA
+					}				
+				}
+			}
+			custom_tooltip = {
+				text = india_retreat_to_bengal_tt
+				every_country = {
+					limit = {
+						is_subject_of = root 
+						OR = {
+							capital.region = sr:region_bombay
+							capital.region = sr:region_madras
+							capital.region = sr:region_punjab
+							capital.region = sr:region_central_india
+							capital.state_region = s:STATE_PASHTUNISTAN
+							capital.state_region = s:STATE_QUETTA
+						}
+					}
+					make_independent = yes
+					c:GBR.power_bloc ?= {
+						add_leverage = { target = PREV value = -500 }
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_scope_state = {
+					OR = {
+						region = sr:region_punjab
+						region = sr:region_central_india
+						region = sr:region_bombay
+						region = sr:region_madras
+						region = sr:region_himalayas
+						state_region = s:STATE_PASHTUNISTAN
+						state_region = s:STATE_QUETTA
+					}
+				}
+			}
+			hidden_effect = { # Sensible prioritzed snatches
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_MADRAS
+						}
+						NOT = {
+							exists = c:CAR
+						}
+					}
+					create_country = {  
+						tag = CAR
+						origin = root
+						state = s:STATE_MADRAS.region_state:BIC
+						on_created = {
+							activate_law = law_type:law_monarchy
+							activate_law = law_type:law_oligarchy						
+						}
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_MANDALAY
+						}
+						NOT = {
+							exists = c:BUR
+						}
+					}
+					create_country = {  
+						tag = BUR
+						origin = root
+						state = s:STATE_MANDALAY.region_state:BIC
+						on_created = {
+							activate_law = law_type:law_monarchy
+							activate_law = law_type:law_oligarchy
+							if = {
+								limit = {
+									c:BIC ?= {
+										any_scope_state = {
+											state_region = s:STATE_PEGU
+										}
+									}
+								}
+								s:STATE_PEGU.region_state:BIC = {
+									set_state_owner = c:BUR
+								}
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_GUJARAT
+						}
+						c:BER ?= {
+							any_scope_state = {
+								state_region = s:STATE_GUJARAT
+							}
+						}
+					}
+					s:STATE_GUJARAT.region_state:BIC = {
+						set_state_owner = c:BER
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_TENASSERIM
+						}
+					}
+					if = {
+						limit = {
+							c:BUR ?= {
+								any_scope_state = {
+									state_region = s:STATE_PEGU
+								}
+							}
+						}
+						s:STATE_TENASSERIM.region_state:BIC = {
+							set_state_owner = c:BUR
+						}		
+					}
+					else_if = {
+						limit = {
+							c:SIA ?= {
+								any_scope_state = {
+									state_region = s:STATE_TENASSERIM
+								}
+							}
+						}
+						s:STATE_TENASSERIM.region_state:BIC = {
+							set_state_owner = c:SIA
+						}	
+					}
+					else_if = {
+						limit = {
+							NOT = {
+								exists = c:KRN
+							}
+						}
+						create_country = {  
+							tag = KRN
+							origin = root
+							state = s:STATE_TENASSERIM.region_state:BIC
+							on_created = {
+								activate_law = law_type:law_monarchy
+								activate_law = law_type:law_oligarchy						
+							}
+						}					
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_TRAVANCORE
+						}
+						OR = {
+							c:COC ?= {
+								any_scope_state = {
+									state_region = s:STATE_TRAVANCORE
+								}
+							}
+							c:TRA ?= {
+								any_scope_state = {
+									state_region = s:STATE_TRAVANCORE
+								}
+							}
+						}
+					}
+					if = {
+						limit = {
+							c:COC ?= {
+								any_scope_state = {
+									state_region = s:STATE_TRAVANCORE
+								}
+							}
+						}
+						s:STATE_TRAVANCORE.region_state:BIC = {
+							set_state_owner = c:COC
+						}		
+					}
+					else_if = {
+						limit = {
+							c:TRA ?= {
+								any_scope_state = {
+									state_region = s:STATE_TRAVANCORE
+								}
+							}
+						}
+						s:STATE_TRAVANCORE.region_state:BIC = {
+							set_state_owner = c:TRA
+						}	
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_CIRCARS
+						}
+						c:HYD ?= {
+							owns_entire_state_region = STATE_HYDERABAD
+						}
+					}
+					s:STATE_CIRCARS.region_state:BIC = {
+						set_state_owner = c:HYD
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_KURNOOL
+						}
+						c:HYD ?= {
+							owns_entire_state_region = STATE_HYDERABAD
+						}
+					}
+					s:STATE_KURNOOL.region_state:BIC = {
+						set_state_owner = c:HYD
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_DELHI
+						}
+						c:MUG ?= {
+							any_scope_state = {
+								state_region = s:STATE_DELHI
+							}
+						}
+					}
+					s:STATE_DELHI.region_state:BIC = {
+						set_state_owner = c:MUG
+					}
+				}
+				else_if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_DELHI
+						}
+						NOT = {
+							exists = c:MUG
+						}
+					}
+					create_country = {  
+						tag = MUG
+						origin = root
+						state = s:STATE_DELHI.region_state:BIC
+						on_created = {
+							activate_law = law_type:law_monarchy
+							activate_law = law_type:law_oligarchy						
+						}
+					}			
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_AGRA
+						}
+						exists = c:MUG
+					}
+					s:STATE_AGRA.region_state:BIC = {
+						set_state_owner = c:MUG
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_AWADH
+						}
+						NOT = {
+							exists = c:AWA
+						}
+					}
+					create_country = {  
+						tag = AWA
+						origin = root
+						state = s:STATE_AWADH.region_state:BIC
+						on_created = {
+							activate_law = law_type:law_monarchy
+							activate_law = law_type:law_oligarchy						
+						}
+					}
+				}
+				else_if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_AWADH
+						}
+						exists = c:MUG
+					}
+					s:STATE_AWADH.region_state:BIC = {
+						set_state_owner = c:MUG
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_CENTRAL_PROVINCES
+						}
+						c:NAG ?= {
+							any_scope_state = {
+								state_region = s:STATE_CENTRAL_PROVINCES
+							}
+						}
+					}
+					s:STATE_CENTRAL_PROVINCES.region_state:BIC = {
+						set_state_owner = c:NAG
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_BOMBAY
+						}
+						c:SAT ?= {
+							any_scope_state = {
+								state_region = s:STATE_BOMBAY
+							}
+						}
+					}
+					s:STATE_BOMBAY.region_state:BIC = {
+						set_state_owner = c:SAT
+					}
+				}
+				else_if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_BOMBAY
+						}
+						c:KHP ?= {
+							any_scope_state = {
+								state_region = s:STATE_BOMBAY
+							}
+						}
+					}
+					s:STATE_BOMBAY.region_state:BIC = {
+						set_state_owner = c:KHP
+					}
+				}
+			}
+		}
+		while = {
+			limit = {
+				any_scope_state = {
+					OR = {
+						region = sr:region_punjab
+						region = sr:region_central_india
+						region = sr:region_bombay
+						region = sr:region_madras
+						region = sr:region_himalayas
+						state_region = s:STATE_PASHTUNISTAN
+						state_region = s:STATE_QUETTA
+					}
+					any_neighbouring_state = {
+						owner = {
+							any_primary_culture = {
+								has_discrimination_trait = south_asian_heritage
+							}
+							OR = {
+								capital.region = sr:region_bombay
+								capital.region = sr:region_madras
+								capital.region = sr:region_punjab
+								capital.region = sr:region_central_india
+								capital.state_region = s:STATE_PASHTUNISTAN
+								capital.state_region = s:STATE_QUETTA
+							}				
+						}
+					}
+				}
+			}
+			every_country = {
+				limit = {
+					any_primary_culture = {
+						has_discrimination_trait = south_asian_heritage
+					}
+					OR = {
+						capital.region = sr:region_bombay
+						capital.region = sr:region_madras
+						capital.region = sr:region_punjab
+						capital.region = sr:region_central_india
+						capital.state_region = s:STATE_PASHTUNISTAN
+						capital.state_region = s:STATE_QUETTA
+					}
+				}
+				save_scope_as = prince_scope
+				root = {
+					random_scope_state = {
+						limit = {
+							OR = {
+								region = sr:region_punjab
+								region = sr:region_central_india
+								region = sr:region_bombay
+								region = sr:region_madras
+								region = sr:region_himalayas
+								state_region = s:STATE_PASHTUNISTAN
+								state_region = s:STATE_QUETTA
+							}
+							any_neighbouring_state = {
+								scope:prince_scope ?= owner
+							}
+						}
+						set_state_owner = scope:prince_scope
+					}
+				}
+			}
+			clear_saved_scope = prince_scope
+		}
+		every_scope_state = {
+			limit = {
+				region = sr:region_bengal
+			}
+			add_radicals_in_state = {
+				religion = rel:hindu
+				value = large_radicals
+			}
+			add_radicals_in_state = {
+				religion = rel:sunni
+				value = large_radicals
+			}
+		}
+	}
+
+	option = {
+		name = sepoy_mutiny_events.2.c
+		highlighted_option = yes
+		ai_chance = {
+			base = 50
+		}
+		trigger = {
+			any_scope_state = {
+				state_region = s:STATE_MADRAS
+			}
+		}
+		if = {
+			limit = {
+				any_subject_or_below ?= {
+					OR = {
+						capital.region = sr:region_bombay
+						capital.region = sr:region_madras
+						capital.region = sr:region_punjab
+						capital.region = sr:region_central_india
+						capital.state_region = s:STATE_PASHTUNISTAN
+						capital.state_region = s:STATE_QUETTA
+					}				
+				}
+			}
+			custom_tooltip = {
+				text = india_retreat_to_madras_tt
+				every_country = {
+					limit = {
+						is_subject_of = root 
+						OR = {
+							capital.region = sr:region_bombay
+							capital.region = sr:region_bengal
+							capital.region = sr:region_punjab
+							capital.region = sr:region_central_india
+							capital.state_region = s:STATE_PASHTUNISTAN
+							capital.state_region = s:STATE_QUETTA
+						}
+					}
+					make_independent = yes
+					c:GBR.power_bloc ?= {
+						add_leverage = { target = PREV value = -500 }
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_scope_state = {
+					OR = {
+						region = sr:region_punjab
+						region = sr:region_central_india
+						region = sr:region_bombay
+						region = sr:region_bengal
+						region = sr:region_himalayas
+						state_region = s:STATE_PASHTUNISTAN
+						state_region = s:STATE_QUETTA
+					}
+				}
+			}
+			hidden_effect = { # Sensible prioritzed snatches
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_MANDALAY
+						}
+						NOT = {
+							exists = c:BUR
+						}
+					}
+					create_country = {  
+						tag = BUR
+						origin = root
+						state = s:STATE_MANDALAY.region_state:BIC
+						on_created = {
+							activate_law = law_type:law_monarchy
+							activate_law = law_type:law_oligarchy
+							if = {
+								limit = {
+									c:BIC ?= {
+										any_scope_state = {
+											state_region = s:STATE_PEGU
+										}
+									}
+								}
+								s:STATE_PEGU.region_state:BIC = {
+									set_state_owner = c:BUR
+								}
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_GUJARAT
+						}
+						c:BER ?= {
+							any_scope_state = {
+								state_region = s:STATE_GUJARAT
+							}
+						}
+					}
+					s:STATE_GUJARAT.region_state:BIC = {
+						set_state_owner = c:BER
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_TENASSERIM
+						}
+					}
+					if = {
+						limit = {
+							c:BUR ?= {
+								any_scope_state = {
+									state_region = s:STATE_PEGU
+								}
+							}
+						}
+						s:STATE_TENASSERIM.region_state:BIC = {
+							set_state_owner = c:BUR
+						}		
+					}
+					else_if = {
+						limit = {
+							c:SIA ?= {
+								any_scope_state = {
+									state_region = s:STATE_TENASSERIM
+								}
+							}
+						}
+						s:STATE_TENASSERIM.region_state:BIC = {
+							set_state_owner = c:SIA
+						}	
+					}
+					else_if = {
+						limit = {
+							NOT = {
+								exists = c:KRN
+							}
+						}
+						create_country = {  
+							tag = KRN
+							origin = root
+							state = s:STATE_TENASSERIM.region_state:BIC
+							on_created = {
+								activate_law = law_type:law_monarchy
+								activate_law = law_type:law_oligarchy						
+							}
+						}					
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_TRAVANCORE
+						}
+						OR = {
+							c:COC ?= {
+								any_scope_state = {
+									state_region = s:STATE_TRAVANCORE
+								}
+							}
+							c:TRA ?= {
+								any_scope_state = {
+									state_region = s:STATE_TRAVANCORE
+								}
+							}
+						}
+					}
+					if = {
+						limit = {
+							c:COC ?= {
+								any_scope_state = {
+									state_region = s:STATE_TRAVANCORE
+								}
+							}
+						}
+						s:STATE_TRAVANCORE.region_state:BIC = {
+							set_state_owner = c:COC
+						}		
+					}
+					else_if = {
+						limit = {
+							c:TRA ?= {
+								any_scope_state = {
+									state_region = s:STATE_TRAVANCORE
+								}
+							}
+						}
+						s:STATE_TRAVANCORE.region_state:BIC = {
+							set_state_owner = c:TRA
+						}	
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_DELHI
+						}
+						c:MUG ?= {
+							any_scope_state = {
+								state_region = s:STATE_DELHI
+							}
+						}
+					}
+					s:STATE_DELHI.region_state:BIC = {
+						set_state_owner = c:MUG
+					}
+				}
+				else_if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_DELHI
+						}
+						NOT = {
+							exists = c:MUG
+						}
+					}
+					create_country = {  
+						tag = MUG
+						origin = root
+						state = s:STATE_DELHI.region_state:BIC
+						on_created = {
+							activate_law = law_type:law_monarchy
+							activate_law = law_type:law_oligarchy						
+						}
+					}			
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_AGRA
+						}
+						exists = c:MUG
+					}
+					s:STATE_AGRA.region_state:BIC = {
+						set_state_owner = c:MUG
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_AWADH
+						}
+						NOT = {
+							exists = c:AWA
+						}
+					}
+					create_country = {  
+						tag = AWA
+						origin = root
+						state = s:STATE_AWADH.region_state:BIC
+						on_created = {
+							activate_law = law_type:law_monarchy
+							activate_law = law_type:law_oligarchy						
+						}
+					}
+				}
+				else_if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_AWADH
+						}
+						exists = c:MUG
+					}
+					s:STATE_AWADH.region_state:BIC = {
+						set_state_owner = c:MUG
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_CENTRAL_PROVINCES
+						}
+						c:NAG ?= {
+							any_scope_state = {
+								state_region = s:STATE_CENTRAL_PROVINCES
+							}
+						}
+					}
+					s:STATE_CENTRAL_PROVINCES.region_state:BIC = {
+						set_state_owner = c:NAG
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_BOMBAY
+						}
+						c:SAT ?= {
+							any_scope_state = {
+								state_region = s:STATE_BOMBAY
+							}
+						}
+					}
+					s:STATE_BOMBAY.region_state:BIC = {
+						set_state_owner = c:SAT
+					}
+				}
+				else_if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_BOMBAY
+						}
+						c:KHP ?= {
+							any_scope_state = {
+								state_region = s:STATE_BOMBAY
+							}
+						}
+					}
+					s:STATE_BOMBAY.region_state:BIC = {
+						set_state_owner = c:KHP
+					}
+				}
+			}
+		}
+		while = {
+			limit = {
+				any_scope_state = {
+					OR = {
+						region = sr:region_punjab
+						region = sr:region_central_india
+						region = sr:region_bombay
+						region = sr:region_bengal
+						region = sr:region_himalayas
+						state_region = s:STATE_PASHTUNISTAN
+						state_region = s:STATE_QUETTA
+					}
+					any_neighbouring_state = {
+						owner = {
+							any_primary_culture = {
+								has_discrimination_trait = south_asian_heritage
+							}
+							OR = {
+								capital.region = sr:region_bombay
+								capital.region = sr:region_bengal
+								capital.region = sr:region_punjab
+								capital.region = sr:region_central_india
+								capital.state_region = s:STATE_PASHTUNISTAN
+								capital.state_region = s:STATE_QUETTA
+							}				
+						}
+					}
+				}
+			}
+			every_country = {
+				limit = {
+					any_primary_culture = {
+						has_discrimination_trait = south_asian_heritage
+					}
+					OR = {
+						capital.region = sr:region_bombay
+						capital.region = sr:region_bengal
+						capital.region = sr:region_punjab
+						capital.region = sr:region_central_india
+						capital.state_region = s:STATE_PASHTUNISTAN
+						capital.state_region = s:STATE_QUETTA
+					}
+				}
+				save_scope_as = prince_scope
+				root = {
+					random_scope_state = {
+						limit = {
+							OR = {
+								region = sr:region_punjab
+								region = sr:region_central_india
+								region = sr:region_bombay
+								region = sr:region_bengal
+								region = sr:region_himalayas
+								state_region = s:STATE_PASHTUNISTAN
+								state_region = s:STATE_QUETTA
+							}
+							any_neighbouring_state = {
+								scope:prince_scope ?= owner
+							}
+						}
+						set_state_owner = scope:prince_scope
+					}
+				}
+			}
+			clear_saved_scope = prince_scope
+		}
+		every_scope_state = {
+			limit = {
+				region = sr:region_madras
+			}
+			add_radicals_in_state = {
+				religion = rel:hindu
+				value = large_radicals
+			}
+			add_radicals_in_state = {
+				religion = rel:sunni
+				value = large_radicals
+			}
+		}
+	}
+
+	option = {
+		name = sepoy_mutiny_events.2.e
+		highlighted_option = yes
+		ai_chance = {
+			base = 40
+		}
+		trigger = {
+			any_scope_state = {
+				state_region = s:STATE_WEST_BENGAL
+			}
+		}
+		if = {
+			limit = {
+				any_subject_or_below ?= {
+					OR = {
+						capital.region = sr:region_bengal
+						capital.region = sr:region_madras
+						capital.region = sr:region_punjab
+						capital.region = sr:region_central_india
+						capital.state_region = s:STATE_PASHTUNISTAN
+						capital.state_region = s:STATE_QUETTA
+					}				
+				}
+			}
+			custom_tooltip = {
+				text = india_retreat_to_bombay_tt
+				every_country = {
+					limit = {
+						is_subject_of = root 
+						OR = {
+							capital.region = sr:region_bengal
+							capital.region = sr:region_madras
+							capital.region = sr:region_punjab
+							capital.region = sr:region_central_india
+							capital.state_region = s:STATE_PASHTUNISTAN
+							capital.state_region = s:STATE_QUETTA
+						}
+					}
+					make_independent = yes
+					c:GBR.power_bloc ?= {
+						add_leverage = { target = PREV value = -500 }
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_scope_state = {
+					OR = {
+						region = sr:region_punjab
+						region = sr:region_central_india
+						region = sr:region_bombay
+						region = sr:region_bengal
+						region = sr:region_himalayas
+						state_region = s:STATE_PASHTUNISTAN
+						state_region = s:STATE_QUETTA
+					}
+				}
+			}
+			hidden_effect = { # Sensible prioritzed snatches
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_MADRAS
+						}
+						NOT = {
+							exists = c:CAR
+						}
+					}
+					create_country = {  
+						tag = CAR
+						origin = root
+						state = s:STATE_MADRAS.region_state:BIC
+						on_created = {
+							activate_law = law_type:law_monarchy
+							activate_law = law_type:law_oligarchy						
+						}
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_MANDALAY
+						}
+						NOT = {
+							exists = c:BUR
+						}
+					}
+					create_country = {  
+						tag = BUR
+						origin = root
+						state = s:STATE_MANDALAY.region_state:BIC
+						on_created = {
+							activate_law = law_type:law_monarchy
+							activate_law = law_type:law_oligarchy
+							if = {
+								limit = {
+									c:BIC ?= {
+										any_scope_state = {
+											state_region = s:STATE_PEGU
+										}
+									}
+								}
+								s:STATE_PEGU.region_state:BIC = {
+									set_state_owner = c:BUR
+								}
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_TENASSERIM
+						}
+					}
+					if = {
+						limit = {
+							c:BUR ?= {
+								any_scope_state = {
+									state_region = s:STATE_PEGU
+								}
+							}
+						}
+						s:STATE_TENASSERIM.region_state:BIC = {
+							set_state_owner = c:BUR
+						}		
+					}
+					else_if = {
+						limit = {
+							c:SIA ?= {
+								any_scope_state = {
+									state_region = s:STATE_TENASSERIM
+								}
+							}
+						}
+						s:STATE_TENASSERIM.region_state:BIC = {
+							set_state_owner = c:SIA
+						}	
+					}
+					else_if = {
+						limit = {
+							NOT = {
+								exists = c:KRN
+							}
+						}
+						create_country = {  
+							tag = KRN
+							origin = root
+							state = s:STATE_TENASSERIM.region_state:BIC
+							on_created = {
+								activate_law = law_type:law_monarchy
+								activate_law = law_type:law_oligarchy						
+							}
+						}					
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_TRAVANCORE
+						}
+						OR = {
+							c:COC ?= {
+								any_scope_state = {
+									state_region = s:STATE_TRAVANCORE
+								}
+							}
+							c:TRA ?= {
+								any_scope_state = {
+									state_region = s:STATE_TRAVANCORE
+								}
+							}
+						}
+					}
+					if = {
+						limit = {
+							c:COC ?= {
+								any_scope_state = {
+									state_region = s:STATE_TRAVANCORE
+								}
+							}
+						}
+						s:STATE_TRAVANCORE.region_state:BIC = {
+							set_state_owner = c:COC
+						}		
+					}
+					else_if = {
+						limit = {
+							c:TRA ?= {
+								any_scope_state = {
+									state_region = s:STATE_TRAVANCORE
+								}
+							}
+						}
+						s:STATE_TRAVANCORE.region_state:BIC = {
+							set_state_owner = c:TRA
+						}	
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_CIRCARS
+						}
+						c:HYD ?= {
+							owns_entire_state_region = STATE_HYDERABAD
+						}
+					}
+					s:STATE_CIRCARS.region_state:BIC = {
+						set_state_owner = c:HYD
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_KURNOOL
+						}
+						c:HYD ?= {
+							owns_entire_state_region = STATE_HYDERABAD
+						}
+					}
+					s:STATE_KURNOOL.region_state:BIC = {
+						set_state_owner = c:HYD
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_DELHI
+						}
+						c:MUG ?= {
+							any_scope_state = {
+								state_region = s:STATE_DELHI
+							}
+						}
+					}
+					s:STATE_DELHI.region_state:BIC = {
+						set_state_owner = c:MUG
+					}
+				}
+				else_if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_DELHI
+						}
+						NOT = {
+							exists = c:MUG
+						}
+					}
+					create_country = {  
+						tag = MUG
+						origin = root
+						state = s:STATE_DELHI.region_state:BIC
+						on_created = {
+							activate_law = law_type:law_monarchy
+							activate_law = law_type:law_oligarchy						
+						}
+					}			
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_AGRA
+						}
+						exists = c:MUG
+					}
+					s:STATE_AGRA.region_state:BIC = {
+						set_state_owner = c:MUG
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_AWADH
+						}
+						NOT = {
+							exists = c:AWA
+						}
+					}
+					create_country = {  
+						tag = AWA
+						origin = root
+						state = s:STATE_AWADH.region_state:BIC
+						on_created = {
+							activate_law = law_type:law_monarchy
+							activate_law = law_type:law_oligarchy						
+						}
+					}
+				}
+				else_if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_AWADH
+						}
+						exists = c:MUG
+					}
+					s:STATE_AWADH.region_state:BIC = {
+						set_state_owner = c:MUG
+					}
+				}
+				if = {
+					limit = {
+						any_scope_state = {
+							state_region = s:STATE_CENTRAL_PROVINCES
+						}
+						c:NAG ?= {
+							any_scope_state = {
+								state_region = s:STATE_CENTRAL_PROVINCES
+							}
+						}
+					}
+					s:STATE_CENTRAL_PROVINCES.region_state:BIC = {
+						set_state_owner = c:NAG
+					}
+				}
+			}
+		}
+		while = {
+			limit = {
+				any_scope_state = {
+					OR = {
+						region = sr:region_punjab
+						region = sr:region_central_india
+						region = sr:region_madras
+						region = sr:region_bengal
+						region = sr:region_himalayas
+						state_region = s:STATE_PASHTUNISTAN
+						state_region = s:STATE_QUETTA
+					}
+					any_neighbouring_state = {
+						owner = {
+							any_primary_culture = {
+								has_discrimination_trait = south_asian_heritage
+							}
+							OR = {
+								capital.region = sr:region_madras
+								capital.region = sr:region_bengal
+								capital.region = sr:region_punjab
+								capital.region = sr:region_central_india
+								capital.state_region = s:STATE_PASHTUNISTAN
+								capital.state_region = s:STATE_QUETTA
+							}				
+						}
+					}
+				}
+			}
+			every_country = {
+				limit = {
+					any_primary_culture = {
+						has_discrimination_trait = south_asian_heritage
+					}
+					OR = {
+						capital.region = sr:region_madras
+						capital.region = sr:region_bengal
+						capital.region = sr:region_punjab
+						capital.region = sr:region_central_india
+						capital.state_region = s:STATE_PASHTUNISTAN
+						capital.state_region = s:STATE_QUETTA
+					}
+				}
+				save_scope_as = prince_scope
+				root = {
+					random_scope_state = {
+						limit = {
+							OR = {
+								region = sr:region_punjab
+								region = sr:region_central_india
+								region = sr:region_madras
+								region = sr:region_bengal
+								region = sr:region_himalayas
+								state_region = s:STATE_PASHTUNISTAN
+								state_region = s:STATE_QUETTA
+							}
+							any_neighbouring_state = {
+								scope:prince_scope ?= owner
+							}
+						}
+						set_state_owner = scope:prince_scope
+					}
+				}
+			}
+			clear_saved_scope = prince_scope
+		}
+		every_scope_state = {
+			limit = {
+				region = sr:region_bombay
+			}
+			add_radicals_in_state = {
+				religion = rel:hindu
+				value = large_radicals
+			}
+			add_radicals_in_state = {
+				religion = rel:sunni
+				value = large_radicals
+			}
+		}
+	}
+}
+
+sepoy_mutiny_events.3 = {
+	type = country_event
+	placement = root
+	event_image = {
+		video = "asia_sepoy_mutiny"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+
+	title = sepoy_mutiny_events.3.t
+	desc = sepoy_mutiny_events.3.d
+	flavor = sepoy_mutiny_events.3.f
+
+	duration = 3
+
+	immediate = {
+		every_scope_state = {
+			limit = {
+				is_incorporated = yes
+			}
+			set_variable = bic_incorporated_state
+		}
+		sepoy_mutiny_immediate_effects = yes
+		sepoy_mutiny_princely_states_stance_effect = yes
+		c:MUG = {
+			save_scope_as = mughals_scope
+		}
+	}
+	
+	trigger = {
+	}
+
+	option = {
+		name = sepoy_mutiny_events.3.a
+		default_option = yes
+		custom_tooltip = {
+			text = sepoy_mutiny_events.3.tt_1
+			sepoy_mutiny_run_all_effects = yes
+		}
+		custom_tooltip = sepoy_mutiny_events.3.tt_2
+	}
+	option = {
+		name = sepoy_mutiny_events.3.b
+		trigger = {
+			c:MUG ?= {
+				has_variable = sepoy_mutiny_revolter_var
+			}
+		}
+		play_as = c:MUG
+		custom_tooltip = {
+			text = sepoy_mutiny_events.3.tt_1
+			sepoy_mutiny_run_all_effects = yes
+		}
+		custom_tooltip = sepoy_mutiny_events.3.tt_2
+	}
+	option = {
+		name = sepoy_mutiny_events.3.c
+		trigger = {
+			c:SAT ?= {
+				has_variable = sepoy_mutiny_revolter_var
+			}
+		}
+		play_as = c:SAT
+		custom_tooltip = {
+			text = sepoy_mutiny_events.3.tt_1
+			sepoy_mutiny_run_all_effects = yes
+		}
+		custom_tooltip = sepoy_mutiny_events.3.tt_2
+	}
+	option = {
+		name = sepoy_mutiny_events.3.e
+		trigger = {
+			c:BGL ?= {
+				has_variable = sepoy_mutiny_revolter_var
+			}
+		}
+		play_as = c:BGL
+		custom_tooltip = {
+			text = sepoy_mutiny_events.3.tt_1
+			sepoy_mutiny_run_all_effects = yes
+		}
+		custom_tooltip = sepoy_mutiny_events.3.tt_2
+	}
+	option = {
+		name = sepoy_mutiny_events.3.g
+		trigger = {
+			c:PAN ?= {
+				has_variable = sepoy_mutiny_revolter_var
+			}
+		}
+		play_as = c:PAN
+		custom_tooltip = {
+			text = sepoy_mutiny_events.3.tt_1
+			sepoy_mutiny_run_all_effects = yes
+		}
+		custom_tooltip = sepoy_mutiny_events.3.tt_2
+	}
+	option = {
+		name = sepoy_mutiny_events.3.h
+		trigger = {
+			c:KNO ?= {
+				has_variable = sepoy_mutiny_revolter_var
+			}
+		}
+		play_as = c:KNO
+		custom_tooltip = {
+			text = sepoy_mutiny_events.3.tt_1
+			sepoy_mutiny_run_all_effects = yes
+		}
+		custom_tooltip = sepoy_mutiny_events.3.tt_2
+	}
+}
+
+sepoy_mutiny_events.4 = {
+	type = country_event
+	placement = root
+	
+	title = sepoy_mutiny_events.4.t
+	desc = sepoy_mutiny_events.4.d
+	flavor = sepoy_mutiny_events.4.f
+	
+	event_image = {
+		video = "asia_sepoy_mutiny"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_protest.dds"
+	
+	duration = 3
+	
+	trigger = {
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				exists = c:SAT
+			}
+			c:SAT = {
+				save_scope_as = satara_scope
+			}
+		}
+		if = {
+			limit = {
+				exists = c:MUG
+			}
+			c:MUG = {
+				save_scope_as = mughals_scope
+			}
+		}
+		if = {
+			limit = {
+				exists = c:BIC
+			}
+			c:BIC = {
+				save_scope_as = eic_scope
+			}
+		}
+	}
+
+	option = {
+		name = sepoy_mutiny_events.4.a
+		default_option = yes
+		ai_chance = {
+			base = 20
+			modifier = {
+				trigger = {
+					gdp >= 2000000
+				}
+				add = 40
+			}
+		}
+		if = {
+			limit = {
+				any_diplomatic_play = {
+					any_scope_play_involved = { this = c:SAT }
+					any_scope_play_involved = { this = c:BIC }
+					is_diplomatic_play_type = dp_annex_war
+				}
+				OR = {
+					capital = {
+						OR = {
+							region = sr:region_bombay
+							region = sr:region_madras
+						}
+					}
+					root = {
+						country_has_primary_culture = cu:marathi
+					}
+				}
+			}
+			random_diplomatic_play = {
+				limit = {
+					any_scope_play_involved = { this = c:SAT }
+					any_scope_play_involved = { this = c:BIC }
+					is_diplomatic_play_type = dp_annex_war
+				}
+				add_target_backers = { root }
+				sepoy_mutiny_tag_specific_war_goals = yes
+			}
+		}
+		else_if = {
+			limit = {
+				any_diplomatic_play = {
+					any_scope_play_involved = { this = c:MUG }
+					any_scope_play_involved = { this = c:BIC }
+					is_diplomatic_play_type = dp_annex_war
+				}
+				capital = {
+					OR = {
+						region = sr:region_bengal
+						region = sr:region_punjab
+						region = sr:region_central_india
+						region = sr:region_himalayas
+						region = sr:region_persia
+					}
+				}			
+			}
+			random_diplomatic_play = {
+				limit = {
+					any_scope_play_involved = { this = c:MUG }
+					any_scope_play_involved = { this = c:BIC }
+					is_diplomatic_play_type = dp_annex_war
+				}
+				add_target_backers = { root }
+				sepoy_mutiny_tag_specific_war_goals = yes
+			}
+		}
+		add_modifier = {
+			name = war_for_independence
+			months = normal_modifier_time
+		}
+	}
+
+	option = {
+		name = sepoy_mutiny_events.4.b
+		ai_chance = {
+			base = 20
+			modifier = {
+				trigger = {
+					capital = {
+						OR = {
+							region = sr:region_bengal
+							region = sr:region_punjab
+							region = sr:region_central_india
+							region = sr:region_himalayas
+							region = sr:region_persia
+						}
+					}
+				}
+				add = 20
+			}
+			modifier = {
+				trigger = {
+					OR = {
+						religion = rel:sunni
+						religion = rel:shiite
+					}
+				}
+				add = 20
+			}
+		}
+		trigger = {
+			any_diplomatic_play = {
+				any_scope_play_involved = { this = c:MUG }
+				any_scope_play_involved = { this = c:BIC }
+				is_diplomatic_play_type = dp_annex_war
+			}
+		}
+		if = {
+			limit = {
+				c:MUG = {
+					is_country_type = unrecognized
+				}
+			}
+			c:MUG ?= {
+				create_diplomatic_pact = {
+					country = root
+					type = vassal
+				}
+			}
+		}
+		else = {
+			c:MUG ?= {
+				create_diplomatic_pact = {
+					country = root
+					type = puppet
+				}
+			}			
+		}
+		random_diplomatic_play = {
+			limit = {
+				any_scope_play_involved = { this = c:MUG }
+				any_scope_play_involved = { this = c:BIC }
+				is_diplomatic_play_type = dp_annex_war
+			}
+			add_target_backers = { root }
+			sepoy_mutiny_tag_specific_war_goals = yes
+		}
+		add_modifier = {
+			name = war_for_independence
+			months = normal_modifier_time
+		}
+	}
+
+	option = {
+		name = sepoy_mutiny_events.4.c
+		ai_chance = {
+			base = 20
+			modifier = {
+				trigger = {
+					OR = {
+						capital = {
+							OR = {
+								region = sr:region_bombay
+								region = sr:region_madras
+							}
+						}
+					}
+				}
+				add = 20
+			}
+			modifier = {
+				trigger = {
+					country_has_primary_culture = cu:marathi
+				}
+				add = 20
+			}
+			modifier = {
+				trigger = {
+					religion = rel:hindu
+				}
+				add = 20
+			}
+		}
+	
+		trigger = {
+			any_diplomatic_play = {
+				any_scope_play_involved = { this = c:SAT }
+				any_scope_play_involved = { this = c:BIC }
+				is_diplomatic_play_type = dp_annex_war
+			}
+		}
+		if = {
+			limit = {
+				c:SAT = {
+					is_country_type = unrecognized
+				}
+			}
+			c:SAT ?= {
+				create_diplomatic_pact = {
+					country = root
+					type = vassal
+				}
+			}
+		}
+		else = {
+			c:SAT ?= {
+				create_diplomatic_pact = {
+					country = root
+					type = puppet
+				}
+			}			
+		}
+		random_diplomatic_play = {
+			limit = {
+				any_scope_play_involved = { this = c:SAT }
+				any_scope_play_involved = { this = c:BIC }
+				is_diplomatic_play_type = dp_annex_war
+			}
+			add_target_backers = { root }
+			sepoy_mutiny_tag_specific_war_goals = yes
+		}
+		add_modifier = {
+			name = war_for_independence
+			months = normal_modifier_time
+		}
+	}
+
+	option = {
+		name = sepoy_mutiny_events.4.e
+		ai_chance = {
+			base = 0
+		}
+		c:BIC ?= {
+			create_diplomatic_pact = {
+				country = root
+				type = puppet
+			}
+		}
+		add_radicals = {
+			value = large_radicals
+		}
+	}
+}
+
+sepoy_mutiny_events.6 = {
+	type = country_event
+	placement = root
+	event_image = {
+		video = "ip2_unruly_soldiers"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+
+	title = sepoy_mutiny_events.6.t
+	desc = sepoy_mutiny_events.6.d
+	flavor = sepoy_mutiny_events.6.f
+
+	duration = 3
+
+	trigger = {
+		has_technology_researched = rifling
+		NOT = {
+			has_variable = sepoy_mutiny_cartridge_event_var
+		}
+	}
+
+	cancellation_trigger = {
+		NOT = {
+			has_journal_entry = je_uneasy_raj
+		}
+	}
+
+	immediate = {
+		set_variable = sepoy_mutiny_cartridge_event_var
+	}
+
+	option = {
+		name = sepoy_mutiny_events.6.a
+		default_option = yes
+		trigger_event = { id = sepoy_mutiny_events.7 days = 60 popup = yes } 
+		change_relations = {
+			country = c:GBR
+			value = -20
+		}
+		add_modifier = {
+			name = sepoy_mutiny_cartridge_grease_exploration
+			multiplier = money_amount_multiplier_medium
+			months = normal_modifier_time
+		}
+	}
+
+	option = {
+		name = sepoy_mutiny_events.6.b
+		trigger_event = { id = sepoy_mutiny_events.8 days = 90 popup = yes }
+		custom_tooltip = {
+			text = sepoy_mutiny_progress_from_events_tt
+			set_variable = { 
+				name = bengal_progress_from_events_var_add_1
+				value = -1
+				months = normal_modifier_time
+			}
+			set_variable = { 
+				name = bombay_progress_from_events_var_add_1
+				value = -1
+				months = normal_modifier_time
+			}
+			set_variable = { 
+				name = madras_progress_from_events_var_add_1
+				value = -1
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+sepoy_mutiny_events.7 = {
+	type = country_event
+	placement = root
+	event_image = {
+		video = "ip2_unruly_soldiers"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+
+	title = sepoy_mutiny_events.7.t
+	desc = sepoy_mutiny_events.7.d
+	flavor = sepoy_mutiny_events.7.f
+
+	duration = 3
+
+	immediate = {
+	}
+	
+	trigger = {
+	}
+
+	cancellation_trigger = {
+		NOT = {
+			has_journal_entry = je_uneasy_raj
+		}
+	}
+
+	option = {
+		name = sepoy_mutiny_events.7.a
+		default_option = yes
+		random_list = {
+			1 = {
+			}
+			3 = {
+				trigger_event = { id = sepoy_mutiny_events.8 days = 90 popup = yes }
+			}
+		}
+		random_list = {
+			3 = {
+				add_radicals = {
+					pop_type = soldiers
+					religion = rel:hindu
+					value = small_radicals
+				}
+				add_radicals = {
+					pop_type = soldiers
+					religion = rel:sunni
+					value = small_radicals
+				}				
+			}
+			1 = {
+				add_radicals = {
+					pop_type = soldiers
+					religion = rel:hindu
+					value = medium_radicals
+				}
+				add_radicals = {
+					pop_type = soldiers
+					religion = rel:sunni
+					value = medium_radicals
+				}
+			}
+		}
+	}
+}
+
+sepoy_mutiny_events.8 = {
+	type = country_event
+	placement = root
+	event_image = {
+		video = "ip2_unruly_soldiers"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+
+	title = sepoy_mutiny_events.8.t
+	desc = sepoy_mutiny_events.8.d
+	flavor = sepoy_mutiny_events.8.f
+
+	duration = 3
+
+	immediate = {
+	}
+	
+	trigger = {
+	}
+
+	cancellation_trigger = {
+		NOT = {
+			has_journal_entry = je_uneasy_raj
+		}
+	}
+
+	option = {
+		name = sepoy_mutiny_events.8.a
+		default_option = yes
+		custom_tooltip = {
+			text = sepoy_mutiny_progress_from_events_bengal_2_year
+			set_variable = { 
+				name = bengal_progress_from_events_var_add_2
+				value = -2
+				months = 12
+			}
+		}
+		custom_tooltip = {
+			text = sepoy_mutiny_timer_decrease_5_months
+			change_variable = {
+				name = sepoy_mutiny_timer_var
+				add = 5
+			}
+		}
+		random_list = {
+			3 = {
+				add_radicals = {
+					pop_type = soldiers
+					religion = rel:hindu
+					value = small_radicals
+				}
+				add_radicals = {
+					pop_type = soldiers
+					religion = rel:sunni
+					value = small_radicals
+				}				
+			}
+			1 = {
+			}
+		}
+		trigger_event = { id = sepoy_mutiny_events.9 days = 30 popup = yes }
+	}
+
+	option = {
+		name = sepoy_mutiny_events.8.b
+		random_list = {
+			3 = {
+				trigger_event = { id = sepoy_mutiny_events.9 days = 30 popup = yes }
+				custom_tooltip = {
+					text = sepoy_mutiny_progress_from_events_bengal_2_year
+					set_variable = { 
+						name = bengal_progress_from_events_var_add_2
+						value = -2
+						months = 12
+					}
+				}	
+			}
+			1 = {
+				custom_tooltip = {
+					text = sepoy_mutiny_progress_from_events_bengal_1_year
+					set_variable = { 
+						name = bengal_progress_from_events_var_add_2
+						value = -1
+						months = 12
+					}
+				}
+			}
+		}
+		add_modifier = {
+			name = sepoy_mutiny_alternative_cartridge_handling
+			months = normal_modifier_time
+		}
+		add_modifier = {
+			name = sepoy_mutiny_alternative_cartridge_debacle
+			months = normal_modifier_time
+		}
+	}
+}
+
+sepoy_mutiny_events.9 = {
+	type = country_event
+	placement = root
+	event_image = {
+		video = "ip2_unruly_soldiers"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+
+	title = sepoy_mutiny_events.9.t
+	desc = sepoy_mutiny_events.9.d
+	flavor = sepoy_mutiny_events.9.f
+
+	duration = 3
+
+	immediate = {
+	}
+	
+	trigger = {
+	}
+
+	cancellation_trigger = {
+		NOT = {
+			has_journal_entry = je_uneasy_raj
+		}
+	}
+
+	option = {
+		name = sepoy_mutiny_events.9.a
+		default_option = yes
+		custom_tooltip = {
+			text = sepoy_mutiny_timer_decrease_5_months
+			change_variable = {
+				name = sepoy_mutiny_timer_var
+				add = 5
+			}
+		}
+		custom_tooltip = {
+			text = sepoy_mutiny_progress_from_events_bengal_2_year
+			set_variable = { 
+			name = bengal_progress_from_events_var_add_3
+				value = -2
+				months = 12
+			}
+		}	
+		trigger_event = { id = sepoy_mutiny_events.10 days = 7 popup = yes }
+	}
+
+	option = {
+		name = sepoy_mutiny_events.9.b
+		add_modifier = {
+			name = sepoy_mutiny_breakdown_of_morale
+			months = normal_modifier_time
+		}
+		add_modifier = {
+			name = sepoy_mutiny_loss_of_authority
+			months = normal_modifier_time
+		}
+		custom_tooltip = {
+			text = sepoy_mutiny_progress_from_events_tt
+			set_variable = { 
+				name = bengal_progress_from_events_var_add_3
+				value = -1
+				months = normal_modifier_time
+			}
+			set_variable = { 
+				name = bombay_progress_from_events_var_add_3
+				value = -1
+				months = normal_modifier_time
+			}
+			set_variable = { 
+				name = madras_progress_from_events_var_add_3
+				value = -1
+				months = normal_modifier_time
+			}
+		}
+	}
+}
+
+sepoy_mutiny_events.10 = {
+	type = country_event
+	placement = root
+	event_image = {
+		video = "asia_sepoy_mutiny"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+
+	title = sepoy_mutiny_events.10.t
+	desc = sepoy_mutiny_events.10.d
+	flavor = sepoy_mutiny_events.10.f
+
+	duration = 3
+
+	immediate = {
+		if = {
+			limit = {
+				any_scope_character = {
+					has_role = general
+				}
+			}
+			random_scope_character = {
+				limit = {
+					has_role = general
+				}
+				save_scope_as = sepoy_general_scope
+			}
+		}
+		else = {
+			ruler = {
+				save_scope_as = sepoy_general_scope
+			}
+		}
+	}
+	
+	trigger = {
+	}
+
+	cancellation_trigger = {
+		NOT = {
+			has_journal_entry = je_uneasy_raj
+		}
+	}
+
+	option = {
+		name = sepoy_mutiny_events.10.a
+		default_option = yes
+		custom_tooltip = {
+			text = sepoy_mutiny_timer_decrease_5_months
+			change_variable = {
+				name = sepoy_mutiny_timer_var
+				add = 5
+			}
+		}
+		custom_tooltip = {
+			text = sepoy_mutiny_progress_from_events_bengal_2_year
+			set_variable = { 
+			name = bengal_progress_from_events_var_add_4
+				value = -2
+				months = 12
+			}
+		}
+		add_radicals = {
+			pop_type = soldiers
+			religion = rel:hindu
+			value = small_radicals
+		}
+		add_radicals = {
+			pop_type = soldiers
+			religion = rel:sunni
+			value = small_radicals
+		}
+	}
+
+	option = {
+		name = sepoy_mutiny_events.10.b
+		custom_tooltip = {
+			text = sepoy_mutiny_progress_from_events_2_tt
+			set_variable = { 
+				name = bengal_progress_from_events_var_add_4
+				value = -2
+				months = normal_modifier_time
+			}
+			set_variable = { 
+				name = bombay_progress_from_events_var_add_4
+				value = -2
+				months = normal_modifier_time
+			}
+			set_variable = { 
+				name = madras_progress_from_events_var_add_4
+				value = -2
+				months = normal_modifier_time
+			}
+		}
+		add_radicals = {
+			pop_type = soldiers
+			religion = rel:hindu
+			value = medium_radicals
+		}
+		add_radicals = {
+			pop_type = soldiers
+			religion = rel:sunni
+			value = medium_radicals
+		}
+	}
+}

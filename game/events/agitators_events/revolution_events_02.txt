@@ -42,7 +42,9 @@ revolution_pulse_events.1 = {
 			is_incorporated = yes
 			any_scope_culture = {
 				has_homeland = prev
-				culture_is_discriminated_in = root
+				root = {
+					cultural_acceptance_base = { target = prev value < acceptance_status_4 }
+				}
 			}
 		}
 		revolution_progress_medium = yes
@@ -75,14 +77,18 @@ revolution_pulse_events.1 = {
 				is_incorporated = yes
 				any_scope_culture = {
 					has_homeland = prev
-					culture_is_discriminated_in = root
+					root = {
+						cultural_acceptance_base = { target = prev value < acceptance_status_4 }
+					}
 				}
 			}
 			save_scope_as = self_defense_threat_state
 			random_scope_culture = {
 				limit = {
 					has_homeland = prev
-					culture_is_discriminated_in = root
+					root = {
+						cultural_acceptance_base = { target = prev value < acceptance_status_4 }
+					}
 				}
 				save_scope_as = self_defense_threat_culture
 			}
@@ -187,7 +193,7 @@ revolution_pulse_events.2 = {
 		any_scope_character = {
 			has_role = agitator
 			this.political_movement ?= {
-				is_revolutionary_movement = yes
+				is_revolutionary = yes
 			}
 			this.interest_group ?= {
 				is_insurrectionary = yes
@@ -210,7 +216,7 @@ revolution_pulse_events.2 = {
 			limit = {
 				has_role = agitator
 				this.political_movement ?= {
-					is_revolutionary_movement = yes
+					is_revolutionary = yes
 				}
 				this.interest_group ?= {
 					is_insurrectionary = yes
@@ -605,10 +611,7 @@ revolution_pulse_events.5 = {
 		socialist_revolution_ongoing = yes
 		ig:ig_rural_folk = {
 			is_marginal = no
-			OR = {
-				is_being_suppressed = yes
-				ig_approval <= 0
-			}
+			ig_approval <= 0
 		}
 		ig:ig_landowners = {
 			is_marginal = no
@@ -655,7 +658,7 @@ revolution_pulse_events.5 = {
 		scope:self_organization_state = {
 			add_radicals_in_state = {
 				value = medium_radicals
-				strata = poor
+				strata = lower
 			}
 		}
 		scope:landowners_ig = {
@@ -674,7 +677,7 @@ revolution_pulse_events.5 = {
 		scope:self_organization_state = {
 			add_radicals_in_state = {
 				value = small_radicals
-				strata = rich
+				strata = upper
 			}
 		}
 		scope:landowners_ig = {
@@ -864,10 +867,7 @@ revolution_pulse_events.7 = {
 		has_ruling_interest_group_count >= 2
 		any_interest_group = {
 			is_in_government = yes
-			OR = {
-				is_being_suppressed = yes
-				ig_approval <= 0
-			}
+			ig_approval <= 0
 		}
 		has_law = law_type:law_monarchy
 		revolution_progress_medium = yes
@@ -882,10 +882,7 @@ revolution_pulse_events.7 = {
 		random_interest_group = {
 			limit = {
 				is_in_government = yes
-				OR = {
-					is_being_suppressed = yes
-					ig_approval <= 0
-				}
+				ig_approval <= 0
 			}
 			save_scope_as = petition_march_ig
 			leader = {
@@ -1281,27 +1278,43 @@ revolution_pulse_events.10 = {
 			socialist_revolution_ongoing = yes
 			liberal_revolution_ongoing = yes
 		}
-		OR = {
-			has_law = law_type:law_monarchy
-			has_law = law_type:law_autocracy
-			has_law = law_type:law_oligarchy
-			has_law = law_type:law_single_party_state
-		}
 		revolution_progress_high = yes
 		any_political_movement = {
-			is_revolutionary_movement = yes
+			is_revolutionary = yes
 			OR = {
-				is_political_movement_type = movement_to_enact
-				is_political_movement_type = movement_to_restore
-			}
-			NOR = {
-				desired_law = law_type:law_chiefdom
-				desired_law = law_type:law_monarchy
-				desired_law = law_type:law_presidential_republic
-				desired_law = law_type:law_parliamentary_republic
-				desired_law = law_type:law_theocracy
-				desired_law = law_type:law_council_republic
-			}
+				AND = {
+					root = { has_law = law_type:law_monarchy }
+					OR = {
+						law_enactment_stance = {
+							law = law_type:law_presidential_republic
+							value > neutral
+						}	
+						law_enactment_stance = {
+							law = law_type:law_parliamentary_republic
+							value > neutral
+						}	
+					}
+				}
+				AND = {
+					root = {
+						OR = {
+							has_law = law_type:law_autocracy
+							has_law = law_type:law_oligarchy
+							has_law = law_type:law_single_party_state
+						}				
+					}
+					OR = {
+						law_enactment_stance = {
+							law = law_type:law_universal_suffrage
+							value > neutral
+						}	
+						law_enactment_stance = {
+							law = law_type:law_census_voting
+							value > neutral
+						}	
+					}
+				}				
+			}							
 		}
 	}
 
@@ -1323,11 +1336,51 @@ revolution_pulse_events.10 = {
 			}
 			save_scope_as = reforms_at_gunpoint_ig
 		}
-		scope:ongoing_revolution_movement = { #Can't trigger if they want governance reforms anyway.
-			this.desired_law = {
-				save_scope_as = revolutionaries_law
+		random_political_movement = {
+			limit = {
+				is_revolutionary = yes
+				OR = {
+					AND = {
+						root = { 
+							OR = {
+								has_law = law_type:law_theocracy
+								has_law = law_type:law_monarchy 
+							}
+						}
+						OR = {
+							law_enactment_stance = {
+								law = law_type:law_presidential_republic
+								value > neutral
+							}	
+							law_enactment_stance = {
+								law = law_type:law_parliamentary_republic
+								value > neutral
+							}	
+						}
+					}
+					AND = {
+						root = {
+							NOR = {
+								has_law = law_type:law_anarchy
+								has_law = law_type:law_universal_suffrage
+								has_law = law_type:law_census_voting
+							}				
+						}
+						OR = {
+							law_enactment_stance = {
+								law = law_type:law_universal_suffrage
+								value > neutral
+							}	
+							law_enactment_stance = {
+								law = law_type:law_census_voting
+								value > neutral
+							}	
+						}
+					}				
+				}					
 			}
-		}
+			save_scope_as = ongoing_revolution_movement						
+		}		
 	}
 	
 	option = {
@@ -1335,10 +1388,72 @@ revolution_pulse_events.10 = {
 		scope:ongoing_revolution = {
 			add_civil_war_progress = revolution_retreat_very_large
 		}
-		default_option = yes
-		ROOT = {
-			activate_law = scope:revolutionaries_law
+		if = {
+			limit = {
+				NOR = {
+					has_law = law_type:law_anarchy
+					has_law = law_type:law_universal_suffrage
+					has_law = law_type:law_census_voting
+				}
+				scope:ongoing_revolution_movement = {
+					law_enactment_stance = {
+						law = law_type:law_universal_suffrage
+						value > neutral
+					}					
+				}
+			}
+			
+			activate_law = law_type:law_universal_suffrage
 		}
+		else_if = {
+			limit = {
+				NOR = {
+					has_law = law_type:law_anarchy
+					has_law = law_type:law_universal_suffrage
+					has_law = law_type:law_census_voting
+				}
+				scope:ongoing_revolution_movement = {
+					law_enactment_stance = {
+						law = law_type:law_census_voting
+						value > neutral
+					}					
+				}
+			}
+			
+			activate_law = law_type:law_census_voting
+		}		
+		else_if = {
+			limit = {
+				OR = {
+					has_law = law_type:law_theocracy
+					has_law = law_type:law_monarchy 
+				}
+				scope:ongoing_revolution_movement = {
+					law_enactment_stance = {
+						law = law_type:law_parliamentary_republic
+						value > neutral
+					}					
+				}
+			}
+			
+			activate_law = law_type:law_parliamentary_republic
+		}
+		else_if = {
+			limit = {
+				OR = {
+					has_law = law_type:law_theocracy
+					has_law = law_type:law_monarchy 
+				}
+				scope:ongoing_revolution_movement = {
+					law_enactment_stance = {
+						law = law_type:law_presidential_republic
+						value > neutral
+					}					
+				}
+			}
+			
+			activate_law = law_type:law_presidential_republic
+		}		
 		add_loyalists = {
 			value = medium_radicals
 		}
@@ -1349,8 +1464,65 @@ revolution_pulse_events.10 = {
 		scope:ongoing_revolution = {
 			add_civil_war_progress = revolution_retreat_large
 		}
-		ROOT = {
-			activate_law = scope:revolutionaries_law
+		if = {
+			limit = {
+				OR = {
+					has_law = law_type:law_autocracy
+					has_law = law_type:law_oligarchy
+					has_law = law_type:law_single_party_state
+				}	
+				scope:ongoing_revolution_movement = {
+					law_enactment_stance = {
+						law = law_type:law_universal_suffrage
+						value > neutral
+					}					
+				}
+			}
+			
+			activate_law = law_type:law_universal_suffrage
+		}
+		else_if = {
+			limit = {
+				OR = {
+					has_law = law_type:law_autocracy
+					has_law = law_type:law_oligarchy
+					has_law = law_type:law_single_party_state
+				}
+				scope:ongoing_revolution_movement = {
+					law_enactment_stance = {
+						law = law_type:law_census_voting
+						value > neutral
+					}					
+				}
+			}
+			
+			activate_law = law_type:law_census_voting
+		}		
+		else_if = {
+			limit = {
+				has_law = law_type:law_monarchy
+				scope:ongoing_revolution_movement = {
+					law_enactment_stance = {
+						law = law_type:law_parliamentary_republic
+						value > neutral
+					}					
+				}
+			}
+			
+			activate_law = law_type:law_parliamentary_republic
+		}
+		else_if = {
+			limit = {
+				has_law = law_type:law_monarchy
+				scope:ongoing_revolution_movement = {
+					law_enactment_stance = {
+						law = law_type:law_presidential_republic
+						value > neutral
+					}					
+				}
+			}
+			
+			activate_law = law_type:law_presidential_republic
 		}
 		scope:reforms_at_gunpoint_ig = {
 			add_modifier = {
@@ -1365,6 +1537,7 @@ revolution_pulse_events.10 = {
 
 	option = {
 		name = revolution_pulse_events.10.c
+		default_option = yes
 		scope:ongoing_revolution = {
 			add_civil_war_progress = revolution_advance_large
 		}
@@ -1409,10 +1582,7 @@ revolution_pulse_events.11 = {
 		any_revolution_ongoing = yes
 		ig:ig_armed_forces = {
 			is_marginal = no
-			OR = {
-				is_being_suppressed = yes
-				ig_approval <= 0
-			}
+			ig_approval <= 0
 		}
 		has_technology_researched = trench_works
 		has_variable = recently_had_war
@@ -2098,8 +2268,9 @@ revolution_pulse_events.17 = {
 	trigger = {	
 		any_scope_state = {
 			is_incorporated = yes
-			any_scope_culture = {
-				culture_is_discriminated_in = root
+			any_scope_pop = {
+				total_size >= 10000
+				pop_acceptance < acceptance_status_3
 			}
 		}
 		OR = {
@@ -2123,16 +2294,20 @@ revolution_pulse_events.17 = {
 		random_scope_state = {
 			limit = {
 				is_incorporated = yes
-				any_scope_culture = {
-					culture_is_discriminated_in = root
+				any_scope_pop = {
+					total_size >= 10000
+					pop_acceptance < acceptance_status_3
 				}
 			}
-			random_scope_culture = {
+			random_scope_pop = {
 				limit = {
-					culture_is_discriminated_in = root
+					total_size >= 10000
+					pop_acceptance < acceptance_status_3
 				}
-				save_scope_as = pogrom_culture
-				set_variable = pogrom_culture_var
+				culture = {
+					save_scope_as = pogrom_culture
+					set_variable = pogrom_culture_var
+				}
 			}
 			save_scope_as = pogrom_state
 		}
@@ -2352,7 +2527,7 @@ revolution_pulse_events.18 = {
 		capital = {	
 			add_radicals_in_state = {
 				value = small_radicals
-				strata = poor
+				strata = lower
 			}	
 		}
 	}
@@ -2877,6 +3052,13 @@ revolution_pulse_events.22 = {
 				value < neutral
 			}
 		}
+		any_interest_group = {
+			is_in_government = yes
+			leader = {
+				is_busy = no
+				is_immortal = no
+			}
+		}
 		has_law = law_type:law_monarchy
 		OR = {
 			revolution_progress_medium = yes
@@ -2896,6 +3078,10 @@ revolution_pulse_events.22 = {
 		random_interest_group = {
 			limit = {
 				is_in_government = yes
+				leader = {
+					is_busy = no
+					is_immortal = no
+				}
 			}
 			save_scope_as = hostage_ig
 			leader = {
@@ -3311,6 +3497,9 @@ revolution_pulse_events.25 = {
 		}
 		has_law = law_type:law_monarchy
 		revolution_progress_high = yes
+		ruler = {
+			is_immortal = no
+		}
 		any_scope_character = {
 			is_heir = yes
 		}
@@ -3370,7 +3559,7 @@ revolution_pulse_events.25 = {
 			}
 			add_loyalists = {
 				value = large_radicals
-				strata = poor
+				strata = lower
 			}
 			add_loyalists = {
 				value = large_radicals
@@ -3392,7 +3581,7 @@ revolution_pulse_events.25 = {
 			}
 			add_loyalists = {
 				value = medium_radicals
-				strata = poor
+				strata = lower
 			}
 			add_loyalists = {
 				value = medium_radicals
@@ -3481,7 +3670,7 @@ revolution_pulse_events.25 = {
 			}
 			add_loyalists = {
 				value = large_radicals
-				strata = poor
+				strata = lower
 			}
 			add_loyalists = {
 				value = large_radicals
@@ -3503,7 +3692,7 @@ revolution_pulse_events.25 = {
 			}
 			add_loyalists = {
 				value = medium_radicals
-				strata = poor
+				strata = lower
 			}
 			add_loyalists = {
 				value = medium_radicals
@@ -4578,7 +4767,7 @@ revolution_pulse_events.33 = {
 		}
 		add_radicals = {
 			value = small_radicals
-			strata = rich
+			strata = upper
 		}
 		add_modifier = {
 			name = modifier_factories_forced_reopen_expenses
@@ -4594,7 +4783,7 @@ revolution_pulse_events.33 = {
 		}
 		add_radicals = {
 			value = medium_radicals
-			strata = rich
+			strata = upper
 		}
 		add_radicals = {
 			value = small_radicals
@@ -5228,7 +5417,7 @@ revolution_pulse_events.38 = {
 				is_agitator = yes
 				interest_group = ig_trade_unions
 				traits = {
-					bandit
+					social_bandit
 					popular_commander
 				}
 			}
@@ -5253,7 +5442,7 @@ revolution_pulse_events.38 = {
 		scope:shall_not_be_infringed_state = {
 			add_radicals_in_state = {
 				value = medium_radicals
-				strata = poor
+				strata = lower
 			}
 		}
 	}

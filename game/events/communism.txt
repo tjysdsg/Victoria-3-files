@@ -23,17 +23,36 @@ communism.1 = {
 	}
 
 	immediate = {
-		random_interest_group = {
+		if = {
 			limit = {
-				law_stance = {
-					law = law_type:law_council_republic
-					value > neutral
+				any_interest_group = {
+					law_stance = {
+						law = law_type:law_council_republic
+						value > neutral
+					}
 				}
 			}
-			set_variable = communist_ig_var
-			save_scope_as = unions
-			leader = {
-				save_scope_as = union_leader
+			random_interest_group = {
+				limit = {
+					law_stance = {
+						law = law_type:law_council_republic
+						value > neutral
+					}
+				}
+				set_variable = communist_ig_var
+				save_scope_as = unions
+				leader = {
+					save_scope_as = union_leader
+				}
+			}
+		}
+		else = {
+			ig:ig_trade_unions = {
+				set_variable = communist_ig_var
+				save_scope_as = unions
+				leader = {
+					save_scope_as = union_leader
+				}
 			}
 		}
 		set_variable = {
@@ -120,7 +139,7 @@ communism.1 = {
 		}
 		add_loyalists = {
 			value = medium_radicals
-			strata = rich
+			strata = upper
 		}
 	}
 }
@@ -159,9 +178,39 @@ communism.2 = {
 		name = communism.2.a
 		trigger = {
 			has_technology_researched = political_agitation
+			any_political_movement = {
+				OR = {
+					is_political_movement_type = movement_communist
+					is_political_movement_type = movement_socialist
+				}
+			}
 		}
 		ig:ig_trade_unions = {
 			set_variable = chose_vanguardism
+		}
+		if = {
+			limit = {
+				NOT = {
+					any_political_movement = {
+						is_political_movement_type = movement_communist
+					}
+				}
+			}
+			create_political_movement = { type = movement_communist }
+		}
+		if = {
+			limit = {
+				any_political_movement = {
+					is_political_movement_type = movement_communist
+				}
+			}
+			random_political_movement = {
+				limit = {
+					is_political_movement_type = movement_communist
+				}
+				set_core_ideology = ideology_vanguardist_movement
+				remove_character_ideology = ideology_communist
+			}
 		}
 		custom_tooltip = chose_vanguardism.tt
 		if = {
@@ -228,6 +277,29 @@ communism.2 = {
 		}
 		ig:ig_trade_unions = {
 			set_variable = chose_communism
+		}
+		if = {
+			limit = {
+				NOT = {
+					any_political_movement = {
+						is_political_movement_type = movement_communist
+					}
+				}
+			}
+			create_political_movement = { type = movement_communist }
+		}
+		if = {
+			limit = {
+				any_political_movement = {
+					is_political_movement_type = movement_communist
+				}
+			}
+			random_political_movement = {
+				limit = {
+					is_political_movement_type = movement_communist
+				}
+				remove_character_ideology = ideology_vanguardist
+			}
 		}
 		custom_tooltip = chose_communism.tt
 		if = {
@@ -302,6 +374,29 @@ communism.2 = {
 				set_ideology = ideology:ideology_communist
 			}
 		}
+		if = {
+			limit = {
+				NOT = {
+					any_political_movement = {
+						is_political_movement_type = movement_communist
+					}
+				}
+			}
+			create_political_movement = { type = movement_communist }
+		}
+		if = {
+			limit = {
+				any_political_movement = {
+					is_political_movement_type = movement_communist
+				}
+			}
+			random_political_movement = {
+				limit = {
+					is_political_movement_type = movement_communist
+				}
+				remove_character_ideology = ideology_vanguardist
+			}
+		}
 		add_modifier = {
 			name = path_to_communism
 			months = normal_modifier_time
@@ -345,10 +440,28 @@ communism.2 = {
 	}
 	option = { # anarchism
 		name = communism.2.c
+		trigger = {
+			any_political_movement = {
+				OR = {
+					is_political_movement_type = movement_anarchist
+					is_political_movement_type = movement_socialist
+				}
+			}
+		}
 		ig:ig_trade_unions = {
 			set_variable = chose_anarchism
 		}
 		custom_tooltip = chose_anarchism.tt
+		if = {
+			limit = {
+				NOT = {
+					any_political_movement = {
+						is_political_movement_type = movement_anarchist
+					}
+				}
+			}
+			create_political_movement = { type = movement_anarchist }
+		}
 		if = {
 			limit = {
 				scope:union_leader = {
@@ -677,7 +790,7 @@ communism.7 = {
 			}
 			add_radicals_in_state = {
 				value = large_radicals
-				strata = poor
+				strata = lower
 			}
 		}
 	}
@@ -763,7 +876,7 @@ communism.8 = {
  			NOT = { has_modifier = coop_loyalty_modifier }
  			NOT = { has_modifier = coop_migration_modifier }
  			any_scope_pop = {
- 				pop_is_discriminated = no
+				pop_acceptance >= acceptance_status_4
  				standard_of_living > 15
  				workplace ?= {
 					NOR = {
@@ -786,7 +899,7 @@ communism.8 = {
 				NOT = { has_modifier = coop_loyalty_modifier }
 				NOT = { has_modifier = coop_migration_modifier }
 				any_scope_pop = {
-					pop_is_discriminated = no
+					pop_acceptance >= acceptance_status_4
 					standard_of_living > 15
 					workplace ?= {
 						NOR = {
@@ -803,7 +916,7 @@ communism.8 = {
  			save_scope_as = coop_state
  			random_scope_pop = {
  				limit = {
-					pop_is_discriminated = no
+					pop_acceptance >= acceptance_status_4
 					standard_of_living > 15
 					workplace ?= {
 						NOR = {
@@ -939,7 +1052,7 @@ communism.11 = {
 		}
 		add_loyalists = {
 			value = small_radicals
-			strata = rich
+			strata = upper
 		}
 		add_loyalists = {
 			value = small_radicals
@@ -954,7 +1067,7 @@ communism.11 = {
 		}
 		add_loyalists = {
 			value = medium_radicals
-			strata = rich
+			strata = upper
 		}
 		add_loyalists = {
 			value = medium_radicals

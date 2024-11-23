@@ -1,0 +1,97 @@
+﻿je_victoria_terminus = {
+    icon = "gfx/interface/icons/event_icons/event_portrait.dds"
+
+	group = je_group_historical_content
+    
+    is_shown_when_inactive = {
+        has_dlc_feature = ip2_content
+        OR = {
+            can_research = steel_frame_buildings
+            has_technology_researched = steel_frame_buildings
+        }
+        country_has_primary_culture = cu:british
+        any_scope_state = {
+            state_region = s:STATE_BOMBAY
+        }
+    }
+    
+    possible = {
+        hidden_trigger = {
+           country_has_primary_culture = cu:british
+        }
+        has_technology_researched = steel_frame_buildings
+        custom_tooltip = {
+            text = victoria_terminus_possible_tt
+            any_scope_state = {
+                state_region = s:STATE_BOMBAY
+                has_building = building_railway
+            }
+        }
+    }
+    
+    immediate = {
+        random_scope_state = {
+            limit = {
+                state_region = s:STATE_BOMBAY
+            }
+            save_scope_as = relevant_bombay_state
+        }
+        ig:ig_industrialists = {
+            save_scope_as = relevant_terminus_ig
+        }
+        trigger_event = { id = victoria_terminus.1 popup = yes }
+    }
+    
+    complete = {
+        custom_tooltip = {
+            text = victoria_terminus_complete_tt
+            any_scope_state = {
+                state_region = s:STATE_BOMBAY
+                has_building = building_victoria_terminus
+            }
+        }
+        trigger_if = {
+            limit = {
+                has_game_rule = allow_monument_effects
+            }
+            custom_tooltip = {
+                text = victoria_terminus_populated_tt
+                any_scope_state = {
+                    state_region = s:STATE_BOMBAY
+                    any_scope_building = {
+                        is_building_type = building_victoria_terminus
+                        occupancy >= 0.5
+                    }
+                }
+            }
+        }
+    }
+   
+    on_complete = {
+        trigger_event = { id = victoria_terminus.2 popup = yes }
+    }
+   
+    invalid = {
+        OR = {
+            hidden_trigger = {
+                NOT = { country_has_primary_culture = cu:british }
+            }
+            custom_tooltip = {
+                text = rejected_victoria_terminus_project_tt
+                has_variable = rejected_victoria_terminus_project
+            }
+            custom_tooltip = {
+                text = does_not_have_state_bombay_tt             
+                NOT = {
+                    any_scope_state = {
+                        state_region = s:STATE_BOMBAY
+                    }
+                }
+            }
+        }
+    }
+
+    weight = 1000
+
+    should_be_pinned_by_default = yes
+}

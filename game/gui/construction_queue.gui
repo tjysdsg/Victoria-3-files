@@ -358,7 +358,6 @@ types construction_queue {
 	}
 
 	type construction_queue_item = widget {
-		visible = "[ConstructionQueueElement.IsValidConstruction]"
 		size = { @queue_item_width @queue_item_height }
 
 		datacontext = "[ConstructionQueueElement.GetBuilding]"
@@ -542,7 +541,7 @@ types construction_queue {
 
 					size = { 35 35 }
 					visible = "[Not(ConstructionQueueElement.GetInvestorBuilding.IsValid)]"
-					texture = "[BuildingType.GetTexture]"
+					texture = "[BuildingType.GetIcon]"
 					using = tooltip_es
 					tooltip = CONSTRUCTION_QUEUE_PRIVATE_INVESTMENT_VIRTUAL_BUILDING_TT
 				}
@@ -628,7 +627,7 @@ types construction_queue {
 		onclick = "[InformationPanelBar.OpenBuildingDetailsPanel(Building.AccessSelf)]"
 		onrightclick = "[RightClickMenuManager.ShowForBuilding(Building.AccessSelf)]"
 		size = { 35 35 }
-		texture = "[Building.GetTexture]"
+		texture = "[Building.GetIcon]"
 		using = tooltip_above
 	}
 }
@@ -663,7 +662,7 @@ types construction_queue {
 		}
 
 		textbox = {
-			visible = "[Not(GreaterThan_CFixedPoint(ConstructionQueueElement.GetConstructionSpeed, '(CFixedPoint)0'))]"
+			visible = "[And(ConstructionQueueElement.IsValidConstruction, Not(GreaterThan_CFixedPoint(ConstructionQueueElement.GetConstructionSpeed, '(CFixedPoint)0')))]"
 			parentanchor = right|vcenter
 			align = right|nobaseline
 			position = { -8 0 }

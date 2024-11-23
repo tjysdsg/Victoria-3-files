@@ -334,6 +334,7 @@ types ongoing_outliner_items {
 		direction = vertical
 		parentanchor = right
 		
+		datamodel_reuse_widgets = yes
 		datacontext = "[Outliner.AccessCategory('diplo_plays')]"
 		datamodel = "[OutlinerEntry.AccessSubEntries]"
 		visible = "[OutlinerEntry.IsShown]"
@@ -453,9 +454,9 @@ types ongoing_outliner_items {
 				icon = {
 					size = { 54 54 }
 					texture = "gfx/interface/backgrounds/round_button_bg.dds"
-					
+
 					round_progress_default = {
-						visible = "[Not(LessThan_int32(GetPlayer.GetGovernmentLegitimacy, '(int32)25'))]"
+						visible = "[GetPlayer.HasProgressingLawEnactment]"
 						size = { 80% 80% }
 						parentanchor = center
 						datacontext = "[GetPlayer.GetLawBeingEnacted]"
@@ -463,30 +464,29 @@ types ongoing_outliner_items {
 					}
 
 					round_progress_bad = {
-						visible = "[LessThan_int32(GetPlayer.GetGovernmentLegitimacy, '(int32)25')]"
+						visible = "[Not(GetPlayer.HasProgressingLawEnactment)]"
 						size = { 80% 80% }
 						parentanchor = center
 						datacontext = "[GetPlayer.GetLawBeingEnacted]"
 						value = "[FixedPointToFloat(GetPlayer.GetLawEnactmentProgress)]"
 					}
-					
+
 					law_icon = {
-						alpha = "[TransparentIfTrue(LessThan_int32(GetPlayer.GetGovernmentLegitimacy, '(int32)25'))]"
+						alpha = "[TransparentIfTrue(Not(GetPlayer.HasProgressingLawEnactment))]"
 						size = { 38 38 }
 						parentanchor = center
 					}
 
 					paused_icon_bad = {
-						visible = "[LessThan_int32(GetPlayer.GetGovernmentLegitimacy, '(int32)25')]"
-						#size = { 28 28 }
+						visible = "[Not(GetPlayer.HasProgressingLawEnactment)]"
 						parentanchor = center
 					}
 				}
 
 				vbox = {
-					margin_right = 60
 					spacing = 4
 					layoutpolicy_horizontal = expanding
+					min_width = 200
 
 					textbox = {
 						layoutpolicy_horizontal = expanding
@@ -494,7 +494,6 @@ types ongoing_outliner_items {
 						align = center|nobaseline
 						elide = right
 						fontsize_min = 14
-						
 						text = "ENACTING_TO_LAW"
 						
 						background = {
@@ -510,15 +509,32 @@ types ongoing_outliner_items {
 						}
 					}
 
-					textbox = {
+					hbox = {
 						layoutpolicy_horizontal = expanding
-						size = { 0 20 }
-						align = center|nobaseline
-						elide = right
-						fontsize_min = 14
-						
-						text = "OUTCOME_SUCCESS_SHORT"
+						spacing = 10
+
+						textbox = {
+							layoutpolicy_horizontal = expanding
+							size = { 0 20 }
+							align = right|nobaseline
+							elide = right
+							fontsize_min = 14
+							text = "OUTCOME_SUCCESS_SHORT"
+						}
+
+						textbox = {
+							layoutpolicy_horizontal = expanding
+							size = { 0 20 }
+							align = left|nobaseline
+							elide = right
+							fontsize_min = 14
+							text = "OUTCOME_STALL"
+						}
 					}
+				}
+
+				expand = {
+					layoutpolicy_horizontal = expanding
 				}
 			}
 
@@ -1474,10 +1490,12 @@ types ongoing_outliner_items {
 				spacing = 5
 
 				textbox = {
+
 					visible = "[And( Not( IsDataModelEmpty(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries) ), NotEqualTo_int32( GetDataModelSize(AccessPlayer.AccessActiveNonPlayerObjectiveJournalEntries), GetDataModelSize(AccessPlayer.AccessActivePinnedNonPlayerObjectiveJournalEntries)))]"
 					text = "NUMBER_OF_NON_PLAYER_OBJECTIVE_JOURNAL_ENTRIES_SHORT"
 					autoresize = yes
-					align = left|nobaseline
+					parentanchor = vcenter
+					align = right|nobaseline
 					elide = right
 					fontsize_min = 14
 					minimumsize = { 180 -1 }
@@ -1515,8 +1533,8 @@ types ongoing_outliner_items {
 	type outliner_revolutionary_political_movement_item = flowcontainer {
 		direction = vertical
 
-		datacontext = "[AccessPlayer.AccessRevolution]"
-		visible = "[PoliticalMovement.IsValid]"
+		datacontext = "[AccessPlayer.GetGrowingCivilWar.AccessPoliticalMovement]"
+		visible = "[AccessPlayer.GetGrowingCivilWar.IsValid]"
 
 		onmousehierarchyenter = "[AccessHighlightManager.HighlightPoliticalMovement(PoliticalMovement.Self)]"
 		onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
@@ -1568,6 +1586,7 @@ types ongoing_outliner_items {
 					size = { 0 10 }
 					name = revolution_button
 					onclick = "[InformationPanelBar.OpenPoliticalMovementPanel(PoliticalMovement.AccessSelf)]"
+					onrightclick = "[RightClickMenuManager.ShowForPoliticalMovement(PoliticalMovement.AccessSelf)]"
 					using = default_button
 					parentanchor = top|right
 
@@ -1674,165 +1693,129 @@ types ongoing_outliner_items {
 								round_progress_bad = {
 									size = { 80% 80% }
 									position = { 0 7 }
-									value = "[FixedPointToFloat(PoliticalMovement.GetRevolution.GetClockTime)]"
+									value = "[FixedPointToFloat(AccessPlayer.GetGrowingCivilWar.GetClockTime)]"
 									parentanchor = center
 								}
 								
 								icon = {
 									size = { 100% 100% }
-									texture = "gfx/interface/backgrounds/revolution_clock_frame.dds"	
-									law_icon = {
-										datacontext = "[PoliticalMovement.GetLaw]"
-										size = { 50% 50% }
-										position = { 0 4 }
-										parentanchor = center
-									}
+									texture = "gfx/interface/backgrounds/revolution_clock_frame.dds"
+								}
+
+								icon = {
+									parentanchor = center
+									position = { 0 5 }
+									size = { 50 50 }
+									texture = "[PoliticalMovement.GetTexture]"
 								}
 							}
 						}
 
-
 						vbox = {
 							layoutpolicy_horizontal = expanding
 							margin_top = 10
-							margin_right = 5
+							margin_right = 15
 
 							### REVOLUTION PROGRESSBAR ###
 							widget = {
 								size = { 230 25 }
-								
-								bad_progressbar_horizontal = {
-									datacontext = "[PoliticalMovement.GetRevolution]"
-									size = { 230 25 }
 
-									tooltip = "REVOLUTIONS_PROGRESS_TOOLTIP"
-									using = tooltip_below
-
-									blockoverride "values" {
-										value = "[FixedPointToFloat( PoliticalMovement.GetRevolution.GetProgress )]"
-										min = 0
-										max = 1
-									}
-
-									flowcontainer = {
-										parentanchor = vcenter
-										margin_left = 10
-										spacing = 7
-
-										### revolution header
-										textbox = {
-											text = "REVOLUTIONS_HEADER"
-											align = nobaseline
-											autoresize = yes
-										}
-									}
-
-									textbox = {
-										text = "[PoliticalMovement.GetRevolution.GetProgress|%0v]"
-										autoresize = yes
-										align = nobaseline
-										parentanchor = right|vcenter
-										margin_right = 35
-									}
-									
-									blockoverride "in_government_icon" {}
-
-									icon = {
-										parentanchor = right|vcenter
-										size = { 25 25 }
-										texture = "gfx/interface/icons/politics_icons/radicalized.dds"
-										position = { -5 0 }
+								revolution_progress_bar = {
+									blockoverride "datacontext" {
+										datacontext = "[AccessPlayer.GetGrowingCivilWar]"
 									}
 								}
 							}
 
-							### LAW HEADER ###
+							### Movement Header ###
 							hbox = {
 								layoutpolicy_horizontal = expanding
-								margin_top = 5
-								margin_right = 12
-								spacing = 2
+								margin = { 0 5 }
+
+								background = {
+									using = dark_area
+									alpha = 0.4
+									
+									modify_texture = {
+										texture = "gfx/interface/masks/fade_horizontal_center.dds"
+										blend_mode = alphamultiply
+									}
+								}
 
 								textbox = {
 									layoutpolicy_horizontal = expanding
 									size = { 0 20 }
-									align = right|vcenter
+									align = right|nobaseline
 									elide = right
 									fontsize_min = 12
-
-									background = {
-										using = dark_area
-										alpha = 0.4
-										margin_bottom = 6
-										margin_top = 4
-										
-										modify_texture = {
-											texture = "gfx/interface/masks/fade_horizontal_center.dds"
-											blend_mode = alphamultiply
-										}
-									}
-									
-									text = "[PoliticalMovement.GetName]"	
+									text = "[PoliticalMovement.GetNameNoFormatting]"	
 								}
 							}
 
 							hbox = {
 								layoutpolicy_horizontal = expanding
-								margin_right = 12
 								spacing = 2
-
 
 								widget = {
 									size = { 30 30 }
 									visible = "[IsDataModelEmpty(PoliticalMovement.GetTopSupportingCharacters)]"
 								}
 
-								### Characters ###
-								widget = {
+								hbox = {
 									layoutpolicy_horizontal = expanding
-									size = { 0 35 }
-									visible = "[Not(IsDataModelEmpty(PoliticalMovement.GetTopSupportingCharacters))]"
-									flowcontainer = {
-										parentanchor = bottom|left
-										spacing = 3
-										margin_right = 10
+									spacing = 2
 
-										dynamicgridbox = {
-											flipdirection = yes
-											datamodel = "[PoliticalMovement.GetTopSupportingCharacters]"
-
-											item = {
-												character_portrait_mini = {
-													character_ig_icon = {
-														size = { 12 12 }
-														parentanchor = right|bottom
-													}
-												}
-											}
-										}
-
-										textbox = {
-											visible = "[Not(IsDataModelEmpty(PoliticalMovement.GetBottomSupportingCharacters))]"
-											tooltip = "[PoliticalMovement.GetBottomSupportingCharactersDesc]"
-											size = { 0 30 }
-											align = left|nobaseline
-											parentanchor = vcenter
-											text = "AGITATORS_IN_QUEUE"
-											fontsize_min = 12
-											autoresize = yes
-										}
+									expand = {}
+									
+									icon = {
+										size = { 30 30 }
+										texture = "gfx/interface/icons/generic_icons/battalions.dds"
 									}
-								}
 
-								textbox = {
-									layoutpolicy_horizontal = expanding
-									visible = "[Not(PoliticalMovement.IsPlacated)]"
-									margin_top = 10
-									size = { 0 20 }
-									align = right|nobaseline
-									elide = right
-									fontsize_min = 12
-									text = "POLITICAL_MOVEMENT_RADICALISM_WITHOUT_LABEL"
+									textbox = {
+										autoresize = yes
+										align = nobaseline
+										elide = right
+										fontsize_min = 12
+										default_format = "#v"
+										text = "[PoliticalMovement.GetCivilWar.GetNumUprisingBattalions]"
+									}
+
+									widget = {
+										size = { 5 5 }
+									}									
+
+									icon = {
+										size = { 30 30 }
+										texture = "gfx/interface/icons/generic_icons/flotillas.dds"
+									}
+
+									textbox = {
+										autoresize = yes
+										align = nobaseline
+										elide = right
+										fontsize_min = 12
+										default_format = "#v"
+										text = "[PoliticalMovement.GetCivilWar.GetNumUprisingFlotillas]"
+									}	
+
+									widget = {
+										size = { 5 5 }
+									}									
+
+									icon = {
+										size = { 30 30 }
+										texture = "gfx/interface/icons/generic_icons/state.dds"
+									}
+
+									textbox = {
+										autoresize = yes
+										align = nobaseline
+										elide = right
+										fontsize_min = 12
+										default_format = "#v"
+										text = "[PoliticalMovement.GetCivilWar.GetNumUprisingStates]"
+									}
 								}
 							}
 						}
@@ -1843,8 +1826,9 @@ types ongoing_outliner_items {
 			
 			### Interest Groups
 			flowcontainer = {
-				visible = "[Not(IsDataModelEmpty(PoliticalMovement.GetSupportingInterestGroups))]"
-				datamodel = "[PoliticalMovement.GetSupportingInterestGroups]"
+				datacontext = "[AccessPlayer.GetGrowingCivilWar]"
+				visible = "[Not(IsDataModelEmpty(CivilWar.AccessInsurrectionaryIGs(GetPlayer)))]"
+				datamodel = "[CivilWar.AccessInsurrectionaryIGs(GetPlayer)]"
 				parentanchor = hcenter
 				alpha = 0
 				name = "interest_group_top"
@@ -1901,179 +1885,6 @@ types ongoing_outliner_items {
 		}
 	}
 
-	### NON-REVOLUTIONARY POLITICAL MOVEMENT ITEM
-	type outliner_non_revolutionary_political_movement_item = flowcontainer {
-		direction = vertical
-		visible = "[PoliticalMovement.IsPinnedInOutliner]"
-
-		onmousehierarchyenter = "[AccessHighlightManager.HighlightPoliticalMovement(PoliticalMovement.Self)]"
-		onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-
-		tooltipwidget = {
-			FancyTooltip_PoliticalMovement = {}
-		}
-
-		widget = {
-			size = { 350 100 }
-
-			button = {
-				size = { 100% 90 }
-				onclick = "[InformationPanelBar.OpenPoliticalMovementPanel(PoliticalMovement.AccessSelf)]"
-				onrightclick = "[RightClickMenuManager.ShowForPoliticalMovement(PoliticalMovement.AccessSelf)]"
-				using = default_button
-				parentanchor = bottom
-
-				vbox = {
-					layoutpolicy_horizontal = expanding
-
-					hbox = {
-						layoutpolicy_horizontal = expanding
-						margin_top = 5
-						margin_left = 5
-						spacing = 2
-
-						law_icon = {
-							datacontext = "[PoliticalMovement.GetLaw]"
-							size = { 37 37 }
-						}
-
-						textbox = {
-							layoutpolicy_horizontal = expanding
-							size = { 0 20 }
-							align = left|vcenter
-							elide = right
-							fontsize_min = 12
-
-							background = {
-								using = dark_area
-								alpha = 0.3
-								margin_bottom = 6
-								margin_top = 4
-								
-								modify_texture = {
-									texture = "gfx/interface/masks/fade_horizontal_center.dds"
-									blend_mode = alphamultiply
-								}
-							}
-							
-							text = "[PoliticalMovement.GetName]"	
-						}
-					}
-
-					hbox = {
-						layoutpolicy_horizontal = expanding
-						margin = { 10 0 }
-
-						### Characters ###
-						hbox = {
-							layoutpolicy_horizontal = preferred
-							layoutpolicy_vertical = preferred
-							visible = "[Not(IsDataModelEmpty(PoliticalMovement.GetSupportingCharacters))]"
-							margin_left = 5
-							margin_bottom = 7
-							spacing = 3
-
-							dynamicgridbox = {
-								datamodel = "[PoliticalMovement.GetTopSupportingCharacters]"
-								flipdirection = yes
-
-								item = {
-									character_portrait_mini = {
-
-										blockoverride "portrait_button_onrightclick" {}
-
-										blockoverride "tooltip" {}
-
-										character_ig_icon = {
-											parentanchor = bottom|right
-											size = { 12 12 }
-
-											blockoverride "tooltip" {}
-										}
-									}
-								}
-							}
-
-							textbox = {
-								autoresize = yes
-								visible = "[Not(IsDataModelEmpty(PoliticalMovement.GetBottomSupportingCharacters))]"
-								size = { 0 30 }
-								align = right|nobaseline
-								text = "AGITATORS_IN_QUEUE"
-								fontsize_min = 12
-								tooltip = "[PoliticalMovement.GetBottomSupportingCharactersDesc]"
-							}
-						}
-
-						vbox = {
-							layoutpolicy_horizontal = expanding
-							layoutpolicy_vertical = preferred
-							margin_bottom = 15
-
-							textbox = {
-								layoutpolicy_horizontal = expanding
-								size = { 0 20 }
-								align = right|nobaseline
-								elide = right
-								fontsize_min = 12
-								text = "POLITICAL_MOVEMENT_SUPPORT_WITH_LABEL"
-							}
-
-							textbox = {
-								layoutpolicy_horizontal = expanding
-								visible = "[Not(PoliticalMovement.IsPlacated)]"
-								size = { 0 20 }
-								align = right|nobaseline
-								elide = right
-								fontsize_min = 12
-								text = "POLITICAL_MOVEMENT_RADICALISM_WITH_LABEL"
-							}
-
-							textbox = {
-								layoutpolicy_horizontal = expanding
-								size = { 0 20 }
-								align = right|nobaseline
-								elide = right
-								fontsize_min = 12
-								
-								visible = "[PoliticalMovement.IsPlacated]"
-								text = "[concept_political_movement_placated]"
-							}
-						}
-					}
-				}
-			}
-			
-			### Interest Groups
-			flowcontainer = {
-				visible = "[Not(IsDataModelEmpty(PoliticalMovement.GetSupportingInterestGroups))]"
-				datamodel = "[PoliticalMovement.GetSupportingInterestGroups]"
-				parentanchor = hcenter
-
-				item = {
-					ig_button = {
-						size = { 26 26 }
-						
-						tooltipwidget = {
-						 	FancyTooltip_IG = {}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	### NON-REVOLUTIONARY POLITICAL MOVEMENT LIST
-	type outliner_non_revolutionary_political_movement_list = flowcontainer {
-		datamodel = "[AccessPlayer.AccessNonRevolutionaryPoliticalMovements]"
-		direction = vertical
-		parentanchor = right
-		
-		item = {
-			outliner_non_revolutionary_political_movement_item = {}
-		}
-	}
-
 	### ELECTION
 	type outliner_election = button {
 		using = default_list_position
@@ -2105,75 +1916,6 @@ types ongoing_outliner_items {
 				text = "ELECTION_REMAINING_DAYS"
 				autoresize = yes
 				align = nobaseline
-			}
-		}
-	}
-
-	### CIVIL WARS LIST
-	type outliner_civil_wars = flowcontainer {
-		using = default_list_position
-		datamodel = "[AccessPlayer.AccessCivilWars]"
-		visible = "[Not(IsDataModelEmpty(AccessPlayer.AccessCivilWars))]"
-		direction = vertical
-		spacing = 2
-
-		item = {
-			flowcontainer = {
-				direction = vertical
-				alwaystransparent = no
-				onmousehierarchyenter = "[AccessHighlightManager.HighlightCivilWarCountry( CivilWar.Self )]"
-				onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-				visible = "[Not( CivilWar.HasBrokenOut )]"
-				spacing = 6
-
-				#### SECESSION PROGRESSBAR ####
-				bad_progressbar_horizontal = {
-					visible = "[CivilWar.IsSecession]"
-					size = { 342 30 }
-					tooltip = "SECESSION_PROGRESS_TOOLTIP"
-
-					blockoverride "values" {
-						value = "[FixedPointToFloat( CivilWar.GetProgress )]"
-						min = 0
-						max = 1
-					}
-
-					### secession header
-					textbox = {
-						text = "SECESSION_HEADER"
-						elide = right
-						align = nobaseline
-						autoresize = yes
-						parentanchor = vcenter
-						margin_left = 10
-					}
-
-					textbox = {
-						text = "[CivilWar.GetProgress|%0v]"
-						autoresize = yes
-						align = nobaseline
-						parentanchor = right|vcenter
-						margin_right = 35
-					}
-
-					widget = {
-						size = { 25 25 }
-						parentanchor = right|vcenter
-						position = { -5 0 }
-
-						icon = {
-							using = rotate_glow_red_02
-							parentanchor = center
-							size = { 300% 300% }
-						}
-
-						icon = {
-							parentanchor = center
-							size = { 100% 100% }
-							texture = "gfx/interface/icons/war_goals/secession.dds"
-						}
-					}
-				}
 			}
 		}
 	}

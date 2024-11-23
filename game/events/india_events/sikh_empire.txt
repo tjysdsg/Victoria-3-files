@@ -1,0 +1,1142 @@
+﻿namespace = sikh_empire
+
+# For c:PAN, The Sikh Empire
+
+# Ranjit Singh Hosts a Wedding 
+sikh_empire.1 = {
+	type = country_event
+	placement = root
+	title = sikh_empire.1.t
+	desc = sikh_empire.1.d
+	flavor = sikh_empire.1.f
+
+	event_image = {
+		video = "ip2_cross_cultural_festival"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	cooldown = { months = stupidly_long_modifier_time }
+
+	duration = 3
+
+	trigger = {
+		# triggered by je_sikh_sovereignty
+	}
+
+	immediate = {
+		c:BIC ?= {
+			save_scope_as = bic_scope
+		}
+		c:PAN ?= {
+			save_scope_as = pan_scope
+		}
+
+	}
+
+	cancellation_trigger = {
+		ruler = { NOT = { has_template = pan_ranjit_singh } }
+	}
+
+	option = {
+		name = sikh_empire.1.a
+		default_option = yes
+		ai_chance = {
+			base = 5
+		}
+		change_relations = {
+			country = c:GBR
+			value = 5
+		}
+		c:BIC ?= {
+			post_notification = sikh_wedding_diplomacy_message
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_positive
+				target = root
+			}
+			change_relations = {
+				country = c:PAN
+				value = 5
+			}
+		}
+		hidden_effect = {
+			trigger_event = { id = sikh_empire.2 days = 30 popup = yes }
+		}
+	}
+	option = {
+		name = sikh_empire.1.b
+		ai_chance = {
+			base = 2
+		}
+		add_modifier = {
+			name = wedding_prestige
+			months = normal_modifier_time
+		}
+		hidden_effect = {
+			trigger_event = { id = sikh_empire.2 days = 30 popup = yes }
+		}
+	}
+}
+
+# Neighbour attacks PAN after royal wedding
+sikh_empire.2 = {
+	type = country_event
+	placement = root
+	title = sikh_empire.2.t
+	desc = sikh_empire.2.d
+	flavor = sikh_empire.2.f
+
+	event_image = {
+		video = "ep1_ca_mountain_pass_military"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	cooldown = { months = stupidly_long_modifier_time }
+
+	duration = 3
+
+	trigger = {
+		# triggered by je_sikh_sovereignty
+		any_scope_state = {
+			state_region = S:STATE_PASHTUNISTAN
+		}
+		any_neighbouring_state = {
+			owner = {
+				country_has_primary_culture = cu:pashtun
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				state_region = S:STATE_PASHTUNISTAN
+			}
+			save_scope_as = relevant_state
+		}
+		random_neighbouring_state = {
+			limit = {
+				owner = {
+					country_has_primary_culture = cu:pashtun
+				}
+			}
+			owner = {
+				save_scope_as = relevant_country
+			}
+		}
+	}
+
+	cancellation_trigger = {
+		OR = {
+			ruler = { NOT = { has_template = pan_ranjit_singh } }
+			NOT = { exists = scope:relevant_country }
+		}
+	}
+
+	option = {
+		name = sikh_empire.2.a
+		default_option = yes
+		c:PAN ?= {
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_negative
+				target = scope:relevant_country
+			}
+		}
+		scope:relevant_state = {
+			add_modifier = {
+				name = sikh_conscription
+				months = normal_modifier_time
+				is_decaying = yes
+			}
+		}
+	}
+	option = {
+		name = sikh_empire.2.b
+		c:PAN ?= {
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_negative
+				target = scope:relevant_country
+			}
+		}
+		ig:ig_armed_forces = {
+			add_modifier = {
+				name = show_of_strength
+				months = normal_modifier_time
+				is_decaying = yes
+			}
+		}
+	}
+}
+
+# Death of the Sher-e-Punjab (Maharaja Ranjit Singh's Death)
+sikh_empire.3 = {
+	type = country_event
+	title = sikh_empire.3.t
+	desc = sikh_empire.3.d
+	flavor = sikh_empire.3.f
+
+	gui_window = event_window_1char_tabloid
+
+	left_icon = scope:relevant_ruler
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/misc/1Character_Banner"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	duration = 3
+
+	cooldown = { months = stupidly_long_modifier_time }
+
+	trigger = {
+		# triggered by je_sikh_sovereignty
+		c:PAN ?= this
+		any_scope_character = {
+			has_template = pan_ranjit_singh
+		}
+		any_diplomatically_relevant_country = {
+			owner = {
+				country_has_primary_culture = cu:pashtun
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_character = {
+			limit = {
+				has_template = pan_ranjit_singh
+			}
+			save_scope_as = relevant_ruler
+		}
+		random_diplomatically_relevant_country = {
+			limit = {
+				owner = {
+					country_has_primary_culture = cu:pashtun
+				}
+			}
+			save_scope_as = relevant_country
+		}
+		c:BIC = {
+			save_scope_as = bic_scope
+		}
+		save_scope_as = pan_scope
+	}
+	option = {
+		name = sikh_empire.3.a
+		custom_tooltip = {
+			text = ranjit_singh_death_tt
+			heir = {
+				set_character_immortal = no
+			}
+			scope:relevant_ruler = {
+				kill_character = yes # Ranjit Singh dies, Kharak Singh will become ruler
+			}
+			create_character = {
+				# Nau Nihal Singh is the new heir
+				template = pan_nau_nihal_singh
+			}
+		} 
+		c:BIC ?= {
+			post_notification = eic_encroaching_pan_message
+			change_relations = {
+				country = c:PAN
+				value = -10
+			}
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_negative
+				target = root
+			}
+		}
+		custom_tooltip = {
+			text = intrigue_reduced_by_20_tt
+			je:je_sikh_sovereignty ?= {
+				add_progress = { value = -20 name = sikh_empire_intrigue_bar }
+			}
+		}
+	}
+}
+
+# Threat of Rebellion
+sikh_empire.4 = {
+	type = country_event
+	placement = root
+	title = sikh_empire.4.t
+	desc = sikh_empire.4.d
+	flavor = sikh_empire.4.f
+
+	event_image = {
+		video = "middleeast_courtroom_upheaval"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	cooldown = { months = stupidly_long_modifier_time }
+
+	duration = 3
+
+	trigger = {
+		# triggered by je_sikh_sovereignty
+		NOT = {
+			ruler = {
+				has_template = pan_ranjit_singh
+			}
+		}
+		any_scope_character = {
+			has_role = general
+			is_busy = no
+			is_ruler = no			
+		}
+	}
+
+	immediate = {
+		random_scope_character = {
+			limit = {
+				has_role = general
+				is_busy = no
+				is_ruler = no
+			}
+			save_scope_as = relevant_general	
+		}
+	}
+
+	option = {
+		name = sikh_empire.4.a
+		default_option = yes
+		scope:relevant_general = {
+			add_character_role = agitator
+		}
+		custom_tooltip = {
+			text = intrigue_increased_by_10_tt
+			je:je_sikh_sovereignty ?= {
+				add_progress = { value = 10 name = sikh_empire_intrigue_bar }
+			}
+		}
+	}
+	option = {
+		name = sikh_empire.4.b
+		trigger = {
+			scope:relevant_general = {
+				NOT = { 
+					this.interest_group = { 
+						is_interest_group_type = ig_devout 
+					} 
+				}
+			}
+		}
+		custom_tooltip = {
+			text = intrigue_reduced_by_10_tt
+			je:je_sikh_sovereignty ?= {
+				add_progress = { value = -10 name = sikh_empire_intrigue_bar }
+			}
+		}
+		add_radicals = {
+			value = medium_radicals
+			interest_group = ruler.interest_group
+		}
+	}
+}
+
+# Untimely End (Kharak Singh's Death)
+sikh_empire.5 = {
+	type = country_event
+	title = sikh_empire.5.t
+	desc = sikh_empire.5.d
+	flavor = sikh_empire.5.f
+
+	gui_window = event_window_1char_tabloid
+
+	left_icon = scope:relevant_ruler
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/misc/1Character_Banner"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	duration = 3
+	
+	cooldown = { months = stupidly_long_modifier_time }
+
+	trigger = {
+		# triggered by je_sikh_sovereignty
+		c:PAN ?= this
+		any_scope_character = {
+			has_template = pan_kharak_singh
+		}
+	}
+
+	immediate = {
+		random_scope_character = {
+			limit = {
+				has_template = pan_kharak_singh
+			}
+			save_scope_as = relevant_ruler
+		}
+		c:BIC ?= {
+			save_scope_as = bic_scope
+		}
+	}
+	option = {
+		name = sikh_empire.5.a
+		default_option = yes
+		custom_tooltip = {
+			text = kharak_singh_death_tt
+			scope:relevant_ruler = {
+				kill_character = {
+					hidden = yes # Kharak Singh dies, Nau Nihal Singh will become ruler
+				}
+			}
+			create_character = {
+				# Sher Singh is the new heir
+				template = pan_sher_singh
+			}
+		}
+
+		c:PAN ?= {
+			post_notification = pan_encroaching_eic_message
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_negative
+				target = scope:bic_scope
+			}
+		}
+		custom_tooltip = {
+			text = intrigue_reduced_by_50_tt
+			je:je_sikh_sovereignty ?= {
+				add_progress = { value = -50 name = sikh_empire_intrigue_bar }
+			}
+		}
+	}
+}
+
+# A Grave Injury (Pillar Falls on Nau Nihal Singh)
+sikh_empire.6 = {
+	type = country_event
+	title = sikh_empire.6.t
+	desc = sikh_empire.6.d
+	flavor = sikh_empire.6.f
+
+	gui_window = event_window_1char_tabloid
+
+	left_icon = scope:relevant_ruler
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/misc/1Character_Banner"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	duration = 3
+
+	cooldown = { months = stupidly_long_modifier_time }
+
+	trigger = {
+		# triggered by je_sikh_sovereignty
+	}
+
+	immediate = {
+		ruler = {
+			save_scope_as = relevant_ruler
+		}
+		if = {
+			limit = {
+				any_scope_character = {
+					has_template = pan_dhian_singh
+				}
+			}
+			random_scope_character = {
+				limit = {
+					has_template = pan_dhian_singh
+				}
+				save_scope_as = dhian_singh_scope
+			}
+		}
+		if = {
+			limit = {
+				any_neighbouring_state = {
+					owner = {
+						AND = {
+							NOT = {
+								c:PAN ?= this
+							}
+							country_has_primary_culture = cu:pashtun
+						}
+					}
+				}
+			}
+			random_neighbouring_state = {
+				limit = {
+					owner = {
+						AND = {
+							NOT = {
+								c:PAN ?= this
+							}
+							country_has_primary_culture = cu:pashtun
+						}
+					}
+				}
+				owner = {
+					save_scope_as = relevant_country
+				}
+			}
+		}
+	}
+	option = {
+		name = sikh_empire.6.a
+		default_option = yes
+		custom_tooltip = {
+			text = nau_nihal_dies_tt
+			scope:relevant_ruler = {
+				kill_character = yes # Nau Nihal Singh dies, Sher Singh will become ruler
+			}
+			create_character = {
+				# Duleep Singh is the new heir
+				# Duleep is the last heir from a character template we spawn in this chain of events for the Sikh Sovereignty JE
+				template = pan_duleep_singh
+			}
+		}
+		if = {
+			limit = {
+				any_scope_character = {
+					has_template = pan_dhian_singh
+				}
+			}
+			scope:dhian_singh_scope = {
+				remove_trait = experienced_political_operator
+				add_trait = expert_political_operator
+			}
+		}
+		if = {
+			limit = {
+				exists = scope:relevant_country
+			}
+			post_notification = neighbor_encroaching_pan_message
+			change_relations = {
+				country = c:BIC
+				value = -5
+			}
+			scope:relevant_country ?= {
+				create_diplomatic_catalyst = {  
+					type = catalyst_event_negative
+					target = ROOT
+				}
+			}
+		}
+		je:je_sikh_sovereignty ?= {
+			add_progress = { value = -50 name = sikh_empire_intrigue_bar }
+		}
+	}
+	option = {
+		name = sikh_empire.6.b
+		trigger = { # Player can choose to try to save Nau Nihal Singh against the Wazir's advice. If Nau Nihal Singh survives he is very injured.
+			is_player = yes
+		}
+		random_list = {
+			50 = {
+				custom_tooltip = { 
+					text = nau_nihal_dies_tt 
+					scope:relevant_ruler = {
+						kill_character = yes # Nau Nihal Singh dies, Sher Singh will become ruler
+					}
+					create_character = {
+						# Duleep Singh is the new heir
+						# Duleep is the last heir from a character template we spawn in this chain of events for the Sikh Sovereignty JE
+						template = pan_duleep_singh
+					}
+				}
+				if = {
+					limit = {
+						exists = scope:relevant_country
+					}
+					post_notification = neighbor_encroaching_pan_message
+					scope:relevant_country ?= {
+						create_diplomatic_catalyst = {  
+							type = catalyst_event_negative
+							target = ROOT
+						}
+					}
+				}
+				je:je_sikh_sovereignty ?= {
+					add_progress = { value = -50 name = sikh_empire_intrigue_bar }
+				}
+			}
+			50 = {
+				custom_tooltip = {
+					text = nau_nihal_lives_tt
+				}
+				scope:relevant_ruler = { 
+					add_trait = wounded
+					add_trait = psychological_affliction
+					add_trait = scarred
+					remove_trait = expensive_tastes
+					remove_trait = pious
+					add_modifier = {
+						name = nau_nihal_survives # Character health impacted for life, he was definitely near death
+					}
+				}
+				if = {
+					limit = {
+						exists = scope:relevant_country
+					}
+					post_notification = neighbor_encroaching_pan_message
+					change_relations = {
+						country = scope:relevant_country
+						value = -5
+					}
+					scope:relevant_country ?= {
+						create_diplomatic_catalyst = {  
+							type = catalyst_event_negative
+							target = ROOT
+						}
+					}
+				}
+				custom_tooltip = {
+					text = intrigue_reduced_by_20_tt
+					je:je_sikh_sovereignty ?= {
+						add_progress = { value = -20 name = sikh_empire_intrigue_bar }
+					}
+				}
+			}
+		}
+	}
+}
+
+# End of a Dynasty (je_sikh_sovereignty, on fail)
+sikh_empire.7 = {
+	type = country_event
+	placement = root
+	title = {
+		first_valid = {
+			triggered_desc = {
+				desc = sikh_empire.7.t
+				trigger = {
+					is_subject = yes
+				}
+			}
+			triggered_desc = {
+				desc = sikh_empire.7.t2 # Loc if JE failed with 5 Majaraja deaths
+				trigger = {
+					always = yes
+				}
+			}
+		}
+	}
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = sikh_empire.7.d
+				trigger = {
+					is_subject = yes
+				}
+			}
+			triggered_desc = {
+				desc = sikh_empire.7.d2 # Loc if JE failed with 5 Majaraja deaths
+				trigger = {
+					always = yes
+				}
+			}
+		}
+	}
+	flavor = {
+		first_valid = {
+			triggered_desc = {
+				desc = sikh_empire.7.f # Loc if GBR becomes overlord
+				trigger = {
+					AND = {
+						is_subject = yes
+						top_overlord = {
+							c:GBR ?= this
+						}
+					}
+				}
+			}
+			triggered_desc = { 
+				desc = sikh_empire.7.f2 # Loc if JE failed with 5 Majaraja deaths or has a top overlord that is not GBR
+				trigger = {
+					always = yes
+				}
+			}
+		}
+	}
+
+	event_image = {
+		video = "ep1_transfer_of_authority"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	cooldown = { months = stupidly_long_modifier_time }
+
+	duration = 3
+
+	trigger = {
+		# triggered by je_sikh_sovereignty
+	}
+
+	immediate = {
+		if = {
+			random_scope_character = {
+				limit = {
+					has_template = pan_duleep_singh
+				} 		
+			}
+			save_scope_as = relevant_character
+		}
+		else = {
+			ruler = {
+				save_scope_as = relevant_character
+			}
+		}
+
+	}
+
+	cancellation_trigger = {
+		
+	}
+
+	option = {
+		name = sikh_empire.7.a
+		default_option = yes
+		hidden_effect = {
+			set_variable = sikh_empire_je_done
+		}
+		if = { # For exiling Duleep Singh if he is very young
+			limit = {
+				ruler = {
+					age < 18
+					has_template = pan_duleep_singh
+				}
+			}
+			ruler = {
+				custom_tooltip = {
+					text = duleep_goes_to_gbr_tt
+					place_character_in_void = 1200
+				}		
+			}	
+			create_character = {
+				ruler = yes
+			}
+		}
+		else_if = { # For sending Duleep Singh to GBR if he happens to be at least 18
+			limit = {
+				ruler = {
+					age >= 18
+					has_template = pan_duleep_singh
+				}
+				top_overlord = {
+					c:GBR ?= this
+				}
+			}
+			ruler = {
+				add_character_role = agitator
+				custom_tooltip = {
+					text = duleep_goes_to_gbr_tt
+					transfer_character = c:GBR
+				}
+				change_character_religion = rel:protestant
+			}
+		} # For exiling any other ruler if Sikh Empire becomes a subject
+		else = {
+			ruler = { 
+				exile_character = yes 
+			}
+			create_character = {
+				ruler = yes
+			}
+		}
+	}
+}
+
+#  Legacy of the Lion (je_sikh_sovereignty, on complete)
+sikh_empire.8 = {
+	type = country_event
+	placement = root
+	title = sikh_empire.8.t
+	desc = sikh_empire.8.d
+	flavor = sikh_empire.8.f
+
+	event_image = {
+		video = "asia_hinduism_sikhism"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	cooldown = { months = stupidly_long_modifier_time }
+
+	duration = 3
+
+	trigger = {
+		# triggered by je_sikh_sovereignty
+	}
+
+	immediate = {
+		random_scope_character = {
+			limit = {
+				has_template = pan_duleep_singh
+			} 		
+		}
+		save_scope_as = duleep_character
+	}
+
+	cancellation_trigger = {
+
+	}
+
+	option = {
+		name = sikh_empire.8.a
+		default_option = yes
+		add_modifier = {
+			name = sikh_sovereignty_success
+			months = very_long_modifier_time
+			is_decaying = yes
+		}
+		ruler = {
+			add_modifier = {
+				name = lions_legacy
+				months = very_long_modifier_time
+				is_decaying = yes
+			}
+		}
+		hidden_effect = {
+			set_variable = sikh_empire_je_done
+		}
+	}
+}
+
+# The Last Maharaja (Freeing Duleep Singh from the void)
+sikh_empire.9 = {
+	type = country_event
+	placement = root
+	title = sikh_empire.9.t
+	desc = sikh_empire.9.d
+	flavor = sikh_empire.9.f
+
+	gui_window = event_window_1char_tabloid
+
+	left_icon = scope:duleep_character
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/misc/1Character_Banner"
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	cooldown = { months = stupidly_long_modifier_time }
+
+	duration = 3
+
+	trigger = {
+		# triggered by je_sikh_sovereignty
+		c:GBR ?= this
+		has_dlc_feature = ip2_content
+		game_date >= 1856.9.6 # After Duleep is 18
+		any_character_in_void = {
+			has_template = pan_duleep_singh
+		}
+	}
+
+	immediate = {
+		random_character_in_void = {
+			limit = {
+				has_template = pan_duleep_singh
+			}
+			save_scope_as = duleep_character
+		}
+
+	}
+
+	cancellation_trigger = {
+		OR = {
+			NOT = { exists = c:PAN }
+			NOT = { exists = c:GBR }
+		}
+	}
+
+	option = {
+		name = sikh_empire.9.a
+		default_option = yes
+		scope:duleep_character = {
+			hidden_effect = {
+				free_character_from_void = yes
+			}
+			add_trait = expensive_tastes
+			add_character_role = agitator
+			custom_tooltip = {
+				text = duleep_goes_to_gbr_tt
+				transfer_character = c:GBR
+			}
+			change_character_religion = rel:protestant
+		}	
+	}
+	option = {
+		name = sikh_empire.9.b
+		scope:duleep_character = {
+			hidden_effect = {
+				free_character_from_void = yes
+			}
+			exile_character = yes
+			add_character_role = agitator
+			add_trait = hedonist
+		}	
+	}
+}
+
+# Sher Singh gets blasted with a shotgun
+sikh_empire.10 = {
+	type = country_event
+	title = sikh_empire.10.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = sikh_empire.10.d1
+				trigger = {
+					any_scope_character = {
+						has_role = politician
+						has_trait = wrathful
+					}
+				}
+			}
+			triggered_desc = { 
+				desc = sikh_empire.10.d2
+			}
+		}
+	}
+	flavor = sikh_empire.10.f
+
+	gui_window = event_window_1char_tabloid
+
+	left_icon = scope:relevant_ruler
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/misc/1Character_Banner"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	duration = 3
+	
+	cooldown = { months = stupidly_long_modifier_time }
+
+	trigger = {
+		# triggered by je_sikh_sovereignty
+		c:PAN ?= this
+		any_scope_character = {
+			has_template = pan_sher_singh
+		}
+	}
+
+	immediate = {
+		random_scope_character = {
+			limit = {
+				has_template = pan_sher_singh
+			}
+			save_scope_as = relevant_ruler
+		}
+		random_scope_character = {
+			limit = {
+				has_role = politician
+				has_trait = wrathful
+			}
+			save_scope_as = assassin_scope
+		}
+		c:BIC ?= {
+			save_scope_as = bic_scope
+		}
+	}
+	option = {
+		name = sikh_empire.10.a
+		default_option = yes
+		custom_tooltip = {
+			text = sher_singh_death_tt
+			scope:relevant_ruler = { 
+				kill_character = { # Sher Singh dies, Duleep Singh will become ruler
+					hidden = yes
+				}
+			}
+		}
+		if = {
+			limit = {
+				heir ?= {
+					has_template = pan_duleep_singh
+				}
+			}
+			heir ?= {
+				disinherit_character = yes
+			}
+		}
+		c:PAN ?= {
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_negative
+				target = scope:bic_scope
+			}
+		}
+		custom_tooltip = {
+			text = intrigue_reduced_by_50_tt
+			je:je_sikh_sovereignty ?= {
+				add_progress = { value = -50 name = sikh_empire_intrigue_bar }
+			}
+		}
+	}
+}
+
+# Generic assassination
+sikh_empire.11 = {
+	type = country_event
+	title = sikh_empire.11.t
+	desc = sikh_empire.11.d
+	flavor = sikh_empire.11.f
+
+	gui_window = event_window_1char_tabloid
+
+	left_icon = scope:relevant_ruler
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+	on_opened_soundeffect = "event:/SFX/Events/misc/1Character_Banner"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	duration = 3
+
+	trigger = {
+		# triggered by je_sikh_sovereignty
+		c:PAN ?= this
+	}
+
+	cooldown = { days = 100 }
+
+	immediate = {
+		random_scope_character = {
+			limit = {
+				is_ruler = yes
+			}
+			save_scope_as = relevant_ruler
+		}
+		c:BIC ?= {
+			save_scope_as = bic_scope
+		}
+	}
+	option = {
+		name = sikh_empire.11.a
+		default_option = yes
+		if = {
+			limit = {
+				ruler = { has_template = pan_kharak_singh }
+			}
+			scope:relevant_ruler = {
+				kill_character = yes # Kharak Singh dies, Nau Nihal Singh will become ruler
+			}
+			create_character = {
+				# Sher Singh is the new heir
+				template = pan_sher_singh
+			}
+		}
+		else_if = {
+			limit = {
+				ruler = { has_template = pan_nau_nihal_singh }
+			}
+			scope:relevant_ruler = {
+				kill_character = yes # Nau Nihal Singh dies, Sher Singh will become ruler
+			}
+			create_character = {			
+				# Duleep Singh is the new heir
+				# Duleep is the last heir from a character template we spawn in this chain of events for the Sikh Sovereignty JE
+				template = pan_duleep_singh
+			}
+		}
+		else_if = {
+			limit = {
+				ruler = { has_template = pan_sher_singh }
+			}
+			scope:relevant_ruler = {	
+				kill_character = yes # Sher Singh dies, Duleep Singh will become ruler
+			}
+			if = {
+				limit = {
+					heir ?= {
+						has_template = pan_duleep_singh
+					}
+				}
+				heir ?= {
+					disinherit_character = yes
+				}
+			}
+		}
+		else = {
+			scope:relevant_ruler = {	
+				kill_character = yes
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					any_scope_character = {
+						OR = {
+							has_template = pan_sher_singh
+							has_template = pan_duleep_singh
+							has_template = pan_kharak_singh
+							has_template = pan_nau_nihal_singh
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					any_scope_character = {
+						has_role = general
+					}
+				}
+				random_scope_character = {
+					limit = {
+						has_role = general
+					}
+					set_character_as_ruler = yes
+				}
+			}
+			else = {
+				ordered_scope_character = {
+					limit = {
+						has_role = politician
+					}
+					order_by = interest_group.ig_clout
+					set_character_as_ruler = yes
+				}
+			}
+		}
+		custom_tooltip = {
+			text = intrigue_reduced_by_50_tt
+			je:je_sikh_sovereignty ?= {
+				add_progress = { value = -50 name = sikh_empire_intrigue_bar }
+			}
+		}
+	}
+}

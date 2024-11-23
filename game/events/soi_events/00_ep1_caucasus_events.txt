@@ -1,0 +1,2264 @@
+﻿ namespace = caucasuswar
+
+caucasuswar.1 = {
+	type = country_event
+	placement = scope:invasion_base_state
+
+	title = caucasuswar.1.t
+	desc = caucasuswar.1.d
+	flavor = caucasuswar.1.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_sick_in_hospital.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	duration = 3
+
+	cooldown = { months = short_modifier_time }
+
+	trigger = {
+		OR = {
+			exists = c:CIR
+			exists = c:CHC
+		}
+	}
+
+	immediate = {
+		root = {
+			save_scope_as = russia_scope
+		}
+		random_scope_state = {
+			limit = {
+				OR = {	
+					state_region = s:STATE_DAGESTAN
+					state_region = s:STATE_KUBAN
+					state_region = s:STATE_NORTH_CAUCASUS
+				}
+				is_split_state = yes
+			}
+			save_scope_as = invasion_base_state
+		}	
+		scope:invasion_base_state = {
+			this.state_region = {
+				random_scope_state = {
+					limit = {
+						NOT = {
+							c:RUS ?= owner
+						}
+						OR = {
+							c:CHC ?= owner
+							c:CIR ?= owner
+						}
+					}
+					owner = {
+						save_scope_as = adversary_scope
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = caucasuswar.1.a
+		default_option = yes
+		scope:invasion_base_state = {
+			add_modifier = {
+				name = modifier_failed_incursion 
+				months = short_modifier_time
+			}	
+			this.state_region = {
+				add_devastation = 15
+			}
+			add_radicals_in_state = {
+				value = medium_radicals
+				culture = cu:circassian
+			}
+		}
+		scope:adversary_scope = {
+			post_notification = caucasus_russian_failed_attack_notification
+		}
+	}
+
+	option = {
+		name = caucasuswar.1.b
+		scope:invasion_base_state = {
+			add_modifier = {
+				name = modifier_failed_incursion 
+				months = short_modifier_time
+			}
+			this.state_region = {
+				add_devastation = 5
+			}
+			add_radicals_in_state = {
+				value = medium_radicals
+				pop_type = officers
+				culture = cu:russian
+			}
+			this.region = {
+				random_scope_state = {
+					limit = {
+						owner = c:RUS
+						any_scope_building = {
+							is_building_type = building_barracks
+						}	
+					}
+					add_radicals_in_state = {
+						value = small_radicals
+						pop_type = officers
+						culture = cu:russian
+					}
+				}
+			}	
+		}
+		ig:ig_armed_forces = {
+			add_modifier = {
+				name = modifier_failed_to_cover_incursion
+				months = 13
+			}
+		}
+		scope:adversary_scope = {
+			post_notification = caucasus_russian_failed_attack_notification
+		}
+	}
+}
+
+caucasuswar.2 = {
+	type = country_event
+	placement = scope:invasion_base_state
+
+	title = caucasuswar.2.t
+	desc = caucasuswar.2.d
+	flavor = caucasuswar.2.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "gfx/event_pictures/ep1_cossacks.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_trade.dds"
+
+	duration = 3
+
+	cooldown = { months = short_modifier_time }
+
+	trigger = {
+		OR = {
+			exists = c:CIR
+			exists = c:CHC
+		}
+	}
+
+	immediate = {
+		root = {
+			save_scope_as = russia_scope
+		}
+		random_scope_state = {
+			limit = {
+				OR = {	
+					state_region = s:STATE_DAGESTAN
+					state_region = s:STATE_KUBAN
+					state_region = s:STATE_NORTH_CAUCASUS
+				}
+				is_split_state = yes
+			}
+			save_scope_as = invasion_base_state
+		}	
+		scope:invasion_base_state = {
+			this.state_region = {
+				random_scope_state = {
+					limit = {
+						NOT = {
+							c:RUS ?= owner 
+						}
+						OR = {
+							c:CHC ?= owner
+							c:CIR ?= owner
+						}
+					}
+					owner = {
+						save_scope_as = adversary_scope
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = caucasuswar.2.a
+		default_option = yes
+		scope:invasion_base_state = {
+			add_modifier = {
+				name = modifier_attacked_supply_train
+				months = 13
+			}
+			this.state_region = {
+				add_devastation = 10
+			}
+		}
+		scope:adversary_scope = {
+			post_notification = caucasus_russian_supply_convoy_notification
+		}
+	}
+
+	option = {
+		name = caucasuswar.2.b
+		scope:invasion_base_state = {
+			add_modifier = {
+				name = modifier_attacked_supply_train
+				months = 13
+				multiplier = 1.5
+			}
+		}	
+		scope:adversary_scope = {
+			post_notification = caucasus_russian_supply_convoy_notification
+		}
+	}
+}
+
+caucasuswar.3 = {
+	type = country_event
+	placement = scope:invasion_state
+
+	title = caucasuswar.3.t
+	desc = caucasuswar.3.d
+	flavor = caucasuswar.3.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_fire.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	duration = 3
+
+	cooldown = { months = short_modifier_time }
+
+	trigger = {
+		OR = {
+			exists = c:CIR
+			exists = c:CHC
+		}
+	}
+
+	immediate = {
+		root = {
+			save_scope_as = russia_scope
+		}
+		random_state = {
+			limit = {
+				OR = {
+					c:CHC ?= owner 
+					c:CIR ?= owner
+				}
+				is_split_state = yes
+			}
+			save_scope_as = invasion_state
+		}	
+		scope:invasion_state = {
+			owner = {
+				save_scope_as = adversary_scope
+			}
+		}
+	}
+
+	option = {
+		name = caucasuswar.3.a
+		default_option = yes
+		scope:adversary_scope = {
+			scope:invasion_state = {
+				add_modifier = {
+					name = modifier_villages_burned
+					months = 13
+					multiplier = 1.5
+				}
+			}
+		}
+		scope:invasion_state = {
+			state_region = {
+				add_devastation = 15
+			}
+		}
+		random_scope_state = {
+			limit = {
+				any_neighbouring_state = {
+					this = scope:invasion_state
+				}
+			}
+			add_radicals_in_state = {
+				value = small_radicals
+			}
+		}
+		scope:adversary_scope = {
+			post_notification = caucasus_russian_village_burned_notification
+		}
+	}
+
+	option = {
+		name = caucasuswar.3.b
+		scope:adversary_scope = {
+			scope:invasion_state = {
+				add_modifier = {
+					name = modifier_villages_burned
+					months = 13
+				}
+			}
+		}
+		scope:invasion_state = {
+			state_region = {
+				add_devastation = 5
+			}
+		}
+		scope:adversary_scope = {
+			post_notification = caucasus_russian_village_burned_notification
+		}
+	}
+}
+
+caucasuswar.4 = {
+	type = country_event
+	placement = scope:invasion_state
+
+	title = caucasuswar.4.t
+	desc = caucasuswar.4.d
+	flavor = caucasuswar.4.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "gfx/event_pictures/ep1_ca_mountain_pass_civilian.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	duration = 3
+
+	cooldown = { months = short_modifier_time }
+	
+	trigger = {
+		OR = {
+			c:CIR ?= {
+				NOT = {
+					has_truce_with = c:RUS
+				}
+			}
+			c:CHC ?= {
+				NOT = {
+					has_truce_with = c:RUS
+				}
+			}
+		}
+	}
+
+	immediate = {
+		root = {
+			save_scope_as = russia_scope
+		}
+		random_state = {
+			limit = {
+				OR = {
+					c:CHC ?= owner
+					c:CIR ?= owner
+				}
+				is_split_state = yes
+			}
+			save_scope_as = invasion_state
+		}	
+		scope:invasion_state = {
+			owner = {
+				save_scope_as = adversary_scope
+			}
+		}
+		scope:adversary_scope = {
+			random_primary_culture = {
+				save_scope_as = defector_culture
+			}
+		}
+	}
+
+	option = {
+		name = caucasuswar.4.a
+		default_option = yes
+		scope:adversary_scope = {
+			add_modifier = {
+				name = modifier_betrayal_of_tribe
+				months = short_modifier_time
+			}
+		}
+		scope:adversary_scope = {
+			post_notification = caucasus_tribe_defection_notification
+		}
+	}
+
+	option = {
+		name = caucasuswar.4.b
+		scope:adversary_scope = {
+			add_modifier = {
+				name = modifier_betrayal_of_tribe
+				months = short_modifier_time
+			}
+		}
+		random_scope_state = {
+			limit = {
+				any_neighbouring_state = {
+					this = scope:invasion_state
+				}
+			}
+			add_culture_standard_of_living_modifier = {
+				culture = scope:defector_culture
+				multiplier = 2
+				months = short_modifier_time
+			}
+			add_radicals_in_state = {
+				value = medium_radicals
+				pop_type = officers
+				culture = cu:russian
+			}
+		}
+		scope:adversary_scope = {
+			post_notification = caucasus_tribe_defection_notification
+		}
+	}
+}
+
+caucasuswar.5 = {
+	type = country_event
+	placement = ROOT
+
+	title = caucasuswar.5.t
+	desc = caucasuswar.5.d
+	flavor = caucasuswar.5.f
+
+	event_image = {
+		video = "gfx/event_pictures/ep1_cossacks.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	duration = 3
+
+	cooldown = { months = very_long_modifier_time }
+
+	trigger = {
+		c:RUS ?= this
+		NOT = {
+			has_variable = milyutin_memorandum
+		}
+		exists = c:CIR
+		NOT = {
+			has_truce_with = c:CIR
+		}
+		OR = {
+			cultural_acceptance_base = { target = cu:circassian value < acceptance_status_4 }
+			has_law = law_type:law_state_religion
+		}
+		any_scope_state = {
+			state_region = s:STATE_KUBAN
+		}
+	}
+
+	immediate = {
+		c:CIR = {
+			save_scope_as = adversary_scope
+		}
+		create_character = {
+			template = RUS_dmitry_milyutin
+			on_created = {
+				set_variable = milyutin_variable
+			}
+		}
+		random_scope_character = {
+			limit = {
+				has_variable = milyutin_variable
+			}
+			save_scope_as = milyutin_scope
+		}
+		cu:circassian = {
+			save_scope_as = circassian_culture
+		}
+		set_variable = milyutin_memorandum
+	}
+
+	option = {
+		name = caucasuswar.5.a
+		default_option = yes
+		custom_tooltip = {
+			text = milyutin_available_tt
+		}
+		custom_tooltip = will_lead_to_expulsions_tt
+		set_variable = milyutin_memorandum_accepted
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_KUBAN
+			}
+			add_modifier = {
+				name = modifier_milyutin_memorandum
+				months = long_modifier_time
+			}
+			add_radicals_in_state = {
+				value = very_large_radicals
+				culture = cu:circassian
+			}
+		}
+		scope:milyutin_scope = {
+			add_trait = war_criminal
+		}
+		scope:adversary_scope = {
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_negative
+				target = root
+			}			
+		}
+		c:TUR ?= {
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_negative
+				target = root
+			}
+		}
+	}
+
+	option = {
+		name = caucasuswar.5.b
+		custom_tooltip = {
+			text = milyutin_available_tt
+		}
+		ig:ig_armed_forces = {
+			add_modifier = {
+				name = modifier_refused_milyutin_memorandum
+				months = normal_modifier_time
+			}
+		}
+		add_radicals = {
+			value = very_large_radicals
+			pop_type = officers
+			culture = cu:russian
+		}
+		scope:milyutin_scope = {
+			add_trait = experienced_colonial_administrator
+		}
+	}
+}
+
+caucasuswar.6 = {
+	type = country_event
+	placement = scope:invasion_base_state
+
+	title = caucasuswar.6.t
+	desc = caucasuswar.6.d
+	flavor = caucasuswar.6.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "gfx/event_pictures/ep1_ca_mountain_pass_military.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	duration = 3
+
+	cooldown = { months = short_modifier_time }
+
+	trigger = {
+		exists = c:CHC
+	}
+
+	immediate = {
+		root = {
+			save_scope_as = russia_scope
+		}
+		random_scope_state = {
+			limit = {
+				OR = {
+					state_region = s:STATE_KUBAN
+					state_region = s:STATE_NORTH_CAUCASUS
+				}
+				is_split_state = yes
+			}
+			save_scope_as = invasion_base_state
+		}	
+		c:CHC = {
+			save_scope_as = adversary_scope
+			ruler = {
+				save_scope_as = shamil_scope
+			}
+		}
+	}
+
+	option = {
+		name = caucasuswar.6.a
+		default_option = yes
+		scope:invasion_base_state = {
+			add_modifier = {
+				name = modifier_soldiers_deserted
+				months = short_modifier_time
+			}
+			add_radicals_in_state = {
+				value = medium_radicals
+				pop_type = soldiers
+			}
+			add_culture_standard_of_living_modifier = {
+				culture = cu:north_caucasian
+				multiplier = -2
+				months = short_modifier_time
+			}
+		}
+		c:CHC = {
+			add_modifier = {
+				name = modifier_receiving_russian_deserters
+				months = short_modifier_time
+			}
+		}
+		scope:adversary_scope = {
+			post_notification = caucasus_russian_soldiers_defection_notification
+		}
+	}
+
+	option = {
+		name = caucasuswar.6.b
+		scope:invasion_base_state = {
+			add_modifier = {
+				name = modifier_soldiers_deserted
+				months = short_modifier_time
+			}
+		}
+		c:CHC = {
+			add_modifier = {
+				name = modifier_receiving_russian_deserters
+				months = short_modifier_time
+			}
+		}
+		ig:ig_armed_forces = {
+			add_modifier = {
+				name = modifier_rampant_desertions
+				months = short_modifier_time
+			}
+		}
+		scope:adversary_scope = {
+			post_notification = caucasus_russian_soldiers_defection_notification
+		}
+	}
+}
+
+caucasuswar.7 = { #Parliament of Independence
+	type = country_event
+	placement = ROOT
+
+	title = caucasuswar.7.t
+	desc = caucasuswar.7.d
+	flavor = caucasuswar.7.f
+
+	dlc = dlc010
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_ruler_speaking_to_people.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	duration = 3
+
+	cooldown = { months = very_long_modifier_time }
+
+	trigger = {
+		NOT = {
+			has_truce_with = c:RUS
+		}
+	}
+
+	immediate = {
+		c:RUS = {
+			save_scope_as = russia_scope
+		}
+		capital = {
+			save_scope_as = capital_scope
+		}
+	}
+
+	option = {
+		name = caucasuswar.7.a
+		default_option = yes
+		if = {
+			limit = {
+				NOT = {
+					has_law = law_type:law_professional_army
+				}
+			}
+			activate_law = law_type:law_professional_army
+		}
+		if = {
+			limit = {
+				NOT = {
+					country_has_primary_culture = cu:north_caucasian
+				}
+			}
+			add_primary_culture = cu:north_caucasian
+		}
+		add_modifier = {
+			name = modifier_circassian_last_stand
+			months = normal_modifier_time
+		}
+		create_character = {
+			# Qerandiqo Berzeg
+			first_name = Qerandiqo
+			last_name = Berzeg
+			birth_date = 1804.6.1 #Only year known
+			ruler = yes
+			hq = region_caucasus
+			is_general = yes
+			commander_rank = commander_rank_3
+			interest_group = ig_landowners
+			ideology = ideology_moderate
+			traits = {
+				persistent
+				brave
+				forest_commander
+			}
+		}
+	}
+
+	option = {
+		name = caucasuswar.7.b
+		if = {
+			limit = {
+				NOT = {
+					country_has_primary_culture = cu:north_caucasian
+				}
+			}
+			add_primary_culture = cu:north_caucasian
+		}
+		create_character = {
+			# Qerandiqo Berzeg
+			first_name = Qerandiqo
+			last_name = Berzeg
+			birth_date = 1804.6.1 #Only year known
+			ruler = yes
+			hq = region_caucasus
+			is_general = yes
+			commander_rank = commander_rank_3
+			interest_group = ig_landowners
+			ideology = ideology_moderate
+			traits = {
+				persistent
+				brave
+				forest_commander
+			}
+		}
+		add_modifier = {
+			name = modifier_circassian_diplomacy
+			months = normal_modifier_time
+		}
+		every_country = {
+			limit = {
+				country_rank >= rank_value:major_power
+				has_interest_marker_in_region = region_caucasus
+				NOT = {
+					this = c:RUS
+				}
+			}
+			trigger_event = { id = caucasuswar.8 }
+		}
+	}
+
+	option = {
+		name = caucasuswar.7.c
+		trigger = {
+			ruler.interest_group = {
+				is_interest_group_type = ig_devout
+			}
+			exists = c:CHC
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_diplomatic_pact = { who = c:CHC type = alliance }
+				}
+			}
+			create_diplomatic_pact = {
+				country = c:CHC
+				type = alliance
+			}
+		}
+		add_modifier = {
+			name = modifier_circassian_joint_struggle
+			months = normal_modifier_time
+		}
+		c:CHC = {
+			add_modifier = {
+				name = modifier_circassian_joint_struggle
+				months = normal_modifier_time
+			}	
+		}
+		c:TUR = {
+			trigger_event = { id = caucasuswar.8 }
+		}
+	}
+}
+
+caucasuswar.8 = { #Message to GPs
+	type = country_event
+	placement = ROOT
+
+	title = caucasuswar.8.t
+	desc = caucasuswar.8.d
+	flavor = caucasuswar.8.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "gfx/event_pictures/ep1_ca_mountain_pass_military.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+
+	duration = 3
+
+	trigger = {
+
+	}
+
+	immediate = {
+		c:CIR = {
+			save_scope_as = circassia_scope
+		}
+		c:RUS = {
+			save_scope_as = russia_scope
+		}
+	}
+
+	option = {
+		name = caucasuswar.8.a
+		default_option = yes
+		custom_tooltip = circassia_decision_tt
+		set_variable = circassia_recognition_seeking
+		change_relations = {
+			country = c:CIR
+			value = 20
+		}
+	}
+
+	option = {
+		name = caucasuswar.8.b
+		change_relations = {
+			country = c:CIR
+			value = -10
+		}
+	}
+}
+
+caucasuswar.9 = { #Muhammad Amin's arrival
+	type = country_event
+	placement = ROOT
+
+	title = caucasuswar.9.t
+	desc = caucasuswar.9.d
+	flavor = caucasuswar.9.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_islam.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+
+	duration = 3
+
+	trigger = {
+
+	}
+
+	immediate = {
+		c:CHC = {
+			save_scope_as = imamate_scope
+		}
+		ig:ig_devout = {
+			save_scope_as = devout_scope
+		}
+	}
+
+	option = {
+		name = caucasuswar.9.a
+		default_option = yes
+		custom_tooltip = muhammad_amin_ruler_tt
+		create_character = {
+			template = CIR_Muhammad_Amin_Asiyalav
+		}
+		add_primary_culture = cu:north_caucasian
+		ig:ig_devout = {
+			add_modifier = {
+				name = modifier_accepted_muhammad_amin
+				months = long_modifier_time
+			}
+		}
+		change_relations = {
+			country = c:CHC
+			value = 50
+		}
+		create_diplomatic_pact = {
+			country = c:CHC
+			type = alliance
+		}
+		create_diplomatic_catalyst = {  
+			type = catalyst_event_positive
+			target = root
+		}
+	}
+
+	option = {
+		name = caucasuswar.9.b
+		ig:ig_devout = {
+			add_modifier = {
+				name = modifier_repudiated_muhammad_amin
+				months = long_modifier_time
+			}
+		}
+		change_relations = {
+			country = c:CHC
+			value = -25
+		}
+	}
+}
+
+caucasuswar.10 = { #Teofil Lapinski's volunteers
+	type = country_event
+	placement = ROOT
+
+	title = caucasuswar.10.t
+	desc = caucasuswar.10.d
+	flavor = caucasuswar.10.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "gfx/event_pictures/ep1_redcoats.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+
+	duration = 3
+
+	cooldown = { months = very_long_modifier_time }
+
+	trigger = {
+		NOT = {
+			has_truce_with = c:RUS
+		}
+		game_date > 1855.1.1
+		NOT = {
+			has_variable = lapinski_variable
+		}
+	}
+
+	immediate = {
+		cu:polish = {
+			save_scope_as = polish_culture
+		}
+		cu:hungarian = {
+			save_scope_as = hungarian_culture
+		}
+		ordered_state = {
+			limit = {
+				state_region = s:STATE_WEST_GALICIA
+			}
+			order_by = state_population
+			save_scope_as = galicia_scope
+			owner = {
+				save_scope_as = austria_scope
+			}
+		}
+		c:RUS = {
+			save_scope_as = russia_scope
+		}
+		set_variable = lapinski_variable
+	}
+
+	option = {
+		name = caucasuswar.10.a
+		default_option = yes
+		create_character = {
+			is_general = yes
+			first_name = Teofil
+			last_name = Lapinski
+			culture = cu:polish
+			historical = yes
+			birth_date = 1827.12.19
+			hq = region_caucasus
+			ideology = ideology_radical
+			interest_group = ig_armed_forces
+			commander_rank = commander_rank_1
+			traits = {
+				persistent
+				explorer
+				celebrity_commander
+			}
+		}
+		capital = {
+			random_scope_building = {
+				limit = {
+					is_building_type = building_barracks
+				}
+				add_modifier = {
+					name = modifier_lapinski_expedition
+					months = short_modifier_time
+				}
+			}
+		}
+	}
+
+	option = {
+		name = caucasuswar.10.b
+		add_modifier = {
+			name = modifier_lapinski_training
+			months = normal_modifier_time
+		}
+	}
+}
+
+namespace = caucasuswar_end
+
+caucasuswar_end.1 = {
+	type = country_event
+	placement = ROOT
+
+	title = caucasuswar_end.1.t
+	desc = caucasuswar_end.1.d
+	flavor = caucasuswar_end.1.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "gfx/event_pictures/ep1_cossacks.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	duration = 3
+
+	cooldown = { months = very_long_modifier_time }
+
+	trigger = {
+		NOT = {
+			exists = c:CIR
+		}
+		NOT = {
+			has_variable = circassia_defeated
+		}
+	}
+
+	immediate = {
+		set_variable = circassia_defeated
+		random_state = {
+			limit = {
+				state_region = s:STATE_KUBAN
+			}
+			save_scope_as = kuban_state
+		}
+	}
+
+	option = {
+		name = caucasuswar_end.1.a
+		default_option = yes
+		trigger = {
+			scope:kuban_state = {
+				has_modifier = modifier_milyutin_memorandum
+			}
+		}
+		add_loyalists = {
+			value = medium_radicals
+			culture = cu:russian
+		}
+		add_loyalists = {
+			value = medium_radicals
+			culture = cu:ukrainian
+		}
+		scope:kuban_state = {
+			add_modifier = {
+				name = modifier_settlers_privileges
+				months = normal_modifier_time
+				is_decaying = yes
+			}
+		}
+		hidden_effect = {
+			scope:kuban_state = {
+				remove_modifier = caucasus_war_attacker
+			}
+		}
+		scope:kuban_state = {
+			add_modifier = {
+				name = modifier_caucasian_war_sol
+				months = normal_modifier_time
+				is_decaying = yes
+			}
+			state_region = {
+				add_homeland = cu:russian
+				add_homeland = cu:ukrainian
+			}
+		}
+		if = {
+            limit = {
+                has_variable = milyutin_memorandum_accepted
+				NOT = {
+					has_journal_entry = je_circassian_expulsions
+				}
+				cultural_acceptance_base = { target = cu:circassian value < acceptance_status_4 }
+            }
+            add_journal_entry = { type = je_circassian_expulsions }
+        }
+	}
+
+	option = {
+		name = caucasuswar_end.1.b
+		trigger = {
+			scope:kuban_state = {
+				NOT = {
+					has_modifier = modifier_milyutin_memorandum
+				}
+			}
+		}
+		hidden_effect = {
+			scope:kuban_state = {
+				remove_modifier = caucasus_war_attacker
+			}
+		}
+		scope:kuban_state = {
+			add_modifier = {
+				name = modifier_caucasian_war_sol
+				months = normal_modifier_time
+				is_decaying = yes
+			}
+			state_region = {
+				add_homeland = cu:russian
+				add_homeland = cu:ukrainian
+			}
+		}
+	}
+}
+
+caucasuswar_end.2 = {
+	type = country_event
+	placement = ROOT
+
+	title = caucasuswar_end.2.t
+	desc = caucasuswar_end.2.d
+	flavor = caucasuswar_end.2.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_military_parade.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	duration = 3
+
+	cooldown = { months = very_long_modifier_time }
+
+	trigger = {
+
+	}
+
+	immediate = {
+		c:RUS = {
+			save_scope_as = russia_scope
+		}
+		if = {
+			limit = {
+				any_country = {
+					has_variable = circassia_recognizer
+				}
+			}
+			random_country = {
+				limit = {
+					has_variable = circassia_recognizer
+				}
+				save_scope_as = circassia_recognizer_scope
+			}
+		}
+	}
+
+	option = {
+		name = caucasuswar_end.2.a
+		default_option = yes
+		ai_chance = {
+			base = 1
+		}
+		every_scope_state = {
+			limit = {
+				has_modifier = modifier_caucasian_war_sol
+			}
+			remove_modifier = modifier_caucasian_war_sol
+		}
+		remove_modifier = caucasus_war_defender_circassia
+		add_modifier = modifier_honour_and_life_sol
+	}
+
+	option = {
+		name = caucasuswar_end.2.b
+		ai_chance = {
+			base = 1
+		}
+		every_scope_state = {
+			limit = {
+				has_modifier = modifier_caucasian_war_sol
+			}
+			remove_modifier = modifier_caucasian_war_sol
+		}
+		remove_modifier = caucasus_war_defender_circassia
+		add_modifier = modifier_honour_and_life_military
+	}
+
+	option = {
+		name = caucasuswar_end.2.c
+		trigger = {
+			any_country = {
+				has_variable = circassia_recognizer
+			}
+		}
+		ai_chance = {
+			base = 100
+		}
+		every_scope_state = {
+			limit = {
+				has_modifier = modifier_caucasian_war_sol
+			}
+			remove_modifier = modifier_caucasian_war_sol
+		}
+		set_country_type = recognized
+		remove_modifier = caucasus_war_defender_circassia
+		scope:circassia_recognizer_scope = {
+			change_relations = {
+				country = c:CIR
+				value = 25
+			}
+		}
+	}
+}
+
+
+caucasuswar_end.3 = {
+	type = country_event
+	placement = ROOT
+
+	title = caucasuswar_end.3.t
+	desc = caucasuswar_end.3.d
+	flavor = caucasuswar_end.3.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "gfx/event_pictures/ep1_ca_mountain_pass_military.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+
+	duration = 3
+
+	cooldown = { months = very_long_modifier_time }
+
+	trigger = {
+		NOT = {
+			exists = c:CHC
+		}
+		NOT = {
+			has_variable = imamate_defeated
+		}
+	}
+
+	immediate = {
+		set_variable = imamate_defeated
+		c:RUS = {
+			ruler = {
+				save_scope_as = rus_ruler_scope
+			}
+		}
+		if = {
+			limit = {
+				any_state = {
+					state_region = s:STATE_DAGESTAN
+				}
+			}
+			random_state = {
+				limit = {
+					state_region = s:STATE_DAGESTAN
+				}
+				save_scope_as = dagestan_state
+			}
+		}
+		if = {
+			limit = {
+				any_state = {
+					state_region = s:STATE_NORTH_CAUCASUS
+				}
+			}
+			random_state = {
+				limit = {
+					state_region = s:STATE_NORTH_CAUCASUS
+				}
+				save_scope_as = north_caucasus_state
+			}
+		}
+	}
+
+	option = {
+		name = caucasuswar_end.3.a
+		default_option = yes
+		scope:dagestan_state = {
+			add_modifier = {
+				name = modifier_legacy_of_shamil
+			}
+			add_loyalists_in_state = {
+				value = medium_radicals
+			}
+		}
+		scope:north_caucasus_state = {
+			add_modifier = {
+				name = modifier_legacy_of_shamil
+			}
+			add_loyalists_in_state = {
+				value = medium_radicals
+			}
+		}
+		hidden_effect = {
+			scope:dagestan_state = {
+				remove_modifier = caucasus_war_attacker
+			}
+			scope:north_caucasus_state = {
+				remove_modifier = caucasus_war_attacker
+			}
+		}
+		scope:dagestan_state = {
+			add_modifier = {
+				name = modifier_caucasian_war_sol
+				months = short_modifier_time
+				is_decaying = yes
+			}
+		}
+		scope:north_caucasus_state = {
+			add_modifier = {
+				name = modifier_caucasian_war_sol
+				months = short_modifier_time
+				is_decaying = yes
+			}
+		}
+	}
+
+	option = {
+		name = caucasuswar_end.3.b
+		scope:dagestan_state = {
+			add_radicals_in_state = {
+				value = very_large_radicals
+				culture = cu:north_caucasian
+			}
+		}
+		scope:north_caucasus_state = {
+			add_radicals_in_state = {
+				value = very_large_radicals
+				culture = cu:north_caucasian
+			}
+		}
+		hidden_effect = {
+			scope:dagestan_state = {
+				remove_modifier = caucasus_war_attacker
+			}
+			scope:north_caucasus_state = {
+				remove_modifier = caucasus_war_attacker
+			}
+		}
+		scope:dagestan_state = {
+			add_modifier = {
+				name = modifier_caucasian_war_sol
+				months = normal_modifier_time
+				is_decaying = yes
+			}
+		}
+		scope:north_caucasus_state = {
+			add_modifier = {
+				name = modifier_caucasian_war_sol
+				months = normal_modifier_time
+				is_decaying = yes
+			}
+		}
+	}
+}
+
+caucasuswar_end.4 = {
+	type = country_event
+	placement = scope:georgia_state
+
+	title = caucasuswar_end.4.t
+	desc = caucasuswar_end.4.d
+	flavor = caucasuswar_end.4.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "gfx/event_pictures/unspecific_devastation.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+
+	duration = 3
+
+	cooldown = { months = very_long_modifier_time }
+
+	trigger = {
+
+	}
+
+	immediate = {
+		if = {
+			limit = {
+				any_scope_state = {
+					state_region = s:STATE_GREATER_CAUCASUS
+				}
+			}
+			random_scope_state = {
+				limit = {
+					state_region = s:STATE_GREATER_CAUCASUS
+				}
+				save_scope_as = georgia_state
+			}
+		}
+		if = {
+			limit = {
+				any_scope_state = {
+					state_region = s:STATE_AZERBAIJAN
+				}
+			}
+			random_scope_state = {
+				limit = {
+					state_region = s:STATE_AZERBAIJAN
+				}
+				save_scope_as = azerbaijan_state
+			}
+		}
+		if = {
+			limit = {
+				any_scope_state = {
+					state_region = s:STATE_ARMENIA
+				}
+			}
+			random_scope_state = {
+				limit = {
+					state_region = s:STATE_ARMENIA
+				}
+				save_scope_as = armenia_state
+			}
+		}
+		if = {
+			limit = {
+				any_state = {
+					state_region = s:STATE_KUBAN
+				}
+			}
+			random_state = {
+				limit = {
+					state_region = s:STATE_KUBAN
+				}
+				save_scope_as = kuban_state
+			}
+		}
+		if = {
+			limit = {
+				any_state = {
+					state_region = s:STATE_DAGESTAN
+				}
+			}
+			random_state = {
+				limit = {
+					state_region = s:STATE_DAGESTAN
+				}
+				save_scope_as = dagestan_state
+			}
+		}
+	}
+
+	option = {
+		name = caucasuswar_end.4.a
+		default_option = yes
+		add_loyalists = {
+			value = medium_radicals
+			pop_type = officers
+		}
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_GREATER_CAUCASUS
+			}
+			add_radicals_in_state = {
+				value = 0.8
+				culture = cu:georgian
+			}
+		}
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_AZERBAIJAN
+			}
+			add_radicals_in_state = {
+				value = 0.8
+				culture = cu:azerbaijani
+			}
+		}
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_ARMENIA
+			}
+			add_radicals_in_state = {
+				value = 0.8
+				culture = cu:armenian
+			}
+			add_radicals_in_state = {
+				value = 0.8
+				culture = cu:turkish
+			}
+		}
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_KARS
+			}
+			add_radicals_in_state = {
+				value = 0.8
+				culture = cu:armenian
+			}
+			add_radicals_in_state = {
+				value = 0.8
+				culture = cu:turkish
+			}
+		}
+	}
+
+	option = {
+		name = caucasuswar_end.4.b
+		custom_tooltip = {
+			text = caucasuswar_end_4b_tt
+			if = {
+				limit = {
+					any_scope_state = {
+						state_region = s:STATE_GREATER_CAUCASUS
+					}
+				}
+				create_country = {
+					tag = GEO
+					origin = this
+					state = scope:georgia_state
+					on_created = {
+						set_country_type = unrecognized
+						random_state = {
+							limit = {
+								state_region = s:STATE_ELIZAVETPOL
+								c:RUS ?= owner
+							}
+							set_state_owner = c:GEO
+						}
+					}
+				}
+				create_country = {
+					tag = ABK
+					origin = this
+					province = p:x73A639
+					on_created = {
+						set_country_type = unrecognized
+						s:STATE_GREATER_CAUCASUS = {
+							set_owner_of_provinces = {
+								country = c:ABK
+								provinces = { x40D001 x011141 xD1A8AF xD65AC8 x85DCE4 }
+							}
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					any_scope_state = {
+						state_region = s:STATE_AZERBAIJAN
+					}
+				}
+				create_country = {
+					tag = AZB
+					origin = this
+					state = scope:azerbaijan_state
+					on_created = {
+						set_country_type = unrecognized
+					}
+				}
+				s:STATE_AZERBAIJAN = {
+					if = {
+						limit = {
+							exists = c:GEO
+						}
+						set_owner_of_provinces = {
+							country = c:GEO
+							provinces = { x0E70E4 x2F7A57 x0E70E4 x80D041 x9195D4 xDFB2B0 xEE1A87 xB7DDE5 }
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					any_scope_state = {
+						state_region = s:STATE_ARMENIA
+					}
+				}
+				create_country = {
+					tag = ARM
+					origin = this
+					state = scope:armenia_state
+					on_created = {
+						set_country_type = unrecognized
+						if = {
+							limit = {
+								any_state = {
+									state_region = s:STATE_KARS
+									owner ?= c:RUS
+								}
+							}
+							random_state = {
+								limit = {
+									owner ?= c:RUS
+									state_region = s:STATE_KARS
+								}
+								set_state_owner = c:ARM
+							}
+						}
+					}
+				}
+				s:STATE_AZERBAIJAN = {
+					if = {
+						limit = {
+							exists = c:ARM
+						}
+						set_owner_of_provinces = {
+							country = c:ARM
+							provinces = { x809040 }
+						}
+					}
+					if = {
+						limit = {
+							exists = c:GEO
+						}
+						set_owner_of_provinces = {
+							country = c:GEO
+							provinces = { x16A02D xDC0812 x005000 }
+						}
+					}
+				}	
+			}
+		}			
+	}
+
+	option = {
+		name = caucasuswar_end.4.c
+		trigger = {
+			has_technology_researched = nationalism
+		}
+		custom_tooltip = {
+			text = caucasuswar_end_4c_tt
+			if = {
+				limit = {
+					any_scope_state = {
+						state_region = s:STATE_GREATER_CAUCASUS
+					}
+				}
+				create_country = {
+					tag = GEO
+					origin = this
+					state = scope:georgia_state
+				}
+			}
+			if = {
+				limit = {
+					any_scope_state = {
+						state_region = s:STATE_AZERBAIJAN
+					}
+				}
+				create_country = {
+					tag = AZB
+					origin = this
+					state = scope:azerbaijan_state
+				}
+			}
+			if = {
+				limit = {
+					any_scope_state = {
+						state_region = s:STATE_ARMENIA
+					}
+				}
+				create_country = {
+					tag = ARM
+					origin = this
+					state = scope:armenia_state
+					on_created = {
+						if = {
+							limit = {
+								any_state = {
+									state_region = s:STATE_KARS
+									owner ?= c:RUS
+								}
+							}
+							random_state = {
+								limit = {
+									owner ?= c:RUS
+									state_region = s:STATE_KARS
+								}
+								set_state_owner = c:ARM
+							}
+						}
+					}
+				}
+			}
+			random_list = {
+				50 = {
+					random_state = {
+						limit = {
+							state_region = s:STATE_ELIZAVETPOL
+						}
+						set_state_owner = c:ARM
+					}
+				}
+				50 = {
+					random_state = {
+						limit = {
+							state_region = s:STATE_ELIZAVETPOL
+						}
+						set_state_owner = c:AZB
+					}
+				}
+			}
+		}	
+	}
+	option = {
+		name = caucasuswar_end.4.e
+		trigger = {
+			has_technology_researched = pan-nationalism
+			AND = {
+				owns_entire_state_region = STATE_GREATER_CAUCASUS
+				owns_entire_state_region = STATE_AZERBAIJAN
+				owns_entire_state_region = STATE_ARMENIA
+			}
+		}
+		custom_tooltip = {
+			text = caucasuswar_end_4e_tt
+			create_country = {
+				tag = CAU
+				origin = this
+				state = scope:georgia_state
+				on_created = {
+					if = {
+						limit = {
+							any_state = {
+								state_region = s:STATE_ARMENIA
+								owner ?= c:RUS
+							}
+						}
+						random_state = {
+							limit = {
+								owner ?= c:RUS
+								state_region = s:STATE_ARMENIA
+							}
+							set_state_owner = c:CAU
+						}
+					}
+					if = {
+						limit = {
+							any_state = {
+								state_region = s:STATE_AZERBAIJAN
+								owner ?= c:RUS
+							}
+						}
+						random_state = {
+							limit = {
+								owner ?= c:RUS
+								state_region = s:STATE_AZERBAIJAN
+							}
+							set_state_owner = c:CAU
+						}
+					}
+					if = {
+						limit = {
+							any_state = {
+								state_region = s:STATE_ELIZAVETPOL
+								owner ?= c:RUS
+							}
+						}
+						random_state = {
+							limit = {
+								owner ?= c:RUS
+								state_region = s:STATE_ELIZAVETPOL
+							}
+							set_state_owner = c:CAU
+						}
+					}
+					if = {
+						limit = {
+							any_state = {
+								state_region = s:STATE_KARS
+								owner ?= c:RUS
+							}
+						}
+						random_state = {
+							limit = {
+								owner ?= c:RUS
+								state_region = s:STATE_KARS
+							}
+							set_state_owner = c:CAU
+						}
+					}
+					activate_law = law_type:law_presidential_republic
+					set_ruling_interest_groups = { ig_intelligentsia }
+				}
+			}	
+		}	
+	}
+}
+
+caucasuswar_end.5 = {
+	type = country_event
+	placement = ROOT
+
+	title = caucasuswar_end.5.t
+	desc = caucasuswar_end.5.d
+	flavor = caucasuswar_end.5.f
+
+	dlc = dlc010
+
+	event_image = {
+		video = "gfx/event_pictures/middleeast_islam.bk2"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	duration = 3
+
+	cooldown = { months = very_long_modifier_time }
+
+	trigger = {
+
+	}
+
+	immediate = {
+		c:RUS = {
+			save_scope_as = russia_scope
+		}
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_DAGESTAN
+			}
+			save_scope_as = dagestan_scope
+		}
+	}
+
+	option = {
+		name = caucasuswar_end.5.a
+		default_option = yes
+		every_scope_state = {
+			limit = {
+				has_modifier = modifier_caucasian_war_sol
+			}
+			remove_modifier = modifier_caucasian_war_sol
+		}
+		remove_modifier = caucasus_war_defender_imamate
+		scope:dagestan_scope = {
+			add_modifier = {
+				name = modifier_conversion_of_reclaimed_territories
+				months = long_modifier_time
+			}
+		}
+		add_modifier = {
+			name = modifier_jizya_tax
+			months = -1
+		}
+	}
+
+	option = {
+		name = caucasuswar_end.5.b
+		every_scope_state = {
+			limit = {
+				has_modifier = modifier_caucasian_war_sol
+			}
+			remove_modifier = modifier_caucasian_war_sol
+		}
+		remove_modifier = caucasus_war_defender_imamate
+		change_relations = {
+			country = c:TUR
+			value = 25
+		}
+		add_modifier = {
+			name = modifier_imamate_diplomacy
+			months = long_modifier_time
+		}
+	}
+}
+
+namespace = caucasus_expulsions
+
+caucasus_expulsions.1 = {
+	type = country_event
+	placement = scope:circassian_expulsion_state
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+	event_image = {
+		video = "ep1_ca_mountain_pass_civilian"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	title = caucasus_expulsions.1.t
+	desc = caucasus_expulsions.1.d
+	flavor = caucasus_expulsions.1.f
+
+	duration = 3
+
+	trigger = {
+		NOT = { has_variable = circassian_expulsion_stall }
+		has_journal_entry = je_circassian_expulsions
+		any_scope_state = {
+			region = sr:region_caucasus
+			any_scope_pop = {
+				culture = cu:circassian
+			}
+		}
+		NOT = {
+			has_variable = circassian_events_hidden
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				region = sr:region_caucasus
+				any_scope_pop = {
+					culture = cu:circassian
+				}
+			}
+			save_scope_as = circassian_expulsion_state
+		}
+		random_country = {
+			limit = {
+				any_scope_state = {
+					OR = {
+						state_region = s:STATE_EASTERN_THRACE
+						state_region = s:STATE_KASTAMONU
+						state_region = s:STATE_TRABZON
+					}
+				}
+			}
+			save_scope_as = expulsion_destination_country
+			random_scope_state = {
+				limit = {
+					OR = {
+						state_region = s:STATE_EASTERN_THRACE
+						state_region = s:STATE_KASTAMONU
+						state_region = s:STATE_TRABZON
+					}
+				}
+				save_scope_as = expulsion_destination_state
+			}
+		}
+		cu:circassian = {
+			save_scope_as = circassian_culture_scope
+		}
+		set_variable = {
+			name = circassian_expulsion_stall
+			months = 3
+		}
+		ROOT = {
+			save_scope_as = russia_scope
+		}
+	}
+
+	option = {
+		name = caucasus_expulsions.1.a
+		default_option = yes
+		scope:circassian_expulsion_state = {
+			if = {
+				limit = {
+					scope:expulsion_destination_country = {
+						has_variable = refused_circassian_refugees
+					}
+				}
+				kill_population_percent_in_state = {
+					percent = 0.06
+					culture = cu:circassian
+				}
+			}
+			else = {
+				kill_population_percent_in_state = {
+					percent = 0.04
+					culture = cu:circassian
+				}
+			}
+			custom_tooltip = {
+				text = three_pops_deported_tt
+				random_scope_pop = {
+					limit = {
+						culture = cu:circassian
+						strata = lower
+					}
+					move_pop = scope:expulsion_destination_state
+				}
+				random_scope_pop = {
+					limit = {
+						culture = cu:circassian
+						strata = middle
+					}
+					move_pop = scope:expulsion_destination_state
+				}
+				random_scope_pop = {
+					limit = {
+						culture = cu:circassian
+						strata = upper
+					}
+					move_pop = scope:expulsion_destination_state
+				}
+			}
+		}
+		scope:expulsion_destination_country = {
+			post_notification = ottoman_circassian_refugees_arrived
+		}
+	}
+
+	option = {
+		name = caucasus_expulsions.1.b
+		scope:circassian_expulsion_state = {
+			kill_population_percent_in_state = {
+				percent = 0.01
+				culture = cu:circassian
+			}
+			custom_tooltip = {
+				text = three_pops_deported_tt
+				random_scope_pop = {
+					limit = {
+						culture = cu:circassian
+						OR = {
+							strata = lower
+							strata = middle
+						}
+					}
+					move_pop = scope:expulsion_destination_state
+				}
+				random_scope_pop = {
+					limit = {
+						culture = cu:circassian
+						OR = {
+							strata = middle
+							strata = upper
+						}
+					}
+					move_pop = scope:expulsion_destination_state
+				}
+			}
+		}
+		scope:expulsion_destination_country = {
+			post_notification = ottoman_circassian_refugees_arrived
+		}
+	}
+
+	option = {
+		name = caucasus_expulsions.1.c
+		set_variable = circassian_events_hidden
+		custom_tooltip = hide_deportation_events_tt
+		scope:circassian_expulsion_state = {
+			if = {
+				limit = {
+					scope:expulsion_destination_country = {
+						has_variable = refused_circassian_refugees
+					}
+				}
+				kill_population_percent_in_state = {
+					percent = 0.06
+					culture = cu:circassian
+				}
+			}
+			else = {
+				kill_population_percent_in_state = {
+					percent = 0.04
+					culture = cu:circassian
+				}
+			}
+			custom_tooltip = {
+				text = three_pops_deported_tt
+				random_scope_pop = {
+					limit = {
+						culture = cu:circassian
+						strata = lower
+					}
+					move_pop = scope:expulsion_destination_state
+				}
+				random_scope_pop = {
+					limit = {
+						culture = cu:circassian
+						strata = middle
+					}
+					move_pop = scope:expulsion_destination_state
+				}
+				random_scope_pop = {
+					limit = {
+						culture = cu:circassian
+						strata = upper
+					}
+					move_pop = scope:expulsion_destination_state
+				}
+			}
+		}
+		scope:expulsion_destination_country = {
+			post_notification = ottoman_circassian_refugees_arrived
+		}
+	}
+}
+
+caucasus_expulsions.2 = {
+	type = country_event
+	placement = ROOT
+
+	icon = "gfx/interface/icons/event_icons/event_scales.dds"
+	event_image = {
+		video = "ep1_ca_mountain_pass_civilian"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	title = caucasus_expulsions.2.t
+	desc = caucasus_expulsions.2.d
+	flavor = caucasus_expulsions.2.f
+
+	duration = 3
+
+	trigger = {
+		# Triggered by JE
+	}
+
+	immediate = {
+		cu:circassian = {
+			save_scope_as = circassian_culture
+		}
+		c:RUS = {
+			save_scope_as = russia_scope
+		}
+	}
+
+	option = { # Accept the proposal
+		name = caucasus_expulsions.2.a
+		default_option = yes
+		custom_tooltip = circassian_refugees_deportations_tt
+		scope:russia_scope = {
+			change_relations = {
+				country = ROOT
+				value = 10
+			}
+		}
+	}
+
+	option = { # Reject the proposal
+		name = caucasus_expulsions.2.b
+		set_variable = refused_circassian_refugees
+		custom_tooltip = circassian_refugees_deportations_tt
+		custom_tooltip = circassian_refugees_warning_tt
+		scope:russia_scope = {
+			change_relations = {
+				country = ROOT
+				value = -5
+			}
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_negative
+				target = root
+			}
+		}
+	}
+}
+
+caucasus_expulsions.3 = {
+	type = country_event
+	placement = ROOT
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+	event_image = {
+		video = "africa_leader_arguing"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	title = caucasus_expulsions.3.t
+	desc = caucasus_expulsions.3.d
+	flavor = caucasus_expulsions.3.f
+
+	duration = 3
+
+	trigger = {
+
+	}
+
+	immediate = {
+		cu:circassian = {
+			save_scope_as = circassian_culture_scope
+		}
+		c:RUS = {
+			save_scope_as = russia_scope
+		}
+		ROOT = {
+			save_scope_as = ottoman_scope
+		}
+	}
+
+	cooldown = { months = normal_modifier_time }
+
+	option = { # Send diplomatic protest
+		name = caucasus_expulsions.3.a
+		default_option = yes
+		change_relations = {
+			country = scope:russia_scope
+			value = -30
+		}
+		c:RUS = {
+			post_notification = ottoman_protest_notification
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_negative
+				target = root
+			}
+		}
+	}
+
+	option = { # Do nothing
+		name = caucasus_expulsions.3.b
+		add_radicals = {
+			value = very_large_radicals
+			culture = cu:circassian
+		}
+	}
+}

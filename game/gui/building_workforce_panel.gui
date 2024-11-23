@@ -27,21 +27,34 @@ types building_panels
 				using = entry_bg_simple
 			}
 
-			flowcontainer = {
-				visible = "[InDebugMode]"
-				datamodel = "[Building.GetSamplePops]"
-				margin_top = 20
-				#spacing = -35
-				scale = 0.85
+			widget = {
 				parentanchor = right|vcenter
-				
-				item = {
-					container = {
-						pop_portrait_medium_male = {
-							tooltipwidget = {
-								FancyTooltip_Pop = {}
-							}
-						}
+				size = { 300 225 }
+
+				# POP - Middle - This is at the top so that the left and right pop portaits does not get overlapped by the middle pop.
+				pop_portraits_datamodel = {
+					parentanchor = center
+
+					blockoverride "datamodel" {
+						datamodel = "[DataModelSubSpan(Building.GetSamplePops, '(int32)1', '(int32)1')]"
+					}
+				}
+
+				# POP - Left
+				pop_portraits_datamodel = {
+					parentanchor = vcenter
+
+					blockoverride "datamodel" {
+						datamodel = "[DataModelFirst(Building.GetSamplePops, '(int32)1')]"
+					}
+				}
+
+				# POP - Right
+				pop_portraits_datamodel = {
+					parentanchor = vcenter|right
+
+					blockoverride "datamodel" {
+						datamodel = "[DataModelLast(Building.GetSamplePops, '(int32)1')]"
 					}
 				}
 			}

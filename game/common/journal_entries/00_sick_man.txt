@@ -30,6 +30,14 @@
 			}
 			custom_tooltip = sick_man_of_europe_lose_power_bloc
 		}
+		custom_tooltip = {
+			text = je_sick_man_main_failure_movements_tt
+			set_variable = {
+				name = failed_tanzimat
+				years = 20
+			}
+		}
+
 	}
 
 	current_value = {
@@ -59,6 +67,10 @@ je_sick_man_syria = {
 		owns_entire_state_region = STATE_PALESTINE
 		owns_entire_state_region = STATE_TRANSJORDAN
 		owns_entire_state_region = STATE_ADANA
+	}
+
+	modifiers_while_active = {
+		modifier_syrian_ambitions
 	}
 
 	on_complete = {
@@ -226,7 +238,6 @@ je_sick_man_education = {
 		scope:journal_entry = {
 			is_goal_complete = yes
 		}
-		literacy_rate >= 0.2
 	}
 
 	on_complete = {
@@ -243,7 +254,6 @@ je_sick_man_education = {
 	}
 
 	goal_add_value = {
-		value = root.literacy_rate
 		add = 0.2
 	}
 
@@ -340,14 +350,17 @@ je_sick_man_army = {
 	complete = {
 		army_size >= 100
 		has_technology_researched = napoleonic_warfare
-		NOR = {
-			any_scope_building = {
-				is_building_type = building_barracks				
-				OR = {
-					building_has_goods_shortage = yes
-					has_active_production_method = pm_no_organization
-				}
+		any_scope_building = {
+			filter = {
+				is_building_type = building_barracks
+			}			
+			NOR = {
+				building_has_goods_shortage = yes
+				has_active_production_method = pm_no_organization
 			}
+			percent = 1
+		}
+		NOT = {
 			any_military_formation = {
 				filter = {
 					is_army = yes

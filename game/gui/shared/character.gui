@@ -324,51 +324,59 @@ types character_types {
 			position = { 0 -14 }
 		}
 		blockoverride "portrait_frame" {
-			icon = {
-				visible="[Not(Character.IsHistorical)]"
-				texture = "gfx/interface/portraits/portrait_frame_torso.dds"
-				size = { 100% 160 }
-				parentanchor = bottom|hcenter
+			block "medium_torso_portrait_frame" {
+				icon = {
+					visible="[Not(Character.IsHistorical)]"
+					texture = "gfx/interface/portraits/portrait_frame_torso.dds"
+					size = { 100% 160 }
+					parentanchor = bottom|hcenter
 
-				using = naval_commander_color
-			}
+					using = naval_commander_color
+				}
 
-			icon = {
-				visible="[And(Character.IsHistorical, Not(StringIsEmpty(Character.GetHistoricalUrl)))]"
-				texture = "gfx/interface/portraits/portrait_frame_torso_historical_info_link.dds"
-				size = { 100% 160 }
-				parentanchor = bottom|hcenter
+				icon = {
+					visible="[And(Character.IsHistorical, Not(StringIsEmpty(Character.GetHistoricalUrl)))]"
+					texture = "gfx/interface/portraits/portrait_frame_torso_historical_info_link.dds"
+					size = { 100% 160 }
+					parentanchor = bottom|hcenter
 
-				using = naval_commander_color
-			}
+					using = naval_commander_color
+				}
 
-			icon = {
-				visible="[And(Character.IsHistorical, StringIsEmpty(Character.GetHistoricalUrl))]"
-				texture = "gfx/interface/portraits/portrait_frame_torso_historical_no_info_link.dds"
-				size = { 100% 160 }
-				parentanchor = bottom|hcenter
+				icon = {
+					visible="[And(Character.IsHistorical, StringIsEmpty(Character.GetHistoricalUrl))]"
+					texture = "gfx/interface/portraits/portrait_frame_torso_historical_no_info_link.dds"
+					size = { 100% 160 }
+					parentanchor = bottom|hcenter
 
-				using = naval_commander_color
+					using = naval_commander_color
+				}
 			}
 		}
-		blockoverride "portrait_frame_on_top_of_portrait" {
-			icon = {
-				visible="[And(Character.IsHistorical, Not(StringIsEmpty(Character.GetHistoricalUrl)))]"
-				texture = "gfx/interface/portraits/portrait_frame_torso_historical_laurel_info_link.dds"
-				size = { 100% 160 }
-				parentanchor = bottom|hcenter
-			}
 
-			icon = {
-				visible="[And(Character.IsHistorical, StringIsEmpty(Character.GetHistoricalUrl))]"
-				texture = "gfx/interface/portraits/portrait_frame_torso_historical_laurel_no_info_link.dds"
-				size = { 100% 160 }
-				parentanchor = bottom|hcenter
+		blockoverride "portrait_frame_on_top_of_portrait" {
+			block "medium_torso_portrait_frame_on_top_of_portrait" {
+				icon = {
+					visible="[And(Character.IsHistorical, Not(StringIsEmpty(Character.GetHistoricalUrl)))]"
+					texture = "gfx/interface/portraits/portrait_frame_torso_historical_laurel_info_link.dds"
+					size = { 100% 160 }
+					parentanchor = bottom|hcenter
+				}
+
+				icon = {
+					visible="[And(Character.IsHistorical, StringIsEmpty(Character.GetHistoricalUrl))]"
+					texture = "gfx/interface/portraits/portrait_frame_torso_historical_laurel_no_info_link.dds"
+					size = { 100% 160 }
+					parentanchor = bottom|hcenter
+				}
 			}
 		}
 
 		blockoverride "portrait_size" {
-			size = { 120 176 } #+16 (extra space for high hats)
+			block "medium_torso_portrait_size"
+			{
+				size = { 120 176 } #+16 (extra space for high hats)
+			}
 		}
 	}
 	
@@ -775,7 +783,7 @@ types character_types {
 		blockoverride "portrait_size" {
 			size = { 430 430 }
 		}
-		blockoverride "portrait_texture" {
+		blockoverride "pop_portrait_texture" {
 			block "pop_portrait_texture" {
 				portrait_texture = "[Pop.GetAnimatedTypedPortrait('environment_standard', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'random_adult', '(int32)-1')]"
 			}
@@ -790,15 +798,13 @@ types character_types {
 	}
 	
 	type pop_portrait_big_male = pop_portrait_big {
-
-				
-
 		blockoverride "pop_portrait_texture" {
 			portrait_texture = "[Pop.GetAnimatedTypedPortrait('pop_environment', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'male', '(int32)-1')]"
-			size = { 600 440 }
-
+			# Make males slightly taller
+			size = { 440 440 }
 		}
-				blockoverride "portrait_mask" {
+		
+		blockoverride "portrait_mask" {
 			mask = "gfx/interface/portraits/portrait_mask_small_fade_bottom.dds"
 		}
 	}
@@ -809,19 +815,13 @@ types character_types {
 		blockoverride "portrait_size" {
 			size = { 225 225 }
 		}
-		blockoverride "portrait_texture" {
+		blockoverride "pop_portrait_texture" {
 			block "pop_portrait_texture" {
 				portrait_texture = "[Pop.GetAnimatedTypedPortrait('environment_standard', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'random_adult', '(int32)-1')]"
 			}
 		}
 	}
 	
-	type pop_portrait_medium_random_adult = pop_portrait_medium {
-		blockoverride "pop_portrait_texture" {
-			portrait_texture = "[Pop.GetAnimatedTypedPortrait('environment_standard', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'random_adult', '(int32)-1')]"
-		}
-	}
-
 	type pop_portrait_medium_female = pop_portrait_medium {
 		blockoverride "pop_portrait_texture" {
 			portrait_texture = "[Pop.GetAnimatedTypedPortrait('environment_standard', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'female', '(int32)-1')]"
@@ -831,29 +831,64 @@ types character_types {
 	type pop_portrait_medium_male = pop_portrait_medium {
 		blockoverride "pop_portrait_texture" {
 			portrait_texture = "[Pop.GetAnimatedTypedPortrait('small_pop_environment', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'male', '(int32)-1')]"
+			
+			# Make males slightly taller
+			size = { 230 230 }
 		}
 		block "portrait_mask" {}
 	}
 
-	### SIMPLE (non-animated and cached, for long lists etc)
-	type pop_portrait_simple = pop_portrait_base {
+	### SMALL (animated)
+
+	type pop_portrait_small = pop_portrait_base {
 		size = { 85 95 }
+
 		blockoverride "pop_portrait_texture" {
-			portrait_texture = "[Pop.GetTypedPortrait('small_pop_environment', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'random_adult', '(int32)-1')]"
+			block "pop_portrait_texture" {
+				portrait_texture = "[Pop.GetAnimatedTypedPortrait('small_pop_environment', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'random_adult', '(int32)-1')]"
+			}
 		}
 	}
 
-	type pop_portrait_simple_female = pop_portrait_base {
+	type pop_portrait_small_female = pop_portrait_small {
+		blockoverride "pop_portrait_texture" {
+			portrait_texture = "[Pop.GetAnimatedTypedPortrait('small_pop_environment', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'female', '(int32)-1')]"
+		}
+	}
+
+	type pop_portrait_small_male = pop_portrait_small {
+		blockoverride "pop_portrait_texture" {
+			portrait_texture = "[Pop.GetAnimatedTypedPortrait('small_pop_environment', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'male', '(int32)-1')]"
+			
+			# Make males slightly taller
+			size = { 82 102 }
+		}
+	}
+
+
+	### SIMPLE (non-animated and cached, for long lists etc)
+	type pop_portrait_simple = pop_portrait_base {
 		size = { 85 95 }
+
+		blockoverride "pop_portrait_texture" {
+			block "pop_portrait_texture" {
+				portrait_texture = "[Pop.GetTypedPortrait('small_pop_environment', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'random_adult', '(int32)-1')]"
+			}
+		}
+	}
+
+	type pop_portrait_simple_female = pop_portrait_simple {
 		blockoverride "pop_portrait_texture" {
 			portrait_texture = "[Pop.GetTypedPortrait('small_pop_environment', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'female', '(int32)-1')]"
 		}
 	}
 
-	type pop_portrait_simple_male = pop_portrait_base {
-		size = { 85 95 }
+	type pop_portrait_simple_male = pop_portrait_simple {
 		blockoverride "pop_portrait_texture" {
 			portrait_texture = "[Pop.GetTypedPortrait('small_pop_environment', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'male', '(int32)-1')]"
+			
+			# Make males slightly taller
+			size = { 82 102 }
 		}
 	}
 }

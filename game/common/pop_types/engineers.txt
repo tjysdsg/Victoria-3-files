@@ -1,7 +1,6 @@
 ﻿engineers = {
 	texture = "gfx/interface/icons/pops_icons/engineers.dds"
 	color = hsv{ 0.07 0.57 0.77 }
-	strata = middle
 	start_quality_of_life = 10
 	wage_weight = 3
 	paid_private_wage = yes
@@ -21,16 +20,31 @@
 			desc = "POP_STARVATION"	
 			
 			if = {
-				limit = { 
-					standard_of_living < 5
+				limit = {
+					is_in_mild_starvation = yes
 				}
-				value = 1
-			}		
-		}		
+				value = 0.5
+			}
+			else_if = {
+				limit = {
+					is_in_severe_starvation = yes
+				}
+				value = 1.5
+			}
+		}
 
 		multiply = {
 			desc = "HAS_POLITICAL_AGITATION"	
-			value = 1.0	
+			value = 1.0
+			
+			if = {
+				limit = { 
+					owner = {
+						has_technology_researched = political_agitation
+					}
+				}
+				value = 1.5
+			}		
 		}		
 	}
 	

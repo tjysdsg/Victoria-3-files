@@ -1,0 +1,211 @@
+﻿# Culture name assignments
+### REGION TRIGGERS ###
+
+assign_state_name_region_the_midwest = { # region_the_midwest
+    if = {
+        limit = {
+            state_region = {
+                s:STATE_OHIO ?= this
+            }
+        }
+        STATE_OHIO_state_name_assign = yes
+    }
+    else_if = {
+        limit = {
+            state_region = {
+                s:STATE_WASHINGTON ?= this
+            }
+        }
+        STATE_WASHINGTON_state_name_assign = yes
+    }
+}
+
+assign_state_name_region_canada = { # region_canada
+    if = {
+        limit = {
+            state_region = {
+                s:STATE_ONTARIO ?= this
+            }
+        }
+        STATE_ONTARIO_state_name_assign = yes
+    }
+}
+
+assign_state_name_region_pacific_coast = { # region_pacific_coast
+    if = {
+        limit = {
+            state_region = {
+                s:STATE_WASHINGTON ?= this
+            }
+        }
+        STATE_WASHINGTON_state_name_assign = yes
+    }
+    else_if = {
+        limit = {
+            state_region = {
+                s:STATE_BRITISH_COLUMBIA ?= this
+            }
+        }
+        STATE_BRITISH_COLUMBIA_state_name_assign = yes
+    }
+}
+
+assign_state_name_region_dixie = { # region_dixie
+    if = {
+        limit = {
+            state_region = {
+                s:STATE_DISTRICT_OF_COLUMBIA ?= this
+            }
+        }
+        STATE_DISTRICT_OF_COLUMBIA_state_name_assign = yes
+    }
+}
+
+assign_state_name_region_brazil = { # region_brazil
+    if = {
+        limit = {
+            state_region = {
+                s:STATE_SANTA_CATARINA ?= this
+            }
+        }
+        STATE_SANTA_CATARINA_state_name_assign = yes
+    }
+}
+
+
+#######################################
+### Specific state name assignments ###
+#######################################
+
+STATE_OHIO_state_name_assign = {
+    if = {
+        limit = {
+            owner = {
+                c:UOM ?= this
+            }
+        }
+        
+        set_state_name = STATE_OHIO_michigander
+    }
+    else = { # switch back to defaults
+        reset_state_name = yes
+        reset_hub_names = yes
+    }
+}
+
+STATE_WASHINGTON_state_name_assign = {
+	if = {
+		limit = {
+			owner = {
+				c:USA ?= this
+			}
+		}
+
+        set_state_name = STATE_WASHINGTON_usa
+
+        set_hub_name = {
+            type = city
+            name = HUB_NAME_STATE_WASHINGTON_city_usa
+        }
+	}
+	# no name reversion effect in an else statement. If the state becomes Washington, it stays Washington.
+}
+
+STATE_BRITISH_COLUMBIA_state_name_assign = { # More likely that British Columbia gets its name from conclusion of Oregon JE, but this serves as a one-off fallback
+	if = {
+		limit = {
+			owner = {
+				OR = {
+					c:GBR ?= this
+					is_subject_of = c:GBR
+					any_primary_culture = {
+						OR = {
+							cu:anglo_canadian = this
+							cu:franco_canadian = this
+						}
+					}
+				}
+			}
+			s:STATE_WASHINGTON = {
+				any_scope_state = {
+					owner = {
+						c:USA ?= this
+					}
+				}
+			}
+		}
+
+        set_state_name = STATE_BRITISH_COLUMBIA_british
+	}
+	# no name reversion effect in an else statement. If the state becomes British Columbia, it stays British Columbia.
+}
+
+STATE_ONTARIO_state_name_assign = {	# this effect is also covered by completing je_canada_can or je_canada_gbr but I am redundantly covering all bases in a redundant manner
+	if = {
+		limit = {
+			owner = {
+				OR = {
+					country_has_primary_culture = cu:anglo_canadian
+					country_has_primary_culture = cu:franco_canadian
+				}
+				has_technology_researched = nationalism
+			}
+		}
+
+        set_hub_name = {
+            type = city
+            name = HUB_NAME_STATE_ONTARIO_city_ottawa
+        }
+	}
+	# no name reversion effect in an else statement. If the city hub becomes Ottawa, it stays Ottawa
+}
+
+STATE_DISTRICT_OF_COLUMBIA_state_name_assign = {
+    if = {
+        limit = {
+            owner = {
+                OR = {
+                    c:GBR ?= this
+                    AND = {
+                        exists = top_overlord
+                        exists = c:GBR
+                        NOT = { c:USA ?= this }
+                        top_overlord = c:GBR
+                    }
+                }
+            }
+        }
+
+        set_hub_name = {
+            type = city
+            name = HUB_NAME_STATE_DISTRICT_OF_COLUMBIA_city_uk
+        }
+    }
+    else = { # switch back to defaults
+        reset_state_name = yes
+        reset_hub_names = yes
+    }
+}
+
+STATE_SANTA_CATARINA_state_name_assign = {
+    if = {
+        limit = {
+            owner = {
+                c:BRZ ?= this
+                OR = {
+                    has_law = law_type:law_presidential_republic
+                    has_law = law_type:law_parliamentary_republic
+                }
+            }
+        }
+
+        set_hub_name = {
+            type = port
+            name = HUB_NAME_STATE_SANTA_CATARINA_port_bra_republic
+        }
+    }
+    else = { # switch back to defaults
+        reset_state_name = yes
+        reset_hub_names = yes
+    }
+}

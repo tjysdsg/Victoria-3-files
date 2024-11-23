@@ -54,30 +54,15 @@ is_brazil_northeast_state = {
 }
 
 law_is_valid_for_ig_petition = {
-	save_temporary_scope_as = petition_law_trig
-	prev = {
-		law_stance = {
-			law = scope:petition_law_trig.type
-			value > neutral
-		}
-	}
-	
-	root = {
-		NOR = {
-			has_law = scope:petition_law_trig.type
-			any_interest_group = {
-				is_in_government = yes 
-				is_marginal = no
-				law_stance = {
-					law = scope:petition_law_trig.type
-					value < neutral
-				}				
-			}
-		}
-		can_have_political_movement = scope:petition_law_trig.type		
-	}
-			
+	# Can the law be enacted at all?
 	can_be_enacted = yes
+
+	# Special code trigger that checks if:
+	# 1: Anyone in government wants to enact this law, and nobody in government actively opposes it
+	# 2: The law would ever be considered for enactment again by the AI (ie, no going back to serfdom)
+	# 3: The law wouldn't be an unnecessarily radical enactment option (based on progressiveness delta to current law) when an alternative exists
+	is_reasonable_law_for_petition = yes		
+
 }
 
 ruler_is_bonapartist = {
@@ -454,6 +439,7 @@ is_afghan_nation = {
 		c:HER ?= this
 		c:KUN ?= this
 		c:MAI ?= this
+		c:KAF ?= this
 	}
 }
 
@@ -536,4 +522,427 @@ meiji_completion_trigger = {
 		is_at_war = no
 		owns_entire_state_region = STATE_KANTO		
 	}	
+}
+
+country_is_in_india = {
+	OR = {
+		capital.region = sr:region_punjab
+		capital.region = sr:region_central_india
+		capital.region = sr:region_bengal
+		capital.region = sr:region_bombay
+		capital.region = sr:region_madras
+		capital.state_region = s:STATE_QUETTA
+		capital.state_region = s:STATE_PASHTUNISTAN
+		capital.state_region = s:STATE_KASHMIR
+	}
+}
+
+state_is_in_india = {
+	OR = {
+		region = sr:region_punjab
+		region = sr:region_central_india
+		region = sr:region_bengal
+		region = sr:region_bombay
+		region = sr:region_madras
+	}
+}
+
+state_is_homeland_of_indian_cultures = {
+	state_region = {
+		OR = {
+			is_homeland = cu:kho
+			is_homeland = cu:assamese
+			is_homeland = cu:bengali
+			is_homeland = cu:bihari
+			is_homeland = cu:manipuri
+			is_homeland = cu:nepali
+			is_homeland = cu:oriya
+			is_homeland = cu:sinhala
+			is_homeland = cu:avadhi
+			is_homeland = cu:panjabi
+			is_homeland = cu:kashmiri
+			is_homeland = cu:gujarati
+			is_homeland = cu:marathi
+			is_homeland = cu:sindi
+			is_homeland = cu:rajput
+			is_homeland = cu:kannada
+			is_homeland = cu:malayalam
+			is_homeland = cu:tamil
+			is_homeland = cu:telegu
+			is_homeland = cu:hindustani
+			is_homeland = cu:lushai
+			is_homeland = cu:bundeli
+			is_homeland = cu:pahari
+			is_homeland = cu:gondi
+			is_homeland = cu:bageli
+			is_homeland = cu:chhattisgarhi
+			is_homeland = cu:naga
+			is_homeland = cu:deccani
+			is_homeland = cu:pathan
+		}
+	}
+}
+
+### Ideology Scripted Triggers - all within interest_group scope.
+### I will not take responsibility for the transgressions of Humanity.
+
+ideology_traditionalist_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_rural_folk
+		is_interest_group_type = ig_trade_unions
+		is_interest_group_type = ig_armed_forces
+		is_interest_group_type = ig_petty_bourgeoisie
+		is_interest_group_type = ig_landowners
+		is_interest_group_type = ig_devout
+	}
+	trigger_if = {
+		limit = {
+			c:BIC ?= owner
+		}
+		NOR = {
+			is_interest_group_type = ig_trade_unions
+			is_interest_group_type = ig_rural_folk
+			is_interest_group_type = ig_petty_bourgeoisie
+			is_interest_group_type = ig_landowners
+			is_interest_group_type = ig_devout
+			is_interest_group_type = ig_intelligentsia
+		}
+	}
+}
+
+ideology_traditionalist_minoritarian_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_rural_folk
+		is_interest_group_type = ig_trade_unions
+		is_interest_group_type = ig_armed_forces
+		is_interest_group_type = ig_petty_bourgeoisie
+		is_interest_group_type = ig_landowners
+		is_interest_group_type = ig_devout
+	}
+	trigger_if = {
+		limit = {
+			c:BIC ?= owner
+		}
+		NOR = {
+			is_interest_group_type = ig_armed_forces
+			is_interest_group_type = ig_industrialists
+		}
+	}
+}
+
+ideology_atheist_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_trade_unions
+		is_interest_group_type = ig_armed_forces
+		is_interest_group_type = ig_petty_bourgeoisie
+		is_interest_group_type = ig_intelligentsia
+	}
+}
+
+ideology_republican_leader_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_trade_unions
+		is_interest_group_type = ig_armed_forces
+		is_interest_group_type = ig_petty_bourgeoisie
+		is_interest_group_type = ig_industrialists
+	}
+}
+
+ideology_radical_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_rural_folk
+		is_interest_group_type = ig_intelligentsia
+		is_interest_group_type = ig_trade_unions
+		is_interest_group_type = ig_petty_bourgeoisie
+		is_interest_group_type = ig_industrialists
+	}
+}
+
+ideology_reformer_valid_trigger = {
+
+}
+
+ideology_feminist_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_rural_folk
+		is_interest_group_type = ig_intelligentsia
+		is_interest_group_type = ig_trade_unions
+		is_interest_group_type = ig_petty_bourgeoisie
+		is_interest_group_type = ig_industrialists
+	}
+}
+
+ideology_abolitionist_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_trade_unions
+		is_interest_group_type = ig_intelligentsia
+		is_interest_group_type = ig_petty_bourgeoisie
+		is_interest_group_type = ig_industrialists
+		is_interest_group_type = ig_devout
+	}
+}
+
+ideology_slaver_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_landowners
+		is_interest_group_type = ig_devout
+		is_interest_group_type = ig_rural_folk
+	}
+}
+
+ideology_pacifist_valid_trigger = {
+	NOT = {
+		is_interest_group_type = ig_armed_forces
+	}
+}
+
+ideology_jingoist_leader_valid_trigger = {
+	NOR = {
+		is_interest_group_type = ig_armed_forces
+		is_interest_group_type = ig_rural_folk
+	}
+}
+
+ideology_royalist_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_devout
+		is_interest_group_type = ig_rural_folk
+		is_interest_group_type = ig_petty_bourgeoisie
+		is_interest_group_type = ig_armed_forces
+	}
+}
+
+ideology_social_democrat_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_devout
+		is_interest_group_type = ig_rural_folk
+		is_interest_group_type = ig_intelligentsia
+		is_interest_group_type = ig_trade_unions
+		is_interest_group_type = ig_armed_forces
+	}
+}
+
+ideology_communist_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_rural_folk
+		is_interest_group_type = ig_intelligentsia
+		is_interest_group_type = ig_trade_unions
+		is_interest_group_type = ig_armed_forces
+	}
+}
+
+ideology_vanguardist_scripted_trigger = {
+	OR = {
+		is_interest_group_type = ig_rural_folk
+		is_interest_group_type = ig_intelligentsia
+		is_interest_group_type = ig_trade_unions
+		is_interest_group_type = ig_armed_forces
+	}
+}
+
+ideology_fascist_valid_trigger = {
+
+}
+
+ideology_anarchist_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_rural_folk
+		is_interest_group_type = ig_intelligentsia
+		is_interest_group_type = ig_trade_unions
+	}
+}
+
+ideology_ethno_nationalist_valid_trigger = {
+	trigger_if = {
+		limit = {
+			c:BIC ?= owner
+		}
+		NOR = {
+			is_interest_group_type = ig_trade_unions
+			is_interest_group_type = ig_rural_folk
+			is_interest_group_type = ig_petty_bourgeoisie
+			is_interest_group_type = ig_landowners
+			is_interest_group_type = ig_devout
+			is_interest_group_type = ig_intelligentsia
+		}
+	}
+}
+
+ideology_theocrat_valid_trigger = {
+	OR = {
+		owner = {
+			has_law = law_type:law_theocracy
+		}
+		is_interest_group_type = ig_devout
+	}
+}
+
+ideology_market_liberal_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_petty_bourgeoisie
+		is_interest_group_type = ig_landowners
+		is_interest_group_type = ig_intelligentsia
+		is_interest_group_type = ig_industrialists
+	}
+}
+
+ideology_luddite_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_rural_folk
+		is_interest_group_type = ig_devout
+	}
+}
+
+ideology_authoritarian_valid_trigger = {
+	# trade unions should always go vanguardist instead if available
+	NAND = {
+		owner = { has_technology_researched = socialism }
+		is_interest_group_type = ig_trade_unions
+	}
+	# PB should always go fascist instead if available
+	NAND = {
+		is_interest_group_type = ig_petty_bourgeoisie
+		owner = { has_technology_researched = mass_propaganda }
+	}
+}
+
+ideology_protectionist_valid_trigger = {
+	NOT = {
+		is_interest_group_type = ig_devout
+	}
+}
+
+ideology_humanitarian_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_intelligentsia
+		is_interest_group_type = ig_trade_unions
+	}
+}
+
+ideology_jacksonian_democrat_valid_trigger = {
+
+}
+
+ideology_positivist_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_armed_forces
+		is_interest_group_type = ig_industrialists
+		is_interest_group_type = ig_intelligentsia
+		is_interest_group_type = ig_petty_bourgeoisie
+	}
+}
+
+ideology_land_reformer_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_rural_folk
+		is_interest_group_type = ig_intelligentsia
+		is_interest_group_type = ig_trade_unions
+		is_interest_group_type = ig_petty_bourgeoisie
+	}
+}
+
+ideology_integralist_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_rural_folk
+		is_interest_group_type = ig_landowners
+		is_interest_group_type = ig_devout
+		is_interest_group_type = ig_petty_bourgeoisie
+		is_interest_group_type = ig_armed_forces
+	}
+}
+
+ideology_liberal_leader_valid_trigger = {
+	
+}
+
+ideology_corporatist_leader_valid_trigger = {
+
+}
+
+ideology_humanitarian_royalist_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_intelligentsia
+		is_interest_group_type = ig_trade_unions
+	}
+}
+
+ideology_despotic_utopian_valid_trigger = {
+	# trade unions should always go vanguardist instead if available
+	NAND = {
+		is_interest_group_type = ig_trade_unions
+		owner = { has_technology_researched = socialism }
+	}
+	# PB should always go fascist instead if available
+	NAND = {
+		is_interest_group_type = ig_petty_bourgeoisie
+		owner = { has_technology_researched = mass_propaganda }
+	}
+	OR = {
+		is_interest_group_type = ig_trade_unions
+		is_interest_group_type = ig_petty_bourgeoisie
+		is_interest_group_type = ig_intelligentsia
+	}
+}
+
+ideology_utilitarian_leader_valid_trigger = {
+	OR = {
+		is_interest_group_type = ig_industrialists # "The ethics of bourgeois bookkeeping" - Leon Trotsky
+		is_interest_group_type = ig_intelligentsia
+		is_interest_group_type = ig_petty_bourgeoisie
+	}
+	trigger_if = {
+		limit = {
+			c:BIC ?= owner
+		}
+		NOR = {
+			is_interest_group_type = ig_intelligentsia
+			is_interest_group_type = ig_petty_bourgeoisie
+		}
+	}
+}
+
+ideology_sovereignist_leader_valid_trigger = { 
+	OR = {
+		is_interest_group_type = ig_intelligentsia
+		is_interest_group_type = ig_trade_unions
+		is_interest_group_type = ig_petty_bourgeoisie
+		is_interest_group_type = ig_rural_folk
+	}
+}
+
+ideology_orleanist_valid_trigger = { 
+	OR = {
+		is_interest_group_type = ig_industrialists
+		is_interest_group_type = ig_petty_bourgeoisie
+		is_interest_group_type = ig_intelligentsia
+		is_interest_group_type = ig_armed_forces
+	}
+}
+
+ideology_bonapartist_valid_trigger = { 
+	OR = {
+		is_interest_group_type = ig_rural_folk
+		is_interest_group_type = ig_petty_bourgeoisie
+		is_interest_group_type = ig_industrialists
+		is_interest_group_type = ig_armed_forces
+	}
+}
+
+ideology_legitimist_valid_trigger = { 
+	OR = {
+		is_interest_group_type = ig_devout
+		is_interest_group_type = ig_rural_folk
+		is_interest_group_type = ig_petty_bourgeoisie
+		is_interest_group_type = ig_landowners
+	}
+}
+
+movement_is_plausibly_indian_nationalist = {
+	OR = {
+		is_political_movement_type = movement_religious_minority
+		is_political_movement_type = movement_cultural_minority
+		is_political_movement_type = movement_india_pan_national
+		is_political_movement_type = movement_hindu_nationalist
+		is_political_movement_type = movement_muslim_nationalist
+	}
 }

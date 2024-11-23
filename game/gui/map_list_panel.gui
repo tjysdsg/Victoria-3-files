@@ -93,6 +93,8 @@ types map_list_panel_types {
 		flowcontainer = {
 			parentanchor = vcenter
 
+			position = { 5 0 }
+
 			widget = {
 				size = { 55 40 }
 				visible = "[MapListOption.ShouldShowStatusIcon]"
@@ -760,6 +762,11 @@ types map_list_panel_types {
 		blockoverride "header_close_button" {
 			onclick = "[MapListPanelManager.CloseCurrentPanel]"
 		}
+		
+		state = {
+			name = _hide
+			on_start = "[RemoveTempMapMode]"
+		}
 
 		blockoverride "button_color" {
 			color = "[Country.GetDiplomaticStatusColor( GetPlayer.Self )]"
@@ -986,7 +993,7 @@ types map_list_panel_types {
 		name = "empty_map_list_panel"
 
 		blockoverride "title" {
-			text = "No active interaction."
+			text = "NO_ACTIVE_INTERACTION"
 		}
 
 		blockoverride "headers" {
@@ -1074,16 +1081,7 @@ types map_list_panel_types {
 				spacing = 5
 
 				textbox = {
-					visible = "[Not(State.GetOwner.IsLocalPlayer)]"
-					text = "[State.GetOwner.GetFlagTextIcon]"
-
-					autoresize = yes
-					align = nobaseline
-					layoutpolicy_vertical = expanding					
-				}
-
-				textbox = {
-					text = "[State.GetNameNoFormatting]"
+					text = "STATE_NAME_WITH_FOREIGN_FLAG_NO_FORMAT"
 
 					layoutpolicy_horizontal = expanding
 					align = nobaseline
@@ -1112,7 +1110,7 @@ types map_list_panel_types {
 				parentanchor = vcenter
 				elide = right
 				using = tooltip_above
-				alpha = "[TransparentIfFalse( Or( GreaterThan_int32(Building.GetExpansionLevel, '(int32)0'), Building.HasConstructionQueued ))]"
+				using = building_size_choose_alpha
 				fontsize_min = 12
 			}
 
@@ -4667,6 +4665,248 @@ types map_list_panel_types {
 					}
 				}
 			}
+		}
+	}
+
+	# HARVEST CONDITION AREAS
+	type harvest_condition_areas_map_list_panel = map_list_panel {
+		name = "harvest_condition_areas_map_list_panel"
+
+		blockoverride "headers" {
+			sort_button = {
+				align = hcenter|nobaseline
+				size = { 255 20 }
+				onclick = "[MapListPanel.Sort('name')]"
+				raw_text = "NAME"
+				tooltip = "SORT_BY_NAME"
+			}
+
+			sort_button = {
+				align = hcenter|nobaseline
+				size = { 115 20 }
+				onclick = "[MapListPanel.Sort('intensity')]"
+				text = "HARVEST_CONDITION_SORT_HEADER_INTENSITY"
+				tooltip = "SORT_BY_INTENSITY"
+			}
+
+			sort_button = {
+				align = hcenter|nobaseline
+				size = { 115 20 }
+				onclick = "[MapListPanel.Sort('duration')]"
+				raw_text = "DURATION"
+				tooltip = "SORT_BY_DURATION"
+			}
+
+			sort_button = {
+				align = hcenter|nobaseline
+				size = { 55 20 }
+				onclick = "[MapListPanel.Sort('num_states')]"
+				raw_text = "##"
+				tooltip = "SORT_BY_AFFECTED_STATES"
+			}
+		}
+
+		blockoverride "item" {
+			item = {
+				map_list_panel_item = {
+					datacontext = "[MapListOption.GetHarvestConditionAreaData.GetArea]"
+					datacontext = "[HarvestConditionArea.GetType]"
+					onmousehierarchyenter = "[AccessHighlightManager.HighlightHarvestConditionArea(HarvestConditionArea.Self)]"
+					onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
+
+					tooltipwidget = {
+						FancyTooltip_HarvestConditionArea = {}
+					}
+					
+					blockoverride "interaction" {
+						enabled = yes
+						onclick = "[MapListOption.OnClick]"
+						onrightclick = "[MapListOption.OnRightClick]"
+						onmousehierarchyenter = "[MapListOption.OnMouseEnter]"
+						onmousehierarchyleave = "[MapListOption.OnMouseLeave]"
+					}
+					
+					blockoverride "button_color" {
+						color = "[HarvestConditionType.GetColor]"
+					}
+
+					blockoverride "values" {
+						textbox = {
+							margin = { 10 0 }
+							size = { 250 25 }
+							align = nobaseline
+							text = "HARVEST_CONDITION_AREA_NAME_IN_STATE_REGION"
+							parentanchor = vcenter
+							elide = right
+							fontsize_min = 14
+						}
+
+						textbox = {
+							margin = { 5 0 }
+							size = { 115 25 }
+							align = hcenter|nobaseline
+							raw_text = "[HarvestConditionArea.GetIntensity|v1]"
+							parentanchor = vcenter
+							elide = right
+							using = tooltip_above
+						}
+
+						textbox = {
+							margin = { 5 0 }
+							size = { 115 25 }
+							align = hcenter|nobaseline
+							text = "[HarvestConditionArea.GetRemainingDurationLabel]"
+							parentanchor = vcenter
+							elide = right
+							using = tooltip_above
+						}
+
+						textbox = {
+							margin = { 5 0 }
+							size = { 55 25 }
+							align = hcenter|nobaseline
+							text = "[HarvestConditionArea.GetNumStates]"
+							parentanchor = vcenter
+							elide = right
+							using = tooltip_above
+						}
+					}
+				}
+			}
+		}
+	}
+
+	# STARVATION
+	type state_starvation_map_list_panel = map_list_panel {
+		name = "state_starvation_map_list_panel"
+
+		blockoverride "header_close_button" {
+			onclick = "[MapListPanelManager.CloseCurrentPanel]"
+		}
+
+		blockoverride "headers" {
+			sort_button = {
+				align = nobaseline
+				text = "STATE"
+				size = { 240 20 }
+				onclick = "[MapListPanel.Sort('name')]"
+			}
+			sort_button = {
+				align = hcenter|nobaseline
+				size = { 100 20 }
+				text = "concept_famine"
+				onclick = "[MapListPanel.Sort('famine')]"
+				tooltip = "SORT_BY_FAMINE"
+			}
+			sort_button = {
+				align = hcenter|nobaseline
+				size = { 100 20 }
+				text = "concept_mild_starvation_short"
+				onclick = "[MapListPanel.Sort('mild_starvation')]"
+				tooltip = "SORT_BY_MILD_STARVATION"
+			}
+			sort_button = {
+				align = hcenter|nobaseline
+				size = { 100 20 }
+				text = "concept_severe_starvation_short"
+				onclick = "[MapListPanel.Sort('severe_starvation')]"
+				tooltip = "SORT_BY_SEVERE_STARVATION"
+			}
+		}
+
+		blockoverride "values" {
+			tooltip = "STATE_FOOD_SECURITY_MAP_TOOLTIP"
+
+			textbox = {
+				margin = { 5 0 }
+				size = { 240 25 }
+				align = nobaseline
+				text = "[MapListOption.GetStateData.GetState.GetOwner.GetFlagTextIcon]  [MapListOption.GetStateData.GetState.GetName]"
+				parentanchor = vcenter
+				elide = right
+			}
+
+			widget = {
+				datacontext = "[MapListOption.GetStateData.GetState.GetFoodSecurity]"
+	
+				size = { 100 40 }
+
+				icon = {
+					visible = "[FoodSecurity.HasFamine]"
+					parentanchor = center
+					align = center
+					size = { 30 30 }
+					texture = "gfx/interface/icons/famine_icons/famine_icon.dds"
+				}
+			}
+
+			widget = {
+				size = { 100 40 }
+
+				flowcontainer = {
+					parentanchor = vcenter
+					spacing = 5
+					margin = { 5 0 }
+	
+					icon = {
+						parentanchor = vcenter
+						size = { 30 30 }
+						texture = "gfx/interface/icons/famine_icons/mild_starvation.dds"
+					}
+	
+					textbox = {
+						datacontext = "[MapListOption.GetStateData.GetState]"
+						parentanchor = vcenter
+						autoresize = yes
+						align = right|nobaseline
+						elide = right
+						fontsize_min = 12
+						max_width = 50
+	
+						block "starvation_mild_text" {
+							raw_text = "#v [State.GetFoodSecurity.GetPercentageStarvingPopsMild|0%]#!"
+						}
+					}
+				}
+			}
+
+			widget = {
+				size = { 100 40 }
+
+				flowcontainer = {
+					parentanchor = vcenter
+					spacing = 5
+					margin = { 5 0 }
+	
+					icon = {
+						parentanchor = vcenter
+						size = { 30 30 }
+						texture = "gfx/interface/icons/famine_icons/severe_starvation.dds"
+					}
+	
+					textbox = {
+						datacontext = "[MapListOption.GetStateData.GetState]"
+						parentanchor = vcenter
+						autoresize = yes
+						align = right|nobaseline
+						elide = right
+						fontsize_min = 12
+						max_width = 50
+		
+						block "starvation_severe_text" {
+							raw_text = "#r [State.GetFoodSecurity.GetPercentageStarvingPopsSevere|0%]#!"
+						}
+					}
+				}
+			}
+		}
+
+		blockoverride "interaction" {
+			datacontext = "[MapListOption.AccessStateData.AccessState]"
+			onclick = "[InformationPanelBar.OpenStatePanel(State.AccessSelf)]"
+			onrightclick = "[RightClickMenuManager.ShowForState(State.AccessSelf)]"
+			onmousehierarchyenter = "[AccessHighlightManager.HighlightState(State.Self)]"
+			onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
 		}
 	}
 }

@@ -30,7 +30,10 @@ tax.1 = {
 			is_enacting_law = law_type:law_per_capita_based_taxation
 		}
 		any_political_movement = {
-			is_political_movement_type = movement_to_preserve
+			law_stance = {
+				law = owner.currently_enacting_law.type
+				value < neutral
+			}
 		}
 		NOT = { has_modifier = taxation_is_theft }
 	}
@@ -38,7 +41,10 @@ tax.1 = {
 	immediate = {
 		random_political_movement = {
 			limit = {
-				is_political_movement_type = movement_to_preserve
+				law_stance = {
+					law = owner.currently_enacting_law.type
+					value < neutral
+				}
 			}
 			save_scope_as = antitax_rebels
 		}
@@ -50,6 +56,8 @@ tax.1 = {
 	cancellation_trigger = {
 		NOT = { currently_enacting_law = scope:current_law_scope }
 	}
+
+	cooldown = { months = normal_modifier_time }
 
 	option = {
 		name = tax.1.a
@@ -108,7 +116,10 @@ tax.2 = {
 			is_enacting_law = law_type:law_per_capita_based_taxation
 		}
 		any_political_movement = {
-			is_political_movement_type = movement_to_preserve
+			law_stance = {
+				law = owner.currently_enacting_law.type
+				value < neutral
+			}
 		}
 		is_at_war = yes
 		any_diplomatic_play = {
@@ -126,7 +137,10 @@ tax.2 = {
     	}
 		random_political_movement = {
 			limit = {
-				is_political_movement_type = movement_to_preserve
+				law_stance = {
+					law = owner.currently_enacting_law.type
+					value < neutral
+				}
 			}
 			save_scope_as = antitax_rebels
 		}
@@ -147,6 +161,8 @@ tax.2 = {
 	cancellation_trigger = {
 		NOT = { currently_enacting_law = scope:current_law_scope }
 	}
+
+	cooldown = { months = normal_modifier_time }
 
 	option = { # cast dissenters as unpatriotic
 		name = tax.2.a
@@ -214,6 +230,7 @@ tax.3 = {
 			}
 			leader = {
 				is_busy = no
+				is_immortal = no
 			}
 		}
 		OR = {
@@ -241,6 +258,7 @@ tax.3 = {
 				}
 				leader = {
 					is_busy = no
+					is_immortal = no
 				}
     		}
     		leader = {
@@ -252,6 +270,8 @@ tax.3 = {
 	cancellation_trigger = {
 		NOT = { currently_enacting_law = scope:current_law_scope }
 	}
+
+	cooldown = { months = normal_modifier_time }
 
 	option = { # a mourning period would be appropriate
 		name = tax.3.a
@@ -307,8 +327,8 @@ tax.4 = {
 			is_incorporated = yes
 			any_scope_pop = {
 				standard_of_living < 15
-				strata = poor
-				pop_is_discriminated = no
+				strata = lower
+				pop_acceptance >= acceptance_status_4
 			}
 		}
 		NOT = { has_modifier = social_banditry }
@@ -323,16 +343,16 @@ tax.4 = {
 				is_incorporated = yes
 				any_scope_pop = {
 					standard_of_living < 15
-					strata = poor
-					pop_is_discriminated = no
+					strata = lower
+					pop_acceptance >= acceptance_status_4
 				}
 			}
 			save_scope_as = bandit_state
 			random_scope_pop = {
 	    		limit = {
 	    			standard_of_living < 15
-					strata = poor
-					pop_is_discriminated = no
+					strata = lower
+					pop_acceptance >= acceptance_status_4
 	    		}
 	    		save_scope_as = bandit_pop
 	    	}
@@ -342,6 +362,8 @@ tax.4 = {
 	cancellation_trigger = {
 		NOT = { currently_enacting_law = scope:current_law_scope }
 	}
+
+	cooldown = { months = normal_modifier_time }
 
 	option = { # hunt down the bandit
 		name = tax.4.a
@@ -368,7 +390,7 @@ tax.4 = {
 		scope:bandit_state = {
 			add_radicals_in_state = {
 				value = 0.25
-				strata = poor
+				strata = lower
 			}
 		}
 	}
@@ -397,7 +419,7 @@ tax.4 = {
 		scope:bandit_state = {
 			add_radicals_in_state = {
 				value = 0.1
-				strata = poor
+				strata = lower
 			}
 		}
 	}
@@ -470,8 +492,8 @@ tax.5 = {
 		}
 		any_scope_pop = {
 			standard_of_living > 40
-			strata = rich
-			pop_is_discriminated = no
+			strata = upper
+			pop_acceptance >= acceptance_status_4
 		}
 	}
 
@@ -482,8 +504,8 @@ tax.5 = {
     	random_scope_pop = {
     		limit = {
     			standard_of_living > 40
-				strata = rich
-				pop_is_discriminated = no
+				strata = upper
+				pop_acceptance >= acceptance_status_4
     		}
     		save_scope_as = philanthropists
     	}
@@ -492,6 +514,8 @@ tax.5 = {
 	cancellation_trigger = {
 		NOT = { currently_enacting_law = scope:current_law_scope }
 	}
+
+	cooldown = { months = normal_modifier_time }
 
 	option = { # encourage philanthropy
 		name = tax.5.a
@@ -545,7 +569,7 @@ tax.6 = {
 		any_scope_pop = {
 			standard_of_living < 40
 			strata = middle
-			pop_is_discriminated = no
+			pop_acceptance >= acceptance_status_4
 		}
 		NOT = { has_modifier = temporary_tax_cut_land_based }
 		NOT = { has_modifier = temporary_tax_cut_per_capita }
@@ -561,7 +585,7 @@ tax.6 = {
     		limit = {
     			standard_of_living < 40
 				strata = middle
-				pop_is_discriminated = no
+				pop_acceptance >= acceptance_status_4
     		}
     		save_scope_as = middle_class_pop
     	}
@@ -571,16 +595,22 @@ tax.6 = {
 		NOT = { currently_enacting_law = scope:current_law_scope }
 	}
 
+	cooldown = { months = normal_modifier_time }
+
 	option = { # lose some progress, middle class have higher expectations
 		name = tax.6.a
 		default_option = yes
 		add_enactment_modifier = {
 			name = temporary_embarrassment
-			multiplier = -1
+			multiplier = 0.5
 		}
 		add_modifier = {
 			name = temporary_embarrassment_pops
 			months = short_modifier_time
+		}
+		add_radicals = {
+			strata = middle
+			value = 0.05
 		}
 	}
 	option = { # reduce middle class taxes, add some success chance

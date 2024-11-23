@@ -122,14 +122,6 @@ expedition_events.602 = { #Choose commander
 			save_scope_as = expedition_leader_3
 		}
 		set_variable = congo_river_expedition_var
-		set_variable = {
-			name = expedition_progress
-			value = 1
-		}
-		set_variable = {
-			name = expedition_peril
-			value = 1
-		}
 		congo_river_expedition_location = yes
 	}
 
@@ -283,17 +275,15 @@ expedition_events.612 = { #Failed expedition
 			triggered_desc = {
 				desc = expedition_events.612.d
 				trigger = {
-					NOR = { 
-						exists = var:expedition_progress
-						var:expedition_progress >= 6 
-					}
+					has_variable = congo_expedition_lost
 				}
 			}
 			triggered_desc = {
 				desc = expedition_events.612.d2
 				trigger = {
-					exists = var:expedition_progress
-					var:expedition_progress >= 6
+					NOT = {
+						has_variable = congo_expedition_lost
+					}
 				}
 			}
 		}
@@ -325,13 +315,7 @@ expedition_events.612 = { #Failed expedition
 		default_option = yes
 		trigger = {
 			OR = {
-				NOT = { 
-					exists = var:expedition_progress
-				}
-				AND = {
-					exists = var:expedition_progress
-					var:expedition_progress < 6 
-				}
+				has_variable = congo_expedition_lost
 				is_ai = yes
 			}
 		}
@@ -349,8 +333,9 @@ expedition_events.612 = { #Failed expedition
 		name = expedition_events.612.b
 		default_option = yes
 		trigger = {
-			exists = var:expedition_progress
-			var:expedition_progress >= 6
+			NOT = {
+				has_variable = congo_expedition_lost
+			}
 		}
 		add_modifier = {
 			name = modifier_failed_expedition
@@ -387,8 +372,14 @@ expedition_events.620 = { #Boat Repair
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
 
 	trigger = {
-		var:expedition_progress >= 1
+		je:je_congo_expedition ?= {
+			"scripted_bar_progress(expedition_progress_bar)" >= 1
+		}
 		NOT = { has_variable = expedition_boat_repair }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 	
 	immediate = {
@@ -447,8 +438,16 @@ expedition_events.630 = { #White Fog
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
 
 	trigger = {
-		var:expedition_progress >= 1
-		var:expedition_progress < 6
+		je:je_congo_expedition ?= {
+			"scripted_bar_progress(expedition_progress_bar)" >= 1
+		}
+		je:je_congo_expedition ?= {
+			"scripted_bar_progress(expedition_progress_bar)" < 6
+		}
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 
 	immediate = {
@@ -488,8 +487,14 @@ expedition_events.640 = { #Crocodile Attack
 	icon = "gfx/interface/icons/event_icons/event_fire.dds"
 
 	trigger = {
-		var:expedition_progress < 6
+		je:je_congo_expedition ?= {
+			"scripted_bar_progress(expedition_progress_bar)" < 6
+		}
 		NOT = { var:expedition_crocodile_attack >= 3 }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 
 	immediate = {
@@ -537,6 +542,10 @@ expedition_events.641 = { #Crocodile Defeated
 		video = "middleeast_jungle_expedition"
 	}
 
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
+
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
@@ -560,6 +569,10 @@ expedition_events.642 = { #F
 
 	event_image = {
 		video = "middleeast_jungle_expedition"
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
@@ -593,8 +606,14 @@ expedition_events.650 = { #Rear Column
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
 
 	trigger = {
-		var:expedition_progress >= 2
+		je:je_congo_expedition ?= {
+			"scripted_bar_progress(expedition_progress_bar)" >= 2
+		}
 		NOT = { has_variable = expedition_rear_column }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 	
 	immediate = {
@@ -655,6 +674,10 @@ expedition_events.651 = { #bad news from the rear column
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
 	
 	immediate = {
 		random_scope_character = {
@@ -691,6 +714,10 @@ expedition_events.652 = { #mutiny
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_fire.dds"
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
+	}
 	
 	immediate = {
 		random_scope_character = {
@@ -726,8 +753,14 @@ expedition_events.660 = { #trading enclave
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
 
 	trigger = {
-		var:expedition_progress >= 3
+		je:je_congo_expedition ?= {
+			"scripted_bar_progress(expedition_progress_bar)" >= 3
+		}
 		NOT = { has_variable = expedition_trading_enclave }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 
 	immediate = {
@@ -767,8 +800,14 @@ expedition_events.670 = { #Lost in the Forest
 	icon = "gfx/interface/icons/event_icons/event_fire.dds"
 
 	trigger = {
-		var:expedition_progress > 3
+		je:je_congo_expedition ?= {
+			"scripted_bar_progress(expedition_progress_bar)" > 3
+		}
 		NOT = { var:expedition_deep_jungle > 3 }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 	
 	immediate = {
@@ -820,9 +859,17 @@ expedition_events.680 = { #naming the falls
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
 	
 	trigger = {
-		var:expedition_progress >= 5
-		var:expedition_progress <= 7
+		je:je_congo_expedition ?= {
+			"scripted_bar_progress(expedition_progress_bar)" >= 5
+		}
+		je:je_congo_expedition ?= {
+			"scripted_bar_progress(expedition_progress_bar)" <= 7
+		}
 		NOT = { has_variable = expedition_found_falls }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 	
 	immediate = {
@@ -872,8 +919,14 @@ expedition_events.690 = { #trading gifts
 	icon = "gfx/interface/icons/event_icons/event_trade.dds"
 	
 	trigger = {
-		var:expedition_progress >= 3
+		je:je_congo_expedition ?= {
+			"scripted_bar_progress(expedition_progress_bar)" >= 3
+		}
 		NOT = { has_variable = expedition_trading_gifts }
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 
 	immediate = {
@@ -929,7 +982,17 @@ expedition_events.695 = { #you find another country's expedition
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
 	
 	trigger = {
-		var:expedition_progress >= 3
+		OR = {
+			je:je_congo_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" >= 3
+			}
+			je:je_central_africa_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" >= 3
+			}
+			je:je_niger_river_expedition ?= {
+				"scripted_bar_progress(expedition_progress_bar)" >= 3
+			}
+		}
 		NOT = { has_variable = expedition_lost_expedition_var }
 		any_country = {
 			NOT = { THIS = ROOT }
@@ -948,6 +1011,10 @@ expedition_events.695 = { #you find another country's expedition
 				}
 			}
 		}
+	}
+
+	cancellation_trigger = {
+		NOT = { has_variable = on_expedition }
 	}
 
 	immediate = {

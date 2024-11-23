@@ -1,0 +1,427 @@
+﻿namespace = treaty_of_london_events
+
+treaty_of_london_events.1 = {
+	type = country_event
+	placement = ROOT
+	
+	title = treaty_of_london_events.1.t
+	desc = treaty_of_london_events.1.d
+	flavor = treaty_of_london_events.1.f
+
+	cooldown = { months = normal_modifier_time }
+	
+	event_image = {
+		video = "southamerica_aristocrats"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+	
+	duration = 3
+
+	trigger = {
+		c:NET ?= this
+		NOT = {
+			has_variable = treaty_of_london_initiation_var
+		}
+		year >= 1838
+	}
+
+	immediate = {
+		set_variable = treaty_of_london_initiation_var
+		c:BEL = {
+			save_scope_as = belgium_scope
+		}
+	}
+
+	option = {
+		name = treaty_of_london_events.1.a
+		default_option = yes
+		ai_chance = {
+			base = 95
+		}
+		c:BEL ?= {
+			trigger_event = { id = treaty_of_london_events.2 popup = yes } 
+		}
+		custom_tooltip = if_they_accept_tt
+		custom_tooltip = treaty_of_london_explanation_tt
+		show_as_tooltip = {
+			add_journal_entry = {
+				type = je_conference_of_london
+			}
+			c:BEL = {
+				add_journal_entry = {
+					type = je_conference_of_london
+				}
+			}
+			every_country = {
+				limit = {
+					country_rank >= rank_value:great_power
+					NOR = { 
+						root ?= this
+						c:BEL ?= this
+					}
+					country_is_in_europe = yes
+				}
+				trigger_event = { id = treaty_of_london_events.3 popup = yes } 
+			}
+		}
+	}
+
+
+	option = {
+		name = treaty_of_london_events.1.b
+		ai_chance = {
+			base = 5
+		}
+		c:BEL = {
+			change_relations = { country = root value = -80 }
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_negative
+				target = root
+			}
+		}
+		every_country = {
+			limit = {
+				country_rank >= rank_value:great_power
+				NOT = { this = root }
+				country_is_in_europe = yes
+			}
+			change_relations = { country = root value = -40 }
+		}
+		hidden_effect = {
+			set_secret_goal = {
+				country = c:BEL
+				secret_goal = conquer
+			}
+			c:BEL = {
+				set_secret_goal = {
+					country = c:LUX
+					secret_goal = conquer
+				}
+			}
+		}
+	}
+}
+
+treaty_of_london_events.2 = {
+	type = country_event
+	placement = ROOT
+	
+	title = treaty_of_london_events.2.t
+	desc = treaty_of_london_events.2.d
+	flavor = treaty_of_london_events.2.f
+
+	cooldown = { months = normal_modifier_time }
+	
+	event_image = {
+		video = "southamerica_aristocrats"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+	
+	duration = 3
+
+	trigger = {
+		# triggered by treaty_of_london_events.1
+	}
+
+	immediate = {
+		c:NET = {
+			save_scope_as = netherlands_scope
+		}
+	}
+
+	option = {
+		name = treaty_of_london_events.2.a
+		default_option = yes
+		ai_chance = {
+			base = 95
+		}
+		c:NET = {
+			add_journal_entry = {
+				type = je_conference_of_london
+			}
+		}
+		add_journal_entry = {
+			type = je_conference_of_london
+		}
+		custom_tooltip = treaty_of_london_explanation_tt
+		every_country = {
+			limit = {
+				country_rank >= rank_value:great_power
+				NOT = { this = root }
+				country_is_in_europe = yes
+			}
+			trigger_event = { id = treaty_of_london_events.3 popup = yes } 
+		}
+	}
+
+
+	option = {
+		name = treaty_of_london_events.2.b
+		ai_chance = {
+			base = 5
+		}
+		c:NET = {
+			change_relations = { country = root value = -80 }
+			create_diplomatic_catalyst = {  
+				type = catalyst_event_negative
+				target = root
+			}
+		}
+		every_country = {
+			limit = {
+				country_rank >= rank_value:great_power
+				NOT = { this = root }
+				country_is_in_europe = yes
+			}
+			change_relations = { country = root value = -40 }
+		}
+		hidden_effect = {
+			set_secret_goal = {
+				country = c:LUX
+				secret_goal = conquer
+			}
+			c:NET = {
+				set_secret_goal = {
+					country = c:BEL
+					secret_goal = conquer
+				}
+			}
+		}
+	}
+}
+
+treaty_of_london_events.3 = {
+	type = country_event
+	placement = ROOT
+	
+	title = treaty_of_london_events.3.t
+	desc = treaty_of_london_events.3.d
+	flavor = treaty_of_london_events.3.f
+
+	cooldown = { months = normal_modifier_time }
+	
+	event_image = {
+		video = "unspecific_politicians_arguing"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+	
+	duration = 3
+
+	trigger = {
+
+	}
+
+	immediate = {
+		c:BEL = {
+			save_scope_as = belgium_scope
+		}
+		c:NET = {
+			save_scope_as = netherlands_scope
+		}
+	}
+
+	option = {
+		name = treaty_of_london_events.3.a
+		default_option = yes
+		ai_chance = {
+			base = 95
+		}
+		add_journal_entry = {
+			type = je_conference_of_london
+		}
+		custom_tooltip = treaty_of_london_explanation_tt
+		if = {
+			limit = {
+				NOT = {
+					exists = global_var:je_conference_of_london_participants_var
+				}
+			}
+			set_global_variable = {
+				name = je_conference_of_london_participants_var
+				value = 1
+			}
+		}
+		else = {
+			change_global_variable = {
+				name = je_conference_of_london_participants_var
+				add = 1
+			}
+		}
+	}
+
+
+	option = {
+		name = treaty_of_london_events.3.b
+		ai_chance = {
+			base = 5
+		}
+		c:BEL = {
+			change_relations = { country = root value = -20 }
+		}
+		c:NET = {
+			change_relations = { country = root value = -20 }
+		}
+	}
+}
+
+treaty_of_london_events.4 = {
+	type = country_event
+	placement = ROOT
+	
+	title = treaty_of_london_events.4.t
+	desc = treaty_of_london_events.4.d
+	flavor = treaty_of_london_events.4.f
+
+	cooldown = { months = normal_modifier_time }
+	
+	event_image = {
+		video = "ep1_transfer_of_authority"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+	
+	duration = 3
+
+	trigger = {
+	}
+
+	immediate = {
+		c:BEL = {
+			save_scope_as = belgium_scope
+		}
+		c:NET = {
+			save_scope_as = netherlands_scope
+		}
+	}
+
+	option = {
+		name = treaty_of_london_events.4.a
+		default_option = yes
+		ai_chance = {
+			base = 95
+		}
+		if = {
+			limit = {
+				c:NET ?= this
+			}
+			custom_tooltip = {
+				text = treaty_of_london_outcome_tt
+				enforce_treaty_of_london = yes
+			}
+		}
+		else = {
+			show_as_tooltip = {
+				custom_tooltip = {
+					text = treaty_of_london_outcome_tt
+					enforce_treaty_of_london = yes
+				}
+			}
+		}
+		if = {
+			limit = {
+				NOR = {
+					c:BEL ?= this
+					c:NET ?= this
+				}
+				NOT = {
+					has_diplomatic_pact = {
+						who = c:BEL
+						type = guarantee_independence						
+					}
+				}
+			}
+			create_diplomatic_pact = {
+				country = c:BEL
+				type = guarantee_independence
+			}
+		}
+		if = {
+			limit = {
+				NOR = {
+					c:BEL ?= this
+					c:NET ?= this
+				}
+			}
+			add_modifier = {
+				name = guarantors_of_peace_modifier
+				months = normal_modifier_time
+			}
+		}
+		show_as_tooltip = {
+			if = {
+				limit = {
+					has_global_variable = favour_belgium_global_var
+				}
+				c:BEL = {
+					take_on_scaled_debt = {
+						who = c:NET
+						value = c:NET.scaled_debt
+					}	
+				}
+			}
+			else_if = {
+				limit = {
+					has_global_variable = favour_netherlands_global_var
+				}
+				c:NET = {
+					take_on_scaled_debt = {
+						who = c:BEL
+						value = c:BEL.scaled_debt
+					}	
+				}
+			}
+		}
+	}
+}
+
+treaty_of_london_events.5 = {
+	type = country_event
+	placement = ROOT
+	
+	title = treaty_of_london_events.5.t
+	desc = treaty_of_london_events.5.d
+	flavor = treaty_of_london_events.5.f
+
+	cooldown = { months = normal_modifier_time }
+	
+	event_image = {
+		video = "africa_leader_arguing"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_default.dds"
+	
+	duration = 3
+
+	trigger = {
+	}
+
+	immediate = {
+		c:BEL = {
+			save_scope_as = belgium_scope
+		}
+		c:NET = {
+			save_scope_as = netherlands_scope
+		}
+	}
+
+	option = {
+		name = treaty_of_london_events.5.a
+		default_option = yes
+		add_radicals = {
+			value = small_radicals
+		}
+	}
+}

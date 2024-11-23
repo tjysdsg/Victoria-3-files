@@ -523,11 +523,25 @@ types pops_overview
 				parentanchor = hcenter
 				position = { 0 25 }
 
-				culture_info_pop_portrait = {
+				pop_portrait_base = {
 					parentanchor = center
 					
 					block "strata_portrait_properties" {}
+					size = { -1 @portrait_box_height }
+					blockoverride "portrait_size" {
+						size = { @portrait_size @portrait_size }
+					}
+					
+					blockoverride "pop_portrait_texture" {
+						portrait_texture = "[Pop.GetAnimatedTypedPortrait('environment_standard', 'camera_body', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self), 'random_adult', '(int32)-1')]"
+					}
+
+					visible = "[Pop.IsValid]"
+					blockoverride "portrait_button" {}
+					tooltipwidget = { FancyTooltip_Pop = {} }
 				}
+
+
 			}
 
 			flowcontainer = {
@@ -768,13 +782,15 @@ types pops_overview
 			spacing = 5
 			
 			alwaystransparent = no
-		
-			default_header = {
-				parentanchor = hcenter
-				
-				blockoverride "text" {
-					block "header_text" {
-						raw_text = "Religion"
+			
+			block "header" {
+				default_header = {
+					parentanchor = hcenter
+					
+					blockoverride "text" {
+						block "header_text" {
+							raw_text = "Religion"
+						}
 					}
 				}
 			}
@@ -1040,6 +1056,56 @@ types pops_overview
 
 		blockoverride "rightside2_info" {
 			raw_text = "([Religion.GetPolStr(GetPlayer)|K])"
+		}
+	}
+
+	type market_starvation_piechart = chart {
+		datacontext = "[Market.GetFoodSecurityFilter]"
+		datacontext = "[FoodSecurityFilter.GetFoodSecurity]"
+
+		blockoverride "background" {}
+
+		blockoverride "datamodel" {
+			datamodel = "[GetStarvationTypes]"
+		}
+
+		blockoverride "show_more_button_visibility" {
+			visible = "[GreaterThan_int32(GetDataModelSize(GetStarvationTypes), '(int32)3')]"
+		}
+
+		empty_state = {
+			blockoverride "visible" {
+				visible = "[IsDataModelEmpty(GetStarvationTypes)]"
+			}
+			blockoverride "text" {
+				text = "NO_STARVATION"
+			}
+		}
+
+		blockoverride "title" {}
+
+		blockoverride "tooltip" {
+			tooltip = "STARVATION_PIESLICE_TOOLTIP"
+		}
+
+		blockoverride "pieslice" {
+			value = "[FoodSecurity.GetStarvationTypePopulationAsFloat(StarvationType.Self)]"
+		}
+		
+		blockoverride "color" {
+			color = "[StarvationType.GetColor]"
+		}
+
+		blockoverride "leftside_info" {
+			text = "[StarvationType.GetName]"
+		}
+
+		blockoverride "rightside1_info" {
+			raw_text = "#v [FoodSecurity.GetStarvationTypePopulation(StarvationType.Self)|D]#!"
+		}
+
+		blockoverride "rightside2_info" {
+			raw_text = "([FoodSecurity.GetStarvationTypePopulationAsPercentage(StarvationType.Self)|%0])"
 		}
 	}
 	
@@ -1336,7 +1402,7 @@ types pops_overview
 		
 		block "pop_list_context" {}
 		
-		datamodel = "[PopList.AccessPopList]"
+		datamodel = "[PopList.GetItems]"
 
 		item = {
 			flowcontainer = {
@@ -1679,14 +1745,18 @@ types pops_overview
 												size = { 210 27 }
 												using = clean_button
 												onclick = "[InformationPanelBar.OpenCultureInfoPanel(Pop.AccessCulture)]"
-														
+												
+												datacontext = "[Pop.GetCulture]"
+												tooltipwidget = {
+													FancyTooltip_Culture = {}
+												}
+												
 												textbox = {
 													size = { 100% 100% }
 													text = "[Pop.GetCulture.GetName]"
 													elide = right
 													align = left|nobaseline
 													margin = { 10 0 }
-													tooltip = "POP_CULTURE_ACCEPTANCE"
 												}
 											}
 											
@@ -1696,9 +1766,13 @@ types pops_overview
 												using = clean_button
 												onclick = "[InformationPanelBar.OpenReligionInfoPanel(Pop.AccessReligion)]"
 												
+												datacontext = "[Pop.GetReligion]"
+												tooltipwidget = {
+													FancyTooltip_Religion = {}
+												}
+												
 												icon = {
 													size = { 25 25 }
-													datacontext = "[Pop.GetReligion]"
 													texture = "[Religion.GetTexture]"
 													parentanchor = right|vcenter
 													position = { -3 0 }
@@ -1711,7 +1785,7 @@ types pops_overview
 													align = left|nobaseline
 													margin = { 10 0 }
 													margin_right = 30
-													tooltip = "POP_RELIGION_ACCEPTANCE"
+													
 												}
 											}
 										}
@@ -1752,7 +1826,7 @@ types pops_overview
 													icon = {
 														position = { -5 0 }
 														size = { 22 22 }
-														texture = "[Pop.GetBuilding.GetTexture]"
+														texture = "[Pop.GetBuilding.GetIcon]"
 														tooltip = "[Pop.GetBuilding.GetTooltip]"
 														parentanchor = right|vcenter
 													}
@@ -1782,19 +1856,9 @@ types pops_overview
 											widget = {
 												parentanchor = vcenter
 												size = { 40 40 }
-												
-												icon = {
-													tooltip = "DISCRIMINATION_TOOLTIP"
-													visible = "[Pop.IsDiscriminated]"
-													texture = "gfx/interface/icons/generic_icons/discriminated_icon.dds"
-													size = { 100% 100% }
-												}
-											
-												icon = {
-													tooltip = "ACCEPTED_TOOLTIP"
-													visible = "[Not(Pop.IsDiscriminated)]"
-													texture = "gfx/interface/icons/generic_icons/accepted_icon.dds"
-													size = { 100% 100% }
+
+												pop_acceptance_icon = {
+													parentanchor = center
 												}
 											}
 
@@ -1918,6 +1982,89 @@ types pops_overview
 					size = { 8 8 }
 				}
 			}
+		}
+	}
+
+	type pop_list_summary_widget = widget {
+		# Datacontexts used:
+		# PopList
+
+		size = { @panel_width 60 }
+
+		background = {
+			using = entry_bg_simple
+		}
+
+		hbox = {
+			margin = {15 5}
+
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+
+			pop_list_summary_section_item_vbox = {
+				blockoverride "sum_item_label"
+				{
+					text = "POPULATION_CONCEPT_HEADER"
+				}
+				blockoverride "sum_item_value"
+				{
+					text = "[PopList.GetTotalPopulation|vD]"
+				}
+			}
+
+			block "pop_list_summary_pol_str"
+			{
+				pop_list_summary_section_item_vbox = {
+					blockoverride "sum_item_label"
+					{
+						raw_text = "[concept_political_strength]:"
+					}
+					blockoverride "sum_item_value"
+					{
+						raw_text = "[PopList.GetTotalPoliticalStrength|vD]"
+					}
+				}
+			}	
+
+			pop_list_summary_section_item_vbox = {
+				blockoverride "sum_item_label"
+				{
+					text = "AVERAGE_SOL_HEADER"
+				}
+				blockoverride "sum_item_value"
+				{
+					raw_text = "[PopList.GetAverageStandardOfLivingLabel|v] ([PopList.GetAverageStandardOfLiving|1])" 	
+				}
+			}
+		}
+	}
+
+	type pop_list_summary_section_item_vbox = vbox {
+		layoutpolicy_horizontal = expanding
+		layoutpolicy_vertical = expanding
+		
+		textbox = {
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+
+			block "sum_item_label"
+			{
+				raw_text = "#todo sum_item_label#!"
+			}
+
+			align = nobaseline
+		}
+
+		textbox = {
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+
+			block "sum_item_value"
+			{
+				raw_text = "#todo sum_item_value#!"
+			}
+
+			align = nobaseline
 		}
 	}
 }

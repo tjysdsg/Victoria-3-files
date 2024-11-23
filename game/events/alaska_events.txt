@@ -58,7 +58,12 @@ alaska.1 = {
 			random_state = {
 				limit = {
 					state_region = s:STATE_ALASKA
-					owner = scope:alaska_seller
+					owner = {
+						OR = {
+							this = scope:alaska_seller
+							is_subject_of = scope:alaska_seller
+						}
+					}
 				}
 				state_region = {
 					remove_claim = root
@@ -138,16 +143,34 @@ alaska.2 = {
 		scope:alaska_seller = {
 			set_variable = successful_sale_of_alaska
 		}
-		random_state = {
+		if = {
 			limit = {
-				state_region = s:STATE_ALASKA
-				owner = scope:alaska_seller
+				exists = c:ALK
+				c:ALK ?= {
+					is_subject_of = scope:alaska_seller
+				}
 			}
-			state_region = {
-				remove_claim = scope:alaska_seller
-				add_claim = scope:alaska_buyer
+			scope:alaska_buyer = {
+				annex = c:ALK
 			}
-			set_state_owner = scope:alaska_buyer
+		}
+		else = {
+			random_state = {
+				limit = {
+					state_region = s:STATE_ALASKA
+					owner = {
+						OR = {
+							this = scope:alaska_seller
+							is_subject_of = scope:alaska_seller
+						}
+					}
+				}
+				state_region = {
+					remove_claim = scope:alaska_seller
+					add_claim = scope:alaska_buyer
+				}
+				set_state_owner = scope:alaska_buyer
+			}
 		}
 		change_relations = {
 			country = scope:alaska_seller
@@ -239,8 +262,20 @@ alaska.4 = {
 				}
 			}
 			save_scope_as = alaska_scope
-			owner = {
-				save_scope_as = alaska_seller
+			if = {
+				limit = {
+					owner = {
+						is_subject = yes
+					}
+				}
+				owner.top_overlord = {
+					save_scope_as = alaska_seller
+				}
+			}
+			else = {
+				owner = {
+					save_scope_as = alaska_seller
+				}
 			}
 		}
 	}

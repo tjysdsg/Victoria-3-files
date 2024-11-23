@@ -3,6 +3,27 @@
 
 	group = je_group_internal_affairs
 
+	is_progressing = {
+		OR = {
+			AND = {
+				OR = {
+					has_law = law_type:law_outlawed_dissent
+					has_law = law_type:law_censorship
+				}
+				any_political_movement = {
+					is_political_movement_type = movement_nihilist
+					is_being_suppressed = yes
+				}
+			}
+			ig:ig_intelligentsia = {
+				OR = {
+					ig_approval > 0
+					is_marginal = yes
+				}
+			}
+		}
+	}
+
 	is_shown_when_inactive = {
 		has_technology_researched = realism
 		NOT = {
@@ -28,10 +49,7 @@
 		}
 		ig:ig_intelligentsia = {
 			is_marginal = no
-			OR = {
-				is_being_suppressed = yes
-				ig_approval < 0
-			}
+			ig_approval < 0
 		}
 	}
 
@@ -39,6 +57,18 @@
 		set_variable = {
 			name = nihilism_progress_var
 			value = 1
+		}
+		show_as_tooltip = {
+			if = {
+				limit = {
+					NOT = {
+						any_political_movement = {
+							is_political_movement_type = movement_nihilist
+						}
+					}
+				}
+				create_political_movement = { type = movement_nihilist }
+			}
 		}
 		ig:ig_intelligentsia = {
 			save_scope_as = nihilist_ig
@@ -58,21 +88,10 @@
 						has_law = law_type:law_outlawed_dissent
 						has_law = law_type:law_censorship
 					}
-					any_interest_group = {
-						filter = {
-							OR = {
-								leader = {
-									has_ideology = ideology:ideology_atheist
-								}
-								any_scope_character = {
-									has_role = agitator
-									has_ideology = ideology:ideology_atheist
-								}
-							}
-						}
+					any_political_movement = {
+						is_political_movement_type = movement_nihilist
 						is_being_suppressed = yes
-						count = all
-					} 
+					}
 				}
 			}
 			custom_tooltip = {
@@ -84,6 +103,19 @@
 					OR = {
 						ig_approval > 0
 						is_marginal = yes
+					}
+				}
+			}
+			trigger_if = {
+				limit = {
+					has_variable = nihilism_je_started
+				}
+				custom_tooltip = {
+					text = has_no_nihilist_movement_tt
+					NOT = {
+						any_political_movement = {
+							is_political_movement_type = movement_nihilist
+						}
 					}
 				}
 			}
@@ -124,21 +156,10 @@
 								has_law = law_type:law_outlawed_dissent
 								has_law = law_type:law_censorship
 							}
-							any_interest_group = {
-								filter = {
-									OR = {
-										leader = {
-											has_ideology = ideology:ideology_atheist
-										}
-										any_scope_character = {
-											has_role = agitator
-											has_ideology = ideology:ideology_atheist
-										}
-									}
-								}
+							any_political_movement = {
+								is_political_movement_type = movement_nihilist
 								is_being_suppressed = yes
-								count = all
-							} 
+							}
 						}
 					}
 					

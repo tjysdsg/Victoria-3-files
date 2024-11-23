@@ -1,7 +1,6 @@
 ﻿clergymen = {
 	texture = "gfx/interface/icons/pops_icons/clergymen.dds"
 	color = hsv{ 0.13 0.52 0.91 }
-	strata = middle
 	start_quality_of_life = 10
 	wage_weight = 3
 	paid_private_wage = yes
@@ -21,12 +20,18 @@
 			desc = "POP_STARVATION"	
 			
 			if = {
-				limit = { 
-					standard_of_living < 5
+				limit = {
+					is_in_mild_starvation = yes
 				}
-				value = 1
-			}		
-		}	
+				value = 0.5
+			}
+			else_if = {
+				limit = {
+					is_in_severe_starvation = yes
+				}
+				value = 1.5
+			}
+		}
 	}
 	
 	qualifications_growth_desc = "CLERGYMEN_QUALIFICATIONS_DESC"
@@ -62,11 +67,27 @@
 			}
 			if = {
 				limit = {
-					religion_accepted = no
+					state = {
+						state_religious_acceptance = {
+							target = ROOT.religion
+							value < religious_acceptance_medium
+					   	}
+					}
 				}
 				multiply = {
-					value = 0.05
+					value = 0.2
 					desc = "POTENTIALS_RELIGIOUS_DISCRIMINATION"
+				}
+			}
+			if = {
+				limit = {
+					owner = {
+						has_law = law_type:law_total_separation
+					}
+				}
+				multiply = {
+					value = 0.5
+					desc = "QUALIFICATIONS_CLERGYMEN_UNDER_TOTAL_SEPARATION"
 				}
 			}
 			if = {

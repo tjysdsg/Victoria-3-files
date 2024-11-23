@@ -351,7 +351,7 @@ types naval_invasion_types
 							section_header_button = {
 								parentanchor = hcenter
 								size = { 260 38 }
-								tooltip = "NAVAL_INVASION_DEFENDING_FLEETS_TOOLTIP"
+								tooltip = "NAVAL_INVASION_BLOCKING_FLEETS_TOOLTIP"
 								
 								blockoverride "onclick" {
 									onclick = "[GetVariableSystem.Toggle( 'naval_invasion_fleets' )]"
@@ -388,7 +388,54 @@ types naval_invasion_types
 								direction = vertical
 								using = default_fade_in_out
 
-								datamodel = "[NavalInvasion.GetDefendingFleets]"
+								datamodel = "[NavalInvasion.GetBlockingFleets]"
+
+								item = {
+									naval_invasion_formation = {}
+								}
+							}
+
+							section_header_button = {
+								parentanchor = hcenter
+								size = { 260 38 }
+								tooltip = "NAVAL_INVASION_NON_BLOCKING_FLEETS_TOOLTIP"
+								
+								blockoverride "onclick" {
+									onclick = "[GetVariableSystem.Toggle( 'naval_invasion_too_small_fleets' )]"
+								}
+
+								blockoverride "onclick_showmore" {
+									visible = "[Not(GetVariableSystem.Exists( 'naval_invasion_too_small_fleets' ))]"
+								}
+
+								blockoverride "onclick_showless" {
+									visible = "[GetVariableSystem.Exists( 'naval_invasion_too_small_fleets' )]"
+								}
+
+								textbox = {
+									parentanchor = vcenter
+									autoresize = yes
+									position = { 30 0 }
+									align = nobaseline
+									text = "NAVAL_INVASION_NUMBER_OF_NON_BLOCKING_FLEETS"
+								}
+
+                                textbox = {
+                                    parentanchor = right|vcenter
+                                    autoresize = yes
+                                    position = { -10 0 }
+                                    align = nobaseline
+                                    text = "NAVAL_INVASION_NUMBER_OF_UNITS_IN_NON_BLOCKING_FLEETS"
+                                }
+							}
+
+							flowcontainer = {
+								visible = "[GetVariableSystem.Exists( 'naval_invasion_too_small_fleets' )]"
+								parentanchor = hcenter
+								direction = vertical
+								using = default_fade_in_out
+
+								datamodel = "[NavalInvasion.GetNonBlockingFleets]"
 
 								item = {
 									naval_invasion_formation = {}

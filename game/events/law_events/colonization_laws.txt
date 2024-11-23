@@ -53,6 +53,7 @@ colonization.1 = {
 
 	option = { # free the colony
 		name = colonization.1.a
+		default_option = yes
 		add_enactment_modifier = {
 			name = decolonization
 		}
@@ -66,7 +67,6 @@ colonization.1 = {
 	}
 	option = { # do not free the colony
 		name = colonization.1.b
-		default_option = yes
 		add_enactment_modifier = {
 			name = refused_to_release_colony
 		}
@@ -108,7 +108,10 @@ colonization.2 = {
 			is_enacting_law = law_type:law_colonial_resettlement
 		}
 		any_political_movement = {
-			is_political_movement_type = movement_to_preserve
+			law_stance = {
+				law = owner.currently_enacting_law.type
+				value < neutral
+			}
 		}
 		NOT = {
 			has_modifier = slow_colonies
@@ -121,7 +124,10 @@ colonization.2 = {
 		}
 		random_political_movement = {
 			limit = {
-				is_political_movement_type = movement_to_preserve
+				law_stance = {
+					law = owner.currently_enacting_law.type
+					value < neutral
+				}
 			}
 			save_scope_as = outsourcing_scope
 		}
@@ -212,14 +218,14 @@ colonization.3 = {
 			months = short_modifier_time
 		}
 		add_enactment_modifier = {
-			name = colonial_enthusiasm
+			name = colonial_enthusiasm_time
 		}
 	}
 	option = { # colonial enthusiasm less chance
 		name = colonization.3.c
 		add_modifier = {
 			name = colonial_enthusiasm_settlers
-			months = short_modifier_time
+			months = normal_modifier_time
 		}
 		add_enactment_modifier = {
 			name = colonial_enthusiasm
@@ -254,7 +260,6 @@ colonization.4 = {
 		OR = {
 			is_enacting_law = law_type:law_colonial_exploitation
 			is_enacting_law = law_type:law_colonial_resettlement
-			is_enacting_law = law_type:law_no_colonial_affairs
 			is_enacting_law = law_type:law_frontier_colonization
 		}
 		NOT = {
@@ -298,7 +303,10 @@ colonization.4 = {
 		if = {
 			limit = {
 				any_political_movement = {
-					is_political_movement_type = movement_to_preserve
+					law_stance = {
+						law = owner.currently_enacting_law.type
+						value < neutral
+					}
 				}
 			}
 			add_enactment_modifier = {
@@ -331,7 +339,10 @@ colonization.4 = {
 		if = {
 			limit = {
 				any_political_movement = {
-					is_political_movement_type = movement_to_preserve
+					law_stance = {
+						law = owner.currently_enacting_law.type
+						value < neutral
+					}
 				}
 			}
 			add_enactment_modifier = {

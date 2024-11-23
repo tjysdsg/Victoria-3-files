@@ -22,7 +22,7 @@
 		}	
         add_radicals = {
             value = small_radicals
-            strata = poor
+            strata = lower
         }
         custom_tooltip = commune_progress_subtract_10
         change_global_variable = {
@@ -56,7 +56,7 @@ je_the_paris_commune_france_button_b = {
 		}	
 		add_loyalists = {
 			value = small_radicals
-			strata = poor
+			strata = lower
         }
         custom_tooltip = commune_progress_add_10
         change_global_variable = {
@@ -277,11 +277,13 @@ je_positivist_movement_embrace_positivism_button = {
 	effect = {
 		custom_tooltip = {
 			text = positivists_advance_10
-			change_variable = { name = positivism_progress_var add = 10 }
+			je:je_positivist_movement = {
+				add_progress = { value = 10 name = positivist_progress_bar }
+			}
 		}
 		add_radicals = {
 			value = small_radicals
-			strata = poor
+			strata = lower
 		}
 		scope:journal_entry = {
 			custom_tooltip = cooldown_year_tt
@@ -310,7 +312,9 @@ je_positivist_movement_suppress_positivism_button = {
 	effect = {
 		custom_tooltip = {
 			text = positivists_retreat_10
-			change_variable = { name = positivism_progress_var subtract = 10 }
+			je:je_positivist_movement = {
+				add_progress = { value = -10 name = positivist_progress_bar }
+			}
 		}
 		add_radicals = {
 			value = small_radicals
@@ -327,7 +331,11 @@ je_sell_alaska_button = {
 	name = "je_sell_alaska_button"
 	desc = "je_sell_alaska_button_desc"
 
-	visible = { always = yes }
+	visible = { 
+		c:ALK ?= {
+			is_player = no
+		} 
+	}
 
 	ai_chance = {
 		base = 0
@@ -372,7 +380,12 @@ je_sell_alaska_button = {
 			text = has_alaska_sale_cooldown_tt
 			NOT = { has_variable = alaska_sale_cooldown }
 		}
-		has_state_in_state_region = STATE_ALASKA
+		OR = {
+			has_state_in_state_region = STATE_ALASKA
+			any_subject_or_below = {
+				has_state_in_state_region = STATE_ALASKA
+			}
+		}
 		custom_tooltip = {
 			text = friendly_nation_with_interest_in_alaska_tt
 			any_country = {
@@ -416,7 +429,11 @@ je_buy_alaska_button = {
 	name = "je_buy_alaska_button"
 	desc = "je_buy_alaska_button_desc"
 
-	visible = { always = yes }
+	visible = { 
+		c:ALK ?= {
+			is_player = no
+		} 
+	}
 
 	ai_chance = {
 		base = 100

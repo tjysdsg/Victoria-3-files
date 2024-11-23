@@ -278,6 +278,14 @@ types companies_panel
 						sort_button = {
 							layoutpolicy_horizontal = expanding
 							size = { 0 30 }
+							onclick = "[AccessPlayer.SortCompanies('building_database_order')]"
+							
+							text = "BUILDING_DATABASE_ORDER"
+						}
+
+						sort_button = {
+							layoutpolicy_horizontal = expanding
+							size = { 0 30 }
 							onclick = "[AccessPlayer.SortCompanies('productivity')]"
 							
 							text = "concept_productivity"
@@ -494,6 +502,16 @@ types companies_panel
 					parentanchor = right|vcenter
 					spacing = 5
 					margin_right = 10
+					
+					button_icon_goto = {
+						parentanchor = vcenter
+						size = { 26 26 }
+						using = tooltip_above
+						tooltip = "GOTO_COMPANY_HQ"
+						visible = "[Company.GetBuilding.IsValid]"
+						onclick = "[InformationPanelBar.OpenBuildingDetailsPanel(Company.GetBuilding.AccessSelf)]"
+					}
+					
 					button_icon_pin = {
 						size = { 26 26 }
 						visible = "[Company.IsPinnedInOutliner]"
@@ -533,9 +551,10 @@ types companies_panel
 
 					button = {
 						using = default_button
+						using = company_building_disband_sound
 						size = { 130 40 }
 						text = "DISBAND_COMPANY"
-						onclick = "[Execute(GetPlayer.RemoveCompany(CompanyType.Self))]"
+						onclick = "[PopupManager.AskConfirmationCustom(GetPlayer.RemoveCompany(CompanyType.Self), 'company_confirmation_window')]"
 						enabled = "[IsValid(GetPlayer.RemoveCompany(CompanyType.Self))]"
 						tooltip = "REMOVE_COMPANY_DESC"
 					}
@@ -555,6 +574,11 @@ types companies_panel
 
 					background = {
 						using = entry_bg_simple
+					}
+
+					textbox = {
+						text = "COMPANY_HEADQUARTER_STATE"
+						using = company_item_text
 					}
 				
 					flowcontainer = {
@@ -707,14 +731,15 @@ types companies_panel
 
 				button = {
 					using = default_button
+					using = company_building_establish_sound
 					size = { 130 40 }
 					name = "tutorial_highlight_establish_company"
 					text = "ESTABLISH_COMPANY"
-					onclick = "[Execute(GetPlayer.CreateCompany(CompanyType.Self))]"
+					onclick = "[PopupManager.AskConfirmationCustom(GetPlayer.CreateCompany(CompanyType.Self), 'company_confirmation_window')]"
 					onclick = "[GetVariableSystem.Clear('hide_current_companies')]"
-					onclick = "[ScrollPanelToTop('companies_panel')]"
 					enabled = "[IsValid(GetPlayer.CreateCompany(CompanyType.Self))]"
 					tooltip = "CREATE_COMPANY_DESC"
+
 				}
 			}
 
@@ -735,13 +760,18 @@ types companies_panel
 					using = entry_bg_simple
 				}
 
+				textbox = {
+					text = "COMPANY_TYPE_HEADQUARTER_STATE"
+					using = company_item_text
+				}
+
 				flowcontainer = {
 					direction = horizontal
 					spacing = 5							
 					datamodel = "[CompanyType.AccessBuildingTypes]"
 					
 					item = {
-						company_building_item = {}
+						company_type_building_item = {}
 					}
 				}	
 
@@ -771,31 +801,56 @@ types companies_panel
 		}		
 	}
 
-	type company_building_item = button {
-		texture = "[BuildingType.GetTexture]"
+	type company_type_building_item = button {
+		texture = "[BuildingType.GetIcon]"
 		onrightclick = "[RightClickMenuManager.ShowForBuildingType(BuildingType.AccessSelf)]"
 		effectname = "NoHighlight"
 		distribute_visual_state = no
 		inherit_visual_state = no
-		alpha = "[TransparentIfZero_int32(BuildingType.GetLevelCountInCountry(GetPlayer.Self))]"
+		alpha = "[TransparentIfZero_int32(BuildingType.GetNumLevelsInCountryRaw(GetPlayer.Self))]"
 
 		block "icon_size" {
 			size = { 50 50 }	
 		}
 
 		textbox = {
-			text = "BUILDING_TYPE_COUNT"
+			text = "[BuildingType.GetNumLevelsInCountryFormatted(GetPlayer.Self)]"
 			autoresize = yes
 			position = { 5 -2 }
 			parentanchor = bottom
 			align = right|nobaseline
-			visible = "[NotEqualTo_int32( BuildingType.GetLevelCountInCountry(GetPlayer.Self), '(int32)0')]"
 		}
 
 		tooltipwidget = {
 			FancyTooltip_BuildingType = {}
 		}
-	}	
+	}
+
+	type company_building_item = button {
+		texture = "[BuildingType.GetIcon]"
+		onrightclick = "[RightClickMenuManager.ShowForBuildingType(BuildingType.AccessSelf)]"
+		effectname = "NoHighlight"
+		distribute_visual_state = no
+		inherit_visual_state = no
+		alpha = "[TransparentIfZero_int32(BuildingType.GetNumLevelsInCountryRaw(GetPlayer.Self))]"
+
+		block "icon_size" {
+			size = { 50 50 }
+		}
+
+		textbox = {
+			raw_text = "[BuildingType.GetNumLevelsOwnedByCompanyFormatted(Company.Self)]/[BuildingType.GetNumLevelsInCountryFormatted(GetPlayer.Self)]"
+			autoresize = yes
+			position = { 5 -2 }
+			parentanchor = bottom
+			align = right|nobaseline
+			visible = "[NotEqualTo_int32(BuildingType.GetNumLevelsInCountryRaw(GetPlayer.Self), '(int32)0')]"
+		}
+
+		tooltipwidget = {
+			FancyTooltip_BuildingType = {}
+		}
+	}
 }
 
 template company_item_text {

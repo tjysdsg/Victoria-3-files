@@ -1,88 +1,5 @@
 ﻿namespace = character_events
 
-character_events.100 = {
-	type = country_event
-	hidden = yes
-
-	trigger = {
-		any_interest_group = {
-			NOT = { has_variable = memento_mori }
-			leader = {
-				is_ruler = no
-				is_busy = no
-				is_historical = no
-				NOT = { has_variable = memento_mori_immunity }
-			}
-		}
-	}
-
-	immediate = {
-		# Kill IG leaders occasionally, but not too often per IG
-		random_interest_group = {
-			limit = {
-				NOT = { has_variable = memento_mori }
-				leader = {
-					is_ruler = no
-					is_busy = no
-					is_historical = no
-					NOT = { has_variable = memento_mori_immunity }
-				}
-			}
-			save_scope_as = memento_mori_ig
-			leader = {
-				save_scope_as = memento_mori_leader
-			}
-			set_variable = {
-				name = memento_mori
-				years = 10
-			}
-		}
-		scope:memento_mori_leader = {
-			kill_character = {
-				hidden = yes
-			}
-		}
-		post_notification = ig_leader_memento_mori
-		# Kill an Agitator occasionally, but not too often
-		if = {
-			limit = {
-				any_scope_character = {
-					has_role = agitator
-					is_historical = no
-					NOT = { has_variable = memento_mori_immunity }
-				}
-				NOT = { has_variable = agitator_kill_var }
-			}
-			random_list = {
-				1 = {
-					random_scope_character = {
-						limit = {
-							has_role = agitator
-							is_historical = no
-							NOT = { has_variable = memento_mori_immunity }
-						}
-						kill_character = yes
-					}
-					set_variable = {
-						name = agitator_kill_var
-						years = 5
-					}
-				}
-				4 = { }
-			}
-		}
-	}
-}
-
-character_events.1 = {
-	type = character_event
-	hidden = yes
-	immediate = {
-		remove_trait = wounded
-	}
-}
-
-
 character_events.2 = { #Rich industrialist wants to build a university
 	type = country_event
 	placement = scope:university_state
@@ -104,8 +21,18 @@ character_events.2 = { #Rich industrialist wants to build a university
 
 	trigger = {
 		has_technology_researched = academia
-		ig:ig_industrialists = {
-			is_marginal = no
+		trigger_if = {
+			limit = {
+				c:BIC ?= this
+			}
+			ig:ig_petty_bourgeoisie = {
+				is_marginal = no
+			}
+		}
+		trigger_else = {
+			ig:ig_industrialists = {
+				is_marginal = no
+			}
 		}
 		any_scope_state = {
 			is_incorporated = yes
@@ -117,9 +44,21 @@ character_events.2 = { #Rich industrialist wants to build a university
 	}
 
 	immediate = {
-		ig:ig_industrialists = {
-			leader = { 
-				save_scope_as = university_benefactor
+		if = {
+			limit = {
+				c:BIC ?= this
+			}
+			ig:ig_petty_bourgeoisie = {
+				leader = { 
+					save_scope_as = university_benefactor
+				}
+			}
+		}
+		else = {
+			ig:ig_industrialists = {
+				leader = { 
+					save_scope_as = university_benefactor
+				}
 			}
 		}
 		random_scope_state = {
@@ -204,6 +143,7 @@ character_events.3 = { #The duel
 				NOT = {
 					has_trait = cautious
 				}
+				is_immortal = no
 				age >= 18
 			}
 			save_scope_as = duel_participant_1
@@ -217,6 +157,7 @@ character_events.3 = { #The duel
 				NOT = {
 					has_trait = cautious
 				}
+				is_immortal = no
 				age >= 18
 			}
 			save_scope_as = duel_participant_2
@@ -264,7 +205,10 @@ character_events.3 = { #The duel
 					if = {
 						limit = {
 							scope:duel_participant_1 = {
-								has_trait = bandit
+								OR = {
+									has_trait = bandit
+									has_trait = social_bandit
+								}
 							}
 						}
 						add = 10
@@ -359,7 +303,10 @@ character_events.3 = { #The duel
 					if = {
 						limit = {
 							scope:duel_participant_1 = {
-								has_trait = bandit
+								OR = {
+									has_trait = bandit
+									has_trait = social_bandit
+								}
 							}
 						}
 						add = 10
@@ -512,6 +459,7 @@ character_events.4 = { #Devout leader sleeping with a nun
 	trigger = {
 		any_scope_character = {
 			has_role = politician
+			is_ruler = no
 			age > 18
 			is_busy = no
 			interest_group = {
@@ -525,6 +473,7 @@ character_events.4 = { #Devout leader sleeping with a nun
 		random_scope_character = {
 			limit = {
 				has_role = politician
+				is_ruler = no
 				age > 18
 				is_busy = no
 				interest_group = {
@@ -539,24 +488,27 @@ character_events.4 = { #Devout leader sleeping with a nun
 	}
 
 	option = { #Steps down
-		default_option = yes
 		trigger = {
 			ig:ig_devout = {
 				is_in_government = yes
+			}
+			scope:devout_scandal = {
+				is_immortal = no
 			}
 		}
 		name = character_events.4.a
 		custom_tooltip = character_events.4.a.tt
 		hidden_effect = {
 			scope:devout_scandal = {
-				kill_character = yes
+                kill_character = {
+                    hidden = yes
+                }
 			}
 		}
 	}
 
 	option = {
 		name = character_events.4.c
-		default_option = yes
 		trigger = {
 			ig:ig_devout = {
 				is_in_government = no
@@ -573,6 +525,7 @@ character_events.4 = { #Devout leader sleeping with a nun
 
 	option = { #Ignore it
 		name = character_events.4.b
+		default_option = yes
 		scope:devout_scandal = {
 			add_modifier = {
 				name = modifier_devout_in_scandal

@@ -12,7 +12,7 @@
         THIS = c:RUS
         is_subject = no
     }
-      possible = {
+    possible = {
         has_technology_researched = nationalism
         NAND = {
             owns_entire_state_region = STATE_OUTER_MANCHURIA 
@@ -56,6 +56,12 @@
     }
     on_complete = {
         trigger_event = { id = russo_chinese.3 } # The Ruler of the East
+    }
+
+    invalid = {
+        NOT = {
+            exists = scope:china_scope
+        }
     }
 
     weight = 1000
@@ -270,9 +276,7 @@ je_circassian_expulsions = {
                 exists = c:CIR
             }
         }
-        cu:circassian = {
-            culture_is_discriminated_in = ROOT
-        }
+        cultural_acceptance_base = { target = cu:circassian value < acceptance_status_4 }
         owns_entire_state_region = STATE_KUBAN
     }
 
@@ -324,10 +328,8 @@ je_circassian_expulsions = {
                 text = has_halted_deportations_tt
                 has_variable = halted_circassian_deportations
             }
-            NOT = {
-                cu:circassian = {
-                    culture_is_discriminated_in = c:RUS
-                }
+            c:RUS ?= {
+                cultural_acceptance_base = { target = cu:circassian value >= acceptance_status_4 }
             }
         }
     }
@@ -409,7 +411,7 @@ je_circassian_expulsions = {
                         random_scope_pop = {
                             limit = {
                                 culture = cu:circassian
-                                strata = poor
+                                strata = lower
                             }
                             move_pop = scope:expulsion_destination_state
                         }
@@ -423,7 +425,7 @@ je_circassian_expulsions = {
                         random_scope_pop = {
                             limit = {
                                 culture = cu:circassian
-                                strata = rich
+                                strata = upper
                             }
                             move_pop = scope:expulsion_destination_state
                         }
@@ -699,7 +701,7 @@ je_pacify_the_steppes = {
     fail = {
         OR = {
             any_civil_war = {
-                civil_war_progress > 0.5
+                civil_war_progress >= 0.75
             }
             country_rank < rank_value:great_power
             OR = {
@@ -772,7 +774,9 @@ je_pacify_the_steppes = {
                 limit = {
                     has_variable = kenesary_variable
                 }
-               kill_character = yes
+                kill_character = {
+                    hidden = yes
+                }
             }
         }
     }
@@ -958,6 +962,237 @@ je_conquest_of_central_asia = {
     on_complete = {
         trigger_event = { id = russian_central_asia.2 } # The Great Game
         set_global_variable = khanates_russia_victory_var
+    }
+
+    weight = 1000
+    should_be_pinned_by_default = yes
+}
+
+je_great_reformer = { # Note - Alexander II certainly would not have called these the "Great Reforms" himself, and to claim that they were all part of the same initiative is incorrect. For gameplay purposes, however, this is the best available name.
+    icon = "gfx/interface/icons/law_icons/monarchy.dds"
+
+	group = je_group_historical_content
+
+    immediate = {
+        set_variable = { name = great_reforms_var value = 0 }
+        ruler = {
+            save_scope_as = alexander_ii_scope
+        }
+    }
+
+    complete = {
+        scope:journal_entry = {
+			is_goal_complete = yes
+		}
+        custom_tooltip = {
+            text = je_great_reforms_serfdom_complete_tt
+            has_variable = je_great_reforms_serfdom_complete
+        }
+        custom_tooltip = {
+            text = je_great_reforms_military_complete_tt
+            has_variable = je_great_reforms_military_complete
+        }
+        custom_tooltip = {
+            text = je_great_reforms_bureaucratic_complete_tt
+            has_variable = je_great_reforms_bureaucratic_complete
+        }
+    }
+
+    fail = {
+        custom_tooltip = {
+            text = ruler_not_alexander_ii_tt
+            ruler = {
+                NOT = {
+                    has_template = RUS_alexander_ii
+                }
+            }
+        }
+    }
+
+    on_complete = {
+        trigger_event = { id = great_reformer.1 }
+    }
+
+    current_value = {
+		value = var:great_reforms_var
+	}
+
+	goal_add_value = {
+		add = 3
+	}
+
+	progressbar = yes
+
+    weight = 1000
+    should_be_pinned_by_default = yes
+}
+
+je_great_reforms_serfdom = {
+    icon = "gfx/interface/icons/law_icons/tenant_farmers.dds"
+
+	group = je_group_historical_content
+    
+    immediate = {
+        ruler = {
+            save_scope_as = alexander_ii_scope
+        }
+    }
+    complete = {
+        OR = {
+            has_law = law_type:law_tenant_farmers
+            has_law = law_type:law_commercialized_agriculture
+        }
+        NOT = {
+            has_law = law_type:law_traditionalism
+        }
+    }
+
+    fail = {
+        custom_tooltip = {
+            text = ruler_not_alexander_ii_tt
+            ruler = {
+                NOT = {
+                    has_template = RUS_alexander_ii
+                }
+            }
+        }
+    }
+
+    on_complete = {
+        custom_tooltip = {
+            text = advances_great_reforms_tt
+            set_variable = je_great_reforms_serfdom_complete
+            change_variable = { name = great_reforms_var add = 1 }
+        }
+    }
+
+    weight = 1000
+    should_be_pinned_by_default = yes
+}
+
+je_great_reforms_military = {
+    icon = "gfx/interface/icons/law_icons/mass_conscription.dds"
+
+	group = je_group_historical_content
+
+    immediate = {
+        ruler = {
+            save_scope_as = alexander_ii_scope
+        }
+    }
+    complete = {
+        has_technology_researched = rifling
+        has_law = law_type:law_mass_conscription
+        OR = {
+            country_army_unit_type_fraction = {  
+                target = unit_type:combat_unit_type_skirmish_infantry  
+                value >= 0.5  
+            }
+            trigger_if = {
+                limit = {
+                    has_technology_researched = trench_works
+                }
+                country_army_unit_type_fraction = {  
+                    target = unit_type:combat_unit_type_trench_infantry  
+                    value >= 0.5  
+                }
+            }
+            trigger_if = {
+                limit = {
+                    has_technology_researched = nco_training
+                }
+                country_army_unit_type_fraction = {  
+                    target = unit_type:combat_unit_type_squad_infantry  
+                    value >= 0.5  
+                }
+            }
+            trigger_if = {
+                limit = {
+                    has_technology_researched = mobile_armor
+                }
+                country_army_unit_type_fraction = {  
+                    target = unit_type:combat_unit_type_mechanized_infantry  
+                    value >= 0.5  
+                }
+            }
+        }
+        any_scope_building = {
+			filter = {
+				is_building_type = building_barracks
+			}			
+			NOR = {
+				building_has_goods_shortage = yes
+				has_active_production_method = pm_no_organization
+			}
+			percent = 1
+		}
+        any_scope_building = {
+            is_building_type = building_munition_plants
+            level >= 3
+        }
+    }
+
+    fail = {
+        custom_tooltip = {
+            text = ruler_not_alexander_ii_tt
+            ruler = {
+                NOT = {
+                    has_template = RUS_alexander_ii
+                }
+            }
+        }
+    }
+
+    on_complete = {
+        custom_tooltip = {
+            text = advances_great_reforms_tt
+            set_variable = je_great_reforms_military_complete
+            change_variable = { name = great_reforms_var add = 1 }
+        }
+    }
+
+    weight = 1000
+    should_be_pinned_by_default = yes
+}
+
+je_great_reforms_bureaucratic = {
+    icon = "gfx/interface/icons/institution_icons/home_affairs.dds"
+
+	group = je_group_historical_content
+
+    immediate = {
+        ruler = {
+            save_scope_as = alexander_ii_scope
+        }
+    }
+    complete = {
+        has_law = law_type:law_appointed_bureaucrats
+        OR = {
+            has_law = law_type:law_per_capita_based_taxation
+            has_law = law_type:law_proportional_taxation
+            has_law = law_type:law_graduated_taxation
+        }
+        bureaucracy >= 0 
+		approaching_bureaucracy_shortage = no
+    }
+
+    fail = {
+        custom_tooltip = {
+            text = ruler_not_alexander_ii_tt
+            ruler = {
+                NOT = {
+                    has_template = RUS_alexander_ii
+                }
+            }
+        }
+    }
+
+    on_complete = {
+        custom_tooltip = {
+            text = advances_great_reforms_tt
+            set_variable = je_great_reforms_bureaucratic_complete
+            change_variable = { name = great_reforms_var add = 1 }
+        }
     }
 
     weight = 1000

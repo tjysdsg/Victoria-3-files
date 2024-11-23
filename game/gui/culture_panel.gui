@@ -8,122 +8,48 @@
 @panel_width_plus_20 = 560			# used to be 480
 @panel_width_plus_30 = 570			# used to be 490
 @panel_width_plus_70 = 610			# used to be 530
+@panel_width_w_margin = 520
 
-types culture_panel
+@social_class_strata_width = 180
+@social_class_width = 170
+
+types society_panel
 {
-	type culture_panel = default_block_window {
-		name = "culture_panel"
+	type society_panel = default_block_window {
+		name = "society_panel"
 		
 		blockoverride "animation_state_block" {
 			state = {
 				name = _show
 				start_sound = {
-					soundeffect = "event:/SFX/UI/SideBar/culture"
+					soundeffect = "event:/SFX/UI/SideBar/society"
 				}
 			}
 
 			state = {
 				name = _hide
 				start_sound = {
-					soundeffect = "event:/SFX/UI/SideBar/culture_stop"
+					soundeffect = "event:/SFX/UI/SideBar/society_stop"
 				}
 			}
 		}
 		
 		blockoverride "window_header_name"
 		{
-			text = "CULTURE_OVERVIEW"
+			text = "SOCIETY_OVERVIEW"
 		}
 		
 		blockoverride "fixed_top"
 		{
-			### PRIMARY CULTURES
-			top_illu = {
-				
-				blockoverride "illu" {
-					texture = "gfx/interface/illustrations/top_illus/top_illu_cultures.dds"
-				}
-				
-				flowcontainer = {
-					parentanchor = hcenter
-					resizeparent = yes
-					
-					spacing = 10
-					
-					flowcontainer = {
-						direction = vertical
-						parentanchor = vcenter
-						margin = { 0 6 }
-
-						textbox = {
-							text = "COUNTRY_CULTURES_ONE_LINE"
-							minimumsize = { @panel_width_half -1 }
-							maximumsize = { @panel_width_half -1 }
-							autoresize = yes
-							align = hcenter|nobaseline
-							parentanchor = hcenter
-						}
-						textbox = {
-							raw_text = "#v [GetPlayer.GetPrimaryCulturesDesc]#!"
-							margin = { 6 0 }
-							minimumsize = { @panel_width_half -1 }
-							maximumsize = { @panel_width_half -1 }
-							multiline = yes
-							autoresize = yes
-							align = hcenter|nobaseline
-							using = fontsize_xl
-							parentanchor = hcenter
-						}
-					}
-
-					flowcontainer = {
-						direction = vertical
-						parentanchor = vcenter
-						margin = { 0 6 }
-
-						textbox = {
-							text = "[concept_state_religion]"
-							minimumsize = { @panel_width_half -1 }
-							maximumsize = { @panel_width_half -1 }
-							autoresize = yes
-							align = hcenter|nobaseline
-							parentanchor = hcenter
-						}
-						textbox = {
-							raw_text = "#v [GetPlayer.GetStateReligion.GetName]#!"
-							margin = { 6 0 }
-							minimumsize = { @panel_width_half -1 }
-							maximumsize = { @panel_width_half -1 }
-							autoresize = yes
-							align = hcenter|nobaseline
-							using = fontsize_xl
-							parentanchor = hcenter
-						}
-					}
-				}
-			}
-
-			flowcontainer = {
-				spacing = 10
-				margin_bottom = 10
-				
-				law_item_small = {
-					datacontext = "[AccessPlayer.AccessActiveLawFromGroup('lawgroup_citizenship')]"
-				}
-
-				law_item_small = {
-					datacontext = "[AccessPlayer.AccessActiveLawFromGroup('lawgroup_church_and_state')]"
-				}
-			}
-			
 			### TABS
 			tab_buttons = {
-				# Culture Info
+
+				# Acceptance Status
 				blockoverride "first_button" {
-					text = CULTURE_INFO
+					text = ACCEPTANCE_STATUSES
 				}
 				blockoverride "first_button_tooltip" {
-					tooltip = "CULTURE_INFO"
+					tooltip = "ACCEPTANCE_STATUSES"
 				}
 				blockoverride "first_button_click" {
 					onclick = "[InformationPanel.SelectTab('default')]"
@@ -135,86 +61,287 @@ types culture_panel
 					visible = "[Not( InformationPanel.IsTabSelected('default') )]"
 				}
 				blockoverride "first_button_selected" {
-					text = CULTURE_INFO
-				}
-				blockoverride "first_button_name" {
-					name = "tutorial_highlight_culture_info_tab"
+					text = ACCEPTANCE_STATUSES
 				}
 
-				# Nation Formation
+				# Culture List
 				blockoverride "second_button" {
-					text = NATION_FORMATION
+					text = ACCEPTANCE_CULTURES
 				}
 				blockoverride "second_button_tooltip" {
-					tooltip = "NATION_FORMATION"
+					tooltip = "ACCEPTANCE_CULTURES"
 				}
 				blockoverride "second_button_click" {
-					onclick = "[InformationPanel.SelectTab('nation_formation')]"
+					onclick = "[InformationPanel.SelectTab('cultures')]"
 				}
 				blockoverride "second_button_visibility" {
-					visible = "[InformationPanel.IsTabSelected('nation_formation')]"
+					visible = "[InformationPanel.IsTabSelected('cultures')]"
 				}
 				blockoverride "second_button_visibility_checked" {
-					visible = "[Not( InformationPanel.IsTabSelected('nation_formation') )]"
+					visible = "[Not( InformationPanel.IsTabSelected('cultures') )]"
 				}
 				blockoverride "second_button_selected" {
-					text = NATION_FORMATION
-				}		
+					text = ACCEPTANCE_CULTURES
+				}
+
+				blockoverride "second_button_name" {
+					name = "tutorial_highlight_culture_list_tab"
+				}
+
+				# Religion List
+				blockoverride "third_button" {
+					text = ACCEPTANCE_RELIGIONS
+				}
+				blockoverride "third_button_tooltip" {
+					tooltip = "ACCEPTANCE_RELIGIONS"
+				}
+				blockoverride "third_button_click" {
+					onclick = "[InformationPanel.SelectTab('religions')]"
+				}
+				blockoverride "third_button_visibility" {
+					visible = "[InformationPanel.IsTabSelected('religions')]"
+				}
+				blockoverride "third_button_visibility_checked" {
+					visible = "[Not( InformationPanel.IsTabSelected('religions') )]"
+				}
+				blockoverride "third_button_selected" {
+					text = ACCEPTANCE_RELIGIONS
+				}
+
+				# Classes
+				blockoverride "fourth_button" {
+					text = ACCEPTANCE_CLASSES
+				}
+				blockoverride "fourth_button_tooltip" {
+					tooltip = "ACCEPTANCE_CLASSES"
+				}
+				blockoverride "fourth_button_click" {
+					onclick = "[InformationPanel.SelectTab('classes')]"
+				}
+				blockoverride "fourth_button_visibility" {
+					visible = "[InformationPanel.IsTabSelected('classes')]"
+				}
+				blockoverride "fourth_button_visibility_checked" {
+					visible = "[Not( InformationPanel.IsTabSelected('classes') )]"
+				}
+				blockoverride "fourth_button_selected" {
+					text = ACCEPTANCE_CLASSES
+				}
 			}
-			
-			### SORT BUTTONS
-			flowcontainer = {
-				margin_top = 10
-				visible = "[InformationPanel.IsTabSelected('default')]"
+
+			### LEGAL STATUS
+			acceptance_group_with_law_status = {
+				visible = "[InformationPanel.IsTabSelected('cultures')]"
+
+				blockoverride "group_label"
+				{
+					text = "COUNTRY_CULTURES_ONE_LINE"
+				}
+
+				blockoverride "group_name"
+				{
+					raw_text = "[GetPlayer.GetPrimaryCulturesDesc]"
+				}
+
+				blockoverride "law_item"
+				{
+					law_item_small = {
+						datacontext = "[AccessPlayer.AccessActiveLawFromGroup('lawgroup_citizenship')]"
+					}
+				}	
+			}
+
+			acceptance_group_with_law_status = {
+				visible = "[InformationPanel.IsTabSelected('religions')]"
+
+				blockoverride "group_label"
+				{
+					text = "[concept_state_religion]"
+				}
+
+				blockoverride "group_name"
+				{
+					raw_text = "[GetPlayer.GetStateReligion.GetName]"
+				}
+
+				blockoverride "law_item"
+				{
+					law_item_small = {
+						datacontext = "[AccessPlayer.AccessActiveLawFromGroup('lawgroup_church_and_state')]"
+					}
+				}	
+			}
+
+			acceptance_group_with_law_status = {
+				visible = "[And(InformationPanel.IsTabSelected('classes'), GetPlayer.HasSpecialSocialHierarchy)]"
 				
-				sort_button = {
-					size = { 230 30 }
+				datacontext = "[AccessPlayer.GetSocialHierarchy]"
+
+				blockoverride "group_label"
+				{
+					text = "[concept_social_hierarchy]"
+				}
+
+				blockoverride "group_name"
+				{	
+					raw_text = "[SocialHierarchy.GetName]"
+				}
+
+				blockoverride "law_item"
+				{
+					law_item_small = {
+						visible = "[GetPlayer.HasSpecialSocialHierarchy]"
+						datacontext = "[AccessPlayer.AccessActiveLawFromGroup('lawgroup_caste_hegemony')]"
+					}
+
+					textbox = {
+						visible = "[Not(GetPlayer.HasSpecialSocialHierarchy)]"
+						margin = { 10 10 }
+						size = { 240 80 }
+						multiline = yes
+						align = nobaseline
+						text = "DEFAULT_SOCIAL_HIERARCHY_EXTRA_DESC"
+					}
+				}	
+			}
+
+			acceptance_group_with_law_status = {
+				visible = "[And(InformationPanel.IsTabSelected('classes'), Not(GetPlayer.HasSpecialSocialHierarchy))]"
+				
+				datacontext = "[AccessPlayer.GetSocialHierarchy]"
+
+				blockoverride "all_textboxes" {
+					empty_state = {
+						blockoverride "visible" {
+							visible = yes
+						}
+						blockoverride "text" {
+							text = "NO_SOCIAL_HIERARCHY"
+						}
+					}
+				}	
+			}
+
+			### SORT BUTTONS
+			culture_or_religion_sort_buttons_widget = {
+				visible = "[InformationPanel.IsTabSelected('cultures')]"
+
+				blockoverride "sort_primary"
+				{
 					text = "CULTURE_TITLE"
 					onclick = "[AccessPlayer.SortCultures('name')]"
 				}
+
+				blockoverride "sort_acceptance"
+				{
+					onclick = "[AccessPlayer.SortCultures('acceptance')]"
+				}
+
+				blockoverride "sort_political_strength"
+				{
+					onclick = "[AccessPlayer.SortCultures('polstr')]"
+				}
+
+				blockoverride "sort_population"
+				{
+					onclick = "[AccessPlayer.SortCultures('population')]"
+				}
+			}
+
+			culture_or_religion_sort_buttons_widget = {
+				visible = "[InformationPanel.IsTabSelected('religions')]"
+
+				blockoverride "sort_primary"
+				{
+					text = "RELIGION_TITLE"
+					onclick = "[AccessPlayer.SortReligions('name')]" 
+				}
+
+				blockoverride "sort_turmoil_column" 
+				{
+					# no turmoil column
+				}
+
+				blockoverride "sort_acceptance"
+				{
+					onclick = "[AccessPlayer.SortReligions('acceptance')]"
+				}
+
+				blockoverride "sort_political_strength"
+				{
+					onclick = "[AccessPlayer.SortReligions('polstr')]"
+				}
+
+				blockoverride "sort_population"
+				{ 
+					onclick = "[AccessPlayer.SortReligions('population')]" 
+				}
+			
+			}
+
+
+			 
+			### SORT BUTTONS OLD
+			flowcontainer = {
+				visible = "[InformationPanel.IsTabSelected('old_default')]"
+				margin_top = 10
+				
+				sort_button = {
+					size = { 230 30 }
+					onclick = "[AccessPlayer.SortCultures('name')]"
+					text = "CULTURE_TITLE"
+				}
+
 				sort_button = {
 					size = { 110 30 }
 					tooltip = "MAJORITY_RELIGION_TITLE"
 					onclick = "[AccessPlayer.SortCultures('religion')]"
+
 					button = {
-						texture = "gfx/interface/buttons/sort_button_icons/sort_icon_religion.dds"
-						size = { 25 25 }
 						parentanchor = center
+						size = { 25 25 }
 						alwaystransparent = yes
+						texture = "gfx/interface/buttons/sort_button_icons/sort_icon_religion.dds"
 					}
 
 				}
+
 				sort_button = {
 					size = { 65 30 }
 					tooltip = "TURMOIL_TITLE"
 					onclick = "[AccessPlayer.SortCultures('turmoil')]"
+
 					button = {
-						texture = "gfx/interface/buttons/sort_button_icons/sort_icon_turmoil.dds"
-						size = { 25 25 }
 						parentanchor = center
+						size = { 25 25 }
 						alwaystransparent = yes
+						texture = "gfx/interface/buttons/sort_button_icons/sort_icon_turmoil.dds"
 					}
 				}
+
 				sort_button = {
 					size = { 65 30 }
 					tooltip = "POLITICAL_STRENGTH_TITLE"
 					onclick = "[AccessPlayer.SortCultures('polstr')]"
+
 					button = {
-						texture = "gfx/interface/buttons/sort_button_icons/sort_icon_political_strength.dds"
-						size = { 25 25 }
 						parentanchor = center
+						size = { 25 25 }
 						alwaystransparent = yes
+						texture = "gfx/interface/buttons/sort_button_icons/sort_icon_political_strength.dds"
 					}
 				}
+
 				sort_button = {
 					size = { 65 30 }
 					tooltip = "POPULATION_TOOLTIP"
 					onclick = "[AccessPlayer.SortCultures('population')]"
+
 					button = {
-						texture = "gfx/interface/buttons/sort_button_icons/sort_icon_population.dds"
-						size = { 25 25 }
 						parentanchor = center
+						size = { 25 25 }
 						alwaystransparent = yes
+						texture = "gfx/interface/buttons/sort_button_icons/sort_icon_population.dds"
 					}
 				}			
 			}
@@ -226,205 +353,648 @@ types culture_panel
 				using = default_list_position
 				direction = vertical
 				minimumsize = { @panel_width_plus_20 -1 }
-				maximumsize = { @panel_width_plus_20 -1 }			
-				margin_top = 10
-				
-				### CULTURES
+				maximumsize = { @panel_width_plus_20 -1 }
+
 				flowcontainer = {
-					parentanchor = hcenter
-					direction = vertical
-					minimumsize = { @panel_width -1 }
-					maximumsize = { @panel_width -1 }
 					visible = "[InformationPanel.IsTabSelected('default')]"
-					using = default_content_fade
+					using = society_panel_tab_contents_properties
+					spacing = 5
+					margin_top = 10
 
-					empty_state = {
-						blockoverride "visible" {
-							visible = "[IsDataModelEmpty(AccessPlayer.AccessPopCultures)]"
-						}
-						blockoverride "text" {
-							text = "NO_CULTURES"
-						}
-					}	
-					
-					flowcontainer = {	
+					datacontext = "[GetPlayer]"
+
+					textbox = {
+						autoresize = yes
+						text = "ACCEPTANCE_STATUS_DISTRIBUTION_LABEL_COUNTRY"
+						parentanchor = hcenter
+					}
+
+					clickable_population_acceptance_status_chart = {}
+
+					flowcontainer = {
+						name = "selected_acceptance_status_info"
+						parentanchor = hcenter
 						direction = vertical
-						visible = "[Not(IsDataModelEmpty(AccessPlayer.AccessPopCultures))]"			
+						minimumsize = { @panel_width -1 }
+						maximumsize = { @panel_width -1 }
+						spacing = 10
+						datacontext = "[SocietyPanel.GetSelectedAcceptanceStatusSegment]" 
+						datacontext = "[AcceptanceStatusSegment.GetStatus]" 
 
-						dynamicgridbox = {
-							datamodel = "[AccessPlayer.AccessPopCultures]"
+						flowcontainer = {
+							direction = vertical
+							parentanchor = hcenter
 
-							item = {
-								flowcontainer = {
-									using = unclickable_listentry_small
-									minimumsize = { @panel_width 48 }
-									alwaystransparent = no
+							margin_top = 20
 
-									button = {
-										name = "tutorial_highlight_specific_culture_button"
-										using = clean_button
-										size = { 230 35 }
-										parentanchor = vcenter
-										onclick = "[InformationPanelBar.OpenCultureInfoPanel(Culture.AccessSelf)]"
-										using = tooltip_above
+							background = {
+								texture = "[AcceptanceStatus.GetBackground]"
+								#alpha = 0.2 #temporary since placeholder backgrounds are opaque
+								fittype = centercrop 
+							}
 
-										tooltipwidget = {
-											FancyTooltip_Culture = {}
-										}
+							widget = {
+								name = "status_heading_area"
+								size = { 555 40 }
+								parentanchor = hcenter
 
-										icon = {
-											visible = "[Culture.IsDiscriminatedIn(GetPlayer.Self)]"
-											texture = "gfx/interface/icons/generic_icons/discriminated_icon.dds"
-											size = { 30 30 }
-											parentanchor = vcenter
-										}
+								background = {
+									using = dark_area
+								}
 
-										icon = {
-											visible = "[Not(Culture.IsDiscriminatedIn(GetPlayer.Self))]"
-											texture = "gfx/interface/icons/generic_icons/accepted_icon.dds"
-											size = { 30 30 }
-											parentanchor = vcenter
-										}
-										
-										textbox = {
-											position = { 30 0 }
-											size = { 120 100% }
-											text = "[Culture.GetNameNoFormatting]"
-											align = left|nobaseline
-											parentanchor = vcenter
-											multiline = yes
-											margin = { 5 0 }
-										}
-									}
-									
-									widget = { size = { 5 5 }}
+								hbox = {
+									layoutpolicy_horizontal = expanding
+									layoutpolicy_vertical = expanding
+									spacing = 3
+									margin = { 12 0 }
 
-									button = {
-										using = clean_button
-										size = { 108 35 }
-										parentanchor = vcenter
-										onclick = "[InformationPanelBar.OpenReligionInfoPanel(Culture.AccessReligion)]"
-										using = tooltip_above
-										datacontext = "[Culture.GetReligion]"
-										
-										tooltipwidget = {
-											FancyTooltip_Religion = {}
-										}
-										
-										textbox = {
-											size = { 100% 100% }
-											text = "[Religion.GetNameNoFormatting]"
-											align = left|nobaseline
-											parentanchor = vcenter
-											multiline = yes
-											margin = { 10 0 }
-										}
-									}
-									
-									widget = {
-										size = { 65 100% }
+									acceptance_status_small_icon = {}
 
-										textbox = {
-											name = "tutorial_highlight_turmoil_value"
-											text = "[GetPlayer.CalcCulturalTurmoil( Culture.Self )|-0%]"
-											size = { 40 100% }
-											align = right|nobaseline
-											parentanchor = right|vcenter
-											tooltip = "CULTURAL_TURMOIL_TOOLTIP"
-											margin_right = 5
-											alpha = "[TransparentIfZero( GetPlayer.CalcCulturalTurmoil( Culture.Self ) )]"
-										}
-
-										icon = {
-											texture = "gfx/interface/icons/generic_icons/secession_culture_possible.dds"
-											size = { 30 30 }
-											parentanchor = vcenter
-											visible = "[And( Culture.HasChanceForSecessionMovement( GetPlayer.Self ), Not( Culture.HasSecessionMovement( GetPlayer.Self ) ))]"
-											tooltip = "CULTURAL_POSSIBLE_SECESSION_ICON_TOOLTIP"
-										}
-
-										icon = {
-											texture = "gfx/interface/icons/generic_icons/secession_culture_ongoing.dds"
-											size = { 30 30 }
-											parentanchor = vcenter
-											visible = "[And( Culture.HasSecessionMovement( GetPlayer.Self ), Not( Culture.HasChanceForSecessionMovement( GetPlayer.Self ) ))]"
-											tooltip = "CULTURAL_GROWING_SECESSION_ICON_TOOLTIP"
-										}
+									textbox = {
+										layoutpolicy_horizontal = expanding
+										layoutpolicy_vertical = expanding
+										align = nobaseline
+										text = "[AcceptanceStatusSegment.GetStatus.GetNameNoIcon]"
 									}
 
 									textbox = {
-										text = "[GetPlayer.GetCulturePolStrAsPercentage(Culture.Self)|1%]"
-										size = { 65 100% }
-										align = right|nobaseline
-										parentanchor = vcenter
-										margin_right = 5
-									}				
-
-									textbox = {
-										text = "[GetPlayer.GetCulturePopulation(Culture.Self)|K]"
-										size = { 65 100% }
-										align = right|nobaseline
-										parentanchor = vcenter
-										margin_right = 5
+										default_format = "#low"
+										autoresize = yes
+										align = nobaseline
+										text = "SELECTED_ACCEPTANCE_STATUS_THRESHOLDS"
 									}
 								}
 							}
-						}	
+
+							widget = {
+								name = "population_portrait_area"
+								visible = "[NotZero_int64(AcceptanceStatusSegment.GetTotalPopulation)]"
+
+								size = { @panel_width 120 }
+								parentanchor = hcenter
+
+								flowcontainer = {
+									parentanchor = vcenter
+									spacing = 10
+									position = { 40 0 }
+
+									icon = {
+										parentanchor = vcenter
+										size = { 60 60 }
+										texture = "gfx/interface/icons/generic_icons/population.dds"
+									}
+
+									textbox = {
+										parentanchor = vcenter
+										autoresize = yes
+										align = nobaseline
+										text = "ACCEPTANCE_STATUS_POPULATION_HEADER_AND_VALUE"
+									}
+								}
+
+								widget = {
+									parentanchor = right|vcenter
+									size = { 270 150 }
+									position = { 0 23 }
+
+									flowcontainer = {
+										parentanchor = center
+										datamodel = "[DataModelFirst(SocietyPanel.AccessRepresentativePops, '(int32)3')]"
+
+										item = {
+											pop_portrait_small = {
+												size = { 80 80 }
+												tooltip = "ACCEPTANCE_STATUS_REPRESENTATIVE_POP_TOOLTIP"
+												using = tooltip_below
+
+												blockoverride "portrait_button" {}
+
+												blockoverride "portrait_size" {
+													size = { 150 150 }
+												}
+
+												blockoverride "portrait_mask" {
+													mask = "gfx/interface/portraits/portrait_mask_no_fade_bottom.dds"
+												}
+											}
+										}
+									}
+								}
+							}
+
+							widget = {
+								visible = "[IsZero_int64(AcceptanceStatusSegment.GetTotalPopulation)]"
+								parentanchor = hcenter
+								name = "no_population_area"
+								size = { @panel_width 120 }
+
+								empty_state = {
+									parentanchor = center
+
+									blockoverride "text" {
+										text = "ACCEPTANCE_STATUS_NO_POPULATION_IN_COUNTRY"
+									}
+								}
+							}
+
+							textbox = {
+								parentanchor = hcenter
+								using = default_list_position
+								margin = { 15 15 }
+								minimumsize = { @panel_width_w_margin 120 }
+								maximumsize = { @panel_width_w_margin -1 }
+								autoresize = yes
+								multiline = yes							
+								align = nobaseline
+								text = "[AcceptanceStatusSegment.GetStatus.GetEffectsDescIn(GetPlayer.Self)]"
+
+								background = {
+									using = entry_bg
+								}
+
+							}
+						}
+
+						flowcontainer = {
+							visible = "[NotZero_int64(AcceptanceStatusSegment.GetTotalPopulation)]"
+							parentanchor = hcenter
+							direction = vertical
+
+							default_header_2texts = {
+								blockoverride "text1" {
+									text = "POPULATION"
+								}
+
+								blockoverride "text2" {
+									text = "SORTED_BY_POPULATION"
+								}
+							}	
+
+							pop_list = {
+								blockoverride "pop_list_context" {
+									datacontext = "[SocietyPanel.GetPopList]"
+								}
+							}
+						}
 					}
 				}
 
-				### NATION FORMATION
-				container = {
-					minimumsize = { @panel_width_plus_20 -1 }
-					maximumsize = { @panel_width_plus_20 -1 }
-					visible = "[InformationPanel.IsTabSelected('nation_formation')]"
-					using = default_content_fade
-					
-					empty_state = {
-						blockoverride "visible" {
-							visible = "[IsDataModelEmpty(AccessPlayer.AccessFormableCountries)]"
+				flowcontainer = {
+					visible = "[InformationPanel.IsTabSelected('cultures')]"
+					using = society_panel_tab_contents_properties
+
+					culture_or_religion_list_dynamicgridbox = {
+						name  = "cultures"
+	
+						blockoverride "cr_list_datamodel"
+						{
+							datamodel = "[AccessPlayer.AccessPopCultures]"
 						}
-						blockoverride "text" {
-							text = "NO_FORMABLE_COUNTRIES"
+
+						blockoverride "cr_item_button_name"
+						{
+							name = "tutorial_highlight_specific_culture_button"
 						}
-					}	
-					
+
+						blockoverride "cr_item_onclick"
+						{
+							onclick = "[InformationPanelBar.OpenCultureInfoPanel(Culture.AccessSelf)]"
+						}
+
+						blockoverride "cr_item_tooltip"
+						{
+							tooltipwidget = {
+								FancyTooltip_Culture = {}
+							}
+						}
+
+						blockoverride "cr_item_name"
+						{
+							text = "CULTURE_NAME_AND_PRIMARY"
+						}
+						
+						blockoverride "cr_item_acceptance"
+						{
+							text = "[Culture.GetAcceptanceIn(GetPlayer.Self)|=]"
+							tooltip = "ACCEPTANCE_OF_CULTURE_TOOLTIP"
+						}
+
+						blockoverride "cr_item_political_strength"
+						{
+							text = "[GetPlayer.GetCulturePolStrAsPercentage(Culture.Self)|1%]"
+						}
+
+						blockoverride "cr_item_population"
+						{
+							text = "[GetPlayer.GetCulturePopulation(Culture.Self)|K]"
+						}
+
+
+					}
+				}
+
+				flowcontainer = {
+					visible = "[InformationPanel.IsTabSelected('religions')]"
+					using = society_panel_tab_contents_properties
+
+					culture_or_religion_list_dynamicgridbox = {
+						name  = "religions"
+
+						blockoverride "cr_list_datamodel"
+						{
+							datamodel = "[AccessPlayer.GetPopReligions]"
+						}
+
+						blockoverride "cr_item_name"
+						{
+							text = "RELIGION_NAME_AND_STATE_RELIGION"
+						}
+
+						blockoverride "cr_item_onclick"
+						{
+							onclick = "[InformationPanelBar.OpenReligionInfoPanel(Religion.AccessSelf)]"
+						}
+
+						blockoverride "cr_item_tooltip"
+						{
+							tooltipwidget = {
+								FancyTooltip_Religion = {}
+							}
+						}
+
+						blockoverride "cr_item_turmoil_column"
+						{
+							# hide turmoil column
+						}
+
+						blockoverride "cr_item_acceptance"
+						{
+							text = "[Religion.GetAcceptanceIn(GetPlayer.Self)|=]"
+							tooltip = "ACCEPTANCE_OF_RELIGION_TOOLTIP"
+						}
+
+						blockoverride "cr_item_political_strength"
+						{
+							text = "[Religion.GetPolStrAsPercentage(GetPlayer)|/%d]"
+						}
+
+						blockoverride "cr_item_population"
+						{
+							text = "[Religion.GetPopulation(GetPlayer)|K]"
+						}
+					} 
+				}
+
+				flowcontainer = {
+					visible = "[InformationPanel.IsTabSelected('classes')]"
+					using = society_panel_tab_contents_properties
+					minimumsize = { @panel_width_plus_14 -1 }
+					maximumsize = { @panel_width_plus_14 -1 }
+					spacing = 5
+					datacontext = "[AccessPlayer.GetSocialHierarchy]"
+
+					divider_decorative = {
+						visible = "[GetPlayer.HasSpecialSocialHierarchy]"
+					}
+
 					flowcontainer = {
-						parentanchor = hcenter					
-						direction = vertical
-						visible = "[Not(IsDataModelEmpty(AccessPlayer.AccessFormableCountries))]"
-						spacing = 5
+						visible = "[GetPlayer.HasSpecialSocialHierarchy]"
+						parentanchor = hcenter
+						margin = { 10 10 }
+						
+						flowcontainer = {
+							parentanchor = vcenter
+							direction = vertical
+							margin_left = 10
+
+							textbox = {
+								autoresize = yes 
+								minimumsize = { 250 -1 }
+								maximumsize = { 250 -1 }
+								multiline = yes
+								align = nobaseline
+								text = "SOCIAL_HIERARCHY_TRIGGER_HEADING"
+							}
+
+							textbox = {
+								autoresize = yes 
+								minimumsize = { 250 -1 }
+								maximumsize = { 250 -1 }
+								multiline = yes
+								align = nobaseline
+								text = "[SocialHierarchy.GetPopTriggerDesc]"
+							}
+						}
 
 						flowcontainer = {
-							parentanchor = hcenter
-							direction = vertical
-							datamodel = "[AccessPlayer.AccessFormableCountries]"
-
-							item = {
-								formable_country_button = {}
+							parentanchor = vcenter
+							spacing = 10
+							margin_left = 30
+							
+							icon = {
+								parentanchor = vcenter
+								size = { 60 60 }
+								texture = "gfx/interface/icons/generic_icons/population.dds"
 							}
-						}	
-					}			
+
+							textbox = {
+								parentanchor = vcenter
+								autoresize = yes 
+								minimumsize = { 180 -1 }
+								maximumsize = { 180 -1 }
+								multiline = yes
+								align = nobaseline
+								text = "SOCIAL_HIERARCHY_POPULATION" 
+							}
+						}
+					}
+
+					default_header = {
+						blockoverride "text" {
+							text = "concept_social_classes"
+						}
+					}
+
+					# we want this background to take up as little logical space as possible, but also start right where the three strata columns start. This is a bit hacky...
+					widget = {
+					 	parentanchor = hcenter
+					 	size = { 0 0 }
+					 	visible = no
+
+					 	widget = {
+					 		parentanchor = hcenter
+					 		size = { @panel_width_minus_10  700 }
+
+					 		background = {
+					 			alpha = 0.3
+					 			fittype = end
+					 			texture = "gfx/interface/icons/acceptance_icons/bg_illu_social_classes.dds"
+					 			
+					 			modify_texture = {
+					 				spriteType = Corneredstretched
+					 				spriteborder = { 0 0 }
+					 				blend_mode = alphamultiply
+					 				texture = "gfx/interface/masks/fade_vertical_center.dds"
+					 			}
+
+					 			modify_texture = {
+					 				spriteType = Corneredstretched
+					 				spriteborder = { 0 0 }
+					 				blend_mode = alphamultiply
+					 				texture = "gfx/interface/masks/fade_horizontal_less_right.dds"
+					 			}
+					 		}
+					 	}
+					}
+
+					flowcontainer = {
+						#margin = { 6 0 }
+
+						social_class_strata_column_flowcontainer = {
+							name = "lower_strata_classes"
+
+							blockoverride "strata_icon"
+							{
+								texture = "gfx/interface/icons/pops_icons/sol_poor_icon.dds"
+							}
+
+							blockoverride "strata_name"
+							{
+								raw_text = "LOWER_NO_ICON"
+							}
+
+							blockoverride "social_class_strata_datamodel"
+							{
+								datamodel = "[SocialHierarchy.GetLowerStrataSocialClasses]"
+							}
+							
+							
+						}
+
+						social_class_strata_column_flowcontainer = {
+							name = "middle_strata_classes"
+
+							blockoverride "strata_icon"
+							{
+								texture = "gfx/interface/icons/pops_icons/sol_middle_icon.dds"
+							}
+
+							blockoverride "strata_name"
+							{
+								raw_text = "MIDDLE_NO_ICON"
+							}
+
+							blockoverride "social_class_strata_datamodel"
+							{
+								datamodel = "[SocialHierarchy.GetMiddleStrataSocialClasses]"
+							}
+						}
+
+						social_class_strata_column_flowcontainer = {
+							name = "upper_strata_classes"
+
+							blockoverride "strata_icon"
+							{
+								texture = "gfx/interface/icons/pops_icons/sol_upper_icon.dds"
+							}
+
+							blockoverride "strata_name"
+							{
+								raw_text = "UPPER_NO_ICON"
+							}
+
+							blockoverride "social_class_strata_datamodel"
+							{
+								datamodel = "[SocialHierarchy.GetUpperStrataSocialClasses]"
+							}
+						}
+					}
+
 				}
 			}
 		}
 	}
 
+	type acceptance_status_portrait_portrait = pop_portrait_small {
+		datacontext = "[SocietyPanel.GetPopList.GetItem0.GetFirstPop]" #TODO get a more representative pop
+		size = { 100 100 }
+
+		blockoverride "portrait_button" {}
+		
+		blockoverride "portrait_size" {
+			size = { 150 150 }
+		}
+	}
+
+	type social_class_strata_column_flowcontainer = flowcontainer {
+		direction = vertical
+		minimumsize = { -1 190 }
+		margin = { 7 0 }
+		margin_bottom = 10
+		spacing = 5
+
+		using = entry_bg_fancy
+
+		flowcontainer = {
+			parentanchor = hcenter
+			spacing = 2
+			margin_top = 15
+
+			icon = {
+				parentanchor = vcenter
+				size = { 28 28 }
+
+				block "strata_icon" {
+					texture = "gfx/interface/icons/pops_icons/sol_upper_icon.dds"
+				}
+			}
+
+			textbox = {
+				parentanchor = vcenter
+				align = hcenter|nobaseline
+				autoresize = yes
+				margin_left = 2
+
+				block "strata_name" {
+					raw_text = "???"
+				}
+			}
+		}
+
+		container = {
+			name = "social_classes_with_dynamic_min_heights"
+			parentanchor = hcenter
+
+			# ensures each column is equally tall in social hierarchies that have uneven amount of classes per Strata
+			# can add more min_heights for higher counts as needed
+			widget = {
+				name = "min_height_2"
+				visible = "[EqualTo_int32(SocialHierarchy.GetMaxSocialClassesInAnyStrata, '(int32)2')]"
+				size = { 1 350 } #this height is measured in game from the flowcontainer below...
+			}
+
+			flowcontainer = {
+				name = "social_classes"
+				parentanchor = hcenter
+				direction = vertical
+				spacing = 6
+
+				block "social_class_strata_datamodel"
+				{
+					# datamodel = ? 
+				}
+
+				item = {
+					flowcontainer = {
+						parentanchor = hcenter
+						direction = vertical
+						spacing = 3
+						margin_bottom = 5
+						minimumsize = { 160 168 }
+
+						background = {
+							using = dark_area
+							alpha = 0.2
+						}
+
+						datacontext = "[GetPlayer]" #for the tooltip
+
+						tooltipwidget = {
+							FancyTooltip_SocialClass = {}
+						}
+
+						widget = {
+							size = { @social_class_width 35 }
+
+							hbox = {
+								layoutpolicy_horizontal = expanding
+								layoutpolicy_vertical = expanding
+								margin = { 10 0 }
+
+								textbox = {
+									layoutpolicy_horizontal = expanding
+									autoresize = yes 
+									align = nobaseline
+									text = "[SocialClass.GetName]"
+								}
+
+								textbox = {
+									autoresize = yes 
+									align = nobaseline
+									text = "[SocialClass.GetTotalPopulationIn(GetPlayer.Self)|vK]"
+								}
+							}
+						}
+
+						divider_clean = {
+							parentanchor = hcenter
+							size = { 160 2 }	 	
+						}
+
+						dynamicgridbox = {
+							parentanchor = hcenter
+							datamodel_wrap = 4
+							flipdirection = yes
+							minimumsize = { 150 80 } #two rows minimum so cards align nicely with each other	
+							datamodel = "[SocialClass.GetAllowedProfessions]"
+
+							item = {
+								widget = {
+									size = { 40 40 }
+
+									icon = {
+										parentanchor = center
+										size = { 30 30 }
+										texture = "[PopType.GetTexture]"
+									}
+								}
+							}
+						}
+
+						divider_clean = {
+							visible = "[SocialClass.HasBoundedAcceptanceIn(GetPlayer.Self)]"
+							parentanchor = hcenter
+							size = { 160 2 }
+						}
+
+						widget = {
+							visible = "[SocialClass.HasBoundedAcceptanceIn(GetPlayer.Self)]"
+							name = "strata_acceptance"
+							parentanchor = hcenter
+							size = { 170 32 }
+							tooltip = "SOCIAL_CLASS_ACCEPTANCE_STATUS_TOOLTIP"
+
+							flowcontainer = {
+								parentanchor = center
+								datamodel = "[SocialClass.GetAllowedStatusesIn(GetPlayer.Self)]"
+
+								item = {
+									acceptance_status_small_icon = {}
+								}
+							}
+						}	
+					}
+				}
+			}
+		}	
+	}
+
+
 	type country_button = button {
+		size = { @panel_width 60 }
 		using = default_button
+
 		blockoverride "sound" {
 			using = confirm_button_sound
 		}
-		size = { @panel_width 60 }
 		
 		flowcontainer = {
-			position = { 10 0 }
 			parentanchor = vcenter
+			position = { 10 0 }
 
 			flag_icon = {
 				framesize = "[GetSmallFlagFrameSize]"
-				block "flag_definition" {
-				}
+				block "flag_definition" {}
 				blockoverride "flag_tooltip" {}
 			}
 			
@@ -434,43 +1004,308 @@ types culture_panel
 				direction = vertical
 			
 				textbox = {
-					block "country_name" {}
 					elide = right
 					fontsize_min = 12
 					max_width = 375
 					autoresize = yes
-					align = left|nobaseline
+					align = nobaseline
 					using = fontsize_large
+					block "country_name" {}
 				}
 
 				textbox = {
-					block "country_tier" {}
 					autoresize = yes
-					align = left|nobaseline
+					align = nobaseline
 					using = fontsize_medium
+					block "country_tier" {}
 				}					
 			}	
 		}	
 
 		textbox = {
-			block "right_number" {}
+			parentanchor = right|vcenter
+			widgetanchor = right|vcenter
 			margin_right = 20
 			autoresize = yes
 			align = right|nobaseline
-			parentanchor = right|vcenter
-			widgetanchor = right|vcenter
 			using = fontsize_large
+			block "right_number" {}
 		}	
 
 		textbox = {
-			block "right_number_two" {}
+			parentanchor = right|vcenter
+			widgetanchor = right|vcenter
 			margin_right = 20
 			autoresize = yes
 			align = right|nobaseline
-			parentanchor = right|vcenter
-			widgetanchor = right|vcenter
 			using = fontsize_large
+			block "right_number_two" {}
 		}			
+	}
+
+	type acceptance_group_with_law_status = top_illu {
+		name = "law_status"
+
+		blockoverride "illu" {
+			texture = "gfx/interface/illustrations/top_illus/top_illu_cultures.dds"
+		}
+
+		flowcontainer = {
+			parentanchor = hcenter
+			resizeparent = yes
+			spacing = 10
+			margin = { 10 10 }
+			
+			flowcontainer = {
+				parentanchor = vcenter
+				direction = vertical
+				margin = { 0 6 }
+
+				block "all_textboxes" {
+					textbox = {
+						parentanchor = hcenter
+						minimumsize = { @panel_width_half -1 }
+						maximumsize = { @panel_width_half -1 }
+						autoresize = yes
+						align = hcenter|nobaseline
+
+						block "group_label" {
+							raw_text = "???"
+						}
+					}
+
+					textbox = {
+						parentanchor = hcenter
+						minimumsize = { @panel_width_half -1 }
+						maximumsize = { @panel_width_half -1 }
+						default_format = "#v"
+						margin = { 6 0 }
+						multiline = yes
+						autoresize = yes
+						align = hcenter|nobaseline
+						using = fontsize_xl
+
+						block "group_name" {
+							raw_text = "[GetPlayer.GetPrimaryCulturesDesc]"
+						}
+					}
+				}
+			}
+
+			block "law_item"
+			{
+
+			}
+		}
+	}
+
+
+	type culture_or_religion_sort_buttons_widget = widget {
+		size = { 535 40 }
+
+		vbox = {
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+
+			widget = {
+				size = { 0 10 }
+			}
+
+			hbox = {
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+
+				sort_button = {
+					size = { 0 30 }
+					layoutpolicy_horizontal = expanding
+					
+					block "sort_primary" {
+						raw_text = "???"
+						# onclick = ?
+					}
+					
+				}
+				sort_button = {
+					size = { 65 30 }
+					raw_tooltip = "[concept_acceptance]"
+
+					block "sort_acceptance" {
+						# onclick = ?
+					}
+					
+					button = {
+						parentanchor = center
+						size = { 25 25 }
+						alwaystransparent = yes
+						texture = "gfx/interface/buttons/sort_button_icons/sort_icon_acceptance.dds"
+					}
+				}
+
+				block "sort_turmoil_column"
+				{
+					sort_button = {
+						size = { 65 30 }
+						raw_tooltip = "[concept_cultural_turmoil]"
+						onclick = "[AccessPlayer.SortCultures('turmoil')]" 	#####
+						
+						button = {
+							parentanchor = center
+							size = { 25 25 }
+							alwaystransparent = yes
+							texture = "gfx/interface/buttons/sort_button_icons/sort_icon_turmoil.dds"
+						}
+					}
+				}
+
+				sort_button = {
+					size = { 65 30 }
+					tooltip = "POLITICAL_STRENGTH_TITLE"
+
+					block "sort_political_strength" {
+						# onclick = ?
+					}
+
+					
+					button = {
+						parentanchor = center
+						size = { 25 25 }
+						alwaystransparent = yes
+						texture = "gfx/interface/buttons/sort_button_icons/sort_icon_political_strength.dds"
+					}
+				}
+				sort_button = {
+					size = { 65 30 }
+					tooltip = "POPULATION_TOOLTIP"
+
+					block "sort_population" {
+						# onclick = ? 
+					}
+					
+					button = {
+						parentanchor = center
+						size = { 25 25 }
+						alwaystransparent = yes
+						texture = "gfx/interface/buttons/sort_button_icons/sort_icon_population.dds"
+					}
+				}
+			}
+		}
+
+
+		
+		
+	}
+
+
+	type culture_or_religion_list_dynamicgridbox = dynamicgridbox {
+		block "cr_list_datamodel" {
+			# datamodel = ?
+		}
+
+		item = {
+
+			#540 48
+			widget = {
+				size = { @panel_width 48 }
+				using = unclickable_listentry_small
+				
+				hbox = {
+					layoutpolicy_horizontal = expanding
+					layoutpolicy_vertical = expanding
+
+
+					button = {
+						using = clean_button
+						size = { 0 35 }
+						layoutpolicy_horizontal = expanding
+
+						block "cr_item_onclick" {
+							# onclick = ?
+						}
+
+						block "cr_item_tooltip" {
+							# tooltip or tooltipwidget = ? 
+						}
+
+						block "cr_item_button_name" {
+							# name = ? (for tutorial)
+						}
+						
+						textbox = {
+							size = { 100% 100% }
+							align = left|nobaseline
+							multiline = yes
+							margin = { 10 0 }
+
+							block "cr_item_name" {
+								raw_text = "???"
+							}
+						}
+					}
+					
+					widget = { size = { 5 5 }}
+
+					textbox = {
+						size = { 65 0 }
+						layoutpolicy_vertical = expanding
+						align = right|nobaseline
+						margin_right = 5
+						
+						block "cr_item_acceptance" {
+							raw_text = "???"
+						}
+					}
+
+					block "cr_item_turmoil_column" {
+						widget = {
+							size = { 65 0 }
+							layoutpolicy_vertical = expanding
+
+							textbox = {
+								name = "tutorial_highlight_turmoil_value"
+								parentanchor = right|vcenter
+								size = { 40 100% }
+								alpha = "[TransparentIfZero( GetPlayer.CalcCulturalTurmoil( Culture.Self ) )]"
+								align = right|nobaseline
+								margin_right = 5
+								tooltip = "CULTURAL_TURMOIL_TOOLTIP"
+								text = "[GetPlayer.CalcCulturalTurmoil( Culture.Self )|-0%]"
+							}
+
+							icon = {
+								visible = "[Culture.HasSecessionMovement( GetPlayer.Self )]"
+								parentanchor = vcenter
+								size = { 30 30 }
+								tooltip = "CULTURAL_GROWING_SECESSION_ICON_TOOLTIP"
+								texture = "gfx/interface/icons/generic_icons/secession_culture_ongoing.dds"
+							}
+						}
+					}
+
+					textbox = {
+						size = { 65 0 }
+						layoutpolicy_vertical = expanding
+						align = right|nobaseline
+						margin_right = 5
+
+						block "cr_item_political_strength" {
+							raw_text = "???"
+						}
+					}				
+
+					textbox = {
+						size = { 65 0 }
+						layoutpolicy_vertical = expanding
+						align = right|nobaseline
+						margin_right = 5
+						
+						block "cr_item_population" {
+							raw_text = "???"
+						}
+					}
+				}
+			}
+		}
 	}
 
 	type formable_country_button = container {
@@ -484,10 +1319,10 @@ types culture_panel
 		}
 
 		country_button = {
+			parentanchor = vcenter
 			onclick = "[InformationPanelBar.OpenCountryFormationPanel(CountryFormation.Self)]"
 			datacontext = "[CountryFormation.GetDefinition]"
 			size = { 450 60 }
-			parentanchor = vcenter
 			tooltip = "GO_TO_COUNTRY_FORMATION"
 			
 			blockoverride "country_name" {
@@ -499,15 +1334,15 @@ types culture_panel
 			}		
 
 			blockoverride "flag_definition" {
-				texture = "[CountryDefinition.GetFlag('formation').GetSmallFlagTexture]"
-				frame = "[CountryDefinition.GetFlag('formation').GetSmallFlagFrame]"
 				parentanchor = vcenter
+				frame = "[CountryDefinition.GetFlag('formation').GetSmallFlagFrame]"
+				texture = "[CountryDefinition.GetFlag('formation').GetSmallFlagTexture]"
 			}
 		}
 
 		textbox = {
 			parentanchor = right|vcenter
-			align = left|nobaseline
+			align = nobaseline
 			margin_right = 10
 			autoresize = yes
 			tooltip = "FORM_COUNTRY_TOOLTIP"
@@ -525,38 +1360,392 @@ types culture_panel
 		size = { @panel_width_half 80 }
 		onclick = "[InformationPanelBar.OpenChangeLaw(Law.AccessSelf)]"
 
-		flowcontainer = {
-			parentanchor = vcenter
-			margin_left = 10
-			spacing = 10
-			
-			law_icon = {
-				size = { 60 60 }
-				parentanchor = vcenter
-			}
-			
-			flowcontainer = {
-				direction = vertical
-				parentanchor = vcenter
-
-				textbox = {
-					autoresize = yes
-					align = nobaseline
-					raw_text = "#title [Law.GetGroup.GetNameNoFormatting]#!"
-				}
-
-				textbox = {
-					autoresize = yes
-					align = nobaseline
-					multiline = yes
-					maximumsize = { 190 -1 }
-					text = "[Law.GetNameNoFormatting|v]"
-				}
-			}
-		}
-
 		tooltipwidget = {
 			FancyTooltip_Law = {}
 		}
+
+
+		hbox = {
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+			margin = { 10 10 }
+			spacing = 5
+
+			law_icon = {
+				size = { 60 60 }
+			}
+
+			vbox = {
+				layoutpolicy_horizontal = expanding
+
+				expand = {}
+
+				textbox = {
+					layoutpolicy_horizontal = expanding
+					size = { 0 23 }
+					align = nobaseline
+					default_format = "#title"
+					elide = right
+					fontsize_min = 14
+					text = "[Law.GetGroup.GetNameNoFormatting]"
+				}
+
+				textbox = {
+					layoutpolicy_horizontal = expanding
+					size = { 0 23 }
+					align = nobaseline
+					default_format = "#title"
+					elide = right
+					fontsize_min = 14
+					text = "[Law.GetNameNoFormatting|v]"
+				}
+
+				expand = {}
+			}
+
+			law_changable_widget = {
+				size = { 30 45 }
+
+				blockoverride "law_change_textsize" {
+					using = fontsize_medium
+				}
+			}
+
+		}		
 	}
+
+	type clickable_population_acceptance_status_chart = v3_clickable_stacked_barchart {
+		block "barchart_size" {
+			size = { @panel_width 85 } 
+		}
+
+		blockoverride "barchart_datamodel" {
+			datamodel = "[AccessPlayer.GetAllAcceptanceStatusSegments]" 
+		}
+
+		blockoverride "barchart_item_stretchfactor" {
+			layoutstretchfactor_horizontal = "[AcceptanceStatusSegment.GetTotalPopulation]"
+			min_width = "[Select_float(EqualTo_int64(AcceptanceStatusSegment.GetTotalPopulation, '(int64)0'),'(float)46','(float)80')]"
+		}
+
+		blockoverride "barchart_item_button_properties"
+		{
+			onclick = "[SocietyPanel.SelectAcceptanceStatus(AcceptanceStatusSegment.GetStatus)]"
+			alwaystransparent = "[SocietyPanel.IsAcceptanceStatusSelected(AcceptanceStatusSegment.GetStatus)]"
+		}
+
+		blockoverride "barchart_item_datacontext" 
+		{
+			datacontext = "[AcceptanceStatusSegment.GetStatus]"
+		}
+
+		blockoverride "barchart_item_color" 
+		{
+			color = "[AcceptanceStatusSegment.GetColor]"
+			alpha = "[TransparentIfTrue(EqualTo_int64(AcceptanceStatusSegment.GetTotalPopulation, '(int64)0'))]"
+		}
+		
+		blockoverride "barchart_item_datacontext" {
+			datacontext = "[AcceptanceStatusSegment.GetStatus]"
+		}
+
+		blockoverride "barchart_item_tooltip" {
+			tooltip = "ACCEPTANCE_STATUS_SEGMENT_SIMPLE_TEXT_TOOLTIP"
+		}
+
+		blockoverride "barchart_item_tooltip_placement" {
+			using = tooltip_above
+		}
+
+		blockoverride "barchart_item_vertical_inset" {
+			visible = "[Not(SocietyPanel.IsAcceptanceStatusSelected(AcceptanceStatusSegment.GetStatus))]"
+
+			state = {
+				name = _show
+				size = { 0 15 }
+				duration = 0.15
+				using = Animation_Curve_EaseOut
+			}
+
+			state = {
+				name = _hide
+				size = { 0 0 }
+				duration = 0.25
+				using = Animation_Curve_EaseOut
+			}
+		}
+
+		blockoverride "barchart_item_contents" {
+			
+			container = {
+				name = "active_segment"
+				visible = "[NotEqualTo_int64(AcceptanceStatusSegment.GetTotalPopulation, '(int64)0')]"
+				parentanchor = center
+
+				icon = {
+					name = "large_selection_glow"
+					visible = "[SocietyPanel.IsAcceptanceStatusSelected(AcceptanceStatusSegment.GetStatus)]"
+					parentanchor = center
+					size = { 200 200 }
+					using = rotate_glow_animation_02
+					position = { 0 -5 }
+					
+					state = {
+						name = _show
+						alpha = 0.5
+						duration = 0.3
+					}
+
+					state = {
+						name = _hide
+						alpha = 0
+						duration = 0.3
+					}
+				}
+
+				acceptance_status_large_icon = {
+					parentanchor = center
+					scale = 0.7	
+				}
+
+				acceptance_status_large_icon = {
+					name = acceptance_status_large_animation
+					visible = "[SocietyPanel.IsAcceptanceStatusSelected(AcceptanceStatusSegment.GetStatus)]"
+					parentanchor = center
+
+					state = {
+						name = _show
+						scale = 1
+						duration = 0.15
+						using = Animation_Curve_EaseOut
+					}
+
+					state = {
+						name = _hide
+						scale = 0.7
+						duration = 0.25
+						using = Animation_Curve_EaseOut
+					}
+				}
+			}
+
+			container = {
+				name = "inactive_segment"
+
+				parentanchor = center
+				visible = "[EqualTo_int64(AcceptanceStatusSegment.GetTotalPopulation, '(int64)0')]"
+
+				icon = {
+					name = "small_selection_glow"
+					visible = "[SocietyPanel.IsAcceptanceStatusSelected(AcceptanceStatusSegment.GetStatus)]"
+					parentanchor = center
+					size = { 40 40 }
+					using = rotate_glow_animation_02
+					alpha = 0.5
+
+					state = {
+						name = _show
+						alpha = 0.5
+						duration = 0.3
+					}
+
+					state = {
+						name = _hide
+						alpha = 0
+						duration = 0.3
+					}
+				}
+
+				acceptance_status_small_icon = {
+					visible = "[SocietyPanel.IsAcceptanceStatusSelected(AcceptanceStatusSegment.GetStatus)]"
+					parentanchor = center
+					alpha = "[TransparentIfTrue(Not(SocietyPanel.IsAcceptanceStatusSelected(AcceptanceStatusSegment.GetStatus)))]"
+				}
+
+				acceptance_status_small_icon = {
+					parentanchor = center
+					visible = "[Not(SocietyPanel.IsAcceptanceStatusSelected(AcceptanceStatusSegment.GetStatus))]"
+					alpha = "[TransparentIfTrue(Not(SocietyPanel.IsAcceptanceStatusSelected(AcceptanceStatusSegment.GetStatus)))]"
+					scale = 0.7
+				}
+			}
+
+			### SELECTION MARKERS
+			icon = {
+				name = "selection_border"
+				visible = "[SocietyPanel.IsAcceptanceStatusSelected(AcceptanceStatusSegment.GetStatus)]"
+				parentanchor = center
+				using = highlighted_square_selection
+				size = { 101% 103% }
+			}
+
+			icon = {
+				name = "selection_arrow"
+				visible = "[SocietyPanel.IsAcceptanceStatusSelected(AcceptanceStatusSegment.GetStatus)]"
+				parentanchor = bottom|hcenter
+				widgetanchor = top|hcenter
+				size = { 45 20 }
+				position = { 0 0 }
+				texture = "gfx/interface/politics_view/summary_arrow_down.dds"
+
+				state = {
+					name = _show
+					alpha = 1
+					duration = 0.25
+				}
+
+				state = {
+					name = _hide
+					alpha = 0
+					duration = 0.25
+				}
+			}
+		
+		}
+	}
+
+	type population_acceptance_status_chart_with_label_flowcontainer = flowcontainer {
+		parentanchor = hcenter
+		spacing = 5
+		direction = vertical
+
+		textbox = {
+			autoresize = yes
+			parentanchor = hcenter
+
+			block "distribution_label" {
+				raw_text = "???"
+			}
+		}
+
+		population_acceptance_status_chart = {
+			parentanchor = hcenter
+		}
+	}
+
+	type population_acceptance_status_chart = v3_stacked_barchart {
+		block "barchart_size" {
+			size = { @panel_width 40 }
+		}
+
+		blockoverride "barchart_item_margins" {
+			margin = { 0 0 }
+		}
+
+		blockoverride "barchart_item_datacontext" {
+			datacontext = "[AcceptanceStatusSegment.GetStatus]"
+		}
+
+		blockoverride "barchart_item_stretchfactor" {
+			layoutstretchfactor_horizontal = "[AcceptanceStatusSegment.GetTotalPopulation]"
+			min_width = 40
+		}
+
+		blockoverride "barchart_item_visibility" {
+			visible = "[NotZero_int64(AcceptanceStatusSegment.GetTotalPopulation)]"
+		}
+
+		blockoverride "barchart_item_tooltip" {
+			tooltipwidget = {
+				FancyTooltip_AcceptanceStatusSegment = {}
+			}
+		}
+
+		blockoverride "barchart_item_color" {
+			color = "[AcceptanceStatusSegment.GetColor]"  
+		}
+
+		blockoverride "barchart_item_icon" {
+			widget = {
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+
+				acceptance_status_small_icon = {
+					parentanchor = center
+				}
+
+				increasing_acceptance_icon = {
+					visible = "[GreaterThan_int64( AcceptanceStatusSegment.GetTotalPopulationIncreasingInAcceptance, '(int64)0')]"
+					parentanchor = center
+					position = { 15 0 }
+					size = { 14 14 }
+				}
+			}
+		}
+	}
+
+	type acceptance_status_small_icon = button {
+		size = { 30 30 }
+		alwaystransparent = yes #this is a button to get mouseover effects, not to be actually clicked
+		texture = "[AcceptanceStatus.GetSmallIcon]"
+	}
+
+	type increasing_acceptance_icon = icon {
+		size = { 20 20 }
+		texture = "gfx/interface/icons/generic_icons/trend_upup.dds"
+	}
+
+	type pop_acceptance_icon = acceptance_status_small_icon {
+		datacontext = "[Pop.GetAcceptanceStatus]"
+		
+		increasing_acceptance_icon = {
+			visible = "[Pop.IsAcceptanceStatusIncreasing]"
+			parentanchor = bottom|right
+			size = { 12 12 }
+		}
+
+		tooltipwidget = {
+			FancyTooltip_PopAcceptance = {}
+		}
+	}
+
+	type acceptance_status_large_icon = button {
+		size = { 70 77 }
+
+		button = {
+			parentanchor = top|hcenter 
+			size = { 70 70 }
+			alwaystransparent = yes
+			texture = "gfx/interface/icons/acceptance_icons/acceptance_frame.dds"
+		}
+		
+		button = {
+			parentanchor = top|hcenter 
+			size = { 70 70 }
+			alwaystransparent = yes
+			texture = "[AcceptanceStatus.GetLargeIcon]"
+		}
+
+		button = {
+			parentanchor = bottom|hcenter 
+			size = { 25 25 }
+			alwaystransparent = yes
+			texture = "[AcceptanceStatus.GetSmallIcon]"
+		}
+
+		increasing_acceptance_icon = {
+			visible = "[GreaterThan_int64( AcceptanceStatusSegment.GetTotalPopulationIncreasingInAcceptance, '(int64)0')]"
+			parentanchor = center
+			position = { 22 12 }
+			size = { 17 17 }
+		}	
+
+		alwaystransparent = yes #this is a button to get mouseover effects, not to be actually clicked
+	}
+
+	type acceptance_status_fancy_tooltip_large_icon = button {
+		parentanchor = center 
+		size = { 65 65 }
+		alwaystransparent = yes
+		texture = "[AcceptanceStatus.GetLargeIcon]"
+	}
+}
+
+template society_panel_tab_contents_properties
+{
+	parentanchor = hcenter
+	minimumsize = { @panel_width -1 }
+	maximumsize = { @panel_width -1 }
+	direction = vertical
+	using = default_content_fade
 }

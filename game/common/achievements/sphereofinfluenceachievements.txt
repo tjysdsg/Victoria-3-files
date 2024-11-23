@@ -1,0 +1,254 @@
+﻿# possible - filters out achivements on game start so we dont have to check everything all the time
+# happened - checks if achivement happened
+
+achievement_duran_duran = {
+	possible = {
+		has_dlc_feature = ep1_cosmetics
+		OR = {
+			c:HER ?= this
+			AND = {
+				c:AFG ?= this
+				was_formed_from = HER
+			}
+		}
+	} 
+	happened = {
+		c:AFG ?= this
+		was_formed_from = HER
+        owns_entire_state_region = STATE_CENTRAL_HIGHLANDS # Hazaristan
+        owns_entire_state_region = STATE_BALKH # Southern Turkestan
+        owns_entire_state_region = STATE_KABUL # Kabulistan
+        owns_entire_state_region = STATE_KANDAHAR
+        owns_entire_state_region = STATE_QUETTA
+        owns_entire_state_region = STATE_PASHTUNISTAN
+        owns_entire_state_region = STATE_NORTHERN_BALUCHISTAN
+        owns_entire_state_region = STATE_HERAT
+        owns_entire_state_region = STATE_BALUCHISTAN
+        owns_entire_state_region = STATE_KASHMIR
+        owns_entire_state_region = STATE_PUNJAB
+        owns_entire_state_region = STATE_KHORASAN
+        owns_entire_state_region = STATE_SINDH
+
+        NAND = {
+	        is_in_power_bloc = yes
+	        is_power_bloc_leader = no
+	    }
+	}
+}
+
+achievement_hyperpeace = {
+	possible = {		
+		always = yes
+	}
+	happened = {
+		is_in_power_bloc = yes
+		ROOT = {
+			is_in_same_power_bloc = c:KOR
+		}
+		ROOT = {
+			is_in_same_power_bloc = c:FIN
+		}
+	}
+}
+
+achievement_bootlicker = {
+	possible = {		
+		always = yes
+	}
+	happened = {
+		hidden_trigger = {
+			any_political_lobby = {
+				is_political_lobby_type = lobby_pro_overlord
+				appeasement = 10
+			}
+		}
+	}
+}
+
+achievement_im_the_captain_now = {
+	possible = {
+		always = yes
+	}
+	happened = {
+		is_power_bloc_leader = yes
+		hidden_trigger = {
+			has_variable = achievement_im_the_captain_now
+		}
+	}
+}
+
+achievement_new_order = {
+	possible = {
+		has_dlc_feature = ep1_cosmetics
+		is_in_power_bloc = yes
+	}
+	happened = {
+		is_power_bloc_leader = yes
+		power_bloc = {
+			total_used_principle_levels = 12
+		}
+	}
+}
+
+achievement_great_game_no_re = {
+	possible = {
+		has_dlc_feature = ep1_cosmetics
+		has_objective = objective_great_game
+	}
+	happened = {
+		hidden_trigger = {
+			has_variable = achievement_great_game_no_re
+		}
+	}
+}
+
+achievement_honor_and_life = {
+	possible = {
+		has_dlc_feature = ep1_cosmetics
+		c:CIR ?= this
+	}
+	happened = {
+		hidden_trigger = {
+			has_variable = honor_and_life_achievement
+		}
+	}
+}
+
+achievement_iranzamin = {
+	possible = {
+		has_dlc_feature = ep1_cosmetics
+		c:PER ?= this
+	}
+	happened = {
+		literacy_rate >= 0.80
+		hidden_trigger = {
+			has_variable = iranzamin_achievement
+		}
+	}
+}
+
+achievement_for_twelve_years_you_have_been_asking = {
+	possible = {
+		always = yes
+	}
+	happened = {
+		any_scope_building = {
+			NOR = {
+				is_building_group = bg_government
+				is_building_group = bg_construction
+				is_building_group = bg_military
+				is_building_group = bg_urban_facilities
+				is_building_group = bg_canals
+				is_building_group = bg_monuments_hidden
+				is_building_group = bg_service
+			}
+			level > 0
+			private_ownership_fraction = 1
+		}
+		hidden_trigger = {
+			NOT = { has_variable = achievement_for_twelve_years_you_have_been_asking_timed }
+			has_variable = achievement_for_twelve_years_you_have_been_asking
+		}
+	}
+}
+
+achievement_cant_touch_this = {
+	possible = {
+		always = yes
+	}
+	happened = {
+		custom_tooltip = {
+			text = cant_touch_this_possible_tt
+			has_variable = cant_touch_this_achievement_possible
+		}
+		any_scope_building = {
+			level > 0
+			private_ownership_fraction = 0
+		}
+		hidden_trigger = {
+			NOT = { has_variable = achievement_cant_touch_this_timed }
+			has_variable = achievement_cant_touch_this
+		}
+	}
+}
+
+achievement_standard_oil = {
+	possible = {
+		always = yes
+	}
+	happened = {
+		hidden_trigger = {
+			num_investments_of_type = {
+			   type = building_oil_rig
+			   value >= 30
+			}
+		}
+	}
+}
+
+achievement_diplomatic_victory = {
+	possible = {
+		always = yes
+	}
+	happened = {
+		country_rank >= rank_value:great_power
+		hidden_trigger = {
+			any_country = {
+				filter = {
+					country_rank >= rank_value:great_power
+					NOT = {
+						this = root
+					}
+				}
+				any_political_lobby = {
+					is_political_lobby_type = lobby_pro_country
+					target = root
+				}
+				count = all
+			}
+		}
+	}
+}
+	
+achievement_hermit_kingdom = {
+	possible = {
+		has_dlc_feature = ep1_cosmetics
+		c:KOR ?= this
+	}
+	happened = {
+		hidden_trigger = {
+			has_variable = hermit_kingdom_achievement
+		}
+	}
+}
+	
+achievement_cult_of_reason = {
+	possible = {
+		has_dlc_feature = ep1_cosmetics
+		is_in_power_bloc = yes
+	}
+	happened = {
+		hidden_trigger = {
+		    is_power_bloc_leader = yes
+			power_bloc ?= {
+				has_identity = identity:identity_ideological_union
+				any_power_bloc_member = {
+					count >= 10
+				}
+			}
+			has_law = law_type:law_state_atheism
+		}
+	}
+}
+	
+achievement_declaration_of_independence = {
+	possible = {
+		hidden_trigger = {
+			has_variable = declaration_of_independence_ach_possible
+		}
+	}
+	happened = {
+		is_subject = no
+	}
+}
+	

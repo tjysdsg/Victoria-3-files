@@ -1918,4 +1918,107 @@ types front_panel_types
 			}
 		}
 	}
+
+	type front_movement_marker_icon = flowcontainer {
+		background = {
+			visible = "[Or(FrontMovementMarker.IsAllSelectedFormationsTarget, FrontMovementMarker.IsAllSelectedFormationsLocation)]"
+			texture = "gfx/interface/map_markers/round_highlight_blue.dds"
+		}
+
+		background = {
+			visible = "[And(And(Front.IsBeingHighlighted, Not(FrontMovementMarker.IsAnySelectedFormationsTarget)), IsValid( Front.GetDeploySelectedFormationsCommand ))]"
+			texture = "gfx/interface/map_markers/round_highlight.dds"
+		}
+
+		background = {
+			visible = "[And(Front.IsBeingHighlighted, And(Not(IsValid( Front.GetDeploySelectedFormationsCommand )), Not(Or(FrontMovementMarker.IsAllSelectedFormationsTarget, FrontMovementMarker.IsAllSelectedFormationsLocation))))]"
+			texture = "gfx/interface/map_markers/convoy_raiding_highlight.dds"
+		}
+
+		background = {
+			visible = "[Or(Front.IsBeingHighlighted, FrontMovementMarker.IsAnySelectedFormationsTarget)]"
+			texture = "gfx/interface/map_markers/front_indicator_behind.dds"
+			margin = { 20 20 }
+		}
+
+		icon = {
+			visible = "[And(Not( IsDataModelEmpty( FrontMovementMarker.AccessFront.AccessFirstCountries ) ), Not( IsDataModelEmpty( FrontMovementMarker.AccessFront.AccessSecondCountries ) ) ) ]"
+			texture = "gfx/interface/map_markers/front_indicator.dds"
+			framesize = { 188 188 }
+			frame = "[Front.GetAdvantageFrame]"
+
+			block "icon_size" {
+				size = { 60 60 }
+			}
+
+			textbox = {
+				visible = "[Not(StringIsEmpty( Front.GetPlayerAdvantageDesc ))]"
+				alpha = "[TransparentIfFalse(Or(GreaterThan_int32(FrontMovementMarker.AccessFront.GetNumFirstCombatUnits, '(int32)0'), GreaterThan_int32( FrontMovementMarker.AccessFront.GetNumSecondCombatUnits, '(int32)0' )))]"
+				raw_text = "#bold [Front.GetPlayerAdvantageRaw|+]#!"
+				autoresize = yes
+				align = hcenter|nobaseline
+				parentanchor = center
+				block "fontsize" {}
+			}
+
+			textbox = {
+				visible = "[StringIsEmpty( Front.GetPlayerAdvantageDesc )]"
+				raw_text = "?"
+				autoresize = yes
+				align = hcenter|nobaseline
+				parentanchor = center
+				margin_left = 10
+				margin_right = 10
+				block "fontsize" {}
+			}
+		}
+	}
+
+	type front_marker_icon = flowcontainer {
+		background = {
+			visible = "[Front.IsBeingHighlighted]"
+			texture = "gfx/interface/map_markers/round_highlight.dds"
+		}
+
+		background = {
+			texture = "gfx/interface/map_markers/front_indicator_behind.dds"
+			margin = { 20 20 }
+		}
+
+		icon = {
+			visible = "[And(Not( IsDataModelEmpty( FrontMarker.GetFront.AccessFirstCountries ) ), Not( IsDataModelEmpty( FrontMarker.GetFront.AccessSecondCountries ) ) ) ]"
+			texture = "gfx/interface/map_markers/front_indicator.dds"
+			tooltip = "FRONT_MARKER_TOOLTIP"
+			framesize = { 188 188 }
+			frame = "[Front.GetAdvantageFrame]"
+			using = tooltip_below
+
+			block "icon_size" {
+				size = { 60 60 }
+			}
+
+			textbox = {
+				visible = "[Not(StringIsEmpty( Front.GetPlayerAdvantageDesc ))]"
+				alpha = "[TransparentIfFalse(Or(GreaterThan_int32(FrontMarker.GetFront.GetNumFirstCombatUnits, '(int32)0'), GreaterThan_int32( FrontMarker.GetFront.GetNumSecondCombatUnits, '(int32)0' )))]"
+				using = tooltip_below
+				raw_text = "#bold [Front.GetPlayerAdvantageRaw|+]#!"
+				autoresize = yes
+				align = hcenter|nobaseline
+				parentanchor = center
+				block "fontsize" {}
+			}
+			
+			textbox = {
+				visible = "[StringIsEmpty( Front.GetPlayerAdvantageDesc )]"
+				raw_text = "?"
+				using = tooltip_below
+				autoresize = yes
+				align = hcenter|nobaseline
+				parentanchor = center
+				margin_left = 10
+				margin_right = 10
+				block "fontsize" {}
+			}
+		}
+	}
 }

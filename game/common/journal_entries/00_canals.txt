@@ -32,11 +32,10 @@
 	invalid = {
 		OR = {
 			NOT = { has_variable = survey_suez_taken }
-			any_state = {
-				state_region = s:STATE_SINAI
-				NOT = { owner = ROOT }
-				any_scope_building = {
-					is_building_type = building_suez_canal
+			s:STATE_SINAI = {
+				any_scope_state = {
+					NOT = { owner = ROOT }
+					has_building = building_suez_canal
 				}
 			}
 		}
@@ -59,17 +58,36 @@ je_suez_canal = {
 	group = je_group_foreign_affairs
 
 	complete = {
-		any_scope_state = {
-			state_region = s:STATE_SINAI
-			any_scope_building = {
-				is_building_type = building_suez_canal
-				occupancy >= 0.9
+		s:STATE_SINAI = {
+			any_scope_state = {
+				owner = root
+				any_scope_building = {
+					is_building_type = building_panama_canal
+					occupancy >= 0.9
+				}
 			}
 		}
 	}
 
 	on_complete = {
 		set_global_variable = suez_canal_complete
+	}
+
+	invalid = {
+		OR = {
+			NOT = { has_variable = survey_suez_taken }
+			s:STATE_SINAI = {
+				any_scope_state = {
+					NOT = { owner = ROOT }
+					has_building = building_suez_canal
+				}
+			}
+		}
+	}
+
+	on_invalid = {
+		remove_variable = survey_suez_taken
+		remove_modifier = modifier_surveying_suez
 	}
 	should_be_pinned_by_default = yes
 }
@@ -108,19 +126,18 @@ je_panama_survey = {
 	invalid = { # If the Panama Canal is being built and you're not the one building it, you've blown it, chief.
 		OR = {
 			NOT = { has_variable = survey_panama_taken }
-			any_state = {
-				state_region = s:STATE_PANAMA
-				NOT = { owner = ROOT }
-				any_scope_building = {
-					is_building_type = building_panama_canal
+			s:STATE_PANAMA = {
+				any_scope_state = {
+					NOT = { owner = ROOT }
+					has_building = building_panama_canal
 				}
 			}
 		}
 	}
 
 	on_invalid = {
-		remove_variable = survey_suez_taken
-		remove_modifier = modifier_surveying_suez
+		remove_variable = survey_panama_taken
+		remove_modifier = modifier_surveying_panama
 	}
 
 	progressbar = yes
@@ -135,17 +152,36 @@ je_panama_canal = {
 	group = je_group_foreign_affairs
 
 	complete = {
-		any_scope_state = {
-			state_region = s:STATE_PANAMA
-			any_scope_building = {
-				is_building_type = building_panama_canal
-				occupancy >= 0.9
+		s:STATE_PANAMA = {
+			any_scope_state = {
+				owner = root
+				any_scope_building = {
+					is_building_type = building_panama_canal
+					occupancy >= 0.9
+				}
 			}
 		}
 	}
 
 	on_complete = {
 		set_global_variable = panama_canal_complete
+	}
+
+	invalid = { # If the Panama Canal is being built and you're not the one building it, you've blown it, chief.
+		OR = {
+			NOT = { has_variable = survey_panama_taken }
+			s:STATE_PANAMA = {
+				any_scope_state = {
+					NOT = { owner = ROOT }
+					has_building = building_panama_canal
+				}
+			}
+		}
+	}
+
+	on_invalid = {
+		remove_variable = survey_panama_taken
+		remove_modifier = modifier_surveying_panama
 	}
 	should_be_pinned_by_default = yes
 }

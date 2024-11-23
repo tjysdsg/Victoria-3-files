@@ -1,0 +1,943 @@
+﻿sepoy_mutiny_progress_bar_bengal = {
+ 	name = "sepoy_mutiny_progress_bar_bengal_name"
+ 	desc = "sepoy_mutiny_progress_bar_bengal_desc"
+
+ 	default_green = yes
+
+ 	monthly_progress = {
+		if = {
+			limit = {
+				c:BIC ?= {
+					any_scope_state = {
+						OR = {
+							region = sr:region_bengal
+							region = sr:region_central_india
+							region = sr:region_punjab
+						}
+						turmoil >= 0.10
+					}
+				}
+			}
+			add = {
+				desc = "bengal_progress_from_radicals_tt"
+				c:BIC ?= {
+					every_scope_state = {
+						limit = {
+							OR = {
+								region = sr:region_bengal
+								region = sr:region_central_india
+								region = sr:region_punjab
+							}
+							turmoil >= 0.10
+						}
+						subtract = this.turmoil
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				c:BIC ?= {
+					any_scope_state = {
+						OR = {
+							region = sr:region_bengal
+							region = sr:region_central_india
+							region = sr:region_punjab
+						}
+						loyalty >= 0.10
+					}
+				}
+			}
+			subtract = {
+				desc = "bengal_progress_from_loyalists_tt"
+				c:BIC ?= {
+					every_scope_state = {
+						limit = {
+							OR = {
+								region = sr:region_bengal
+								region = sr:region_central_india
+								region = sr:region_punjab
+							}
+							loyalty >= 0.10
+						}
+						subtract = this.loyalty
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				c:BIC ?= {
+					any_subject_or_below = {
+						capital = {
+							OR = {
+								region = sr:region_bengal
+								region = sr:region_central_india
+								region = sr:region_punjab
+							}
+						}
+						liberty_desire >= 75
+					}
+				}
+			}
+			add = {
+				desc = "bengal_progress_from_high_liberty_desire_tt"
+				c:BIC ?= {
+					every_subject_or_below = {
+						limit = {
+							capital = {
+								OR = {
+									region = sr:region_bengal
+									region = sr:region_central_india
+									region = sr:region_punjab
+								}
+							}
+							liberty_desire >= 75
+						}
+						subtract = this.liberty_desire
+						divide = 100
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				c:BIC ?= {
+					any_subject_or_below = {
+						capital = {
+							OR = {
+								region = sr:region_bengal
+								region = sr:region_central_india
+								region = sr:region_punjab
+							}
+						}
+						liberty_desire <= 25
+					}
+				}
+			}
+			add = {
+				desc = "bengal_progress_from_low_liberty_desire_tt"
+				c:BIC ?= {
+					every_subject_or_below = {
+						limit = {
+							capital = {
+								OR = {
+									region = sr:region_bengal
+									region = sr:region_central_india
+									region = sr:region_punjab
+								}
+							}
+							liberty_desire <= 25
+						}
+						add = {
+							value = 0.25
+							subtract = {
+								value = liberty_desire
+								multiply = 0.01
+							}
+						}
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				exists = c:BIC.var:bengal_progress_from_events_var_add_1
+				NOT = {  
+					c:BIC.var:bengal_progress_from_events_var_add_1 = 0
+				}
+			}
+			add = {
+				desc = "presidencies_progress_from_events_tt"
+				value = c:BIC.var:bengal_progress_from_events_var_add_1
+			}
+		}
+		if = {
+			limit = {
+				exists = c:BIC.var:bengal_progress_from_events_var_add_2
+				NOT = {  
+					c:BIC.var:bengal_progress_from_events_var_add_2 = 0
+				}
+			}
+			add = {
+				desc = "presidencies_progress_from_events_tt"
+				value = c:BIC.var:bengal_progress_from_events_var_add_2
+			}
+		}
+		if = {
+			limit = {
+				exists = c:BIC.var:bengal_progress_from_events_var_add_3
+				NOT = {  
+					c:BIC.var:bengal_progress_from_events_var_add_3 = 0
+				}
+			}
+			add = {
+				desc = "presidencies_progress_from_events_tt"
+				value = c:BIC.var:bengal_progress_from_events_var_add_3
+			}
+		}
+		if = {
+			limit = {
+				exists = c:BIC.var:bengal_progress_from_events_var_add_4
+				NOT = {  
+					c:BIC.var:bengal_progress_from_events_var_add_4 = 0
+				}
+			}
+			add = {
+				desc = "presidencies_progress_from_events_tt"
+				value = c:BIC.var:bengal_progress_from_events_var_add_4
+			}
+		}
+		if = {
+			limit = {
+				exists = c:BIC.var:bengal_progress_from_events_var_add_5
+				NOT = {  
+					c:BIC.var:bengal_progress_from_events_var_add_5 = 0
+				}
+			}
+			add = {
+				desc = "presidencies_progress_from_events_tt"
+				value = c:BIC.var:bengal_progress_from_events_var_add_5
+			}
+		}
+		if = {
+			limit = {
+				exists = c:BIC.var:bengal_progress_from_events_var_add_6
+				NOT = {  
+					c:BIC.var:bengal_progress_from_events_var_add_6 = 0
+				}
+			}
+			add = {
+				desc = "presidencies_progress_from_events_tt"
+				value = c:BIC.var:bengal_progress_from_events_var_add_6
+			}
+		}
+		# Military Wages
+		if = {
+			limit = { c:BIC ?= { military_wage_level = very_low } }
+			add = {
+				desc = "presidencies_low_military_wages_tt"
+				subtract = 1
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { military_wage_level = low } }
+			add = {
+				desc = "presidencies_low_military_wages_tt"
+				subtract = 0.5
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { military_wage_level = high } }
+			add = {
+				desc = "presidencies_high_military_wages_tt"
+				add = 0.5
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { military_wage_level = very_high } }
+			add = {
+				desc = "presidencies_high_military_wages_tt"
+				add = 1
+			}
+		}
+		# Taxation
+		if = {
+			limit = { c:BIC ?= { tax_level = very_low } }
+			add = {
+				desc = "presidencies_low_taxation_tt"
+				add = 1
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { tax_level = low } }
+			add = {
+				desc = "presidencies_low_taxation_tt"
+				add = 0.5
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { tax_level = high } }
+			add = {
+				desc = "presidencies_high_taxation_tt"
+				subtract = 0.5
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { tax_level = very_high } }
+			add = {
+				desc = "presidencies_high_taxation_tt"
+				subtract = 1
+			}
+		}
+		# Utilitarian Leaders in government
+		if = {
+			limit = { 
+				c:BIC ?= {
+					any_interest_group = {
+						is_in_government = yes
+						leader = {
+							has_ideology = ideology:ideology_utilitarian_leader
+						}
+					}
+				}
+			}
+			add = {
+				desc = "presidencies_utilitarian_leaders_tt"
+				subtract = 1
+			}
+		}
+		# Religious laws
+		if = {
+			limit = { 
+				c:BIC ?= {
+					NOT = {
+						has_law = law_type:law_total_separation
+					}
+				}
+			}
+			add = {
+				desc = "presidencies_religious_laws_tt"
+				subtract = 2
+			}
+		}
+		# Military laws
+		if = {
+			limit = { 
+				c:BIC ?= {
+					NOT = {
+						has_law = law_type:law_professional_army
+					}
+				}
+			}
+			add = {
+				desc = "presidencies_military_laws_tt"
+				subtract = 1
+			}
+		}
+		# Famine
+		if = {
+			limit = { 
+				c:BIC ?= {
+					has_journal_entry = je_indian_famines
+				}
+			}
+			add = {
+				desc = "presidencies_je_indian_famines_tt"
+				subtract = 1
+			}
+		}
+ 	}
+
+	start_value = 80
+	min_value = 0
+	max_value = 100
+}
+
+sepoy_mutiny_progress_bar_bombay = {
+ 	name = "sepoy_mutiny_progress_bar_bombay_name"
+ 	desc = "sepoy_mutiny_progress_bar_bombay_desc"
+
+ 	monthly_progress = {
+		if = {
+			limit = {
+				c:BIC ?= {
+					any_scope_state = {
+						region = sr:region_bombay					
+						turmoil >= 0.10
+					}
+				}
+			}
+			add = {
+				desc = "bombay_progress_from_radicals_tt"
+				c:BIC ?= {
+					every_scope_state = {
+						limit = {
+							region = sr:region_bombay						
+							turmoil >= 0.10
+						}
+						subtract = this.turmoil
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				c:BIC ?= {
+					any_scope_state = {
+						region = sr:region_bombay						
+						loyalty >= 0.10
+					}
+				}
+			}
+			subtract = {
+				desc = "bombay_progress_from_loyalists_tt"
+				c:BIC ?= {
+					every_scope_state = {
+						limit = {
+							region = sr:region_bombay						
+							loyalty >= 0.10
+						}
+						subtract = this.loyalty
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				c:BIC ?= {
+					any_subject_or_below = {
+						capital = {
+							region = sr:region_bombay
+						}
+						liberty_desire >= 75				
+					}
+				}
+			}
+			add = {
+				desc = "bombay_progress_from_high_liberty_desire_tt"
+				c:BIC ?= {
+					every_subject_or_below = {
+						limit = {
+							capital = {
+								region = sr:region_bombay
+							}
+							liberty_desire >= 75
+						}
+						subtract = this.liberty_desire
+						divide = 100
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				c:BIC ?= {
+					any_subject_or_below = {
+						capital = {
+							region = sr:region_bombay
+						}
+						liberty_desire <= 25			
+					}
+				}
+			}
+			add = {
+				desc = "bombay_progress_from_low_liberty_desire_tt"
+				c:BIC ?= {
+					every_subject_or_below = {
+						limit = {
+							capital = {
+								region = sr:region_bombay
+							}
+							liberty_desire <= 25				
+						}
+						add = {
+							value = 0.25
+							subtract = {
+								value = liberty_desire
+								multiply = 0.01
+							}
+						}
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				exists = c:BIC.var:bombay_progress_from_events_var_add_1
+				NOT = {  
+					c:BIC.var:bombay_progress_from_events_var_add_1 = 0
+				}
+			}
+			add = {
+				desc = "presidencies_progress_from_events_tt"
+				value = c:BIC.var:bombay_progress_from_events_var_add_1
+			}
+		}
+	#	if = { # Does not appear in event
+	#		limit = {
+	#			exists = c:BIC.var:bombay_progress_from_events_var_add_2
+	#			NOT = {  
+	#				c:BIC.var:bombay_progress_from_events_var_add_2 = 0
+	#			}
+	#		}
+	#		add = {
+	#			desc = "presidencies_progress_from_events_tt"
+	#			value = c:BIC.var:bombay_progress_from_events_var_add_2
+	#		}
+	#	}
+		if = {
+			limit = {
+				exists = c:BIC.var:bombay_progress_from_events_var_add_3
+				NOT = {  
+					c:BIC.var:bombay_progress_from_events_var_add_3 = 0
+				}
+			}
+			add = {
+				desc = "presidencies_progress_from_events_tt"
+				value = c:BIC.var:bombay_progress_from_events_var_add_3
+			}
+		}
+		if = {
+			limit = {
+				exists = c:BIC.var:bombay_progress_from_events_var_add_4
+				NOT = {  
+					c:BIC.var:bombay_progress_from_events_var_add_4 = 0
+				}
+			}
+			add = {
+				desc = "presidencies_progress_from_events_tt"
+				value = c:BIC.var:bombay_progress_from_events_var_add_4
+			}
+		}
+		if = {
+			limit = {
+				exists = c:BIC.var:bombay_progress_from_events_var_add_5
+				NOT = {  
+					c:BIC.var:bombay_progress_from_events_var_add_5 = 0
+				}
+			}
+			add = {
+				desc = "presidencies_progress_from_events_tt"
+				value = c:BIC.var:bombay_progress_from_events_var_add_5
+			}
+		}
+		if = {
+			limit = {
+				exists = c:BIC.var:bombay_progress_from_events_var_add_6
+				NOT = {  
+					c:BIC.var:bombay_progress_from_events_var_add_6 = 0
+				}
+			}
+			add = {
+				desc = "presidencies_progress_from_events_tt"
+				value = c:BIC.var:bombay_progress_from_events_var_add_6
+			}
+		}
+		# Military Wages
+		if = {
+			limit = { c:BIC ?= { military_wage_level = very_low } }
+			add = {
+				desc = "presidencies_low_military_wages_tt"
+				subtract = 1
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { military_wage_level = low } }
+			add = {
+				desc = "presidencies_low_military_wages_tt"
+				subtract = 0.5
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { military_wage_level = high } }
+			add = {
+				desc = "presidencies_high_military_wages_tt"
+				add = 0.5
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { military_wage_level = very_high } }
+			add = {
+				desc = "presidencies_high_military_wages_tt"
+				add = 1
+			}
+		}
+		# Taxation
+		if = {
+			limit = { c:BIC ?= { tax_level = very_low } }
+			add = {
+				desc = "presidencies_low_taxation_tt"
+				add = 1
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { tax_level = low } }
+			add = {
+				desc = "presidencies_low_taxation_tt"
+				add = 0.5
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { tax_level = high } }
+			add = {
+				desc = "presidencies_high_taxation_tt"
+				subtract = 0.5
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { tax_level = very_high } }
+			add = {
+				desc = "presidencies_high_taxation_tt"
+				subtract = 1
+			}
+		}
+		# Utilitarian Leaders in government
+		if = {
+			limit = { 
+				c:BIC ?= {
+					any_interest_group = {
+						is_in_government = yes
+						leader = {
+							has_ideology = ideology:ideology_utilitarian_leader
+						}
+					}
+				}
+			}
+			add = {
+				desc = "presidencies_utilitarian_leaders_tt"
+				subtract = 1
+			}
+		}
+		# Religious laws
+		if = {
+			limit = { 
+				c:BIC ?= {
+					NOT = {
+						has_law = law_type:law_total_separation
+					}
+				}
+			}
+			add = {
+				desc = "presidencies_religious_laws_tt"
+				subtract = 2
+			}
+		}
+		# Military laws
+		if = {
+			limit = { 
+				c:BIC ?= {
+					NOT = {
+						has_law = law_type:law_professional_army
+					}
+				}
+			}
+			add = {
+				desc = "presidencies_military_laws_tt"
+				subtract = 1
+			}
+		}
+		# Famine
+		if = {
+			limit = { 
+				c:BIC ?= {
+					has_journal_entry = je_indian_famines
+				}
+			}
+			add = {
+				desc = "presidencies_je_indian_famines_tt"
+				subtract = 1
+			}
+		}
+ 	}
+
+ 	default_green = yes
+
+	start_value = 95
+	min_value = 0
+	max_value = 100
+}
+
+sepoy_mutiny_progress_bar_madras = {
+ 	name = "sepoy_mutiny_progress_bar_madras_name"
+ 	desc = "sepoy_mutiny_progress_bar_madras_desc"
+
+ 	monthly_progress = {
+		if = {
+			limit = {
+				c:BIC ?= {
+					any_scope_state = {
+						region = sr:region_madras					
+						turmoil >= 0.10
+					}
+				}
+			}
+			add = {
+				desc = "madras_progress_from_radicals_tt"
+				c:BIC ?= {
+					every_scope_state = {
+						limit = {
+							region = sr:region_madras						
+							turmoil >= 0.10
+						}
+						subtract = this.turmoil
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				c:BIC ?= {
+					any_scope_state = {
+						region = sr:region_madras						
+						loyalty >= 0.10
+					}
+				}
+			}
+			subtract = {
+				desc = "madras_progress_from_loyalists_tt"
+				c:BIC ?= {
+					every_scope_state = {
+						limit = {
+							region = sr:region_madras						
+							loyalty >= 0.10
+						}
+						subtract = this.loyalty
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				c:BIC ?= {
+					any_subject_or_below = {
+						capital = {
+							region = sr:region_madras
+						}
+						liberty_desire >= 75				
+					}
+				}
+			}
+			add = {
+				desc = "madras_progress_from_high_liberty_desire_tt"
+				c:BIC ?= {
+					every_subject_or_below = {
+						limit = {
+							capital = {
+								region = sr:region_madras
+							}
+							liberty_desire >= 75
+						}
+						subtract = this.liberty_desire
+						divide = 100
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				c:BIC ?= {
+					any_subject_or_below = {
+						capital = {
+							region = sr:region_madras
+						}
+						liberty_desire <= 25
+					}
+				}
+			}
+			add = {
+				desc = "madras_progress_from_low_liberty_desire_tt"
+				c:BIC ?= {
+					every_subject_or_below = {
+						limit = {
+							capital = {
+								region = sr:region_madras
+							}
+							liberty_desire <= 25
+						}
+						add = {
+							value = 0.25
+							subtract = {
+								value = liberty_desire
+								multiply = 0.01
+							}
+						}
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				exists = c:BIC.var:madras_progress_from_events_var_add_1
+				NOT = {  
+					c:BIC.var:madras_progress_from_events_var_add_1 = 0
+				}
+			}
+			add = {
+				desc = "presidencies_progress_from_events_tt"
+				value = c:BIC.var:madras_progress_from_events_var_add_1
+			}
+		}
+	#	if = { # Does not appear in event
+	#		limit = {
+	#			exists = c:BIC.var:madras_progress_from_events_var_add_2
+	#			NOT = {  
+	#				c:BIC.var:madras_progress_from_events_var_add_2 = 0
+	#			}
+	#		}
+	#		add = {
+	#			desc = "presidencies_progress_from_events_tt"
+	#			value = c:BIC.var:madras_progress_from_events_var_add_2
+	#		}
+	#	}
+		if = {
+			limit = {
+				exists = c:BIC.var:madras_progress_from_events_var_add_3
+				NOT = {  
+					c:BIC.var:madras_progress_from_events_var_add_3 = 0
+				}
+			}
+			add = {
+				desc = "presidencies_progress_from_events_tt"
+				value = c:BIC.var:madras_progress_from_events_var_add_3
+			}
+		}
+		if = {
+			limit = {
+				exists = c:BIC.var:madras_progress_from_events_var_add_4
+				NOT = {  
+					c:BIC.var:madras_progress_from_events_var_add_4 = 0
+				}
+			}
+			add = {
+				desc = "presidencies_progress_from_events_tt"
+				value = c:BIC.var:madras_progress_from_events_var_add_4
+			}
+		}
+		if = {
+			limit = {
+				exists = c:BIC.var:madras_progress_from_events_var_add_5
+				NOT = {  
+					c:BIC.var:madras_progress_from_events_var_add_5 = 0
+				}
+			}
+			add = {
+				desc = "presidencies_progress_from_events_tt"
+				value = c:BIC.var:madras_progress_from_events_var_add_5
+			}
+		}
+		if = {
+			limit = {
+				exists = c:BIC.var:madras_progress_from_events_var_add_6
+				NOT = {  
+					c:BIC.var:madras_progress_from_events_var_add_6 = 0
+				}
+			}
+			add = {
+				desc = "presidencies_progress_from_events_tt"
+				value = c:BIC.var:madras_progress_from_events_var_add_6
+			}
+		}
+		# Military Wages
+		if = {
+			limit = { c:BIC ?= { military_wage_level = very_low } }
+			add = {
+				desc = "presidencies_low_military_wages_tt"
+				subtract = 1
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { military_wage_level = low } }
+			add = {
+				desc = "presidencies_low_military_wages_tt"
+				subtract = 0.5
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { military_wage_level = high } }
+			add = {
+				desc = "presidencies_high_military_wages_tt"
+				add = 0.5
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { military_wage_level = very_high } }
+			add = {
+				desc = "presidencies_high_military_wages_tt"
+				add = 1
+			}
+		}
+		# Taxation
+		if = {
+			limit = { c:BIC ?= { tax_level = very_low } }
+			add = {
+				desc = "presidencies_low_taxation_tt"
+				add = 1
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { tax_level = low } }
+			add = {
+				desc = "presidencies_low_taxation_tt"
+				add = 0.5
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { tax_level = high } }
+			add = {
+				desc = "presidencies_high_taxation_tt"
+				subtract = 0.5
+			}
+		}
+		if = {
+			limit = { c:BIC ?= { tax_level = very_high } }
+			add = {
+				desc = "presidencies_high_taxation_tt"
+				subtract = 1
+			}
+		}
+		# Utilitarian Leaders in government
+		if = {
+			limit = { 
+				c:BIC ?= {
+					any_interest_group = {
+						is_in_government = yes
+						leader = {
+							has_ideology = ideology:ideology_utilitarian_leader
+						}
+					}
+				}
+			}
+			add = {
+				desc = "presidencies_utilitarian_leaders_tt"
+				subtract = 1
+			}
+		}
+		# Religious laws
+		if = {
+			limit = { 
+				c:BIC ?= {
+					NOT = {
+						has_law = law_type:law_total_separation
+					}
+				}
+			}
+			add = {
+				desc = "presidencies_religious_laws_tt"
+				subtract = 2
+			}
+		}
+		# Military laws
+		if = {
+			limit = { 
+				c:BIC ?= {
+					NOT = {
+						has_law = law_type:law_professional_army
+					}
+				}
+			}
+			add = {
+				desc = "presidencies_military_laws_tt"
+				subtract = 1
+			}
+		}
+		# Famine
+		if = {
+			limit = { 
+				c:BIC ?= {
+					has_journal_entry = je_indian_famines
+				}
+			}
+			add = {
+				desc = "presidencies_je_indian_famines_tt"
+				subtract = 1
+			}
+		}
+ 	}
+
+ 	default_green = yes
+
+	start_value = 90
+	min_value = 0
+	max_value = 100
+}
