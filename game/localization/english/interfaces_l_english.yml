@@ -838,7 +838,7 @@
 
  COUNTRY_LITERACY:0 "#title [concept_literacy]:#!\n#variable [Country.GetIncorporatedLiteracyRate|%1]#!"
  COUNTRY_LITERACY_ONE_LINE:0 "#title [concept_literacy]#!"
- LITERACY_TOOLTIP:5 "#header [concept_literacy]#!\n#variable [Country.GetNumIncorporatedLiteratePops|*]#! out of #variable [Country.GetIncorporatedPopulation|*]#! living in the [Concept('concept_incorporated_state','$concept_incorporated_states$')] of #variable [Country.GetName]#! are literate, resulting in a Literacy Rate of [Country.GetIncorporatedLiteracyRate|%v] ([Country.GetIncorporatedLiteracyRanking])\n$TOOLTIP_DELIMITER$\nThis results in an [concept_innovation] cap of #tooltippable #tooltip:[GetPlayer.GetTooltipTag],INNOVATION_POINTS_MAX_BREAKDOWN @innovation![Country.GetWeeklyMaxInnovation|1]#!#!\nWe are currently generating #tooltippable #tooltip:[GetPlayer.GetTooltipTag],INNOVATION_POINTS_CURRENT_BREAKDOWN #v @innovation![Country.GetWeeklyInnovation|+=1]#!#!#! each week (@innovation![Country.GetWeeklyRawInnovation|+=1] uncapped)\n\nAdditionally, our current [concept_literacy] rate provides us with a [concept_technology_spread] rate of #P #tooltippable #tooltip:[GetPlayer.GetTooltipTag],TECHNOLOGY_SPREAD_RATE_BREAKDOWN [Country.GetMinWeeklyTechnologySpread|1] to [Country.GetMaxWeeklyTechnologySpread|1]#!#!#! worth of @innovation![concept_innovation] each week[SelectLocalization(EqualTo_int64(GetPlayer.GetTotalPopulation,GetPlayer.GetIncorporatedPopulation),'','LITERACY_UNINCORPORATED_TOOLTIP')]"
+ LITERACY_TOOLTIP:5 "#header [concept_literacy]#!\n#variable [Country.GetNumIncorporatedLiteratePops|*]#! out of #variable [Country.GetIncorporatedPopulation|*]#! living in the [Concept('concept_incorporated_state','$concept_incorporated_states$')] of #variable [Country.GetName]#! are literate, resulting in a Literacy Rate of [Country.GetIncorporatedLiteracyRate|%v] ([Country.GetIncorporatedLiteracyRanking])\n$TOOLTIP_DELIMITER$\nThis results in an [concept_innovation] cap of #tooltippable #tooltip:[GetPlayer.GetTooltipTag],INNOVATION_POINTS_MAX_BREAKDOWN @innovation![Country.GetWeeklyMaxInnovation|1]#!#!\nWe are currently generating #tooltippable #tooltip:[GetPlayer.GetTooltipTag],INNOVATION_POINTS_CURRENT_BREAKDOWN #v @innovation![Country.GetWeeklyInnovation|+=1]#!#!#! each week (@innovation![Country.GetWeeklyRawInnovation|+=1] uncapped)\n\nAdditionally, our current [concept_literacy] rate provides us with a [concept_technology_spread] rate of #P #tooltippable #tooltip:[GetPlayer.GetTooltipTag],TECHNOLOGY_SPREAD_RATE_BREAKDOWN [Country.GetMinWeeklyTechnologySpread|1] to [Country.GetMaxWeeklyTechnologySpread|1]#!#!#! worth of @innovation![concept_innovation] each week[SelectLocalization(GreaterThan_int32(GetPlayer.GetNumUnincorporatedStates,'(int32)0'),'LITERACY_UNINCORPORATED_TOOLTIP','')]"
  LITERACY_UNINCORPORATED_TOOLTIP:2 "\n$TOOLTIP_DELIMITER$\nWhen also factoring in [Concept('concept_unincorporated_state','$concept_unincorporated_states$')], #variable [Country.GetNumTotalLiteratePops|*]#! out of #variable [Country.GetTotalPopulation|*]#! ([Country.GetTotalLiteracyRate|%v]) [Concept('concept_pop','$concept_pops$')] in #variable [Country.GetName]#! are literate ([Country.GetTotalLiteracyRanking])"
 
  INNOVATION_POINTS_CURRENT_BREAKDOWN:1 "#header @innovation![concept_innovation] generation#!\nWe generate #v @innovation![Country.GetWeeklyInnovation|+2]#!, due to:\n[Country.GetWeeklyInnovationDesc]"
@@ -4294,9 +4294,9 @@
  NO_INSTITUTION_home_affairs: "No [GetInstitutionType('institution_home_affairs').GetName]"
  IS_BELOW_15_SOL: "Average [concept_sol] is below $STANDARD_OF_LIVING_LEVEL_15$"
  COUNTRY_TURMOIL: "[concept_turmoil] in the [concept_country]"
- DISCRIMINATION_LEVEL_cultural_erasure: "Base acceptance level is $cultural_erasure$"
- DISCRIMINATION_LEVEL_violent_hostility: "Base acceptance level is $violent_hostility$"
- DISCRIMINATION_LEVEL_open_prejudice: "Base acceptance level is $open_prejudice$"
+ DISCRIMINATION_LEVEL_cultural_erasure: "Base acceptance level is @acceptance_status_2! $cultural_erasure$"
+ DISCRIMINATION_LEVEL_violent_hostility: "Base acceptance level is @acceptance_status_1! $violent_hostility$"
+ DISCRIMINATION_LEVEL_open_prejudice: "Base acceptance level is @acceptance_status_3! $open_prejudice$"
  NUMBER_OF_CLAIMS: "Number of [Concept('concept_claim','$concept_claims$')]"
  owner_has_modern_agriculture_tt: "Owner has [GetLawType('law_commercialized_agriculture').GetName] or [GetLawType('law_collectivized_agriculture').GetName]"
  owner_has_homesteading_tt: "Owner has [GetLawType('law_homesteading').GetName] or [GetLawType('law_commercialized_agriculture').GetName]"
@@ -4346,7 +4346,7 @@
  PAN_NATIONALISM: "Researched Pan-Nationalism"
  FAILED_TANZIMAT_REFORMS: "Failed $je_sick_man_main$ [concept_journal_entry]"
  STRONG_SOCIALIST_MOVEMENT: "Powerful Socialist [concept_political_movement]"
- COUNTRY_IS_AUTOCRATIC: "Country has no [concept_election_voting_franchise]"
+ COUNTRY_IS_AUTOCRATIC: "Country has no [Concept('concept_election', '$concept_election_voting_franchise$')]"
  COUNTRY_IS_DEMOCRATIC: "Country has democratic [concept_elections]"
  
  POP_HIGH_URBANIZATION: "Highly Urbanized [concept_state]"
@@ -10187,10 +10187,14 @@
  SCRIPTED_ACTION_TOOLTIP_IS_SELECTED: "#i (Selected)#!"
 
  PROGRESS_BAR_BREAKDOWN: "#header $Name$ progress#!\n$TOTAL_VALUE|+=1$ average monthly progress currently[AddTextIf(NotEqualTo_CFixedPoint('(CFixedPoint)$TOTAL_VALUE$','(CFixedPoint)0'), '\n$TOOLTIP_DELIMITER$\nThis is due to:' )][AddTextIf(Not(StringIsEmpty('$WEEKLY_DESC$')), '\n#title $WEEKLY_VALUE|+=1$ weekly change from:#! #indent_newline:3 \n $WEEKLY_DESC$#!\n')][AddTextIf(Not(StringIsEmpty('$MONTHLY_DESC$')), '\n#title $MONTHLY_VALUE|+=1$ monthly change from:#! #indent_newline:3 \n $MONTHLY_DESC$#!\n')][AddTextIf(Not(StringIsEmpty('$YEARLY_DESC$')), '\n#title $YEARLY_VALUE|+=1$ yearly change from:#! #indent_newline:3 \n $YEARLY_DESC$#!\n')]"
+ PROGRESS_BAR_BREAKDOWN_NEGATIVE: "#header $Name$ progress#!\n$TOTAL_VALUE|-=1$ average monthly progress currently[AddTextIf(NotEqualTo_CFixedPoint('(CFixedPoint)$TOTAL_VALUE$','(CFixedPoint)0'), '\n$TOOLTIP_DELIMITER$\nThis is due to:' )][AddTextIf(Not(StringIsEmpty('$WEEKLY_DESC$')), '\n#title $WEEKLY_VALUE|-=1$ weekly change from:#! #indent_newline:3 \n $WEEKLY_DESC$#!\n')][AddTextIf(Not(StringIsEmpty('$MONTHLY_DESC$')), '\n#title $MONTHLY_VALUE|-=1$ monthly change from:#! #indent_newline:3 \n $MONTHLY_DESC$#!\n')][AddTextIf(Not(StringIsEmpty('$YEARLY_DESC$')), '\n#title $YEARLY_VALUE|-=1$ yearly change from:#! #indent_newline:3 \n $YEARLY_DESC$#!\n')]"
 
  PROGRESS_BAR_VALUE_FORMAT_WEEKLY: "$VALUE|+=1$ from $KEY$"
  PROGRESS_BAR_VALUE_FORMAT_MONTHLY: "$VALUE|+=1$ from $KEY$"
  PROGRESS_BAR_VALUE_FORMAT_YEARLY: "$VALUE|+=1$ from $KEY$"
+ PROGRESS_BAR_VALUE_FORMAT_WEEKLY_NEGATIVE: "$VALUE|-=1$ from $KEY$"
+ PROGRESS_BAR_VALUE_FORMAT_MONTHLY_NEGATIVE: "$VALUE|-=1$ from $KEY$"
+ PROGRESS_BAR_VALUE_FORMAT_YEARLY_NEGATIVE: "$VALUE|-=1$ from $KEY$"
 
  DIPLO_PLAY_COUNTRY_WARSHIPS_BREAKDOWN:2 "[Country.GetName] has @flotillas![Country.GetWarships|v] [Concept('concept_flotilla', '$concept_flotillas$')]"
 

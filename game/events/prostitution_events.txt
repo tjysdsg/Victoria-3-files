@@ -40,6 +40,8 @@ prostitution.1 = {
 
 	duration = 3
 
+	cooldown = { months = normal_modifier_time }
+
 	trigger = {
 		NOT = { has_variable = police_cooldown }
 		NOT = {
@@ -50,10 +52,19 @@ prostitution.1 = {
 			value = 3
 		}
 		any_scope_state = {
+			NOT = {
+				has_modifier = cda_enacted
+			}
 			is_incorporated = yes
 			has_building = building_urban_center
 		}
 		any_interest_group = {
+			NOT = {
+				OR = {
+					has_modifier = cda_enacted_ig
+					has_modifier = cda_not_enacted_ig
+				}
+			}
 			is_in_government = yes
 			OR = {
 				leader = {
@@ -80,10 +91,13 @@ prostitution.1 = {
 	immediate = {
 		set_variable = {
 			name = police_cooldown
-			years = 2
+			years = 5
 		}
 		random_scope_state = {
 			limit = {
+				NOT = {
+					has_modifier = cda_enacted
+				}
 				has_building = building_urban_center
 				is_incorporated = yes
 			}
@@ -91,6 +105,12 @@ prostitution.1 = {
 		}
 		random_interest_group = {
 			limit = {
+				NOT = {
+					OR = {
+						has_modifier = cda_enacted_ig
+						has_modifier = cda_not_enacted_ig
+					}
+				}
 				is_in_government = yes
 				OR = {
 					leader = {
@@ -361,7 +381,7 @@ prostitution.3 = {
 	immediate = {
 		set_variable = {
 			name = police_cooldown
-			years = 2
+			years = 5
 		}
 		random_scope_state = {
 			limit = {

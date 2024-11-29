@@ -172,6 +172,10 @@ NPolitics = {
 
 	DEFAULT_LAW_ACTIVATION_DATE = "1836.1.1"
 	
+	# If there are multiple civil wars that could start, and the current active one has lower activism, it can potentially be replaced by a more viable civil war
+	# This is the minimum delta required for another civil war to replace the active one
+	MIN_ACTIVISM_DELTA_TO_REPLACE_OTHER_CIVIL_WAR = 0.1 
+	
 	# The values below are used to calculate the target number of states that rise up when a civil war without an explicit target_fraction_of_states begins
 	# This is just a target value - the end result may end up different based on state weights defined in the civil war scripting
 	CIVIL_WAR_UPRISING_STATES_DEFAULT_CLOUT_FACTOR = 1.0 	# Fraction of total states in country, multiplied by revolutionary IG clout 
@@ -1118,6 +1122,9 @@ NPops = {
 	MIN_ACCEPTANCE_VALUE = 0													# It is both the minimum acceptance value a pop can have as well as the explicit threshold scripted for the first acceptance status [any signed 32 bit value]
 	MAX_ACCEPTANCE_VALUE = 100													# It is both the maximum acceptance value a pop can have as well as the (implied) upper bound of the last acceptance status [> MIN_ACCEPTANCE_VALUE]
 	ACCEPTANCE_FROM_HOMELAND_COMMUNITY = 10										# The amount of acceptance a pop gets from living in their homeland, applied statically on their Cultural Community
+	MIN_REQUIRED_ACCEPTANCE_FOR_MIGRATION = 30		 							# If a pop would have less than this much acceptance in a target state, they won't mass migrate there
+	EXPECTED_ACCEPTANCE_INCREASE_TO_MIGRATE = 10                                # A pop will look to increase their acceptance by this much when mass migrating, but might accept less if mass migration attraction difference is high enough
+	MAX_ACCEPTANCE_RATIO_MULT_MIGRATION = 5										# A difference in acceptance between source and target in mass migrations will result in at most this much increased migration
 
 	# Cultural Communities #
 	CULTURAL_COMMUNITY_LINGER_TIME_WEEKS = 3									# When the last pop of a given culture leaves a state, the corresponding cultural community will be removed after this long
@@ -1372,6 +1379,7 @@ NCharacters = {
 	RECRUIT_COMMANDER_NUM_OPTIONS = 3
 	RECRUIT_COMMANDER_POOL_SIZE = 5
 	RECRUIT_COMMANDER_VALUE_MARGINAL = -50
+	RECRUIT_COMMANDER_VALUE_HISTORICAL = 50     # Prioritize showing historical commanders
 	RECRUIT_COMMANDER_VALUE_AGE_MULT = 0.5
 	RECRUIT_COMMANDER_VALUE_SAME_IGS = -40
 	RECRUIT_COMMANDER_REMOVE_AGE = 55			# removed from the recruit pool when they reach 55 years

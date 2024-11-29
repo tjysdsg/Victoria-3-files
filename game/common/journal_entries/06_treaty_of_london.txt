@@ -120,7 +120,7 @@
 	on_monthly_pulse = {
 		effect = {
 			if = {
-				limit = { # Only one country can actually modify this, or the congress will end after one month
+				limit = { # London Conference Timer: Only one country can actually modify this, or the congress will end after one month
 					c:NET ?= this
 					global_var:je_conference_of_london_timer >= 1
 				}
@@ -130,17 +130,132 @@
 				}
 			}
 			if = {
+				limit = { # BEL/NET Acceptance Timer: Only one country can actually modify this, or the congress will end after one month
+					c:NET ?= this
+					exists = global_var:je_conference_of_london_acceptance_timer
+					global_var:je_conference_of_london_acceptance_timer >= 1
+				}
+				change_global_variable = {
+					name = je_conference_of_london_acceptance_timer
+					add = -1
+				}
+			}
+			if = {
 				limit = {
 					c:NET ?= this
 					global_var:je_conference_of_london_timer <= 0
 				}
-				if = {
+				if = { # If you have not chosen a proposal by now, a random one will be chosen for you. Must run in the c:NET scope for sequence to work properly
 					limit = {
 						NOT = {
-							has_global_variable = london_treaty_has_concluded_global_var
+							has_variable = je_conference_of_london_random_votes_var
+						}
+						any_country = {
+							has_journal_entry = je_conference_of_london
+							NOR = {
+								c:NET ?= this
+								c:BEL ?= this
+							}
+							NOR = {
+								has_variable = favour_belgium_button_var # proposal 1
+								has_variable = favour_netherlands_button_var #proposal 2
+								has_variable = partition_compromise_button_var # proposal 3
+								has_variable = luxembourg_compromise_button_var # proposal 4				
+							}
 						}
 					}
-					set_global_variable = london_treaty_has_concluded_global_var
+					set_variable = je_conference_of_london_random_votes_var # this effect should only run once for performance reasons
+					every_country = {
+						limit = {
+							has_journal_entry = je_conference_of_london
+							NOR = {
+								c:NET ?= this
+								c:BEL ?= this
+							}
+							NOR = {
+								has_variable = favour_belgium_button_var # proposal 1
+								has_variable = favour_netherlands_button_var #proposal 2
+								has_variable = partition_compromise_button_var # proposal 3
+								has_variable = luxembourg_compromise_button_var # proposal 4				
+							}
+						}
+						random_list = {
+							1 = {
+								set_variable = favour_belgium_button_var
+								change_global_variable = {
+									name = je_conference_of_london_proposal_1
+									add = 1
+								}
+								scope:belgium_scope = {
+									change_relations = { country = root value = 20 }
+									create_diplomatic_catalyst = {  
+										type = catalyst_event_positive
+										target = root
+									}
+								}
+								scope:netherlands_scope = {
+									change_relations = { country = root value = -20 }
+									create_diplomatic_catalyst = {  
+										type = catalyst_event_negative
+										target = root
+									}
+								}
+							}
+							1 = {
+								set_variable = favour_netherlands_button_var
+								change_global_variable = {
+									name = je_conference_of_london_proposal_2
+									add = 1
+								}
+								scope:netherlands_scope = {
+									change_relations = { country = root value = 20 }
+									create_diplomatic_catalyst = {  
+										type = catalyst_event_positive
+										target = root
+									}
+								}
+								scope:belgium_scope = {
+									change_relations = { country = root value = -20 }
+									create_diplomatic_catalyst = {  
+										type = catalyst_event_negative
+										target = root
+									}
+								}								
+							}
+							1 = {
+								set_variable = partition_compromise_button_var
+								change_global_variable = {
+									name = je_conference_of_london_proposal_3
+									add = 1
+								}
+								every_country = {
+									limit = {
+										any_primary_culture = {
+											has_discrimination_trait = german_speaking
+										}
+										capital = {
+											OR = {
+												region = sr:region_north_germany
+												region = sr:region_south_germany
+												region = sr:region_rhine
+											}
+										}
+										NOT = {
+											this ?= root
+										}
+									}
+									change_relations = { country = root value = 10 }
+								}							
+							}
+							1 = {
+								set_variable = luxembourg_compromise_button_var
+								change_global_variable = {
+									name = je_conference_of_london_proposal_4
+									add = 1
+								}
+							}
+						}
+					}
 				}
 				if = {
 					limit = {
@@ -359,6 +474,46 @@
 						    }
 						}
 					}
+					set_global_variable = london_treaty_has_concluded_global_var
+				}
+			}
+			if = {
+				limit = {
+					c:NET ?= this
+					has_global_variable = london_treaty_has_concluded_global_var
+					NOT = {
+						exists = global_var:je_conference_of_london_acceptance_timer
+					}
+				}
+				set_global_variable = {
+					name = je_conference_of_london_acceptance_timer
+					value = 6
+				}
+			}
+			if = {
+				limit = {
+					exists = global_var:je_conference_of_london_acceptance_timer
+					OR = {
+						c:NET ?= this
+						c:BEL ?= this
+					}
+					NOT = {
+						has_variable = decided_on_london_treaty_var
+					}
+					global_var:je_conference_of_london_acceptance_timer <= 0
+				}
+				set_variable = decided_on_london_treaty_var
+				if = {
+					limit = {
+						c:NET = this
+					}
+					set_global_variable = london_treaty_signed_net_global_var
+				}
+				if = {
+					limit = {
+						c:BEL = this
+					}
+					set_global_variable = london_treaty_signed_bel_global_var
 				}
 			}
 		}

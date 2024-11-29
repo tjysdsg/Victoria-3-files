@@ -3,6 +3,8 @@
         desc = "PROGRESS_BAR_TEXT3" #This will be printed on the left side of the progress bar
        second_desc = "PROGRESS_BAR_TEXT3" #This will be printed on the right side of the progress bar
     
+        is_inverted = yes #Will treat negative progress as positive meaning that the object is to keep this progress down
+
         start_value = 50
         min_value = 0
         max_value = 100

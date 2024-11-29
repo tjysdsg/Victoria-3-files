@@ -3016,6 +3016,10 @@ container = {
 
 	container = {
 		using = small_nib
+
+		blockoverride "nib_visibility" {
+			visible = "[Or(IsZoomLevelNear, And(Not(IsZoomLevelNear), Not(Or(IsMapModeSelected('mm_default'), IsMapModeSelected('mm_ongoing_diplo_play')))))]"
+		}
 		
 		flowcontainer = {
 			datamodel = "[HarvestConditionRegionMarker.GetHarvestConditionAreas]"
@@ -3028,20 +3032,33 @@ container = {
 					onmousehierarchyenter = "[AccessHighlightManager.HighlightHarvestConditionArea(HarvestConditionArea.Self)]"
 					onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
 
-					icon = {
-						visible = "[Not(IsZoomLevelFar)]"
+					button = {
+						visible = "[IsZoomLevelNear]"
 						size = { 36 36 }
 						texture = "[HarvestConditionArea.GetType.GetIcon]"
+						onclick = "[InformationPanelBar.OpenMarketPanelTab(AccessPlayer.AccessFirstMarket, 'food_security')]"
 
 						tooltipwidget = {
 							FancyTooltip_HarvestConditionArea = {}
 						}
 					}
 
-					icon = {
-						visible = "[IsZoomLevelFar]"
+					button = {
+						visible = "[And(IsZoomLevelMid, Not(Or(IsMapModeSelected('mm_default'), IsMapModeSelected('mm_ongoing_diplo_play'))))]"
+						size = { 30 30 }
+						texture = "[HarvestConditionArea.GetType.GetIcon]"
+						onclick = "[InformationPanelBar.OpenMarketPanelTab(AccessPlayer.AccessFirstMarket, 'food_security')]"
+
+						tooltipwidget = {
+							FancyTooltip_HarvestConditionArea = {}
+						}
+					}
+
+					button = {
+						visible = "[And(IsZoomLevelFar, Not(Or(IsMapModeSelected('mm_default'), IsMapModeSelected('mm_ongoing_diplo_play'))))]"
 						size = { 25 25 }
 						texture = "[HarvestConditionArea.GetType.GetIcon]"
+						onclick = "[InformationPanelBar.OpenMarketPanelTab(AccessPlayer.AccessFirstMarket, 'food_security')]"
 
 						tooltipwidget = {
 							FancyTooltip_HarvestConditionArea = {}
