@@ -1074,6 +1074,7 @@ revolution_pulse_events.8 = {
 		default_option = yes
 		add_modifier = {
 			name = modifier_bank_robbery_payments
+			multiplier = money_amount_multiplier_medium
 			months = short_modifier_time
 		}
 	}
@@ -1085,6 +1086,7 @@ revolution_pulse_events.8 = {
 		}
 		add_modifier = {
 			name = modifier_bank_robbery_payments
+			multiplier = money_amount_multiplier_medium
 			months = 13
 		}
 	}
@@ -1118,10 +1120,10 @@ revolution_pulse_events.9 = {
 			triggered_desc = {
 				desc = revolution_pulse_events.9.d
 				trigger = {
-					any_interest_group = {
+					any_political_movement = {
 						is_insurrectionary = yes
 						NOT = {
-							any_scope_character = {
+							any_supporting_character = {
 								has_role = agitator
 							}
 						}
@@ -1131,9 +1133,9 @@ revolution_pulse_events.9 = {
 			triggered_desc = {
 				desc = revolution_pulse_events.9.d2
 				trigger = {
-					any_interest_group = {
+					any_political_movement = {
 						is_insurrectionary = yes
-						any_scope_character = {
+						any_supporting_character = {
 							has_role = agitator
 						}
 					}
@@ -1156,19 +1158,31 @@ revolution_pulse_events.9 = {
 	cooldown = { months = normal_modifier_time }
 
 	trigger = {
-		any_revolution_ongoing = yes
+		OR = {
+			any_secession_ongoing = yes
+			any_revolution_ongoing = yes
+		}
 		ig:ig_armed_forces = {
 			is_insurrectionary = no
 			is_marginal = no
 		}
-		revolution_progress_low = yes
-		any_scope_building = {
-			is_building_type = building_barracks	
+		OR = {
+			revolution_progress_low = yes
+			secession_progress_low = yes
+		}
+		any_scope_state = {
+			is_in_revolt = yes
+			any_scope_building = {
+				is_building_type = building_barracks	
+			}
 		}
 	}
 
 	cancellation_trigger = {
-		NOT = { any_revolution_ongoing = yes }
+		NOR = { 
+			any_revolution_ongoing = yes 
+			any_secession_ongoing = yes 
+		}
 	}
 	
 	immediate = {
@@ -1178,10 +1192,10 @@ revolution_pulse_events.9 = {
 		}
 		random_scope_state = {
 			limit = {
+				is_in_revolt = yes
 				any_scope_building = {
 					is_building_type = building_barracks
-				}
-				is_incorporated = yes				
+				}			
 			}
 			save_scope_as = agitation_af_state
 			random_scope_building = {
@@ -3966,7 +3980,7 @@ revolution_pulse_events.27 = {
 		}
 		any_scope_state = {
 			is_incorporated = yes
-			turmoil > 0.2
+			is_in_revolt = yes
 		}
 		NOT = {
 			has_law = law_type:law_state_religion
@@ -3982,7 +3996,7 @@ revolution_pulse_events.27 = {
 		random_scope_state = {
 			limit = {
 				is_incorporated = yes
-				turmoil > 0.2
+				is_in_revolt = yes
 			}
 			save_scope_as = standoff_state
 		}
@@ -4290,14 +4304,33 @@ revolution_pulse_events.30 = {
 	cooldown = { months = normal_modifier_time }
 
 	trigger = {
-		reactionary_revolution_ongoing = yes
 		OR = {
+			AND = {
+				any_secession_ongoing = yes
+				OR = {
+					has_law = law_type:law_council_republic
+					AND = {
+						OR = {
+							has_law = law_type:law_presidential_republic
+							has_law = law_type:law_parliamentary_republic
+						}
+						OR = {
+							has_law = law_type:law_census_suffrage
+							has_law = law_type:law_universal_suffrage
+						}
+					}
+				}
+			}
+			reactionary_revolution_ongoing = yes
+		}
+		OR = {
+			secession_progress_medium = yes
+			secession_progress_high = yes
 			revolution_progress_medium = yes
 			revolution_progress_high = yes
 		}
 		any_scope_state = {
-			is_incorporated = yes
-			turmoil > 0.2
+			is_in_revolt = yes
 		}
 		any_interest_group = {
 			any_scope_character = {
@@ -4310,15 +4343,17 @@ revolution_pulse_events.30 = {
 	}
 
 	cancellation_trigger = {
-		NOT = { reactionary_revolution_ongoing = yes }
+		NOR = { 
+			reactionary_revolution_ongoing = yes 
+			any_secession_ongoing = yes
+		}
 	}
 	
 	immediate = {
 		save_revolution_scopes = yes
 		random_scope_state = {
 			limit = {
-				is_incorporated = yes
-				turmoil > 0.2
+				is_in_revolt = yes
 			}
 			save_scope_as = workers_brigade_state
 		}

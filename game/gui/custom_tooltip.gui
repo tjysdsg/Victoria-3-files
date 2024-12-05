@@ -315,10 +315,307 @@ types TooltipTypes
 				}
 			}
 
-			custom_tooltip_newline = {}
+			custom_tooltip_textbox_with_empty_line = {
+				text = "[Law.GetReplacedLawEffect]"
+			}
 
 			custom_tooltip_textbox = {
-				text = "TOOLTIP_ENACT_COMMON"
+				text = "[Law.PredictLegitimacyChangeToEnactDesc]"
+			}
+
+			custom_tooltip_textbox = {
+				text = "[Law.PredictApprovalChangesDuringEnactmentDesc]"
+			}
+
+			custom_tooltip_textbox = {
+				text = "[Law.PredictMovementLoyalistsFromEnactmentDesc]"
+			}
+
+			flowcontainer = {
+				visible = "[Not(IsDataModelEmpty(Law.GetAffectedMovementsFromStartEnact))]"
+				direction = vertical
+
+				custom_tooltip_newline = {
+					visible = "[Not(StringIsEmpty(Law.PredictMovementLoyalistsFromEnactmentDesc))]"
+				}
+
+				custom_tooltip_textbox = {
+					text = "LAW_ENACTMENT_EFFECT_ON_MOVEMENT_ACTIVISM_HEADER"
+				}
+
+				flowcontainer = {
+					minimumsize = { 520 -1 }
+					direction = vertical
+					margin = { 10 0 }
+					datamodel = "[DataModelFirst(Law.GetAffectedMovementsFromStartEnact, '(int32)5')]"
+
+					background = {
+						using = entry_bg_simple
+					}
+
+					item = {
+						movement_affected_by_law_enactment_tooltip_item = {}
+					}
+				}
+
+				### If more than 5 affected Movements, here are the additional
+				custom_tooltip_textbox = {
+					visible = "[GreaterThan_int32(GetDataModelSize(Law.GetAffectedMovementsFromStartEnact), '(int32)5')]"
+					default_format = "#tooltippable"
+					text = "LAW_ENACTMENT_AFFECTED_MOVEMENTS_ADDITIONAL"
+
+					tooltipwidget = {
+						RegularTooltip = {
+							blockoverride "tooltip_content" {
+								flowcontainer = {
+									parentanchor = hcenter
+									minimumsize = { 520 -1 }
+									direction = vertical
+									datamodel = "[DataModelSkipFirst(Law.GetAffectedMovementsFromStartEnact, '(int32)5')]"
+
+									item = {
+										movement_affected_by_law_enactment_tooltip_item = {
+											blockoverride "bottom_divider_visiblity" {
+												visible = "[NotEqualTo_int32(Subtract_int32(GetDataModelSize(DataModelSkipFirst(Law.GetAffectedMovementsFromStartEnact, '(int32)5')), '(int32)1'), PdxGuiWidget.AccessParent.GetIndexInDataModel)]"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	type RegularTooltip_CancelLawEnactment = RegularTooltip {
+		blockoverride "tooltip_content_after" {
+
+			custom_tooltip_textbox = {
+				visible = "[IsValid(Law.StopEnacting)]"
+				text = "TOOLTIP_CANCEL_LAW"
+			}
+
+			custom_tooltip_textbox = {
+				visible = "[Not(IsValid(Law.StopEnacting))]"
+				text = "TOOLTIP_CANCEL_LAW_DISALLOWED"
+			}
+
+			tooltip_divider = {}
+
+			custom_tooltip_textbox = {
+				text = "[GetDesc(Law.StopEnacting)]"
+			}
+
+			custom_tooltip_textbox = {
+				text = "TOOLTIP_CANCEL_LAW_COOLDOWN"
+			}
+
+			flowcontainer = {
+				visible = "[Not(IsDataModelEmpty(Law.GetAffectedMovementsFromCancelEnact))]"
+				direction = vertical
+
+				custom_tooltip_newline = {
+					visible = "[Not(StringIsEmpty(Law.PredictMovementLoyalistsFromEnactmentDesc))]"
+				}
+
+				custom_tooltip_textbox = {
+					text = "LAW_CANCEL_ENACTMENT_EFFECT_ON_MOVEMENT_ACTIVISM_HEADER"
+				}
+
+				flowcontainer = {
+					minimumsize = { 520 -1 }
+					direction = vertical
+					margin = { 10 0 }
+					datamodel = "[DataModelFirst(Law.GetAffectedMovementsFromCancelEnact, '(int32)5')]"
+
+					background = {
+						using = entry_bg_simple
+					}
+
+					item = {
+						movement_affected_by_cancel_law_enactment_tooltip_item = {}
+					}
+				}
+
+				### If more than 5 affected Movements, here are the additional
+				custom_tooltip_textbox = {
+					visible = "[GreaterThan_int32(GetDataModelSize(Law.GetAffectedMovementsFromCancelEnact), '(int32)5')]"
+					default_format = "#tooltippable"
+					text = "LAW_ENACTMENT_AFFECTED_MOVEMENTS_ADDITIONAL"
+
+					tooltipwidget = {
+						RegularTooltip = {
+							blockoverride "tooltip_content" {
+								flowcontainer = {
+									parentanchor = hcenter
+									minimumsize = { 520 -1 }
+									direction = vertical
+									datamodel = "[DataModelSkipFirst(Law.GetAffectedMovementsFromCancelEnact, '(int32)5')]"
+
+									item = {
+										movement_affected_by_cancel_law_enactment_tooltip_item = {
+											blockoverride "bottom_divider_visiblity" {
+												visible = "[NotEqualTo_int32(Subtract_int32(GetDataModelSize( DataModelSkipFirst(Law.GetAffectedMovementsFromCancelEnact, '(int32)5') ), '(int32)1'), PdxGuiWidget.AccessParent.GetIndexInDataModel)]"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	type movement_affected_by_law_enactment_tooltip_item = flowcontainer {
+		direction = vertical
+		tooltip = "LAW_ENACTMENT_AFFECTED_MOVEMENT_TOOLTIP"
+		using = tooltip_ws
+
+		widget = {
+			size = { 530 40 }
+
+			hbox = {
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+				spacing = 5
+
+				icon = {
+					visible = "[LessThan_CFixedPoint(Law.GetRadicalismDriftTargetOnMovementFromStartEnact( PoliticalMovement.Self ), '(CFixedPoint)0.5')]"
+					size = { 25 25 }
+					texture = "gfx/interface/icons/political_movement_icons/political_activism.dds"
+				}
+
+				icon = {
+					visible = "[GreaterThanOrEqualTo_CFixedPoint(Law.GetRadicalismDriftTargetOnMovementFromStartEnact( PoliticalMovement.Self ), '(CFixedPoint)0.5')]"
+					size = { 25 25 }
+					texture = "gfx/interface/icons/political_movement_icons/political_activism_red.dds"
+				}
+
+				textbox = {
+					size = { 50 40 }
+					align = nobaseline
+					elide = right
+					fontsize_min = 12
+					text = "[Law.GetRadicalismEffectOnMovementFromStartEnact( PoliticalMovement.Self )|-=0%]"
+				}
+
+				vertical_divider = {
+					blockoverride "size" {
+						layoutpolicy_vertical = expanding
+						size = { 2 0 }
+					}
+				}
+
+				textbox = {
+					layoutpolicy_horizontal = expanding
+					size = { 0 40 }
+					align = nobaseline
+					elide = right
+					fontsize_min = 12
+					text = "[PoliticalMovement.GetName]"
+				}
+
+				expand = {}
+
+				icon = {
+					size = { 25 25 }
+					texture = "gfx/interface/icons/generic_icons/arrow_right_small.dds"
+				}
+
+				expand = {}
+
+				textbox = {
+					size = { 80 40 }
+					align = right|nobaseline
+					elide = right
+					fontsize_min = 12
+					text = "[LabelingHelper.GetLabelForRadicalism(Law.GetRadicalismDriftTargetOnMovementFromStartEnact( PoliticalMovement.Self ))]"
+				}
+			}
+		}
+
+		divider_clean = {
+			block "bottom_divider_visiblity" {
+				visible = "[NotEqualTo_int32(Subtract_int32(GetDataModelSize(DataModelFirst(Law.GetAffectedMovementsFromStartEnact, '(int32)5')), '(int32)1'), PdxGuiWidget.AccessParent.GetIndexInDataModel)]"
+			}
+		}
+	}
+
+	type movement_affected_by_cancel_law_enactment_tooltip_item = flowcontainer {
+		direction = vertical
+		tooltip = "CANCEL_LAW_ENACTMENT_AFFECTED_MOVEMENT_TOOLTIP"
+		using = tooltip_ws
+
+		widget = {
+			size = { 530 40 }
+
+			hbox = {
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+				spacing = 5
+
+				icon = {
+					visible = "[LessThan_CFixedPoint(Law.GetRadicalismDriftTargetOnMovementFromCancelEnact( PoliticalMovement.Self ), '(CFixedPoint)0.5')]"
+					size = { 25 25 }
+					texture = "gfx/interface/icons/political_movement_icons/political_activism.dds"
+				}
+
+				icon = {
+					visible = "[GreaterThanOrEqualTo_CFixedPoint(Law.GetRadicalismDriftTargetOnMovementFromCancelEnact( PoliticalMovement.Self ), '(CFixedPoint)0.5')]"
+					size = { 25 25 }
+					texture = "gfx/interface/icons/political_movement_icons/political_activism_red.dds"
+				}
+
+				textbox = {
+					size = { 50 40 }
+					align = nobaseline
+					elide = right
+					fontsize_min = 12
+					text = "[Law.GetRadicalismEffectOnMovementFromCancelEnact( PoliticalMovement.Self )|-=0%]"
+				}
+
+				vertical_divider = {
+					blockoverride "size" {
+						layoutpolicy_vertical = expanding
+						size = { 2 0 }
+					}
+				}
+
+				textbox = {
+					layoutpolicy_horizontal = expanding
+					size = { 0 40 }
+					align = nobaseline
+					elide = right
+					fontsize_min = 12
+					text = "[PoliticalMovement.GetName]"
+				}
+
+				expand = {}
+
+				icon = {
+					size = { 25 25 }
+					texture = "gfx/interface/icons/generic_icons/arrow_right_small.dds"
+				}
+
+				expand = {}
+
+				textbox = {
+					size = { 80 40 }
+					align = right|nobaseline
+					elide = right
+					fontsize_min = 12
+					text = "[LabelingHelper.GetLabelForRadicalism(Law.GetRadicalismDriftTargetOnMovementFromCancelEnact( PoliticalMovement.Self ))]"
+				}
+			}
+		}
+
+		divider_clean = {
+			block "bottom_divider_visiblity" {
+				visible = "[NotEqualTo_int32(Subtract_int32(GetDataModelSize(DataModelFirst(Law.GetAffectedMovementsFromCancelEnact, '(int32)5')), '(int32)1'), PdxGuiWidget.AccessParent.GetIndexInDataModel)]"
 			}
 		}
 	}
