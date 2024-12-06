@@ -214,8 +214,9 @@ NPolitics = {
 	CIVIL_WAR_CHECKPOINT_INTERVAL_BASE_WEEKS = 8   # civil war progress will be updated every this many weeks (may be affected by modifiers)
 	CIVIL_WAR_CHECKPOINT_INTERVAL_MAXIMUM_WEEKS = 52	# This serves as a limit, to protect modifiers from reducing the progress speed to zero
 
-	CIVIL_WAR_CONSCRIPTION_RATE_POPULAR_SUPPORT_MULTIPLIER = 0.5 # At 100% popular support, insurrectionary states gain this multiplier of civil_war_conscription modifier
-	CIVIL_WAR_CONSCRIPTION_RATE_CLOUT_MULTIPLIER = 0.25 # At 100% clout from supporting IGs, insurrectionary states gain this multiplier of civil_war_conscription modifier
+	CIVIL_WAR_CONSCRIPTION_RATE_POPULAR_SUPPORT_MULTIPLIER = 0.25 # At 100% popular support, insurrectionary states gain this multiplier of civil_war_conscription modifier
+	CIVIL_WAR_CONSCRIPTION_RATE_CLOUT_MULTIPLIER = 0.05 # At 100% clout from supporting IGs, insurrectionary states gain this multiplier of civil_war_conscription modifier
+	CIVIL_WAR_CONSCRIPTION_RATE_MAX_MULTIPLIER = 0.1 # Total multiplier of civil_war_conscription modifier cannot exceed this number (this is intentionally much lower than the possible maximum scaling above, as movements very rarely have >10-20% popular support)
 	CIVIL_WAR_LOSER_IG_AND_MOVEMENT_DEBUFF_YEARS = 10			# Debuff duration in years for IG that looses in a revolution
 
 	SECESSION_WON_LOYALISTS_INCREASED_PERCENTAGE = 0.5		# This percentage of pops in the secession country of the seceded culture will become more loyal after a secession is victorious
@@ -310,6 +311,7 @@ NEconomy = {
 	IN_DEFAULT_MINIMUM_PENALTY_SCALE = 0.1				# This amount of the 'in default' throughput penalty is applied right away
 	IN_DEFAULT_DAYS_TO_FULL_PENALTY = 365				# How many days of being in default does it take to get the full throughput penalty
 	DECLARE_BANKRUPTCY_PENALTY_DURATION_YEARS = 10		# How many years does it take for penalties from declaring bankruptcy to fully decay
+	DECLARE_BANKRUPTCY_RADICALIZATION_BASE_FACTOR = 0.25 # Radicalize this percentage of all pops when declaring bankruptcy
 	DECLARE_BANKRUPTCY_RADICALIZATION_SHARES_FACTOR = 0.05 # For each per-pop shares in their building, radicalize this percentage of a pop on declaring bankruptcy
 
 	FIRED_POP_RADICALIZATION_FRACTION = 0.1				# This percentage of a pop becomes radicalized when they lose their job, for instance due to a building being downsized
@@ -410,18 +412,20 @@ NEconomy = {
 	BUILDING_RAISE_WAGES_DIVIDEND_INCOME_FACTOR = 0.5 # A pop with dividend income has its wealth multiplied by 1 - ( the fraction of their income that is dividends * this ) to ensure buildings don't start wage dumping just because all employees are getting dividends
 	BUILDING_RAISE_WAGES_MIN_RELEVANT_POP_SIZE = 50 # Pops with less workforce than this are ignored when checking whether a profitable building should raise wages because of radicalizing workers
 	BUILDING_RAISE_WAGES_DISCRIMINATION_FACTOR = 0.66 # Profitable buildings only care to raise wages for discriminated pops if their wealth to expected SoL ratio is less than this
-	BUILDING_LOWER_WAGES_TARGET_WEALTH_MULT = 1.33 # Buildings will consider lowering wages if all significant pops working in them have this * the target wealth to expected SoL ratio
-	OWNERSHIP_BUILDING_LOWER_WAGES_TARGET_WEALTH_MULT = 1.1 # Overrides BUILDING_LOWER_WAGES_TARGET_WEALTH_MULT for buildings that own other buildings
+	BUILDING_LOWER_WAGES_TARGET_WEALTH_MULT = 1.2 # Buildings will consider lowering wages if all significant pops working in them have this * the target wealth to expected SoL ratio
+	BUILDING_PREFER_LAYOFFS_TARGET_WEALTH_MULT = 0.5 # Buildings will prefer laying off pops if any significant pops working in them have this * the target wealth to expected SoL ratio or below
 	BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES = 3  # Non-subsidized buildings will not hire if it would result in their annual earnings/employee falling below this threshold (default value, can be overridden for building group)
-	BUILDING_PROFIT_TARGET_TO_RAISE_WAGES = 0.3		# Required profit margin to consider raising wages for SoL or employment reasons, with BUILDING_WEEKS_BETWEEN_PAY_CHANGES weeks cooldown
+	BUILDING_PROFIT_TARGET_TO_RAISE_WAGES = 0.25	# Required profit margin to consider raising wages for SoL or employment reasons, with BUILDING_WEEKS_BETWEEN_PAY_CHANGES weeks cooldown
 	BUILDING_PROFIT_TARGET_TO_LOWER_WAGES = 0.15	# If profit margin is this or below, buildings should lower their wages, with BUILDING_WEEKS_BETWEEN_PAY_CHANGES weeks cooldown
-	BUILDING_PROFIT_TARGET_TO_WITHDRAW_CASH = 0.2	# If profit margin is this or below, buildings should withdraw money from the cash reserves to make up the difference
+	BUILDING_PROFIT_TARGET_TO_WITHDRAW_CASH = 0.15	# If profit margin is this or below, buildings should withdraw money from the cash reserves to make up the difference
+	BUILDING_PROFIT_TARGET_TO_HIRE_EMPLOYEES = 0.25	# If profit margin is this or above, buildings should try to hire new workers
 	OWNERSHIP_BUILDING_PROFIT_TARGET_TO_RAISE_WAGES = 0.5	# Overrides BUILDING_PROFIT_TARGET_TO_RAISE_WAGES for buildings that own other buildings
 	OWNERSHIP_BUILDING_PROFIT_TARGET_TO_LOWER_WAGES = 0.3	# Overrides BUILDING_PROFIT_TARGET_TO_LOWER_WAGES for buildings that own other buildings
-	OWNERSHIP_BUILDING_PROFIT_TARGET_TO_WITHDRAW_CASH = 0.4	# Overrides BUILDING_PROFIT_TARGET_TO_WITHDRAW_CASH for buildings that own other buildings
-	SUBSISTENCE_BUILDING_PROFIT_TARGET_TO_RAISE_WAGES = 5.0	# Overrides BUILDING_PROFIT_TARGET_TO_RAISE_WAGES for subsistence buildings
-	SUBSISTENCE_BUILDING_PROFIT_TARGET_TO_LOWER_WAGES = 3.0	# Overrides BUILDING_PROFIT_TARGET_TO_LOWER_WAGES for subsistence buildings
-	SUBSISTENCE_BUILDING_PROFIT_TARGET_TO_WITHDRAW_CASH = 4.0	# Overrides BUILDING_PROFIT_TARGET_TO_WITHDRAW_CASH for subsistence buildings
+	OWNERSHIP_BUILDING_PROFIT_TARGET_TO_WITHDRAW_CASH = 0.3	# Overrides BUILDING_PROFIT_TARGET_TO_WITHDRAW_CASH for buildings that own other buildings
+	OWNERSHIP_BUILDING_PROFIT_TARGET_TO_HIRE_EMPLOYEES = 0.5 # Overrides BUILDING_PROFIT_TARGET_TO_HIRE_EMPLOYEES for buildings that own other buildings
+	SUBSISTENCE_BUILDING_PROFIT_TARGET_TO_RAISE_WAGES = 0.7	# Overrides BUILDING_PROFIT_TARGET_TO_RAISE_WAGES for subsistence buildings
+	SUBSISTENCE_BUILDING_PROFIT_TARGET_TO_LOWER_WAGES = 0.5	# Overrides BUILDING_PROFIT_TARGET_TO_LOWER_WAGES for subsistence buildings
+	SUBSISTENCE_BUILDING_PROFIT_TARGET_TO_WITHDRAW_CASH = 0.5	# Overrides BUILDING_PROFIT_TARGET_TO_WITHDRAW_CASH for subsistence buildings
 	BUILDING_MAX_EMPLOYMENT_FRACTION_TO_RAISE_WAGES = 0.5 # If the employment fraction of a building is above this, don't raise wages just to try and snipe employees from other buildings
 	BUILDING_WEEKS_BETWEEN_PAY_CHANGES = 0		# Cooldown between changes in pay, so buildings don't overcompensate for a temporary change in circumstances. If the building is unprofitable it uses BUILDING_WEEKS_BETWEEN_PAY_CHANGES_WHEN_UNPROFITABLE instead.
 	BUILDING_WEEKS_BETWEEN_PAY_CHANGES_WHEN_UNPROFITABLE = 0 # Cooldown between changes in pay, so buildings don't overcompensate for a temporary change in circumstances. Only used when unprofitable.
@@ -449,8 +453,9 @@ NEconomy = {
 	RETOOLING_WEEKS = 0							# How long it takes for a building to get back up to full production after switching a production method
 	BUILDING_TIMED_MODIFIER_WEEKS = 52 			# Duration of a timed modifier which is applied after switching a production method
 
-	BUILDING_PAUSE_HIRES_CASH_RESERVES_THRESHOLD = 0.75 	# If cash reserves are less than this, buildings should consider pausing new hires to wait for cash reserves
+	BUILDING_PAUSE_HIRES_CASH_RESERVES_THRESHOLD = 0.75 	# If cash reserves are higher than this, and employment fraction is below BUILDING_MAX_EMPLOYMENT_FRACTION_TO_CONSIDER_CASH_RESERVES, then allow hiring even if profits are low
 	BUILDING_MIN_EMPLOYMENT_FRACTION_TO_PAUSE_HIRES = 0.1 	# If building has at least this employment, it's OK to pause hiring
+	BUILDING_MAX_EMPLOYMENT_FRACTION_TO_CONSIDER_CASH_RESERVES = 0.5 	# If a building has at least this employment fraction, then ignore the cash reserves override for hiring
 	BUILDING_MAX_PROFIT_TO_PAUSE_HIRES = 0.2				# If building is making less than this fraction of revenue in profit, it's OK to pause hiring
 
 	PRICE_REPORT_MAX_ENTRIES = 10
@@ -498,8 +503,9 @@ NEconomy = {
 	BUILDING_FAILED_HIRE_COOLDOWN_WEEKS_WITHOUT_WAGE_RAISE = 4		# If a building fails to hire, it waits this many weeks before trying again *unless* it has since raised wages or adjusted its hiring rate
 
 	BUILDING_LAYOFFS_DECREASE_BY = 0.05				# The ratio that layoffs will reduce employment by (e.g. 0.15 means if you're currently 57% employed, reduce that to 48.45%)
+	BUILDING_LAYOFF_HIRING_COOLDOWN_WEEKS = 4		# If a building does layoffs, don't hire anymore workers for at least this amount of weeks 
 	BUILDING_MINIMUM_HIRING_ADJUSTMENT_FRACTION = 0.001		# If a hiring or firing wouldn't result in at least this amount of the wanted employees being transfered, don't bother
-
+	
 	BUILDING_CASH_RESERVES_HIGH_ROI = 0.25			# A ROI (return on investment) at or above this value is considered "high". In this context ROI means how much more money a building makes compared to how much it spends. Must be >= BUILDING_CASH_RESERVES_MED_ROI.
 	BUILDING_CASH_RESERVES_MED_ROI = 0.15			# A ROI (return on investment) at exactly this value is considered "medium". In this context ROI means how much more money a building makes compared to how much it spends. Must be >= BUILDING_CASH_RESERVES_LOW_ROI.
 	BUILDING_CASH_RESERVES_LOW_ROI = 0.05			# A ROI (return on investment) at or below this value is considered "low". In this context ROI means how much more money a building makes compared to how much it spends. Must be > 0.
@@ -524,7 +530,8 @@ NEconomy = {
 	CUSTOMS_UNION_CONTROLLER_MINIMUM_TARIFFS_SPLIT = 0.25	# Minimum amount of tariffs that the senior partner of a customs union gets. The rest will be split among the junior partners, according to their GDP contribution (between 0 and 1)
 
 	REINVESTMENT_EFFICIENCY_MAX = 3.0					# Maximum conversion of reinvestment to investment pool
-	REINVESTMENT_BASE_EFFICIENCY_THRESHOLD = 10000000	# Below this amount of GDP, increase reinvestment multiplier on a linear scale up to REINVESTMENT_EFFICIENCY_MAX at 0
+	REINVESTMENT_BASE_EFFICIENCY_THRESHOLD = 50000000	# Below this amount of GDP, increase reinvestment multiplier on a linear scale up to REINVESTMENT_EFFICIENCY_MAX at 0
+	REINVESTMENT_SUBSISTENCE_FRACTION_REDUCTION = 0.5	# Reinvestment from pops in ownership buildings is multiplied by ( 1 - this * the share of levels owned that are subsistence buildings )
 
 	COMPANY_OVER_LIMIT_BONUS_PENALTY_MIN = 0.33			# If the number of companies in the country exceeds the limit, all company bonuses get penalty. The penalty is scaled proportionally to the limit (exceeding the limit by 100% reduces bonuses by 100%) and the minimum value is this
 	COMPANY_PRODUCTIVITY_RATIO_HIGH_THRESHOLD = 1.25	# Companies whose productivity exceeds this factor of the global average will be considered high-productivity companies

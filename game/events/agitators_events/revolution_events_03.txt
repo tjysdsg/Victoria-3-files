@@ -664,14 +664,18 @@ revolution_pulse2_events.5 = {
 	cooldown = { months = normal_modifier_time }
 
 	trigger = {
-		any_revolution_ongoing = yes
 		OR = {
+			any_secession_ongoing = yes
+			any_revolution_ongoing = yes
+		}
+		OR = {
+			secession_progress_medium = yes
+			secession_progress_high = yes
 			revolution_progress_medium = yes
 			revolution_progress_high = yes
 		}
 		any_scope_state = {
-			is_incorporated = yes
-			turmoil >= 0.25
+			is_in_revolt = yes
 			any_scope_building = {
 			 	is_building_type = building_barracks
 				level >= 3
@@ -688,15 +692,17 @@ revolution_pulse2_events.5 = {
 	}
 
 	cancellation_trigger = {
-		NOT = { any_revolution_ongoing = yes }
+		NOR = { 
+			any_revolution_ongoing = yes 
+			any_secession_ongoing = yes 
+		}
 	}
 	
 	immediate = {
 		save_revolution_scopes = yes
 		random_scope_state = {
 			limit = {
-				is_incorporated = yes
-				turmoil >= 0.25
+				is_in_revolt = yes
 				any_scope_building = {
 				 	is_building_type = building_barracks
 					level >= 3

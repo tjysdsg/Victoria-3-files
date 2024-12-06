@@ -4234,6 +4234,20 @@ on_secession_checkpoint_reached = {
 		5 = secession_events.7
 		5 = secession_events.8
 		5 = secession_events.9
+		5 = revolution_pulse_events.9
+		5 = revolution_pulse_events.30
+		5 = revolution_pulse1_events.2
+		5 = revolution_pulse1_events.6
+		5 = revolution_pulse1_events.11
+		5 = revolution_pulse1_events.12
+		5 = revolution_pulse1_events.13
+		5 = revolution_pulse1_events.14
+		5 = revolution_pulse1_events.15
+		5 = revolution_pulse1_events.16
+		5 = revolution_pulse1_events.17
+		5 = revolution_pulse1_events.18
+		5 = revolution_pulse1_events.19
+		5 = revolution_pulse2_events.5
 	}
 }
 
@@ -4976,6 +4990,40 @@ on_become_independent = {
 	effect = { 
 		every_scope_state = {
 			assign_state_hub_dynamic_names = yes # All dynamic naming is handled by this scripted effect
+		}
+		if = {
+			limit = {
+				c:BCE ?= this
+				country_has_primary_culture = cu:british
+			}
+			change_tag = CEY
+			add_primary_culture = cu:sinhala
+			remove_primary_culture = cu:british
+			if = {
+				limit = {
+					NOT = {
+						has_law = law_type:law_state_atheism
+					}
+				}
+				set_state_religion = rel:theravada
+				ig:ig_devout = {
+					set_interest_group_name = ig_theravada_monks
+					remove_ideology = ideology_moralist
+					add_ideology = ideology_buddhist_moralist
+				}
+			}
+			recalculate_pop_ig_support = yes
+			every_scope_character = {
+				limit = {
+					OR = {
+						culture = cu:british
+						culture = cu:scottish
+						culture = cu:irish
+					}
+					is_immortal = no
+				}
+				kill_character = yes
+			}
 		}
 	}
 }

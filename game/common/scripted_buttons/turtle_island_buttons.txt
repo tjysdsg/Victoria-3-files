@@ -10,7 +10,6 @@
 
 	possible = {
 		has_technology_researched = nationalism
-
 		any_neighbouring_state = {
 			state_is_in_north_america = yes
 			owner = {
@@ -38,44 +37,50 @@ je_unite_the_nations_organize_the_tribes_button = {
 			state_is_in_north_america = yes
 			owner = {
 				is_country_type = decentralized
+				is_subject = no
+				any_primary_culture = {
+					shares_heritage_trait_with_any_primary_culture = root
+				}
+				hidden_trigger = {
+					is_player = no
+				}
 			}
 		}
 		bureaucracy > 150
 	}
 
 	effect = {
-		ordered_country = {
+		ordered_neighbouring_state = {
 			limit = {
-				is_country_type = decentralized
-				is_player = no
-				is_subject = no
-				any_primary_culture = {
-					shares_heritage_trait_with_any_primary_culture = ROOT
-				}
-				any_scope_state = {
-					state_is_in_north_america = yes
-					any_neighbouring_state = {
-						owner = ROOT
+				state_is_in_north_america = yes
+				owner = {
+					is_country_type = decentralized
+					is_subject = no
+					any_primary_culture = {
+						shares_heritage_trait_with_any_primary_culture = root
+					}
+					hidden_trigger = {
+						is_player = no
 					}
 				}
 			}
-			order_by = gdp
-
-			save_temporary_scope_as = decentralized_neighboring_territory # NEIGHBORING SHOULD NOT HAVE A U IN IT
+			order_by = owner.gdp
+			owner = {
+				save_temporary_scope_as = decentralised_neighbouring_territory
+			}
 		}
 
 		if = {
-			limit = { NOT = { exists = scope:decentralized_neighboring_territory } }
+			limit = { NOT = { exists = scope:decentralised_neighbouring_territory } }
 			custom_tooltip = { text = je_unite_the_nations_organize_the_tribes_tt }
 		}
 
 		if = {
-			limit = { exists = scope:decentralized_neighboring_territory }
-			scope:decentralized_neighboring_territory = {
+			limit = { exists = scope:decentralised_neighbouring_territory }
+			scope:decentralised_neighbouring_territory = {
 				set_country_type = unrecognized
 				hidden_effect = {
 					effect_starting_technology_tier_4_tech = yes
-		
 					effect_starting_politics_traditional = yes
 				}
 			}
@@ -101,40 +106,38 @@ je_unite_the_nations_offer_confederation_button = {
 		any_neighbouring_state = {
 			state_is_in_north_america = yes
 			owner = {
-				is_player = no
 				is_subject = no
 				any_primary_culture = {
 					shares_heritage_trait_with_any_primary_culture = ROOT
 				}
 				NOT = { is_country_type = decentralized }
 				relations:root >= 25
+				hidden_trigger = {
+					is_player = no
+				}
 			}
 		}
 	}
 
 	effect = {
-
-		ordered_country = {
+		ordered_neighbouring_state = {
 			limit = {
-				NOT = { is_country_type = decentralized }
-				relations:root >= 25
-				is_player = no
-				is_subject = no
-				any_primary_culture = {
-					shares_heritage_trait_with_any_primary_culture = ROOT
-				}
-				any_scope_state = {
-					state_is_in_north_america = yes
-					any_neighbouring_state = {
-						owner = ROOT
+				owner = {
+					is_subject = no
+					any_primary_culture = {
+						shares_heritage_trait_with_any_primary_culture = ROOT
+					}
+					NOT = { is_country_type = decentralized }
+					relations:root >= 25
+					hidden_trigger = {
+						is_player = no
 					}
 				}
 			}
-			order_by = gdp
-
-			save_temporary_scope_as = to_be_annexed
-
-
+			order_by = owner.gdp
+			owner = {
+				save_temporary_scope_as = to_be_annexed
+			}
 			if = {
 				limit = {
 					scope:to_be_annexed = {

@@ -74,6 +74,83 @@ types notifications {
 			raw_text = "Replace me!"
 		}
 	}
+	
+	type base_general_information_window = container {
+		
+		parentanchor = center
+		using = clickthrough_blocker
+		layer = confirmation
+
+		state = {
+			trigger_on_create = yes
+			name = 1
+			next = 2
+
+			alpha = 0
+			position_y = -50
+		}
+		state = {
+			name = 2
+			duration = 0.25
+			using = Animation_Curve_Default
+
+			alpha = 1
+			position_y = 0
+		}
+
+		background = {
+			using = default_background
+		}
+		background = {
+			using = frame_small
+		}
+		
+		flowcontainer = {
+			direction = vertical
+			margin = { 40 20 }
+			spacing = 20
+			
+			textbox = {
+				block "text_size" {
+					minimumsize = { 300 -1 }
+					maximumsize = { 300 -1 }
+				}
+				
+				multiline = yes
+				text = "[GeneralInformationWindow.GetTitle]"
+				autoresize = yes
+			}
+
+			textbox = {
+				block "text_size" {
+					minimumsize = { 300 -1 }
+					maximumsize = { 300 -1 }
+				}
+				
+				multiline = yes
+				text = "[GeneralInformationWindow.GetText]"
+				autoresize = yes
+			}
+			
+			flowcontainer = {
+				direction = horizontal
+				using = default_list_position
+				spacing = 20
+
+				button = {
+					using = default_button
+					using = close_button_sound
+					size = { 140 40 }
+					text = "OK_BUTTON"
+					shortcut = "close_window"
+
+					block "answer_no_handler" {
+						onclick = "[PopupManager.CloseGeneralInformationWindow]"
+					}
+				}
+			}
+		}
+	}
 
 	### CONFIRMATION WINDOW
 	type default_confirmation_window = container {
@@ -156,6 +233,9 @@ types notifications {
 	}
 }
 
+base_general_information_window = {
+	name = "general_information_window"
+}
 
 ### DIPLOMATIC ACTION NOTIFICATION (WITH AI REASONS)
 default_notification =  {
