@@ -126,6 +126,9 @@
 	# Multiplies the impact law enactment has on the activism of this movement type
 	law_enactment_radicalism_multiplier = x
 	
+	# Multiplies the impact active laws have on the activism of this movement type
+	active_law_radicalism_multiplier = x
+	
 	# Bespoke factors for increasing/decreasing the activism of movements of this type
 	additional_radicalism_factors = {}	
 }	

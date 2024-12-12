@@ -106,8 +106,11 @@ NPolitics = {
 	# The values below determine how ideologically divergent an IG can be from an insurrectionary political movement and still join on the civil war side, based on their level of approval
 	# Happy/Loyal IGs will never join civil wars
 	IG_MAX_IDEOLOGICAL_DELTA_TO_JOIN_CIVIL_WAR_NEUTRAL = 1
-	IG_MAX_IDEOLOGICAL_DELTA_TO_JOIN_CIVIL_WAR_UNHAPPY = 2
-	IG_MAX_IDEOLOGICAL_DELTA_TO_JOIN_CIVIL_WAR_ANGRY = 3
+	IG_MAX_IDEOLOGICAL_DELTA_TO_JOIN_CIVIL_WAR_UNHAPPY = 1.5
+	IG_MAX_IDEOLOGICAL_DELTA_TO_JOIN_CIVIL_WAR_ANGRY = 2
+	
+	# Laws that the IG leader's ideology has an opinion has this multiplier for their impact on ideological divergence for joining civil wars
+	IG_MAX_IDEOLOGICAL_DELTA_TO_JOIN_CIVIL_WAR_LEADER_FACTOR = 2.0
 	
 	BASE_IG_APPROVAL = 0				# Baseline IG approval
 	MIN_IG_APPROVAL = -20				# Minimum IG approval
@@ -165,12 +168,14 @@ NPolitics = {
 
 	RECENT_PARTY_DAYS = 14				# Party is considered recently formed if activated within RECENT_PARTY_DAYS days range
 
-	MAX_GOVERNMENT_ALTERNATIVES_TO_CONSIDER_AI = 12					# When evaluating government reform options (for AI), only consider this many constellations (sorted by average clout, descending) [>=1]
+	MAX_GOVERNMENT_ALTERNATIVES_TO_CONSIDER_AI = 64					# When evaluating government reform options (for AI), only consider this many constellations (sorted by average clout, descending) [>=1]
 	MAX_GOVERNMENT_ALTERNATIVES_TO_CONSIDER_PLAYER = 256			# When evaluating government reform options (the 3 suggested to the player in the UI), only consider this many constellations (sorted by average clout, descending) [>=3]
 	MAX_GOVERNMENT_ALTERNATIVES_OPTIONS_WANTED_FOR_VALIDATION = 8	# When evaluating government reform options during government validation stage
 	MAX_GOVERNMENT_ALTERNATIVES_TO_CONSIDER_FOR_VALIDATION = 256	# When evaluating government reform options during government validation stage
 
 	DEFAULT_LAW_ACTIVATION_DATE = "1836.1.1"
+	
+	CIVIL_WAR_COOLDOWN_MONTHS = 6									# After a civil war concludes, it takes this long before another one can start
 	
 	# If there are multiple civil wars that could start, and the current active one has lower activism, it can potentially be replaced by a more viable civil war
 	# This is the minimum delta required for another civil war to replace the active one
@@ -311,7 +316,7 @@ NEconomy = {
 	IN_DEFAULT_MINIMUM_PENALTY_SCALE = 0.1				# This amount of the 'in default' throughput penalty is applied right away
 	IN_DEFAULT_DAYS_TO_FULL_PENALTY = 365				# How many days of being in default does it take to get the full throughput penalty
 	DECLARE_BANKRUPTCY_PENALTY_DURATION_YEARS = 10		# How many years does it take for penalties from declaring bankruptcy to fully decay
-	DECLARE_BANKRUPTCY_RADICALIZATION_BASE_FACTOR = 0.25 # Radicalize this percentage of all pops when declaring bankruptcy
+	DECLARE_BANKRUPTCY_RADICALIZATION_BASE_FACTOR = 0.1 # Radicalize this percentage of all pops when declaring bankruptcy
 	DECLARE_BANKRUPTCY_RADICALIZATION_SHARES_FACTOR = 0.05 # For each per-pop shares in their building, radicalize this percentage of a pop on declaring bankruptcy
 
 	FIRED_POP_RADICALIZATION_FRACTION = 0.1				# This percentage of a pop becomes radicalized when they lose their job, for instance due to a building being downsized
@@ -398,7 +403,7 @@ NEconomy = {
 	MARKET_SHARE_MARKET_ACCESS_SCALED = 0.5		# How much of market points is gained based on market access
 
 	COUNTRY_MIN_CREDIT_BASE = 100000			# Added to the total Building Cash Reserves to determine credit limit (base)
-	COUNTRY_MIN_CREDIT_SCALED = 0.05 			# Added to the total Building Cash Reserves to determine credit limit (multiplied by GDP)
+	COUNTRY_MIN_CREDIT_SCALED = 0.5 			# Added to the total Building Cash Reserves to determine credit limit (multiplied by GDP)
 	CREDIT_RATIO_MAX_OVERRUN = 0.01 			# Countries can accumulate this percentage more of a debt "hole" than their credit limit when in default
 	GOLD_RESERVE_RATIO_AT_START = 0.5			# Unless a country history's 'treasury' parameter is set to a non-zero value, countries start with this ratio of their gold reserve in gold
 	BUILDING_INITIAL_WAGE_WEEKS = 2				# A building will not adjust its wages for the first this many weeks of its existence
@@ -1069,6 +1074,9 @@ NPops = {
 	RADICALS_MAX_FROM_STARVATION_BASE = 0.15 # Food Security = Mild Threshold
 	RADICALS_MAX_FROM_STARVATION_MILD = 0.5 # Food Security = Severe Threshold
 	RADICALS_MAX_FROM_STARVATION_SEVERE = 0.75 # Food Security = 0
+
+	ALLOW_ASSIMILATION_IN_HOMELANDS = no		# Can pops assimilate when living in their homelands?
+	ALLOW_ASSIMILATION_ACROSS_HERITAGES = yes 	# Can pops assimilate into pops of a different heritage?
 
 	ASSIMILATION_RATE = 0.002					# Percentage of pops who will Assimilate into a different Culture each month, if eligible
 	MIN_ASSIMILATION = 1						# If there is any assmiliation at least this many people will assimilate
