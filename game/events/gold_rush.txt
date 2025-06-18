@@ -1,6 +1,6 @@
 ﻿namespace = goldrush
 
-goldrush.1 = { #gold discovered in a state
+goldrush.1 = { #gold rush in state. Gold Discovery itself is a notification.
 	type = state_event
 	placement = ROOT
 	title = goldrush.1.t
@@ -8,6 +8,8 @@ goldrush.1 = { #gold discovered in a state
 	flavor = goldrush.1.f
 
 	duration = 3
+
+	cooldown = { days = stupidly_long_modifier_time }  #State Cooldown
 
 	event_image = {
 		video = "europenorthamerica_gold_prospectors"
@@ -18,12 +20,26 @@ goldrush.1 = { #gold discovered in a state
 	icon = "gfx/interface/icons/event_icons/event_trade.dds"
 
 	trigger = {
-		has_building = building_gold_fields
-		NOT = { has_modifier = state_gold_rush }
+		has_building = building_gold_fields #A gold rush is triggered when gold is discovered where there already is some gold.
+		owner = {  #If these top two are true, will do hidden event goldrush.6. The last is the National cooldown
+			NOR = {
+				has_variable = gold_always_exploit
+				has_variable = gold_always_attract
+			}
+			NOT = { has_variable = goldrush_active}
+		}
 	}
 
 	immediate = {
+		set_variable = gold_rush_state #Allows gold rush ended events
 		save_scope_as = goldrush_state
+		owner = {
+			save_scope_as = goldrush_country
+			set_variable = {
+				name = goldrush_active
+				days = very_long_modifier_time #National Cooldown. Not every discovery leads to a gold rush.
+			}
+		}
 	}
 
 	option = { #move everyone there
@@ -31,23 +47,54 @@ goldrush.1 = { #gold discovered in a state
 		default_option = yes
 		add_modifier = {
 			name = state_gold_rush
-			months = short_modifier_time
+			days = normal_modifier_time
 		}
 	}
-	
-	option = { #explote it
+
+	option = { #exploit it
 		name = goldrush.1.b
 		add_modifier = {
 			name = state_gold_rush_less_migration
-			months = short_modifier_time
+			days = normal_modifier_time
 		}
 		add_modifier = {
-			name = state_gold_rush_explotation
-			months = short_modifier_time
+			name = state_gold_rush_exploitation
+			days = normal_modifier_time
+		}
+	}
+
+	option = { #always attract people
+		name = goldrush.1.c
+		add_modifier = {
+			name = state_gold_rush
+			days = normal_modifier_time
+		}
+		custom_tooltip = {
+			text = gold_always_attract_tt
+			owner = {
+				set_variable = gold_always_attract
+			}
+		}
+	}
+
+	option = { #always exploit it.
+		name = goldrush.1.e
+		add_modifier = {
+			name = state_gold_rush_less_migration
+			days = normal_modifier_time
+		}
+		add_modifier = {
+			name = state_gold_rush_exploitation
+			days = normal_modifier_time
+		}
+		custom_tooltip = {
+			text = gold_always_exploit_tt
+			owner = {
+				set_variable = gold_always_exploit
+			}
 		}
 	}
 }
-
 
 goldrush.2 = { #gold fields depleted
 	type = state_event
@@ -58,6 +105,8 @@ goldrush.2 = { #gold fields depleted
 
 	duration = 3
 
+	cooldown = { days = very_long_modifier_time } #state cooldown
+
 	event_image = {
 		video = "europenorthamerica_gold_prospectors"
 	}
@@ -66,16 +115,25 @@ goldrush.2 = { #gold fields depleted
 
 	icon = "gfx/interface/icons/event_icons/event_trade.dds"
 
-	trigger = {
-		has_building = building_gold_fields
-		NOT = { has_modifier = state_gold_rush }
+	trigger = { #Triggered by resources depleted
+		has_variable = gold_rush_state
+		owner = {
+			NOR = { #If these are true, will do hidden event goldrush.7
+				has_variable = gold_always_let_go
+				has_variable = gold_always_make_stay
+			}
+		}
 	}
 
 	immediate = {
 		save_scope_as = goldrush_no_more_state
+		owner = {
+			save_scope_as = goldrush_country
+		}
+		remove_variable = gold_rush_state
 	}
 
-	option = { #sad
+	option = { #let them go
 		name = goldrush.2.a
 		default_option = yes
 		if = {
@@ -86,10 +144,10 @@ goldrush.2 = { #gold fields depleted
 		}
 		add_modifier = {
 			name = state_gold_depleted
-			months = short_modifier_time
+			days = normal_modifier_time
 		}
 	}
-	
+
 	option = { #try to retain them
 		name = goldrush.2.b
 		if = {
@@ -98,13 +156,49 @@ goldrush.2 = { #gold fields depleted
 			}
 			remove_modifier = state_gold_rush
 		}
+		add_radicals_in_state = {
+			pop_type = laborers
+			value = very_large_radicals
+		}
+	}
+
+	option = { #always let them go
+		name = goldrush.2.c
+		if = {
+			limit = {
+				has_modifier = state_gold_rush
+			}
+			remove_modifier = state_gold_rush
+		}
 		add_modifier = {
-			name = state_gold_depleted_palliative
-			months = short_modifier_time
+			name = state_gold_depleted
+			days = normal_modifier_time
+		}
+		custom_tooltip = {
+			text = gold_always_let_go_tt
+			owner = {
+				set_variable = gold_always_let_go
+			}
+		}
+	}
+
+	option = { #always try to retain them
+		name = goldrush.2.e
+		if = {
+			limit = {
+				has_modifier = state_gold_rush
+			}
+			remove_modifier = state_gold_rush
 		}
 		add_radicals_in_state = {
 			pop_type = laborers
-			value = medium_radicals
+			value = very_large_radicals
+		}
+		custom_tooltip = {
+			text = gold_always_make_stay_tt
+			owner = {
+				set_variable = gold_always_make_stay
+			}
 		}
 	}
 }
@@ -115,6 +209,8 @@ goldrush.3 = { #foreign influx provokes outcry
 	title = goldrush.3.t
 	desc = goldrush.3.d
 	flavor = goldrush.3.f
+
+	cooldown = { days = stupidly_long_modifier_time }
 
 	duration = 3
 
@@ -128,7 +224,7 @@ goldrush.3 = { #foreign influx provokes outcry
 
 	trigger = {
 		any_scope_state = {
-			has_modifier = state_gold_rush
+			has_variable = gold_rush_state
 		}
 		OR = {
 			ig:ig_landowners = {
@@ -138,7 +234,7 @@ goldrush.3 = { #foreign influx provokes outcry
 				is_powerful = yes
 			}
 			ig:ig_devout = {
-				is_powerful = yes 
+				is_powerful = yes
 			}
 		}
 	}
@@ -163,7 +259,7 @@ goldrush.3 = { #foreign influx provokes outcry
 		else_if = {
 			limit = {
 				ig:ig_devout = {
-					is_powerful = yes 
+					is_powerful = yes
 				}
 			}
 			ig:ig_devout = {
@@ -183,7 +279,7 @@ goldrush.3 = { #foreign influx provokes outcry
 		ig:ig_petty_bourgeoisie = {
 			add_modifier = {
 				name = pb_angry_at_foreign_miners
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -194,7 +290,7 @@ goldrush.3 = { #foreign influx provokes outcry
 			remove_modifier = state_gold_rush
 			add_modifier = {
 				name = state_limited_gold_rush
-				months = short_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -209,6 +305,8 @@ goldrush.4 = { #miners get organized
 
 	duration = 3
 
+	cooldown = { days = stupidly_long_modifier_time }
+
 	event_image = {
 		video = "europenorthamerica_gold_prospectors"
 	}
@@ -219,10 +317,7 @@ goldrush.4 = { #miners get organized
 
 	trigger = {
 		any_scope_state = {
-			OR = {
-				has_modifier = state_gold_rush
-				has_modifier = state_limited_gold_rush
-			}
+			has_variable = gold_rush_state
 		}
 		NOR = {
 			ig:ig_trade_unions = {
@@ -258,13 +353,13 @@ goldrush.4 = { #miners get organized
 		ig:ig_trade_unions = {
 			add_modifier = {
 				name = tu_mining_syndicates_formed
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		ig:ig_industrialists = {
 			add_modifier = {
 				name = in_disrupted_paradigms
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -274,13 +369,13 @@ goldrush.4 = { #miners get organized
 		ig:ig_industrialists = {
 			add_modifier = {
 				name = in_mining_conglomerates_formed
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		ig:ig_trade_unions = {
 			add_modifier = {
 				name = tu_miners_exploited
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -296,6 +391,8 @@ goldrush.5 = {
 
 	duration = 3
 
+	cooldown = { days = never_fire_again_modifier_time } #applies to state
+
 	event_image = {
 		video = "europenorthamerica_gold_prospectors"
 	}
@@ -304,20 +401,23 @@ goldrush.5 = {
 
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
 
-	cooldown = { months = normal_modifier_time }
-
 	trigger = {
-		OR = {
-			has_modifier = state_gold_rush
-			has_modifier = state_limited_gold_rush
+		has_variable = gold_rush_state #must fire in gold rush state
+		owner = {
+			NOT = {
+				has_variable = goldrush_dream_fired #only fires once
+			}
 		}
-		NOT = { has_modifier = expecting_riches }
 	}
 
 	immediate = {
 		save_scope_as = gold_rush_state
 		owner = {
 			save_scope_as = owner_country_scope
+			set_variable = {
+				name = goldrush_dream_fired
+				days = stupidly_long_modifier_time #national cooldown
+			}
 		}
 	}
 
@@ -326,15 +426,122 @@ goldrush.5 = {
 		default_option = yes
 		add_modifier = {
 			name = expecting_riches
-			months = normal_modifier_time
+			days = normal_modifier_time
+		}
+		add_modifier = {
+			name = expecting_riches_forever
+			days = long_modifier_time
+			multiplier = 2
 		}
 	}
-	
+
 	option = { #tell them to tone it down
-		name = goldrush.5.b 
+		name = goldrush.5.b
 		add_modifier = {
 			name = expecting_riches_angry
-			months = normal_modifier_time
-		}	
+			days = normal_modifier_time
+		}
+		add_modifier = {
+			name = expecting_riches_forever
+			days = long_modifier_time
+		}
+	}
+}
+
+goldrush.6 = { #hidden event that does the effects if the player chooses to always exploit or always extract
+	type = state_event
+	hidden = yes
+
+	cooldown = { days = stupidly_long_modifier_time } #state cooldown
+
+	trigger = {
+		has_building = building_gold_fields
+		owner = {
+			OR = {
+				has_variable = gold_always_exploit
+				has_variable = gold_always_attract
+			}
+			NOT = {
+				has_variable = goldrush_active
+			}
+		}
+	}
+
+	immediate = {
+		set_variable = gold_rush_state #Allows gold rush ended events
+		save_scope_as = goldrush_state
+		#Notification is done directly in on-action
+		owner = {
+			save_scope_as = goldrush_country
+			set_variable = {
+				name = goldrush_active
+				days = very_long_modifier_time #National Cooldown. Not every discovery leads to a gold rush.
+			}
+		}
+		if = {
+			limit = {
+				owner = {
+					has_variable = gold_always_exploit
+				}
+			}
+			add_modifier = {
+				name = state_gold_rush_less_migration
+				days = normal_modifier_time
+			}
+			add_modifier = {
+				name = state_gold_rush_exploitation
+				days = normal_modifier_time
+			}
+		}
+		else = {
+			add_modifier = {
+				name = state_gold_rush
+				days = normal_modifier_time
+			}
+		}
+	}
+}
+
+goldrush.7 = { #hidden event that does the effects if the player chooses to always let the people go or always keep them in. Triggered by resource depleted.
+	type = state_event
+	hidden = yes
+	trigger = {
+		has_variable = gold_rush_state
+		owner = {
+			OR = {
+				has_variable = gold_always_let_go
+				has_variable = gold_always_make_stay
+			}
+		}
+	}
+
+	cooldown = { days = very_long_modifier_time }#state cooldown
+
+	immediate = {
+		#notification is handled by on_actions
+		save_scope_as = goldrush_state
+		if = {
+			limit = {
+				has_modifier = state_gold_rush
+			}
+			remove_modifier = state_gold_rush
+		}
+		if = {
+			limit = {
+				owner = {
+					has_variable = gold_always_let_go
+				}
+			}
+			add_modifier = {
+				name = state_gold_depleted
+				days = normal_modifier_time
+			}
+		}
+		else = {
+			add_radicals_in_state = {
+				pop_type = laborers
+				value = very_large_radicals
+			}
+		}
 	}
 }

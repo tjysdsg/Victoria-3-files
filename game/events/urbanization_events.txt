@@ -11,6 +11,8 @@ urbanization_events.1 = {
 
 	duration = 3
 
+	cooldown = { days = stupidly_long_modifier_time }
+
 	event_image = {
 		video = "southamerica_factory_opening"
 	}
@@ -34,16 +36,16 @@ urbanization_events.1 = {
 		default_option = yes
 		add_modifier = {
 			name = modifier_urbanized_state
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 
-	option = { #focus on the party 
+	option = { #focus on the party
 		name = urbanization_events.1.b
 		scope:industrialist_ig = {
 			add_modifier = {
 				name = ig_urbanization_industrialists
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -61,6 +63,8 @@ urbanization_events.2 = {
 
 	duration = 3
 
+	cooldown = { days = stupidly_long_modifier_time }
+
 	event_image = {
 		video = "europenorthamerica_london_center"
 	}
@@ -68,7 +72,7 @@ urbanization_events.2 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
-	
+
 	trigger = {
 		NOT = { has_variable = city_of_plenty_var }
 		any_scope_state = {
@@ -78,15 +82,14 @@ urbanization_events.2 = {
 			}
 			is_incorporated = yes
 			any_scope_pop = {
-				standard_of_living >= 32 
+				standard_of_living >= 32
 			}
 		}
 	}
-	
+
 	immediate = {
 		set_variable = {
-			name = city_of_plenty_var
-			months = long_modifier_time
+			name = city_of_plenty_var #won't hit the same city twice
 		}
 		random_scope_state = {
 			limit = {
@@ -96,16 +99,16 @@ urbanization_events.2 = {
 				}
 				is_incorporated = yes
 				any_scope_pop = {
-					standard_of_living >= 32 
+					standard_of_living >= 32
 				}
 			}
 			save_scope_as = urbanization_state
 		}
 	}
-	
+
 	cancellation_trigger = {
 		scope:urbanization_state = {
-			NOT = { 
+			NOT = {
 				any_scope_pop = {
 					standard_of_living > 32
 				}
@@ -133,7 +136,7 @@ urbanization_events.2 = {
 		scope:urbanization_state = {
 			add_modifier = { # rich people expect more parties
 				name = luxurious_parties
-				months = long_modifier_time
+				days = long_modifier_time
 			}
 			add_loyalists_in_state = {
 				strata = upper
@@ -158,6 +161,8 @@ urbanization_events.4 = {
 
 	duration = 3
 
+	cooldown = { days = stupidly_long_modifier_time }
+
 	event_image = {
 		video = "southamerica_factory_opening"
 	}
@@ -180,12 +185,12 @@ urbanization_events.4 = {
 	immediate = {
 		set_variable = {
 			name = industrialists_favouring_var
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 		ig:ig_industrialists = {
 			save_scope_as = industrialist_ig
 		}
-		random_interest_group = {	
+		random_interest_group = {
 			limit = {
 				is_marginal = no
 				NOT = { is_interest_group_type = ig_industrialists }
@@ -199,7 +204,8 @@ urbanization_events.4 = {
 		scope:opposing_ig = {
 			add_modifier = {
 				name = modifier_ig_happy_urbanization
-				months = normal_modifier_time
+				days = normal_modifier_time
+				multiplier = 2
 			}
 			if = {
 				limit = {
@@ -214,7 +220,8 @@ urbanization_events.4 = {
 		ig:ig_industrialists = {
 			add_modifier = {
 				name = modifier_ig_happy_urbanization_bad
-				months = normal_modifier_time
+				days = normal_modifier_time
+				multiplier = 2
 			}
 		}
 	}
@@ -225,7 +232,7 @@ urbanization_events.4 = {
 		scope:opposing_ig = {
 			add_modifier = {
 				name = modifier_ignored_ig_urbanization
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 			if = {
 				limit = {
@@ -250,6 +257,8 @@ urbanization_events.5 = {
 	flavor = urbanization_events.5.f
 
 	duration = 3
+
+	cooldown = { days = stupidly_long_modifier_time }
 
 	event_image = {
 		video = "southamerica_factory_opening"
@@ -282,7 +291,7 @@ urbanization_events.5 = {
 		scope:urbanization_state = {
 			add_modifier = {
 				name = modifier_heavily_urbanized
-				months = short_modifier_time
+				days = short_modifier_time
 			}
 		}
 	}
@@ -292,7 +301,7 @@ urbanization_events.5 = {
 		scope:urbanization_state = {
 			add_modifier = {
 				name = modifier_urban_centers
-				months = short_modifier_time
+				days = short_modifier_time
 			}
 		}
 	}
@@ -309,6 +318,8 @@ urbanization_events.6 = {
 
 	duration = 3
 
+	cooldown = { days = stupidly_long_modifier_time }
+
 	event_image = {
 		video = "votp_realist_household"
 	}
@@ -324,7 +335,7 @@ urbanization_events.6 = {
 			has_subsistence_building = yes
 		}
 		ig:ig_industrialists = {
-			OR = {
+			AND = {
 				is_powerful = yes
 				is_in_government = yes
 			}
@@ -334,12 +345,13 @@ urbanization_events.6 = {
 	immediate = {
 		set_variable = {
 			name = subsistence_farms_var
-			months = normal_modifier_time
+			days = stupidly_long_modifier_time
 		}
-		random_scope_state = {
+		ordered_scope_state = {
 			limit = {
 				has_subsistence_building = yes
 			}
+			order_by = gdp
 			save_scope_as = subsistence_state
 		}
 		ig:ig_industrialists = {
@@ -352,22 +364,40 @@ urbanization_events.6 = {
 		default_option = yes
 		scope:subsistence_state = {
 			add_modifier = {
-				name = modifier_no_subsistence_farming
-				months = normal_modifier_time
+				name = modifier_factories_no_subsistence_farming
+				days = long_modifier_time
 			}
-			add_radicals_in_state = {
-				strata = upper
-				value = medium_radicals
+		}
+		ROOT = {
+			add_modifier = {
+				name = modifier_listened_to_advice
+				days = long_modifier_time
 			}
 		}
 	}
 
 	option = {
 		name = urbanization_events.6.b
-		ig:ig_industrialists = {
+		scope:subsistence_state = {
+			add_modifier = {
+				name = modifier_better_farms_no_subsistence_farming
+				days = long_modifier_time
+			}
+		}
+	}
+
+	option = {
+		name = urbanization_events.6.c
+		scope:subsistence_state = {
 			add_modifier = {
 				name = subsistence_farms_ignored
-				months = normal_modifier_time
+				days = long_modifier_time
+			}
+		}
+		ROOT = {
+			add_modifier = {
+				name = modifier_army_bases
+				days = long_modifier_time
 			}
 		}
 	}

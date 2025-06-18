@@ -1,7 +1,7 @@
 ﻿namespace = rubber_events
 
-# You export rubber
- rubber_events.1 = {
+# You move rubber to a new state
+rubber_events.1 = {
 	type = state_event
 	placement = ROOT
 
@@ -19,11 +19,9 @@
 
 	duration = 3
 
-	cooldown = { months = short_modifier_time }
-
+	cooldown = { days = never_fire_again_modifier_time } #cooldown for state. Rubber can only be transplanted "for the first time" once.
 	trigger = {
 		has_potential_resource = bg_rubber
-		NOT = { has_modifier = state_rubber_modifier }
 		NOT = { region = sr:region_brazil }
 		state_region = {
 			remaining_undepleted = {
@@ -31,9 +29,13 @@
 				amount > 1
 			}
 		}
-		NOT = {
-			owner = {
+		owner = {
+			NOT = { #cooldown
 				has_variable = rubber_rush_event_var
+			}
+			NOR = { #auto-fire event triggers
+					has_variable = rubber_always_spread
+					has_variable = rubber_always_concentrate
 			}
 		}
 	}
@@ -41,7 +43,19 @@
 	immediate = {
 		save_scope_as = rubber_state
 		owner = {
-			set_variable = { name = rubber_rush_event_var months = short_modifier_time }
+			set_variable = { name = rubber_rush_event_var days = very_long_modifier_time } #national cooldown. Rubber rushes are no longer so frequent.
+		}
+		owner = {
+			ordered_scope_state = {
+				limit = {
+					has_building = building_rubber_plantation
+				}
+				order_by = b:building_rubber_plantation.level
+				save_scope_as = rubber_centre
+				b:building_rubber_plantation = {
+					save_scope_as = rubber_plantation
+				}
+			}
 		}
 	}
 
@@ -53,33 +67,145 @@
 		}
 		add_modifier = {
 			name = state_rubber_modifier
-			months = short_modifier_time
+			days = long_modifier_time
 		}
 	}
 
-	option = { #expand the rubber to adjacent states
+	option = { #focus on the existing rubber nexus
 		name = rubber_events.1.b
 		trigger = {
-			any_neighbouring_state = {
-				has_potential_resource = bg_rubber
-				owner = scope:rubber_state.owner
-				state_region = {
-					remaining_undepleted = {
-						type = bg_rubber
-						amount > 1
-					}
+			owner = {
+				exists = scope:rubber_centre
+				scope:rubber_centre = {
+					has_building = building_rubber_plantation
 				}
 			}
 		}
-		random_neighbouring_state = {
+		scope:rubber_state = {
+			force_resource_discovery = bg_rubber
+		}
+		owner = {
+			scope:rubber_centre = {
+				add_modifier = {
+					name = state_rubber_nexus_modifier
+					days = long_modifier_time
+				}
+			}
+		}
+	}
+
+	option = { #always spread rubber
+		name = rubber_events.1.c
+		trigger = { #Only available if both options are visible or else player may not realise what choice they're making.
+			owner = {
+				exists = scope:rubber_centre
+				scope:rubber_centre = {
+					has_building = building_rubber_plantation
+				}
+			}
+		}
+		scope:rubber_state = {
+			force_resource_discovery = bg_rubber
+		}
+		add_modifier = {
+			name = state_rubber_modifier
+			days = long_modifier_time
+		}
+		custom_tooltip = {
+			text = rubber_always_spread_tt
+			owner = {
+				set_variable = rubber_always_spread
+			}
+		}
+	}
+
+	option = { #Always focus on the existing rubber nexus
+		name = rubber_events.1.e
+		trigger = {
+			owner = {
+				exists = scope:rubber_centre
+				scope:rubber_centre = {
+					has_building = building_rubber_plantation
+				}
+			}
+		}
+		scope:rubber_state = {
+			force_resource_discovery = bg_rubber
+		}
+		owner = {
+			scope:rubber_centre = {
+				add_modifier = {
+					name = state_rubber_nexus_modifier
+					days = long_modifier_time
+				}
+			}
+		}
+		custom_tooltip = {
+			text = rubber_always_concentrate_tt
+			owner = {
+				set_variable = rubber_always_concentrate
+			}
+		}
+	}
+}
+
+rubber_events.2 = { #hidden event that does the effects if the player chooses option c or d
+	type = state_event
+	hidden = yes
+
+	cooldown = { days = never_fire_again_modifier_time } #state cooldown
+
+	trigger = {
+		has_potential_resource = bg_rubber
+		NOT = { region = sr:region_brazil }
+		state_region = {
+			remaining_undepleted = {
+				type = bg_rubber
+				amount > 1
+			}
+		}
+		owner = {
+			OR = {
+				has_variable = rubber_always_spread
+				has_variable = rubber_always_concentrate
+			}
+			NOT = {
+				has_variable = rubber_rush_event_var
+			}
+		}
+	}
+
+	immediate = {
+		save_scope_as = rubber_state
+		#Notification on on-action or in code.
+		owner = {
+			set_variable = { name = rubber_rush_event_var days = very_long_modifier_time } #national cooldown. Rubber rushes are no longer so frequent.
+		}
+		if = {
 			limit = {
-				owner = scope:rubber_state.owner
-				has_potential_resource = bg_rubber
+				owner = {
+					has_variable = rubber_always_spread
+				}
 			}
 			force_resource_discovery = bg_rubber
 			add_modifier = {
 				name = state_rubber_modifier
-				months = short_modifier_time
+				days = long_modifier_time
+			}
+		}
+		else = {
+			force_resource_discovery = bg_rubber
+			owner = {
+				ordered_scope_state = {
+					limit = {
+						has_building = building_rubber_plantation
+					}
+					order_by = b:building_rubber_plantation.level
+					add_modifier = {
+						name = state_rubber_nexus_modifier
+						days = long_modifier_time
+					}
+				}
 			}
 		}
 	}

@@ -6,25 +6,25 @@ catalyst_historical_relationship = {
 
 catalyst_became_relevant = {
 	category = cc_diplomatic_relevance
-	
+
 	ai_country_goal_recalculation = {
 		type = all
 		chance = { value = 1.0 }
-	}	
+	}
 }
 
 catalyst_became_irrelevant = {
 	category = cc_diplomatic_relevance
-	
+
 	ai_country_goal_recalculation = {
 		type = all
 		chance = { value = 1.0 }
-	}	
+	}
 }
 
 catalyst_gained_land_border = {
 	category = cc_diplomatic_relevance
-	
+
 	ai_country_goal_recalculation = {
 		type = only_hostile
 		trigger = {
@@ -36,7 +36,7 @@ catalyst_gained_land_border = {
 		}
 		chance = {
 			value = 0.25
-			
+
 			if = {
 				limit = { country_rank >= rank_value:great_power }
 				multiply = 2
@@ -50,14 +50,14 @@ catalyst_gained_land_border = {
 			if = {
 				limit = { is_in_same_power_bloc = scope:target_country }
 				multiply = 0.1
-			}			
+			}
 		}
-	}		
+	}
 }
 
 catalyst_lost_land_border = {
 	category = cc_diplomatic_relevance
-	
+
 	ai_country_goal_recalculation = {
 		type = more_friendly
 		trigger = {
@@ -68,94 +68,93 @@ catalyst_lost_land_border = {
 		}
 		chance = {
 			value = 0.25
-			
+
 			if = {
 				limit = { "relations(scope:target_country)" >= relations_threshold:amicable }
 				multiply = 4.0
-			}			
+			}
 			else_if = {
 				limit = { "relations(scope:target_country)" >= relations_threshold:cordial }
 				multiply = 2.0
-			}			
+			}
 		}
-	}	
+	}
 }
 
 catalyst_relations_level_increased = {
 	category = cc_relations_change
-	
+
 	political_lobby_creation = {
 		lobby_pro_country = {
 			value = 0.05
-			
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" < relations_threshold:cordial
 				}
 				multiply = 0.5
-			}		
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:friendly
 				}
 				multiply = 1.5
-			}			
+			}
 		}
 
 		lobby_pro_overlord = {
 			value = 0.10
-			
+
 			if = {
 				limit = { liberty_desire <= 25 }
 				multiply = 3
 			}
-
 			else_if = {
 				limit = { liberty_desire <= 50 }
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" < relations_threshold:cordial
 				}
 				multiply = 0.5
-			}			
+			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
 		type = more_friendly
 		chance = {
 			value = 0.05
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:friendly
 				}
 				add = 100.0 # Guaranteed
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:amicable
@@ -167,35 +166,35 @@ catalyst_relations_level_increased = {
 					"relations(scope:target_country)" >= relations_threshold:cordial
 				}
 				multiply = 2
-			}				
+			}
 		}
 	}
-	
+
 	effect = {
-		add_lobby_appeasement_from_diplomacy_unidirectional = { 
+		add_lobby_appeasement_from_diplomacy_unidirectional = {
 			FIRST = root
-			SECOND = scope:target_country 
+			SECOND = scope:target_country
 			PRO_AMOUNT = 1
 			ANTI_AMOUNT = -1
 			FACTOR = appeasement_relations_increased
 		}
-		add_overlord_lobby_appeasement_from_diplomacy = { 
+		add_overlord_lobby_appeasement_from_diplomacy = {
 			FIRST = root
-			SECOND = scope:target_country 
+			SECOND = scope:target_country
 			PRO_AMOUNT = 2
 			ANTI_AMOUNT = -2
 			FACTOR = appeasement_relations_increased
-		}		
+		}
 	}
 }
 
 catalyst_relations_level_decreased = {
 	category = cc_relations_change
-	
+
 	political_lobby_creation = {
 		lobby_anti_overlord = {
 			value = 0.05
-			
+
 			if = {
 				limit = { liberty_desire >= 75 }
 				multiply = 3
@@ -204,64 +203,64 @@ catalyst_relations_level_decreased = {
 			else_if = {
 				limit = { liberty_desire >= 50 }
 				multiply = 2
-			}	
+			}
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
+			}
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}		
+			}
 		}
 
 		lobby_anti_country = {
 			value = 0.10
-			
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}			
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				multiply = 1.5
-			}			
+			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
 		type = more_hostile
 		chance = {
 			value = 0.05
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				add = 100.0 # Guaranteed
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:cold
@@ -273,85 +272,85 @@ catalyst_relations_level_decreased = {
 					"relations(scope:target_country)" <= relations_threshold:poor
 				}
 				multiply = 2
-			}				
+			}
 		}
-	}	
-	
+	}
+
 	effect = {
-		add_lobby_appeasement_from_diplomacy_unidirectional = { 
+		add_lobby_appeasement_from_diplomacy_unidirectional = {
 			FIRST = root
-			SECOND = scope:target_country 
+			SECOND = scope:target_country
 			PRO_AMOUNT = -1
 			ANTI_AMOUNT = 1
 			FACTOR = appeasement_relations_decreased
-		}	
-		add_overlord_lobby_appeasement_from_diplomacy = { 
+		}
+		add_overlord_lobby_appeasement_from_diplomacy = {
 			FIRST = root
-			SECOND = scope:target_country 
+			SECOND = scope:target_country
 			PRO_AMOUNT = -2
 			ANTI_AMOUNT = 2
 			FACTOR = appeasement_relations_decreased
-		}			
-	}	
+		}
+	}
 }
 
 catalyst_diplomatic_demand = {
 	category = cc_diplomatic_aggression
-	
+
 	political_lobby_creation = {
 		lobby_anti_country = {
 			value = 0.05
-			
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
-			}	
+			}
 
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}				
+			}
 		}
 	}
-	
+
 	effect = {
-		add_lobby_appeasement_from_diplomacy_unidirectional = { 
+		add_lobby_appeasement_from_diplomacy_unidirectional = {
 			FIRST = root
-			SECOND = scope:target_country 
+			SECOND = scope:target_country
 			PRO_AMOUNT = -4
 			ANTI_AMOUNT = 4
 			FACTOR = appeasement_diplomatic_demand_made
-		}		
-	}	
+		}
+	}
 }
 
 catalyst_diplomatic_demand_target = {
 	category = cc_diplomatic_aggression
-	
+
 	political_lobby_creation = {
 		lobby_anti_country = {
 			value = 0.2
-			
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
-			}	
+			}
 
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}			
+			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
 		type = more_hostile
 		chance = 1.0
@@ -360,74 +359,74 @@ catalyst_diplomatic_demand_target = {
 
 catalyst_diplomatic_play = {
 	category = cc_diplomatic_aggression
-	
+
 	political_lobby_creation = {
 		lobby_anti_country = {
 			value = 0.1
-				
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
-			}	
+			}
 
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}			
+			}
 		}
 	}
-	
+
 	effect = {
-		add_lobby_appeasement_from_diplomacy_unidirectional = { 
+		add_lobby_appeasement_from_diplomacy_unidirectional = {
 			FIRST = root
-			SECOND = scope:target_country 
+			SECOND = scope:target_country
 			PRO_AMOUNT = -5
 			ANTI_AMOUNT = 5
 			FACTOR = appeasement_diplomatic_play_started
-		}		
-	}	
+		}
+	}
 }
 
 catalyst_diplomatic_play_target = {
 	category = cc_diplomatic_aggression
-	
+
 	political_lobby_creation = {
 		lobby_anti_country = {
 			value = 0.2
-			
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
-			}	
+			}
 
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}			
+			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
 		type = more_hostile
 		chance = 1.0
-	}	
+	}
 }
 
 catalyst_autonomy_level_increased = {
 	category = cc_autonomy_change
-	
+
 	political_lobby_creation = {
 		lobby_pro_overlord = {
 			value = 0.25
-			
+
 			if = {
 				limit = { liberty_desire < 25 }
 				multiply = 3
@@ -435,28 +434,28 @@ catalyst_autonomy_level_increased = {
 			else_if = {
 				limit = { liberty_desire < 50 }
 				multiply = 2
-			}		
+			}
 		}
 	}
-	
+
 	effect = {
-		add_overlord_lobby_appeasement_from_diplomacy = { 
+		add_overlord_lobby_appeasement_from_diplomacy = {
 			FIRST = root
-			SECOND = scope:target_country 
+			SECOND = scope:target_country
 			PRO_AMOUNT = -5
 			ANTI_AMOUNT = 5
 			FACTOR = appeasement_autonomy_increased
-		}		
+		}
 	}
 }
 
 catalyst_autonomy_level_decreased = {
 	category = cc_autonomy_change
-	
+
 	political_lobby_creation = {
 		lobby_anti_overlord = {
 			value = 0.25
-			
+
 			if = {
 				limit = { liberty_desire >= 75 }
 				multiply = 3
@@ -464,51 +463,51 @@ catalyst_autonomy_level_decreased = {
 			else_if = {
 				limit = { liberty_desire >= 50 }
 				multiply = 2
-			}		
+			}
 		}
 	}
-	
+
 	effect = {
-		add_overlord_lobby_appeasement_from_diplomacy = { 
+		add_overlord_lobby_appeasement_from_diplomacy = {
 			FIRST = root
-			SECOND = scope:target_country 
+			SECOND = scope:target_country
 			PRO_AMOUNT = 5
 			ANTI_AMOUNT = -5
 			FACTOR = appeasement_autonomy_decreased
-		}		
-	}	
+		}
+	}
 }
 
 catalyst_gained_independence = {
 	category = cc_subject_status_change
 
 	effect = {
-		add_overlord_lobby_appeasement_from_diplomacy = { 
+		add_overlord_lobby_appeasement_from_diplomacy = {
 			FIRST = root
-			SECOND = scope:target_country 
+			SECOND = scope:target_country
 			PRO_AMOUNT = -5
 			ANTI_AMOUNT = 5
 			FACTOR = appeasement_gained_independence
-		}		
-	}	
+		}
+	}
 }
 
 catalyst_became_overlord = {
 	category = cc_subject_status_change
-	
+
 	ai_country_goal_recalculation = {
 		type = only_friendly
 		chance = 1.0
-	}	
+	}
 }
 
 catalyst_became_subject = {
 	category = cc_subject_status_change
-	
+
 	political_lobby_creation = {
 		lobby_pro_overlord = {
 			value = 0.5
-			
+
 			if = {
 				limit = { liberty_desire < 25 }
 				add = 0.25
@@ -516,11 +515,11 @@ catalyst_became_subject = {
 			else_if = {
 				limit = { liberty_desire < 50 }
 				add = 0.10
-			}		
+			}
 		}
 		lobby_anti_overlord = {
 			value = 0.5
-			
+
 			if = {
 				limit = { liberty_desire >= 75 }
 				add = 0.25
@@ -528,9 +527,9 @@ catalyst_became_subject = {
 			else_if = {
 				limit = { liberty_desire >= 50 }
 				add = 0.10
-			}		
-		}		
-	}	
+			}
+		}
+	}
 }
 
 catalyst_diplomatic_incident = {
@@ -540,11 +539,11 @@ catalyst_diplomatic_incident = {
 		trigger = {
 			scope:target_country.infamy >= infamy_threshold:infamous
 			"relations(scope:target_country)" < relations_threshold:cordial
-		}	
-	
+		}
+
 		lobby_anti_country = {
 			value = 0.0
-			
+
 			if = {
 				limit = { scope:target_country.infamy >= infamy_threshold:infamous }
 				add = 0.01
@@ -556,11 +555,11 @@ catalyst_diplomatic_incident = {
 			else_if = {
 				limit = { scope:target_country.infamy >= infamy_threshold:pariah }
 				add = 0.05
-			}				
+			}
 		}
 		lobby_anti_overlord = {
 			value = 0.0
-			
+
 			if = {
 				limit = { scope:target_country.infamy >= infamy_threshold:infamous }
 				add = 0.10
@@ -572,10 +571,10 @@ catalyst_diplomatic_incident = {
 			else_if = {
 				limit = { scope:target_country.infamy >= infamy_threshold:pariah }
 				add = 0.30
-			}				
+			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
 		trigger = {
 			scope:target_country.infamy >= infamy_threshold:infamous
@@ -583,22 +582,22 @@ catalyst_diplomatic_incident = {
 				"relations(scope:target_country)" < relations_threshold:cordial
 				scope:target_country.infamy >= infamy_threshold:pariah
 			}
-		}	
-		
+		}
+
 		type = more_hostile
 		chance = {
 			value = 0.05
-			
+
 			if = {
 				limit = { scope:target_country.infamy >= infamy_threshold:pariah }
 				add = 1.0
-			}			
+			}
 			else_if = {
 				limit = { scope:target_country.infamy >= infamy_threshold:notorious }
 				add = 0.1
-			}					
+			}
 		}
-	}	
+	}
 }
 
 # This only triggers when non-hostile two-sided pacts are created
@@ -607,49 +606,49 @@ catalyst_pact_formed = {
 
 	political_lobby_creation = {
 		lobby_pro_country = {
-			value = 0.05		
-			
+			value = 0.05
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" < relations_threshold:cordial
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:friendly
 				}
 				multiply = 1.5
-			}			
+			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
 		type = more_friendly
 		chance = {
 			value = 0.1
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:amicable
 				}
 				multiply = 4.0
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:friendly
@@ -661,7 +660,7 @@ catalyst_pact_formed = {
 					"relations(scope:target_country)" >= relations_threshold:cordial
 				}
 				multiply = 2.0
-			}				
+			}
 		}
 	}
 }
@@ -673,37 +672,37 @@ catalyst_pact_broken = {
 	political_lobby_creation = {
 		lobby_anti_country = {
 			value = 0.05
-			
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}				
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				multiply = 1.5
-			}			
+			}
 		}
 		lobby_anti_overlord = {
 			value = 0.05
-			
+
 			if = {
 				limit = { liberty_desire >= 75 }
 				multiply = 3
@@ -712,33 +711,33 @@ catalyst_pact_broken = {
 			else_if = {
 				limit = { liberty_desire >= 50 }
 				multiply = 2
-			}	
+			}
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
+			}
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}		
+			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
 		type = more_hostile
 		chance = {
 			value = 0.1
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:cold
 				}
 				multiply = 4.0
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" < relations_threshold:cordial
@@ -750,9 +749,179 @@ catalyst_pact_broken = {
 					"relations(scope:target_country)" < relations_threshold:friendly
 				}
 				multiply = 2.0
-			}				
+			}
 		}
-	}	
+	}
+}
+
+catalyst_treaty_broken = {
+	category = cc_diplomatic_treaty
+
+	political_lobby_creation = {
+		lobby_anti_country = {
+			value = 0.05
+
+			if = {
+				limit = {
+					scope:target_country.country_rank > root.country_rank
+				}
+				multiply = 2
+			}
+
+			if = {
+				limit = {
+					NOT = { has_strategic_adjacency = scope:target_country }
+				}
+				multiply = 0.5
+			}
+
+			if = {
+				limit = {
+					"relations(scope:target_country)" > relations_threshold:poor
+				}
+				multiply = 0.5
+			}
+			else_if = {
+				limit = {
+					"relations(scope:target_country)" <= relations_threshold:hostile
+				}
+				multiply = 1.5
+			}
+		}
+		lobby_anti_overlord = {
+			value = 0.05
+
+			if = {
+				limit = { liberty_desire >= 75 }
+				multiply = 3
+			}
+
+			else_if = {
+				limit = { liberty_desire >= 50 }
+				multiply = 2
+			}
+			if = {
+				limit = {
+					NOT = { has_strategic_adjacency = scope:target_country }
+				}
+				multiply = 0.5
+			}
+			if = {
+				limit = {
+					"relations(scope:target_country)" > relations_threshold:poor
+				}
+				multiply = 0.5
+			}
+		}
+	}
+
+	ai_country_goal_recalculation = {
+		type = more_hostile
+		chance = {
+			value = 0.1
+
+			if = {
+				limit = {
+					"relations(scope:target_country)" <= relations_threshold:cold
+				}
+				multiply = 4.0
+			}
+			else_if = {
+				limit = {
+					"relations(scope:target_country)" < relations_threshold:cordial
+				}
+				multiply = 3.0
+			}
+			else_if = {
+				limit = {
+					"relations(scope:target_country)" < relations_threshold:friendly
+				}
+				multiply = 2.0
+			}
+		}
+	}
+}
+
+catalyst_treaty_enforced = {
+	category = cc_diplomatic_treaty
+
+	political_lobby_creation = {
+		lobby_anti_country = {
+			value = 0.25
+
+			if = {
+				limit = {
+					scope:target_country.country_rank > root.country_rank
+				}
+				multiply = 2
+			}
+
+			if = {
+				limit = {
+					NOT = { has_strategic_adjacency = scope:target_country }
+				}
+				multiply = 0.5
+			}
+
+			if = {
+				limit = {
+					"relations(scope:target_country)" > relations_threshold:poor
+				}
+				multiply = 0.5
+			}
+			else_if = {
+				limit = {
+					"relations(scope:target_country)" <= relations_threshold:hostile
+				}
+				multiply = 1.5
+			}
+		}
+		lobby_anti_overlord = {
+			value = 0.25
+
+			if = {
+				limit = { liberty_desire >= 75 }
+				multiply = 3
+			}
+
+			else_if = {
+				limit = { liberty_desire >= 50 }
+				multiply = 2
+			}
+			if = {
+				limit = {
+					NOT = { has_strategic_adjacency = scope:target_country }
+				}
+				multiply = 0.5
+			}
+			if = {
+				limit = {
+					"relations(scope:target_country)" > relations_threshold:poor
+				}
+				multiply = 0.5
+			}
+		}
+	}
+
+	ai_country_goal_recalculation = {
+		type = more_hostile
+		chance = {
+			value = 0.5
+
+			if = {
+				limit = {
+					"relations(scope:target_country)" <= relations_threshold:cold
+				}
+				add = 100.0 # Guaranteed
+			}
+			else_if = {
+				limit = {
+					"relations(scope:target_country)" <= relations_threshold:poor
+				}
+				multiply = 1.5
+			}
+		}
+	}
 }
 
 # This only triggers when non-hostile two-sided alliances & defensive pacts are created (replaces catalyst_pact_formed)
@@ -769,38 +938,38 @@ catalyst_alliance_formed = {
 				}
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" < relations_threshold:cordial
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:friendly
 				}
 				multiply = 1.5
-			}			
+			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
 		trigger = {
 			"relations(scope:target_country)" > relations_threshold:poor
-		}	
-		
+		}
+
 		type = more_friendly
 		chance = {
-			value = 1		
+			value = 1
 		}
 	}
 }
@@ -812,47 +981,47 @@ catalyst_alliance_broken = {
 	political_lobby_creation = {
 		lobby_anti_country = {
 			value = 0.1
-			
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}				
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				multiply = 1.5
-			}			
+			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
 		type = more_hostile
 		chance = {
 			value = 0.25
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:cold
 				}
 				multiply = 4.0
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" < relations_threshold:cordial
@@ -864,9 +1033,9 @@ catalyst_alliance_broken = {
 					"relations(scope:target_country)" < relations_threshold:friendly
 				}
 				multiply = 2.0
-			}				
+			}
 		}
-	}	
+	}
 }
 
 catalyst_alliance_with_rival = {
@@ -875,37 +1044,37 @@ catalyst_alliance_with_rival = {
 	political_lobby_creation = {
 		lobby_anti_country = {
 			value = 0.05
-			
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}				
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				multiply = 1.5
-			}			
+			}
 		}
 		lobby_anti_overlord = {
 			value = 0.05
-			
+
 			if = {
 				limit = { liberty_desire >= 75 }
 				multiply = 3
@@ -914,33 +1083,33 @@ catalyst_alliance_with_rival = {
 			else_if = {
 				limit = { liberty_desire >= 50 }
 				multiply = 2
-			}	
+			}
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
+			}
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}		
+			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
 		type = more_hostile
 		chance = {
 			value = 0.1
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:cold
 				}
 				multiply = 4.0
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" < relations_threshold:cordial
@@ -952,9 +1121,9 @@ catalyst_alliance_with_rival = {
 					"relations(scope:target_country)" < relations_threshold:friendly
 				}
 				multiply = 2.0
-			}				
+			}
 		}
-	}	
+	}
 }
 
 catalyst_rival_of_rival = {
@@ -963,38 +1132,38 @@ catalyst_rival_of_rival = {
 	political_lobby_creation = {
 		lobby_pro_country = {
 			value = 0.05
-			
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}				
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				multiply = 1.5
-			}			
+			}
 		}
 
 		lobby_pro_overlord = {
 			value = 0.10
-			
+
 			if = {
 				limit = { liberty_desire <= 25 }
 				multiply = 3
@@ -1004,34 +1173,34 @@ catalyst_rival_of_rival = {
 				limit = { liberty_desire <= 50 }
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" < relations_threshold:cordial
 				}
 				multiply = 0.5
-			}			
+			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
 		type = more_friendly
 		chance = {
 			value = 0.1
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:amicable
 				}
 				multiply = 4.0
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:friendly
@@ -1043,9 +1212,9 @@ catalyst_rival_of_rival = {
 					"relations(scope:target_country)" >= relations_threshold:cordial
 				}
 				multiply = 2.0
-			}				
+			}
 		}
-	}	
+	}
 }
 
 catalyst_increased_relations_with_rival = {
@@ -1054,37 +1223,37 @@ catalyst_increased_relations_with_rival = {
 	political_lobby_creation = {
 		lobby_anti_country = {
 			value = 0.01
-			
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}				
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				multiply = 1.5
-			}			
+			}
 		}
 		lobby_anti_overlord = {
 			value = 0.05
-			
+
 			if = {
 				limit = { liberty_desire >= 75 }
 				multiply = 3
@@ -1093,33 +1262,33 @@ catalyst_increased_relations_with_rival = {
 			else_if = {
 				limit = { liberty_desire >= 50 }
 				multiply = 2
-			}	
+			}
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
+			}
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}		
+			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
 		type = more_hostile
 		chance = {
 			value = 0.05
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:cold
 				}
 				multiply = 4.0
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" < relations_threshold:cordial
@@ -1131,9 +1300,9 @@ catalyst_increased_relations_with_rival = {
 					"relations(scope:target_country)" < relations_threshold:friendly
 				}
 				multiply = 2.0
-			}				
+			}
 		}
-	}	
+	}
 }
 
 catalyst_decreased_relations_with_rival = {
@@ -1142,38 +1311,38 @@ catalyst_decreased_relations_with_rival = {
 	political_lobby_creation = {
 		lobby_pro_country = {
 			value = 0.01
-			
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}				
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				multiply = 1.5
-			}			
+			}
 		}
 
 		lobby_pro_overlord = {
 			value = 0.10
-			
+
 			if = {
 				limit = { liberty_desire <= 25 }
 				multiply = 3
@@ -1183,34 +1352,34 @@ catalyst_decreased_relations_with_rival = {
 				limit = { liberty_desire <= 50 }
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" < relations_threshold:cordial
 				}
 				multiply = 0.5
-			}			
+			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
 		type = more_friendly
 		chance = {
 			value = 0.05
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:amicable
 				}
 				multiply = 4.0
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:friendly
@@ -1222,9 +1391,9 @@ catalyst_decreased_relations_with_rival = {
 					"relations(scope:target_country)" >= relations_threshold:cordial
 				}
 				multiply = 2.0
-			}				
+			}
 		}
-	}	
+	}
 }
 
 catalyst_opposed_in_play = {
@@ -1233,18 +1402,18 @@ catalyst_opposed_in_play = {
 	ai_country_goal_recalculation = {
 		trigger = {
 			NOT = { is_subject_of = scope:target_country }
-		}		
-	
+		}
+
 		type = more_hostile
 		chance = {
 			value = 0.1
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:cold
 				}
 				multiply = 4.0
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" < relations_threshold:cordial
@@ -1256,9 +1425,9 @@ catalyst_opposed_in_play = {
 					"relations(scope:target_country)" < relations_threshold:friendly
 				}
 				multiply = 2.0
-			}				
+			}
 		}
-	}		
+	}
 }
 
 catalyst_allies_in_play = {
@@ -1267,18 +1436,18 @@ catalyst_allies_in_play = {
 	ai_country_goal_recalculation = {
 		trigger = {
 			NOT = { is_subject_of = scope:target_country }
-		}		
-	
+		}
+
 		type = more_friendly
 		chance = {
 			value = 0.1
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:amicable
 				}
 				multiply = 4.0
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:friendly
@@ -1290,9 +1459,9 @@ catalyst_allies_in_play = {
 					"relations(scope:target_country)" >= relations_threshold:cordial
 				}
 				multiply = 2.0
-			}				
+			}
 		}
-	}	
+	}
 }
 
 catalyst_wargoal_enforced = {
@@ -1301,37 +1470,37 @@ catalyst_wargoal_enforced = {
 	political_lobby_creation = {
 		lobby_anti_country = {
 			value = 0.1
-			
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}			
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				multiply = 1.5
-			}			
+			}
 		}
 		lobby_anti_overlord = {
 			value = 0.1
-			
+
 			if = {
 				limit = { liberty_desire >= 75 }
 				multiply = 3
@@ -1340,60 +1509,60 @@ catalyst_wargoal_enforced = {
 			else_if = {
 				limit = { liberty_desire >= 50 }
 				multiply = 2
-			}	
+			}
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
+			}
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}		
+			}
 		}
 	}
 }
 
 catalyst_state_conquered = {
 	category = cc_wargoal_enforced
-	
+
 	political_lobby_creation = {
 		lobby_anti_country = {
 			value = 0.25
-			
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}			
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				multiply = 1.5
-			}			
+			}
 		}
 		lobby_anti_overlord = {
 			value = 0.25
-			
+
 			if = {
 				limit = { liberty_desire >= 75 }
 				multiply = 3
@@ -1402,19 +1571,19 @@ catalyst_state_conquered = {
 			else_if = {
 				limit = { liberty_desire >= 50 }
 				multiply = 2
-			}	
+			}
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
+			}
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}		
+			}
 		}
 	}
 
@@ -1434,7 +1603,7 @@ catalyst_state_conquered = {
 					"relations(scope:target_country)" <= relations_threshold:poor
 				}
 				multiply = 1.5
-			}			
+			}
 		}
 	}
 }
@@ -1445,87 +1614,87 @@ catalyst_diplomatic_strategy_changed = {
 	ai_country_goal_recalculation = {
 		trigger = {
 			NOT = { has_friendly_diplomatic_pact = { TARGET = scope:target_country } }
-		}	
-	
+		}
+
 		type = all
 		chance = {
 			value = 0.05
-			
+
 			if = {
-				limit = { 
-					is_subject_of = scope:target_country	
+				limit = {
+					is_subject_of = scope:target_country
 				}
 				add = 100.0 # Guaranteed
-			}	
-			
+			}
+
 			if = {
-				limit = { 
+				limit = {
 					has_strategy = ai_strategy_unify_germany
-					scope:target_country = {			
+					scope:target_country = {
 						OR = {
 							country_has_primary_culture = cu:north_german
 							country_has_primary_culture = cu:south_german
 						}
-					}		
+					}
 				}
 				add = 100.0 # Guaranteed
 			}
 
-			
+
 			if = {
-				limit = { 
+				limit = {
 					has_strategy = ai_strategy_unify_italy
-					scope:target_country = {			
+					scope:target_country = {
 						OR = {
 							country_has_primary_culture = cu:north_italian
 							country_has_primary_culture = cu:south_italian
 						}
-					}		
+					}
 				}
 				add = 100.0 # Guaranteed
 			}
 
 			if = {
-				limit = { 
+				limit = {
 					has_strategy = ai_strategy_unify_ethiopia
-					scope:target_country = {			
+					scope:target_country = {
 						scope:target_country = { can_form_nation = ETH }
-					}		
-				}
-				add = 100.0 # Guaranteed
-			}	
-
-			if = {
-				limit = { 
-					has_strategy = ai_strategy_unify_china
-					scope:target_country = {			
-						scope:target_country = { can_form_nation = CHI }
-					}		
+					}
 				}
 				add = 100.0 # Guaranteed
 			}
 
 			if = {
-				limit = { 
+				limit = {
+					has_strategy = ai_strategy_unify_china
+					scope:target_country = {
+						scope:target_country = { can_form_nation = CHI }
+					}
+				}
+				add = 100.0 # Guaranteed
+			}
+
+			if = {
+				limit = {
 					OR = {
 						has_strategy = ai_strategy_socialism_in_one_country
-						has_strategy = ai_strategy_world_revolution		
+						has_strategy = ai_strategy_world_revolution
 						has_strategy = ai_strategy_anti_imperialism
-					}	
+					}
 				}
 				multiply = 10
-			}	
-			
+			}
+
 			if = {
-				limit = { 
+				limit = {
 					OR = {
 						has_strategy = ai_strategy_colonial_expansion
 						has_strategy = ai_strategy_economic_imperialism
 					}
-					scope:target_country = { is_country_type = unrecognized } 			
+					scope:target_country = { is_country_type = unrecognized }
 				}
 				multiply = 5
-			}	
+			}
 
 			if = {
 				limit = {
@@ -1534,18 +1703,18 @@ catalyst_diplomatic_strategy_changed = {
 				multiply = 0.5
 			}
 			else_if = {
-				limit = { 
-					has_strategy = ai_strategy_territorial_expansion	
+				limit = {
+					has_strategy = ai_strategy_territorial_expansion
 				}
 				multiply = 5
-			}									
+			}
 		}
 	}
 }
 
 catalyst_declared_bankruptcy = {
 	category = cc_bankruptcy
-	
+
 	ai_country_goal_recalculation = {
 		trigger = {
 			country_rank >= scope:target_country.country_rank
@@ -1553,65 +1722,65 @@ catalyst_declared_bankruptcy = {
 				country_rank >= rank_value:great_power
 				has_strategic_adjacency = scope:target_country
 			}
-		}	
-		
+		}
+
 		type = more_hostile
 		chance = {
 			value = 0.05
-			
+
 			if = {
-				limit = { 
+				limit = {
 					NOT = { is_country_type = unrecognized }
-					scope:target_country = { is_country_type = unrecognized } 			
+					scope:target_country = { is_country_type = unrecognized }
 				}
 				add = 0.05
-			}			
+			}
 
 			if = {
 				limit = { has_strategy = ai_strategy_economic_imperialism }
 				multiply = 5
 			}
 		}
-	}	
+	}
 }
 
 catalyst_ideological_drift = {
 	category = cc_government_change
-	
+
 	political_lobby_creation = {
 		lobby_anti_country = {
 			value = 0.01
-			
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}			
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				multiply = 1.5
-			}			
+			}
 		}
 		lobby_anti_overlord = {
 			value = 0.05
-			
+
 			if = {
 				limit = { liberty_desire >= 75 }
 				multiply = 3
@@ -1620,55 +1789,55 @@ catalyst_ideological_drift = {
 			else_if = {
 				limit = { liberty_desire >= 50 }
 				multiply = 2
-			}	
+			}
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
+			}
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}		
+			}
 		}
-	}	
+	}
 
 	ai_country_goal_recalculation = {
 		trigger = {
 			OR = {
 				"relations(scope:target_country)" < relations_threshold:friendly
 				AND = {
-					has_radical_leftist_government = no			
+					has_radical_leftist_government = no
 					scope:target_country = {
 						has_radical_leftist_government = yes
 					}
 				}
 			}
-		}	
-		
+		}
+
 		type = more_hostile
 		chance = {
 			value = 0.05
-			
+
 			if = {
 				limit = {
-					has_radical_leftist_government = no			
+					has_radical_leftist_government = no
 					scope:target_country = {
 						has_radical_leftist_government = yes
-					}				
+					}
 				}
 				multiply = 5.0
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}						
+			}
 
 			if = {
 				limit = {
@@ -1676,13 +1845,13 @@ catalyst_ideological_drift = {
 				}
 				multiply = 0.25
 			}
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				multiply = 4.0
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:cold
@@ -1694,49 +1863,49 @@ catalyst_ideological_drift = {
 					"relations(scope:target_country)" <= relations_threshold:poor
 				}
 				multiply = 2.0
-			}			
+			}
 		}
-	}	
+	}
 }
 
 catalyst_ideological_alignment = {
 	category = cc_government_change
-	
+
 	political_lobby_creation = {
 		lobby_pro_country = {
 			value = 0.01
-			
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" < relations_threshold:cordial
 				}
 				multiply = 0.5
-			}		
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:friendly
 				}
 				multiply = 1.5
-			}			
+			}
 		}
-		
+
 		lobby_pro_overlord = {
 			value = 0.10
-			
+
 			if = {
 				limit = { liberty_desire <= 25 }
 				multiply = 3
@@ -1746,63 +1915,63 @@ catalyst_ideological_alignment = {
 				limit = { liberty_desire <= 50 }
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" < relations_threshold:cordial
 				}
 				multiply = 0.5
-			}			
+			}
 		}
-	}	
-	
+	}
+
 	ai_country_goal_recalculation = {
 		trigger = {
 			OR = {
 				"relations(scope:target_country)" > relations_threshold:poor
 				AND = {
-					has_radical_leftist_government = yes		
+					has_radical_leftist_government = yes
 					scope:target_country = {
 						has_radical_leftist_government = yes
 					}
 				}
 			}
-		}	
-		
+		}
+
 		type = more_friendly
 		chance = {
 			value = 0.05
-			
+
 			if = {
 				limit = {
-					has_radical_leftist_government = yes		
+					has_radical_leftist_government = yes
 					scope:target_country = {
 						has_radical_leftist_government = yes
-					}				
+					}
 				}
 				multiply = 10.0
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}						
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:amicable
 				}
 				multiply = 4.0
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:friendly
@@ -1814,7 +1983,7 @@ catalyst_ideological_alignment = {
 					"relations(scope:target_country)" >= relations_threshold:cordial
 				}
 				multiply = 2.0
-			}			
+			}
 		}
 	}
 }
@@ -1825,8 +1994,8 @@ catalyst_joined_same_bloc = {
 	ai_country_goal_recalculation = {
 		trigger = {
 			"relations(scope:target_country)" > relations_threshold:poor
-		}	
-		
+		}
+
 		type = more_friendly
 		chance = {
 			value = 0.1
@@ -1836,13 +2005,13 @@ catalyst_joined_same_bloc = {
 				}
 				add = 0.1
 			}
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:amicable
 				}
 				multiply = 4.0
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:friendly
@@ -1854,7 +2023,7 @@ catalyst_joined_same_bloc = {
 					"relations(scope:target_country)" >= relations_threshold:cordial
 				}
 				multiply = 2.0
-			}				
+			}
 		}
 	}
 }
@@ -1866,7 +2035,7 @@ catalyst_joined_different_bloc = {
 		trigger = {
 			"relations(scope:target_country)" < relations_threshold:cordial
 		}
-		
+
 		type = more_hostile
 		chance = {
 			value = 0.1
@@ -1876,13 +2045,13 @@ catalyst_joined_different_bloc = {
 				}
 				add = 0.1
 			}
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				multiply = 4.0
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:cold
@@ -1894,7 +2063,7 @@ catalyst_joined_different_bloc = {
 					"relations(scope:target_country)" <= relations_threshold:poor
 				}
 				multiply = 2.0
-			}				
+			}
 		}
 	}
 }
@@ -1902,7 +2071,7 @@ catalyst_joined_different_bloc = {
 catalyst_declined_bloc_invite = {
 	category = cc_power_bloc_membership
 
-	ai_country_goal_recalculation = {		
+	ai_country_goal_recalculation = {
 		type = only_hostile
 		chance = {
 			value = 0.5
@@ -1912,7 +2081,7 @@ catalyst_declined_bloc_invite = {
 					"relations(scope:target_country)" < relations_threshold:cordial
 				}
 				add = 0.5
-			}					
+			}
 		}
 	}
 }
@@ -1930,13 +2099,13 @@ catalyst_left_power_bloc = {
 				}
 				add = 0.5
 			}
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				multiply = 4.0
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:cold
@@ -1948,10 +2117,10 @@ catalyst_left_power_bloc = {
 					"relations(scope:target_country)" <= relations_threshold:poor
 				}
 				multiply = 2.0
-			}				
+			}
 		}
 	}
-		
+
 	effect = {
 		change_relations = {
 			country = scope:target_country
@@ -1962,7 +2131,7 @@ catalyst_left_power_bloc = {
 
 catalyst_kicked_out_of_bloc = {
 	category = cc_power_bloc_membership
-	
+
 	political_lobby_creation = {
 		lobby_anti_country = {
 			value = 0.2
@@ -1972,7 +2141,7 @@ catalyst_kicked_out_of_bloc = {
 					"relations(scope:target_country)" < relations_threshold:neutral
 				}
 				multiply = 3
-			}		
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:cordial
@@ -1981,7 +2150,7 @@ catalyst_kicked_out_of_bloc = {
 			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
 		type = more_hostile
 		chance = {
@@ -1992,10 +2161,10 @@ catalyst_kicked_out_of_bloc = {
 					"relations(scope:target_country)" < relations_threshold:neutral
 				}
 				add = 0.5
-			}					
+			}
 		}
 	}
-	
+
 	effect = {
 		change_relations = {
 			country = scope:target_country
@@ -2022,23 +2191,23 @@ catalyst_journal_entry = {
 				has_je_conquest_reason = { TARGET = scope:target_country }
 				has_je_subjugation_reason = { TARGET = scope:target_country }
 			}
-		}	
-		
+		}
+
 		type = only_hostile
 		chance = { value = 1.0 }
-	}		
-	
+	}
+
 	ai_country_goal_recalculation = {
 		trigger = {
 			OR = {
 				has_je_befriend_reason = { TARGET = scope:target_country }
 				has_je_protect_reason = { TARGET = scope:target_country }
 			}
-		}	
-		
+		}
+
 		type = only_friendly
 		chance = { value = 1.0 }
-	}		
+	}
 }
 
 catalyst_unification_support_added = {
@@ -2047,7 +2216,7 @@ catalyst_unification_support_added = {
 	ai_country_goal_recalculation = {
 		type = only_friendly
 		chance = { value = 1.0 }
-	}				
+	}
 }
 
 catalyst_unification_support_removed = {
@@ -2056,13 +2225,13 @@ catalyst_unification_support_removed = {
 	ai_country_goal_recalculation = {
 		type = only_hostile
 		chance = { value = 1.0 }
-	}				
+	}
 }
 
 catalyst_friendly_lobby_in_government = {
 	category = cc_government_change
 
-	ai_country_goal_recalculation = {		
+	ai_country_goal_recalculation = {
 		type = more_friendly
 		chance = {
 			value = "lobby_in_government_foreign_pro_clout(scope:target_country)"
@@ -2073,63 +2242,63 @@ catalyst_friendly_lobby_in_government = {
 
 catalyst_hostile_lobby_in_government = {
 	category = cc_government_change
-	
+
 	ai_country_goal_recalculation = {
-		type = more_hostile	
+		type = more_hostile
 		chance = {
-			value = "lobby_in_government_foreign_anti_clout(scope:target_country)"	
-			subtract = "lobby_in_government_foreign_pro_clout(scope:target_country)"		
+			value = "lobby_in_government_foreign_anti_clout(scope:target_country)"
+			subtract = "lobby_in_government_foreign_pro_clout(scope:target_country)"
 		}
-	}	
+	}
 }
 
 catalyst_event_positive = {
 	category = cc_event
-	
+
 	political_lobby_creation = {
 		lobby_pro_country = {
 			value = 0.05
-			
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" < relations_threshold:cordial
 				}
 				multiply = 0.5
-			}		
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:friendly
 				}
 				multiply = 1.5
-			}			
+			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
 		type = more_friendly
 		chance = {
 			value = 0.05
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:friendly
 				}
 				add = 100.0 # Guaranteed
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:amicable
@@ -2141,75 +2310,75 @@ catalyst_event_positive = {
 					"relations(scope:target_country)" >= relations_threshold:cordial
 				}
 				multiply = 2
-			}				
+			}
 		}
 	}
 
 	effect = {
-		add_lobby_appeasement_from_diplomacy_unidirectional = { 
+		add_lobby_appeasement_from_diplomacy_unidirectional = {
 			FIRST = root
-			SECOND = scope:target_country 
+			SECOND = scope:target_country
 			PRO_AMOUNT = 1
 			ANTI_AMOUNT = -1
 			FACTOR = appeasement_special_events_positive
 		}
-		add_overlord_lobby_appeasement_from_diplomacy = { 
+		add_overlord_lobby_appeasement_from_diplomacy = {
 			FIRST = root
-			SECOND = scope:target_country 
+			SECOND = scope:target_country
 			PRO_AMOUNT = 1
 			ANTI_AMOUNT = -1
 			FACTOR = appeasement_special_events_positive
-		}		
+		}
 	}
 }
 
 catalyst_event_negative = {
 	category = cc_event
-	
+
 	political_lobby_creation = {
 		lobby_anti_country = {
 			value = 0.05
-			
+
 			if = {
 				limit = {
 					scope:target_country.country_rank > root.country_rank
 				}
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" > relations_threshold:poor
 				}
 				multiply = 0.5
-			}			
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				multiply = 1.5
-			}			
+			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
 		type = more_hostile
 		chance = {
 			value = 0.05
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				add = 100.0 # Guaranteed
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:cold
@@ -2221,52 +2390,52 @@ catalyst_event_negative = {
 					"relations(scope:target_country)" <= relations_threshold:poor
 				}
 				multiply = 2
-			}				
+			}
 		}
 	}
 
 	effect = {
-		add_lobby_appeasement_from_diplomacy_unidirectional = { 
+		add_lobby_appeasement_from_diplomacy_unidirectional = {
 			FIRST = root
-			SECOND = scope:target_country 
+			SECOND = scope:target_country
 			PRO_AMOUNT = -1
 			ANTI_AMOUNT = 1
 			FACTOR = appeasement_special_events_negative
-		}	
-		add_overlord_lobby_appeasement_from_diplomacy = { 
+		}
+		add_overlord_lobby_appeasement_from_diplomacy = {
 			FIRST = root
-			SECOND = scope:target_country 
+			SECOND = scope:target_country
 			PRO_AMOUNT = -1
 			ANTI_AMOUNT = 1
 			FACTOR = appeasement_special_events_negative
-		}			
+		}
 	}
 }
-			
+
 catalyst_nationalized_building = {
 	category = cc_nationalization
-	
+
 	political_lobby_creation = {
 		trigger = {
 			"relations(scope:target_country)" < relations_threshold:cordial
-		}	
-	
+		}
+
 		lobby_anti_country = {
 			value = 0.05
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				multiply = 2.0
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:cold
@@ -2278,26 +2447,26 @@ catalyst_nationalized_building = {
 					"relations(scope:target_country)" <= relations_threshold:poor
 				}
 				multiply = 1.25
-			}				
+			}
 		}
-	}	
-	
-	
+	}
+
+
 	ai_country_goal_recalculation = {
 		trigger = {
 			"relations(scope:target_country)" < relations_threshold:cordial
-		}	
-	
+		}
+
 		type = more_hostile
 		chance = {
 			value = 0.05
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				multiply = 2.0
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:cold
@@ -2309,25 +2478,25 @@ catalyst_nationalized_building = {
 					"relations(scope:target_country)" <= relations_threshold:poor
 				}
 				multiply = 1.25
-			}				
+			}
 		}
-	}	
+	}
 }
 
 catalyst_overtaken_in_prestige_rank = {
 	category = cc_rank_change
-	
+
 	political_lobby_creation = {
 		lobby_anti_country = {
 			value = 0.1
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:friendly
@@ -2339,34 +2508,34 @@ catalyst_overtaken_in_prestige_rank = {
 					"relations(scope:target_country)" >= relations_threshold:amicable
 				}
 				multiply = 0.5
-			}			
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:cordial
 				}
 				multiply = 0.75
-			}				
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:cold
 				}
 				multiply = 1.5
-			}			
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
 				}
 				multiply = 2.0
-			}			
+			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
-	
+
 		type = more_hostile
 		chance = {
 			value = 0.1
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:friendly
@@ -2378,19 +2547,19 @@ catalyst_overtaken_in_prestige_rank = {
 					"relations(scope:target_country)" >= relations_threshold:amicable
 				}
 				multiply = 0.5
-			}			
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:cordial
 				}
 				multiply = 0.75
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:cold
 				}
 				multiply = 1.5
-			}			
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" <= relations_threshold:hostile
@@ -2399,8 +2568,8 @@ catalyst_overtaken_in_prestige_rank = {
 			}
 		}
 	}
-	
-	
+
+
 	effect = {
 		scope:target_country = {
 			every_political_lobby = {
@@ -2412,7 +2581,7 @@ catalyst_overtaken_in_prestige_rank = {
 					amount = 2
 					factor = appeasement_overtook_in_prestige_rank
 				}
-			}	
+			}
 		}
 		every_political_lobby = {
 			limit = {
@@ -2423,34 +2592,34 @@ catalyst_overtaken_in_prestige_rank = {
 				amount = -2
 				factor = appeasement_overtaken_in_prestige_rank
 			}
-		}		
-	}	
+		}
+	}
 }
 
 catalyst_revolution_successful = {
 	category = cc_revolution
-	
+
 	political_lobby_creation = {
 		lobby_anti_country = {
 			value = 0.0
-			
+
 			if = {
 				limit = {
 					"ai_ideological_opinion(scope:target_country)" <= -25
 				}
 				add = 0.2
-			}			
+			}
 		}
 		lobby_pro_country = {
 			value = 0.0
-			
+
 			if = {
 				limit = {
 					"ai_ideological_opinion(scope:target_country)" >= 25
 				}
 				add = 0.2
-			}			
-		}		
+			}
+		}
 	}
 }
 
@@ -2461,18 +2630,18 @@ catalyst_became_recognized = {
 		trigger = {
 			NOT = { is_country_type = unrecognized }
 		}
-	
+
 		type = more_friendly
 
 		chance = {
 			value = 0.1
-			
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:amicable
 				}
 				multiply = 4.0
-			}	
+			}
 			else_if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:friendly
@@ -2484,9 +2653,9 @@ catalyst_became_recognized = {
 					"relations(scope:target_country)" >= relations_threshold:cordial
 				}
 				multiply = 2.0
-			}				
+			}
 		}
-	}	
+	}
 }
 
 catalyst_market_opened = {
@@ -2495,18 +2664,18 @@ catalyst_market_opened = {
 	ai_country_goal_recalculation = {
 		trigger = {
 			has_strategy = ai_strategy_economic_imperialism
-			scope:target_country = { 
-				is_country_type = unrecognized 
+			scope:target_country = {
+				is_country_type = unrecognized
 				gdp >= 5000000
 			}
 		}
-	
+
 		type = more_friendly
 
 		chance = {
-			value = 1.0			
+			value = 1.0
 		}
-	}	
+	}
 }
 
 catalyst_granted_military_assistance = {
@@ -2522,38 +2691,38 @@ catalyst_granted_military_assistance = {
 				}
 				multiply = 2
 			}
-			
+
 			if = {
 				limit = {
 					NOT = { has_strategic_adjacency = scope:target_country }
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" < relations_threshold:cordial
 				}
 				multiply = 0.5
-			}	
-			
+			}
+
 			if = {
 				limit = {
 					"relations(scope:target_country)" >= relations_threshold:friendly
 				}
 				multiply = 1.5
-			}			
+			}
 		}
 	}
-	
+
 	ai_country_goal_recalculation = {
 		trigger = {
 			"relations(scope:target_country)" > relations_threshold:poor
-		}	
-		
+		}
+
 		type = more_friendly
 		chance = {
-			value = 1		
+			value = 1
 		}
 	}
 }
@@ -2561,7 +2730,7 @@ catalyst_granted_military_assistance = {
 catalyst_declined_military_assistance = {
 	category = cc_military_assistance
 
-	ai_country_goal_recalculation = {		
+	ai_country_goal_recalculation = {
 		type = more_hostile
 		chance = {
 			value = 0.5
@@ -2571,7 +2740,7 @@ catalyst_declined_military_assistance = {
 					"relations(scope:target_country)" < relations_threshold:cordial
 				}
 				add = 0.5
-			}					
+			}
 		}
 	}
 }

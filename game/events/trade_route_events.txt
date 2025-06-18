@@ -22,54 +22,25 @@ trade_route_events.1 = {
 		NOT = {
 			any_scope_state = { has_building = building_arms_industry }
 		}
-		any_market = {
-			owner = root
-			any_trade_route = {
-				actor_market.owner = root
-				importer.owner = root
-				goods = g:small_arms
-				exporter.owner = {
-					save_temporary_scope_as = arms_seller
-				}
-				root = {
-					"scope:arms_seller.infamy" >= 5
-				}
-			}
-		}
+        any_market = {
+            root.market = {
+                market_imports_reliance = { target = prev goods = small_arms value > 0.25 }
+            }
+            "owner.relations(root)" <= 0
+        }
 	}
 
 	immediate = {
 		random_market = {
 			limit = {
-				owner = root
-				any_trade_route = {
-					actor_market.owner = root
-					importer.owner = root
-					goods = g:small_arms
-					exporter.owner = {
-						save_temporary_scope_as = arms_seller
-					}
-					root = {
-						"scope:arms_seller.infamy" >= 5
-					}
-				}
+				root.market = {
+                    market_imports_reliance = { target = prev goods = small_arms value > 0.25 }
+                }
+                "owner.relations(root)" <= 0
 			}
-			random_trade_route = {
-				limit = {
-					actor_market.owner = root
-					importer.owner = root
-					goods = g:small_arms
-					exporter.owner = {
-						save_temporary_scope_as = arms_seller
-					}
-					root = {
-						"scope:arms_seller.infamy" >= 5
-					}
-				}
-				exporter.owner = {
-					save_scope_as = arms_seller_threat
-				}
-			}
+			owner = {
+                save_scope_as = arms_seller_threat
+            }
 		}
 	}
 
@@ -86,7 +57,7 @@ trade_route_events.1 = {
 		ig:ig_armed_forces = {
 			add_modifier = {
 				name = ig_unreliable_weapon_imports
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		scope:arms_seller_threat = {
@@ -114,102 +85,67 @@ trade_route_events.2 = {
 	duration = 3
 
 	trigger = {
-		any_market = {
-			owner = root
-			any_trade_route = {
-				actor_market.owner = root
-				importer.owner = root
-				goods = g:small_arms
-				OR = {
-					AND = {
-						root = { is_researching_technology = gunsmithing }
-						exporter.owner = { has_technology_researched = gunsmithing }
-					}
-					AND = {
-						root = { is_researching_technology = percussion_cap }
-						exporter.owner = { has_technology_researched = percussion_cap }
-					}
-					AND = {
-						root = { is_researching_technology = rifling }
-						exporter.owner = { has_technology_researched = rifling }
-					}
-					AND = {
-						root = { is_researching_technology = repeaters }
-						exporter.owner = { has_technology_researched = repeaters }
-					}
-					AND = {
-						root = { is_researching_technology = bolt_action_rifles }
-						exporter.owner = { has_technology_researched = bolt_action_rifles }
-					}
-				}
-			}
-		}
+        any_market = {
+            OR = {
+                AND = {
+                    root = { is_researching_technology = gunsmithing }
+                    owner = { has_technology_researched = gunsmithing }
+                }
+                AND = {
+                    root = { is_researching_technology = percussion_cap }
+                    owner = { has_technology_researched = percussion_cap }
+                }
+                AND = {
+                    root = { is_researching_technology = rifling }
+                    owner = { has_technology_researched = rifling }
+                }
+                AND = {
+                    root = { is_researching_technology = repeaters }
+                    owner = { has_technology_researched = repeaters }
+                }
+                AND = {
+                    root = { is_researching_technology = bolt_action_rifles }
+                    owner = { has_technology_researched = bolt_action_rifles }
+                }
+            }
+            root.market = {
+                market_imports = { target = prev goods = small_arms value >= 5 }
+            }
+        }
 	}
 
 	immediate = {
 		random_market = {
 			limit = {
-				owner = root
-				any_trade_route = {
-					actor_market.owner = root
-					importer.owner = root
-					goods = g:small_arms
-					OR = {
-						AND = {
-							root = { is_researching_technology = gunsmithing }
-							exporter.owner = { has_technology_researched = gunsmithing }
-						}
-						AND = {
-							root = { is_researching_technology = percussion_cap }
-							exporter.owner = { has_technology_researched = percussion_cap }
-						}
-						AND = {
-							root = { is_researching_technology = rifling }
-							exporter.owner = { has_technology_researched = rifling }
-						}
-						AND = {
-							root = { is_researching_technology = repeaters }
-							exporter.owner = { has_technology_researched = repeaters }
-						}
-						AND = {
-							root = { is_researching_technology = bolt_action_rifles }
-							exporter.owner = { has_technology_researched = bolt_action_rifles }
-						}
-					}
-				}
+				OR = {
+                    AND = {
+                        root = { is_researching_technology = gunsmithing }
+                        owner = { has_technology_researched = gunsmithing }
+                    }
+                    AND = {
+                        root = { is_researching_technology = percussion_cap }
+                        owner = { has_technology_researched = percussion_cap }
+                    }
+                    AND = {
+                        root = { is_researching_technology = rifling }
+                        owner = { has_technology_researched = rifling }
+                    }
+                    AND = {
+                        root = { is_researching_technology = repeaters }
+                        owner = { has_technology_researched = repeaters }
+                    }
+                    AND = {
+                        root = { is_researching_technology = bolt_action_rifles }
+                        owner = { has_technology_researched = bolt_action_rifles }
+                    }
+                }
+                root.market = {
+                    market_imports = { target = prev goods = small_arms value >= 5 }
+                }
 			}
-			random_trade_route = {
-				limit = {
-					actor_market.owner = root
-					importer.owner = root
-					goods = g:small_arms
-					OR = {
-						AND = {
-							root = { is_researching_technology = gunsmithing }
-							exporter.owner = { has_technology_researched = gunsmithing }
-						}
-						AND = {
-							root = { is_researching_technology = percussion_cap }
-							exporter.owner = { has_technology_researched = percussion_cap }
-						}
-						AND = {
-							root = { is_researching_technology = rifling }
-							exporter.owner = { has_technology_researched = rifling }
-						}
-						AND = {
-							root = { is_researching_technology = repeaters }
-							exporter.owner = { has_technology_researched = repeaters }
-						}
-						AND = {
-							root = { is_researching_technology = bolt_action_rifles }
-							exporter.owner = { has_technology_researched = bolt_action_rifles }
-						}
-					}
-				}
-				exporter.owner = {
-					save_scope_as = arms_seller_gun_tech
-				}
-			}
+            owner = {
+                save_scope_as = arms_seller_gun_tech
+            }
 		}
 	}
 
@@ -218,7 +154,7 @@ trade_route_events.2 = {
 		add_modifier = {
 			name = modifier_researching_imported_weapons
 			multiplier = money_amount_multiplier_small
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 		if = {
 			limit = { is_researching_technology = gunsmithing }
@@ -292,21 +228,12 @@ trade_route_events.3 = {
 		capital.market = {
 			owner = root
 			mg:grain = { market_goods_pricier > 0.25 }
-			any_trade_route = {
-				actor_market.owner = root
-				importer.owner = root
-				OR = {
-					goods = g:wine
-					goods = g:luxury_clothes
-					goods = g:luxury_furniture
-				}
-			}
-			NOT = {
-				any_trade_route = {
-					importer.owner = root
-					goods = g:grain
-				}
-			}
+            market_imports_reliance = { goods = wine value >= 0.1 } # This event doesn't really have anything to do with reliance, but this makes sure it's a relevant amount.
+            market_imports_reliance = { goods = luxury_clothes value >= 0.1 }
+            market_imports_reliance = { goods = luxury_furniture value >= 0.1 }
+		}
+		NOT = {
+			has_law = law_type:law_isolationism
 		}
 	}
 
@@ -337,7 +264,7 @@ trade_route_events.3 = {
 		scope:angry_luxury_import_ig = {
 			add_modifier = {
 				name = ig_refused_desired_imports
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -368,12 +295,6 @@ trade_route_events.4 = {
 		capital.market = {
 			owner = root
 			mg:steel = { market_goods_pricier > 0.25 }
-			NOT = {
-				any_trade_route = {
-					importer.owner = root
-					goods = g:steel
-				}
-			}
 		}
 		NOT = {
 			has_law = law_type:law_isolationism
@@ -393,7 +314,7 @@ trade_route_events.4 = {
 		ig:ig_industrialists = {
 			add_modifier = {
 				name = ig_refused_desired_imports
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -424,12 +345,6 @@ trade_route_events.5 = {
 		capital.market = {
 			owner = root
 			mg:paper = { market_goods_pricier > 0.25 }
-			NOT = {
-				any_trade_route = {
-					importer.owner = root
-					goods = g:paper
-				}
-			}
 		}
 		NOT = {
 			has_law = law_type:law_isolationism
@@ -449,7 +364,7 @@ trade_route_events.5 = {
 		ig:ig_intelligentsia = {
 			add_modifier = {
 				name = ig_refused_desired_imports
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}

@@ -58,7 +58,12 @@ types sway_country_types
 					item = {
 						container = {
 							sway_offer_item = {
-								visible = "[Or( DiplomaticPlay.IsPrimaryParticipant(GetPlayer), DiplomaticPlay.IsUndecidedParticipant(GetPlayer) )]"
+								visible = "[And( SwayOffer.RequiresAnyInput, Or( DiplomaticPlay.IsPrimaryParticipant(GetPlayer), DiplomaticPlay.IsUndecidedParticipant(GetPlayer) ) )]"
+								onclick = "[RightClickMenuManager.ToggleSwayOfferArticleTypeInput(SwayOffer.Self, PdxGuiWidget.AccessSelf, 'article_input_right_click_menu_right')]"
+							}
+
+							sway_offer_item = {
+								visible = "[And( Not( SwayOffer.RequiresAnyInput ), Or( DiplomaticPlay.IsPrimaryParticipant(GetPlayer), DiplomaticPlay.IsUndecidedParticipant(GetPlayer) ) )]"
 								onclick = "[Execute( SwayCountryPanel.AccessDiplomaticPlay.CreateSway( GetPlayer.Self, SwayCountryPanel.GetCountry, SwayOffer.Self ))]"
 								onclick = "[InformationPanelBar.OpenDiplomaticPlayPanel( DiplomaticPlay.AccessSelf )]"
 							}

@@ -2,7 +2,7 @@
 	name = favour_belgium_button
 	desc = favour_belgium_button_desc
 
-	visible = { 
+	visible = {
 		NOR = {
 			c:NET ?= this
 			c:BEL ?= this
@@ -30,18 +30,18 @@
 		set_variable = favour_belgium_button_var
 		change_global_variable = {
 			name = je_conference_of_london_proposal_1
-			add = 1
+			add = ROOT.prestige
 		}
 		scope:belgium_scope = {
 			change_relations = { country = root value = 20 }
-			create_diplomatic_catalyst = {  
+			create_diplomatic_catalyst = {
 				type = catalyst_event_positive
 				target = root
 			}
 		}
 		scope:netherlands_scope = {
 			change_relations = { country = root value = -20 }
-			create_diplomatic_catalyst = {  
+			create_diplomatic_catalyst = {
 				type = catalyst_event_negative
 				target = root
 			}
@@ -49,7 +49,26 @@
 	}
 
 	ai_chance = {
-		base = 1
+		value = 2
+		# Liberal powers
+		if = {
+			limit = {
+				country_has_voting_franchise = yes
+			}
+			add = 3
+		}
+		add = {
+			value = "c:BEL.relations(ROOT)"
+			divide = 10
+		}
+		if = {
+			limit = {
+				c:BEL ?= {
+					is_player = yes
+				}
+			}
+			add = 3
+		}
 	}
 }
 
@@ -85,18 +104,18 @@ favour_netherlands_button = {
 		set_variable = favour_netherlands_button_var
 		change_global_variable = {
 			name = je_conference_of_london_proposal_2
-			add = 1
+			add = ROOT.prestige
 		}
 		scope:netherlands_scope = {
 			change_relations = { country = root value = 20 }
-			create_diplomatic_catalyst = {  
+			create_diplomatic_catalyst = {
 				type = catalyst_event_positive
 				target = root
 			}
 		}
 		scope:belgium_scope = {
 			change_relations = { country = root value = -20 }
-			create_diplomatic_catalyst = {  
+			create_diplomatic_catalyst = {
 				type = catalyst_event_negative
 				target = root
 			}
@@ -104,7 +123,26 @@ favour_netherlands_button = {
 	}
 
 	ai_chance = {
-		base = 10
+		value = 2
+		# Conservative powers
+		if = {
+			limit = {
+				country_has_voting_franchise = no
+			}
+			add = 3
+		}
+		add = {
+			value = "c:NET.relations(ROOT)"
+			divide = 10
+		}
+		if = {
+			limit = {
+				c:NET ?= {
+					is_player = yes
+				}
+			}
+			add = 3
+		}
 	}
 }
 
@@ -140,7 +178,7 @@ partition_compromise_button = {
 		set_variable = partition_compromise_button_var
 		change_global_variable = {
 			name = je_conference_of_london_proposal_3
-			add = 1
+			add = ROOT.prestige
 		}
 		custom_tooltip = improve_relations_with_german_confederation_tt
 		show_as_tooltip = { # German Confederation stand-in
@@ -180,7 +218,13 @@ partition_compromise_button = {
 	}
 
 	ai_chance = {
-		base = 10
+		value = 5
+		if = {
+			limit = {
+				c:GBR ?= this
+			}
+			add = 7
+		}
 	}
 }
 
@@ -216,12 +260,20 @@ luxembourg_compromise_button = {
 		set_variable = luxembourg_compromise_button_var
 		change_global_variable = {
 			name = je_conference_of_london_proposal_4
-			add = 1
+			add = ROOT.prestige
 		}
 	}
 
 	ai_chance = {
-		base = 10
+		value = 3
+		if = {
+			limit = {
+				c:LUX ?= {
+					is_player = yes
+				}
+			}
+			add = 7
+		}
 	}
 }
 
@@ -279,7 +331,7 @@ london_conference_approve_button = {
 	}
 
 	ai_chance = {
-		base = 10
+		value = 10
 	}
 }
 
@@ -342,6 +394,6 @@ london_conference_disapprove_button = {
 	}
 
 	ai_chance = {
-		base = 0
+		value = 0
 	}
 }

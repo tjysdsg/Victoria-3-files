@@ -122,7 +122,60 @@
                 }
             }
         }
-    
+		
+	
+		# dynamically updated text, which describes potential event outcomes when JE is completed
+		# multiple such entries can be added to a JE
+        event_outcome_completed_desc = {
+			first_valid = {
+				triggered_desc = {
+					desc = holstein_is_annexed
+					trigger = {
+						exists = c:SCH
+					}
+				}
+			}
+		}
+
+	
+		# dynamically updated text, which describes potential event outcomes when JE is failed
+		# multiple such entries can be added to a JE
+        event_outcome_failed_desc = {
+			first_valid = {
+				triggered_desc = {
+					desc = holstein_is_annexed
+					trigger = {
+						exists = c:SCH
+					}
+				}
+			}
+		}		
+	
+		# dynamically updated text, which describes potential event outcomes when JE timeouts
+		# multiple such entries can be added to a JE
+        event_outcome_timeout_desc = {
+			first_valid = {
+				triggered_desc = {
+					desc = holstein_is_annexed
+					trigger = {
+						exists = c:SCH
+					}
+				}
+			}
+		}		
+
+        # [optional] loc key to use instead of JOURNAL_ENTRY_COMPLETION_HEADER, for flavor
+        custom_completion_header = <loc key>
+
+        # [optional] loc key to use instead of JOURNAL_ENTRY_FAILURE_HEADER, for flavor
+        custom_failure_header = <loc key>
+
+        # [optional] loc key to use instead of JOURNAL_ENTRY_ON_COMPLETION, for flavor
+        custom_on_completion_header = <loc key>
+
+        # [optional] loc key to use instewad of JOURNAL_ENTRY_ON_FAILURE, for flavor
+        custom_on_failure_header = <loc key>
+
         # the number of days before this journal entry forcibly transitions, can be used to transition silently or into another event, framed either as success, failure, or neutral; if left blank or set to zero, will not time out
         timeout = 720
     

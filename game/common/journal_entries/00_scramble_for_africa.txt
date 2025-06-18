@@ -1,0 +1,197 @@
+﻿je_scramble_for_africa = {
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	group = je_group_foreign_affairs
+
+	is_shown_when_inactive = {
+		NOT = { is_country_type = unrecognized }
+		has_technology_researched = quinine
+		any_scope_state = {
+			is_incorporated = no
+			state_is_in_africa = yes
+		}
+	}
+
+	possible = {
+		has_technology_researched = malaria_prevention
+		OR = {
+			has_law = law_type:law_colonial_resettlement
+			has_law = law_type:law_colonial_exploitation
+		}
+		OR = {
+			any_scope_state = {
+				state_is_in_africa = yes
+				is_incorporated = no
+				is_treaty_port = no
+			}
+			any_subject_or_below = {
+				country_is_in_africa = yes
+			}
+		}
+	}
+
+	immediate = {
+		trigger_event = {
+			id = africa_colonial_events.1
+			popup = yes
+		}
+		save_scope_as = scramble_for_africa_self
+
+		set_variable = {
+			name = controlled_colonies_in_africa_cached
+			value = controlled_colonies_in_africa
+		}
+	}
+
+	complete = {
+		custom_tooltip = {
+			text = scramble_for_africa_complete_tt
+			var:controlled_colonies_in_africa_cached ?= {
+				this >= scope:journal_entry.goal_value
+			}
+		}
+		custom_tooltip = {
+			text = scramble_for_africa_complete_2_tt
+			any_state_region = {
+				filter = {
+					state_is_in_africa = yes
+				}
+				any_scope_state = {
+					owner = {
+						OR = {
+							is_country_type = recognized
+							top_overlord ?= {
+								is_country_type = recognized
+							}
+						}
+					}
+				}
+				percent >= 0.95
+			}
+		}
+	}
+
+	on_complete = {
+		trigger_event = {
+			id = africa_colonial_events.2
+			popup = yes
+		}
+		if = {
+			limit = {
+				has_variable = controlled_colonies_in_africa_cached
+			}
+			remove_variable = controlled_colonies_in_africa_cached
+		}
+	}
+
+
+	# goal_value
+	current_value = {
+		value = 7
+	}
+
+	fail = {
+		custom_tooltip = {
+			text = scramble_for_africa_fail_tt
+			NOR = {
+				any_scope_state = {
+					is_incorporated = no
+					state_is_in_africa = yes
+				}
+				any_subject_or_below = {
+					country_is_in_africa = yes
+				}
+			}
+		}
+	}
+
+	on_fail = {
+		#trigger_event = {
+		#	id = africa_colonial_events.3
+		#	days = 0
+		#	popup = yes
+		#}
+		if = {
+			limit = {
+				has_variable = controlled_colonies_in_africa_cached
+			}
+			remove_variable = controlled_colonies_in_africa_cached
+		}
+	}
+
+	status_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = scramble_for_africa_6_states
+				trigger = {
+					any_scope_state = {
+						count >= 6
+						is_incorporated = no
+						state_is_in_africa = yes
+					}
+				}
+			}
+			triggered_desc = {
+				desc = scramble_for_africa_4_states
+				trigger = {
+					any_scope_state = {
+						count >= 4
+						is_incorporated = no
+						state_is_in_africa = yes
+					}
+				}
+			}
+			triggered_desc = {
+				desc = scramble_for_africa_3_states
+				trigger = {
+					any_scope_state = {
+						count >= 1
+						is_incorporated = no
+						state_is_in_africa = yes
+					}
+				}
+			}
+			triggered_desc = {
+				desc = scramble_for_africa_0_states
+			}
+		}
+	}
+
+	# No timeout. Imperialism never ends.
+	# timeout = 7300
+
+	on_timeout = {
+
+	}
+
+	on_weekly_pulse = {
+		effect = {
+			set_variable = {
+				name = controlled_colonies_in_africa_cached
+				value = controlled_colonies_in_africa
+			}
+		}
+	}
+
+	on_yearly_pulse = {
+		random_events = {
+			100 = 0
+			10 = africa_colonial_events.4
+			10 = africa_colonial_events.5
+			10 = africa_colonial_events.6
+			5 = africa_colonial_events.7
+			10 = patagonia.2
+			10 = amazon.2
+
+			10 = africa_colonial_events.40
+			10 = africa_colonial_events.41
+			10 = africa_colonial_events.51
+			10 = africa_colonial_events.53
+			10 = africa_colonial_events.54
+		}
+	}
+
+	weight = 200
+	should_be_pinned_by_default = yes
+}

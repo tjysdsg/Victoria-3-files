@@ -4,6 +4,13 @@ production_tech_events.1 = {
 	type = country_event
 
 	trigger = {
+		any_scope_building = {
+			is_building_type = building_rubber_plantation
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			occupancy >= 0.5
+			level >= 5
+		}
 	}
 
 	event_image = {
@@ -11,6 +18,8 @@ production_tech_events.1 = {
 	}
 
 	duration = 3
+
+	cooldown = { days = never_fire_again_modifier_time }
 
 	placement = scope:rubber_state
 
@@ -49,7 +58,7 @@ production_tech_events.1 = {
 		scope:rubber_state = {
 			add_modifier = {
 				name = rubber_production_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -68,6 +77,19 @@ production_tech_events.102 = {
 	type = country_event
 
 	trigger = {
+		has_technology_researched = dynamite
+		any_scope_building = {
+			OR = {
+				is_building_type = building_munition_plants
+				is_building_type = building_iron_mine
+				is_building_type = building_coal_mine
+				is_building_type = building_lead_mine
+				is_building_type = building_sulfur_mine
+			}
+		}
+		any_scope_building = {
+			is_building_type = building_explosives_factory
+		}
 	}
 
 	event_image = {
@@ -79,6 +101,8 @@ production_tech_events.102 = {
 	icon = "gfx/interface/icons/event_icons/event_industry.dds"
 
 	duration = 3
+
+	cooldown = { days = never_fire_again_modifier_time }
 
 	placement = ROOT
 
@@ -93,24 +117,24 @@ production_tech_events.102 = {
 		name = production_tech_events.102.a
 		default_option = yes
 		add_modifier = {
-			name = dynamite_production_modifier 
-			months = normal_modifier_time
+			name = dynamite_production_modifier
+			days = normal_modifier_time
 		}
 	}
 
 	option = { # Make national to effect mining industries
 		name = production_tech_events.102.b
 		add_modifier = {
-			name = mining_production_modifier 
-			months = normal_modifier_time
+			name = mining_production_modifier
+			days = normal_modifier_time
 		}
 	}
 
 	option = { # Make national to effect munitions plants
 		name = production_tech_events.102.c
 		add_modifier = {
-			name = munitions_production_modifier 
-			months = normal_modifier_time
+			name = munitions_production_modifier
+			days = normal_modifier_time
 		}
 	}
 }
@@ -119,6 +143,28 @@ production_tech_events.103 = {
 	type = country_event
 
 	trigger = {
+		OR = {
+			any_scope_building = {
+				filter = {
+					is_building_type = building_urban_center
+				}
+				percent > 0.75
+				has_active_production_method = pm_public_motor_carriages
+				cash_reserves_ratio >= 0.25
+				weekly_profit > 0
+				occupancy >= 0.75
+			}
+			any_scope_building = {
+				filter = {
+					is_building_type = building_motor_industry
+				}
+				percent > 0.75
+				has_active_production_method = pm_automobile_production
+				cash_reserves_ratio >= 0.25
+				weekly_profit > 0
+				occupancy >= 0.75
+			}
+		}
 	}
 
 	event_image = {
@@ -130,6 +176,8 @@ production_tech_events.103 = {
 	icon = "gfx/interface/icons/event_icons/event_industry.dds"
 
 	duration = 3
+
+	cooldown = { days = never_fire_again_modifier_time }
 
 	placement = ROOT
 
@@ -145,7 +193,7 @@ production_tech_events.103 = {
 		default_option = yes
 		add_modifier = {
 			name = motor_industry_production_modifier
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 
@@ -153,7 +201,7 @@ production_tech_events.103 = {
 		name = production_tech_events.103.b
 		add_modifier = {
 			name = public_trasportation_modifier
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 }
@@ -169,11 +217,30 @@ production_tech_events.200 = {
 
 	duration = 3
 
+	cooldown = { days = never_fire_again_modifier_time }
+
 	placement = ROOT
 
 	title = production_tech_events.200.t
 	desc = production_tech_events.200.d
 	flavor = production_tech_events.200.f
+
+	trigger = {
+		any_scope_building = {
+			filter = {
+				is_building_type = building_glassworks
+			}
+
+			percent >= 0.5
+
+			occupancy > 0.75
+			weekly_profit > 10
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			level >= 5
+			has_active_production_method = pm_houseware_plastics
+		}
+	}
 
 	immediate = {
 		random_scope_building = {
@@ -202,7 +269,7 @@ production_tech_events.200 = {
 		default_option = yes
 		add_modifier = {
 			name = plastic_production_modifier
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 	option = {
@@ -246,6 +313,23 @@ production_tech_events.210 = {
 
 	duration = 3
 
+	cooldown = { days = never_fire_again_modifier_time }
+
+	trigger = {
+		any_scope_building = {
+			filter = {
+				is_building_type = building_electrics_industry
+			}
+
+			percent >= 0.5
+			occupancy > 0.75
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			level >= 5
+			has_active_production_method = pm_radios
+		}
+	}
+
 	immediate = {
 		random_scope_building = {
 				limit = {
@@ -272,7 +356,7 @@ production_tech_events.210 = {
 		default_option = yes
 		add_modifier = {
 			name = radio_production_modifier
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 
@@ -301,6 +385,8 @@ production_tech_events.210 = {
 production_tech_events.300 = { #telephone
 	type = country_event
 	duration = 3
+
+	cooldown = { days = never_fire_again_modifier_time }
 	placement = scope:electrics_state
 
 	event_image = {
@@ -316,7 +402,15 @@ production_tech_events.300 = { #telephone
 	flavor = production_tech_events.300.f
 
 	trigger = {
-		#triggered by JE
+		any_scope_building = {
+			is_building_type = building_electrics_industry
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			occupancy > 0.75
+			level >= 5
+		}
+		NOT = { has_technology_researched = radio }
+		can_research = radio
 	}
 
 	immediate = {
@@ -358,7 +452,7 @@ production_tech_events.300 = { #telephone
 		scope:electrics_state = {
 			add_modifier = {
 				name = electrics_building_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -367,10 +461,12 @@ production_tech_events.300 = { #telephone
 production_tech_events.301 = { #whaling
 	type = country_event
 	duration = 3
+
+	cooldown = { days = never_fire_again_modifier_time }
 	placement = scope:whaling_state
 
 	event_image = {
-		video = "unspecific_whaling" 
+		video = "unspecific_whaling"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
@@ -382,7 +478,18 @@ production_tech_events.301 = { #whaling
 	flavor = production_tech_events.301.f
 
 	trigger = {
-		#triggered by JE
+		any_scope_building = {
+			is_building_type = building_whaling_station
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			occupancy > 0.75
+			level >= 3
+		}
+		any_scope_character = {
+			has_role = admiral
+			is_busy = no
+			is_ruler = no
+		}
 	}
 
 	immediate = {
@@ -424,13 +531,13 @@ production_tech_events.301 = { #whaling
 		scope:whaling_admiral_character = {
 			add_modifier = {
 				name = whaling_admiral_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		scope:whaling_state = {
 			add_modifier = {
 				name = whaling_state_mortality_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -440,7 +547,7 @@ production_tech_events.301 = { #whaling
 		scope:whaling_state = {
 			add_modifier = {
 				name = whaling_state_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -460,9 +567,21 @@ production_tech_events.401 = {
 
 	duration = 3
 
+	cooldown = { days = never_fire_again_modifier_time }
+
 	title = production_tech_events.401.t
 	desc = production_tech_events.401.d
 	flavor = production_tech_events.401.f
+
+	trigger = {
+		any_scope_building = {
+			is_building_type = building_oil_rig
+			occupancy > 0.75
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			level >= 5
+		}
+	}
 
 	immediate = {
 		random_scope_state = {
@@ -493,7 +612,7 @@ production_tech_events.401 = {
 		scope:oil_rig_state = {
 			add_modifier = {
 				name = oil_production_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -522,9 +641,26 @@ production_tech_events.402 = {
 
 	duration = 3
 
+	cooldown = { days = never_fire_again_modifier_time }
+
 	title = production_tech_events.402.t
 	desc = production_tech_events.402.d
 	flavor = production_tech_events.402.f
+
+	trigger = {
+		any_scope_building = {
+			is_building_type = building_power_plant
+			occupancy > 0.75
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			level >= 5
+		}
+		OR = {
+			can_research = electric_railway
+			can_research = steam_turbine
+			can_research = shift_work
+		}
+	}
 
 	immediate = {
 		random_scope_state = {
@@ -555,7 +691,7 @@ production_tech_events.402 = {
 		scope:power_plant_state = {
 			add_modifier = {
 				name = electrical_power_production_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -603,6 +739,8 @@ production_tech_events.501 = {
 
 	duration = 3
 
+	cooldown = { days = never_fire_again_modifier_time }
+
 	placement = scope:railway_state
 
 	title = production_tech_events.501.t
@@ -610,6 +748,74 @@ production_tech_events.501 = {
 	flavor = production_tech_events.501.f
 
 	trigger = {
+		trigger_if = {
+			limit = {
+				any_scope_building = {
+					OR = {
+						is_building_type = building_coal_mine
+						is_building_type = building_iron_mine
+						is_building_type = building_lead_mine
+						is_building_type = building_sulfur_mine
+						is_building_type = building_logging_camp
+						is_building_type = building_oil_rig
+					}
+				}
+			}
+			any_scope_building = {
+				filter = {
+					OR = {
+						is_building_type = building_coal_mine
+						is_building_type = building_iron_mine
+						is_building_type = building_lead_mine
+						is_building_type = building_sulfur_mine
+						is_building_type = building_logging_camp
+						is_building_type = building_oil_rig
+					}
+				}
+				percent > 0.2
+				OR = {
+				    has_active_production_method = pm_rail_transport_mine
+				    has_active_production_method = pm_rail_transport_building_logging_camp
+				    has_active_production_method = pm_rail_transport_building_oil_rig
+                }
+				occupancy >= 0.75
+			}
+		}
+		trigger_if = {
+			limit = {
+				any_scope_building = {
+					OR = {
+						is_building_type = building_coffee_plantation
+						is_building_type = building_cotton_plantation
+						is_building_type = building_dye_plantation
+						is_building_type = building_opium_plantation
+						is_building_type = building_tea_plantation
+						is_building_type = building_tobacco_plantation
+						is_building_type = building_sugar_plantation
+						is_building_type = building_rubber_plantation
+						is_building_type = building_banana_plantation
+					}
+				}
+			}
+			any_scope_building = {
+				filter = {
+					OR = {
+						is_building_type = building_coffee_plantation
+						is_building_type = building_cotton_plantation
+						is_building_type = building_dye_plantation
+						is_building_type = building_opium_plantation
+						is_building_type = building_tea_plantation
+						is_building_type = building_tobacco_plantation
+						is_building_type = building_sugar_plantation
+						is_building_type = building_rubber_plantation
+						is_building_type = building_banana_plantation
+					}
+				}
+				percent > 0.2
+				has_active_production_method = pm_steam_rail_transport
+				occupancy >= 0.75
+			}
+		}
 		any_scope_state = {
 			has_building = building_motor_industry
 		}
@@ -651,7 +857,7 @@ production_tech_events.501 = {
 		scope:railway_state = {
 			add_modifier = {
 				name = railway_production_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -666,7 +872,7 @@ production_tech_events.501 = {
 		scope:engine_state = {
 			add_modifier = {
 				name = engine_production_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -686,6 +892,36 @@ production_tech_events.600 = {
 	type = country_event
 
 	trigger = {
+		any_scope_building = {
+			filter = {
+				OR = {
+					is_building_type = building_rye_farm
+					is_building_type = building_wheat_farm
+					is_building_type = building_maize_farm
+					is_building_type = building_millet_farm
+				}
+			}
+			percent >= 0.75
+			trigger_if = {
+				limit = {
+					owner = {
+						has_technology_researched = compression_ignition
+					}
+				}
+				OR = {
+					has_active_production_method = pm_tractors
+					has_active_production_method = pm_compression_ignition_tractors
+				}
+			}
+			trigger_else = {
+				OR = {
+					has_active_production_method = pm_tractors
+                }
+			}
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			occupancy > 0.75
+		}
 	}
 
 	event_image = {
@@ -697,6 +933,8 @@ production_tech_events.600 = {
 	icon = "gfx/interface/icons/event_icons/event_industry.dds"
 
 	duration = 3
+
+	cooldown = { days = never_fire_again_modifier_time }
 	placement = root
 
 	title = production_tech_events.600.t
@@ -711,7 +949,7 @@ production_tech_events.600 = {
 		default_option = yes
 		add_modifier = {
 			name = tractor_food_for_the_poor
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 
@@ -719,7 +957,7 @@ production_tech_events.600 = {
 		name = production_tech_events.600.b
 		add_modifier = {
 			name = tractor_production
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 }
@@ -734,6 +972,16 @@ production_tech_events.601 = {
 	flavor = production_tech_events.601.f
 
 	trigger = {
+		has_technology_researched = atmospheric_engine
+		any_scope_building = {
+			OR = {
+				is_building_type = building_coal_mine
+				is_building_type = building_iron_mine
+				is_building_type = building_sulfur_mine
+				is_building_type = building_lead_mine
+			}
+			level >= 3
+		}
 	}
 
 	event_image = {
@@ -745,6 +993,8 @@ production_tech_events.601 = {
 	icon = "gfx/interface/icons/event_icons/event_industry.dds"
 
 	duration = 3
+
+	cooldown = { days = never_fire_again_modifier_time }
 
 	immediate = {
 		random_scope_state = {
@@ -768,7 +1018,7 @@ production_tech_events.601 = {
 		default_option = yes
 		add_modifier = {
 			name = atmospheric_engine_mining
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 
@@ -801,6 +1051,29 @@ production_tech_events.700 = {
 	flavor = production_tech_events.700.f
 
 	trigger = {
+		any_scope_building = {
+			is_building_type = building_motor_industry
+			occupancy > 0.75
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			level >= 3
+		}
+		any_scope_state = {
+			any_scope_building = {
+				is_building_type = building_railway
+				occupancy > 0.75
+			}
+			custom_tooltip = {
+				text = has_adjacent_railway_tt
+				any_neighbouring_state = {
+					owner = ROOT
+					any_scope_building = {
+						is_building_type = building_railway
+						occupancy > 0.75
+					}
+				}
+			}
+		}
 	}
 
 	event_image = {
@@ -812,6 +1085,8 @@ production_tech_events.700 = {
 	icon = "gfx/interface/icons/event_icons/event_industry.dds"
 
 	duration = 3
+
+	cooldown = { days = never_fire_again_modifier_time }
 
 	immediate = {
 		random_scope_state = {
@@ -859,7 +1134,7 @@ production_tech_events.700 = {
 		default_option = yes
 		add_modifier = {
 			name = first_railway_modifier
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 
@@ -868,7 +1143,7 @@ production_tech_events.700 = {
 		scope:steam_engine_state = {
 			add_modifier = {
 				name = steam_engine_production
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}

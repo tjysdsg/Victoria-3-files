@@ -138,6 +138,9 @@ expedition_events.602 = { #Choose commander
 		scope:expedition_leader_1 = {
 			set_character_busy_and_immortal = yes
 			set_variable = expedition_leader_var
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		trigger_event = { id = expedition_events.604 days = 30 }
 	}
@@ -156,12 +159,15 @@ expedition_events.602 = { #Choose commander
 		scope:expedition_leader_2 = {
 			set_character_busy_and_immortal = yes
 			set_variable = expedition_leader_var
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		trigger_event = { id = expedition_events.604 days = 30 }
 	}
 
 	option = {
-		name = expedition_events.602.c	
+		name = expedition_events.602.c
 		trigger = {
 			exists = scope:expedition_leader_3
 		}
@@ -173,6 +179,9 @@ expedition_events.602 = { #Choose commander
 		scope:expedition_leader_3 = {
 			set_character_busy_and_immortal = yes
 			set_variable = expedition_leader_var
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		trigger_event = { id = expedition_events.604 days = 30 }
 	}
@@ -195,7 +204,7 @@ expedition_events.604 = { #Expedition Arrives
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	
+
 	immediate = {
 		congo_river_expedition_location = yes
 		random_scope_character = {
@@ -252,14 +261,14 @@ expedition_events.611 = { #Successful expedition
 		default_option = yes
 		add_modifier = {
 			name = modifier_congo_river_expedition_complete
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 		scope:expedition_leader = {
 			add_trait = explorer
 			set_character_busy_and_immortal = no
 			add_modifier = {
 				name = congo_expedition_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -324,7 +333,7 @@ expedition_events.612 = { #Failed expedition
 		}
 		add_modifier = {
 			name = modifier_failed_expedition
-			months = normal_modifier_time
+			days = normal_modifier_time
 			is_decaying	= yes
 		}
 	}
@@ -339,13 +348,13 @@ expedition_events.612 = { #Failed expedition
 		}
 		add_modifier = {
 			name = modifier_failed_expedition
-			months = normal_modifier_time
+			days = normal_modifier_time
 			is_decaying	= yes
 		}
 		scope:expedition_leader = {
 			add_modifier = {
 				name = failed_congo_river_expedition_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 			set_character_busy_and_immortal = no
 			add_trait = explorer
@@ -381,7 +390,7 @@ expedition_events.620 = { #Boat Repair
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		set_variable = expedition_boat_repair
 		congo_river_expedition_location = yes
@@ -519,6 +528,20 @@ expedition_events.640 = { #Crocodile Attack
 		default_option = yes
 		random_list = {
 			50 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 25
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 100
+					}
+				}
 				trigger_event = { id = expedition_events.641 days = 0 popup = yes }
 			}
 			50 = {
@@ -615,7 +638,7 @@ expedition_events.650 = { #Rear Column
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		set_variable = expedition_rear_column
 		congo_river_expedition_location = yes
@@ -636,6 +659,20 @@ expedition_events.650 = { #Rear Column
 					trigger_event = { id = expedition_events.651 days = day_until_next_expedition_event }
 				}
 				50 = {
+					modifier = {
+						if = {
+							limit = {
+								ROOT.modifier:country_expedition_events_explorer_mult > 0
+							}
+							add = 25
+						}
+						if = {
+							limit = {
+								scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+							}
+							add = 100
+						}
+					}
 				}
 			}
 		}
@@ -651,6 +688,20 @@ expedition_events.650 = { #Rear Column
 					trigger_event = { id = expedition_events.652 days = 7 }
 				}
 				50 = {
+					modifier = {
+						if = {
+							limit = {
+								ROOT.modifier:country_expedition_events_explorer_mult > 0
+							}
+							add = 25
+						}
+						if = {
+							limit = {
+								scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+							}
+							add = 100
+						}
+					}
 				}
 			}
 		}
@@ -678,7 +729,7 @@ expedition_events.651 = { #bad news from the rear column
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		random_scope_character = {
 			limit = { has_variable = expedition_leader_var }
@@ -691,7 +742,7 @@ expedition_events.651 = { #bad news from the rear column
 		default_option = yes
 		add_modifier = {
 			name = modifier_expedition_rear_column_disaster
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 		expedition_minor_progress_effect = yes
 	}
@@ -718,7 +769,7 @@ expedition_events.652 = { #mutiny
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		random_scope_character = {
 			limit = { has_variable = expedition_leader_var }
@@ -809,7 +860,7 @@ expedition_events.670 = { #Lost in the Forest
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		if = {
 			limit = { exists = var:expedition_deep_jungle }
@@ -857,7 +908,7 @@ expedition_events.680 = { #naming the falls
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	
+
 	trigger = {
 		je:je_congo_expedition ?= {
 			"scripted_bar_progress(expedition_progress_bar)" >= 5
@@ -871,7 +922,7 @@ expedition_events.680 = { #naming the falls
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		set_variable = expedition_found_falls
 		congo_river_expedition_location = yes
@@ -886,13 +937,13 @@ expedition_events.680 = { #naming the falls
 		default_option = yes
 		add_modifier = {
 			name = modifier_expedition_waterfalls
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 		expedition_minor_progress_effect = yes
 		scope:expedition_leader = {
 			add_modifier = {
 				name = waterfalls_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -917,7 +968,7 @@ expedition_events.690 = { #trading gifts
 	on_opened_soundeffect = "event:/SFX/Events/misc/2Characters"
 
 	icon = "gfx/interface/icons/event_icons/event_trade.dds"
-	
+
 	trigger = {
 		je:je_congo_expedition ?= {
 			"scripted_bar_progress(expedition_progress_bar)" >= 3
@@ -980,7 +1031,7 @@ expedition_events.695 = { #you find another country's expedition
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	
+
 	trigger = {
 		OR = {
 			je:je_congo_expedition ?= {
@@ -1057,7 +1108,7 @@ expedition_events.695 = { #you find another country's expedition
 		random_scope_character = {
 			limit = { has_variable = expedition_leader_var }
 			save_scope_as = expedition_leader
-		}		
+		}
 	}
 
 	option = { #guide them to a safe place
@@ -1070,7 +1121,7 @@ expedition_events.695 = { #you find another country's expedition
 			value = 30
 		}
 	}
-	
+
 	option = { #invite them to join you
 		name = expedition_events.695.b
 		add_small_peril_effect = yes
@@ -1079,17 +1130,17 @@ expedition_events.695 = { #you find another country's expedition
 			value = 10
 		}
 	}
-	
+
 	option = { #leave them to their fate
 		name = expedition_events.695.c
 		expedition_minor_progress_effect = yes
 		add_small_peril_effect = yes
 	}
-	
+
 	option = { #kill them
 		name = expedition_events.695.e
 		custom_tooltip = killed_lost_expedition_tt
-		trigger = {	
+		trigger = {
 			scope:lost_expedition_country = {
 				relations:root <= relations_threshold:cold
 			}
@@ -1114,7 +1165,7 @@ expedition_events.695 = { #you find another country's expedition
 			scope:expedition_leader = {
 				add_trait = cruel
 			}
-		}		
+		}
 	}
 }
 
@@ -1135,11 +1186,11 @@ expedition_events.696 = { #follow up if you killed the other expedition and mana
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
-	
+
 	trigger = {
-		#fires from the success event 
+		#fires from the success event
 	}
-	
+
 	immediate = {
 		random_country = {
 			limit = {
@@ -1170,7 +1221,7 @@ expedition_events.696 = { #follow up if you killed the other expedition and mana
 			}
 		}
 	}
-	
+
 	option = { #oops
 		name = expedition_events.696.b
 		change_relations = {

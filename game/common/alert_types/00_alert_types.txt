@@ -18,15 +18,15 @@
 # player_interest_group
 # player_invaded_state
 # player_market
-# player_naval_invasion
-# player_involved_market
+# player_invasion
 # player_state
 # player_building
 # player_market_goods
 # player_commander
 # player_military_formation
 # player_subject
-# player_trade_route
+# player_treaty
+# player_article
 
 ### ALERTS
 ### these need icons, if you create a new alert or move an important action here use texture = "gfx/interface/icons/alert_icons/placeholder.dds"
@@ -68,7 +68,7 @@ can_establish_company = {
 		can_establish_company = yes
 	}
 
-	open_panel = companies|potential_companies
+	open_panel = companies|default
 	type = alert
 	color = green
 }
@@ -81,7 +81,7 @@ above_company_limit = {
 		num_companies > max_num_companies
 	}
 
-	open_panel = companies|potential_companies
+	open_panel = companies|default
 	type = alert
 	color = red
 }
@@ -171,42 +171,114 @@ vulnerable_front = {
 	script_context = player_front
 	texture = "gfx/interface/icons/alert_icons/vulnerable_front.dds"
 
-    valid = {
-        is_vulnerable_front = scope:actor
-    }
+	valid = {
+		is_vulnerable_front = scope:actor
+		# Invasion fronts show `invasion` alert instead
+		NOT = {
+			exists = invasion
+		}
+	}
 
 	open_panel = front
 	type = alert
 	color = red
 }
 
-naval_invasion = {
-	script_context = player_naval_invasion
+# Additional scopes for player_invasion:
+# 	scope:is_naval_invasion - if it's a naval invasion
+# 	scope:attacker - invading country
+# 	scope:defender - invaded country
+invasion = {
+	script_context = player_invasion
 	texture = "gfx/interface/icons/alert_icons/naval_invasion_alert.dds"
 
-    valid = {
-		is_active = yes
-		naval_invasion_defender ?= scope:actor
-    }
+	valid = {
+		scope:is_naval_invasion = no
+		scope:defender = scope:actor
 
-	open_panel = naval_invasion
+		# Show the alert only if front is vulnerable
+		front = {
+			is_vulnerable_front = scope:actor
+		}
+	}
+
+	open_panel = invasion
+	type = alert
+	color = red
+}
+
+naval_invasion = {
+	script_context = player_invasion
+	texture = "gfx/interface/icons/alert_icons/naval_invasion_alert.dds"
+
+	valid = {
+		scope:is_naval_invasion = yes
+		scope:defender = scope:actor
+	}
+
+	open_panel = invasion
+	type = alert
+	color = red
+}
+
+stalled_invasion = {
+	script_context = player_invasion
+	texture = "gfx/interface/icons/alert_icons/naval_invasion_alert.dds"
+
+	valid = {
+		scope:is_naval_invasion = no
+		scope:attacker = scope:actor
+		is_invasion_stalled = yes
+	}
+
+	open_panel = invasion
 	type = alert
 	color = red
 }
 
 stalled_naval_invasion = {
-	script_context = player_naval_invasion
+	script_context = player_invasion
 	texture = "gfx/interface/icons/alert_icons/naval_invasion_alert.dds"
 
-    valid = {
-		is_active = yes
-		is_naval_invasion_stalled_due_to_orders = yes
-		naval_invasion_attacker ?= scope:actor
-    }
+	valid = {
+		scope:is_naval_invasion = yes
+		scope:attacker = scope:actor
+		is_invasion_stalled = yes
+	}
 
-	open_panel = naval_invasion
+	open_panel = invasion
 	type = alert
 	color = red
+}
+
+blockaded_hub_alert = {
+	script_context = player_state
+	texture = "gfx/interface/icons/alert_icons/blockaded.dds"
+
+	valid = {
+		blockade_level > 0
+		is_world_market_hub = yes
+	}
+
+	open_panel = states_panel
+	type = alert
+	color = red
+	alert_group = blockaded_hubs
+}
+
+blockaded_state_alert = {
+	script_context = player_state
+	texture = "gfx/interface/icons/alert_icons/blockaded.dds"
+
+	valid = {
+		blockade_level > 0
+		is_world_market_hub = no
+	}
+
+	open_panel = states_panel
+    type = important_action
+	color = red
+	alert_group = blockaded_states
 }
 
 high_attrition_alert = {
@@ -236,23 +308,23 @@ active_peace_deal_alert = {
 legitimacy_level_illegitimate_alert = {
 	script_context = player_country
 	texture = "gfx/interface/icons/alert_icons/low_legitimacy.dds"
-	
+
 	valid = {
 		government_legitimacy < 25
 	}
-	
+
 	open_panel = politics|interest_groups
 	type = alert
 	color = red
 }
 
-market_goods_shortage_alert = { 
+market_goods_shortage_alert = {
 	script_context = player_market_goods
 	texture = "gfx/interface/icons/alert_icons/goods_shortage.dds"
 
 	valid = {
 		market_goods_shortage_ratio > 0.33
-		country_has_local_shortage = scope:actor	 
+		country_has_local_shortage = scope:actor
 	}
 
 	open_panel = goods_panel
@@ -291,20 +363,6 @@ isolated_state_alert = {
 	type = alert
 	color = red
 	alert_group = isolated_states
-}
-
-inactive_trade_route_alert = {
-	texture = "gfx/interface/icons/alert_icons/supply_low.dds"
-	script_context = player_trade_route
-
-	valid = {
-		is_trade_route_active = no
-	}
-
-	open_panel = market|trade_routes
-	type = alert
-	color = red
-	alert_group = inactive_trade_routes
 }
 
 secession_growing_alert = {
@@ -394,8 +452,8 @@ low_organization_active = { # Formation is at front
 	script_context = player_military_formation
 
 	valid = {
-		organization <= define:NMilitary|MILITARY_FORMATION_ORGANIZATION_MIN
 		is_on_front = yes
+		organization_target <= 99
 	}
 
 	type = alert
@@ -437,8 +495,8 @@ low_organization_idle = { # Formation is idle
 	script_context = player_military_formation
 
 	valid = {
-		organization <= define:NMilitary|MILITARY_FORMATION_ORGANIZATION_MIN
 		is_on_front = no
+		organization_target <= 99
 	}
 
 	type = angry_important_action
@@ -604,21 +662,6 @@ can_take_decisions = {
 	color = green
 }
 
-low_max_organization = {
-	texture = "gfx/interface/icons/alert_icons/organization_alert.dds"
-	script_context = player_military_formation
-
-	valid = {
-		organization > define:NMilitary|MILITARY_FORMATION_ORGANIZATION_MIN
-		max_organization < define:NMilitary|MILITARY_FORMATION_ORGANIZATION_MAX
-	}
-
-	type = important_action
-	color = yellow
-	open_panel = military_formation
-	alert_group = formation_low_max_organization
-}
-
 # Hidden by default
 #unhealthy_economy_alert = {
 #	script_context = player_country
@@ -719,32 +762,18 @@ can_resign_alert = {
 #}
 
 # Hidden by default
-#unused_interests_alert = {
-#	script_context = player_country
-#
-#	valid = {
-#		num_declared_interests < max_num_declared_interests
-#	}
-#
-#	open_panel = diplomatic_overview
-#	type = important_action
-#	color = green
-#}
+unused_interests_alert = {
+	script_context = player_country
+	texture = "gfx/interface/icons/alert_icons/unused_interests.dds"
 
-# Hidden by default
-#unproductive_trade_route_alert = {
-#	script_context = player_trade_route
-#
-#	valid = {
-#		is_trade_route_productive = no
-#		is_trade_route_active = yes
-#	}
-#
-#	open_panel = market|trade_routes
-#	type = important_action
-#	color = green
-#	alert_group = unproductive_trade_routes
-#}
+	valid = {
+		num_declared_interests < max_num_declared_interests
+	}
+
+	open_panel = diplomatic_overview
+	type = important_action
+	color = green
+}
 
 low_market_access_alert = {
 	texture = "gfx/interface/icons/alert_icons/market_over_capacity.dds"
@@ -880,4 +909,40 @@ power_bloc_mandates_available = {
 	open_panel = power_bloc_panel
 	type = important_action
 	color = green
+}
+
+treaty_not_fulfilled = {
+	texture = "gfx/interface/icons/alert_icons/treaty_non_fulfillment.dds"
+	script_context = player_treaty
+
+	valid = {
+		not = {
+			is_fulfilled_by = scope:actor
+		}
+	}
+
+	open_panel = treaty_panel
+	type = alert
+	color = red
+}
+
+article_contravened = {
+	texture = "gfx/interface/icons/generic_icons/warning.dds"
+	script_context = player_article
+
+	valid = {
+		num_contraventions = {
+			target = scope:actor
+			value > 0
+		}
+
+		num_contraventions = {
+			target = scope:actor
+			value <= max_contraventions
+		}
+	}
+
+	open_panel = treaty_panel
+	type = alert
+	color = red
 }

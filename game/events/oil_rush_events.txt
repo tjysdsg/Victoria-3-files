@@ -1,7 +1,7 @@
 ﻿namespace = oil_rush
 
 # Oil!
-oil_rush.1 = {
+oil_rush.1 = { #Oil discovery is handled by Toast notification. This is an Oil Rush.
 	type = state_event
 	placement = ROOT
 	title = oil_rush.1.t
@@ -10,6 +10,17 @@ oil_rush.1 = {
 
 	duration = 3
 
+	cooldown = { days = stupidly_long_modifier_time } #State Cooldown
+
+	immediate = {
+		save_scope_as = oil_state
+		owner = {
+			set_variable = {
+				name = oil_rush_active
+				days = very_long_modifier_time #National Cooldown. Oil rushes will be less frequent.
+			}
+		}
+	}
 
 	event_image = {
 		video = "middleeast_oil_derricks"
@@ -20,39 +31,127 @@ oil_rush.1 = {
 	icon = "gfx/interface/icons/event_icons/event_industry.dds"
 
 	trigger = {
-		has_building = building_oil_rig
-		NOT = { has_modifier = state_oil_rush }
+		has_potential_resource = bg_oil_extraction
+		state_region = {
+			remaining_undepleted = {
+				type = bg_oil_extraction
+				amount > 1
+			}
+		}
+		owner = {
+			NOT = { has_variable = oil_rush_active }
+			NOR = {
+				has_variable = always_oil_rush
+				has_variable = always_oil_caution
+			}
+		}
 	}
 
 	option = {
 		name = oil_rush.1.a
-		default_option = yes
 		add_modifier = {
 			name = state_oil_rush
-			months = short_modifier_time
+			days = long_modifier_time
 		}
-		trigger_event = { id = oil_rush.2 years = 5 }
+		hidden_effect = {
+			set_variable = oil_rush_state
+			owner = {
+				trigger_event = {
+					id = oil_rush.2
+					days = long_modifier_time
+				}
+			}
+		}
 	}
 
 	option = {
 		name = oil_rush.1.b
+		default_option = yes
 		add_modifier = {
 			name = state_limited_oil_rush
-			months = short_modifier_time
+			days = long_modifier_time
 		}
-		trigger_event = { id = oil_rush.2 years = 5 }
+		hidden_effect = {
+			set_variable = oil_rush_state
+			owner = {
+				trigger_event = {
+					id = oil_rush.2
+					days = long_modifier_time
+				}
+			}
+		}
+	}
+
+	option = {
+		name = oil_rush.1.c
+		add_modifier = {
+			name = state_oil_rush
+			days = long_modifier_time
+		}
+		hidden_effect = {
+			set_variable = oil_rush_state
+			owner = {
+				trigger_event = {
+					id = oil_rush.2
+					days = long_modifier_time
+				}
+			}
+		}
+		custom_tooltip = {
+			text = always_oil_rush_tt
+			owner = {
+				set_variable = always_oil_rush
+			}
+		}
+	}
+
+	option = {
+		name = oil_rush.1.e
+		add_modifier = {
+			name = state_limited_oil_rush
+			days = long_modifier_time
+		}
+		hidden_effect = {
+			set_variable = oil_rush_state
+			owner = {
+				trigger_event = {
+					id = oil_rush.2
+					days = long_modifier_time
+				}
+			}
+		}
+		custom_tooltip = {
+			text = always_oil_caution_tt
+			owner = {
+				set_variable = always_oil_caution
+			}
+		}
 	}
 }
 
-# End of Oil Rush
+# End of Oil Rush.
 oil_rush.2 = {
-	type = state_event
-	placement = ROOT
+	type = country_event
+	placement = scope:oil_state
 	title = oil_rush.2.t
 	desc = oil_rush.2.d
 	flavor = oil_rush.2.f
 
 	duration = 3
+
+	cooldown = { days = long_modifier_time } #country event. Oil has not actually run out in this case, it's just the momentum.
+
+	trigger = { #triggered 10 years after Oil Rush, and then won't be seen for 10 more years due to cooldown.
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				has_variable = oil_rush_state
+			}
+			save_scope_as = oil_state
+		}
+	}
 
 	event_image = {
 		video = "middleeast_oil_derricks"
@@ -64,11 +163,28 @@ oil_rush.2 = {
 
 	option = {
 		name = oil_rush.2.a
-		default_option = yes
-		add_modifier = {
-			name = state_oil_rush_over
-			months = short_modifier_time
+		scope:oil_state = {
+			add_modifier = {
+				name = state_oil_rush_forever
+				days = long_modifier_time
+			}
 		}
+		set_variable = { #Remove variable in 10 years.
+			name = oil_rush_state
+			days = long_modifier_time
+		}
+	}
+
+	option = {
+		name = oil_rush.2.b
+		default_option = yes
+		scope:oil_state = {
+			add_modifier = {
+				name = state_oil_manufacturing_instead
+				days = long_modifier_time
+			}
+		}
+		remove_variable = oil_rush_state
 	}
 }
 
@@ -82,6 +198,8 @@ oil_rush.3 = {
 
 	duration = 3
 
+	cooldown = { days = very_long_modifier_time }
+
 	event_image = {
 		video = "middleeast_oil_derricks"
 	}
@@ -90,11 +208,21 @@ oil_rush.3 = {
 
 	icon = "gfx/interface/icons/event_icons/event_fire.dds"
 
+	immediate = {
+		owner = {
+			set_variable = {
+				name = oil_dangerous_work_fired
+				days = very_long_modifier_time
+			}
+		}
+	}
+
 	trigger = {
 		has_building = building_oil_rig
 		OR = {
 			has_modifier = state_oil_rush
 			has_modifier = state_limited_oil_rush
+			has_modifier = state_oil_rush_forever
 		}
 		NOR = {
 			has_modifier = state_oil_dangerous_work
@@ -104,6 +232,7 @@ oil_rush.3 = {
 			NOR = {
 				has_law = law_type:law_regulatory_bodies
 				has_law = law_type:law_worker_protections
+				has_variable = oil_dangerous_work_fired
 			}
 		}
 	}
@@ -119,14 +248,14 @@ oil_rush.3 = {
 			ig:ig_industrialists = {
 				add_modifier = {
 					name = permitted_oil_dangerous_work
-					months = short_modifier_time
+					days = short_modifier_time
 				}
 			}
 			ig:ig_trade_unions = {
 				add_modifier = {
 					name = permitted_oil_dangerous_work
 					multiplier = -1
-					months = short_modifier_time
+					days = short_modifier_time
 				}
 			}
 		}
@@ -142,21 +271,21 @@ oil_rush.3 = {
 			ig:ig_trade_unions = {
 				add_modifier = {
 					name = prevented_oil_dangerous_work
-					months = short_modifier_time
+					days = short_modifier_time
 				}
 			}
 			ig:ig_industrialists = {
 				add_modifier = {
 					name = prevented_oil_dangerous_work
 					multiplier = -1
-					months = short_modifier_time
+					days = short_modifier_time
 				}
 			}
 		}
 	}
 }
 
-# Pipeline Construction
+# Pipeline Construction. This should be a Decision.
 oil_rush.4 = {
 	type = state_event
 	placement = ROOT
@@ -165,6 +294,8 @@ oil_rush.4 = {
 	flavor = oil_rush.4.f
 
 	duration = 3
+
+	cooldown = { days = very_long_modifier_time }
 
 	event_image = {
 		video = "middleeast_oil_derricks"
@@ -179,15 +310,32 @@ oil_rush.4 = {
 		OR = {
 			has_modifier = state_oil_rush
 			has_modifier = state_limited_oil_rush
+			has_modifier = state_oil_rush_forever
 		}
 		NOT = { has_modifier = state_oil_pipeline }
+		owner = {
+			NOT = {
+				has_variable = oil_pipeline_offer_fired
+			}
+		}
+	}
+
+	immediate = {
+		owner = {
+			set_variable = {
+				name = oil_pipeline_offer_fired
+				days = very_long_modifier_time
+			}
+		}
 	}
 
 	option = {
 		name = oil_rush.4.a
 		add_modifier = {
 			name = state_oil_pipeline
+			multiplier = 1
 		}
+
 		owner = {
 			add_modifier = {
 				name = funding_oil_pipeline
@@ -196,7 +344,7 @@ oil_rush.4 = {
 			ig:ig_industrialists = {
 				add_modifier = {
 					name = pipeline_funded
-					months = short_modifier_time
+					days = short_modifier_time
 				}
 			}
 		}
@@ -209,7 +357,7 @@ oil_rush.4 = {
 			ig:ig_industrialists = {
 				add_modifier = {
 					name = no_pipeline_funding
-					months = short_modifier_time
+					days = short_modifier_time
 				}
 			}
 		}
@@ -220,12 +368,14 @@ oil_rush.4 = {
 # Bribery Scandal
 oil_rush.5 = {
 	type = country_event
-	placement = ROOT
+	placement = scope:oil_state
 	title = oil_rush.5.t
 	desc = oil_rush.5.d
 	flavor = oil_rush.5.f
 
 	duration = 3
+
+	cooldown = { days = very_long_modifier_time }
 
 	event_image = {
 		video = "europenorthamerica_capitalists_meeting"
@@ -248,10 +398,12 @@ oil_rush.5 = {
 			}
 		}
 		any_scope_state = {
+			has_variable = oil_rush_state
 			has_building = building_oil_rig
 			OR = {
 				has_modifier = state_oil_rush
 				has_modifier = state_limited_oil_rush
+				has_modifier = state_oil_rush_forever
 			}
 		}
 	}
@@ -259,7 +411,13 @@ oil_rush.5 = {
 	immediate = {
 		set_variable = {
 			name = bribery_scandal
-			years = 10
+			days = stupidly_long_modifier_time
+		}
+		random_scope_state = {
+			limit = {
+				has_variable = oil_rush_state
+			}
+			save_scope_as = oil_state
 		}
 		random_interest_group = {
 			limit = {
@@ -288,7 +446,7 @@ oil_rush.5 = {
 		ig:ig_industrialists = {
 			add_modifier = {
 				name = jailed_oil_barons
-				months = short_modifier_time
+				days = short_modifier_time
 			}
 		}
 	}
@@ -305,7 +463,7 @@ oil_rush.5 = {
 		ig:ig_trade_unions = {
 			add_modifier = {
 				name = let_off_oil_barons
-				months = short_modifier_time
+				days = short_modifier_time
 			}
 		}
 	}
@@ -316,12 +474,12 @@ oil_rush.5 = {
 		ig:ig_industrialists = {
 			add_modifier = {
 				name = jailed_oil_barons
-				months = short_modifier_time
+				days = short_modifier_time
 			}
 		}
 		add_modifier = {
 			name = corrupt_administration
-			months = short_modifier_time
+			days = short_modifier_time
 		}
 	}
 
@@ -332,12 +490,78 @@ oil_rush.5 = {
 		ig:ig_trade_unions = {
 			add_modifier = {
 				name = let_off_oil_barons
-				months = short_modifier_time
+				days = short_modifier_time
 			}
 		}
 		add_modifier = {
 			name = corrupt_administration
-			months = short_modifier_time
+			days = short_modifier_time
+		}
+	}
+}
+
+oil_rush.6 = { #hidden event that does the effects if the player choose C or D on oil rush
+	type = state_event
+	hidden = yes
+
+	cooldown = { days = stupidly_long_modifier_time } #state cooldown
+
+	trigger = {
+		has_potential_resource = bg_oil_extraction
+		owner = {
+			OR = {
+				has_variable = always_oil_rush
+				has_variable = always_oil_caution
+			}
+			NOT = {
+				has_variable = oil_rush_active
+			}
+		}
+	}
+
+	immediate = {
+		save_scope_as = oil_state
+		#Notification on on-action or in code.
+		owner = {
+			set_variable = {
+				name = oil_rush_active
+				days = very_long_modifier_time  #national cooldown
+			}
+		}
+		if = {
+			limit = {
+				owner = {
+					has_variable = always_oil_rush
+				}
+			}
+			add_modifier = {
+				name = state_oil_rush
+				days = long_modifier_time
+			}
+			hidden_effect = {
+				set_variable = oil_rush_state
+				owner = {
+					trigger_event = {
+						id = oil_rush.2
+						days = long_modifier_time
+					}
+				}
+			}
+		}
+		else = {
+			add_modifier = {
+				name = state_limited_oil_rush
+				days = long_modifier_time
+			}
+			hidden_effect = {
+				set_variable = oil_rush_state
+				owner = {
+					trigger_event = {
+						id = oil_rush.2
+						days = long_modifier_time
+					}
+				}
+			}
 		}
 	}
 }

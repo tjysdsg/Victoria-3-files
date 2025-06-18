@@ -1,0 +1,207 @@
+﻿je_gran_colombia = {
+    icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	group = je_group_foreign_affairs
+
+    is_shown_when_inactive = {
+        country_has_primary_culture = cu:north_andean
+		has_dlc_feature = rp1_content
+        NOT = {
+            OR = {
+                country_tier = empire
+                country_tier = hegemony
+            }
+        }
+    }
+    possible = {
+		has_technology_researched = nationalism
+        country_has_primary_culture = cu:north_andean
+    }
+    immediate = {
+        trigger_event = { id = gran_colombia.1 popup = yes }
+    }
+    complete = {
+        custom_tooltip = {
+            text = formed_gran_colombia_tt
+            c:GCO ?= this
+        }
+    }
+    on_complete = {
+        trigger_event = { id = gran_colombia.2 popup = yes }
+        if = {
+            limit = {
+                has_modifier = modifier_seeking_gran_colombia
+            }
+            remove_modifier = modifier_seeking_gran_colombia
+        }
+    }
+    fail = {
+        OR = {
+            NOT = {
+                country_has_primary_culture = cu:north_andean
+            }
+            custom_tooltip = {
+                text = has_rejected_gran_colombia_tt
+                has_variable = rejected_gran_colombia
+            }
+        }
+    }
+    on_fail = {
+        if = {
+            limit = {
+                has_modifier = modifier_seeking_gran_colombia
+            }
+            remove_modifier = modifier_seeking_gran_colombia
+        }
+    }
+
+    weight = 1000
+
+    should_be_pinned_by_default = yes
+}
+
+je_la_plata = {
+    icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	group = je_group_foreign_affairs
+
+    is_shown_when_inactive = {
+        country_has_primary_culture = cu:platinean
+		has_dlc_feature = rp1_content
+        NOT = {
+            OR = {
+                country_tier = empire
+                country_tier = hegemony
+            }
+        }
+    }
+    possible = {
+		has_technology_researched = nationalism
+        country_has_primary_culture = cu:platinean
+    }
+    immediate = {
+        trigger_event = { id = la_plata.1 popup = yes }
+    }
+    complete = {
+        custom_tooltip = {
+            text = formed_la_plata_tt
+            c:PLT ?= this
+        }
+    }
+    on_complete = {
+        trigger_event = { id = la_plata.2 popup = yes }
+        if = {
+            limit = {
+                has_modifier = modifier_seeking_la_plata
+            }
+            remove_modifier = modifier_seeking_la_plata
+        }
+    }
+    fail = {
+        OR = {
+            NOT = {
+                country_has_primary_culture = cu:platinean
+            }
+            custom_tooltip = {
+                text = has_rejected_la_plata_tt
+                has_variable = rejected_la_plata
+            }
+        }
+    }
+    on_fail = {
+        if = {
+            limit = {
+                has_modifier = modifier_seeking_la_plata
+            }
+            remove_modifier = modifier_seeking_la_plata
+        }
+    }
+
+    weight = 1000
+
+    should_be_pinned_by_default = yes
+}
+
+je_andean_federation = {
+    icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	group = je_group_foreign_affairs
+
+    is_shown_when_inactive = {
+        OR = {
+            country_has_primary_culture = cu:north_andean
+            country_has_primary_culture = cu:south_andean
+        }
+		has_technology_researched = nationalism
+        NOT = {
+            has_variable = rejected_gran_colombia
+        }
+		has_dlc_feature = rp1_content
+    }
+    possible = {
+        has_technology_researched = pan-nationalism
+        OR = {
+            country_has_primary_culture = cu:north_andean
+            country_has_primary_culture = cu:south_andean
+        }
+        custom_tooltip = {
+            text = andean_federation_reqs_tt
+            OR = {
+                any_scope_state = {
+                    state_is_in_south_america = yes
+                    is_incorporated = yes
+                    count >= 10
+                }
+                c:GCO ?= this
+                c:PBC ?= this
+                c:PLT ?= this
+            }
+        }
+    }
+    immediate = {
+        trigger_event = { id = andean_federation.1 popup = yes }
+    }
+    complete = {
+        custom_tooltip = {
+            text = formed_andean_federation_tt
+            c:FND ?= this
+        }
+    }
+    on_complete = {
+        trigger_event = { id = andean_federation.2 popup = yes }
+        show_as_tooltip = {
+            if = {
+                limit = {
+                    NOT = {
+                        country_has_primary_culture = cu:south_andean
+                    }
+                }
+                add_primary_culture = cu:south_andean
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        country_has_primary_culture = cu:north_andean
+                    }
+                }
+                add_primary_culture = cu:north_andean
+            }
+        }
+    }
+    fail = {
+        OR = {
+            NOT = {
+                country_has_primary_culture = cu:north_andean
+                country_has_primary_culture = cu:south_andean
+            }
+            custom_tooltip = {
+                text = has_rejected_andean_federation_tt
+                has_variable = rejected_andean_federation
+            }
+        }
+    }
+
+    weight = 1000
+
+    should_be_pinned_by_default = yes
+}

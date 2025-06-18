@@ -1,5 +1,7 @@
 ﻿namespace = assassination_events
 
+#adding a 10 year cooldown to all. This will stop same events firing twice and rare weird assassination spam.
+
 assassination_events.1 = { #there's a plot to kill your ruler
 	type = country_event
 	placement = root
@@ -15,6 +17,8 @@ assassination_events.1 = { #there's a plot to kill your ruler
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	cooldown = { days = long_modifier_time }
 
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
 
@@ -33,17 +37,17 @@ assassination_events.1 = { #there's a plot to kill your ruler
 		NOT = { has_variable = assassination_cooldown }
 		NOT = { has_variable = ongoing_serial_killer_je }
 	}
-	
+
 	immediate = {
 		ruler = { save_scope_as = assassination_ruler_scope }
 		set_variable = {
 			name = assassination_cooldown
-			months = stupidly_long_modifier_time #50 years
+			days = stupidly_long_modifier_time #50 years
 		}
 	}
-	
+
 	option = {
-		name = assassination_events.1.a 
+		name = assassination_events.1.a
 		default_option = yes
 		add_journal_entry = {
 			type = je_assassination
@@ -81,6 +85,8 @@ assassination_events.2 = { #suspicious meeting
 
 		video = "middleeast_police_breaking_door"
 	}
+
+	cooldown = { days = long_modifier_time }
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
@@ -124,7 +130,7 @@ assassination_events.2 = { #suspicious meeting
 		scope:suspicious_ig = {
 			add_modifier = {
 				name = assassination_ig_not_monitored_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -139,11 +145,11 @@ assassination_events.2 = { #suspicious meeting
 		scope:suspicious_ig = {
 			add_modifier = {
 				name = assassination_ig_monitored
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
-	
+
 	option = { #we suspect this other IG
 		name = assassination_events.2.c
 		trigger = {
@@ -160,17 +166,19 @@ assassination_events.2 = { #suspicious meeting
 		scope:second_suspicious_ig = {
 			add_modifier = {
 				name = assassination_ig_monitored
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
 }
 
-assassination_events.3 = { #The Snitch 
+assassination_events.3 = { #The Snitch
 	type = country_event
 	placement = root
 
 	duration = 3
+
+	cooldown = { days = long_modifier_time }
 
 	title = assassination_events.3.t
 	desc = assassination_events.3.d
@@ -215,7 +223,7 @@ assassination_events.3 = { #The Snitch
 		scope:snitched_ig = {
 			add_modifier = {
 				name = suspicious_modifier #pol str
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -226,13 +234,13 @@ assassination_events.3 = { #The Snitch
 		scope:snitch_leader = {
 			add_modifier = {
 				name = snitch_modifier #popularity
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
-	
+
 	option = { #don't and also accuse them
-		name = assassination_events.3.c 
+		name = assassination_events.3.c
 		custom_tooltip = advance_assassination_progress_tt
 		change_variable = {
 			name = je_assassination_progress
@@ -241,7 +249,7 @@ assassination_events.3 = { #The Snitch
 		scope:snitch_ig = {
 			add_modifier = {
 				name = suspicious_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -252,6 +260,8 @@ assassination_events.4 = { #accusatory talk in the high spheres
 	placement = scope:high_spheres_state
 
 	duration = 3
+
+	cooldown = { days = long_modifier_time }
 
 	title = assassination_events.4.t
 	desc = assassination_events.4.d
@@ -326,7 +336,7 @@ assassination_events.4 = { #accusatory talk in the high spheres
 		scope:suspicious_ig = {
 			add_modifier = {
 				name = assassination_ig_monitored
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		scope:high_spheres_state = {
@@ -347,7 +357,7 @@ assassination_events.4 = { #accusatory talk in the high spheres
 			}
 		}
 	}
-	
+
 	option = { #we clearly need to improve our security
 		name = assassination_events.4.c
 		custom_tooltip = advance_assassination_progress_tt
@@ -357,7 +367,7 @@ assassination_events.4 = { #accusatory talk in the high spheres
 		}
 		add_modifier = {
 			name = hightened_security
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 }
@@ -405,7 +415,7 @@ assassination_events.5 = { #Failure to stop assassination
 		}
 		add_modifier = {
 			name = assassination_success_modifier #great authority hit
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 }
@@ -451,7 +461,7 @@ assassination_events.6 = { #ruler deposed
 		scope:assassination_ruler_scope = {
 			add_modifier = {
 				name = deposed_ruler_modifier #he loses a lot of popularity
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -498,7 +508,7 @@ assassination_events.7 = { #Stopped the assassination
 		default_option = yes
 		add_modifier =  {
 			name = assassination_caught_em_modifier #legitimacy
-			months = short_modifier_time
+			days = short_modifier_time
 		}
 	}
 }
@@ -543,7 +553,7 @@ assassination_events.8 = { #ruler died of other cause
 		default_option = yes
 		add_modifier = {
 			name = assassination_dead_ruler_modifier #legitimacy loss
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 }

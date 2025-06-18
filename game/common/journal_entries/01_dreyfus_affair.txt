@@ -1,0 +1,97 @@
+﻿je_dreyfus_affair = {
+	icon = "gfx/interface/icons/event_icons/bicorne_hat.dds"
+
+	group = je_group_historical_content
+
+	immediate = {
+		set_variable = {
+			name = dreyfus_case_var # Dreyfus' case strength
+			value = 0
+		}
+		set_variable = {
+			name = rennes_retrial_var # Time until retrial
+			value = 0
+		}
+	}
+
+	complete = {
+		custom_tooltip = {
+			text = je_dreyfus_affair_tt.3
+			scope:journal_entry = {
+				is_goal_complete = yes
+			}
+		}
+		custom_tooltip = {
+			text = je_dreyfus_affair_tt.1
+		}
+	}
+
+	on_complete = {
+		trigger_event = {
+			id = dreyfus.8
+		}
+		custom_tooltip = {
+			text = je_dreyfus_affair_tt.4
+		}
+		if = {
+			limit = {
+				var:dreyfus_case_var <= 4
+			}
+			set_variable = dreyfus_trial_reincarceration
+		}
+		if = {
+			limit = {
+				var:dreyfus_case_var >= 5
+				var:dreyfus_case_var <= 9
+			}
+			set_variable = dreyfus_trial_lesser_sentence
+		}
+		if = {
+			limit = {
+				var:dreyfus_case_var >= 10
+			}
+			set_variable = dreyfus_trial_exoneration
+		}
+	}
+
+	on_monthly_pulse = {
+		effect = {
+			change_variable = {
+				name = rennes_retrial_var
+				add = 1
+			}
+		}
+		random_events = {
+			75 = 0
+			5 = dreyfus.4
+			5 = dreyfus.5
+			5 = dreyfus.6
+			5 = dreyfus.7
+			5 = dreyfus.9
+		}
+	}
+
+	status_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = je_dreyfus_status
+			}
+		}
+	}
+
+	current_value = {
+		value = var:rennes_retrial_var
+	}
+
+	goal_add_value = {
+		value = 60  #  5 Years
+	}
+
+	weight = 100
+
+	should_be_pinned_by_default = yes
+
+	transferable = no
+
+	progressbar = yes
+}

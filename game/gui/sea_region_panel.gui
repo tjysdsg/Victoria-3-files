@@ -90,17 +90,111 @@ types sea_region_panel_types
 				blockoverride "second_button_name" {
 					name = "tutorial_highlight_sea_node_navy_tab"
 				}
+				
+				blockoverride "third_button" {
+					text = "TRADE"
+				}
+				blockoverride "third_button_tooltip" {
+					tooltip = "TRADE"
+				}
+				blockoverride "third_button_click" {
+					onclick = "[InformationPanel.SelectTab('trade')]"
+				}
+				blockoverride "third_button_visibility" {
+					visible = "[InformationPanel.IsTabSelected('trade')]"
+				}
+				blockoverride "third_button_visibility_checked" {
+					visible = "[Not( InformationPanel.IsTabSelected('trade') )]"
+				}
+				blockoverride "third_button_selected" {
+					text = "TRADE"
+				}
+				blockoverride "third_button_name" {
+					name = "tutorial_highlight_sea_node_trade_tab"
+				}				
+			}
+
+			flowcontainer = {
+				visible = "[InformationPanel.IsTabSelected('trade')]"
+
+				margin_top = 10
+				sort_button = {
+					onclick = "[SeaRegionPanel.Sort('name')]"
+					tooltip = "SORT_BY_MARKET_GOODS"
+					size = { 50 20 }
+
+					button = {
+						texture = "gfx/interface/buttons/sort_button_icons/sort_icon_good.dds"
+						size = { 25 25 }
+						parentanchor = center
+						alwaystransparent = yes
+					}
+				}
+
+				sort_button = {
+					text = "concept_trade"
+					onclick = "[SeaRegionPanel.Sort('amount')]"
+					size = { 70 20 }
+					align = hcenter|nobaseline
+					elide = right
+				}
+
+				sort_button = {
+					text = "IMPORTS"
+					enabled = no
+					size = { 210 20 }
+					align = hcenter|nobaseline
+					elide = right
+				}
+
+				sort_button = {
+					text = "EXPORTS"
+					enabled = no
+					size = { 210 20 }
+					align = hcenter|nobaseline
+					elide = right
+				}
 			}
 		}
 		
 		blockoverride "scrollarea_content_vbox" {
+		
+			vbox = {
+				layoutpolicy_horizontal = preferred
+				visible = "[InformationPanel.IsTabSelected('trade')]"
+				using = default_content_fade
+				margin_top = 10
+				
+				textbox = {
+					margin_top = 100
+					layoutpolicy_vertical = preferred
+					visible = "[IsDataModelEmpty(SeaRegionPanel.GetWorldMarketTradedGoods)]"
+					autoresize = yes
+					align = center|nobaseline
+					using = fontsize_xxl
+					text = "WORLD_MARKET_NO_SEA_REGION_TRADE"
+					using = empty_state_text_properties
+				}	
+
+				flowcontainer = {
+					visible = "[Not(IsDataModelEmpty(SeaRegionPanel.GetWorldMarketTradedGoods))]"
+					direction = vertical
+					datamodel = "[SeaRegionPanel.GetWorldMarketTradedGoods]"
+					
+					item = {
+						world_market_traded_goods_item = {}
+					}						
+				}	
+				
+				expand = {}			
+			}
 
 			vbox = {
 				layoutpolicy_horizontal = preferred
 				visible = "[InformationPanel.IsTabSelected('default')]"
 				using = default_content_fade
 				spacing = 10
-				margin_top = 10
+				margin_top = 10				
 
 				textbox = {
 					margin_top = 100
@@ -417,18 +511,18 @@ types sea_region_panel_types
 				}
 			}
 
-			### NAVAL INVASIONS
+			### INVASIONS
 			flowcontainer = {
-				visible = "[Not(IsDataModelEmpty(SeaRegionWar.GetActiveNavalInvasions))]"
+				visible = "[Not(IsDataModelEmpty(SeaRegionWar.GetInvasions))]"
 				spacing = 10
 				direction = vertical
 				parentanchor = hcenter
 				margin = { 0 10 }
 
-				datamodel = "[SeaRegionWar.GetActiveNavalInvasions]"
+				datamodel = "[SeaRegionWar.GetInvasions]"
 
 				item = {
-					naval_invasion_list_item = {}
+					invasion_list_item = {}
 				}
 			}
 		}
@@ -549,7 +643,7 @@ types sea_region_panel_types
 					parentanchor = right|vcenter
 					position = { -7 0 }
 					size = { 25 25 }
-					onclick = "[InformationPanelBar.OpenMilitaryFormationPanel(MilitaryFormation.AccessSelf)]"
+					onclick = "[InformationPanelBar.OpenMilitaryFormationPanel(MilitaryFormation.Self)]"
 					tooltip = "GO_TO_BUTTON_FORMATION"
 				}
 			}
@@ -894,28 +988,7 @@ types sea_region_panel_types
 							}
 						}
 					}
-
-					fixedgridbox = {
-						datamodel = "[DataModelFirst(State.AccessShippingLanesOnlyTradeRoutesFromThisState(SeaRegionPanel.GetProvince.Self), '(int32)4')]"
-						size = { 120 30 }
-						addrow = 30
-						addcolumn = 30
-						flipdirection = yes
-					
-						item = {
-							icon = {
-								datacontext = "[ShippingLane.GetTradeRoute.GetGoods]"
-								datacontext = "[ShippingLane.GetTradeRoute]"
-								texture = "[Goods.GetTexture]"
-								tooltip = "TRADE_ROUTE_TOOLTIP"
-								size = { 30 30 }
-							}
-						}
-					}
 				}
-
-
-
 
 				textbox = {
 					text = "ORIGIN_STATE_TOTAL_NUMBER_OF_PORT_CONNECTIONS"
@@ -981,18 +1054,23 @@ types sea_region_panel_types
 								size = { 5 5 }
 							}
 
-
-							textbox = {
-								layoutstretchfactor_horizontal = 10
+							hbox = {
 								layoutpolicy_horizontal = expanding
-								align = left|nobaseline
-								elide = right
-								fontsize_min = 12
-								text = "SHIPPING_LANE_SUPPLIED_STATE"
-							}
+								spacing = 2
+								layoutstretchfactor_horizontal = 12
 
-							tiny_flag = {
-								datacontext = "[ShippingLane.GetEndState.GetCountry]"
+								textbox = {
+									layoutpolicy_horizontal = expanding
+									align = left|nobaseline
+									elide = right
+									fontsize_min = 12
+									text = "SHIPPING_LANE_SUPPLIED_STATE"
+								}
+
+								tiny_flag = {
+									visible = "[ShippingLane.GetEndState.IsValid]"
+									datacontext = "[ShippingLane.GetEndState.GetCountry]"
+								}
 							}
 
 							textbox = {
@@ -1017,68 +1095,64 @@ types sea_region_panel_types
 				}
 			}
 
+			### GOODS TRANSFER SHIPPING LANES
 			fixedgridbox = {
 				addcolumn = 510
 				addrow = 35
-				datamodel = "[State.AccessShippingLanesOnlyTradeRoutesFromThisState(SeaRegionPanel.GetProvince.Self)]"
+				datamodel = "[State.AccessShippingLanesOnlyGoodsTransferFromThisState(SeaRegionPanel.GetProvince.Self)]"
 				
 				item = {
 					widget = {
+						tooltip = "SHIPPING_LANE_TOOLTIP"
 						size = { 510 35 }
-						datacontext = "[ShippingLane.GetTradeRoute]"
-						tooltip = "TRADE_ROUTE_TOOLTIP"
-
 						divider_clean = {
 							size = { 510 1 }
 						}
 
-						flowcontainer = {
-							margin = { 10 0 }
+						### GOODS TRANSFER
+						hbox = {
+							minimumsize = { -1 35 }
+							margin = { 10 10 }
 							spacing = 5
-
-							icon = {
-								visible = "[TradeRoute.IsExport]"
-								size = { 35 35 }
-								texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_export_lens_option.dds"
-							}
-
-							icon = {
-								visible = "[TradeRoute.IsImport]"
-								size = { 35 35 }
-								texture = "gfx/interface/icons/lens_toolbar_icons/trade_route_import_lens_option.dds"
-							}
+							layoutpolicy_vertical = expanding 
+							layoutpolicy_horizontal = expanding
 
 							textbox = {
-								size = { 57 35 }
-								elide = right
-								fontsize_min = 12
-								align = right|nobaseline
-								text = "SHIPPING_LANE_NUMBER_GOODS_TRADED"
-							}
-
-							textbox = {
-								size = { 100 35 }
-								elide = right
-								fontsize_min = 12
-								align = left|nobaseline
-								text = "SHIPPING_LANE_GOODS_TRADED"
-							}
-
-							textbox = {
-								size = { 142 35 }
+								layoutstretchfactor_horizontal = 7
+								layoutpolicy_horizontal = expanding
 								align = left|nobaseline
 								elide = right
 								fontsize_min = 12
-								text = "SHIPPING_LANE_END_STATE"
+								text = "goods_transfer"
+							}
+
+							widget = {
+								layoutstretchfactor_horizontal = 4
+								layoutpolicy_horizontal = expanding
+								size = { 5 5 }
+							}
+
+
+							widget = {
+								size = { 35 0 }
+							}
+
+							textbox = {
+								layoutstretchfactor_horizontal = 10
+								layoutpolicy_horizontal = expanding
+								align = left|nobaseline
+								elide = right
+								fontsize_min = 12
+								text = "SHIPPING_LANE_SUPPLIED_STATE_GOODS_TRANSFER"
 							}
 
 							tiny_flag = {
 								datacontext = "[ShippingLane.GetEndState.GetCountry]"
-								parentanchor = vcenter
 							}
 
 							textbox = {
-								size = { 43 35 }
+								layoutstretchfactor_horizontal = 3.5
+								layoutpolicy_horizontal = expanding
 								alpha = "[TransparentIfTrue(EqualTo_CFixedPoint(ShippingLane.GetEffectivenessRaw,'(CFixedPoint)1'))]"
 								align = right|nobaseline
 								elide = right
@@ -1086,9 +1160,10 @@ types sea_region_panel_types
 							}
 
 							textbox = {
-								size = { 56 35 }
-								elide = right
+								layoutstretchfactor_horizontal = 4
+								layoutpolicy_horizontal = expanding
 								align = right|nobaseline
+								elide = right
 								fontsize_min = 12
 								text = "[ShippingLane.GetConvoyCostFormattedShort]"
 								alpha = "[TransparentIfZero_int32(ShippingLane.GetConvoyCostRaw)]"
@@ -1178,7 +1253,7 @@ types sea_region_panel_types
 	}
 	
 	type military_formation_shipping_lane_button = button_icon_round {
-		onclick = "[InformationPanelBar.OpenMilitaryFormationPanel(MilitaryFormation.AccessSelf)]"
+		onclick = "[InformationPanelBar.OpenMilitaryFormationPanel(MilitaryFormation.Self)]"
 		onrightclick = "[RightClickMenuManager.ShowForMilitaryFormation(MilitaryFormation.AccessSelf)]"
 		onmousehierarchyenter = "[AccessHighlightManager.HighlightMilitaryFormation( MilitaryFormation.Self )]"
 		onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
@@ -1205,6 +1280,57 @@ types sea_region_panel_types
 				size = { 25 25 }
 				texture = "[MilitaryFormation.GetFlag]"
 				color = "[MilitaryFormation.GetFlagColor]"
+			}
+		}
+	}
+	
+	type world_market_traded_goods_item = button {
+		tooltip = "WORLD_MARKET_SEA_REGION_TRADE_TOOLTIP"
+		onclick = "[InformationPanelBar.OpenGoodsWorldMarketPanel(Goods.Self)]"
+		onrightclick = "[RightClickMenuManager.ShowForGoods(Goods.AccessSelf)]"
+		
+		size = { @panel_width 42 }
+		using = default_button
+
+		flowcontainer = {
+			margin_left = 10
+			parentanchor = vcenter
+			spacing = 10
+
+			icon = {
+				texture = "[Goods.GetTexture]"
+				size = { 36 36 }
+				parentanchor = vcenter
+			}	
+
+			textbox = {
+				raw_text = "[SeaRegionPanel.GetNumTradedInWorldMarket(Goods.Self)|v0D]"
+				parentanchor = vcenter
+				align = center|nobaseline
+				size = { 60 23 }
+				fontsize_min = 12
+			}
+
+			overlappingitembox = {
+				datamodel = "[SeaRegionPanel.GetImporters(Goods.Self)]"
+				size = { 190 18 }
+				parentanchor = vcenter
+
+				item = {
+					small_market_flag = {}
+				}
+			}
+
+			widget = { size = { 1 1 }}
+
+			overlappingitembox = {
+				datamodel = "[SeaRegionPanel.GetExporters(Goods.Self)]"
+				size = { 190 18 }
+				parentanchor = vcenter
+
+				item = {
+					small_market_flag = {}
+				}
 			}
 		}
 	}

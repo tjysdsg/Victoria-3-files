@@ -1,0 +1,201 @@
+﻿je_communal_divides = {
+    icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+    group = je_group_british_india
+
+    scripted_button = je_communal_divides_federal_solution
+
+    is_shown_when_inactive = {
+        c:BIC ?= this
+        has_technology_researched = nationalism
+        any_scope_state = {
+            state_is_homeland_of_indian_cultures = yes
+            any_scope_pop = {
+                OR = {
+                    religion = rel:sunni
+                    religion = rel:shiite
+                }
+            }
+            any_scope_pop = {
+                religion = rel:hindu
+            }
+            count >= 5
+        }
+    }
+
+    possible = {
+        has_technology_researched = pan-nationalism
+        OR = {
+            AND = {
+                custom_tooltip = {
+                    text = hindu_nationalist_support_above_5_tt
+                    any_political_movement = {
+                        is_political_movement_type = movement_hindu_nationalist
+                        political_movement_identity_support >= 0.05
+                    }
+                }
+                custom_tooltip = {
+                    text = hindu_nationalist_movement_above_50_tt
+                    any_political_movement = {
+                        is_political_movement_type = movement_hindu_nationalist
+                        political_movement_radicalism >= 0.50
+                    }
+                }
+            }
+            AND = {
+                custom_tooltip = {
+                    text = muslim_nationalist_support_above_5_tt
+                    any_political_movement = {
+                        is_political_movement_type = movement_muslim_nationalist
+                        political_movement_identity_support >= 0.05
+                    }
+                }
+                custom_tooltip = {
+                    text = muslim_nationalist_movement_above_50_tt
+                    any_political_movement = {
+                        is_political_movement_type = movement_muslim_nationalist
+                        political_movement_radicalism >= 0.50
+                    }
+                }
+            }
+        }
+    }
+
+    immediate = {
+        s:STATE_EAST_BENGAL = {
+            save_scope_as = east_bengal_scope
+        }
+        s:STATE_PUNJAB = {
+            save_scope_as = punjab_scope
+        }
+        s:STATE_SINDH = {
+            save_scope_as = sindh_scope
+        }
+        s:STATE_KASHMIR = {
+            save_scope_as = kashmir_scope
+        }
+    }
+
+    modifiers_while_active = {
+        modifier_hightened_intercommunal_tension
+    }
+
+    complete = {
+        OR = {
+            custom_tooltip = {
+                text = je_communal_divides_goal_tt
+                has_variable = selected_federal_solution_var
+            }
+            AND = {
+                OR = {
+                    custom_tooltip = {
+                        text = muslim_nationalist_support_below_5_tt
+                        any_political_movement = {
+                            is_political_movement_type = movement_muslim_nationalist
+                            political_movement_identity_support <= 0.05
+                        }
+                    }
+                    custom_tooltip = {
+                        text = hindu_nationalist_movement_below_25_tt
+                        any_political_movement = {
+                            is_political_movement_type = movement_hindu_nationalist
+                            political_movement_radicalism <= 0.20
+                        }
+                    }
+                }
+                OR = {
+                    custom_tooltip = {
+                        text = muslim_nationalist_support_below_5_tt
+                        any_political_movement = {
+                            is_political_movement_type = movement_muslim_nationalist
+                            political_movement_identity_support <= 0.05
+                        }
+                    }
+                    custom_tooltip = {
+                        text = muslim_nationalist_movement_below_25_tt
+                        any_political_movement = {
+                            is_political_movement_type = movement_muslim_nationalist
+                            political_movement_radicalism <= 0.20
+                        }
+                    }
+                }
+                NOT = {
+                    any_political_movement = {
+                        is_insurrectionary = yes
+                    }
+                }
+            }
+        }
+    }
+
+    on_complete = {
+        trigger_event = { id = communal_divides_events.1 popup = yes }
+    }
+
+    event_outcome_completed_desc = {
+        first_valid = {
+            triggered_desc = {
+                desc = event_effects_communal_divides_events.1_tt
+            }
+        }
+    }
+
+    invalid = {
+
+    }
+
+    fail = {
+        custom_tooltip = {
+            text = je_communal_divides_fail_tt
+            NOT = {
+                has_variable = selected_federal_solution_var
+            }
+            NOT = {
+                any_scope_state = {
+                    state_region = s:STATE_EAST_BENGAL
+                }
+            }
+            NOT = {
+                any_scope_state = {
+                    state_region = s:STATE_PUNJAB
+                }
+            }
+            NOT = {
+                any_scope_state = {
+                    state_region = s:STATE_SINDH
+                }
+            }
+            NOT = {
+                any_scope_state = {
+                    state_region = s:STATE_KASHMIR
+                }
+            }
+        }
+        is_at_war = no
+    }
+
+    on_fail = {
+        trigger_event = { id = communal_divides_events.2 popup = yes }
+    }
+
+    event_outcome_failed_desc = {
+        first_valid = {
+            triggered_desc = {
+                desc = event_effects_communal_divides_events.2_tt
+            }
+        }
+    }
+
+    on_monthly_pulse = {
+        random_events = {
+            100 = 0
+            10 = communal_divides_events.3
+            10 = communal_divides_events.4
+            10 = communal_divides_events.5
+            10 = communal_divides_events.6
+        }
+    }
+
+    weight = 1000
+    should_be_pinned_by_default = yes
+}

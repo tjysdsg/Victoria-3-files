@@ -1,0 +1,285 @@
+﻿je_india_non_cooperation_movement = {
+	should_be_pinned_by_default = yes
+	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
+
+	group = je_group_british_india
+
+	modifiers_while_active = {
+		national_swadeshi_movement # boost of political activity from discriminated pops
+	}
+
+	is_shown_when_inactive = {
+		has_dlc_feature = ip2_content
+		c:BIC ?= this
+		is_subject = yes
+		has_technology_researched = pan-nationalism
+	}
+
+	possible = {
+		any_political_movement = {
+			is_political_movement_type = movement_india_pan_national
+			political_movement_radicalism >= 0.35
+		}
+		is_subject = yes
+		NOT = {
+			any_primary_culture = {
+				has_discrimination_trait = south_asian_heritage
+			}
+		}
+		hidden_trigger = {
+			exists = top_overlord
+		}
+		"ROOT.economic_dependence(top_overlord)" > 2.5
+		market ?= {
+			any_market_goods = {
+				is_tradeable = yes
+				market_goods_sell_orders > 200
+			}
+		}
+	}
+
+	immediate = {
+		top_overlord = {
+			save_scope_as = probably_britain_scope
+			market = {
+				save_scope_as = probably_britain_market_scope
+			}
+		}
+		ROOT = {
+			save_scope_as = india_scope
+			if = {
+				limit = {
+					root.market = top_overlord.market
+				}
+				market = {
+					ordered_market_goods = {
+						limit = {
+							is_tradeable = yes
+							market_goods_sell_orders > 200
+						}
+						order_by = "market.market_production_share(scope:probably_britain_scope)"
+
+						goods = {
+							save_scope_as = british_trade_route_goods	# need a good to be called on for loc in the non-trade-route path
+						}
+					}
+				}
+			}
+			else = {
+				market = {
+					ordered_market_goods = {
+						limit = {
+							is_tradeable = yes
+							market_goods_sell_orders > 200
+						}
+						order_by = "market.market_imports_reliance(scope:probably_britain_market_scope)"
+
+						goods = {
+							save_scope_as = british_trade_route_goods	# need a good to be called on for loc in the non-trade-route path
+						}
+					}
+				}
+			}
+		}
+		random_political_movement = {
+			limit = {
+				is_political_movement_type = movement_india_pan_national
+				political_movement_radicalism >= 0.35
+			}
+			save_scope_as = indian_independence_movement
+		}
+		trigger_event = { id = india_non_cooperation.1 popup = yes }
+	}
+
+	timeout = 3650 # ten years
+
+	complete = {
+		"ROOT.economic_dependence(top_overlord)" < 2
+		trigger_if = {
+			limit = {
+				root.market = top_overlord.market
+			}
+			market = { market_production_share = { target = ROOT value > 0.5 } }
+		}
+		trigger_else = {
+			market = { market_imports_reliance = { target = scope:probably_britain_market_scope value < 0.25 } }
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = india_non_cooperation.7 popup = yes }
+	}
+
+    event_outcome_completed_desc = {
+        first_valid = {
+            triggered_desc = {
+                desc = event_effects_india_non_cooperation.7_tt
+            }
+        }
+    }
+
+	fail = {
+		OR = {
+			custom_tooltip = {
+				text = india_independence_movement_defeated_tt
+				OR = {
+					NOT = {
+						any_political_movement = {
+							is_political_movement_type = movement_india_pan_national
+						}
+					}
+					any_political_movement = {
+						is_political_movement_type = movement_india_pan_national
+						political_movement_radicalism <= 0.1
+					}
+				}
+			}
+			trigger_if = {
+				limit = {
+					exists = scope:indian_independence_movement
+				}
+				custom_tooltip = {
+					text = india_non_cooperation_violence_escalates_tt
+					any_political_movement = {
+						is_political_movement_type = movement_india_pan_national
+						political_movement_radicalism >= define:NPolitics|MIN_RADICALISM_FOR_CIVIL_WAR_PROGRESSION # Minimum radicalism threshhold to trigger civil war. 0.75 as of time of writing, but linking it directly to that value should make maintenance easier.
+					}
+				}
+			}
+		}
+	}
+
+	on_fail = {
+		if = {
+			limit = {
+				any_political_movement = {
+					is_political_movement_type = movement_india_pan_national
+					political_movement_radicalism >= define:NPolitics|MIN_RADICALISM_FOR_CIVIL_WAR_PROGRESSION
+				}
+			}
+			trigger_event = india_non_cooperation.5
+		}
+		else_if = {
+			limit = {
+				OR = {
+					NOT = {
+						any_political_movement = {
+							is_political_movement_type = movement_india_pan_national
+						}
+					}
+					any_political_movement = {
+						is_political_movement_type = movement_india_pan_national
+						political_movement_radicalism <= 0.1
+					}
+				}
+			}
+			if = {
+				limit = { has_journal_entry = je_india_home_rule }
+				custom_tooltip = india_bar_retreat_25_tt
+			}
+			trigger_event = india_non_cooperation.6
+		}
+	}
+
+    event_outcome_failed_desc = {
+        first_valid = {
+            triggered_desc = {
+				trigger = {
+					any_political_movement = {
+						is_political_movement_type = movement_india_pan_national
+						political_movement_radicalism >= define:NPolitics|MIN_RADICALISM_FOR_CIVIL_WAR_PROGRESSION
+					}
+				}
+                desc = event_effects_india_non_cooperation.5_tt
+            }
+            triggered_desc = {
+				trigger = {
+					any_political_movement = {
+						is_political_movement_type = movement_india_pan_national
+						political_movement_radicalism >= define:NPolitics|MIN_RADICALISM_FOR_CIVIL_WAR_PROGRESSION
+						any_supporting_character = {
+							is_in_exile_pool = no
+							is_in_void = no
+							is_ruler = no
+							is_heir = no
+							has_role = politician
+							OR = {
+								has_ideology = ideology:ideology_humanitarian
+								has_ideology = ideology:ideology_pacifist
+							}
+							is_immortal = no
+						}
+					}
+				}
+                desc = event_effects_india_non_cooperation.5_1_tt
+            }
+            triggered_desc = {
+				trigger = {
+					any_political_movement = {
+						is_political_movement_type = movement_india_pan_national
+						political_movement_radicalism >= define:NPolitics|MIN_RADICALISM_FOR_CIVIL_WAR_PROGRESSION
+						any_supporting_character = {
+							is_in_exile_pool = no
+							is_in_void = no
+							is_ruler = no
+							is_heir = no
+							has_role = agitator
+							OR = {
+								has_ideology = ideology:ideology_humanitarian
+								has_ideology = ideology:ideology_pacifist
+							}
+							is_immortal = no
+						}
+					}
+				}
+                desc = event_effects_india_non_cooperation.5_2_tt
+            }
+            triggered_desc = {
+				trigger = {
+					OR = {
+						NOT = {
+							any_political_movement = {
+								is_political_movement_type = movement_india_pan_national
+							}
+						}
+						any_political_movement = {
+							is_political_movement_type = movement_india_pan_national
+							political_movement_radicalism <= 0.1
+						}
+					}
+				}
+                desc = event_effects_india_non_cooperation.6_tt
+            }
+        }
+    }
+
+	on_timeout = {
+		trigger_event = india_non_cooperation.6
+		if = {
+			limit = { has_journal_entry = je_india_home_rule }
+			custom_tooltip = india_bar_retreat_25_tt
+		}
+	}
+
+	event_outcome_timeout_desc = {
+        first_valid = {
+            triggered_desc = {
+                desc = event_effects_india_non_cooperation.6_tt
+            }
+        }
+    }
+
+	invalid = {
+		ROOT = {
+			is_subject = no
+		}
+	}
+
+	on_yearly_pulse = {
+		random_events = { #five year cooldowns on these
+			1 = 0
+			1 = india_non_cooperation.3
+			1 = india_non_cooperation.4
+		}
+	}
+}

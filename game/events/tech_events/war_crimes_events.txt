@@ -2,11 +2,11 @@
 war_crimes.1 = {
  	type = country_event
  	placement = ROOT
-	
+
  	title = war_crimes.1.t
  	desc = war_crimes.1.d
  	flavor = war_crimes.1.f
-	
+
  	event_image = {
  		video = "middleeast_battlefield_trenches"
  	}
@@ -14,12 +14,31 @@ war_crimes.1 = {
  	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
  	icon = "gfx/interface/icons/event_icons/event_skull.dds"
-	
+
  	duration = 3
 
+	cooldown = { days = never_fire_again_modifier_time }
+
  	trigger = {
- 		#triggered by war crimes JE
+		army_mobilization_option_fraction = {
+			target = mobilization_option:mobilization_option_chemical_weapons
+			value >= 0.2
+		}
+		any_scope_war = {
+			any_scope_front = {
+				any_scope_general = {
+					owner = ROOT
+					this.commander_military_formation = {
+						has_mobilization_option = mobilization_option:mobilization_option_chemical_weapons
+					}
+				}
+				any_scope_state = {
+					NOT = { owner = ROOT }
+				}
+			}
+		}
  	}
+
  	immediate = {
  		random_scope_war = {
  			limit = {
@@ -75,7 +94,7 @@ war_crimes.1 = {
  		scope:war_crimes_state = {
  			add_modifier = {  #mortality, welfare
  				name = mustard_gas
- 				months = normal_modifier_time
+ 				days = normal_modifier_time
  				multiplier = 2
  			}
  		}
@@ -87,15 +106,15 @@ war_crimes.1 = {
 			   hidden = yes
 		   }
 		}
- 		scope:war_crimes_state = { 
+ 		scope:war_crimes_state = {
  			add_modifier = {  #mortality, welfare
  				name = mustard_gas
- 				months = normal_modifier_time
+ 				days = normal_modifier_time
  			}
  		}
  		add_modifier = {  #reduced kill rate
  			name = laws_against_war_crimes
- 			months = long_modifier_time
+ 			days = long_modifier_time
  		}
  	}
 }
@@ -104,11 +123,11 @@ war_crimes.1 = {
 war_crimes.2 = {
 	type = country_event
 	placement = scope:munitions_state
-	
+
 	title = war_crimes.2.t
 	desc = war_crimes.2.d
 	flavor = war_crimes.2.f
-	
+
 	event_image = {
 		video = "unspecific_gears_pistons"
 	}
@@ -116,11 +135,19 @@ war_crimes.2 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_fire.dds"
-	
+
 	duration = 3
-	
+
+	cooldown = { days = never_fire_again_modifier_time }
+
 	trigger = {
-		# triggered by je_munitions_factories
+		any_scope_building = {
+			is_building_type = building_munition_plants
+			cash_reserves_ratio > 0.25
+			weekly_profit > 0
+			occupancy >= 0.5
+			level >= 5
+		}
 	}
 
 	immediate = {
@@ -148,13 +175,16 @@ war_crimes.2 = {
 		scope:munitions_state = {
 			add_modifier = { # munitions plants throughput
 				name = munitions_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
 
 	option = {
 		name = war_crimes.2.b
+		trigger = {
+			can_research = rifling
+		}
 		add_technology_progress = { progress = 3500 technology = rifling }
 	}
 }

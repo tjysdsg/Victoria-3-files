@@ -29,7 +29,7 @@ types goods_local_prices_panel_types
 			button_icon_goto = {
 				datacontext = "[GoodsLocalPricesPanel.AccessGoods.AccessMarket]"
 				size = { 30 30 }
-				onclick = "[InformationPanelBar.OpenMarketPanel(GoodsLocalPricesPanel.AccessGoods.AccessMarket)]"
+				onclick = "[InformationPanelBar.OpenMarketPanel(GoodsLocalPricesPanel.AccessGoods.AccessMarket.Self)]"
 				tooltip = "GO_TO_BUTTON_MARKET"
 				input_action = "go_to_details"
 			}
@@ -39,59 +39,73 @@ types goods_local_prices_panel_types
 		{
 			tab_buttons = {
 				
-				# OBS! these 4 tabs are copied to goods_panel.gui / goods_usage_panel.gui / goods_state_panel.gui / goods_local_prices_panel.gui
+				# OBS! these 5 tabs are copied to goods_panel.gui / goods_usage_panel.gui / goods_state_panel.gui / goods_local_prices_panel.gui
 				# consider merging these panels into the same panel
 
-				# market
+				# world market
 				blockoverride "first_button" {
-					text = "[GoodsLocalPricesPanel.GetGoods.GetMarket.GetNameNoFormatting]"
+					text = "concept_world_market"
 				}
 				blockoverride "first_button_tooltip" {
-					tooltip = "[GoodsLocalPricesPanel.GetGoods.GetMarket.GetNameNoFormatting]"
-				}
+					tooltip = "[concept_world_market]"
+				} 
 				blockoverride "first_button_click" {
-					onclick = "[InformationPanelBar.OpenGoodsPanel(GoodsLocalPricesPanel.GetGoods.GetMarket, GoodsLocalPricesPanel.GetGoods.Self)]"
+					onclick = "[InformationPanelBar.OpenGoodsWorldMarketPanel( GoodsLocalPricesPanel.GetGoods.Self )]"
 				}
 				blockoverride "first_button_visibility_checked" {
+					visible = "[Not(GoodsLocalPricesPanel.GetGoods.IsLocal)]"
+				}
+
+				# market
+				blockoverride "second_button" {
+					text = "[GoodsLocalPricesPanel.GetGoods.GetMarket.GetNameNoFormatting]"
+				}
+				blockoverride "second_button_tooltip" {
+					tooltip = "[GoodsLocalPricesPanel.GetGoods.GetMarket.GetNameNoFormatting]"
+				}
+				blockoverride "second_button_click" {
+					onclick = "[InformationPanelBar.OpenGoodsPanel(GoodsLocalPricesPanel.GetGoods.GetMarket, GoodsLocalPricesPanel.GetGoods.Self)]"
+				}
+				blockoverride "second_button_visibility_checked" {
 					visible = "[And(GoodsLocalPricesPanel.GetGoods.HasMarketContext,Not(GoodsLocalPricesPanel.GetGoods.IsLocal))]"
 				}			
 				
 				# selected state
-				blockoverride "second_button" {
+				blockoverride "third_button" {
 					text = "[GoodsLocalPricesPanel.GetGoods.GetState.GetNameNoFormatting]"
 				}
-				blockoverride "second_button_tooltip" {
+				blockoverride "third_button_tooltip" {
 					tooltip = "[GoodsLocalPricesPanel.GetGoods.GetState.GetNameNoFormatting]"
 				} 
-				blockoverride "second_button_visibility_checked" {
+				blockoverride "third_button_visibility_checked" {
 					visible = "[GoodsLocalPricesPanel.GetGoods.HasStateContext]"
 				}
-				blockoverride "second_button_click" {
-					onclick = "[InformationPanelBar.OpenGoodsStatePanel( GoodsLocalPricesPanel.GetGoods.GetState, GoodsLocalPricesPanel.GetGoods )]"
+				blockoverride "third_button_click" {
+					onclick = "[InformationPanelBar.OpenGoodsStatePanel(GoodsLocalPricesPanel.GetGoods.GetState, GoodsLocalPricesPanel.GetGoods.Self)]"
 				}				
 				
 				# states in market
-				blockoverride "third_button_selected" {
+				blockoverride "fourth_button_selected" {
 					text = "LOCAL_PRICES"
 				}
-				blockoverride "third_button_selected_tooltip" {}
-				blockoverride "third_button_visibility" {
+				blockoverride "fourth_button_selected_tooltip" {}
+				blockoverride "fourth_button_visibility" {
 					visible = yes
 				}				
-				blockoverride "third_button_click" {
+				blockoverride "fourth_button_click" {
 				}	
 
 				# usage / application
-				blockoverride "fourth_button" {
+				blockoverride "fifth_button" {
 					text = USAGE
 				}
-				blockoverride "fourth_button_tooltip" {
+				blockoverride "fifth_button_tooltip" {
 					tooltip = "USAGE"
 				}
-				blockoverride "fourth_button_click" {
-					onclick = "[InformationPanelBar.OpenGoodsUsagePanel(GoodsLocalPricesPanel.GetGoods)]"
+				blockoverride "fifth_button_click" {
+					onclick = "[InformationPanelBar.OpenGoodsUsagePanel(GoodsLocalPricesPanel.GetGoods.Self)]"
 				}
-				blockoverride "fourth_button_visibility_checked" {
+				blockoverride "fifth_button_visibility_checked" {
 					visible = yes
 				}
 			}
@@ -136,8 +150,14 @@ types goods_local_prices_panel_types
 
 						sort_button = {
 							align = hcenter|nobaseline
-							text = "concept_good_production"
 							tooltip = "[concept_good_production]"
+
+							icon = {
+								size = { 23 23 }
+								parentanchor = center
+								texture = "gfx/interface/buttons/sort_button_icons/sort_production.dds"
+							}
+
 							size = { 50 20 }
 							margin_right = 7
 
@@ -146,8 +166,14 @@ types goods_local_prices_panel_types
 
 						sort_button = {
 							align = hcenter|nobaseline
-							text = "concept_good_consumption"
 							tooltip = "[concept_good_consumption]"
+							
+							icon = {
+								size = { 23 23 }
+								parentanchor = center
+								texture = "gfx/interface/buttons/sort_button_icons/sort_consumption.dds"
+							}
+
 							size = { 50 20 }
 							margin_right = 7
 
@@ -156,8 +182,14 @@ types goods_local_prices_panel_types
 
 						sort_button = {
 							align = hcenter|nobaseline
-							text = "BALANCE"
 							tooltip = "BALANCE"
+
+							icon = {
+								size = { 23 23 }
+								parentanchor = center
+								texture = "gfx/interface/buttons/sort_button_icons/sort_balance.dds"
+							}
+
 							size = { 90 20 }
 							margin_right = 7
 
@@ -195,7 +227,7 @@ types goods_local_prices_panel_types
 								size = { 540 52 }
 								onmousehierarchyenter = "[AccessHighlightManager.HighlightState(Goods.GetState)]"
 								onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-								datacontext = "[Goods.GetState]"
+								datacontext = "[Goods.AccessState]"
 
 								background = {
 									using = entry_bg_simple
@@ -235,26 +267,80 @@ types goods_local_prices_panel_types
 											}						
 										}
 
-										textbox = {
-											align = right|nobaseline
-											text = "[Goods.GetStateProductionWithTooltip|Dv]"
-											size = { 50 40 }
-											margin_right = 5
-											fontsize_min = 12
+										flowcontainer = {
+											direction = vertical
+											spacing =  3
 											parentanchor = vcenter
-											alpha = "[TransparentIfZero(Goods.GetStateProduction)]"
+											
+											textbox = {
+												text = "[Goods.GetStateProductionWithTooltip|Dv]"
+												alpha = "[TransparentIfZero(Goods.GetStateProduction)]"
+												align = hcenter|nobaseline
+												size = { 50 23 }
+												margin_right = 3
+												margin_left = 3
+												fontsize_min = 12
+											}
+
+											widget = {
+												tooltip = "STATE_GOODS_IMPORT_DEPENDENCE"
+												tooltipwidget = {
+													RegularTooltip_StateWorldMarketImportDependence = {}
+												}
+
+												visible = "[NotZero_CFixedPoint(Goods.GetStateImports)]"
+												
+												parentanchor = hcenter
+												size = { 36 6 }
+
+												gold_progressbar_horizontal = {
+													size = { 100% 100% }
+													
+													blockoverride "values" {
+														min = 0
+														max = "[Goods.GetStateProduction]"
+														value = "[Goods.GetStateImports]"
+													}
+												}
+											}
 										}
 
 										vertical_divider = {}
 										
-										textbox = {
-											align = right|nobaseline
-											text = "[Goods.GetStateConsumptionWithTooltip|Dv]"
-											size = { 50 40 }
-											fontsize_min = 12
-											margin_right = 5
+										flowcontainer = {
+											direction = vertical
+											spacing =  3
 											parentanchor = vcenter
-											alpha = "[TransparentIfZero(Goods.GetStateConsumption)]"
+											
+											textbox = {
+												align = hcenter|nobaseline
+												text = "[Goods.GetStateConsumptionWithTooltip|Dv]"
+												size = { 50 23 }
+												fontsize_min = 12
+												margin_right = 3
+												margin_left = 3
+												alpha = "[TransparentIfZero(Goods.GetStateConsumption)]"
+											}
+
+											widget = {
+												tooltip = "STATE_GOODS_EXPORT_DEPENDENCE"
+												tooltipwidget = {
+													RegularTooltip_StateWorldMarketExportDependence = {}
+												}
+												visible = "[NotZero_CFixedPoint(Goods.GetStateExports)]"
+												parentanchor = hcenter
+												size = { 36 6 }
+
+												gold_progressbar_horizontal = {
+													size = { 100% 100% }
+													
+													blockoverride "values" {
+														min = 0
+														max = "[Goods.GetStateConsumption]"
+														value = "[Goods.GetStateExports]"
+													}
+												}
+											}
 										}
 
 										vertical_divider = {}
@@ -267,26 +353,29 @@ types goods_local_prices_panel_types
 											tooltip = "STATE_GOODS_BALANCE_TOOLTIP"
 
 											textbox = {
-												visible = "[GreaterThan_int32(FixedPointToInt(Goods.GetStateProductionConsumptionDiff), '(int32)0')]"
-												align = right|nobaseline
 												text = "GOODS_LOCAL_PRICE_PANEL_BALANCE_GOLD"
+												visible = "[GreaterThan_int32(FixedPointToInt(Goods.GetStateProductionConsumptionDiff), '(int32)0')]"
+												
+												align = right|nobaseline
 												autoresize = yes
 												margin_right = 15
 												parentanchor = right
 											}
 
 											textbox = {
-												visible = "[EqualTo_int32(FixedPointToInt(Goods.GetStateProductionConsumptionDiff), '(int32)0')]"
-												align = hcenter|nobaseline
 												text = "GOODS_LOCAL_PRICE_PANEL_BALANCE"
+												visible = "[EqualTo_int32(FixedPointToInt(Goods.GetStateProductionConsumptionDiff), '(int32)0')]"
+												
+												align = hcenter|nobaseline
 												autoresize = yes
 												parentanchor = hcenter
 											}
 
 											textbox = {
-												visible = "[LessThan_int32(FixedPointToInt(Goods.GetStateProductionConsumptionDiff), '(int32)0')]"
-												align = left|nobaseline
 												text = "GOODS_LOCAL_PRICE_PANEL_BALANCE_BLUE"
+												visible = "[LessThan_int32(FixedPointToInt(Goods.GetStateProductionConsumptionDiff), '(int32)0')]"
+												
+												align = left|nobaseline
 												autoresize = yes
 												margin_left = 15
 												parentanchor = left
@@ -342,26 +431,29 @@ types goods_local_prices_panel_types
 											margin_top = 10
 
 											textbox = {
-												visible = "[GreaterThanOrEqualTo_CFixedPoint(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetStatePrice), '(CFixedPoint)0.01')]"
-												align = right|nobaseline
 												text = "GOODS_LOCAL_PRICE_GOLD"
+												visible = "[GreaterThanOrEqualTo_CFixedPoint(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetStatePrice), '(CFixedPoint)0.01')]"
+												
+												align = right|nobaseline
 												autoresize = yes
 												margin_right = 10
 												parentanchor = right
 											}
 
 											textbox = {
-												visible = "[And( Not(LessThanOrEqualTo_CFixedPoint(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetStatePrice), '(CFixedPoint)-0.01')), Not(GreaterThanOrEqualTo_CFixedPoint(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetStatePrice), '(CFixedPoint)0.01')))]"
-												align = hcenter|nobaseline
 												text = "GOODS_LOCAL_PRICE"
+												visible = "[And( Not(LessThanOrEqualTo_CFixedPoint(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetStatePrice), '(CFixedPoint)-0.01')), Not(GreaterThanOrEqualTo_CFixedPoint(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetStatePrice), '(CFixedPoint)0.01')))]"
+												
+												align = hcenter|nobaseline
 												autoresize = yes
 												parentanchor = hcenter
 											}
 
 											textbox = {
-												visible = "[LessThanOrEqualTo_CFixedPoint(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetStatePrice), '(CFixedPoint)-0.01')]"
-												align = left|nobaseline
 												text = "GOODS_LOCAL_PRICE_BLUE"
+												visible = "[LessThanOrEqualTo_CFixedPoint(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetStatePrice), '(CFixedPoint)-0.01')]"
+												
+												align = left|nobaseline
 												autoresize = yes
 												margin_left = 10
 												parentanchor = left

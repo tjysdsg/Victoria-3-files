@@ -21,7 +21,7 @@ template multiplayer_lobby_selected_country_info {
 			margin_bottom = 2
 		}
 		
-		@lobby_panel_info_width = 390
+		@lobby_panel_info_width = 400
 
 		scrollwidget = {
 			flowcontainer = {
@@ -246,9 +246,82 @@ template multiplayer_lobby_selected_country_info {
 
 					blockoverride "size" {
 						size = { @lobby_panel_info_width 38 }
+						max_width = @lobby_panel_info_width
 					}
 
 					blockoverride "flag_click" {}
+
+					blockoverride "treaties_dropdown_visibility" {
+						visible = no
+					}
+
+					### TREATIES
+					blockoverride "multiplayer_lobby_treaties" {
+						flowcontainer = {
+							visible = "[Not(IsDataModelEmpty(Country.GetInForceTreaties))]"
+							parentanchor = hcenter
+							direction = vertical
+							datamodel = "[Country.GetInForceTreaties]"
+
+							item = {
+								container = {
+									container = {
+										compact_treaty_item = {
+											visible = "[Not(Treaty.IsEnforced)]"
+
+											blockoverride "treaty_item_size" {
+												size = { 390 35 }
+											}
+
+											blockoverride "treaty_item_minimumsize" {
+												minimumsize = { 390 35 }
+											}
+
+											blockoverride "treaty_item_articles_datamodel_wrap" {
+												datamodel_wrap = 2
+											}
+
+											blockoverride "treaty_name_max_width" {
+												max_width = 370
+											}
+
+											blockoverride "treaty_go_to_button" {}
+
+											blockoverride "binding_period" {}
+
+											blockoverride "treaty_pin_button" {}
+										}
+
+										compact_war_reparation_treaty_item = {
+											visible = "[Treaty.IsEnforced]"
+
+											blockoverride "treaty_item_size" {
+												size = { 390 35 }
+											}
+
+											blockoverride "treaty_item_minimumsize" {
+												minimumsize = { 390 35 }
+											}
+
+											blockoverride "treaty_item_articles_datamodel_wrap" {
+												datamodel_wrap = 2
+											}
+
+											blockoverride "treaty_name_max_width" {
+												max_width = 320
+											}
+
+											blockoverride "treaty_go_to_button" {}
+
+											blockoverride "binding_period" {}
+
+											blockoverride "treaty_pin_button" {}
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 
 				flowcontainer = {

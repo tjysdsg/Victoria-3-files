@@ -20,7 +20,7 @@
 			5 = cold.13 #strange rock
 		}
 	}
-	
+
 	immediate = {
 		random_scope_character = {
 			limit = {
@@ -29,36 +29,34 @@
 			save_scope_as = expedition_leader
 		}
 	}
-	
+
 	status_desc = {
 		first_valid = {
 			triggered_desc = {
-				desc = expedition_low_peril_loc
+				desc = expedition_status_loc_blank
 				trigger = {
-					scope:journal_entry = {
-						"scripted_bar_progress(expedition_peril_progress_bar)" <= 3
+					NOT = { exists = var:expedition_leader_storage_var }
+				}
+			}
+			triggered_desc = {
+				desc = expedition_status_loc_antarctica_leader_towards
+				trigger = {
+					exists = var:expedition_leader_storage_var
+					NOT = {
+						has_variable = south_pole_event_var
 					}
 				}
 			}
 			triggered_desc = {
-				desc = expedition_medium_peril_loc
+				desc = expedition_status_loc_antarctica_leader_away
 				trigger = {
-					scope:journal_entry = {
-						"scripted_bar_progress(expedition_peril_progress_bar)" <= 5
-					}
-				}
-			}
-			triggered_desc = {
-				desc = expedition_high_peril_loc
-				trigger = {
-					scope:journal_entry = {
-						"scripted_bar_progress(expedition_peril_progress_bar)" > 5
-					}
+					exists = var:expedition_leader_storage_var
+					has_variable = south_pole_event_var
 				}
 			}
 		}
 	}
-	
+
     fail = {
 		custom_tooltip = {
 			text = je_expedition_fail
@@ -67,7 +65,7 @@
 			}
 		}
     }
-	
+
 	on_fail = {
 		trigger_event = { id = cold.4 }
 		remove_variable = on_expedition
@@ -79,7 +77,15 @@
 			remove_variable = expedition_leader_var
 		}
 	}
-	
+
+	event_outcome_failed_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = event_effects_cold.4_tt
+			}
+		}
+	}
+
 	complete = {
 		custom_tooltip = {
 			text = je_expedition_success
@@ -89,7 +95,7 @@
 			has_variable = south_pole_event_var
 		}
 	}
-	
+
 	on_complete = {
 		trigger_event = { id = cold.7 }
 		remove_variable = on_expedition
@@ -102,7 +108,15 @@
 			remove_variable = expedition_leader_var
 		}
 	}
-	
+
+	event_outcome_completed_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = event_effects_cold.7_tt
+			}
+		}
+	}
+
     weight = 200
     transferable = no
     should_be_pinned_by_default = yes

@@ -245,7 +245,7 @@ types outliner_types {
 					parentanchor = hcenter 
 
 					blockoverride "outliner_datamodel" {
-						datamodel = "[OutlinerEntry.AccessPinnedSubEntries]"
+						datamodel = "[OutlinerEntry.GetPinnedSubEntries]"
 					}
 					
 					outliner_countries = {
@@ -379,6 +379,24 @@ types outliner_types {
 					}
 
 					outliner_political_lobbies = {
+						blockoverride "visibility" {
+							visible = "[OutlinerEntry.IsShownPinned]"
+						}
+
+						blockoverride "title_click" {
+							onclick = "[OutlinerEntry.TogglePinnedExpanded]"
+						}
+
+						blockoverride "list_visibility" {
+							visible = "[OutlinerEntry.IsPinnedExpanded]"
+						}
+
+						blockoverride "pinnable_expand_buttons" {
+							pinned_expand_buttons = {}
+						}
+					}
+
+					outliner_treaties = {
 						blockoverride "visibility" {
 							visible = "[OutlinerEntry.IsShownPinned]"
 						}
@@ -645,6 +663,7 @@ types outliner_types {
 					parentanchor = hcenter
 					visible = "[GetVariableSystem.HasValue('outliner_tab', 'diplomacy')]"
 					
+					outliner_treaties = {}
 					outliner_countries = {}
 					outliner_countries = {
 						datacontext = "[Outliner.AccessCategory('unrecognized_countries')]"

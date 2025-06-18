@@ -1,0 +1,65 @@
+﻿je_the_krakow_uprising = {
+    icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	group = je_group_historical_content
+
+    is_shown_when_inactive = {
+		has_dlc_feature = voice_of_the_people_content
+        c:AUS ?= this
+        country_rank >= rank_value:major_power
+        exists = c:KRA
+        NOT = {
+            has_variable = dismissed_krakow
+        }
+    }
+    scripted_button = je_the_krakow_uprising_annex_button
+    possible = {
+        OR = {
+            custom_tooltip = {
+                text = krakow_uprising_happened_tt
+                has_variable = krakow_uprising_happened
+            }
+        }
+    }
+    immediate = {
+        c:KRA = {
+            save_scope_as = krakow_scope
+        }
+    }
+    complete = {
+        trigger_if = {
+            limit = {
+                exists = c:KRA
+            }
+            NOT = {
+                c:KRA = {
+                    is_country_alive = yes
+                }
+            }
+        }
+        owns_entire_state_region = STATE_WEST_GALICIA
+    }
+    on_complete = {
+        trigger_event = { id = krakow.2 }
+    }
+    fail = {
+        trigger_if = {
+            limit = {
+                exists = c:KRA
+            }
+            NOT = {
+                c:KRA = {
+                    is_country_alive = yes
+                }
+            }
+        }
+        NOT = {
+            owns_entire_state_region = STATE_WEST_GALICIA
+        }
+    }
+
+    timeout = 3650
+
+    weight = 1000
+    should_be_pinned_by_default = yes
+}

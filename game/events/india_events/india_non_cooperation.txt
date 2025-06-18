@@ -25,29 +25,31 @@ india_non_cooperation.1 = { # The Non-Cooperation Movement
 			save_scope_as = india_scope
 		}
 		if = {
-			limit = { has_variable = non_cooperation_trade_route }
-			ordered_trade_route = {
-				limit = {
-					is_trade_route_productive = yes
-					exporter.owner = top_overlord
-				}
-				order_by = level
-				save_scope_as = british_trade_route
-				
-				goods = {
-					save_scope_as = british_trade_route_goods
-				}
+			limit = {
+				root.market = top_overlord.market
 			}
-		}
-		else_if = {
-			limit = { has_variable = non_cooperation_common_market }
 			market = {
 				ordered_market_goods = {
 					limit = {
 						is_tradeable = yes
-						market_goods_sell_orders > 500
+						market_goods_sell_orders > 200
 					}
-					order_by = market_goods_pricier
+					order_by = "market.market_production_share(scope:probably_britain_scope)"
+
+					goods = {
+						save_scope_as = british_trade_route_goods
+					}
+				}
+			}
+		}
+		else = {
+			market = {
+				ordered_market_goods = {
+					limit = {
+						is_tradeable = yes
+						market_goods_sell_orders > 200
+					}
+					order_by = "market.market_imports_reliance(scope:probably_britain_scope.market)"
 
 					goods = {
 						save_scope_as = british_trade_route_goods	# need a good to be called on for loc in the non-trade-route path
@@ -62,7 +64,7 @@ india_non_cooperation.1 = { # The Non-Cooperation Movement
 		random_political_movement = {
 			limit = {
 				is_political_movement_type = movement_india_pan_national
-				political_movement_radicalism >= 0.5
+				political_movement_radicalism >= 0.35
 			}
 			save_scope_as = indian_independence_movement
 
@@ -92,9 +94,9 @@ india_non_cooperation.1 = { # The Non-Cooperation Movement
 			}
 		}
 	}
-	
+
 	option = {
-		name = india_non_cooperation.1.a 
+		name = india_non_cooperation.1.a
 		default_option = yes
 
 		if = {
@@ -107,16 +109,16 @@ india_non_cooperation.1 = { # The Non-Cooperation Movement
 			}
 		}
 		else = {
-			add_small_indian_radicals = yes	
+			add_small_indian_radicals = yes
 		}
 	}
-	
+
 	option = {
 		name = india_non_cooperation.1.b
 		highlighted_option = yes
 
-		trigger = { 
-			NOT = { has_law = law_type:law_guaranteed_liberties } 
+		trigger = {
+			NOT = { has_law = law_type:law_guaranteed_liberties }
 			exists = scope:indian_independence_movement_agitator
 		}
 
@@ -182,18 +184,20 @@ india_non_cooperation.3 = { # Hartal!
 
 	icon = "gfx/interface/icons/event_icons/event_industry.dds"
 
-	cooldown = { months = short_modifier_time } # should lead to Hartal modifier being active in more than one state at a time
+	cooldown = { days = normal_modifier_time }
 
 	trigger = {
 		any_scope_state = {
 			NOT = { has_modifier = hartal_action }
+			state_is_in_india = yes
 		}
 	}
-	
+
 	immediate = {
-		ordered_state = {
+		ordered_scope_state = {
 			limit = {
 				NOT = { has_modifier = hartal_action }
+				state_is_in_india = yes
 			}
 			order_by = gdp
 			save_scope_as = hartal_state
@@ -207,17 +211,17 @@ india_non_cooperation.3 = { # Hartal!
 	}
 
 	option = {
-		name = india_non_cooperation.3.a 
+		name = india_non_cooperation.3.a
 		default_option = yes
 
 		scope:hartal_state = {
 			add_modifier = {
 				name = hartal_action
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 
-		
+
 		custom_tooltip = {	# not using the scripted effect because this is targeting a specific state
 			text = add_small_indian_radicals_tt
 			every_scope_culture = {
@@ -240,7 +244,7 @@ india_non_cooperation.3 = { # Hartal!
 		scope:hartal_state = {
 			add_modifier = {
 				name = hartal_action
-				months = short_modifier_time
+				days = short_modifier_time
 				multiplier = 0.5
 			}
 		}
@@ -248,7 +252,7 @@ india_non_cooperation.3 = { # Hartal!
 		scope:indian_independence_movement = {
 			add_modifier = {
 				name = hartal_negotiating_with_leaders
-				months = short_modifier_time
+				days = short_modifier_time
 			}
 		}
 	}
@@ -274,7 +278,7 @@ india_non_cooperation.4 = { # Swadeshi Production
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
-	cooldown = { months = short_modifier_time } # should lead to Swadeshi modifier potentially being active in more than one state at a time
+	cooldown = { days = normal_modifier_time }
 
 	trigger = {
 		any_scope_state = {
@@ -298,20 +302,20 @@ india_non_cooperation.4 = { # Swadeshi Production
 	}
 
 	option = {
-		name = india_non_cooperation.4.a 
+		name = india_non_cooperation.4.a
 		default_option = yes
 
 		scope:swadeshi_state = {
 			add_modifier = {
 				name = swadeshi_agitation
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 
 		scope:indian_independence_movement = {
 			add_modifier = {
 				name = successful_swadeshi_action
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -320,16 +324,16 @@ india_non_cooperation.4 = { # Swadeshi Production
 	option = {
 		name = india_non_cooperation.4.b
 
-		
+
 		custom_tooltip = {	# not using the scripted effect because this is targeting a specific state
-			text = add_medium_indian_radicals_tt
+			text = add_huge_indian_radicals_tt
 			every_scope_culture = {
 				limit = {
 					has_discrimination_trait = south_asian_heritage
 				}
 				scope:swadeshi_state = {
-					add_radicals = {
-						value = medium_radicals
+					add_radicals_in_state = {
+						value = 0.2
 						culture = prev
 					}
 				}
@@ -339,7 +343,7 @@ india_non_cooperation.4 = { # Swadeshi Production
 		scope:indian_independence_movement = {
 			add_modifier = {
 				name = suppressed_swadeshi_action
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -374,7 +378,7 @@ india_non_cooperation.5 = { # The Chauri Chaura Incident / The Blazing Chowki
 		random_scope_culture = {
 			limit = {
 				has_discrimination_trait = south_asian_heritage
-				has_homeland = ROOT
+				has_homeland = prev
 			}
 			save_scope_as = firebrand_movement_leader
 		}
@@ -415,18 +419,20 @@ india_non_cooperation.5 = { # The Chauri Chaura Incident / The Blazing Chowki
 	}
 
 	option = {
-		name = india_non_cooperation.5.a 
+		name = india_non_cooperation.5.a
 		default_option = yes
 
 		scope:indian_independence_movement = {
 			add_modifier = {
 				name = failure_of_non_cooperation
-				months = long_modifier_time
+				days = long_modifier_time
 			}
 		}
 
 		scope:chauri_chaura_state = {
-			add_devastation = 10
+			state_region = {
+				add_devastation = 10
+			}
 		}
 	}
 
@@ -437,8 +443,8 @@ india_non_cooperation.5 = { # The Chauri Chaura Incident / The Blazing Chowki
 		custom_tooltip = indian_nationalist_leader_retires_tt
 		if = {
 			limit = {
-				scope:nonviolent_movement_leader = { 
-					has_role = agitator 
+				scope:nonviolent_movement_leader = {
+					has_role = agitator
 					NOT = { has_role = politician }
 				}
 			}
@@ -483,8 +489,8 @@ india_non_cooperation.5 = { # The Chauri Chaura Incident / The Blazing Chowki
 
 		if = {
 			limit = {
-				scope:nonviolent_movement_leader = { 
-					has_role = politician 
+				scope:nonviolent_movement_leader = {
+					has_role = politician
 				}
 			}
 			scope:nonviolent_movement_leader = {
@@ -564,13 +570,13 @@ india_non_cooperation.6 = { # Insufficient Self-Sufficiency
 	}
 
 	option = {
-		name = india_non_cooperation.6.a 
+		name = india_non_cooperation.6.a
 		default_option = yes
 
 		scope:indian_independence_movement = {
 			add_modifier = {
 				name = failure_of_non_cooperation
-				months = long_modifier_time
+				days = long_modifier_time
 			}
 		}
 		if = {
@@ -623,13 +629,13 @@ india_non_cooperation.7 = { # The Victory of Satyagraha
 	}
 
 	option = {
-		name = india_non_cooperation.7.a 
+		name = india_non_cooperation.7.a
 		default_option = yes
 
 		scope:indian_independence_movement = {
 			add_modifier = {
 				name = satyagraha_triumphant
-				months = long_modifier_time
+				days = long_modifier_time
 			}
 
 			every_supporting_character = {

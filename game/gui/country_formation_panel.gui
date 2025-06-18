@@ -57,24 +57,46 @@ types country_formation_types
 					}
 					
 					button = {
+						visible = "[CountryFormation.IsMajorFormation]"
 						enabled = "[IsValid(CountryFormation.FormCountry(GetPlayer))]"		
 						onclick = "[Execute(CountryFormation.FormCountry(GetPlayer))]"
 						using = default_button
 						size = { 250 75 }
+						tooltip = "FORM_COUNTRY_TOOLTIP"
 
 						textbox = {
 							max_width = 230
 							autoresize = yes
 							multiline = yes
 							text = "FORM_COUNTRY"
-							tooltip = "FORM_COUNTRY_TOOLTIP"
 							elide = right
 							align = nobaseline|hcenter
 							fontsize_min = 16
 							using = fontsize_large
 							parentanchor = center
 						}	
-					}				
+					}
+
+					button = {
+						visible = "[Not(CountryFormation.IsMajorFormation)]"
+						enabled = "[IsValid(CountryFormation.FormCountry(GetPlayer))]"		
+						onclick = "[Execute(CountryFormation.FormCountry(GetPlayer))]"
+						using = default_button
+						size = { 530 75 }
+						tooltip = "FORM_COUNTRY_TOOLTIP"
+
+						textbox = {
+							max_width = 500
+							autoresize = yes
+							multiline = yes
+							text = "FORM_COUNTRY"
+							elide = right
+							align = nobaseline|hcenter
+							fontsize_min = 16
+							using = fontsize_large
+							parentanchor = center
+						}	
+					}
 				}
 				
 				divider_decorative = {}
@@ -124,20 +146,21 @@ types country_formation_types
 								}
 								
 								flag_icon = {
+									parentanchor = vcenter
 									size = { 48 32 }
+									framesize = "[GetMediumFlagFrameSize]"
 
 									# Using medium size textures in small flag for better downscaling of flag details
 									block "flag_definition" {
 										texture = "[Country.GetFlag.GetMediumFlagTexture]"
 										frame = "[Country.GetFlag.GetMediumFlagFrame]"
 									}
-									framesize = "[GetMediumFlagFrameSize]"
+									
 									block "flag_tooltip" {
 										tooltipwidget = {
 											FancyTooltip_Country = {}
 										}
 									}
-									parentanchor = vcenter
 								}
 
 								flowcontainer = {
@@ -365,6 +388,7 @@ types country_formation_types
 								textbox = {
 									visible = "[StateRegion.IsSplitState]"
 									parentanchor = right|vcenter
+									position = { -10 0 }
 									align = nobaseline
 									using = fontsize_large
 									text = "FORM_COUNTRY_SPLIT_STATE"

@@ -1,9 +1,15 @@
 ﻿je_niger_river_expedition = {
-	
+
 	group = je_group_expeditions
 
 	scripted_progress_bar = expedition_progress_bar
 	scripted_progress_bar = expedition_peril_progress_bar
+
+	on_weekly_pulse = {
+		effect = {
+			niger_river_expedition_location = yes
+		}
+	}
 
 	on_monthly_pulse = {
 		random_events = {
@@ -28,7 +34,7 @@
 			20 = expedition_events.695 #lost foreign expedition
 		}
 	}
-	
+
 	immediate = {
 		random_scope_character = {
 			limit = {
@@ -37,36 +43,40 @@
 			save_scope_as = expedition_leader
 		}
 	}
-	
+
 	status_desc = {
 		first_valid = {
 			triggered_desc = {
-				desc = expedition_low_peril_loc
+				desc = expedition_status_loc_blank
 				trigger = {
-					scope:journal_entry = {
-						"scripted_bar_progress(expedition_peril_progress_bar)" <= 3
-					}
+					NOT = { exists = var:current_expedition_location_var }
+					NOT = { exists = var:expedition_leader_storage_var }
 				}
 			}
 			triggered_desc = {
-				desc = expedition_medium_peril_loc
+				desc = expedition_status_loc_leader
 				trigger = {
-					scope:journal_entry = {
-						"scripted_bar_progress(expedition_peril_progress_bar)" <= 5
-					}
+					NOT = { exists = var:current_expedition_location_var }
+					exists = var:expedition_leader_storage_var
 				}
 			}
 			triggered_desc = {
-				desc = expedition_high_peril_loc
+				desc = expedition_status_loc_leader_and_location
 				trigger = {
-					scope:journal_entry = {
-						"scripted_bar_progress(expedition_peril_progress_bar)" > 5
-					}
+					exists = var:current_expedition_location_var
+					exists = var:expedition_leader_storage_var
+				}
+			}
+			triggered_desc = {
+				desc = expedition_status_loc_location
+				trigger = {
+					exists = var:current_expedition_location_var
+					NOT = { exists = var:expedition_leader_storage_var }
 				}
 			}
 		}
 	}
-	
+
     complete = {
 		custom_tooltip = {
 			text = je_expedition_success
@@ -75,12 +85,12 @@
 			}
 		}
     }
-	
+
 	on_complete = {
 		trigger_event = { id = expedition_events.11 }
 		remove_variable = on_expedition
 		remove_variable = niger_river_expedition_var
-		remove_modifier = modifier_large_expedition_cost 
+		remove_modifier = modifier_large_expedition_cost
 		remove_modifier = expedition_extra_expenses_modifier
 		set_variable = niger_river_expedition_success_var #grand exhibition check
 		random_scope_character = {
@@ -90,7 +100,7 @@
 			remove_variable = expedition_leader_var
 		}
 	}
-    
+
     fail = {
 		OR = {
 			custom_tooltip = {
@@ -110,7 +120,7 @@
 			}
 		}
     }
-	
+
 	on_fail = {
 		trigger_event = { id = expedition_events.12 }
 		remove_variable = on_expedition
@@ -125,7 +135,7 @@
 			remove_variable = expedition_leader_var
 		}
 	}
-	
+
     weight = 200
     transferable = no
     should_be_pinned_by_default = yes

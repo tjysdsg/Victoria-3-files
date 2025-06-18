@@ -1,8 +1,8 @@
 ﻿tibet_expedition = {
-	is_shown = {		
+	is_shown = {
 		NOT = { c:TIB ?= this }
 		exists = c:TIB
-		c:TIB ?= { 
+		c:TIB ?= {
 			is_country_type = unrecognized
 			NOT = { country_rank >= rank_value:great_power }
 		}
@@ -10,18 +10,18 @@
 			is_country_type = recognized
 			is_country_type = colonial
 		}
-		NOT = { has_variable = on_expedition }		
+		NOT = { has_variable = on_expedition }
 		has_technology_researched = colonization
 		NOT = { has_global_variable = tibet_expedition_completed }
 		NOT = { has_variable = tibet_expedition_var }
 		OR = {
 			is_ai = no
 			NOT = { has_variable = ai_expedition_cooldown }
-		}		
+		}
 	}
-	
+
 	possible = {
-		is_at_war = no	
+		is_at_war = no
 		NOT = {
 			c:TIB ?= {
 				OR = {
@@ -42,12 +42,12 @@
 			OR = {
 				has_role = general
 				has_role = admiral
-			}	
+			}
 			count >= 3
 		}
 		has_technology_researched = civilizing_mission
 	}
-	
+
 	when_taken = {
 		trigger_event = { id = tibet_expedition_events.1 popup = yes }
 		set_variable = on_expedition
@@ -56,32 +56,34 @@
 				name = ai_expedition_cooldown
 				value = yes
 				days = 1825
-			}	
-			set_variable = tibet_expedition_var	
-		}		
+			}
+			set_variable = tibet_expedition_var
+		}
 	}
 
 	ai_chance = {
-		base = 0
-		modifier = {
-			trigger = { 
+		value = 0
+		if = {
+			limit = {
 				weekly_net_fixed_income > money_amount_multiplier_medium
-				gold_reserves > 0		
+				gold_reserves > 0
 			}
 			add = 1
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				has_strategy = ai_strategy_armed_isolationism
 			}
-			add = -1000
-		}		
-		modifier = {
-			OR = {
-				is_diplomatic_play_committed_participant = yes
-				is_at_war = yes
+			multiply = 0
+		}
+		if = {
+			limit = {
+				OR = {
+					is_diplomatic_play_committed_participant = yes
+					is_at_war = yes
+				}
 			}
-			add = -1000
+			multiply = 0
 		}
 	}
 }

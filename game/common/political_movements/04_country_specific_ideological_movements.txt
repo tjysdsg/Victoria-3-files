@@ -1,11 +1,11 @@
 ﻿movement_utilitarian = {
 	category = movement_category_ideological
-	
-	ideology = ideology_utilitarian_millian
+
+	ideology = ideology_utilitarian_movement
 	character_ideologies = {
 		ideology_utilitarian_leader
 	}
-	
+
 	creation_trigger = {
 		OR = {
 			country_has_primary_culture = cu:british
@@ -15,11 +15,11 @@
 	}
 	creation_weight = {
 		value = 100
-	}	
+	}
 	on_created = {
 		add_movement_enthusiasm_modifier = yes
 	}
-	
+
 	character_support_trigger = {
 		OR = {
 			AND = {
@@ -77,10 +77,49 @@
 		movement_support_officers
 		movement_support_clerks
 	}
-	
+
 	pop_support_weight = {
+		if = {
+			limit = {
+				owner ?= {
+					any_political_movement = {
+						is_political_movement_type = movement_utilitarian
+						OR = {
+							is_being_suppressed = yes
+							is_being_bolstered = yes
+						}
+						save_temporary_scope_as = affected_movement
+					}
+				}
+			}
+			if = {
+				limit = {
+					scope:affected_movement = {
+						is_being_suppressed = yes
+					}
+				}
+				add = {
+					value = 10
+					multiply = {
+						value = -0.5
+						add = owner.modifier:country_suppression_attraction_factor
+					}
+					desc = "concept_suppressed"
+				}
+			}
+			else = {
+				add = {
+					value = 10
+					multiply = {
+						value = 0.5
+						add = owner.modifier:country_bolster_attraction_factor
+					}
+					desc = "concept_bolstered"
+				}
+			}
+		}
 		value = 1
-		
+
 		if = {
 			limit = {
 				owner = {
@@ -164,32 +203,32 @@
 	revolution = {
 		possible = {
 			political_movement_support >= 0.05
-		}	
-	
+		}
+
 		weight = {
 			value = 100
 		}
-	
+
 		state_weight = {
 			value = 1
 			if = {
-				limit = { 
+				limit = {
 					OR = {
 					    any_scope_building = {
 							is_building_group = bg_bureaucracy
 							level >= 10
-					    }		
+					    }
 					}
 				}
 				multiply = 10
 			}
 			else_if = {
-				limit = { 
+				limit = {
 					OR = {
 					    any_scope_building = {
 							is_building_group = bg_bureaucracy
 							level >= 5
-					    }		
+					    }
 					}
 				}
 				multiply = 5
@@ -199,37 +238,37 @@
 			}
 		}
 	}
-	
+
 	secession = {
 		possible = {
 			political_movement_support >= 0.05
 			scope:clout <= 0
 		}
-		
+
 		weight = {
 			value = 1000
-		}		
-		
+		}
+
 		state_weight = {
 			value = 1
 			if = {
-				limit = { 
+				limit = {
 					OR = {
 					    any_scope_building = {
 							is_building_group = bg_bureaucracy
 							level >= 10
-					    }		
+					    }
 					}
 				}
 				multiply = 10
 			}
 			else_if = {
-				limit = { 
+				limit = {
 					OR = {
 					    any_scope_building = {
 							is_building_group = bg_bureaucracy
 							level >= 5
-					    }		
+					    }
 					}
 				}
 				multiply = 5
@@ -237,14 +276,14 @@
 			else = {
 				multiply = 0
 			}
-		}		
-	}	
-	
+		}
+	}
+
 	additional_radicalism_factors = {
 		owner = {
 			if = {
 				limit = { has_institution = institution_schools }
-				
+
 				add = {
 					value = 3
 					subtract = "institution_investment_level(institution_schools)"
@@ -256,20 +295,20 @@
 				add = {
 					value = 0.1
 					desc = "NO_INSTITUTION_schools"
-				}		
-			}				
+				}
+			}
 		}
 	}
 }
 
 movement_orleanist = {
 	category = movement_category_ideological
-	
-	ideology = ideology_orleanist
+
+	ideology = ideology_orleanist_movement
 	character_ideologies = {
 		ideology_orleanist
 	}
-	
+
 	creation_trigger = {
 		exists = c:FRA
 		OR = {
@@ -289,7 +328,7 @@ movement_orleanist = {
 	}
 	creation_weight = {
 		value = 100
-	}	
+	}
 	on_created = {
 		add_movement_enthusiasm_modifier = yes
 	}
@@ -306,7 +345,7 @@ movement_orleanist = {
 			}
 		}
 	}
-	
+
 	character_support_trigger = {
 		OR = {
 			has_ideology = ideology:ideology_orleanist
@@ -335,7 +374,7 @@ movement_orleanist = {
 			}
 		}
 	}
-	
+
 	pop_support_trigger = {
 		NOT = {
 			is_pop_type = slaves
@@ -352,8 +391,47 @@ movement_orleanist = {
 		movement_support_clerks
 		movement_support_peasants
 	}
-	
+
 	pop_support_weight = {
+		if = {
+			limit = {
+				owner ?= {
+					any_political_movement = {
+						is_political_movement_type = movement_orleanist
+						OR = {
+							is_being_suppressed = yes
+							is_being_bolstered = yes
+						}
+						save_temporary_scope_as = affected_movement
+					}
+				}
+			}
+			if = {
+				limit = {
+					scope:affected_movement = {
+						is_being_suppressed = yes
+					}
+				}
+				add = {
+					value = 10
+					multiply = {
+						value = -0.5
+						add = owner.modifier:country_suppression_attraction_factor
+					}
+					desc = "concept_suppressed"
+				}
+			}
+			else = {
+				add = {
+					value = 10
+					multiply = {
+						value = 0.5
+						add = owner.modifier:country_bolster_attraction_factor
+					}
+					desc = "concept_bolstered"
+				}
+			}
+		}
 		add = {
 			value = 3
 			desc = "POP_BASE_SUPPORT"
@@ -372,7 +450,7 @@ movement_orleanist = {
 			if = {
 				limit = {
 					is_pop_type = capitalists
-				} 
+				}
 				add = {
 					value = 12
 					desc = "POP_CAPITALISTS"
@@ -457,23 +535,23 @@ movement_orleanist = {
 	revolution = {
 		possible = {
 			political_movement_support >= 0.05
-		}	
-	
+		}
+
 		weight = {
 			value = 100
 		}
 	}
-	
+
 	secession = {
 		possible = {
 			political_movement_support >= 0.05
 			scope:clout <= 0
 		}
-		
+
 		weight = {
 			value = 1000
-		}		
-	}	
+		}
+	}
 
 	additional_radicalism_factors = {
 		if = {
@@ -491,18 +569,18 @@ movement_orleanist = {
 				value = 0.25
 				desc = "NON_ORLEANIST_MONARCH"
 			}
-		}		
+		}
 	}
 }
 
 movement_bonapartist = {
 	category = movement_category_ideological
-	
-	ideology = ideology_bonapartist
+
+	ideology = ideology_bonapartist_movement
 	character_ideologies = {
 		ideology_bonapartist
 	}
-	
+
 	creation_trigger = {
 		exists = c:FRA
 		OR = {
@@ -522,7 +600,7 @@ movement_bonapartist = {
 	}
 	creation_weight = {
 		value = 100
-	}	
+	}
 	on_created = {
 		add_movement_enthusiasm_modifier = yes
 	}
@@ -539,7 +617,7 @@ movement_bonapartist = {
 			}
 		}
 	}
-	
+
 	character_support_trigger = {
 		OR = {
 			has_ideology = ideology:ideology_bonapartist
@@ -587,8 +665,47 @@ movement_bonapartist = {
 		movement_support_soldiers
 		movement_support_peasants
 	}
-	
+
 	pop_support_weight = {
+		if = {
+			limit = {
+				owner ?= {
+					any_political_movement = {
+						is_political_movement_type = movement_bonapartist
+						OR = {
+							is_being_suppressed = yes
+							is_being_bolstered = yes
+						}
+						save_temporary_scope_as = affected_movement
+					}
+				}
+			}
+			if = {
+				limit = {
+					scope:affected_movement = {
+						is_being_suppressed = yes
+					}
+				}
+				add = {
+					value = 10
+					multiply = {
+						value = -0.5
+						add = owner.modifier:country_suppression_attraction_factor
+					}
+					desc = "concept_suppressed"
+				}
+			}
+			else = {
+				add = {
+					value = 10
+					multiply = {
+						value = 0.5
+						add = owner.modifier:country_bolster_attraction_factor
+					}
+					desc = "concept_bolstered"
+				}
+			}
+		}
 		add = {
 			value = 5
 			desc = "POP_BASE_SUPPORT"
@@ -704,8 +821,8 @@ movement_bonapartist = {
 	revolution = {
 		possible = {
 			political_movement_support >= 0.05
-		}	
-	
+		}
+
 		weight = {
 			value = 100
 		}
@@ -716,11 +833,11 @@ movement_bonapartist = {
 			political_movement_support >= 0.05
 			scope:clout <= 0
 		}
-		
+
 		weight = {
 			value = 1000
-		}		
-	}	
+		}
+	}
 
 	additional_radicalism_factors = {
 		if = {
@@ -738,18 +855,18 @@ movement_bonapartist = {
 				value = 0.25
 				desc = "NON_BONAPARTIST_MONARCH"
 			}
-		}		
-	}	
+		}
+	}
 }
 
 movement_legitimist = {
 	category = movement_category_ideological
-	
-	ideology = ideology_legitimist
+
+	ideology = ideology_legitimist_movement
 	character_ideologies = {
 		ideology_legitimist
 	}
-	
+
 	creation_trigger = {
 		exists = c:FRA
 		OR = {
@@ -769,7 +886,7 @@ movement_legitimist = {
 	}
 	creation_weight = {
 		value = 100
-	}	
+	}
 	on_created = {
 		add_movement_enthusiasm_modifier = yes
 	}
@@ -786,7 +903,7 @@ movement_legitimist = {
 			}
 		}
 	}
-	
+
 	character_support_trigger = {
 		OR = {
 			has_ideology = ideology:ideology_legitimist
@@ -836,6 +953,45 @@ movement_legitimist = {
 	}
 
 	pop_support_weight = {
+		if = {
+			limit = {
+				owner ?= {
+					any_political_movement = {
+						is_political_movement_type = movement_legitimist
+						OR = {
+							is_being_suppressed = yes
+							is_being_bolstered = yes
+						}
+						save_temporary_scope_as = affected_movement
+					}
+				}
+			}
+			if = {
+				limit = {
+					scope:affected_movement = {
+						is_being_suppressed = yes
+					}
+				}
+				add = {
+					value = 10
+					multiply = {
+						value = -0.5
+						add = owner.modifier:country_suppression_attraction_factor
+					}
+					desc = "concept_suppressed"
+				}
+			}
+			else = {
+				add = {
+					value = 10
+					multiply = {
+						value = 0.5
+						add = owner.modifier:country_bolster_attraction_factor
+					}
+					desc = "concept_bolstered"
+				}
+			}
+		}
 		add = {
 			desc = "URBAN_STATE" # Increases support in rural states, decreases in urban
 			value = 0.5
@@ -856,7 +1012,7 @@ movement_legitimist = {
 				value = 25
 				desc = "POP_ARISTOCRATS"
 			}
-		}	
+		}
 		else_if = {
 			limit = {
 				is_pop_type = farmers
@@ -874,7 +1030,7 @@ movement_legitimist = {
 				value = 15
 				desc = "POP_PEASANTS"
 			}
-		}			
+		}
 		else_if = {
 			limit = {
 				is_pop_type = clergymen
@@ -893,7 +1049,7 @@ movement_legitimist = {
 				desc = "POP_OFFICERS"
 			}
 		}
-		
+
 		multiply = { # Illiterate pops participate at 1/10 the rate of fully literate pops
 			desc = "POP_LITERACY"
 			value = literacy_rate
@@ -905,23 +1061,23 @@ movement_legitimist = {
 	revolution = {
 		possible = {
 			political_movement_support >= 0.05
-		}	
-	
+		}
+
 		weight = {
 			value = 100
 		}
 	}
-	
+
 	secession = {
 		possible = {
 			political_movement_support >= 0.05
 			scope:clout <= 0
 		}
-		
+
 		weight = {
 			value = 1000
-		}		
-	}	
+		}
+	}
 
 	additional_radicalism_factors = {
 		if = {
@@ -939,6 +1095,6 @@ movement_legitimist = {
 				value = 0.25
 				desc = "NON_LEGITIMIST_MONARCH"
 			}
-		}		
+		}
 	}
 }

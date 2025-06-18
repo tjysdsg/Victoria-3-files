@@ -1,0 +1,1289 @@
+﻿je_prestige_goods_clothes = {
+    icon = "gfx/interface/icons/goods_icons/prestige_goods/generic_clothes_prestige.dds"
+
+	group = je_group_technology
+
+    is_shown_when_inactive = {
+        has_dlc_feature = mp1_content
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_clothes
+            is_producing_prestige_goods = no
+            NOT = {
+                has_variable = prestige_good_generic_clothes_var
+            }
+        }
+    }
+
+    possible = {
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_clothes
+            is_producing_prestige_goods = no
+            company_is_prosperous = yes
+            NOT = {
+                custom_tooltip = {
+                    text = not_prestige_good_generic_clothes_var_tt
+                    has_variable = prestige_good_generic_clothes_var
+                }
+            }
+        }
+    }
+
+    immediate = {
+        random_company = {
+            limit = {
+                can_potentially_produce_prestige_goods = prestige_good_generic_clothes
+                is_producing_prestige_goods = no
+                company_is_prosperous = yes
+                NOT = {
+                    has_variable = prestige_good_generic_clothes_var
+                }
+            }
+            save_scope_as = relevant_company
+        }
+		set_variable = {
+			name = prestige_clothes_timer_var
+			value = 0
+		}
+        g:clothes = {
+            save_scope_as = relevant_goods
+        }
+    }
+
+    complete = {
+        trigger_if = {
+            limit = {
+                has_variable = prestige_clothes_timer_var
+            }
+            scope:journal_entry = {
+                is_goal_complete = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            scope:relevant_company ?= {
+                company_is_prosperous = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_goods
+            }
+            custom_tooltip = {
+                text = relevant_goods_production_rank_tt
+                "goods_production_rank(scope:relevant_goods)" <= 3
+            }
+        }
+    }
+
+    on_monthly_pulse = {
+        effect = {
+            if = {
+                limit = {
+                    scope:relevant_company ?= {
+                        company_is_prosperous = yes
+                    }
+                    "goods_production_rank(scope:relevant_goods)" <= 3
+                }
+                change_variable = { name = prestige_clothes_timer_var add = 1 }
+            }
+        }
+    }
+
+    on_complete = {
+        if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            custom_tooltip = {
+                text = je_prestige_goods_clothes_reward_tt
+                scope:relevant_company ?= {
+                    set_variable = prestige_good_generic_clothes_var
+                }
+            }
+        }
+        post_notification = prestige_goods_clothes_unlocked
+    }
+
+    invalid = {
+        NOT = {
+            exists = scope:relevant_company
+        }
+    }
+
+	current_value = {
+		value = root.var:prestige_clothes_timer_var
+	}
+
+	goal_add_value = {
+		add = prestige_good_journal_entry_months
+	}
+
+	progressbar = yes
+
+    weight = 1000
+
+    should_be_pinned_by_default = yes
+}
+
+je_prestige_goods_groceries = {
+    icon = "gfx/interface/icons/goods_icons/prestige_goods/generic_groceries_prestige.dds"
+
+	group = je_group_technology
+
+    is_shown_when_inactive = {
+        has_dlc_feature = mp1_content
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_groceries
+            is_producing_prestige_goods = no
+            NOT = {
+                has_variable = prestige_good_generic_groceries_var
+            }
+        }
+    }
+
+    possible = {
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_groceries
+            is_producing_prestige_goods = no
+            company_is_prosperous = yes
+            NOT = {
+                custom_tooltip = {
+                    text = not_prestige_good_generic_groceries_var_tt
+                    has_variable = prestige_good_generic_groceries_var
+                }
+            }
+        }
+    }
+
+    immediate = {
+        random_company = {
+            limit = {
+                can_potentially_produce_prestige_goods = prestige_good_generic_groceries
+                is_producing_prestige_goods = no
+                company_is_prosperous = yes
+                NOT = {
+                    has_variable = prestige_good_generic_groceries_var
+                }
+            }
+            save_scope_as = relevant_company
+        }
+		set_variable = {
+			name = prestige_groceries_timer_var
+			value = 0
+		}
+        g:groceries = {
+            save_scope_as = relevant_goods
+        }
+    }
+
+    complete = {
+        trigger_if = {
+            limit = {
+                has_variable = prestige_groceries_timer_var
+            }
+            scope:journal_entry = {
+                is_goal_complete = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            scope:relevant_company ?= {
+                company_is_prosperous = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_goods
+            }
+            custom_tooltip = {
+                text = relevant_goods_production_rank_tt
+                "goods_production_rank(scope:relevant_goods)" <= 3
+            }
+        }
+    }
+
+    on_monthly_pulse = {
+        effect = {
+            if = {
+                limit = {
+                    scope:relevant_company ?= {
+                        company_is_prosperous = yes
+                    }
+                    "goods_production_rank(scope:relevant_goods)" <= 3
+                }
+                change_variable = { name = prestige_groceries_timer_var add = 1 }
+            }
+        }
+    }
+
+    on_complete = {
+        if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            custom_tooltip = {
+                text = je_prestige_goods_groceries_reward_tt
+                scope:relevant_company ?= {
+                    set_variable = prestige_good_generic_groceries_var
+                }
+            }
+        }
+        post_notification = prestige_goods_groceries_unlocked
+    }
+
+    invalid = {
+        NOT = {
+            exists = scope:relevant_company
+        }
+    }
+
+	current_value = {
+		value = root.var:prestige_groceries_timer_var
+	}
+
+	goal_add_value = {
+		add = prestige_good_journal_entry_months
+	}
+
+	progressbar = yes
+
+    weight = 1000
+
+    should_be_pinned_by_default = yes
+}
+
+je_prestige_goods_furniture = {
+    icon = "gfx/interface/icons/goods_icons/prestige_goods/generic_furniture_prestige.dds"
+
+	group = je_group_technology
+
+    is_shown_when_inactive = {
+        has_dlc_feature = mp1_content
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_furniture
+            is_producing_prestige_goods = no
+            NOT = {
+                has_variable = prestige_good_generic_furniture_var
+            }
+        }
+    }
+
+    possible = {
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_furniture
+            is_producing_prestige_goods = no
+            company_is_prosperous = yes
+            NOT = {
+                custom_tooltip = {
+                    text = not_prestige_good_generic_furniture_var_tt
+                    has_variable = prestige_good_generic_furniture_var
+                }
+            }
+        }
+    }
+
+    immediate = {
+        random_company = {
+            limit = {
+                can_potentially_produce_prestige_goods = prestige_good_generic_furniture
+                is_producing_prestige_goods = no
+                company_is_prosperous = yes
+                NOT = {
+                    has_variable = prestige_good_generic_furniture_var
+                }
+            }
+            save_scope_as = relevant_company
+        }
+		set_variable = {
+			name = prestige_furniture_timer_var
+			value = 0
+		}
+        g:furniture = {
+            save_scope_as = relevant_goods
+        }
+    }
+
+    complete = {
+        trigger_if = {
+            limit = {
+                has_variable = prestige_furniture_timer_var
+            }
+            scope:journal_entry = {
+                is_goal_complete = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            scope:relevant_company ?= {
+                company_is_prosperous = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_goods
+            }
+            custom_tooltip = {
+                text = relevant_goods_production_rank_tt
+                "goods_production_rank(scope:relevant_goods)" <= 3
+            }
+        }
+    }
+
+    on_monthly_pulse = {
+        effect = {
+            if = {
+                limit = {
+                    scope:relevant_company ?= {
+                        company_is_prosperous = yes
+                    }
+                    "goods_production_rank(scope:relevant_goods)" <= 3
+                }
+                change_variable = { name = prestige_furniture_timer_var add = 1 }
+            }
+        }
+    }
+
+    on_complete = {
+        if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            custom_tooltip = {
+                text = je_prestige_goods_furniture_reward_tt
+                scope:relevant_company ?= {
+                    set_variable = prestige_good_generic_furniture_var
+                }
+            }
+        }
+        post_notification = prestige_goods_furniture_unlocked
+    }
+
+    invalid = {
+        NOT = {
+            exists = scope:relevant_company
+        }
+    }
+
+	current_value = {
+		value = root.var:prestige_furniture_timer_var
+	}
+
+	goal_add_value = {
+		add = prestige_good_journal_entry_months
+	}
+
+	progressbar = yes
+
+    weight = 1000
+
+    should_be_pinned_by_default = yes
+}
+
+je_prestige_goods_fertilizer = {
+    icon = "gfx/interface/icons/goods_icons/prestige_goods/generic_fertilizer_prestige.dds"
+
+	group = je_group_technology
+
+    is_shown_when_inactive = {
+        has_dlc_feature = mp1_content
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_fertilizer
+            is_producing_prestige_goods = no
+            NOT = {
+                has_variable = prestige_good_generic_fertilizer_var
+            }
+        }
+    }
+
+    possible = {
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_fertilizer
+            is_producing_prestige_goods = no
+            company_is_prosperous = yes
+            NOT = {
+                custom_tooltip = {
+                    text = not_prestige_good_generic_fertilizer_var_tt
+                    has_variable = prestige_good_generic_fertilizer_var
+                }
+            }
+        }
+    }
+
+    immediate = {
+        random_company = {
+            limit = {
+                can_potentially_produce_prestige_goods = prestige_good_generic_fertilizer
+                is_producing_prestige_goods = no
+                company_is_prosperous = yes
+                NOT = {
+                    has_variable = prestige_good_generic_fertilizer_var
+                }
+            }
+            save_scope_as = relevant_company
+        }
+		set_variable = {
+			name = prestige_fertilizer_timer_var
+			value = 0
+		}
+        g:fertilizer = {
+            save_scope_as = relevant_goods
+        }
+    }
+
+    complete = {
+        trigger_if = {
+            limit = {
+                has_variable = prestige_fertilizer_timer_var
+            }
+            scope:journal_entry = {
+                is_goal_complete = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            scope:relevant_company ?= {
+                company_is_prosperous = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_goods
+            }
+            custom_tooltip = {
+                text = relevant_goods_production_rank_tt
+                "goods_production_rank(scope:relevant_goods)" <= 3
+            }
+        }
+    }
+
+    on_monthly_pulse = {
+        effect = {
+            if = {
+                limit = {
+                    scope:relevant_company ?= {
+                        company_is_prosperous = yes
+                    }
+                    "goods_production_rank(scope:relevant_goods)" <= 3
+                }
+                change_variable = { name = prestige_fertilizer_timer_var add = 1 }
+            }
+        }
+    }
+
+    on_complete = {
+        if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            custom_tooltip = {
+                text = je_prestige_goods_fertilizer_reward_tt
+                scope:relevant_company ?= {
+                    set_variable = prestige_good_generic_fertilizer_var
+                }
+            }
+        }
+        post_notification = prestige_goods_fertilizer_unlocked
+    }
+
+    invalid = {
+        NOT = {
+            exists = scope:relevant_company
+        }
+    }
+
+	current_value = {
+		value = root.var:prestige_fertilizer_timer_var
+	}
+
+	goal_add_value = {
+		add = prestige_good_journal_entry_months
+	}
+
+	progressbar = yes
+
+    weight = 1000
+
+    should_be_pinned_by_default = yes
+}
+
+je_prestige_goods_tools = {
+    icon = "gfx/interface/icons/goods_icons/prestige_goods/generic_tools_prestige.dds"
+
+	group = je_group_technology
+
+    is_shown_when_inactive = {
+        has_dlc_feature = mp1_content
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_tools
+            is_producing_prestige_goods = no
+            NOT = {
+                has_variable = prestige_good_generic_tools_var
+            }
+        }
+    }
+
+    possible = {
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_tools
+            is_producing_prestige_goods = no
+            company_is_prosperous = yes
+            NOT = {
+                custom_tooltip = {
+                    text = not_prestige_good_generic_tools_var_tt
+                    has_variable = prestige_good_generic_tools_var
+                }
+            }
+        }
+    }
+
+    immediate = {
+        random_company = {
+            limit = {
+                can_potentially_produce_prestige_goods = prestige_good_generic_tools
+                is_producing_prestige_goods = no
+                company_is_prosperous = yes
+                NOT = {
+                    has_variable = prestige_good_generic_tools_var
+                }
+            }
+            save_scope_as = relevant_company
+        }
+		set_variable = {
+			name = prestige_tools_timer_var
+			value = 0
+		}
+        g:tools = {
+            save_scope_as = relevant_goods
+        }
+    }
+
+    complete = {
+        trigger_if = {
+            limit = {
+                has_variable = prestige_tools_timer_var
+            }
+            scope:journal_entry = {
+                is_goal_complete = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            scope:relevant_company ?= {
+                company_is_prosperous = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_goods
+            }
+            custom_tooltip = {
+                text = relevant_goods_production_rank_tt
+                "goods_production_rank(scope:relevant_goods)" <= 3
+            }
+        }
+    }
+
+    on_monthly_pulse = {
+        effect = {
+            if = {
+                limit = {
+                    scope:relevant_company ?= {
+                        company_is_prosperous = yes
+                    }
+                    "goods_production_rank(scope:relevant_goods)" <= 3
+                }
+                change_variable = { name = prestige_tools_timer_var add = 1 }
+            }
+        }
+    }
+
+    on_complete = {
+        if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            custom_tooltip = {
+                text = je_prestige_goods_tools_reward_tt
+                scope:relevant_company ?= {
+                    set_variable = prestige_good_generic_tools_var
+                }
+            }
+        }
+        post_notification = prestige_goods_tools_unlocked
+    }
+
+    invalid = {
+        NOT = {
+            exists = scope:relevant_company
+        }
+    }
+
+	current_value = {
+		value = root.var:prestige_tools_timer_var
+	}
+
+	goal_add_value = {
+		add = prestige_good_journal_entry_months
+	}
+
+	progressbar = yes
+
+    weight = 1000
+
+    should_be_pinned_by_default = yes
+}
+
+je_prestige_goods_fish = {
+    icon = "gfx/interface/icons/goods_icons/prestige_goods/generic_fish_prestige.dds"
+
+	group = je_group_technology
+
+    is_shown_when_inactive = {
+        has_dlc_feature = mp1_content
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_fish
+            is_producing_prestige_goods = no
+            NOT = {
+                has_variable = prestige_good_generic_fish_var
+            }
+        }
+    }
+
+    possible = {
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_fish
+            is_producing_prestige_goods = no
+            company_is_prosperous = yes
+            NOT = {
+                custom_tooltip = {
+                    text = not_prestige_good_generic_fish_var_tt
+                    has_variable = prestige_good_generic_fish_var
+                }
+            }
+        }
+    }
+
+    immediate = {
+        random_company = {
+            limit = {
+                can_potentially_produce_prestige_goods = prestige_good_generic_fish
+                is_producing_prestige_goods = no
+                company_is_prosperous = yes
+                NOT = {
+                    has_variable = prestige_good_generic_fish_var
+                }
+            }
+            save_scope_as = relevant_company
+        }
+		set_variable = {
+			name = prestige_fish_timer_var
+			value = 0
+		}
+        g:fish = {
+            save_scope_as = relevant_goods
+        }
+    }
+
+    complete = {
+        trigger_if = {
+            limit = {
+                has_variable = prestige_fish_timer_var
+            }
+            scope:journal_entry = {
+                is_goal_complete = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            scope:relevant_company ?= {
+                company_is_prosperous = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_goods
+            }
+            custom_tooltip = {
+                text = relevant_goods_production_rank_tt
+                "goods_production_rank(scope:relevant_goods)" <= 3
+            }
+        }
+    }
+
+    on_monthly_pulse = {
+        effect = {
+            if = {
+                limit = {
+                    scope:relevant_company ?= {
+                        company_is_prosperous = yes
+                    }
+                    "goods_production_rank(scope:relevant_goods)" <= 3
+                }
+                change_variable = { name = prestige_fish_timer_var add = 1 }
+            }
+        }
+    }
+
+    on_complete = {
+        if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            custom_tooltip = {
+                text = je_prestige_goods_fish_reward_tt
+                scope:relevant_company ?= {
+                    set_variable = prestige_good_generic_fish_var
+                }
+            }
+        }
+        post_notification = prestige_goods_fish_unlocked
+    }
+
+    invalid = {
+        NOT = {
+            exists = scope:relevant_company
+        }
+    }
+
+	current_value = {
+		value = root.var:prestige_fish_timer_var
+	}
+
+	goal_add_value = {
+		add = prestige_good_journal_entry_months
+	}
+
+	progressbar = yes
+
+    weight = 1000
+
+    should_be_pinned_by_default = yes
+}
+
+je_prestige_goods_meat = {
+    icon = "gfx/interface/icons/goods_icons/prestige_goods/generic_meat_prestige.dds"
+
+	group = je_group_technology
+
+    is_shown_when_inactive = {
+        has_dlc_feature = mp1_content
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_meat
+            is_producing_prestige_goods = no
+            NOT = {
+                has_variable = prestige_good_generic_meat_var
+            }
+        }
+    }
+
+    possible = {
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_meat
+            is_producing_prestige_goods = no
+            company_is_prosperous = yes
+            NOT = {
+                custom_tooltip = {
+                    text = not_prestige_good_generic_meat_var_tt
+                    has_variable = prestige_good_generic_meat_var
+                }
+            }
+        }
+    }
+
+    immediate = {
+        random_company = {
+            limit = {
+                can_potentially_produce_prestige_goods = prestige_good_generic_meat
+                is_producing_prestige_goods = no
+                company_is_prosperous = yes
+                NOT = {
+                    has_variable = prestige_good_generic_meat_var
+                }
+            }
+            save_scope_as = relevant_company
+        }
+		set_variable = {
+			name = prestige_meat_timer_var
+			value = 0
+		}
+        g:meat = {
+            save_scope_as = relevant_goods
+        }
+    }
+
+    complete = {
+        trigger_if = {
+            limit = {
+                has_variable = prestige_meat_timer_var
+            }
+            scope:journal_entry = {
+                is_goal_complete = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            scope:relevant_company ?= {
+                company_is_prosperous = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_goods
+            }
+            custom_tooltip = {
+                text = relevant_goods_production_rank_tt
+                "goods_production_rank(scope:relevant_goods)" <= 3
+            }
+        }
+    }
+
+    on_monthly_pulse = {
+        effect = {
+            if = {
+                limit = {
+                    scope:relevant_company ?= {
+                        company_is_prosperous = yes
+                    }
+                    "goods_production_rank(scope:relevant_goods)" <= 3
+                }
+                change_variable = { name = prestige_meat_timer_var add = 1 }
+            }
+        }
+    }
+
+    on_complete = {
+        if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            custom_tooltip = {
+                text = je_prestige_goods_meat_reward_tt
+                scope:relevant_company ?= {
+                    set_variable = prestige_good_generic_meat_var
+                }
+            }
+        }
+        post_notification = prestige_goods_meat_unlocked
+    }
+
+    invalid = {
+        NOT = {
+            exists = scope:relevant_company
+        }
+    }
+
+	current_value = {
+		value = root.var:prestige_meat_timer_var
+	}
+
+	goal_add_value = {
+		add = prestige_good_journal_entry_months
+	}
+
+	progressbar = yes
+
+    weight = 1000
+
+    should_be_pinned_by_default = yes
+}
+
+je_prestige_goods_coffee = {
+    icon = "gfx/interface/icons/goods_icons/prestige_goods/generic_coffee_prestige.dds"
+
+	group = je_group_technology
+
+    is_shown_when_inactive = {
+        has_dlc_feature = mp1_content
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_coffee
+            is_producing_prestige_goods = no
+            NOT = {
+                has_variable = prestige_good_generic_coffee_var
+            }
+        }
+    }
+
+    possible = {
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_coffee
+            is_producing_prestige_goods = no
+            company_is_prosperous = yes
+            NOT = {
+                custom_tooltip = {
+                    text = not_prestige_good_generic_coffee_var_tt
+                    has_variable = prestige_good_generic_coffee_var
+                }
+            }
+        }
+    }
+
+    immediate = {
+        random_company = {
+            limit = {
+                can_potentially_produce_prestige_goods = prestige_good_generic_coffee
+                is_producing_prestige_goods = no
+                company_is_prosperous = yes
+                NOT = {
+                    has_variable = prestige_good_generic_coffee_var
+                }
+            }
+            save_scope_as = relevant_company
+        }
+		set_variable = {
+			name = prestige_coffee_timer_var
+			value = 0
+		}
+        g:coffee = {
+            save_scope_as = relevant_goods
+        }
+    }
+
+    complete = {
+        trigger_if = {
+            limit = {
+                has_variable = prestige_coffee_timer_var
+            }
+            scope:journal_entry = {
+                is_goal_complete = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            scope:relevant_company ?= {
+                company_is_prosperous = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_goods
+            }
+            custom_tooltip = {
+                text = relevant_goods_production_rank_tt
+                "goods_production_rank(scope:relevant_goods)" <= 3
+            }
+        }
+    }
+
+    on_monthly_pulse = {
+        effect = {
+            if = {
+                limit = {
+                    scope:relevant_company ?= {
+                        company_is_prosperous = yes
+                    }
+                    "goods_production_rank(scope:relevant_goods)" <= 3
+                }
+                change_variable = { name = prestige_coffee_timer_var add = 1 }
+            }
+        }
+    }
+
+    on_complete = {
+        if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            custom_tooltip = {
+                text = je_prestige_goods_coffee_reward_tt
+                scope:relevant_company ?= {
+                    set_variable = prestige_good_generic_coffee_var
+                }
+            }
+        }
+        post_notification = generic_coffee_prestige
+    }
+
+    invalid = {
+        NOT = {
+            exists = scope:relevant_company
+        }
+    }
+
+	current_value = {
+		value = root.var:prestige_coffee_timer_var
+	}
+
+	goal_add_value = {
+		add = prestige_good_journal_entry_months
+	}
+
+	progressbar = yes
+
+    weight = 1000
+
+    should_be_pinned_by_default = yes
+}
+
+je_prestige_goods_steel = {
+    icon = "gfx/interface/icons/goods_icons/prestige_goods/generic_steel_prestige.dds"
+
+	group = je_group_technology
+
+    is_shown_when_inactive = {
+        has_dlc_feature = mp1_content
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_steel
+            is_producing_prestige_goods = no
+            NOT = {
+                has_variable = prestige_good_generic_steel_var
+            }
+        }
+    }
+
+    possible = {
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_steel
+            is_producing_prestige_goods = no
+            company_is_prosperous = yes
+            NOT = {
+                custom_tooltip = {
+                    text = not_prestige_good_generic_steel_var_tt
+                    has_variable = prestige_good_generic_steel_var
+                }
+            }
+        }
+    }
+
+    immediate = {
+        random_company = {
+            limit = {
+                can_potentially_produce_prestige_goods = prestige_good_generic_steel
+                is_producing_prestige_goods = no
+                company_is_prosperous = yes
+                NOT = {
+                    has_variable = prestige_good_generic_steel_var
+                }
+            }
+            save_scope_as = relevant_company
+        }
+		set_variable = {
+			name = prestige_steel_timer_var
+			value = 0
+		}
+        g:steel = {
+            save_scope_as = relevant_goods
+        }
+    }
+
+    complete = {
+        trigger_if = {
+            limit = {
+                has_variable = prestige_steel_timer_var
+            }
+            scope:journal_entry = {
+                is_goal_complete = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            scope:relevant_company ?= {
+                company_is_prosperous = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_goods
+            }
+            custom_tooltip = {
+                text = relevant_goods_production_rank_tt
+                "goods_production_rank(scope:relevant_goods)" <= 3
+            }
+        }
+    }
+
+    on_monthly_pulse = {
+        effect = {
+            if = {
+                limit = {
+                    scope:relevant_company ?= {
+                        company_is_prosperous = yes
+                    }
+                    "goods_production_rank(scope:relevant_goods)" <= 3
+                }
+                change_variable = { name = prestige_steel_timer_var add = 1 }
+            }
+        }
+    }
+
+    on_complete = {
+        if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            custom_tooltip = {
+                text = je_prestige_goods_steel_reward_tt
+                scope:relevant_company ?= {
+                    set_variable = prestige_good_generic_steel_var
+                }
+            }
+        }
+        post_notification = prestige_goods_steel_unlocked
+    }
+
+    invalid = {
+        NOT = {
+            exists = scope:relevant_company
+        }
+    }
+
+	current_value = {
+		value = root.var:prestige_steel_timer_var
+	}
+
+	goal_add_value = {
+		add = prestige_good_journal_entry_months
+	}
+
+	progressbar = yes
+
+    weight = 1000
+
+    should_be_pinned_by_default = yes
+}
+
+je_prestige_goods_opium = {
+    icon = "gfx/interface/icons/goods_icons/prestige_goods/generic_opium_prestige.dds"
+
+	group = je_group_technology
+
+    is_shown_when_inactive = {
+        has_dlc_feature = mp1_content
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_opium
+            is_producing_prestige_goods = no
+            NOT = {
+                has_variable = prestige_good_generic_opium_var
+            }
+        }
+    }
+
+    possible = {
+        any_company = {
+            can_potentially_produce_prestige_goods = prestige_good_generic_opium
+            is_producing_prestige_goods = no
+            company_is_prosperous = yes
+            NOT = {
+                custom_tooltip = {
+                    text = not_prestige_good_generic_opium_var_tt
+                    has_variable = prestige_good_generic_opium_var
+                }
+            }
+        }
+    }
+
+    immediate = {
+        random_company = {
+            limit = {
+                can_potentially_produce_prestige_goods = prestige_good_generic_opium
+                is_producing_prestige_goods = no
+                company_is_prosperous = yes
+                NOT = {
+                    has_variable = prestige_good_generic_opium_var
+                }
+            }
+            save_scope_as = relevant_company
+        }
+		set_variable = {
+			name = prestige_opium_timer_var
+			value = 0
+		}
+        g:opium = {
+            save_scope_as = relevant_goods
+        }
+    }
+
+    complete = {
+        trigger_if = {
+            limit = {
+                has_variable = prestige_opium_timer_var
+            }
+            scope:journal_entry = {
+                is_goal_complete = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            scope:relevant_company ?= {
+                company_is_prosperous = yes
+            }
+        }
+        trigger_if = {
+            limit = {
+                exists = scope:relevant_goods
+            }
+            custom_tooltip = {
+                text = relevant_goods_production_rank_tt
+                "goods_production_rank(scope:relevant_goods)" <= 3
+            }
+        }
+    }
+
+    on_monthly_pulse = {
+        effect = {
+            if = {
+                limit = {
+                    scope:relevant_company ?= {
+                        company_is_prosperous = yes
+                    }
+                    "goods_production_rank(scope:relevant_goods)" <= 3
+                }
+                change_variable = { name = prestige_opium_timer_var add = 1 }
+            }
+        }
+    }
+
+    on_complete = {
+        if = {
+            limit = {
+                exists = scope:relevant_company
+            }
+            custom_tooltip = {
+                text = je_prestige_goods_opium_reward_tt
+                scope:relevant_company ?= {
+                    set_variable = prestige_good_generic_opium_var
+                }
+            }
+        }
+        post_notification = prestige_goods_opium_unlocked
+    }
+
+    invalid = {
+        NOT = {
+            exists = scope:relevant_company
+        }
+    }
+
+	current_value = {
+		value = root.var:prestige_opium_timer_var
+	}
+
+	goal_add_value = {
+		add = prestige_good_journal_entry_months
+	}
+
+	progressbar = yes
+
+    weight = 1000
+
+    should_be_pinned_by_default = yes
+}

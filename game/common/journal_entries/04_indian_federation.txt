@@ -1,0 +1,143 @@
+﻿je_federation_of_india = {
+	icon = "gfx/interface/icons/invention_icons/pan_nationalism.dds"
+
+	group = je_group_british_india
+
+	scripted_button = je_federation_of_india_invite_princely_states
+
+	is_shown_when_inactive = {
+		has_dlc_feature = ip2_content
+		OR = {
+			c:BHT ?= this
+			AND = {
+				c:BIC ?= this
+				OR = { # Why the convoluted trigger? Because there's a delay between the Home Rule JE completing and BIC tag switching to BHT.
+					has_global_variable = india_home_rule
+					has_journal_entry = je_india_home_rule
+				}
+			}
+		}
+		any_princely_state = {
+			is_subject_of = ROOT
+		}
+	}
+
+	status_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = blank_tt
+				trigger = {
+					NOT = {
+						has_modifier = modifier_privy_purse_payments
+					}
+				}
+			}
+			triggered_desc = {
+				desc = privy_purse_payments_total_tt
+				trigger = {
+					has_modifier = modifier_privy_purse_payments
+				}
+			}
+		}
+	}
+
+	possible = {
+		OR = {
+			is_subject = no
+			custom_tooltip = {
+				text = has_earned_home_rule_tt
+				has_global_variable = india_home_rule
+			}
+		}
+	}
+
+	immediate = {
+		ROOT = {
+			save_scope_as = india_scope
+			set_variable = { name = indian_states_annexed value = 0 }
+		}
+	}
+
+	on_weekly_pulse = {
+		effect = {
+			if = {
+				limit = {
+					var:indian_states_annexed > 0
+					NOT = {
+						has_modifier = modifier_privy_purse_payments
+					}
+				}
+				add_modifier = {
+					name = modifier_privy_purse_payments
+					multiplier = privy_purse_value
+				}
+			}
+			if = {
+				limit = {
+					has_variable = update_privy_purse
+					has_modifier = modifier_privy_purse_payments
+				}
+				remove_modifier = modifier_privy_purse_payments
+				add_modifier = {
+					name = modifier_privy_purse_payments
+					multiplier = privy_purse_value
+				}
+				remove_variable = update_privy_purse
+			}
+		}
+	}
+
+	on_yearly_pulse = {
+		random_events = {
+			1 = 0
+			1 = federation_of_india.4 #Princely State joins willingly
+		}
+	}
+
+	complete = {
+		custom_tooltip = {
+			text = all_princely_states_have_acceded_to_the_federation_tt
+			NOT = {
+				any_princely_state = {
+					exists = THIS
+				}
+			}
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = federation_of_india.2 popup = yes }
+	}
+
+    event_outcome_completed_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = event_effects_federation_of_india.2_tt
+			}
+		}
+    }
+
+	fail = {
+		OR = {
+			infamy >= 100
+			has_law = law_type:law_council_republic
+		}
+	}
+
+	on_fail = {
+		trigger_event = { id = federation_of_india.3 popup = yes }
+	}
+
+    event_outcome_failed_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = event_effects_federation_of_india.3_tt
+			}
+		}
+    }
+
+	weight = 100
+
+	should_be_pinned_by_default = yes
+
+}

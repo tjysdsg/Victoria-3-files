@@ -215,9 +215,9 @@ types notifications {
 					}
 				}
 				button = {
+					name = "confirmation_button"
 					using = default_button_primary_action
 					using = confirm_button_sound
-					name = "confirmation_button"
 					size = { 140 40 }
 					text = "CONFIRM_YES"
 					
@@ -331,7 +331,7 @@ notification_popup = {
 						duration = 0
 						alpha = 0
 						size = { 0 200 }
-						position = { 0 0 }
+						position = { 50 0 }
 					}
 					state = {
 						name = 2
@@ -353,6 +353,7 @@ notification_popup = {
 				widget = {
 					size = { 607 193 }
 					parentanchor = vcenter
+					position = { 2 0 }
 
 					background = {
 						using = dark_area
@@ -522,9 +523,10 @@ notification_popup = {
 					position = { -20 0 }
 					text = "TECHNOLOGY_LORE_TEXT"
 					autoresize = yes
-					maximumsize = { 360 -1 }
+					maximumsize = { 360 185 }
 					minimumsize = { 360 -1 }
 					multiline = yes
+					fontsize_min = 12
 					parentanchor = right|vcenter
 
 					state = {
@@ -974,48 +976,47 @@ default_popup_two_lines =  {
 				}
 
 				flowcontainer = {
-					direction = horizontal
+					visible = "[DiplomaticAction.CanCallInObligation]"
 					margin_top = 10
 					margin_bottom = 10
-					visible = "[DiplomaticAction.CanCallInObligation]"
+					spacing = 5
 
 					checkbutton = {
+						size = { 25 25 }
 						parentanchor = vcenter
+						using = check_button
 						onclick = "[DiplomaticActionWindow.ToggleCallInObligation]"
 						checked = "[DiplomaticActionWindow.WillCallInObligation]"
-						using = check_button
-						size = { 25 25 }
 					}
 
 					textbox = {
-						text = USE_OBLIGATION
+						parentanchor = vcenter
 						autoresize = yes
-						margin_left = 10
-						widgetanchor = left|vcenter
-						parentanchor = left|vcenter
+						align = nobaseline
+						text = "USE_OBLIGATION"
 					}
 				}
 
 				flowcontainer = {
-					direction = horizontal
 					visible = "[DiplomaticAction.CanPotentiallyOweObligation]"
 					margin_top = 10
 					margin_bottom = 10
+					spacing = 5
 
 					checkbutton = {
-						using = check_button
 						size = { 25 25 }
 						parentanchor = vcenter
+						using = check_button
 						enabled = "[DiplomaticAction.CanOweObligation]"
 						onclick = "[DiplomaticActionWindow.ToggleOweObligation]"
 						checked = "[DiplomaticActionWindow.WillOweObligation]"
 					}
 
 					textbox = {
-						text = OWE_OBLIGATION
-						margin_left = 10
+						parentanchor = vcenter
 						autoresize = yes
-						align = left|nobaseline
+						align = nobaseline
+						text = "OWE_OBLIGATION"
 					}
 				}
 				
@@ -2142,8 +2143,19 @@ default_popup_two_lines =  {
 									text = "BUILDING_NATIONALIZATION_WITH_COMPENSATION"
 								}
 							}
+							
 							textbox = {
 								name = "line2"
+								visible = "[GreaterThan_int32(NationalizeBuildingWindow.GetNumLevelsToNationalize, '(int32)0')]"
+								layoutpolicy_horizontal = expanding
+								autoresize = yes
+								align = nobaseline
+								text = "NATIONALIZE_COMPENSATION_AMOUNT"
+								tooltip = "BUILDING_NATIONALIZE_COMPENSATION_TOOLTIP"
+							}
+							
+							textbox = {
+								visible = "[Not(GreaterThan_int32(NationalizeBuildingWindow.GetNumLevelsToNationalize, '(int32)0'))]"
 								layoutpolicy_horizontal = expanding
 								autoresize = yes
 								align = nobaseline
@@ -2991,6 +3003,119 @@ default_popup = {
 	}
 }
 
+### TREATY PROPOSAL
+default_popup_vbox = {
+	name = "treaty_proposal"
+	datacontext = "[Proposal.GetTreaty]"
+
+	blockoverride "window_header_name" {
+		text = "[Treaty.GetName]"
+	}
+
+	blockoverride "header_close_button_visibility" {
+		visible = yes
+	}
+
+	blockoverride "header_close_button" {
+		onclick = "[PopupManager.HideProposal(Proposal.AccessSelf)]"
+		shortcut = "close_window"
+	}
+
+	blockoverride "side_margins" {
+		margin = { 25 0 }
+	}
+
+	blockoverride "top_margin" {
+		margin_top = 90
+	}
+
+	blockoverride "scrollarea_size" {
+		size = { 540 640 }
+	}
+
+	blockoverride "scrollarea_content_vbox"
+	{
+		treaty = {
+			name = "content_container"
+
+			background = {
+				using = paper_bg_light
+			}
+
+			blockoverride "unsigned_seal_visibility" {
+				visible = yes
+			}
+
+			blockoverride "binding_period_textboxes" {
+				### BINDING PERIOD
+				treaty_textbox = {
+					visible = "[NotZero(Treaty.GetBindingDays)]"
+					align = nobaseline
+					autoresize = yes
+					max_width = 230
+					using = elide_fontsize_min
+					text = "TREATY_BINDING_PERIOD"
+				}
+
+				### NO BINDING PERIOD SET TO BEGIN WITH
+				treaty_textbox = {
+					visible = "[IsZero(Treaty.GetBindingDays)]"
+					align = nobaseline
+					autoresize = yes
+					max_width = 230
+					using = elide_fontsize_min
+					text = "TREATY_NO_BINDING_PERIOD_NO_CONCEPT"
+				}
+			}
+		}
+	}
+
+	blockoverride "fixed_bottom" {
+		flowcontainer = {
+			margin = { 0 10 }
+			spacing = 3
+
+			button = {
+				using = default_button_action
+				using = close_button_sound
+				size = { 180 42 }
+				text = "DECLINE"
+				onclick = "[Execute(Proposal.GetTreaty.DeclineTreatyProposal)]"
+				onclick = "[PopupManager.CloseProposal(Proposal.AccessSelf)]"
+				enabled = "[IsValid(Proposal.GetTreaty.DeclineTreatyProposal)]"
+				tooltip = "[GetDesc(Proposal.GetTreaty.DeclineTreatyProposal)]"
+				using = tooltip_se
+				shortcut = "close_window"
+			}
+
+			button = {
+				using = default_button
+				size = { 180 42 }
+				text = "NEGOTIATE"
+				enabled = "[Not(Proposal.GetTreaty.IsEnforced)]"
+				onclick = "[InformationPanelBar.OpenTreatyDraftPanel(Proposal.GetTreaty.Self)]"
+				onclick = "[PopupManager.CloseProposal(Proposal.AccessSelf)]"
+				tooltip = "TREATY_PROPOSAL_NEGOTIATE_TOOLTIP" #todo PRCAL-38358
+				using = tooltip_se
+
+			}
+
+			button = {
+				using = default_button_primary_action
+				using = confirm_button_sound
+				size = { 180 42 }
+				text = "ACCEPT"
+				onclick = "[Execute(Proposal.GetTreaty.AcceptTreatyProposal)]"
+				onclick = "[PopupManager.CloseProposal(Proposal.AccessSelf)]"
+				enabled = "[IsValid(Proposal.GetTreaty.AcceptTreatyProposal)]"
+				tooltip = "[GetDesc(Proposal.GetTreaty.AcceptTreatyProposal)]"
+				using = tooltip_se
+				input_action = "confirm"
+			}
+		}
+	}
+}
+
 default_confirmation_window = {
 	name = "confirmation_window"
 }
@@ -3009,6 +3134,30 @@ default_confirmation_window = {
 	blockoverride "description_size" {
 		maximumsize = { 400 -1 }
 		minimumsize = { 400 -1 }
+	}
+}
+
+default_confirmation_window = {
+	name = "company_charter_confirmation_window"
+
+	blockoverride "window_header_name" {
+		text = "GRANT_COMPANY_CHARTER_CONFIRMATION_HEADER"
+	}
+
+	blockoverride "scrollarea_content" {
+		icon = {
+			size = { 100 100 }
+			parentanchor = hcenter
+			alwaystransparent = yes
+			texture = "gfx/interface/portraits/portrait_frame_head.dds" #ingela
+			
+			icon = {
+				size = { 75% 75% }
+				parentanchor = center
+				alwaystransparent = yes
+				texture = "[CompanyCharterType.GetIcon]"
+			}
+		}
 	}
 }
 
@@ -4058,7 +4207,7 @@ notification_popup = {
 							}
 							dynamicgridbox = {
 								using = default_list_position
-								datamodel = "[DiplomaticPlay.AccessAllWarGoalsOfInitiatorSide]"
+								datamodel = "[DiplomaticPlay.GetAllWarGoalsOfInitiatorSide]"
 
 								item = {
 									small_wargoal_item_with_checkmark = {}
@@ -4081,7 +4230,7 @@ notification_popup = {
 							}
 							dynamicgridbox = {
 								using = default_list_position
-								datamodel = "[DiplomaticPlay.AccessAllWarGoalsOfTargetSide]"
+								datamodel = "[DiplomaticPlay.GetAllWarGoalsOfTargetSide]"
 
 								item = {
 									small_wargoal_item_with_checkmark = {}

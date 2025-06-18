@@ -1,6 +1,6 @@
 ﻿namespace = tibet_expedition_events
 
- 
+
 tibet_expedition_events.1 = { #Start event
 	type = country_event
     placement = ROOT
@@ -137,6 +137,9 @@ tibet_expedition_events.2 = { #Choose commander
 		scope:expedition_leader_1 = {
 			set_character_busy_and_immortal = yes
 			set_variable = expedition_leader_var
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		trigger_event = { id = tibet_expedition_events.3 days = 30 }
 	}
@@ -150,18 +153,24 @@ tibet_expedition_events.2 = { #Choose commander
 		scope:expedition_leader_2 = {
 			set_character_busy_and_immortal = yes
 			set_variable = expedition_leader_var
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		trigger_event = { id = tibet_expedition_events.3 days = 30 }
 	}
 
 	option = {
-		name = expedition_events.602.c	
+		name = expedition_events.602.c
 		trigger = {
 			exists = scope:expedition_leader_3
 		}
 		scope:expedition_leader_3 = {
 			set_character_busy_and_immortal = yes
 			set_variable = expedition_leader_var
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		trigger_event = { id = tibet_expedition_events.3 days = 30 }
 	}
@@ -184,9 +193,9 @@ tibet_expedition_events.3 = { #Expedition Arrives
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	
+
 	immediate = {
-		
+
 		random_scope_character = {
 			limit = { has_variable = expedition_leader_var }
 			save_scope_as = expedition_leader
@@ -252,9 +261,9 @@ tibet_expedition_events.4 = { # Yaks cross the border
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	
+
 	trigger = {
-		NOT = { 
+		NOT = {
 			any_interest_group = {
 				OR = {
 					has_modifier = hostility_resisted
@@ -266,7 +275,7 @@ tibet_expedition_events.4 = { # Yaks cross the border
 	}
 
 	immediate = {
-		
+
 		random_scope_character = {
 			limit = { has_variable = expedition_leader_var }
 			save_scope_as = expedition_leader
@@ -306,7 +315,7 @@ tibet_expedition_events.4 = { # Yaks cross the border
 			}
 			add_modifier = {
 				name = hostility_resisted
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 
@@ -339,7 +348,7 @@ tibet_expedition_events.4 = { # Yaks cross the border
 				}
 				add_modifier = {
 					name = hostility_resisted
-					months = normal_modifier_time
+					days = normal_modifier_time
 				}
 			}
 		}
@@ -357,7 +366,7 @@ tibet_expedition_events.4 = { # Yaks cross the border
 		ai_chance = {
 			base = 0
 		}
-		
+
 		every_interest_group = {
 			limit = {
 				OR = {
@@ -369,7 +378,7 @@ tibet_expedition_events.4 = { # Yaks cross the border
 			}
 			add_modifier = {
 				name = resisted_being_hostile
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -401,7 +410,7 @@ tibet_expedition_events.5 = { # The Great Trigonometrical Survey Goes North (Mou
 			}
 		}
 	}
-	
+
 	immediate = {
 		random_scope_character = {
 			limit = { has_variable = expedition_leader_var }
@@ -445,7 +454,7 @@ tibet_expedition_events.5 = { # The Great Trigonometrical Survey Goes North (Mou
 		scope:expedition_leader = {
 			add_modifier = {
 				name = sidelined_mountaineer
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 
@@ -531,6 +540,20 @@ tibet_expedition_events.5 = { # The Great Trigonometrical Survey Goes North (Mou
 				}
 			}
 			1 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 1
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 2
+					}
+				}
 				scope:expedition_leader = {
 					add_modifier = famed_mountaineer
 					if = {
@@ -570,9 +593,9 @@ tibet_expedition_events.6 = { # Leeches!
 	trigger = {
 		var:tibet_expedition_progress_var < 4
 	}
-	
+
 	immediate = {
-		
+
 		random_scope_character = {
 			limit = { has_variable = expedition_leader_var }
 			save_scope_as = expedition_leader
@@ -600,6 +623,20 @@ tibet_expedition_events.6 = { # Leeches!
 				}
 			}
 			1 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 0.5
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 2
+					}
+				}
 				trigger = {
 					scope:expedition_leader = {
 						NOT = { has_trait = sickly }
@@ -614,6 +651,22 @@ tibet_expedition_events.6 = { # Leeches!
 				}
 			}
 			2 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 1
+					}
+				}
+				modifier = {
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 4
+					}
+				}
 				custom_tooltip = {
 					text = je_tibet_expedition_advance
 					change_variable = { name = tibet_expedition_progress_var add = 1 }
@@ -661,18 +714,18 @@ tibet_expedition_events.6 = { # Leeches!
 				scope:expedition_leader = {
 					remove_trait = cocaine_addiction
 				}
-			}	
+			}
 			1 = {
 				trigger = { scope:expedition_leader = { has_trait = alcoholic } }
 				scope:expedition_leader = {
 					remove_trait = alcoholic
 				}
-			}	
+			}
 		}
 		scope:expedition_leader = {
 			add_modifier = {
 				name = well_rested_leader
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -704,9 +757,9 @@ tibet_expedition_events.7 = { # Selecting the expeditionary force
 		}
 		var:tibet_expedition_progress_var < 4
 	}
-	
+
 	immediate = {
-		
+
 		random_scope_character = {
 			limit = { has_variable = expedition_leader_var }
 			save_scope_as = expedition_leader
@@ -807,7 +860,7 @@ tibet_expedition_events.8 = { # Cross the border
 			has_variable = entered_into_tibet
 		}
 	}
-	
+
 	immediate = {
 		save_scope_as = expedition_country
 		random_scope_character = {
@@ -881,7 +934,7 @@ tibet_expedition_events.9 = { # Cross the border (Overlord alert)
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	
+
 	immediate = {
 		scope:expedition_leader = {
 			owner = {
@@ -932,7 +985,7 @@ tibet_expedition_events.9 = { # Cross the border (Overlord alert)
 
 	option = {
 		name = tibet_expedition_events.9.b
-		
+
 		# Diplomatically object
 
 		change_relations = {
@@ -964,7 +1017,7 @@ tibet_expedition_events.9 = { # Cross the border (Overlord alert)
 
 		add_modifier = {
 			name = himalayan_affairs # temp hit to authority
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 
 		create_incident = {
@@ -1007,7 +1060,7 @@ tibet_expedition_events.9 = { # Cross the border (Overlord alert)
 			}
 			add_modifier = {
 				name = overlord_military_support
-				months = short_modifier_time
+				days = short_modifier_time
 			}
 			trigger_event = { id = tibet_expedition_events.10 days = 1 }
 		}
@@ -1031,7 +1084,7 @@ tibet_expedition_events.10 = { # Cross the border (Tibetan response)
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	
+
 	immediate = {
 		scope:expedition_leader = {
 			owner = {
@@ -1067,7 +1120,7 @@ tibet_expedition_events.10 = { # Cross the border (Tibetan response)
 		create_diplomatic_play = {
 			name = anti_expedition_war
 			target_country = scope:expedition_country
-			type = dp_war_reparations
+			type = dp_default_treaty_article
 		}
 	}
 }
@@ -1091,7 +1144,7 @@ tibet_expedition_events.11 = { # (Tibet) Block their advance?
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	
+
 	immediate = {
 		scope:expedition_leader = {
 			owner = {
@@ -1135,20 +1188,20 @@ tibet_expedition_events.11 = { # (Tibet) Block their advance?
 			}
 			add_modifier = {
 				name = government_cowardice
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 
 		if = {
-			limit = { 
+			limit = {
 				any_scope_state = {
-					NOT = { has_modifier = expedition_disturbs_the_people } 
+					NOT = { has_modifier = expedition_disturbs_the_people }
 				}
 			}
 			scope:disturbed_state = {
 				add_modifier = {
 					name = expedition_disturbs_the_people
-					months = normal_modifier_time
+					days = normal_modifier_time
 				}
 			}
 		}
@@ -1173,7 +1226,7 @@ tibet_expedition_events.11 = { # (Tibet) Block their advance?
 			}
 			add_modifier = {
 				name = government_bravery
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		scope:expedition_country = {
@@ -1290,7 +1343,7 @@ tibet_expedition_events.13 = { # Block their advance? Overlord alert of clash.
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	
+
 	immediate = {
 		c:TIB = {
 			save_scope_as = tibet_scope
@@ -1301,7 +1354,7 @@ tibet_expedition_events.13 = { # Block their advance? Overlord alert of clash.
 		OR = {
 			NOT = { exists = c:TIB }
 			scope:expedition_country = {
-			NOR = { 
+			NOR = {
 				has_journal_entry = je_tibet_expedition }
 				any_scope_character = {
 					has_variable = expedition_leader_var
@@ -1343,7 +1396,7 @@ tibet_expedition_events.13 = { # Block their advance? Overlord alert of clash.
 				}
 				add_modifier = {
 					name = overlord_military_support
-					months = short_modifier_time
+					days = short_modifier_time
 				}
 			}
 		}
@@ -1355,7 +1408,7 @@ tibet_expedition_events.13 = { # Block their advance? Overlord alert of clash.
 			add_modifier = {
 				name = himalayan_expenses
 				multiplier = money_amount_multiplier_small
-				months = short_modifier_time
+				days = short_modifier_time
 			}
 		}
 
@@ -1396,7 +1449,7 @@ tibet_expedition_events.14 = { # Lost in a blizzard
 			has_variable = delayed_expedition_events
 		}
 	}
-	
+
 	immediate = {
 		c:TIB = {
 			save_scope_as = tibet_scope
@@ -1425,6 +1478,20 @@ tibet_expedition_events.14 = { # Lost in a blizzard
 
 		random_list = {
 			3 = { # 75% chance it's fine
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 1
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 2
+					}
+				}
 				custom_tooltip = {
 					text = je_tibet_expedition_advance
 					change_variable = { name = tibet_expedition_progress_var add = 1 }
@@ -1478,9 +1545,9 @@ tibet_expedition_events.18 = { # Approaching Lhasa/Assault on Gyantse Dzong
 		}
 		var:tibet_expedition_progress_var >= 4
 	}
-	
+
 	immediate = {
-		
+
 		random_scope_character = {
 			limit = { has_variable = expedition_leader_var }
 			save_scope_as = expedition_leader
@@ -1549,6 +1616,20 @@ tibet_expedition_events.18 = { # Approaching Lhasa/Assault on Gyantse Dzong
 				}
 			}
 			1 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 1
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 4
+					}
+				}
 				custom_tooltip = {
 					text = je_tibet_expedition_advance
 					change_variable = { name = tibet_expedition_progress_var add = 1 }
@@ -1586,12 +1667,12 @@ tibet_expedition_events.19 = { # Unsanctioned pillaging
 			has_variable = delayed_expedition_events
 		}
 	}
-	
+
 	immediate = {
 		c:TIB = {
 			save_scope_as = tibet_scope
 		}
-		
+
 		random_scope_character = {
 			limit = { has_variable = expedition_leader_var }
 			save_scope_as = expedition_leader
@@ -1599,7 +1680,7 @@ tibet_expedition_events.19 = { # Unsanctioned pillaging
 
 		set_variable = {
 			name = pillaged_tibet
-			months = short_modifier_time
+			days = short_modifier_time
 		}
 	}
 
@@ -1653,12 +1734,26 @@ tibet_expedition_events.19 = { # Unsanctioned pillaging
 		add_modifier = {
 			name = tibetan_restitution
 			multiplier = money_amount_multiplier_very_small
-			months = short_modifier_time
+			days = short_modifier_time
 		}
 
 		random_list = {
 			1 = { }
 			1 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 1
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 4
+					}
+				}
 				custom_tooltip = {
 					text = je_tibet_expedition_advance
 					change_variable = { name = tibet_expedition_progress_var add = 1 }
@@ -1711,7 +1806,7 @@ tibet_expedition_events.20 = { # Who to address the ultimatum to?
 			}
 		}
 	}
-	
+
 	immediate = {
 		c:TIB = {
 			save_scope_as = tibet_scope
@@ -1746,7 +1841,7 @@ tibet_expedition_events.20 = { # Who to address the ultimatum to?
 			text = sending_tibet_ultimatum_tt
 			c:TIB = {
 				trigger_event = {
-					id = tibet_expedition_events.21 
+					id = tibet_expedition_events.21
 					days = 1
 				}
 			}
@@ -1779,7 +1874,7 @@ tibet_expedition_events.20 = { # Who to address the ultimatum to?
 			c:TIB ?= {
 				is_subject = yes
 			}
-		} 
+		}
 
 		custom_tooltip = {
 			text = sending_tibet_overlord_ultimatum_tt
@@ -1829,9 +1924,9 @@ tibet_expedition_events.21 = { # Ultimatum sent (Tibet)
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	
+
 	immediate = {
-		
+
 		scope:expedition_leader = {
 			owner = {
 				save_scope_as = expedition_country
@@ -1955,7 +2050,7 @@ tibet_expedition_events.21 = { # Ultimatum sent (Tibet)
 			country = scope:expedition_country
 			value = -40
 		}
-		scope:expedition_country = { 
+		scope:expedition_country = {
 			set_variable = received_subjugation_refusal_var # variable for expedition_country to fail their Tibet Expedition JE if this option is selected
 		}
 
@@ -2011,7 +2106,7 @@ tibet_expedition_events.22 = { # Ultimatum sent (Overlord)
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	
+
 	immediate = {
 		scope:expedition_leader = {
 			owner = {
@@ -2095,7 +2190,7 @@ tibet_expedition_events.22 = { # Ultimatum sent (Overlord)
 
 		scope:expedition_country = {
 			trigger_event = {
-				id = tibet_expedition_events.27 
+				id = tibet_expedition_events.27
 				days = 3
 			}
 		}
@@ -2103,8 +2198,8 @@ tibet_expedition_events.22 = { # Ultimatum sent (Overlord)
 
 	option = {
 		name = tibet_expedition_events.22.b # Only the player should be able to get a last out like this, and only if it's not an MP where another player has been working hard at this themself
-		trigger = { 
-			is_player = yes 
+		trigger = {
+			is_player = yes
 			scope:expedition_country = { is_player = no }
 		}
 
@@ -2115,7 +2210,7 @@ tibet_expedition_events.22 = { # Ultimatum sent (Overlord)
 		scope:expedition_country = {
 			post_notification = tibet_overlord_refuses_demands
 		}
-		scope:expedition_country = { 
+		scope:expedition_country = {
 			set_variable = received_subjugation_refusal_var # variable for expedition_country to fail their Tibet Expedition JE if this option is selected by player
 		}
 	}
@@ -2138,7 +2233,7 @@ tibet_expedition_events.26 = { # (Overlord) Tibet submits to demands
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	
+
 	immediate = {
 		scope:expedition_leader = {
 			owner = {
@@ -2218,7 +2313,7 @@ tibet_expedition_events.27 = { # Conclusion
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	
+
 	immediate = {
 		c:TIB = {
 			save_scope_as = tibet_scope
@@ -2321,7 +2416,7 @@ tibet_expedition_events.29 = { # Manul spotted
 		}
 		var:tibet_expedition_progress_var < 4
 	}
-	
+
 	immediate = {
 		random_scope_character = {
 			limit = { has_variable = expedition_leader_var }
@@ -2347,8 +2442,8 @@ tibet_expedition_events.29 = { # Manul spotted
 
 		random_list = {
 			3 = { }
-			1 = { 
-				scope:expedition_leader = { 
+			1 = {
+				scope:expedition_leader = {
 					if = {
 						limit = { NOT = { has_trait = wounded } }
 						add_trait = wounded
@@ -2356,7 +2451,7 @@ tibet_expedition_events.29 = { # Manul spotted
 					else = {
 						kill_character = yes
 					}
-				} 
+				}
 			}
 		}
 		random_scope_state = {
@@ -2366,7 +2461,7 @@ tibet_expedition_events.29 = { # Manul spotted
 
 			add_modifier = {
 				name = manul_zoo_exhibit
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 
@@ -2381,8 +2476,8 @@ tibet_expedition_events.29 = { # Manul spotted
 
 		random_list = {
 			2 = { }
-			1 = { 
-				scope:expedition_leader = { 
+			1 = {
+				scope:expedition_leader = {
 					if = {
 						limit = { NOT = { has_trait = wounded } }
 						add_trait = wounded
@@ -2390,7 +2485,7 @@ tibet_expedition_events.29 = { # Manul spotted
 					else = {
 						kill_character = yes
 					}
-				} 
+				}
 			}
 		}
 

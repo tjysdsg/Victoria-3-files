@@ -18,7 +18,7 @@ decree_events.1 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_industry.dds"
-	
+
 	trigger = {
 		any_scope_state = {
 			is_incorporated = yes
@@ -34,8 +34,8 @@ decree_events.1 = {
 		}
 		has_technology_researched = combustion_engine
 	}
-	
-	
+
+
 	immediate = {
 		random_scope_state = {
 			limit = {
@@ -53,7 +53,7 @@ decree_events.1 = {
 		}
 		set_variable = road_maintenance_var
 	}
-	
+
 	option = { #engineer 1 wants it to have great drainage (expensive)
 		name = decree_events.1.a
 		if = {
@@ -62,73 +62,73 @@ decree_events.1 = {
 			}
 			add_modifier = {
 				name = drainage_roads_cheaper_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 			add_modifier = {
 				name = drainage_roads_cheaper_modifier_costs
 				multiplier = money_amount_multiplier_medium
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		else = {
 			add_modifier = {
 				name = drainage_roads_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 			add_modifier = {
 				name = drainage_roads_modifier_costs
 				multiplier = money_amount_multiplier_medium
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
-	
+
 	option = { #engineer 2 cheap one
 		name = decree_events.1.b
 		default_option = yes
 		add_modifier = {
 			name = cheaper_roads_modifier
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 
 		add_modifier = {
 			name = cheaper_roads_modifier_costs
 			multiplier = money_amount_multiplier_very_small
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
-	
+
 	option = { #engineer 3 has great and risky ideas
 		name = decree_events.1.c
 		random_list = {
 			1 = {
 				add_modifier = {
 					name = risky_road_modifier
-					months = normal_modifier_time
+					days = normal_modifier_time
 				}
 
 				add_modifier = {
 					name = risky_road_modifier_costs
 					multiplier = money_amount_multiplier_medium
-					months = normal_modifier_time
+					days = normal_modifier_time
 				}
 			}
 			3 = {
 				add_modifier = {
 					name = risky_road_modifier_costs
 					multiplier = money_amount_multiplier_very_small
-					months = normal_modifier_time
+					days = normal_modifier_time
 				}
 			}
 		}
 	}
-	
+
 	option = { #we dont want to make our roads better
 		name = decree_events.1.e
 		ig:ig_industrialists = {
 			add_modifier = {
 				name = no_roads_sad_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -148,17 +148,19 @@ decree_events.2 = {
 	}
 
 	duration = 3
-	
+
+	cooldown = {days = very_long_modifier_time}
+
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_industry.dds"
-	
+
 	trigger = {
 		any_scope_state = {
 			is_incorporated = yes
 			has_decree = decree_road_maintenance
 			state_region = {
-				pollution_amount > 75
+				pollution_amount > 50
 			}
 		}
 		any_interest_group = {
@@ -172,17 +174,25 @@ decree_events.2 = {
 			has_modifier = ignored_pollution_modifier
 		}
 	}
-	
+
 	immediate = {
 		random_scope_state = {
 			limit = {
 				is_incorporated = yes
 				has_decree = decree_road_maintenance
 				state_region = {
-					pollution_amount > 75
+					pollution_amount > 50
 				}
 			}
 			save_scope_as = decree_state
+			set_variable = {
+				name = pollution_amount
+				value = state_region.pollution_amount
+			}
+			change_variable = {
+				name = pollution_amount
+				multiply = -0.50
+			}
 		}
 		random_interest_group = {
 			limit = {
@@ -194,31 +204,7 @@ decree_events.2 = {
 			save_scope_as = ecology_ig
 		}
 	}
-	
-	option = { #take measures
-		name = decree_events.2.a
-		default_option = yes
-		trigger = {
-			scope:decree_state.state_region = {
-				pollution_amount < 150
-			}
-		}
-		add_modifier = {
-			name = addressed_pollution_modifier
-			multiplier = money_amount_multiplier_medium
-			months = normal_modifier_time
-		}
-		scope:ecology_ig = {
-			add_modifier = {
-				name = good_pollution_modifier
-				months = normal_modifier_time
-			}
-		}
-		scope:decree_state.state_region = {
-			add_pollution = -50
-		}
-	}
-	
+
 	option = { #ignore it
 		name = decree_events.2.b
 		scope:decree_state.state_region = {
@@ -227,25 +213,26 @@ decree_events.2 = {
 		scope:ecology_ig = {
 			add_modifier = {
 				name = ignored_pollution_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
-	
-	option = { #super big pollution 
+
+	option = { #take measures
 		name = decree_events.2.a
+		default_option = yes
 		trigger = {
 			scope:decree_state.state_region = {
-				pollution_amount >= 150
+				pollution_amount >= 50
 			}
 		}
 		add_modifier = {
 			name = addressed_pollution_modifier
-			multiplier = money_amount_multiplier_small
-			months = normal_modifier_time
+			multiplier = money_amount_multiplier_very_small
+			days = normal_modifier_time
 		}
 		scope:decree_state.state_region = {
-			add_pollution = -75
+			add_pollution = scope:decree_state.var:pollution_amount
 		}
 	}
 }
@@ -264,11 +251,11 @@ decree_events.3 = {
 	}
 
 	duration = 3
-	
+
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
-	
+
 	trigger = {
 		any_scope_state = {
 			is_incorporated = yes
@@ -277,7 +264,7 @@ decree_events.3 = {
 		NOT = { has_variable = david_copperfield_var }
 		empty_agitator_slots >= 1
 	}
-	
+
 	immediate = {
 		random_scope_state = {
 			limit = {
@@ -291,7 +278,7 @@ decree_events.3 = {
 		}
 		set_variable = david_copperfield_var
 	}
-	
+
 	option = { #support him to IG leader
 		name = decree_events.3.a
 		default_option = yes
@@ -310,7 +297,7 @@ decree_events.3 = {
 				on_created = {
 					add_modifier = {
 						name = david_copperfield_modifier
-						months = normal_modifier_time
+						days = normal_modifier_time
 					}
 				}
 			}
@@ -324,19 +311,19 @@ decree_events.3 = {
 				on_created = {
 					add_modifier = {
 						name = david_copperfield_modifier
-						months = normal_modifier_time
+						days = normal_modifier_time
 					}
 				}
 			}
 		}
 	}
-	
+
 	option = { #ignore him
 		name = decree_events.3.b
 		ig:ig_intelligentsia = {
 			add_modifier = {
 				name = ignored_david_copperfield_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		if = {
@@ -353,7 +340,7 @@ decree_events.3 = {
 				on_created = {
 					add_modifier = {
 						name = david_copperfield_modifier
-						months = normal_modifier_time
+						days = normal_modifier_time
 					}
 				}
 			}
@@ -366,7 +353,7 @@ decree_events.3 = {
 				on_created = {
 					add_modifier = {
 						name = david_copperfield_modifier
-						months = normal_modifier_time
+						days = normal_modifier_time
 					}
 				}
 			}
@@ -388,11 +375,11 @@ decree_events.4 = {
 	}
 
 	duration = 3
-	
+
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
-	
+
 	trigger = {
 		any_scope_state = {
 			is_incorporated = yes
@@ -421,8 +408,9 @@ decree_events.4 = {
 				}
 			}
 		}
+		naval_power_projection > 0 # You must have at least a single boat for the admiral to crew
 	}
-	
+
 	immediate = {
 		random_scope_state = {
 			limit = {
@@ -461,8 +449,8 @@ decree_events.4 = {
 		}
 		set_variable = social_mobility_var
 	}
-	
-	
+
+
 	option = { #they deserve this
 		name = decree_events.4.a
 		default_option = yes
@@ -481,11 +469,11 @@ decree_events.4 = {
 		ig:ig_trade_unions = {
 			add_modifier = {
 				name = social_mobility_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
-	
+
 	option = { #but the son of xxx wants it
 		name = decree_events.4.b
 		create_character = {
@@ -503,7 +491,7 @@ decree_events.4 = {
 		ig:ig_landowners = {
 			add_modifier = {
 				name = social_mobility_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -517,8 +505,10 @@ decree_events.5 = {
 	title = decree_events.5.t
 	desc = decree_events.5.d
 	flavor = decree_events.5.f
-	
+
 	duration = 3
+
+	cooldown = {days = stupidly_long_modifier_time}
 
 	event_image = {
 		video = "unspecific_world_fair"
@@ -527,7 +517,7 @@ decree_events.5 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
-	
+
 	trigger = {
 		any_scope_state = {
 			is_incorporated = yes
@@ -542,7 +532,7 @@ decree_events.5 = {
 			has_modifier = opera_didnt_pay_modifier
 		}
 	}
-	
+
 	immediate = {
 		random_scope_state = {
 			limit = {
@@ -558,52 +548,53 @@ decree_events.5 = {
 			}
 		}
 	}
-	
-	option = { #comission an important artist
+
+	option = { #commission an important artist
 		name = decree_events.5.a
 		default_option = yes
 		add_modifier = {
 			name = opera_modifier
-			months = normal_modifier_time
+			days = long_modifier_time
 			multiplier = 2
 		}
 
 		add_modifier = {
 			name = opera_modifier_costs
-			months = normal_modifier_time
+			days = normal_modifier_time
 			multiplier = money_amount_multiplier_small
 		}
 	}
-	
+
 	option = { #get a cheaper guy to do it
 		name = decree_events.5.b
 		add_modifier = {
 			name = opera_modifier
-			months = normal_modifier_time
+			days = long_modifier_time
 		}
 
 		add_modifier = {
 			name = opera_modifier_costs
-			months = normal_modifier_time
+			days = normal_modifier_time
 			multiplier = money_amount_multiplier_very_small
 		}
 	}
-	
-	option = { #comission the expensive one, refuse to pay
+
+	option = { #commission the expensive one, refuse to pay
 		name = decree_events.5.c
 		add_modifier = {
 			name = opera_didnt_pay_modifier
-			months = normal_modifier_time
+			days = long_modifier_time
 		}
 		ig:ig_intelligentsia = {
 			add_modifier = {
 				name = refused_to_pay_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
+				multiplier = 2
 			}
 		}
 		scope:decree_state = {
 			add_radicals_in_state = {
-				value = medium_radicals
+				value = very_large_radicals
 				pop_type = academics
 			}
 		}
@@ -624,11 +615,11 @@ decree_events.6 = {
 	}
 
 	duration = 3
-	
+
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	
+
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
-	
+
 	trigger = {
 		any_scope_state = {
 			is_incorporated = yes
@@ -640,7 +631,7 @@ decree_events.6 = {
 		income >= 100
 		NOT = { has_variable = concert_var }
 	}
-	
+
 	immediate = {
 		random_scope_state = {
 			limit = {
@@ -657,32 +648,32 @@ decree_events.6 = {
 		}
 		set_variable = concert_var
 	}
-	
+
 	option = { #fund their concert
 		name = decree_events.6.a
 		default_option = yes
 		add_modifier = {
 			name = foreign_concert_costs_modifier
 			multiplier = money_amount_multiplier_small
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 		add_modifier = {
 			name = foreign_concert_modifier
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
-	
+
 	option = { #ignore them
 		name = decree_events.6.b
 		ig:ig_intelligentsia = {
 			add_modifier = {
 				name = ignored_concert_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		add_modifier = {
 			name = ignored_concert_country_modifier
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 }

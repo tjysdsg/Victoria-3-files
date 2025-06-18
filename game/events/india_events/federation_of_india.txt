@@ -1,0 +1,394 @@
+﻿namespace = federation_of_india
+
+federation_of_india.1 = {
+	type = country_event
+	placement = ROOT
+
+	duration = 3
+
+	title = federation_of_india.1.t
+	desc = federation_of_india.1.d
+	flavor = federation_of_india.1.f
+
+	event_image = {
+		video = "ip2_india_urban_scene"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	trigger = {
+		# Triggered by JE
+	}
+
+	immediate = {
+		overlord = {
+			save_scope_as = india_scope
+		}
+		save_scope_as = princely_state_scope
+	}
+
+	cancellation_trigger = {
+		OR = {
+			is_subject = no
+			NOT = {
+				exists = scope:india_scope
+			}
+		}
+	}
+
+	option = {
+		name = federation_of_india.1.a
+		default_option = yes
+		ai_chance = {
+			base = 10
+			modifier = {
+				trigger = {
+					scope:india_scope = {
+						is_player = yes
+					}
+				}
+				add = 10
+			}
+			modifier = {
+				trigger = {
+					liberty_desire < 25
+				}
+				add = 10
+			}
+			modifier = {
+				trigger = {
+					liberty_desire < 15
+				}
+				add = 10
+			}
+			modifier = {
+				trigger = {
+					liberty_desire < 5
+				}
+				add = 10
+			}
+			modifier = {
+				trigger = {
+					liberty_desire = 0
+				}
+				add = 50
+			}
+			modifier = {
+				trigger = {
+					"relations(scope:india_scope)" > relations_threshold:amicable
+				}
+				add = 10
+			}
+			modifier = {
+				trigger = {
+					"relations(scope:india_scope)" >= relations_threshold:friendly
+				}
+				add = 10
+			}
+			modifier = {
+				trigger = {
+					OR = {
+						ruler = { age >= define:NCharacters|OLD_AGE }
+						ruler = { age < define:NCharacters|ADULT_AGE }
+					}
+				}
+				add = 10
+			}
+			modifier = {
+				trigger = {
+					ruler = {
+						OR = {
+							has_trait = psychological_affliction
+							has_trait = cancer
+							has_trait = senile
+							has_trait = wounded
+						}
+					}
+				}
+				add = 25
+			}
+		}
+		if = {
+			limit = {
+				is_player = yes
+			}
+			play_as = scope:india_scope
+		}
+		scope:india_scope = {
+			post_notification = joins_union_of_india
+			change_variable = { name = indian_states_annexed add = 1 }
+			set_variable = update_privy_purse
+			annex = ROOT
+		}
+	}
+
+	option = {
+		name = federation_of_india.1.b
+		ai_chance = {
+			base = 30
+		}
+		add_liberty_desire = 10
+		scope:india_scope = {
+			change_relations = {
+				country = ROOT
+				value = -25
+			}
+		}
+		scope:india_scope = {
+			post_notification = refuses_to_join_union_of_india
+		}
+	}
+}
+
+federation_of_india.2 = {
+	type = country_event
+	placement = ROOT
+
+	duration = 3
+
+	title = federation_of_india.2.t
+	desc = federation_of_india.2.d
+	flavor = federation_of_india.2.f
+
+	event_image = {
+		video = "ip2_india_urban_scene"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { days = 365 }
+
+	trigger = {
+		# Triggered by JE
+	}
+
+	immediate = {
+		save_scope_as = india_scope
+	}
+
+	option = {
+		name = federation_of_india.2.a
+		default_option = yes
+		add_modifier = {
+			name = modifier_unification_of_india
+			days = long_modifier_time
+		}
+		add_loyalists = {
+			value = medium_radicals
+		}
+	}
+}
+
+federation_of_india.3 = {
+	type = country_event
+	placement = ROOT
+
+	duration = 3
+
+	title = federation_of_india.3.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = federation_of_india.3.d_cr
+				trigger = {
+					has_law = law_type:law_council_republic
+				}
+			}
+			triggered_desc = {
+				desc = federation_of_india.3.d_infamy
+				trigger = {
+					always = yes
+				}
+			}
+		}
+	}
+	flavor = federation_of_india.3.f
+
+	event_image = {
+		video = "ip2_india_urban_scene"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { days = 365 }
+
+	trigger = {
+		# Triggered by JE
+	}
+
+	immediate = {
+		save_scope_as = india_scope
+		ordered_diplomatically_relevant_country = {
+			limit = {
+				is_princely_state = yes
+				country_is_in_india = yes
+			}
+			order_by = country_rank
+			save_scope_as = relevant_country
+		}
+	}
+
+	option = {
+		name = federation_of_india.3.a
+		default_option = yes
+		trigger = {
+			NOT = {
+				has_law = law_type:law_council_republic
+			}
+		}
+		custom_tooltip = {
+			text = add_claims_on_india_tt
+			every_state = {
+				limit = {
+					state_is_in_india = yes
+					NOT = {
+						owner = ROOT
+						has_claim_by = ROOT
+					}
+				}
+				state_region = {
+					add_claim = ROOT
+				}
+			}
+		}
+		custom_tooltip = {
+			text = upset_every_princely_state_federation_tt
+			every_princely_state = {
+				change_relations = {
+					country = ROOT
+					value = -10
+				}
+				add_liberty_desire = 25
+			}
+		}
+		if = {
+			limit = {
+				exists = scope:relevant_country
+			}
+			create_incident = {
+				value = 15
+				country = scope:relevant_country
+			}
+		}
+	}
+
+	option = {
+		name = federation_of_india.3.b
+		default_option = yes
+		trigger = {
+			has_law = law_type:law_council_republic
+		}
+		custom_tooltip = {
+			text = add_claims_on_india_tt
+			every_state = {
+				limit = {
+					state_is_in_india = yes
+					NOT = {
+						owner = ROOT
+						has_claim_by = ROOT
+					}
+				}
+				state_region = {
+					add_claim = ROOT
+				}
+			}
+		}
+		custom_tooltip = {
+			text = upset_every_princely_state_federation_tt
+			every_princely_state = {
+				change_relations = {
+					country = ROOT
+					value = -10
+				}
+				add_liberty_desire = 25
+			}
+		}
+		if = {
+			limit = {
+				exists = scope:relevant_country
+			}
+			create_incident = {
+				value = 15
+				country = scope:relevant_country
+			}
+		}
+	}
+}
+
+federation_of_india.4 = {
+	type = country_event
+	placement = scope:relevant_princely_state.capital
+
+	duration = 3
+
+	title = federation_of_india.4.t
+	desc = federation_of_india.4.d
+	flavor = federation_of_india.4.f
+
+	event_image = {
+		video = "ip2_india_urban_scene"
+	}
+
+	dlc = dlc011
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	cooldown = { days = 180 } #on yearly pulse with 50% chance.
+
+	trigger = {
+		any_princely_state = {
+			is_subject_of = ROOT
+			relations:ROOT >= relations_threshold:amicable
+			liberty_desire <= 25
+			is_player = no
+		}
+	}
+
+	immediate = {
+		save_scope_as = india_scope
+		random_princely_state = {
+			limit = {
+				is_subject_of = ROOT
+				relations:ROOT >= relations_threshold:amicable
+				liberty_desire <= 25
+				is_player = no
+			}
+			save_scope_as = relevant_princely_state
+		}
+	}
+
+	option = {
+		name = federation_of_india.4.a
+		default_option = yes
+		ai_chance = {
+			base = 1
+		}
+		annex = scope:relevant_princely_state
+		change_variable = { name = indian_states_annexed add = 1 }
+		set_variable = update_privy_purse
+	}
+
+	option = {
+		name = federation_of_india.4.b
+		ai_chance = {
+			base = 0
+		}
+		scope:relevant_princely_state = {
+			make_independent = yes
+		}
+	}
+}

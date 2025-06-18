@@ -1,13 +1,13 @@
 ﻿movement_india_pan_national = {
 	category = movement_category_pan_national
 
-	ideology = ideology_sovereignist
+	ideology = ideology_sovereignist_movement
 	character_ideologies = {
 		ideology_sovereignist_leader
 		ideology_social_democrat
 		ideology_humanitarian
 	}
-	
+
 	creation_trigger = {
 		c:BIC ?= this
 		is_subject = yes
@@ -17,10 +17,10 @@
 			}
 		}
 		has_technology_researched = pan-nationalism
-	}	
+	}
 	creation_weight = {
 		value = 5000
-	}	
+	}
 	on_created = {
 		add_movement_enthusiasm_modifier = yes
 	}
@@ -60,7 +60,7 @@
 			}
 		}
 	}
-	
+
 	pop_support_trigger = {
 		culture = {
 			has_discrimination_trait = south_asian_heritage
@@ -85,6 +85,45 @@
 	pop_support_weight = {
 		if = {
 			limit = {
+				owner ?= {
+					any_political_movement = {
+						is_political_movement_type = movement_india_pan_national
+						OR = {
+							is_being_suppressed = yes
+							is_being_bolstered = yes
+						}
+						save_temporary_scope_as = affected_movement
+					}
+				}
+			}
+			if = {
+				limit = {
+					scope:affected_movement = {
+						is_being_suppressed = yes
+					}
+				}
+				add = {
+					value = 10
+					multiply = {
+						value = -0.5
+						add = owner.modifier:country_suppression_attraction_factor
+					}
+					desc = "concept_suppressed"
+				}
+			}
+			else = {
+				add = {
+					value = 10
+					multiply = {
+						value = 0.5
+						add = owner.modifier:country_bolster_attraction_factor
+					}
+					desc = "concept_bolstered"
+				}
+			}
+		}
+		if = {
+			limit = {
 				culture = {
 					has_discrimination_trait = south_asian_heritage
 				}
@@ -101,7 +140,7 @@
 					value = 30
 					desc = "POP_ACADEMICS"
 				}
-			}	
+			}
 			else_if = {
 				limit = {
 					is_pop_type = bureaucrats
@@ -110,7 +149,7 @@
 					value = 12
 					desc = "POP_BUREAUCRATS"
 				}
-			}		
+			}
 			else_if = {
 				limit = {
 					is_pop_type = clerks
@@ -151,25 +190,25 @@
 			if = {
 				limit = {
 					state = {
-						state_cultural_acceptance = {  
+						state_cultural_acceptance = {
 							target = PREV.culture
 							value < acceptance_status_5
-						}	
+						}
 					}
 				}
-				
+
 				multiply = {
-					desc = "POP_DISCRIMINATED"	
+					desc = "POP_DISCRIMINATED"
 					value = 100
-					subtract = pop_acceptance			
-					divide = 25	
-				}			
+					subtract = pop_acceptance
+					divide = 25
+				}
 			}
 			else = { # Non-discriminated pops are less likely to form separatist movements
 				multiply = {
-					desc = "POP_ACCEPTANCE"	
+					desc = "POP_ACCEPTANCE"
 					value = 0.10
-				}			
+				}
 			}
 
 			multiply = { # Illiterate pops participate at 1/10 the rate of fully literate pops
@@ -177,13 +216,13 @@
 				value = literacy_rate
 				add = 0.10
 			}
-			
+
 			multiply = { # Multiplied by 2x max
 				desc = "POP_RADICALS"
 				value = pop_radical_fraction
 				add = 1
 			}
-			
+
 			if = {
 				limit = {
 					owner ?= {
@@ -208,20 +247,20 @@
 			}
 		}
 	}
-	
+
 	revolution = {
 		possible = {
 			political_movement_support >= 0.05
-		}	
-	
+		}
+
 		weight = {
 			value = 100
 		}
-	
+
 		state_weight = {
 			add = {
 				value = state_urbanization_rate
-				multiply = 5	
+				multiply = 5
 			}
 		}
 
@@ -240,11 +279,11 @@
 			political_movement_support >= 0.05
 			scope:clout <= 0
 		}
-		
+
 		weight = {
 			value = 1000
-		}	
-		
+		}
+
 		forced_tags = {
 			BHT = {
 				trigger = {
@@ -252,9 +291,9 @@
 				}
 				weight = 1000
 			}
-		}	
+		}
 	}
-	
+
 	additional_radicalism_factors = {
 		if = {
 			limit = {
@@ -284,7 +323,7 @@
 					value = 0.10
 				}
 			}
-		}	
+		}
 		if = {
 			limit = {
 				owner ?= {
@@ -296,6 +335,6 @@
 				value = owner.liberty_desire
 				divide = 500
 			}
-		}	
+		}
 	}
 }

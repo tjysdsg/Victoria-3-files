@@ -9,7 +9,7 @@
 @panel_width_plus_30 = 570			# used to be 490
 @panel_width_plus_70 = 610			# used to be 530
 
-@diplo_play_side_width = 250
+@diplo_play_side_width = 260
 
 ### DIPLOMATIC PLAYS TEMPLATES
 template phase_image_swap {
@@ -193,6 +193,7 @@ types diplomatic_play_panel_types
 							align = nobaseline
 							parentanchor = vcenter
 							position = { 30 0 }
+							margin_left = 3
 							raw_text = "#v [DiplomaticPlay.GetNumberOfPossibleSwayCountriesFormatted( GetPlayer.Self )]#!"
 						}
 					}
@@ -216,6 +217,7 @@ types diplomatic_play_panel_types
 							align = nobaseline
 							parentanchor = vcenter
 							position = { 30 0 }
+							margin_left = 3
 							raw_text = "#v [DiplomaticPlay.GetNumberOfPossibleSwayCountriesFormatted( GetPlayer.Self )]#!"
 						}
 					}
@@ -403,8 +405,26 @@ types diplomatic_play_panel_types
 							datacontext = "[DiplomaticPlay.GetTarget]"
 							datacontext = "[DiplomaticPlay.AccessTarget]"
 						}
-						blockoverride "wargoal_datamodel" {
-							datamodel = "[DiplomaticPlay.AccessTargetWarGoals]"
+						blockoverride "wargoal_primary_datamodel" {
+							datamodel = "[DiplomaticPlay.GetTargetPrimaryWarGoals]"
+						}
+						blockoverride "wargoal_primary_datamodel_visibility" {
+							visible = "[Not(IsDataModelEmpty(DiplomaticPlay.GetTargetPrimaryWarGoals))]"
+						}
+						blockoverride "wargoal_primary_datamodel_visibility_empty" {
+							visible = "[IsDataModelEmpty(DiplomaticPlay.GetTargetPrimaryWarGoals)]"
+						}
+						blockoverride "wargoal_secondary_datamodel" {
+							datamodel = "[DiplomaticPlay.GetTargetSecondaryWarGoals]"
+						}
+						blockoverride "wargoal_secondary_datamodel_visibility" {
+							visible = "[Not(IsDataModelEmpty(DiplomaticPlay.GetTargetSecondaryWarGoals))]"
+						}
+						blockoverride "wargoal_secondary_datamodel_visibility_empty" {
+							visible = "[IsDataModelEmpty(DiplomaticPlay.GetTargetSecondaryWarGoals)]"
+						}
+						blockoverride "title_background_fade" {
+							using = fade_left_colored
 						}
 						blockoverride "side_visible_property" {
 							visible = "[And(DiplomaticPlay.IsValidWarGoalDeclarer(GetPlayer.Self),DiplomaticPlay.IsTargetOrBacker(GetPlayer.Self))]"
@@ -636,6 +656,10 @@ types diplomatic_play_panel_types
 							tooltip = "[DiplomaticPlay.GetNumLeaningMobilizedBattalionsForSideBreakdown( DiplomaticPlay.GetInitiator )]"
 						}
 
+						blockoverride "involved_battalions_alpha" {
+							alpha = "[TransparentIfZero_int32(DiplomaticPlay.GetNumLeaningTotalBattalionsForSide( DiplomaticPlay.GetInitiator ))]"
+						}
+
 						blockoverride "involved_num_mobilized_battalions" {
 							text = "[DiplomaticPlay.GetNumLeaningMobilizedBattalionsForSide( DiplomaticPlay.GetInitiator )]"
 						}
@@ -644,8 +668,12 @@ types diplomatic_play_panel_types
 							text = "[DiplomaticPlay.GetNumLeaningTotalBattalionsForSide( DiplomaticPlay.GetInitiator )]"
 						}
 
-						blockoverride "involved_FLOTILLAS_tooltip" {
+						blockoverride "involved_flotillas_tooltip" {
 							tooltip = "[DiplomaticPlay.GetNumLeaningTotalWarshipsForSideBreakdown( DiplomaticPlay.GetInitiator )]"
+						}
+
+						blockoverride "involved_flotillas_alpha" {
+							alpha = "[TransparentIfZero_int32(DiplomaticPlay.GetNumLeaningTotalWarshipsForSide( DiplomaticPlay.GetInitiator ))]"
 						}
 
 						blockoverride "involved_num_total_warships" {
@@ -667,6 +695,10 @@ types diplomatic_play_panel_types
 							tooltip = "[DiplomaticPlay.GetNumOnTheFenceBattalionsBreakdown]"
 						}
 
+						blockoverride "involved_battalions_alpha" {
+							alpha = "[TransparentIfZero_int32(DiplomaticPlay.GetNumOnTheFenceTotalBattalions)]"
+						}
+
 						blockoverride "involved_num_mobilized_battalions" {
 							text = "[DiplomaticPlay.GetNumOnTheFenceMobilizedBattalions]"
 						}
@@ -675,8 +707,12 @@ types diplomatic_play_panel_types
 							text = "[DiplomaticPlay.GetNumOnTheFenceTotalBattalions]"
 						}
 
-						blockoverride "involved_FLOTILLAS_tooltip" {
+						blockoverride "involved_flotillas_tooltip" {
 							tooltip = "[DiplomaticPlay.GetNumOnTheFenceWarshipsBreakdown]"
+						}
+
+						blockoverride "involved_flotillas_alpha" {
+							alpha = "[TransparentIfZero_int32(DiplomaticPlay.GetNumOnTheFenceTotalWarships)]"
 						}
 
 						blockoverride "involved_num_total_warships" {
@@ -698,6 +734,10 @@ types diplomatic_play_panel_types
 							tooltip = "[DiplomaticPlay.GetNumLeaningMobilizedBattalionsForSideBreakdown( DiplomaticPlay.GetTarget )]"
 						}
 
+						blockoverride "involved_battalions_alpha" {
+							alpha = "[TransparentIfZero_int32(DiplomaticPlay.GetNumLeaningTotalBattalionsForSide( DiplomaticPlay.GetTarget ))]"
+						}
+
 						blockoverride "involved_num_mobilized_battalions" {
 							text = "[DiplomaticPlay.GetNumLeaningMobilizedBattalionsForSide( DiplomaticPlay.GetTarget )]"
 						}
@@ -706,8 +746,12 @@ types diplomatic_play_panel_types
 							text = "[DiplomaticPlay.GetNumLeaningTotalBattalionsForSide( DiplomaticPlay.GetTarget )]"
 						}
 
-						blockoverride "involved_FLOTILLAS_tooltip" {
+						blockoverride "involved_flotillas_tooltip" {
 							tooltip = "[DiplomaticPlay.GetNumLeaningTotalWarshipsForSideBreakdown( DiplomaticPlay.GetTarget )]"
+						}
+
+						blockoverride "involved_flotillas_alpha" {
+							alpha = "[TransparentIfZero_int32(DiplomaticPlay.GetNumLeaningTotalWarshipsForSide( DiplomaticPlay.GetTarget ))]"
 						}
 
 						blockoverride "involved_num_total_warships" {
@@ -788,8 +832,8 @@ types diplomatic_play_panel_types
 						position = { 0 10 }
 						parentanchor = center
 						autoresize = yes
-						minimumsize = { 300 -1 }
-						maximumsize = { 300 -1 }
+						minimumsize = { 280 -1 }
+						maximumsize = { 280 -1 }
 						multiline = yes
 						text = "DIPLO_PLAY_CANNOT_SWAY"
 						default_format = "#title"
@@ -803,8 +847,8 @@ types diplomatic_play_panel_types
 						position = { 0 10 }
 						parentanchor = center
 						autoresize = yes
-						minimumsize = { 300 -1 }
-						maximumsize = { 300 -1 }
+						minimumsize = { 280 -1 }
+						maximumsize = { 280 -1 }
 						multiline = yes
 						text = "DIPLO_PLAY_CLICK_TO_SET_STANCE"
 						default_format = "#title"
@@ -818,8 +862,8 @@ types diplomatic_play_panel_types
 						position = { 0 10 }
 						parentanchor = center
 						autoresize = yes
-						minimumsize = { 300 -1 }
-						maximumsize = { 300 -1 }
+						minimumsize = { 280 -1 }
+						maximumsize = { 280 -1 }
 						multiline = yes
 						text = "DIPLO_PLAY_CLICK_TO_SWAY"
 						default_format = "#title"
@@ -833,8 +877,8 @@ types diplomatic_play_panel_types
 						position = { 0 10 }
 						parentanchor = center
 						autoresize = yes
-						minimumsize = { 300 -1 }
-						maximumsize = { 300 -1 }
+						minimumsize = { 280 -1 }
+						maximumsize = { 280 -1 }
 						multiline = yes
 						text = "DIPLO_PLAY_CLICK_TO_SET_STANCE"
 						default_format = "#title"
@@ -1168,39 +1212,53 @@ types custom_popup_types
 			
 			flowcontainer = {
 				block "involved_battalions_tooltip" {}
+				minimumsize = { 140 -1 }
+				spacing = 3
+
+				block "involved_battalions_alpha" {}
 
 				icon = {
 					size = { 22 22 }
 					texture = "gfx/interface/icons/generic_icons/battalions.dds"
 					parentanchor = vcenter
 				}
+
 				textbox = {
 					size = { 40 25 }
 					block "involved_num_mobilized_battalions" {}
 					align = nobaseline
 					default_format = "#v"
+					autoresize = yes
 				}
+
 				textbox = {
 					size = { 10 25 }
 					raw_text = "/"
 					align = center|nobaseline
+					autoresize = yes
 				}
+
 				textbox = {
 					size = { 40 25 }
 					block "involved_num_total_battalions" {}
 					align = nobaseline
-					margin_left = 7
+					autoresize = yes
 				}
 			}
 			
 			flowcontainer = {
-				block "involved_FLOTILLAS_tooltip" {}
+				block "involved_flotillas_tooltip" {}
+				minimumsize = { 140 -1 }
+				spacing = 3
+
+				block "involved_flotillas_alpha" {}
 
 				icon = {
 					size = { 22 22 }
 					texture = "gfx/interface/icons/generic_icons/flotillas.dds"
 					parentanchor = vcenter
 				}
+
 				textbox = {
 					size = { 40 25 }
 					block "involved_num_total_warships" {}
@@ -1248,7 +1306,7 @@ types custom_popup_types
 		
 		### TOTAL MOBILIZED
 		flowcontainer = {
-			margin = { 5 10 }
+			margin = { 0 10 }
 			direction = vertical
 			block "parentanchor" {}
 			minimumsize = { @diplo_play_side_width -1 }
@@ -1269,7 +1327,8 @@ types custom_popup_types
 
 				flowcontainer = {				
 					tooltip = "DIPLO_PLAY_TOTAL_MOBILIZED_BATTALIONS_BREAKDOWN"
-					
+					alpha = "[TransparentIfZero_int32(DiplomaticPlay.GetTotalNumMobilizedBattalionsForSide( Country.Self ))]"
+						
 					icon = {
 						size = { 25 25 }
 						texture = "gfx/interface/icons/generic_icons/battalions.dds"
@@ -1290,6 +1349,8 @@ types custom_popup_types
 				flowcontainer = {
 					spacing = 5
 					tooltip = "DIPLO_PLAY_TOTAL_FLOTILLAS_BREAKDOWN"
+					alpha = "[TransparentIfZero_int32(DiplomaticPlay.GetTotalNumWarshipsForSide( Country.Self ))]"
+					
 					
 					icon = {
 						size = { 25 25 }
@@ -1314,25 +1375,23 @@ types custom_popup_types
 		
 		### HEADER
 		flowcontainer = {
-			margin = { 5 0 }
 			block "parentanchor" {}
 			spacing = 5
 			
 			textbox = {
 				autoresize = yes
-				using = fontsize_xxl
 				block "header_text" {
 					text = "DIPLO_PLAY_INITIATOR"
 				}
 				align = nobaseline
 				default_format = "#title"
-			}						
+			}
+
 			textbox = {
 				block "side_visible_property" {
 					visible = "[DiplomaticPlay.IsInitiator(GetPlayer.Self)]"
 				}
 				autoresize = yes
-				using = fontsize_large
 				text = "DIPLO_PLAY_YOU"
 				align = nobaseline
 				parentanchor = vcenter
@@ -1341,18 +1400,18 @@ types custom_popup_types
 
 		### CONFIDENCE
 		flowcontainer = {
-			margin = { 5 0 }
 			block "parentanchor" {}
 			spacing = 5
+
 			block "confidence_tooltip" {
 				tooltip = "[DiplomaticPlay.GetConfidenceDesc(DiplomaticPlay.GetInitiator)]"
 			}
 			
 			textbox = {
 				autoresize = yes
-				using = fontsize_large
+				using = fontsize_xl
 				block "confidence_text" {
-					text = "[DiplomaticPlay.GetConfidenceLabel(DiplomaticPlay.GetInitiator)]"
+					raw_text = "[DiplomaticPlay.GetConfidenceLabel(DiplomaticPlay.GetInitiator)]"
 				}
 				align = nobaseline
 			}	
@@ -1360,7 +1419,6 @@ types custom_popup_types
 		
 		### MANEUVERS
 		flowcontainer = {
-			margin = { 5 0 }
 			block "parentanchor" {}
 			spacing = 3
 			block "maneuvers_tooltip" {
@@ -1385,36 +1443,25 @@ types custom_popup_types
 		
 		### FLAG + TROOPS
 		flowcontainer = {
-			margin_top = 30
-			margin_bottom = 10
+			margin = { 0 15 }
 			block "parentanchor" {}
 			block "flowcontainers_direction" {}
+			spacing = 10
 
 			# flag
-			container = {
-				widget = {
-					size = { 100% 100% }
-					icon = {
-						block "side_visible_property" {
-							visible = "[DiplomaticPlay.IsInitiator(GetPlayer.Self)]"
-						}
-						parentanchor = center
-						using = rotate_glow_animation_02
-						size = { 220 220 }
-					}
-				}
-				flowcontainer = {
-					margin = { 5 0 }
-					large_flag = {
-						mobilization_icon_flag = {}
-					}
+			large_flag = {
+				parentanchor = vcenter
+				mobilization_icon_flag = {}
+
+				blockoverride "is_player_glow" {
+					visible = no
 				}
 			}
-			
-			widget = { size = { 5 5 }}
 
 			# troops
 			container = {
+				parentanchor = vcenter
+
 				icon = {
 					block "side_visible_not_property" {
 						visible = "[Not(DiplomaticPlay.IsInitiator(GetPlayer.Self))]"
@@ -1435,7 +1482,8 @@ types custom_popup_types
 				
 				flowcontainer = {
 					direction = vertical
-					margin = { 10 3 }
+					margin = { 10 7 }
+					minimumsize = { 150 -1 }
 					
 					flowcontainer = {
 						tooltip = "PANEL_MILITARY_ARMY_OVERVIEW_TOOLTIP"
@@ -1449,15 +1497,20 @@ types custom_popup_types
 
 						textbox = {
 							autoresize = yes
-							minimumsize = { 40 30 }
+							minimumsize = { 48 25 }
+							maximumsize = { 48 25 }
+							using = elide_fontsize_min
 							raw_text = "#v [Country.GetBattalions]#!"
 							align = nobaseline
 						}
 
 						textbox = {
 							autoresize = yes
-							minimumsize = { 40 30 }
-							raw_text = "(#v [Country.GetFullyMobilizedBattalionsPercentageRaw|0%]#!)"
+							minimumsize = { 48 25 }
+							maximumsize = { 48 25 }
+							using = elide_fontsize_min
+							alpha = "[TransparentIfZero(Country.GetMobilizationRatio)]"
+							raw_text = "#v [Country.GetMobilizationRatio|0%]#! @mobilization!"
 							align = nobaseline
 						}
 					}
@@ -1465,6 +1518,7 @@ types custom_popup_types
 					flowcontainer = {
 						tooltip = "PANEL_MILITARY_NAVY_CURRENT_FLOTILLAS_TOOLTIP"
 						spacing = 5
+						alpha = "[TransparentIfZero_int32(Country.GetWarships)]"
 
 						icon = {
 							size = { 25 25 }
@@ -1550,102 +1604,549 @@ types custom_popup_types
 			direction = vertical
 			spacing = 5
 			block "parentanchor" {}
-			
-			textbox = {
-				block "parentanchor" {}
-				text = "WARGOALS"
-				autoresize = yes
-				align = nobaseline
-				margin = { 5 0 }
-				default_format = "#title"
-			}
 
 			add_wargoal_button = {
 				block "side_visible_property" {
 					visible = "[And(DiplomaticPlay.IsValidWarGoalDeclarer(GetPlayer.Self),DiplomaticPlay.IsInitiatorOrBacker(GetPlayer.Self))]"
 				}
 			}
+
+			widget = {
+				size = { 100% 26 }
+
+				background = {
+					block "title_background_fade" {
+						using = fade_right_colored
+					}
+					
+					color = "[Country.GetMapColor]"
+					margin_bottom = 3
+				}
 			
+				textbox = {
+					block "parentanchor" {}
+					text = "PRIMARY_WARGOALS"
+					autoresize = yes
+					align = nobaseline
+					margin = { 5 0 }
+					default_format = "#title"
+					margin_top = 3
+				}
+			}
+
+			textbox = {
+				block "wargoal_primary_datamodel_visibility_empty" {
+					visible = "[IsDataModelEmpty(DiplomaticPlay.GetInitiatorPrimaryWarGoals)]"
+				}
+
+				block "parentanchor" {}
+				text = "NO_PRIMARY_WARGOALS"
+				autoresize = yes
+				align = nobaseline
+				margin = { 5 0 }
+				using = empty_state_text_properties
+				margin_top = 3
+
+			}
+
 			flowcontainer = {
 				spacing = 2
 				direction = vertical
-				block "wargoal_datamodel" {
-					datamodel = "[DiplomaticPlay.AccessInitiatorWarGoals]"
+
+				block "wargoal_primary_datamodel_visibility" {
+					visible = "[Not(IsDataModelEmpty(DiplomaticPlay.GetInitiatorPrimaryWarGoals))]"
+				}
+
+				block "wargoal_primary_datamodel" {
+					datamodel = "[DiplomaticPlay.GetInitiatorPrimaryWarGoals]"
 				}
 				
 				item = {
-					flowcontainer = {
-						margin = { 0 5 }
-						margin_left = 10
-						spacing = 3
+					container = {
+						war_goal_item = {
+							visible = "[WarGoal.HoldsArticle]"
 
-						background = {
-							using = entry_bg
+							blockoverride "war_goal_tooltip" {
+								tooltipwidget = {
+									RegularTooltip_WarGoalArticle = {
+										datacontext = "[WarGoal.GetArticleDraft]"
+									}
+								}
+							}
+						}
+
+						war_goal_item = {
+							visible = "[Not(WarGoal.HoldsArticle)]"
+						}
+
+						icon = {
 							visible = "[WarGoal.IsPrimaryDemand]"
+							using = highlighted_active_square_selection
+						}
+					}
+				}
+			}
+
+			divider_clean = {}
+
+			textbox = {
+				block "parentanchor" {}
+				text = "SECONDARY_WARGOALS"
+				autoresize = yes
+				align = nobaseline
+				margin = { 5 0 }
+				default_format = "#title"
+				margin_top = 3
+
+			}
+
+			textbox = {
+				block "wargoal_secondary_datamodel_visibility_empty" {
+					visible = "[IsDataModelEmpty(DiplomaticPlay.GetInitiatorSecondaryWarGoals)]"
+				}
+
+				block "parentanchor" {}
+				text = "NO_SECONDARY_WARGOALS"
+				autoresize = yes
+				align = nobaseline
+				margin = { 5 0 }
+				using = empty_state_text_properties
+				margin_top = 3
+
+			}
+
+			flowcontainer = {
+				spacing = 2
+				direction = vertical
+
+				block "wargoal_secondary_datamodel_visibility" {
+					visible = "[Not(IsDataModelEmpty(DiplomaticPlay.GetInitiatorSecondaryWarGoals))]"
+				}
+				
+				block "wargoal_secondary_datamodel" {
+					datamodel = "[DiplomaticPlay.GetInitiatorSecondaryWarGoals]"
+				}
+				
+				item = {
+					container = {
+						war_goal_item = {
+							visible = "[WarGoal.HoldsArticle]"
+
+							blockoverride "war_goal_tooltip" {
+								tooltipwidget = {
+									RegularTooltip_WarGoalArticle = {
+										datacontext = "[WarGoal.GetArticleDraft]"
+									}
+								}
+							}
 						}
 
-						background = {
-							using = entry_bg_simple
-							visible = "[Not(WarGoal.IsPrimaryDemand)]"
-							margin_left = 1
-							margin_right = 1
+						war_goal_item = {
+							visible = "[Not(WarGoal.HoldsArticle)]"
 						}
 
-
-						minimumsize = { @diplo_play_side_width 40 }
-						maximumsize = { @diplo_play_side_width -1 }
-						tooltip = "WARGOAL_ACTIVE_TOOLTIP"
-						onmousehierarchyenter = "[WarGoal.ShowHighlight]"
-						onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
-						alwaystransparent = no
-						direction = vertical
-
-						flowcontainer = {
-							spacing = 5
-							icon = {
-								size = { 28 28 }
-								texture = "[WarGoal.GetTexture]"
-								parentanchor = vcenter
-							}
-									
-							textbox = {
-								autoresize = yes
-								minimumsize = { 200 -1 }
-								maximumsize = { 200 -1 }
-								raw_text = "#BOLD [WarGoal.GetName]#!"
-								align = nobaseline
-								parentanchor = vcenter
-								multiline = yes
-								margin_left = 5
-							}
+						icon = {
+							visible = "[WarGoal.IsPrimaryDemand]"
+							using = highlighted_active_square_selection
 						}
-						
-						flowcontainer = {
-							spacing = 5
-							tiny_flag = {
-								parentanchor = vcenter
-								datacontext = "[WarGoal.GetHolder]"
-							}
-							
-							button = {
-								visible = "[And(Not(WarGoal.IsPrimaryDemand), WarGoal.GetCreator.IsLocalPlayer)]"
-								using = default_button
-								size = { 200 30 }
-								text = "DIPLO_PLAY_MAKE_PRIMARY_DEMAND"
-								tooltip = "DIPLO_PLAY_MAKE_PRIMARY_DEMAND_TOOLTIP"
-								enabled = "[IsValid(WarGoal.MakeWarGoalPrimaryDemand(GetPlayer.Self))]"
-								onclick = "[Execute(WarGoal.MakeWarGoalPrimaryDemand(GetPlayer.Self))]"
-								parentanchor = vcenter
-							}
-							
-							textbox = {
-								size = { 200 30 }
-								text = "[concept_primary_demand]"
-								visible = "[WarGoal.IsPrimaryDemand]"
-								align = nobaseline
-								parentanchor = vcenter
-								margin_left = 5
-							}								
+					}
+				}
+			}
+		}
+	}
+
+	type war_goal_item = flowcontainer {
+		margin = { 0 5 }
+		margin_left = 10
+		spacing = 3
+		minimumsize = { @diplo_play_side_width 40 }
+		maximumsize = { @diplo_play_side_width -1 }
+		onmousehierarchyenter = "[WarGoal.ShowHighlight]"
+		onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
+		alwaystransparent = no
+		direction = vertical
+
+		block "war_goal_tooltip" {
+			tooltipwidget = {
+				RegularTooltip_WarGoal = {}
+			}
+		}
+
+		background = {
+			visible = "[And(Not(WarGoal.HoldsArticle), Not(WarGoal.IsPrimaryDemand))]"
+			using = entry_bg_simple
+			margin_left = 1
+			margin_right = 1
+		}
+
+		background = {
+			visible = "[And(Not(WarGoal.HoldsArticle), WarGoal.IsPrimaryDemand)]"
+			using = entry_bg_simple_solid
+			margin_left = 1
+			margin_right = 1
+		}
+
+		background = {
+			visible = "[And(WarGoal.HoldsArticle, Not(WarGoal.IsPrimaryDemand))]"
+			using = paper_bg_light
+			margin_left = 1
+			margin_right = 1
+		}
+
+		background = {
+			visible = "[And(WarGoal.HoldsArticle, WarGoal.IsPrimaryDemand)]"
+			using = paper_bg
+			margin_left = 1
+			margin_right = 1
+		}
+
+		flowcontainer = {
+			spacing = 5
+
+			background = {
+				visible = "[WarGoal.IsPrimaryDemand]"
+				using = fade_right_simple
+				margin = { 10 0 }
+			}
+
+			icon = {
+				visible = "[WarGoal.HoldsArticle]"
+				size = { 28 28 }
+				parentanchor = vcenter
+				texture = "[WarGoal.GetArticleType.GetIcon]"
+			}
+
+			icon = {
+				visible = "[Not(WarGoal.HoldsArticle)]"
+				size = { 28 28 }
+				parentanchor = vcenter
+				texture = "[WarGoal.GetTexture]"
+			}
+					
+			textbox = {
+				visible = "[WarGoal.IsPrimaryDemand]"
+				autoresize = yes
+				minimumsize = { 207 -1 }
+				maximumsize = { 207 -1 }
+				align = nobaseline
+				parentanchor = vcenter
+				multiline = yes
+				margin_left = 5
+				raw_text = "#b [WarGoal.GetName]#!"
+			}
+
+			textbox = {
+				visible = "[And(Not(WarGoal.HoldsArticle), Not(WarGoal.IsPrimaryDemand))]"
+				autoresize = yes
+				minimumsize = { 207 -1 }
+				maximumsize = { 207 -1 }
+				align = nobaseline
+				parentanchor = vcenter
+				multiline = yes
+				margin_left = 5
+				raw_text = "[WarGoal.GetName]"
+			}
+
+			treaty_textbox = {
+				visible = "[And(WarGoal.HoldsArticle, Not(WarGoal.IsPrimaryDemand))]"
+				autoresize = yes
+				minimumsize = { 207 -1 }
+				maximumsize = { 207 -1 }
+				align = nobaseline
+				parentanchor = vcenter
+				multiline = yes
+				margin_left = 5
+				raw_text = "[WarGoal.GetName]"
+			}
+		}
+
+		### ARTICLE INPUT INFORMATION AREA
+		war_goal_article_inputs = {
+			visible = "[And(And(WarGoal.HoldsArticle, WarGoal.GetArticleType.RequiresAnyInput), Not(WarGoal.IsPrimaryDemand))]"
+		}
+
+		### ARTICLE INPUT INFORMATION AREA - PRIMARY DEMAND - CHANGES TEXTFORMATTING
+		war_goal_article_inputs = {
+			visible = "[And(And(WarGoal.HoldsArticle, WarGoal.GetArticleType.RequiresAnyInput), WarGoal.IsPrimaryDemand)]"
+			blockoverride "treaty_textbox_default_format" {}
+		}
+		
+		flowcontainer = {
+			spacing = 5
+			margin_bottom = 5
+
+			tiny_flag = {
+				parentanchor = vcenter
+				datacontext = "[WarGoal.GetHolder]"
+			}
+			
+			button = {
+				visible = "[And(Not(WarGoal.IsPrimaryDemand), WarGoal.GetCreator.IsLocalPlayer)]"
+				using = default_button
+				size = { 175 30 }
+				tooltip = "DIPLO_PLAY_MAKE_PRIMARY_DEMAND_TOOLTIP"
+				enabled = "[IsValid(WarGoal.MakeWarGoalPrimaryDemand(GetPlayer.Self))]"
+				onclick = "[Execute(WarGoal.MakeWarGoalPrimaryDemand(GetPlayer.Self))]"
+				parentanchor = vcenter
+
+				textbox = {
+					parentanchor = vcenter
+					position = { 10 0 }
+					autoresize = yes
+					align = nobaseline
+					using = elide_fontsize_min
+					max_width = 120
+					text = "DIPLO_PLAY_MAKE_PRIMARY_DEMAND"
+				}
+
+				textbox = {
+					parentanchor = right|vcenter
+					position = { -10 0 }
+					autoresize = yes
+					align = nobaseline
+					using = elide_fontsize_min
+					max_width = 35
+					raw_text = "@maneuvers![WarGoal.CalcMakePrimaryDemandManeuversCost|v]"
+				}
+			}
+			
+			textbox = {
+				visible = "[WarGoal.IsPrimaryDemand]"
+				size = { 175 30 }
+				text = "[concept_primary_demand]"
+				align = nobaseline
+				parentanchor = vcenter
+				margin_left = 5
+			}
+
+			icon = {
+				visible = "[Not(Or(WarGoal.GetCreator.IsLocalPlayer, WarGoal.IsPrimaryDemand))]"
+				size = { 25 25 }
+				parentanchor = vcenter
+				texture = "gfx/interface/icons/generic_icons/turns_into.dds"
+			}
+
+			tiny_flag = {
+				parentanchor = vcenter
+				datacontext = "[WarGoal.GetTarget]"
+			}							
+		}
+	}
+
+	type war_goal_article_inputs = flowcontainer {
+		minimumsize = { 240 30 }
+		datacontext = "[WarGoal.GetArticleDraft]"
+		datacontext = "[WarGoal.GetArticleType]"
+
+		flowcontainer = {
+			direction = vertical
+			spacing = 5
+
+			### MUTUAL AGREEMENT
+			treaty_textbox = {
+				visible = "[ArticleDraft.HasKind('mutual')]"
+				text = "[ArticleDraft.GetShortDesc]"
+				autoresize = yes
+				maximumsize = { 240 60 }
+				align = nobaseline
+				using = elide_fontsize_min
+				multiline = yes
+			}
+
+			### NO INPUT DIRECTED ARTICLES
+			treaty_textbox = {
+				visible = "[And(Not(ArticleDraft.HasKind('mutual')), Not(ArticleDraft.RequiresAnyInput))]"
+				text = "[ArticleDraft.GetShortDesc]"
+				autoresize = yes
+				maximumsize = { 240 60 }
+				align = nobaseline
+				using = elide_fontsize_min
+				multiline = yes
+			}
+
+			### MONEY TRANSFER
+			widget = {
+				visible = "[ArticleDraft.HasType('money_transfer')]"
+				size = { 230 30 }
+
+				treaty_textbox = {
+					parentanchor = vcenter
+					autoresize = yes
+					align = nobaseline
+					max_width = 230
+					using = elide_fontsize_min
+					text = "TREATY_DRAFT_SELECTED_MONEY_ARTICLE_AMOUNT"
+				}
+			}
+
+			### STATE INPUT
+			widget = {
+				visible = "[ArticleDraft.RequiresInput('state')]"
+				size = { 230 30 }
+				datacontext = "[ArticleDraft.GetState]"
+
+				treaty_textbox = {
+					parentanchor = vcenter
+					autoresize = yes
+					align = nobaseline
+					max_width = 230
+					using = elide_fontsize_min
+					raw_text = "[State.GetCountry.GetFlagTextIcon] [State.GetNameNoFormatting]"
+				}
+			}
+
+			### STRATEGIC REGION INPUT
+			widget = {
+				visible = "[ArticleDraft.RequiresInput('strategic_region')]"
+				datacontext = "[ArticleDraft.GetStrategicRegion]"
+				size = { 230 30 }
+
+				treaty_textbox = {
+					parentanchor = vcenter
+					autoresize = yes
+					align = nobaseline
+					max_width = 230
+					using = elide_fontsize_min
+					raw_text = "[StrategicRegion.GetNameNoFormatting]"
+				}
+			}
+
+			### GOODS TRANSFER
+			widget = {
+				visible = "[ArticleDraft.HasType('goods_transfer')]"
+				size = { 230 30 }
+				datacontext = "[ArticleDraft.GetGoods]"
+
+				widget = {
+					parentanchor = vcenter
+					size = { 230 30 }
+
+					treaty_textbox = {
+						text = "TREATY_DRAFT_SELECTED_ARTICLE_AMOUNT"
+						parentanchor = vcenter
+						autoresize = yes
+						align = nobaseline
+						margin_left = 30
+						max_width = 230
+						using = elide_fontsize_min
+					}
+
+					icon = {
+						texture = "[Goods.GetTexture]"
+						parentanchor = vcenter
+						size = { 26 26 }
+					}
+				}
+			}
+
+			### GOODS INPUT GENERIC
+			widget = {
+				visible = "[And(ArticleDraft.RequiresInput('goods'), Not(ArticleDraft.HasType('goods_transfer')))]"
+				size = { 230 30 }
+				datacontext = "[ArticleDraft.GetGoods]"
+
+				widget = {
+					parentanchor = vcenter
+					size = { 230 30 }
+
+					treaty_textbox = {
+						text = "[Goods.GetNameNoFormatting]"
+						parentanchor = vcenter
+						autoresize = yes
+						align = nobaseline
+						margin_left = 30
+						max_width = 220
+						using = elide_fontsize_min
+					}
+
+					icon = {
+						texture = "[Goods.GetTexture]"
+						parentanchor = vcenter
+						size = { 26 26 }
+					}
+				}
+			}
+
+			### COMPANY MONOPOLY
+			flowcontainer = {
+				visible = "[ArticleDraft.HasType('acquire_monopoly_for_company')]"
+				direction = vertical
+				spacing = 5
+
+				widget = {
+					size = { 230 30 }
+					datacontext = "[ArticleDraft.GetCompany]"
+
+					treaty_textbox = {
+						parentanchor = vcenter
+						autoresize = yes
+						align = nobaseline
+						max_width = 230
+						margin_left = 30
+						using = elide_fontsize_min
+						text = "[Company.GetNameNoFormatting]"
+					}
+
+					icon = {
+						parentanchor = vcenter
+						size = { 26 26 }
+						texture = "[Company.GetCompanyType.GetIcon]"
+					}
+				}
+
+				widget = {
+					size = { 230 30 }
+					datacontext = "[ArticleDraft.GetBuildingType]"
+
+					treaty_textbox = {
+						parentanchor = vcenter
+						autoresize = yes
+						align = nobaseline
+						max_width = 230
+						margin_left = 30
+						using = elide_fontsize_min
+						text = "[BuildingType.GetNameNoFormatting]"
+					}
+
+					icon = {
+						parentanchor = vcenter
+						size = { 26 26 }
+						texture = "[BuildingType.GetIcon]"
+					}
+				}
+			}
+
+			### LAW TYPE INPUT GENERIC
+			widget = {
+				visible = "[ArticleDraft.RequiresInput('law_type')]"
+				size = { 230 60 }
+				datacontext = "[ArticleDraft.GetLawType]"
+
+				widget = {
+					parentanchor = vcenter
+					size = { 230 50 }
+
+					treaty_textbox = {
+						text = "[LawType.GetNameNoFormatting]"
+						parentanchor = vcenter
+						autoresize = yes
+						minimumsize = { 230 20 }
+						maximumsize = { 230 50 }
+						align = nobaseline
+						margin_left = 55
+						multiline = yes
+						using = elide_fontsize_min
+					}
+
+					icon = {
+						texture = "gfx/interface/backgrounds/round_button_bg.dds"
+						parentanchor = vcenter
+						size = { 50 50 }
+
+						icon = {
+							texture = "[LawType.GetTexture]"
+							parentanchor = center
+							size = { 70% 70% }
 						}
 					}
 				}
@@ -1722,10 +2223,27 @@ types custom_popup_types
 	type add_wargoal_button = button {
 		using = default_button
 		size = { @diplo_play_side_width 40 }
-		text = "DIPLO_PLAY_ADD_WARGOAL"
+		
 		tooltip = "ADD_WARGOAL_TOOLTIP"
 		enabled = "[DiplomaticPlay.CanAddWarGoal(GetPlayer.Self)]"
 		onclick = "[InformationPanelBar.OpenAddWarGoalPanel( DiplomaticPlay.Self, GetPlayer.Self )]"
+
+		flowcontainer = {
+			parentanchor = center
+
+			icon = {
+				size = { 30 30 }
+				texture = "gfx/interface/buttons/button_icons/plus.dds"
+				parentanchor = vcenter
+			}
+
+			textbox = {
+				text = "DIPLO_PLAY_ADD_WARGOAL"
+				autoresize = yes
+				align = nobaseline
+				parentanchor = vcenter
+			}
+		}
 	}
 
 	type diplomatic_play_stance_lane_backer = flowcontainer {
@@ -2014,6 +2532,10 @@ types custom_popup_types
 										blockoverride "icon" {
 											texture = "gfx/interface/icons/generic_icons/approval_icon.dds"
 										}
+
+										blockoverride "icon_size" {
+											size = { 75% 75% }
+										}
 									}
 
 									# DISAPPROVAL ICON
@@ -2134,7 +2656,7 @@ types custom_popup_types
 								autoresize = yes
 								raw_text = "COUNTRY_MOBILIZATION_SWAY_PANEL"
 								align = nobaseline
-								visible = "[NotZero_CFixedPoint(Country.GetFullyMobilizedBattalionsPercentageRaw)]"
+								visible = "[NotZero_CFixedPoint(Country.GetMobilizationRatio)]"
 								elide = left
 								fontsize_min = 12
 								maximumsize = { 130 -1 }
@@ -2654,7 +3176,7 @@ types custom_popup_types
 
 								# Mobilization
 								textbox = {
-									visible = "[NotZero_CFixedPoint(Country.GetFullyMobilizedBattalionsPercentageRaw)]"
+									visible = "[NotZero_CFixedPoint(Country.GetMobilizationRatio)]"
 									autoresize = yes
 									align = nobaseline
 									elide = left

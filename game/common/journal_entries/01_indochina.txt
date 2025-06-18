@@ -1,0 +1,83 @@
+﻿je_indochina = {
+	icon = "gfx/interface/icons/event_icons/event_military.dds"
+
+	group = je_group_foreign_affairs
+
+	immediate = {
+		random_country = {
+			limit = {
+				has_variable = indochina_campaign_target
+			}
+			save_scope_as = indochina_conquest_target
+			capital = {
+				state_region = {
+					set_variable = indochina_capital_state
+					save_scope_as = indochina_capital_state_scope
+				}
+			}
+		}
+		set_global_variable = indochina_intervention_happened
+	}
+
+	complete = {
+		is_subject = no
+		is_at_war = no
+		OR = {
+			trigger_if = {
+				limit = {
+					exists = scope:indochina_conquest_target
+				}
+				custom_tooltip = {
+					text = conquered_indochina_target_tt
+					NOT = { exists = scope:indochina_conquest_target }
+				}
+			}
+			trigger_else = {
+				custom_tooltip = {
+					text = conquered_indochina_target_blank_tt
+					NOT = { exists = scope:indochina_conquest_target }
+				}
+			}
+			AND = {
+				exists = scope:indochina_conquest_target
+				scope:indochina_conquest_target ?= { is_subject_of = ROOT }
+			}
+		}
+		custom_tooltip = {
+			text = indochina_state_controlled_by_us_or_puppet
+			any_state = {
+				OR = {
+					owner = ROOT
+					owner = { is_subject_of = ROOT }
+				}
+				state_region = {
+					has_variable = indochina_capital_state
+				}
+			}
+		}
+		custom_tooltip = {
+			text = indochina_five_states_conquered
+			any_state = {
+				OR = {
+					owner = ROOT
+					owner = { is_subject_of = ROOT }
+				}
+				region = sr:region_indochina
+				count >= 5
+			}
+		}
+	}
+
+	on_complete = {
+		trigger_event = { id = indochina.4 }
+	}
+
+	weight = 100
+
+	transferable = no
+
+	invalid = {
+	}
+
+	should_be_pinned_by_default = yes
+}

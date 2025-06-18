@@ -5,12 +5,12 @@
 		unit_morale_loss_mult = -1
 		battle_combat_width_mult = 10
 	}
-	
+
 	instant_switch = {
-		NOR = { 
+		NOR = {
 			has_battle_condition = battle_condition_panicked_retreat
 			has_battle_condition = battle_condition_controlled_retreat
-		}	
+		}
 		current_manpower > {
 			value = opposite_battle_side.current_manpower
 			multiply = {
@@ -36,7 +36,7 @@
 			}
 		}
 	}
-	
+
 	weight = 1
 }
 
@@ -50,10 +50,10 @@ battle_condition_panicked_retreat = {
 		unit_morale_loss_mult = 0.5
 		unit_recovery_rate_add = -0.5
 	}
-	
+
 	instant_switch = {
-		NOR = { 
-			has_battle_condition = battle_condition_controlled_retreat 
+		NOR = {
+			has_battle_condition = battle_condition_controlled_retreat
 			opposite_battle_side = {
 				has_battle_condition = battle_condition_panicked_retreat
 			}
@@ -77,7 +77,7 @@ battle_condition_panicked_retreat = {
 			}
 		}
 	}
-	
+
 	weight = 1
 }
 
@@ -89,10 +89,10 @@ battle_condition_controlled_retreat = {
 		unit_morale_damage_mult = -0.75
 		unit_recovery_rate_add = 0.25
 	}
-	
+
 	instant_switch = {
 		NOR = {
-			has_battle_condition = battle_condition_panicked_retreat 
+			has_battle_condition = battle_condition_panicked_retreat
 			opposite_battle_side = {
 				OR = {
 					has_battle_condition = battle_condition_panicked_retreat
@@ -100,7 +100,7 @@ battle_condition_controlled_retreat = {
 				}
 			}
 		}
-		scope:character ?= { 
+		scope:character ?= {
 			experience_level > 5
 		}
 		current_manpower < {
@@ -108,7 +108,7 @@ battle_condition_controlled_retreat = {
 			multiply = 0.2
 		}
 	}
-	
+
 	weight = {
 		add = 1
 		scope:character ?= {
@@ -125,12 +125,12 @@ battle_condition_dug_in = { #defender only
 		unit_morale_loss_mult = -0.1
 		unit_army_defense_mult = 0.2
 	}
-	
+
 	possible = {
 		scope:is_advancing_side = no
 		exists = scope:character
-		scope:character = { 
-			has_role = general 
+		scope:character = {
+			has_role = general
 		}
 		NOT = { has_battle_condition = battle_condition_aggressive_maneuver }
 	}
@@ -169,12 +169,12 @@ battle_condition_charted_terrain = {
 
 	possible = {
 		exists = scope:character
-		scope:character = { 
-			has_role = general 
+		scope:character = {
+			has_role = general
 		}
 		NOT = { has_battle_condition = battle_condition_blunder }
 	}
-	
+
 	weight = {
 		value = 1
 		multiply = {
@@ -197,17 +197,17 @@ battle_condition_rapid_advance = { #attacker only
 	possible = {
 		scope:is_advancing_side = yes
 		exists = scope:character
-		scope:character = { 
-			has_role = general 
+		scope:character = {
+			has_role = general
 		}
 	}
-	
+
 	weight = {
 		value = 1
 		if = {
 			limit = {
-				scope:character = { 
-					has_trait = plains_commander 
+				scope:character = {
+					has_trait = plains_commander
 				}
 				province = { has_label = label_flat }
 			}
@@ -215,8 +215,8 @@ battle_condition_rapid_advance = { #attacker only
 		}
 		if = {
 			limit = {
-				scope:character = { 
-					has_trait = forest_commander 
+				scope:character = {
+					has_trait = forest_commander
 				}
 				province = { has_label = label_forested }
 			}
@@ -224,14 +224,14 @@ battle_condition_rapid_advance = { #attacker only
 		}
 		if = {
 			limit = {
-				scope:character = { 
-					has_trait = mountain_commander 
+				scope:character = {
+					has_trait = mountain_commander
 				}
 				province = { has_label = label_elevated }
 			}
 			add = 1
 		}
-		
+
 		multiply = {
 			value = 1
 			scope:character = {
@@ -264,11 +264,11 @@ battle_condition_camouflaged = { #defender only
 	possible = {
 		scope:is_advancing_side = no
 		exists = scope:character
-		scope:character = { 
-			has_role = general 
+		scope:character = {
+			has_role = general
 		}
 	}
-	
+
 	weight = {
 		value = 1
 		if = {
@@ -298,7 +298,7 @@ battle_condition_camouflaged = { #defender only
 			}
 			add = 2
 		}
-		
+
 		multiply = {
 			value = 1
 			scope:character = {
@@ -325,12 +325,12 @@ battle_condition_logistics_secured = { #attacker only
 	possible = {
 		scope:is_advancing_side = yes
 		exists = scope:character
-		scope:character = { 
-			has_role = general 
+		scope:character = {
+			has_role = general
 		}
 		NOT = { has_battle_condition = battle_condition_broken_supply_line }
 	}
-	
+
 	weight = {
 		value = 1
 		multiply = {
@@ -360,12 +360,12 @@ battle_condition_mud = {
 
 	possible = {
 		exists = scope:character
-		scope:character = { 
-			has_role = general 
+		scope:character = {
+			has_role = general
 		}
 		NOT = { has_battle_condition = battle_condition_dug_in }
 	}
-	
+
 	weight = {
 		value = 0.5
 		if = {
@@ -411,7 +411,7 @@ battle_condition_mud = {
 			add = 1
 		}
 	}
-	
+
 	weight = {
 		value = 1
 		multiply = {
@@ -433,12 +433,12 @@ battle_condition_broken_supply_line = {
 
 	possible = {
 		exists = scope:character
-		scope:character = { 
-			has_role = general 
+		scope:character = {
+			has_role = general
 		}
 		NOT = { has_battle_condition = battle_condition_logistics_secured }
 	}
-	
+
 	weight = {
 		value = 0.5
 		if = {
@@ -459,7 +459,7 @@ battle_condition_broken_supply_line = {
 			}
 			add = 2
 		}
-		
+
 		multiply = {
 			value = 1
 			scope:character = {
@@ -479,11 +479,11 @@ battle_condition_exhausted = {
 
 	possible = {
 		exists = scope:character
-		scope:character = { 
-			has_role = general 
+		scope:character = {
+			has_role = general
 		}
 	}
-	
+
 	weight = {
 		value = 0.5
 		if = {
@@ -498,7 +498,7 @@ battle_condition_exhausted = {
 			}
 			add = 1
 		}
-		
+
 		multiply = {
 			value = 1
 			scope:character = {
@@ -551,11 +551,11 @@ battle_condition_lost = { #attacker only
 	possible = {
 		scope:is_advancing_side = yes
 		exists = scope:character
-		scope:character = { 
-			has_role = general 
+		scope:character = {
+			has_role = general
 		}
 	}
-	
+
 	weight = {
 		value = 0.5
 		if = {
@@ -582,7 +582,7 @@ battle_condition_lost = { #attacker only
 			}
 			add = 2
 		}
-		
+
 		multiply = {
 			value = 1
 			scope:character = {
@@ -608,15 +608,15 @@ battle_condition_surprise_maneuver = {
 
 	possible = {
 		exists = scope:character
-		scope:character = { 
-			has_role = general 
+		scope:character = {
+			has_role = general
 		}
 		NOT = { has_battle_condition = battle_condition_poor_visibility }
 	}
-	
+
 	weight = {
 		value = 1
-		
+
 		multiply = {
 			value = 1
 			scope:character = {
@@ -662,10 +662,10 @@ battle_condition_aggressive_maneuver = {
 	possible = {
 		exists = scope:character
 	}
-	
+
 	weight = {
 		value = 1
-		
+
 		multiply = {
 			value = 1
 			scope:character = {
@@ -695,14 +695,14 @@ battle_condition_careful_maneuver = {
 		battle_casualties_mult = -0.1
 		unit_morale_loss_mult = -0.1
 	}
-	
+
 	possible = {
 		exists = scope:character
 	}
-	
+
 	weight = {
 		value = 1
-		
+
 		multiply = {
 			value = 1
 			scope:character = {
@@ -733,7 +733,7 @@ battle_condition_blunder = {
 
 	weight = {
 		value = 0.5
-		
+
 		multiply = {
 			value = 1
 			scope:character = {
@@ -762,7 +762,7 @@ battle_condition_poor_visibility = {
 		exists = scope:character
 		NOT = { has_battle_condition = battle_condition_good_visibility }
 	}
-	
+
 	weight = {
 		value = 0.5
 		multiply = {
@@ -788,7 +788,7 @@ battle_condition_good_visibility = { #defender only
 		exists = scope:character
 		NOT = { has_battle_condition = battle_condition_poor_visibility }
 	}
-	
+
 	weight = {
 		value = 1
 		multiply = {
@@ -812,11 +812,11 @@ battle_condition_rough_waters = {
 
 	possible = {
 		exists = scope:character
-		scope:character = { 
-			has_role = admiral 
+		scope:character = {
+			has_role = admiral
 		}
 	}
-	
+
 	weight = {
 		value = 0.5
 		multiply = {
@@ -839,11 +839,11 @@ battle_condition_strong_winds = {
 
 	possible = {
 		exists = scope:character
-		scope:character = { 
-			has_role = admiral 
+		scope:character = {
+			has_role = admiral
 		}
 	}
-	
+
 	weight = {
 		value = 1
 		multiply = {
@@ -865,18 +865,18 @@ battle_condition_death_from_below = {
 
 	possible = {
 		exists = scope:character
-		scope:character = { 
-			has_role = admiral 
+		scope:character = {
+			has_role = admiral
 			commander_military_formation = {
-				formation_navy_unit_type_fraction = {  
+				formation_navy_unit_type_fraction = {
 					target = unit_type:combat_unit_type_submarine
-					value >= 0.2  
+					value >= 0.2
 				}
 			}
 		}
 		NOT = { has_battle_condition = battle_condition_rough_waters }
 	}
-		
+
 	weight = {
 		value = 2
 		multiply = {
@@ -899,8 +899,8 @@ battle_condition_ramming_maneuver = {
 	}
 	possible = {
 		exists = scope:character
-		scope:character = { 
-			has_role = admiral 
+		scope:character = {
+			has_role = admiral
 		}
 	}
 
