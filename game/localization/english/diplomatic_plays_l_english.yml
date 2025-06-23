@@ -33,7 +33,7 @@
  DIPLO_PLAY_ALREADY_AT_WAR:1 "We are already fighting in a War"
  DIPLO_PLAY_AT_WAR_WITH:1 "[COUNTRY.GetName] is at war with [TARGET_COUNTRY.GetName|v]"
  DIPLO_PLAY_HUMILIATED_BY:1 "[COUNTRY.GetName] has been [Concept('concept_humiliation', '$concept_humiliated$')] by [TARGET_COUNTRY.GetName|v]"
- DIPLO_PLAY_OBLIGED_AUTOJOIN_WITH: "[COUNTRY.GetName] is obliged trough a pact to support [TARGET_COUNTRY.GetName|v]"
+ DIPLO_PLAY_OBLIGED_AUTOJOIN_WITH: "[COUNTRY.GetName] is obliged trough a [concept_treaty] to support [TARGET_COUNTRY.GetName|v]"
  DIPLO_PLAY_ALLIED_WITH:1 "[COUNTRY.GetName] is allied to [TARGET_COUNTRY.GetName|v]"
  DIPLO_PLAY_SAME_SIDE_AS: "[COUNTRY.GetName] is on the same side as [TARGET_COUNTRY.GetName] in the [DIPLOMATIC_PLAY.GetName]"
  DIPLO_PLAY_WAR_ALLIED_WITH: "[COUNTRY.GetName] is fighting on the same side as [TARGET_COUNTRY.GetName] in a war"
@@ -41,7 +41,7 @@
  DIPLO_PLAY_SAME_SIDES:1 "[COUNTRY.GetName] is supporting [TARGET_COUNTRY.GetName] in another diplomatic play"
  ALREADY_IN_DIPLO_PLAY:1 "[COUNTRY.GetName] and [TARGET_COUNTRY.GetName] are both already part of a different diplomatic play"
  DIPLO_PLAY_ADD_WARGOAL:0 "Add [concept_war_goal]"
- DIPLO_PLAY_MAKE_PRIMARY_DEMAND:0 "Add to [Concept('concept_primary_demand', '$concept_primary_demand_short$')] (@maneuvers![WarGoal.CalcMakePrimaryDemandManeuversCost|v])"
+ DIPLO_PLAY_MAKE_PRIMARY_DEMAND: "Make $concept_primary_demand_short$"
  DIPLO_PLAY_MAKE_PRIMARY_DEMAND_TOOLTIP:0 "#header Add [WarGoal.GetName] to our [Concept('concept_primary_demand','$concept_primary_demands$')]#!\n$TOOLTIP_DELIMITER$\n[WarGoal.GetMakePrimaryDemandManeuversCostDesc][ConcatIfNeitherEmpty('\n',WarGoal.GetMakePrimaryDemandDiplomaticIncidentDesc)][ConcatIfNeitherEmpty('\n\n',GetDesc(WarGoal.MakeWarGoalPrimaryDemand(GetPlayer.Self)))]\n\n@information! Making a [concept_war_goal] into a [concept_primary_demand] will ensure that it is ceded to our side even if the enemy backs down."
  DIPLO_PLAY_MAKE_PRIMARY_DEMAND_MANEUVERS_COST:0 "Cost: @maneuvers!$COST|v$ ([concept_war_goal] base cost of @maneuvers!$BASE_COST|v$ x [GetDefine('NDiplomacy', 'MAKE_WARGOAL_PRIMARY_DEMAND_MANEUVERS_COST')|v])"
  DIPLO_PLAY_MAKE_PRIMARY_DEMAND_INFAMY_AMOUNT:0 "[concept_infamy]: $INFAMY|1v$ ([concept_war_goal] base [concept_infamy] of $BASE_INFAMY|v$ x [GetDefine('NDiplomacy', 'MAKE_WARGOAL_PRIMARY_DEMAND_INFAMY_AMOUNT')|v])"
@@ -70,7 +70,16 @@
  DIPLO_PLAY_BACKER_PROMISED_TARGET_OBLIGATION:1 "[Country.GetName] has been promised an [concept_obligation] to support the target side in this [concept_diplomatic_play]"
  DIPLOMATIC_PLAY_ESCALATION_PAUSE:0 "Escalation paused for [DiplomaticPlay.GetEscalationPause|v] day(s)"
  DIPLOMATIC_PLAY_ESCALATION_NO_PAUSE:0 "Escalation is continuing..."
- DIPLO_PLAY_COUNTRY_TOOLTIP: "#header [Country.GetName]#!\n[DiplomaticPlay.GetSupportStanceDesc( Country.Self )]\n$TOOLTIP_DELIMITER$\n@battalions! #v #tooltippable #tooltip:[Country.GetTooltipTag],PANEL_MILITARY_ARMY_OVERVIEW_TOOLTIP [Country.GetBattalions|0]#!#!#! [Concept('concept_battalion', '$concept_battalions$')] (#v [Country.GetFullyMobilizedBattalionsPercentageRaw|0%]#! @mobilization! [Concept('concept_mobilize_battalion', '$concept_mobilize_battalion_mobilized$')])\n@flotillas! #v #tooltippable #tooltip:[Country.GetTooltipTag],PANEL_MILITARY_NAVY_CURRENT_FLOTILLAS_TOOLTIP [Country.GetWarships]#!#!#! [Concept('concept_flotilla', '$concept_flotillas$')]"
+ DIPLO_PLAY_COUNTRY_TOOLTIP: "#header [Country.GetName]#!\n[DiplomaticPlay.GetSupportStanceDesc( Country.Self )]\n$TOOLTIP_DELIMITER$\n@battalions! #v #tooltippable #tooltip:[Country.GetTooltipTag],PANEL_MILITARY_ARMY_OVERVIEW_TOOLTIP [Country.GetBattalions|0]#!#!#! [Concept('concept_battalion', '$concept_battalions$')] (#v [Country.GetMobilizationRatio|0%]#! @mobilization! [Concept('concept_mobilize_battalion', '$concept_mobilize_battalion_mobilized$')])\n@flotillas! #v #tooltippable #tooltip:[Country.GetTooltipTag],PANEL_MILITARY_NAVY_CURRENT_FLOTILLAS_TOOLTIP [Country.GetWarships]#!#!#! [Concept('concept_flotilla', '$concept_flotillas$')]"
+
+ CLICK_TO_SELECT_ARTICLE_INPUT: "Click to select [concept_article] input"
+ CLICK_TO_SELECT_ARTICLE_INPUT_GOODS: "Click to select a [concept_good]"
+ CLICK_TO_SELECT_ARTICLE_INPUT_GOODS_AND_AMOUNT: "Click to select a [concept_good] and amount"
+ CLICK_TO_SELECT_ARTICLE_INPUT_MONEY: "Click to select amount of @money![concept_money]"
+ CLICK_TO_SELECT_ARTICLE_INPUT_COMPANY_AND_INDUSTRY: "Click to select a [concept_company] and an [Concept('concept_building', '$concept_building_industry$')]"
+ CLICK_TO_SELECT_ARTICLE_INPUT_STATE: "Click to select a [concept_state]"
+ CLICK_TO_SELECT_ARTICLE_INPUT_STRATEGIC_REGION: "Click to select a [concept_strategic_region]"
+ CLICK_TO_SELECT_ARTICLE_INPUT_LAW: "Click to select a [concept_law]"
   
  DIPLOMATIC_DEMAND_ACCEPTANCE: "- [DiplomaticPlayConfirmation.GetDiplomaticDemandAcceptanceDesc]"
   
@@ -78,7 +87,7 @@
  DIPLO_PLAY_MIDDLE_PHASE:1 "[concept_diplomatic_maneuvers]"
  DIPLO_PLAY_CLOSING_PHASE:1 "[concept_countdown_to_war]"
  
- DIPLO_PLAY_ADD_WARGOAL_DESC: "#header Add [concept_war_goal]#!\n$TOOLTIP_DELIMITER$\nAdd a [concept_war_goal] to your demands in the [concept_diplomatic_play][ConcatIfNeitherEmpty( '\n\n', '$ERRORS$' )]"
+ DIPLO_PLAY_ADD_WARGOAL_DESC: "$ERRORS$"
  DIPLO_PLAY_SWAY_COUNTRY_DESC: "#header Sway [COUNTRY.GetName]#!\nCurrently #b [DiplomaticPlay.GetSupportStanceDesc( Country.Self )]#!\n$TOOLTIP_DELIMITER$\nAttempt to [concept_sway] [COUNTRY.GetName] to your side in the [concept_diplomatic_play][ConcatIfNeitherEmpty( '\n\n', '$ERRORS$' )]"
  DIPLO_PLAY_REVERSE_SWAY_COUNTRY_DESC: "#header [concept_offer_support] to [COUNTRY.GetName]#!\n$TOOLTIP_DELIMITER$\n[SelectLocalization(DiplomaticPlay.WouldAcceptAnySway(GetPlayer.Self, COUNTRY.Self), 'CAN_REVERSE_SWAY', 'CANNOT_REVERSE_SWAY')][ConcatIfNeitherEmpty( '\n\n', '$ERRORS$' )]"
  DIPLO_PLAY_SWAY_OFFER_DESC:3 "#header Sway with $SWAY_OFFER|v$#![ConcatIfNeitherEmpty('\n', SelectLocalization( And(SwayOffer.GetOfferedWarGoal.IsValid,GreaterThan_CFixedPoint(SwayOffer.GetOfferedWarGoal.GetInfamyAmount, '(CFixedPoint)0')), 'SWAY_OFFER_MANEUVERS_AND_INFAMY_COST', 'SWAY_OFFER_MANEUVERS_COST_ONLY'))][ConcatIfNeitherEmpty( '\n\n', '$ERRORS$' )]"
@@ -260,11 +269,16 @@
  WAR_PEACE_PROPOSAL_COOLDOWN:0 "We must wait until #v $DATE$#! to propose another [concept_peace_deal]"
  WAR_PEACE_MUST_PRESS_INDEPENDENCE:0 "$COUNTRY_NAME$ #bold does not agree#! to a [concept_peace_deal] that prevents its independence."
  WAR_PEACE_ANNEXED_COUNTRY_CANT_PRESS_WARGOALS: "[Country.GetName()] can not press any [Concept('concept_war_goal', '$concept_war_goals$')]. They will be fully annexed by this [concept_peace_deal]."
+ WAR_PEACE_MUTUALLY_EXCLUSIVE_TREATY_ARTICLES: "Peace deal cannot contain mutually exclusive [TREATY_ARTICLE_TYPE.GetName] [Concept('concept_war_goal', '$concept_war_goals$')]."
  WAR_NAME_FORMAT_DEFAULT:0 "$INITIATOR$ vs. $TARGET$"
   
  dp_war_reparations: "$war_goal_war_reparations_type_name$"
  dp_war_reparations_tooltip: "#header Start a $dp_war_reparations$ [concept_diplomatic_play]#!\n$TOOLTIP_DELIMITER$\n$dp_war_reparations_desc$"
  dp_war_reparations_desc: "Sets the initiating [concept_war_goal] to force the targeted [concept_country] to pay [concept_war_reparations]."
+
+ dp_default_treaty_article: "$war_goal_treaty_article_type_name$"
+ dp_default_treaty_article_tooltip: "#header Start a $dp_default_treaty_article$ [concept_diplomatic_play]#!\n$TOOLTIP_DELIMITER$\n$dp_default_treaty_article_desc$"
+ dp_default_treaty_article_desc: "Sets the initiating [concept_war_goal] to enforce a money payment [concept_treaty] on the targeted [concept_country]."
 
  dp_open_market:0 "$war_goal_open_market_type_name$"
  dp_open_market_tooltip:1 "#header Start a $dp_open_market$ [concept_diplomatic_play]#!\n$TOOLTIP_DELIMITER$\n$dp_open_market_desc$"
@@ -380,6 +394,7 @@
  dp_unify_india_tooltip:1 "#header Start a $dp_unify_india$ [concept_diplomatic_play]#!\n$TOOLTIP_DELIMITER$\n$dp_unify_india_desc$"
  dp_unify_india_desc:0 "Sets the initiating [concept_war_goal] to annex all lesser Indian countries."
  BHT_tt:0 "[SCOPE.sCountry('target_country').GetName] can form India"
+ indian_primary_culture_tt: "[SCOPE.sCountry('target_country').GetName] has Indian [concept_primary_cultures]"
 
  dp_unify_indonesia:0 "Unify the Archipelago"
  dp_unify_indonesia_tooltip:1 "#header Start a $dp_unify_indonesia$ [concept_diplomatic_play]#!\n$TOOLTIP_DELIMITER$\n$dp_unify_indonesia_desc$"
@@ -434,7 +449,7 @@
 
  war_goal_conquer_state_type_name:0 "Conquer State"
  war_goal_conquer_state_type_desc:1 "Conquer a [concept_state] from another [concept_country]."
- war_goal_conquer_state:0 "Conquer [WAR_GOAL.GetTargetState.GetName]"
+ war_goal_conquer_state:0 "Conquer [WAR_GOAL.GetTargetState.GetCountry.GetFlagTextIcon] [WAR_GOAL.GetTargetState.GetName]"
  war_goal_conquer_state_desc:1 "[WAR_GOAL.GetHolder.GetName] conquers the [concept_state] of [WAR_GOAL.GetTargetState.GetName] from [WAR_GOAL.GetTarget.GetName]"
  war_goal_conquer_state_sway_desc:0 "Try to convince [WAR_GOAL.GetHolder.GetName] to join your side by forcing [WAR_GOAL.GetWarGoalStakeholder.GetName] to cede them [WAR_GOAL.GetTargetState.GetName]."
  
@@ -551,7 +566,7 @@
  war_goal_leave_power_bloc_type_name: "Leave $concept_power_bloc$"
  war_goal_leave_power_bloc_type_desc: "Force the leader of a $concept_power_bloc$ to allow a member $concept_country$ to leave it."
  war_goal_leave_power_bloc: "Leave $concept_power_bloc$"
- war_goal_leave_power_bloc_desc: "[WAR_GOAL.GetHolder.GetName] leaves the [SelectLocalization(WAR_GOAL.GetWarGoalStakeholder.GetPowerBloc.IsValid,WAR_GOAL.GetWarGoalStakeholder.GetPowerBloc.GetName,'$concept_power_bloc$')]."
+ war_goal_leave_power_bloc_desc: "[WAR_GOAL.GetHolder.GetName] leaves the [SelectLocalization(WAR_GOAL.GetWarGoalStakeholder.GetPowerBloc.IsValid,'WAR_GOAL.GetWarGoalStakeholder.GetPowerBloc.GetName','$concept_power_bloc$')]."
  war_goal_leave_power_bloc_sway_desc: "Try to convince [WAR_GOAL.GetHolder.GetName] to join your side by by having them leave the [WAR_GOAL.GetWarGoalStakeholder.GetPowerBloc.GetName]."
     
  war_goal_liberate_subject_type_name:0 "Liberate Subject"
@@ -614,3 +629,8 @@
  war_goal_unification_desc:2 "[WAR_GOAL.GetHolder.GetName] annexes the [WAR_GOAL.GetCountryFormation.GetAdjective] homeland of [WAR_GOAL.GetTargetState.GetName]."
  war_goal_unification_sway_desc:2 "Try to convince [WAR_GOAL.GetHolder.GetName] to join your side by having them annex the [WAR_GOAL.GetCountryFormation.GetAdjective] homeland of [WAR_GOAL.GetTargetState.GetName]."
   
+
+ war_goal_enforce_treaty_article_type_name: "Enforce Treaty Article"
+ war_goal_enforce_treaty_article_type_desc: "Force a [concept_country] to sign a [concept_treaty] containing a specific [concept_article]."
+ war_goal_enforce_treaty_article: "Enforce [WAR_GOAL.GetArticleType.GetNameNoFormatting]"
+ war_goal_enforce_treaty_article_desc: "• Force [WarGoal.GetTarget.GetName] to sign a [concept_treaty] containing the [WarGoal.GetArticleType.GetName] [concept_article]"

@@ -1,0 +1,450 @@
+# COPY-PASTED FOR NOW
+@panel_width_minus_10 = 530			# used to be 450
+@panel_width = 540  				# used to be 460
+@panel_width_half = 270				# used to be 230
+@panel_width_plus_10 = 550  		# used to be 470
+@panel_width_plus_14 = 554			# used to be 474
+@panel_width_plus_14_half = 277		# used to be 237
+@panel_width_plus_20 = 560			# used to be 480
+@panel_width_plus_30 = 570			# used to be 490
+@panel_width_plus_70 = 610			# used to be 530
+
+types goods_world_market_panel_tyes
+{
+	type goods_world_market_panel = default_block_window_two_lines {
+		name = "goods_world_market_panel"
+		datacontext = "[GoodsWorldMarketPanel.GetGoods]"
+		
+		blockoverride "window_header_name"
+		{
+			raw_text = "#BOLD [GoodsWorldMarketPanel.GetGoods.GetName]#!"
+		}
+
+		blockoverride "window_header_name_line_two"
+		{
+			text = "GOODS_WORLD_MARKET_PANEL_LINE_TWO"
+		}
+
+		blockoverride "map_modes_button" {
+			map_modes_single_button_minimized = {
+				datacontext = "[GoodsWorldMarketPanel.GetMapModeList]"
+				using = map_modes_button_position
+			}
+		}
+		
+		blockoverride "fixed_top"
+		{
+			tab_buttons = {
+				
+				# OBS! these 5 tabs are copied to goods_panel.gui / goods_usage_panel.gui / goods_state_panel.gui / goods_local_prices_panel.gui
+				# consider merging these panels into the same panel
+				
+				# world market
+				blockoverride "first_button_selected" {
+					text = "concept_world_market"
+				}
+				blockoverride "first_button_tooltip" {
+					tooltip = "[concept_world_market]"
+				} 
+				blockoverride "first_button_visibility" {
+					visible = yes
+				}
+
+				# market
+				blockoverride "second_button" {
+					text = "[GoodsWorldMarketPanel.GetGoods.GetMarket.GetNameNoFormatting]"
+				}
+				blockoverride "second_button_tooltip" {
+					tooltip = "[GoodsWorldMarketPanel.GetGoods.GetMarket.GetNameNoFormatting]"
+				} 
+				blockoverride "second_button_visibility_checked" {
+					visible = "[And(GoodsWorldMarketPanel.GetGoods.HasMarketContext,Not(GoodsWorldMarketPanel.GetGoods.IsLocal))]"
+				}
+				blockoverride "second_button_click" {
+					onclick = "[InformationPanelBar.OpenGoodsPanel( GoodsWorldMarketPanel.GetGoods.GetMarket, GoodsWorldMarketPanel.GetGoods )]"
+				}
+				
+				# selected state
+				blockoverride "third_button" {
+					text = "[GoodsWorldMarketPanel.GetGoods.GetState.GetNameNoFormatting]"
+				}
+				blockoverride "third_button_tooltip" {
+					tooltip = "[GoodsWorldMarketPanel.GetGoods.GetState.GetNameNoFormatting]"
+				} 
+				blockoverride "third_button_visibility_checked" {
+					visible = "[GoodsWorldMarketPanel.GetGoods.HasStateContext]"
+				}
+				blockoverride "third_button_click" {
+					onclick = "[InformationPanelBar.OpenGoodsStatePanel( GoodsWorldMarketPanel.GetGoods.GetState, GoodsWorldMarketPanel.GetGoods )]"
+				}			
+				
+				# states in market
+				blockoverride "fourth_button" {
+					text = "LOCAL_PRICES"
+				}
+				blockoverride "fourth_button_tooltip" {
+					tooltip = "LOCAL_PRICES"
+				} 					
+				blockoverride "fourth_button_visibility_checked" {
+					visible = "[GoodsWorldMarketPanel.GetGoods.HasMarketContext]"
+				}			
+				blockoverride "fourth_button_click" {
+					onclick = "[InformationPanelBar.OpenGoodsLocalPricesPanel(GoodsWorldMarketPanel.GetGoods)]"
+				}					
+				
+				# usage / application
+				blockoverride "fifth_button" {
+					text = USAGE
+				}
+				blockoverride "fifth_button_tooltip" {
+					tooltip = "USAGE"
+				}
+				blockoverride "fifth_button_click" {
+					onclick = "[InformationPanelBar.OpenGoodsUsagePanel(GoodsWorldMarketPanel.GetGoods.Self)]"
+				}
+				blockoverride "fifth_button_visibility_checked" {
+					visible = yes
+				}		
+			}
+		}
+
+		blockoverride "scrollarea_content"
+		{
+			flowcontainer = {
+				margin_top = 10
+				minimumsize = { @panel_width -1 }
+				using = default_list_position
+				direction = vertical
+				datacontext = "[GoodsWorldMarketPanel.GetBaseGoods]"					
+				
+				container = {
+					parentanchor = hcenter
+					minimumsize = { @panel_width -1 }
+					maximumsize = { @panel_width -1 }
+					
+					good_icon_and_prize = {
+						blockoverride "price_card" {
+							world_market_price_card = {
+								blockoverride "icons_visible" {
+									visible = yes
+								}
+
+								blockoverride "icon_balance" {
+									texture = "gfx/interface/icons/trade_icons/balance.dds"
+								}
+
+								blockoverride = "icon_input" {
+									texture = "gfx/interface/icons/trade_icons/imports.dds"	
+								}
+
+								blockoverride "icon_output" {
+									texture = "gfx/interface/icons/trade_icons/exports.dds"
+								}
+							}
+						}
+					}
+				}
+
+				flowcontainer = {
+					visible = "[Not(IsDataModelEmpty(Goods.GetWorldMarketPrestigeGoods))]"
+					parentanchor = hcenter
+					direction = vertical
+					margin_bottom = 5
+					margin_top = 5
+
+					default_header = {
+						parentanchor = hcenter
+
+						blockoverride "text"
+						{
+							text = "concept_prestige_goods"
+						}
+					}
+
+					goods_prestige_goods_breakdown_list_item = {						
+						parentanchor = hcenter
+
+						blockoverride "prestige_goods_item_minimumsize" {
+							minimumsize = { 540 -1 }
+						}
+
+						blockoverride "prestige_goods_item_name_size" {
+							minimumsize = { 300 -1 }
+							maximumsize = { 300 -1 }
+						}
+
+						blockoverride "prestige_goods_item_text_1" {
+							raw_text = "BASE_GOODS_WORLD_MARKET_EXPORTS"
+						}
+
+						blockoverride "prestige_goods_item_text_2" {
+							raw_text = "BASE_GOODS_WORLD_MARKET_IMPORTS"
+						}
+					}
+
+					flowcontainer = {
+						direction = vertical
+						parentanchor = hcenter
+						datamodel = "[Goods.GetWorldMarketPrestigeGoods]"
+						
+						item = {
+							goods_prestige_goods_breakdown_list_item = {
+								blockoverride "prestige_goods_item_minimumsize" {
+									minimumsize = { 540 -1 }
+								}
+
+								blockoverride "prestige_goods_item_name_size" {
+									minimumsize = { 300 -1 }
+									maximumsize = { 300 -1 }
+								}
+
+								blockoverride "prestige_goods_item_text_1" {
+									raw_text = "PRESTIGE_GOODS_WORLD_EXPORTS"
+									alpha = "[TransparentIfZero(Goods.GetWorldMarketExports)]"
+								}
+
+								blockoverride "prestige_goods_item_text_2" {
+									raw_text = "PRESTIGE_GOODS_WORLD_IMPORTS"
+									alpha = "[TransparentIfZero(Goods.GetWorldMarketImports)]"
+								}
+							}
+						}
+					}
+				}
+
+				default_header = {
+					parentanchor = hcenter
+
+					blockoverride "text"
+					{
+						text = "MARKETS"
+					}
+				}
+
+				flowcontainer = {
+					parentanchor = hcenter
+
+					sort_button = {
+						size = { 180 30 }
+						onclick = "[GoodsWorldMarketPanel.SortMarkets('name')]"
+						align = nobaseline
+						text = "NAME"
+					}
+
+					sort_button = {
+						size = { 80 30 }
+						onclick = "[GoodsWorldMarketPanel.SortMarkets('imports')]"
+						align = right|nobaseline
+						tooltip = "SORT_BY_IMPORTS"
+
+						button = {
+							texture = "gfx/interface/buttons/sort_button_icons/sort_imports.dds"
+							size = { 25 25 }
+							parentanchor = center
+							alwaystransparent = yes
+						}
+					}
+
+					sort_button = {
+						size = { 100 30 }
+						onclick = "[GoodsWorldMarketPanel.SortMarkets('imports_ta_relative')]"
+						align = center|nobaseline
+						text = "IMPORTS_TA"
+						tooltip = "IMPORTS_TA"
+					}
+					
+					sort_button = {
+						size = { 80 30 }
+						onclick = "[GoodsWorldMarketPanel.SortMarkets('exports')]"
+						align = right|nobaseline
+						tooltip = "SORT_BY_EXPORTS"
+
+						button = {
+							texture = "gfx/interface/buttons/sort_button_icons/sort_exports.dds"
+							size = { 25 25 }
+							parentanchor = center
+							alwaystransparent = yes
+						}
+					}
+
+					sort_button = {
+						size = { 100 30 }
+						onclick = "[GoodsWorldMarketPanel.SortMarkets('exports_ta_relative')]"
+						align = center|nobaseline
+						text = "EXPORTS_TA"
+						tooltip = "EXPORTS_TA"
+					}
+				}
+
+				flowcontainer = {
+					datamodel = "[GoodsWorldMarketPanel.GetMarkets]"
+					direction = vertical
+					parentanchor = hcenter
+
+					item = {
+						flowcontainer = {
+							direction = vertical
+
+							flowcontainer = {
+								margin = { 0 3 }
+								margin_left = 3
+
+								small_market_flag = {
+									parentanchor = vcenter
+								}
+
+								textbox = {
+									text = "[Market.GetName]"
+									autoresize = yes
+									align = nobaseline
+									minimumsize = { 120 -1 }
+									maximumsize = { 120 -1 }
+									margin_left = 10
+									margin_right = 5
+									parentanchor = vcenter
+									elide = right
+								}
+
+
+								widget = {
+									size = { 30 30 }
+
+									button_icon_goto = {
+										size = { 23 23 }
+										onclick = "[InformationPanelBar.OpenGoodsPanel(Market.Self, Goods.Self)]"
+										tooltip = "GO_TO_BUTTON_MARKET"
+										parentanchor = center
+									}
+								}
+
+								textbox = {
+									text = "[Market.GetImportedAmount(Goods.Self)|v0]"
+									alpha = "[TransparentIfTrue(IsZero_CFixedPoint(Market.GetImportedAmount(Goods.Self)))]"
+									autoresize = yes
+									align = center|nobaseline
+									minimumsize = { 80 -1 }
+									maximumsize = { 80 -1 }
+									margin_right = 5
+									parentanchor = vcenter
+								}
+
+								textbox = {
+									text = "[Market.GetRelativeImportAdvantage(Goods.Self)|=+%0]"
+									tooltip = "[Market.GetRelativeImportAdvantageDesc(Goods.Self)]"
+									alpha = "[TransparentIfTrue(IsZero_CFixedPoint(Market.GetImportedAmount(Goods.Self)))]"
+									visible = "[Not(IsZero_CFixedPoint(Market.GetImportedAmount(Goods.Self)))]"
+									autoresize = yes
+									align = center|nobaseline
+									minimumsize = { 50 -1 }
+									maximumsize = { 50 -1 }
+									margin_right = 5
+									parentanchor = vcenter
+								}
+
+								textbox = {
+									text = "[Market.GetImportAdvantage(Goods.Self)|0v]"
+									tooltip = "[Market.GetRelativeExportAdvantageDesc(Goods.Self)]"
+									alpha = "[TransparentIfTrue(IsZero_CFixedPoint(Market.GetImportedAmount(Goods.Self)))]"
+									visible = "[Not(IsZero_CFixedPoint(Market.GetImportedAmount(Goods.Self)))]"
+									autoresize = yes
+									align = center|nobaseline
+									minimumsize = { 50 -1 }
+									maximumsize = { 50 -1 }
+									margin_right = 5
+									parentanchor = vcenter
+								}
+
+								textbox = {
+									text = "NOT_AVAILABLE"
+									visible = "[IsZero_CFixedPoint(Market.GetImportedAmount(Goods.Self))]"
+									alpha = "[TransparentIfTrue(IsZero_CFixedPoint(Market.GetImportedAmount(Goods.Self)))]"
+									autoresize = yes
+									align = right|nobaseline
+									minimumsize = { 50 -1 }
+									maximumsize = { 50 -1 }
+									margin_right = 5
+									parentanchor = vcenter
+								}
+
+								textbox = {
+									text = "NOT_AVAILABLE"
+									visible = "[IsZero_CFixedPoint(Market.GetImportedAmount(Goods.Self))]"
+									alpha = "[TransparentIfTrue(IsZero_CFixedPoint(Market.GetImportedAmount(Goods.Self)))]"
+									autoresize = yes
+									align = right|nobaseline
+									minimumsize = { 50 -1 }
+									maximumsize = { 50 -1 }
+									margin_right = 5
+									parentanchor = vcenter
+								}
+
+								textbox = {
+									text = "[Market.GetExportedAmount(Goods.Self)|v0]"
+									alpha = "[TransparentIfTrue(IsZero_CFixedPoint(Market.GetExportedAmount(Goods.Self)))]"
+									autoresize = yes
+									align = center|nobaseline
+									minimumsize = { 80 -1 }
+									maximumsize = { 80 -1 }
+									margin_right = 5
+									parentanchor = vcenter
+								}
+
+								textbox = {
+									text = "[Market.GetRelativeExportAdvantage(Goods.Self)|=+%0]"
+									tooltip = "[Market.GetRelativeExportAdvantageDesc(Goods.Self)]"
+									alpha = "[TransparentIfTrue(IsZero_CFixedPoint(Market.GetExportedAmount(Goods.Self)))]"
+									visible = "[Not(IsZero_CFixedPoint(Market.GetExportedAmount(Goods.Self)))]"
+									autoresize = yes
+									align = right|nobaseline
+									minimumsize = { 50 -1 }
+									maximumsize = { 50 -1 }
+									margin_right = 5
+									parentanchor = vcenter
+								}
+
+								textbox = {
+									text = "[Market.GetExportAdvantage(Goods.Self)|0v]"
+									tooltip = "[Market.GetRelativeExportAdvantageDesc(Goods.Self)]"
+									alpha = "[TransparentIfTrue(IsZero_CFixedPoint(Market.GetExportedAmount(Goods.Self)))]"
+									visible = "[Not(IsZero_CFixedPoint(Market.GetExportedAmount(Goods.Self)))]"
+									autoresize = yes
+									align = right|nobaseline
+									minimumsize = { 50 -1 }
+									maximumsize = { 50 -1 }
+									margin_right = 5
+									parentanchor = vcenter
+								}
+
+								textbox = {
+									text = "NOT_AVAILABLE"
+									visible = "[IsZero_CFixedPoint(Market.GetExportedAmount(Goods.Self))]"
+									alpha = "[TransparentIfTrue(IsZero_CFixedPoint(Market.GetExportedAmount(Goods.Self)))]"
+									autoresize = yes
+									align = right|nobaseline
+									minimumsize = { 50 -1 }
+									maximumsize = { 50 -1 }
+									margin_right = 5
+									parentanchor = vcenter
+								}
+
+								textbox = {
+									text = "NOT_AVAILABLE"
+									visible = "[IsZero_CFixedPoint(Market.GetExportedAmount(Goods.Self))]"
+									alpha = "[TransparentIfTrue(IsZero_CFixedPoint(Market.GetExportedAmount(Goods.Self)))]"
+									autoresize = yes
+									align = right|nobaseline
+									minimumsize = { 50 -1 }
+									maximumsize = { 50 -1 }
+									margin_right = 5
+									parentanchor = vcenter
+								}
+							}
+
+							divider_clean = {}
+						}
+					}
+				}
+			}
+		}
+	}
+}

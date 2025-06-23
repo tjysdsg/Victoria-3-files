@@ -3,11 +3,11 @@
 trench_warfare.1 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = trench_warfare.1.t
 	desc = trench_warfare.1.d
 	flavor = trench_warfare.1.f
-	
+
 	event_image = {
 		video = "middleeast_battlefield_trenches"
 	}
@@ -15,10 +15,23 @@ trench_warfare.1 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_skull.dds"
-	
+
+	cooldown = { days = stupidly_long_modifier_time }
+
 	duration = 3
 
 	trigger = {
+		any_scope_war = {
+			any_scope_front = {
+				any_military_formation = {
+					owner = ROOT
+					formation_army_unit_type_fraction = {
+						target = unit_type:combat_unit_type_trench_infantry
+						value >= 0.25
+					}
+				}
+			}
+		}
 	}
 
 	immediate = {
@@ -95,7 +108,7 @@ trench_warfare.1 = {
 		scope:trench_warfare_state = {
 			add_modifier = { # mortality and reduction in outputs
 				name = zone_rouge
-				months = long_modifier_time
+				days = long_modifier_time
 			}
 			state_region = {
 				add_devastation = 10
@@ -108,10 +121,10 @@ trench_warfare.1 = {
 		trigger = {
 			NOT = { has_technology_researched = defense_in_depth }
 		}
-		
+
 		if = {
 			limit = {
-				can_research = defense_in_depth 
+				can_research = defense_in_depth
 			}
 			add_technology_progress = {
 				progress = 6000
@@ -122,13 +135,13 @@ trench_warfare.1 = {
 		scope:trench_warfare_state = {
 			add_modifier = { # smaller negative modifier because the front isn't static
 				name = zone_rouge
-				months = long_modifier_time
+				days = long_modifier_time
 				multiplier = 0.75
 			}
 			state_region = {
 				add_devastation = 5
 			}
-		}	
+		}
 	}
 
 	option = { # We need a breakthrough.
@@ -138,10 +151,10 @@ trench_warfare.1 = {
 			has_technology_researched = wargaming
 			NOT = { has_technology_researched = stormtroopers }
 		}
-		
+
 		if = {
 			limit = {
-				can_research = stormtroopers 
+				can_research = stormtroopers
 			}
 			add_technology_progress = {
 				progress = 8000
@@ -152,7 +165,7 @@ trench_warfare.1 = {
 		scope:trench_warfare_state = {
 			add_modifier = { # smaller negative modifier because the front is moving more
 				name = zone_rouge
-				months = long_modifier_time
+				days = long_modifier_time
 				multiplier = 0.75
 			}
 			state_region = {

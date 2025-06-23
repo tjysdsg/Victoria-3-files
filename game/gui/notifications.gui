@@ -32,14 +32,14 @@ types notifications {
 		
 			### notifications in fullscreen (can maximize and minimize)
 			message_feed_widget_inner = {
-				using = fullscreen_show
+				using = half_and_fullscreen_show
 				onmousehierarchyenter = "[PdxGuiInterruptThenTriggerAllAnimations('notifications_minimize','notifications_maximize')]"
 				onmousehierarchyleave = "[PdxGuiInterruptThenTriggerAllAnimations('notifications_maximize','notifications_minimize')]"
 			}
 			
 			### notifications in non fullscreen
 			message_feed_widget_inner = {
-				using = fullscreen_hide
+				using = half_and_fullscreen_hide
 				# this maximize is for when you click things from the notifications in fullscreen the mouse will "leave" the outliner thus it minimizes.
 				# so this makes sure it stays maximized.
 				onmousehierarchyenter = "[PdxGuiInterruptThenTriggerAllAnimations('notifications_minimize','notifications_maximize')]"
@@ -199,6 +199,7 @@ types notifications {
 										onrightclick = "[MessageFeedHandler.MarkAllForDelete]"
 										onclick = "[FeedMessageItem.MarkToDelete]"
 										using = notification_dismiss_button_sound
+										rightclicksound = "event:/SFX/UI/Alerts/notification_dismiss"
 										using = tooltip_se
 										tooltip = "MESSAGE_CLEAR_ALL_TOOLTIP"
 									}
@@ -412,7 +413,8 @@ types notifications {
 				name = hide
 				using = Animation_FadeOut_Quick
 			}	
-		} 
+		}
+
 		icon = {
 			name = "toast_icon2"
 			texture = "gfx/interface/notifications/dec_frame.dds"
@@ -476,18 +478,13 @@ types notifications {
 			name = "toast_content"
 			resizeparent = yes
 			spacing = 10
+			minimumsize = { 585 -1 }
+			maximumsize = { 585 -1 }
 
-			text_multi = {
-				name = "title"
+			flowcontainer = {
+				direction = vertical
 				minimumsize = { 585 -1 }
 				maximumsize = { 585 -1 }
-				autoresize = yes
-				multiline = yes
-				margin = { 5 5 }
-				align = center|nobaseline
-
-				text = "[PlayerMessageItem.GetName]"
-				using = fontsize_large
 
 				background = {
 					name = "neutral"
@@ -499,6 +496,18 @@ types notifications {
 						blend_mode = alphamultiply
 					}
 				}
+
+				text_multi = {
+					name = "title"
+					parentanchor = hcenter
+					autoresize = yes
+					multiline = yes
+					margin = { 5 5 }
+					align = hcenter|nobaseline
+					max_width = 500
+					using = fontsize_large
+					raw_text = "[PlayerMessageItem.GetName]"
+				}
 			}
 
 			text_multi = {
@@ -508,11 +517,9 @@ types notifications {
 				autoresize = yes
 				multiline = yes
 				margin = { 5 5 }
-				align = center|nobaseline
-
-				text = "[PlayerMessageItem.GetDescription]"
-
+				align = hcenter|nobaseline
 				alwaystransparent = yes
+				text = "[PlayerMessageItem.GetDescription]"
 			}
 		}
 

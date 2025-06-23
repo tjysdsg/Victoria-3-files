@@ -18,6 +18,10 @@
 			interest_group_pol_str_mult = -0.05
 			interest_group_pop_attraction_mult = 0.1
 		}
+		
+		executive_modifier = {													# Applies to building levels owned by the company that the character is the executive for
+			building_throughput_add = 0.05
+		}
 																			
 		possible = {															# Used to determine if this trait is a valid random choice
 			popularity < 0														# Does NOT impact the validity of the trait once it's acquired

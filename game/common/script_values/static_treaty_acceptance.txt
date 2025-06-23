@@ -1,0 +1,329 @@
+﻿#root = evaluating country
+#scope:other_country = other country
+#scope:binding_period = binding period of the treaty (in days)
+static_treaty_acceptance = {
+	value = 0
+
+	# We are doing this to be able to reuse loc across treaties and diplomatic actions
+	root = {
+		save_temporary_scope_as = target
+	}
+	scope:other_country = {
+		save_temporary_scope_as = actor
+	}
+
+	add = {
+		desc = "DIPLOMATIC_ACCEPTANCE_BASE"
+		value = -10
+	}
+
+	subtract = {
+		desc = "DIPLOMATIC_ACCEPTANCE_BINDING_PERIOD"
+
+		if = {
+			limit = {
+				NOT = { exists = scope:is_treaty_active }
+				exists = scope:binding_period
+				scope:binding_period >= 18250
+			}
+			add = 25
+
+			add = {
+				value = scope:binding_period
+				min = 365
+				divide = 365
+				max = 150
+			}
+		}
+	}
+
+	subtract = {
+		desc = "DIPLOMATIC_ACCEPTANCE_UNTRUSTWORTHY_COUNTRY"
+
+		if = {
+			limit = {
+				scope:other_country = {
+					has_modifier = modifier_untrustworthy_country
+				}
+			}
+			value = 25
+
+			if = {
+				limit = {
+					NOT = { exists = scope:is_treaty_active }
+					exists = scope:binding_period
+					scope:binding_period > 18250
+				}
+				add = {
+					value = 5
+					multiply = scope:binding_period
+					divide = 365
+					subtract = 25
+					max = 100
+				}
+			}
+		}
+	}
+
+	add = {
+		desc = "DIPLOMATIC_ACCEPTANCE_ATTITUDE"
+		if = {
+			limit = {
+				OR = {
+					has_attitude = {
+						who = scope:other_country
+						attitude = genial
+					}
+					has_attitude = {
+						who = scope:other_country
+						attitude = conciliatory
+					}
+					has_attitude = {
+						who = scope:other_country
+						attitude = loyal
+					}
+				}
+			}
+			value = 20
+		}
+		if = {
+			limit = {
+				has_attitude = {
+					who = scope:other_country
+					attitude = cooperative
+				}
+				has_attitude = {
+					who = scope:other_country
+					attitude = protective
+				}
+			}
+			value = 10
+		}
+		if = {
+			limit = {
+				has_attitude = {
+					who = scope:other_country
+					attitude = cautious
+				}
+			}
+			value = -10
+		}
+		if = {
+			limit = {
+				OR = {
+					has_attitude = {
+						who = scope:other_country
+						attitude = antagonistic
+					}
+					has_attitude = {
+						who = scope:other_country
+						attitude = domineering
+					}
+					has_attitude = {
+						who = scope:other_country
+						attitude = belligerent
+					}
+					has_attitude = {
+						who = scope:other_country
+						attitude = rebellious
+					}
+				}
+			}
+			value = -50
+		}
+	}
+
+	add = {
+		desc = "DIPLOMATIC_ACCEPTANCE_RELATIONS"
+		if = {
+			limit = {
+				"relations(scope:other_country)" >= relations_threshold:amicable
+				"relations(scope:other_country)" < relations_threshold:friendly
+			}
+			value = 5
+		}
+		if = {
+			limit = {
+				"relations(scope:other_country)" >= relations_threshold:friendly
+			}
+			value = 10
+		}
+	}
+
+	add = {
+		desc = "DIPLOMATIC_ACCEPTANCE_INFAMY"
+		if = {
+			limit = {
+				"scope:other_country.infamy" >= infamy_threshold:infamous
+				"scope:other_country.infamy" < infamy_threshold:notorious
+			}
+			value = -10
+		}
+		if = {
+			limit = {
+				"scope:other_country.infamy" >= infamy_threshold:notorious
+				"scope:other_country.infamy" < infamy_threshold:pariah
+			}
+			value = -25
+		}
+		if = {
+			limit = {
+				"scope:other_country.infamy" >= infamy_threshold:pariah
+			}
+			value = -50
+		}
+	}
+
+	add = {
+		desc = "DIPLOMATIC_ACCEPTANCE_RANK"
+
+		if = {
+			limit = { scope:other_country = { country_rank > root.country_rank } }
+			value = 10
+		}
+
+		if = {
+			limit = { scope:other_country = { country_rank < root.country_rank } }
+			value = -10
+		}
+	}
+
+	add = {
+		desc = "DIPLOMATIC_ACCEPTANCE_ARMY_STRENGTH"
+
+		if = {
+			limit = {
+				NOT = { exists = scope:is_treaty_active }
+				scope:other_country.army_power_projection > root.army_power_projection
+			}
+			value = {
+				add = "scope:other_country.ai_army_comparison(root)"
+				max = 20
+				min = -10
+			}
+
+			if = {
+				limit = {
+					NOT = { has_strategic_land_adjacency = scope:other_country }
+				}
+				max = 10
+			}
+		}
+
+		if = {
+			limit = {
+				"scope:other_country.ai_treaty_fairness(root)" < 0
+			}
+			add = {
+				desc = "DIPLOMATIC_ACCEPTANCE_TREATY_FAIRNESS"
+				value = "scope:other_country.ai_treaty_fairness(root)"
+				min = -30
+			}
+		}
+	}
+
+	add = {
+		desc = "DIPLOMATIC_ACCEPTANCE_NAVY_STRENGTH"
+
+		if = {
+			limit = {
+				NOT = { exists = scope:is_treaty_active }
+				scope:other_country.naval_power_projection > root.naval_power_projection
+			}
+			value = {
+				add = "scope:other_country.ai_navy_comparison(root)"
+				max = 25
+				min = -15
+			}
+
+			if = {
+				limit = {
+					NOT = { has_strategic_land_adjacency = scope:other_country }
+				}
+				min = -100
+			}
+		}
+
+		if = {
+			limit = {
+				"scope:other_country.ai_treaty_fairness(root)" < 0
+			}
+			add = {
+				desc = "DIPLOMATIC_ACCEPTANCE_TREATY_FAIRNESS"
+				value = "scope:other_country.ai_treaty_fairness(root)"
+				min = -30
+			}
+		}
+	}
+
+	if = {
+		limit = {
+			"root.ai_ideological_opinion(scope:other_country)" > 0
+		}
+		add = {
+			desc = "DIPLOMATIC_ACCEPTANCE_IDEOLOGICAL_OPINION"
+			value = "root.ai_ideological_opinion(scope:other_country)"
+			multiply = 0.5
+			max = 10
+		}
+	}
+	else_if = {
+		limit = {
+			"root.ai_ideological_opinion(scope:other_country)" < 0
+		}
+		add = {
+			desc = "DIPLOMATIC_ACCEPTANCE_IDEOLOGICAL_OPINION_NEGATIVE"
+			value = "root.ai_ideological_opinion(scope:other_country)"
+			multiply = 0.5
+			min = -10
+		}
+	}
+
+	add = {
+		desc = "DIPLOMATIC_ACCEPTANCE_PRINCIPLE_SACRED_CIVICS"
+
+		if = {
+			limit = {
+				AND = {
+					scope:other_country.power_bloc ?= {
+						OR = {
+							has_principle = principle:principle_sacred_civics_1
+							has_principle = principle:principle_sacred_civics_2
+							has_principle = principle:principle_sacred_civics_3
+						}
+					}
+					scope:other_country.religion = root.religion
+				}
+			}
+			value = 10
+		}
+	}
+
+	add = {
+		desc = "DIPLOMATIC_ACCEPTANCE_SOURCE_PRO_LOBBY_CLOUT"
+		value = "root.lobby_foreign_pro_clout(scope:other_country)"
+		multiply = 50
+		max = 15
+	}
+
+	add = {
+		desc = "DIPLOMATIC_ACCEPTANCE_SOURCE_ANTI_LOBBY_CLOUT"
+		value = "root.lobby_foreign_anti_clout(scope:other_country)"
+		multiply = -50
+		min = -15
+	}
+
+	add = {
+		desc = "DIPLOMATIC_ACCEPTANCE_TARGET_PRO_LOBBY_CLOUT"
+		value = "scope:other_country.lobby_foreign_pro_clout(root)"
+		multiply = 100
+		max = 15
+	}
+
+	add = {
+		desc = "DIPLOMATIC_ACCEPTANCE_TARGET_ANTI_LOBBY_CLOUT"
+		value = "scope:other_country.lobby_foreign_anti_clout(root)"
+		multiply = -100
+		min = -15
+	}
+}

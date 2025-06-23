@@ -1,0 +1,154 @@
+﻿je_grand_exhibition = {
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	group = je_group_crises
+
+	immediate = {
+		capital = {
+			save_scope_as = grand_exhibition_state
+			if = {
+				limit = {
+					any_scope_building = {
+						is_building_type = building_eiffel_tower #they held a huge exhibition there
+					}
+				}
+				random_scope_building = {
+					limit = {
+						is_building_type = building_eiffel_tower
+					}
+					save_scope_as = grand_exhibition_building
+				}
+			}
+			else = {
+				random_scope_building = {
+					limit = {
+						is_building_type = building_urban_center
+					}
+					save_scope_as = grand_exhibition_building
+				}
+			}
+		}
+		set_variable = {
+			name = grand_exhibition_points_var
+			value = 0
+		}
+		set_variable = {
+			name = grand_exhibition_points_change
+			value = 0
+		}
+	}
+
+	status_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = je_grand_exhibition_bad_points
+				trigger = {
+					root.var:grand_exhibition_points_var <= 20
+				}
+			}
+			triggered_desc = {
+				desc = je_grand_exhibition_medium_points
+				trigger = {
+					root.var:grand_exhibition_points_var > 20
+					root.var:grand_exhibition_points_var < 50
+				}
+			}
+			triggered_desc = {
+				desc = je_grand_exhibition_good_points
+				trigger = {
+					root.var:grand_exhibition_points_var >= 50
+					root.var:grand_exhibition_points_var < 100
+				}
+			}
+			triggered_desc = {
+				desc = je_grand_exhibition_great_points
+				trigger = {
+					root.var:grand_exhibition_points_var >= 100
+				}
+			}
+		}
+	}
+
+	on_weekly_pulse = {
+		effect = {
+			set_variable = {
+				name = grand_exhibition_points_var
+				value = grand_exhibition_points
+			}
+			change_variable = {
+				name = grand_exhibition_points_var
+				add = var:grand_exhibition_points_change
+			}
+		}
+	}
+
+	on_monthly_pulse = {
+		random_events = {
+			250 = 0
+			10 = exhibition_events.4
+			10 = exhibition_events.5
+			10 = exhibition_events.6
+			5 = exhibition_events.7
+			30 = exhibition_events.8
+		}
+	}
+
+	complete = {
+		custom_tooltip = {
+			text = grand_exhibition_complete_tt
+			always = no
+		}
+	}
+
+	current_value = {
+		value = root.var:grand_exhibition_points_var
+	}
+
+	goal_add_value = {
+		value = 100
+	}
+
+	progressbar = yes
+
+	invalid = {
+		scope:grand_exhibition_state = {
+			devastation >= 0.1
+			NOT = {
+				owner = root
+			}
+		}
+	}
+
+	on_invalid = {
+		custom_tooltip = {
+			text = invalid_grand_exhibition_tt
+			remove_variable = grand_exhibition_decision_taken
+		}
+	}
+
+	timeout = 1825 # 5 years
+
+	on_timeout = {
+		if = {
+			limit = {
+				root.var:grand_exhibition_points_var >= 100
+			}
+			trigger_event = { id = exhibition_events.3 }
+		}
+		else_if = {
+			limit = {
+				root.var:grand_exhibition_points_var >= 50
+			}
+			trigger_event = { id = exhibition_events.2 }
+		}
+		else = {
+			trigger_event = { id = exhibition_events.1 }
+		}
+	}
+
+	weight = 20
+
+	should_be_pinned_by_default = yes
+
+	transferable = no
+}

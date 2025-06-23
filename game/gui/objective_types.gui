@@ -718,7 +718,7 @@ types objective_types
 		flowcontainer_game_rules_mini = {
 			name = "game_rules_mini"
 		}
-		
+
 		divider_light = {
 			layoutpolicy_vertical = expanding
 		}
@@ -763,6 +763,63 @@ types objective_types
 		}						
 
 		divider_light = {
+			layoutpolicy_vertical = expanding
+		}
+
+		widget = {
+			datacontext = "[AccessGameRules]"
+			datacontext = "[JominiGameRules.AccessNamedGameRule( 'custom_rng_seed' )]"
+			datacontext = "[GuiGameRule.GetRule]"
+			datacontext = "[GuiGameRule.GetSetting]"
+			size = { 180 60 }
+			visible = "[GameRuleSetting.HasFlag( 'use_custom_rng_seed' )]" 
+
+			textbox = {
+				align = nobaseline
+				raw_text = "[GameRule.GetName]:"
+				default_format = "#medium"
+				size = { 180 25 }
+			}
+
+			hbox = {
+				name = "buttons"
+				margin_top = 20
+
+				editbox = {
+					name = "custom_rng_seed_edit"
+					maxcharacters = 25
+					size = { 180 40 }
+					margin_left = 10
+					alwaystransparent = no
+					focuspolicy = click
+					focus_on_visible = no
+					align = nobaseline
+
+					background = {
+						using = text_edit_bg
+					}
+
+					text = "CHANGE_RNG_SEED"
+					ontextedited = "[GameSetup.OnEditRNGSeed]"
+
+					textbox = {
+						visible = "[StringIsEmpty(GameSetup.GetCustomRNGSeed)]"
+						parentanchor = vcenter
+						align = nobaseline
+						position = { 10 0 }
+						autoresize = yes
+						default_format = "#title"
+						text = "RNG_SEED_CLICK_TO_CHANGE"
+					}
+				}
+			}
+		}
+
+		divider_light = {
+			datacontext = "[AccessGameRules]"
+			datacontext = "[JominiGameRules.AccessNamedGameRule( 'custom_rng_seed' )]"
+			datacontext = "[GuiGameRule.GetSetting]"
+			visible = "[GameRuleSetting.HasFlag( 'use_custom_rng_seed' )]"
 			layoutpolicy_vertical = expanding
 		}
 

@@ -120,7 +120,7 @@
 
 	# Harvest condition map mode
 	HARVEST_CONDITION_COLOR_MIN_ALPHA = 0.4					# Min color of the province is the color of the harvest condition type (max color) with this alpha
-	# The color of the province affected by a harvest condition is scaled based on the max intensity in the area. 
+	# The color of the province affected by a harvest condition is scaled based on the max intensity in the area.
 	# This value defines how many different colors a harvest condition area can have inside.
 	# E.g. 4 will give the following brackets: 0-0.25, 0.25-0.5, 0.5-0.75, 0.75-1
 	HARVEST_CONDITION_NUM_COLOR_BRACKETS = 5
@@ -239,6 +239,7 @@ NGraphics = {
 	PIE_CHART_TIMER_FILLED_COLOR = { 0.85 0.72 0.44 1.0 }
 
 	# Map markers
+	MAP_MARKER_MERGE_DISTANCE_FOR_STACK = 10				# The max screen distance in pixels between map markers (center points) for them to form a stack
 	MAP_MARKER_MERGE_PROVINCES = 800.0
 	MAP_MARKER_MERGE_STATES = 1600.0
 	MAP_MARKER_MERGE_PROVINCES_STRATEGIC_REGION = 1600.0
@@ -308,7 +309,7 @@ NGraphics = {
 	ROUTE_GENERATION_NAV_MESH_DENSITY = 0.375						# Controls the density of vertexes in the navmesh used to generate the road system
 
 	ROUTE_PAVED_ROAD_TECH = "paved_roads"
-	ROUTE_PAVED_ROAD_MIN_INFRASTRUCTURE = 1000.0
+	ROUTE_PAVED_ROAD_MIN_INFRASTRUCTURE = 500.0
 
 	# Flags
 	FLAG_TEXT_ICON_FONT_SIZE = 16
@@ -322,7 +323,6 @@ NGraphics = {
 	POWER_BLOC_COA_TEXT_ICON_OFFSET = { 0 4 }
 
 	COA_FLAGS_FRAMES_BETWEEN_UPDATES = 30;
-	OUTLINER_FRAMES_BETWEEN_UPDATES = 10
 	ALERTS_FRAMES_BETWEEN_UPDATES = 5
 
 	# Coa
@@ -340,7 +340,6 @@ NGraphics = {
 	CELL_SCORE_SLOPE_PENALTY = 6			# penalty per 'k' above the limit. Does not scale linearly with slope angle so might be tricky to tweak
 	CELL_SCORE_RIVER_PENALTY = 10.0			# Penalty per "to-close-to-river"-units	(distance-from-cell-center-to-river-edge - bias)
 	CELL_SCORE_ROAD_PENALTY = 10.0
-	CELL_SCORE_NOISE_FACTOR = 0.0			# Multiplies score with 1+-noise_factor
 
 	# Front entities graphics
 	FRONT_ENTITIES_CUTOFF = 300 			# Zoom at which we hide all front entities
@@ -430,6 +429,8 @@ NCamera = {
 }
 
 NCities = {
+	NUM_GRID_LAYOUTS = 16		# How many different grid layouts are available for a city to choose. Grid layouts are randomly generated and cities select them randomly
+
 	#Select a province and use the "Cities.DrawDebugLines" for easy tweaking
 	GRID_SCALE = 1.1
 	MESH_SCALE = 1.0		#scale all meshes by this
@@ -456,6 +457,7 @@ NCities = {
 	RESIDENTIAL_PROMOTE_ENTITY = "residential_promotion_entity" # Entity that is spawned on a residential building that is promoted due to demographics changes
 	RESIDENTIAL_DEMOTE_ENTITY = "residential_demotion_entity"	# Entity that is spawned on a residential building that is demoted due to demographics changes
 
+	CITY_VFX_MAX_ENTITIES = 128				# The limit of how many VFX instances can exist at the same time
 	CITY_VFX_ZOOM_CUTOFF = 250				# zoom at which we hide all city VFXes
 	CITY_PARTICLES_ZOOM_CUTOFF = 200		# zoom at which we hide all city particle effects (for example chimney smoke)
 
@@ -480,7 +482,14 @@ NRoutes = {
 		"_medium_mesh"
 		"_large_mesh"
 		}
-	ROUTE_ENTITIES_CUTOFF = 250				# zoom at which we hide all route entities
+
+	CARAVAN_DISTANCE_OPACITY_THRESHOLD = 0.75 	# Ratio of the caravan distance to camera and cut-off distance at which its entities start to become transparent
+	LAND_ENTITIES_CUTOFF = 300				# Distance to camera at which land route entities hide
+	NAVAL_ENTITIES_CUTOFF = 650				# Distance to camera at which naval route entities hide
+	AIR_ENTITIES_CUTOFF = 450				# Zoom at which air route entities hide
+
+	LAND_ENTITIES_UPDATE_DISTANCE_RATIO = 0.0005		# Ratio of traveled distance of the caravan and the distance to camera which defines the update frequency of caravan entities. The higher it is the less frequently they update
+	NAVAL_ENTITIES_UPDATE_DISTANCE_RATIO = 0.00025	# Ratio of traveled distance of the caravan and the distance to camera which defines the update frequency of caravan entities. The higher it is the less frequently they update
 }
 
 NPortrait = {

@@ -59,7 +59,7 @@
 	}
 
 	ai_chance = {
-		base = 1
+		value = 1
 	}
 }
 
@@ -125,19 +125,25 @@ sell_savoy = {
 	}
 
 	ai_chance = {
-		base = 0
-		modifier = {
-			c:FRA = {
-				relations:root >= relations_threshold:amicable
-			}
-			OR = {
-				has_diplomatic_pact = {
-					who = c:FRA
-					type = defensive_pact
+		value = 0
+		if = {
+			limit = {
+				c:FRA = {
+					relations:root >= relations_threshold:amicable
 				}
-				has_diplomatic_pact = {
-					who = c:FRA
-					type = alliance
+				OR = {
+					any_scope_treaty = {
+						binds = c:FRA
+						any_scope_article = {
+							has_type = defensive_pact
+						}
+					}
+					any_scope_treaty = {
+						binds = c:FRA
+						any_scope_article = {
+							has_type = alliance
+						}
+					}
 				}
 			}
 			add = 1
@@ -193,6 +199,6 @@ france_annex_luxembourg = {
 	}
 
 	ai_chance = {
-		base = 1
+		value = 1
 	}
 }

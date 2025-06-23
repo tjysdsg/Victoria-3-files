@@ -2,12 +2,12 @@ types politics_panel_types
 {
 	type politics_panel_government = vbox {
 		datacontext = "[PoliticsPanel.AccessReformGovernment]"
-		
+
 		background = {
 			texture = "gfx/interface/illustrations/government/government_illustration.dds"
 			alpha = 0.1
 			fittype = center
-			
+
 			modify_texture = {
 				texture = "gfx/interface/masks/fade_vertical_center.dds"
 				spriteType = Corneredstretched
@@ -27,15 +27,15 @@ types politics_panel_types
 				blend_mode = alphamultiply
 			}
 		}
-			
+
 		fullscreen_scrollarea = {
 			visible = "[Not(GetVariableSystem.Exists('reform_government'))]"
 
 			blockoverride "scrollarea_content" {
 				politics_panel_government_details = {}
 			}
-		}	
-				
+		}
+
 		fullscreen_scrollarea = {
 			visible = "[GetVariableSystem.Exists('reform_government')]"
 
@@ -43,14 +43,14 @@ types politics_panel_types
 				politics_panel_government_reform = {}
 			}
 		}
-		
+
 		### BUTTONS
 		hbox = {
 			margin = { 40 10 }
 			spacing = 25
 			layoutpolicy_horizontal = expanding
 			layoutpolicy_vertical = preferred
-			
+
 			button = {
 				size = { 400 45 }
 				using = default_button_primary
@@ -82,7 +82,7 @@ types politics_panel_types
 					align = center|nobaseline
 				}
 			}
-			
+
 			widget = { size = { 10 10 }}
 
 			button = {
@@ -126,10 +126,10 @@ types politics_panel_types
 					}
 				}
 			}
-			
+
 			container = {
 				visible = "[GetVariableSystem.Exists('reform_government')]"
-			
+
 				# SHOULD ASK FOR CONFIRMATION
 				button = {
 					visible = "[ShouldAskConfirmation(ReformGovernment.Confirm)]"
@@ -177,8 +177,8 @@ types politics_panel_types
 			}
 		}
 	}
-	
-	
+
+
 	### RULER ITEM
 	type politics_panel_reform_no_ruler_item = widget {
 		layoutpolicy_horizontal = expanding
@@ -193,23 +193,23 @@ types politics_panel_types
 		block "datacontext" {
 			datacontext = "[AccessPlayer.AccessRuler]"
 		}
-		
+
 		using = entry_bg_fancy
-		
+
 		hbox = {
 			layoutpolicy_horizontal = expanding
 			layoutpolicy_vertical = expanding
 			spacing = 5
 			margin_left = 5
 			margin_right = 10
-		
+
 			character_portrait_medium_torso = {
 				blockoverride "tooltip" {}
 				using = tooltip_below
 				blockoverride "show_hat" {}
 				blockoverride "highlight" {}
 			}
-			
+
 			vbox = {
 				layoutpolicy_horizontal = expanding
 				layoutpolicy_vertical = expanding
@@ -217,7 +217,7 @@ types politics_panel_types
 			}
 		}
 	}
-	
+
 	### GOVERNMENT DETAILS
 	type politics_panel_government_details = hbox {
 		layoutpolicy_horizontal = expanding
@@ -233,11 +233,11 @@ types politics_panel_types
 			layoutpolicy_horizontal = expanding
 			layoutpolicy_vertical = expanding
 			datacontext = "[AccessPlayer]"
-			
+
 			background = {
 				using = light_bg
 				alpha = 0.65
-				
+
 				modify_texture = {
 					texture = "gfx/interface/masks/fade_vertical_center.dds"
 					spriteType = Corneredstretched
@@ -251,18 +251,18 @@ types politics_panel_types
 					blend_mode = alphamultiply
 				}
 			}
-			
+
 			### HEADER
 			hbox = {
 				name = "tutorial_highlight_government_title"
 				spacing = 5
 				margin = { 5 8 }
 				layoutpolicy_horizontal = preferred
-				
+
 				background = {
 					using = default_header_bg_faded
 				}
-				
+
 				textbox = {
 					layoutpolicy_horizontal = expanding
 					size = { 0 30 }
@@ -272,13 +272,13 @@ types politics_panel_types
 					using = fontsize_xxl
 					margin_left = 5
 				}
-				
+
 				hbox = {
 					layoutpolicy_horizontal = preferred
 					layoutpolicy_vertical = preferred
 					tooltip = IN_GOVERNMENT_DESC
 					spacing = 10
-				
+
 					textbox = {
 						autoresize = yes
 						text = "GOVERNMENT"
@@ -293,29 +293,29 @@ types politics_panel_types
 					}
 				}
 			}
-			
+
 			widget = { size = { 1 10 }}
-			
+
 			### RULER / LEGITIMACY + MISC
 			hbox = {
 				layoutpolicy_horizontal = expanding
 				layoutpolicy_vertical = preferred
 				spacing = 10
 				margin_bottom = 10
-				
+
 				### HAS LEADER IN REFORM
 				politics_panel_ruler_item = {
 
 					blockoverride "visible" {
 						visible = "[Or( And(Country.HasRuler, Not(GetVariableSystem.Exists('reform_government'))), And( ReformGovernment.HasStagedGroup, GetVariableSystem.Exists('reform_government')) )]"
 					}
-					
+
 					blockoverride "datacontext" {
 						datacontext = "[ReformGovernment.GetPredictedNewRuler( GetVariableSystem.Exists('reform_government') )]"
 					}
 
 					layoutstretchfactor_horizontal = 3
-					
+
 					blockoverride "additional_info_top_right" {
 						textbox = {
 							visible = "[And( ReformGovernment.WouldGetNewRuler, And( ReformGovernment.HasStagedGroup, GetVariableSystem.Exists('reform_government')) )]"
@@ -326,13 +326,13 @@ types politics_panel_types
 							align = nobaseline
 							using = fontsize_large
 							margin = { 15 0 }
-							
+
 							using = look_at_me_text_animation
-							
+
 							background = {
 								using = dark_area
 								margin = { 10 5 }
-								
+
 								modify_texture = {
 									texture = "gfx/interface/masks/fade_horizontal_center.dds"
 									spriteType = Corneredstretched
@@ -343,37 +343,37 @@ types politics_panel_types
 						}
 					}
 				}
-				
+
 				### NO NEW LEADER POSSIBLE IN REFORM
 				politics_panel_reform_no_ruler_item = {
 
 					blockoverride "visible" {
 						visible = "[And( Not(ReformGovernment.HasStagedGroup), GetVariableSystem.Exists('reform_government')) ]"
 					}
-					
+
 					blockoverride "datacontext" {
 						datacontext = "[ReformGovernment.GetPredictedNewRuler( GetVariableSystem.Exists('reform_government') )]"
 					}
 
 					layoutstretchfactor_horizontal = 3
-					
+
 				}
-				
+
 				vbox = {
 					layoutstretchfactor_horizontal = 2
 					layoutpolicy_horizontal = expanding
 					layoutpolicy_vertical = preferred
 					margin = { 10 10 }
-					
+
 					background = {
 						using = entry_bg_simple
 					}
-					
+
 					# legitimacy
 					politics_panel_legitimacy_item = {
 						visible = "[Not(GetVariableSystem.Exists('reform_government'))]"
 					}
-					
+
 					# legitimacy when reforming
 					vbox = {
 						name = "tutorial_highlight_reform_legitimacy"
@@ -382,7 +382,7 @@ types politics_panel_types
 						layoutpolicy_horizontal = expanding
 						layoutpolicy_vertical = preferred
 						spacing = 5
-						
+
 						hbox = {
 							layoutpolicy_horizontal = expanding
 							spacing = 10
@@ -411,13 +411,13 @@ types politics_panel_types
 								align = left|nobaseline
 								elide = right
 							}
-							
+
 							# changed value plus
 							widget = {
 								layoutpolicy_horizontal = expanding
 								size = { 0 20 }
 								visible = "[GreaterThan_int32(ReformGovernment.GetPredictedLegitimacyDelta, '(int32)0')]"
-								
+
 								icon = {
 									position = { 35 0 }
 									alpha = 0.5
@@ -425,7 +425,7 @@ types politics_panel_types
 									size = { 100 100 }
 									parentanchor = right|vcenter
 								}
-								
+
 								textbox = {
 									size = { 100% 100% }
 									text = "[ReformGovernment.GetPredictedLegitimacyDelta|=p]"
@@ -434,13 +434,13 @@ types politics_panel_types
 									using = fontsize_large
 								}
 							}
-							
+
 							# changed value minus
 							widget = {
 								layoutpolicy_horizontal = expanding
 								size = { 0 20 }
 								visible = "[LessThan_int32(ReformGovernment.GetPredictedLegitimacyDelta, '(int32)0')]"
-								
+
 								icon = {
 									position = { 35 0 }
 									alpha = 1
@@ -451,7 +451,7 @@ types politics_panel_types
 									size = { 100 100 }
 									parentanchor = right|vcenter
 								}
-								
+
 								textbox = {
 									size = { 100% 100% }
 									text = "[ReformGovernment.GetPredictedLegitimacyDelta|r]"
@@ -461,10 +461,10 @@ types politics_panel_types
 								}
 							}
 						}
-						
+
 						levels_progressbar = {
 							datamodel = "[GetLegitimacyLevels]"
-							
+
 							blockoverride "item_properties" {
 								layoutstretchfactor_horizontal = "[LegitimacyLevel.GetWidth]"
 								tooltip = "[SelectLocalization( LegitimacyLevel.IsActive( ReformGovernment.GetPredictedLegitimacy ), 'LEGITIMACY_LEVEL_PREDICTED_TOOLTIP', 'LEGITIMACY_LEVEL_INACTIVE_TOOLTIP' )]"
@@ -498,12 +498,12 @@ types politics_panel_types
 							}
 						}
 					}
-					
+
 					widget = {
 						layoutpolicy_horizontal = expanding
 						layoutpolicy_vertical = expanding
 					}
-					
+
 					# radicals
 					hbox = {
 						layoutpolicy_horizontal = expanding
@@ -511,7 +511,7 @@ types politics_panel_types
 						spacing = 5
 						using = radicals_tooltip_with_graph
 						margin = { 5 0 }
-						
+
 						textbox = {
 							layoutpolicy_horizontal = expanding
 							size = { 0 20 }
@@ -531,18 +531,18 @@ types politics_panel_types
 						hbox = {
 							layoutpolicy_horizontal = expanding
 							layoutpolicy_vertical = preferred
-							
+
 							widget = {
 								layoutpolicy_horizontal = expanding
 								size = { 0 20 }
 								visible = "[And(NotEqualTo_int64(ReformGovernment.GetPredictedRadicalsDelta, '(int64)0'),GetVariableSystem.Exists('reform_government'))]"
-								
+
 								background = {
 									using = dark_area_rounded
 									margin = { 0 2 }
 									margin_left = 15
 								}
-								
+
 								textbox = {
 									size = { 100% 100% }
 									text = "[ReformGovernment.GetPredictedRadicalsDelta|D=-]"
@@ -554,7 +554,7 @@ types politics_panel_types
 							}
 						}
 					}
-					
+
 					# loyalists
 					hbox = {
 						layoutpolicy_horizontal = expanding
@@ -562,7 +562,7 @@ types politics_panel_types
 						spacing = 5
 						using = loyalists_tooltip_with_graph
 						margin = { 5 0 }
-						
+
 						textbox = {
 							layoutpolicy_horizontal = expanding
 							size = { 0 20 }
@@ -579,22 +579,22 @@ types politics_panel_types
 							raw_text = "#variable [Country.GetNumLoyalists|D]#!"
 							align = left|nobaseline
 						}
-						
+
 						hbox = {
 							layoutpolicy_horizontal = expanding
 							layoutpolicy_vertical = preferred
-							
+
 							widget = {
 								layoutpolicy_horizontal = expanding
 								size = { 0 20 }
 								visible = "[And(NotEqualTo_int64(ReformGovernment.GetPredictedLoyalistsDelta, '(int64)0'),GetVariableSystem.Exists('reform_government'))]"
-								
+
 								background = {
 									using = dark_area_rounded
 									margin = { 0 2 }
 									margin_left = 15
 								}
-								
+
 								textbox = {
 									size = { 100% 100% }
 									text = "[ReformGovernment.GetPredictedLoyalistsDelta|D=+]"
@@ -608,7 +608,7 @@ types politics_panel_types
 					}
 				}
 			}
-			
+
 			### BUTTONS
 			hbox = {
 				visible = "[GetVariableSystem.Exists('reform_government')]"
@@ -724,7 +724,7 @@ types politics_panel_types
 					}
 				}
 			}
-						
+
 			### IG LIST
 			parties_and_ig_list_details = {
 				name = "tutorial_highlight_all_government_interest_groups"
@@ -743,20 +743,20 @@ types politics_panel_types
 				blockoverride "move_to_government_button_party" {}
 				blockoverride "marginal_igs" {}
 			}
-			
+
 			widget = { size = { 1 40 }}
 
-			# laws 
+			# laws
 			laws_support_list = {
 				visible = "[Not(GetVariableSystem.Exists('reform_government'))]"
-				
+
 				blockoverride "laws_has_changed_text" {}
 			}
-			
+
 			# laws when reforming
 			laws_support_list = {
 				visible = "[GetVariableSystem.Exists('reform_government')]"
-				
+
 				blockoverride "laws_with_support_header" {
 					text = "CHEAPEST_LAWS_HEADER_REFORM"
 				}
@@ -770,18 +770,18 @@ types politics_panel_types
 					datamodel = "[ReformGovernment.GetPredictedLawsWithoutGovernmentOrMovementSupport]"
 				}
 			}
-			
+
 			widget = {
 				layoutpolicy_horizontal = expanding
 				layoutpolicy_vertical = expanding
 			}
 		}
-		
+
 		vertical_divider_stronger_full = {
 			size = { 2 0 }
 			layoutpolicy_vertical = expanding
 		}
-		
+
 		### OPPOSITION
 		vbox = {
 			margin_right = 5
@@ -790,10 +790,10 @@ types politics_panel_types
 			layoutpolicy_horizontal = expanding
 			layoutpolicy_vertical = expanding
 			datacontext = "[GetPlayer]"
-			
+
 			background = {
 				using = dark_area
-				
+
 				modify_texture = {
 					texture = "gfx/interface/masks/fade_vertical_center.dds"
 					spriteType = Corneredstretched
@@ -807,10 +807,10 @@ types politics_panel_types
 					blend_mode = alphamultiply
 				}
 			}
-			
+
 			### HEADER
 			hbox = {
-				name = "tutorial_highlight_opposition_title"		
+				name = "tutorial_highlight_opposition_title"
 				spacing = 5
 				margin = { 5 8 }
 				layoutpolicy_horizontal = preferred
@@ -819,18 +819,18 @@ types politics_panel_types
 				background = {
 					using = default_header_bg_faded
 				}
-				
+
 				widget = {
 					layoutpolicy_horizontal = expanding
 					size = { 0 30 }
 				}
-				
+
 				hbox = {
 					layoutpolicy_horizontal = preferred
 					layoutpolicy_vertical = preferred
 					tooltip = IN_OPPOSITION_DESC
 					spacing = 10
-				
+
 					textbox = {
 						autoresize = yes
 						text = "IN_OPPOSITION_TITLE"
@@ -845,7 +845,7 @@ types politics_panel_types
 					}
 				}
 			}
-			
+
 			textbox = {
 				layoutpolicy_horizontal = preferred
 				visible = "[And(IsDataModelEmpty(AccessPlayer.GetPartiesInOpposition),IsDataModelEmpty(AccessPlayer.GetIndependentInterestGroupsInOpposition))]"
@@ -855,11 +855,11 @@ types politics_panel_types
 				size = { 0 100 }
 				alpha = 0.5
 			}
-			
+
 			### IG LIST
 			parties_and_ig_list_details = {
 				name = "tutorial_highlight_all_opposition_interest_groups"
-				
+
 				blockoverride "datamodel" {
 					block "datamodel_opposition_parties" {
 						datamodel = "[AccessPlayer.GetPartiesInOpposition]"
@@ -876,7 +876,7 @@ types politics_panel_types
 				blockoverride "move_to_opposition_button" {}
 				blockoverride "move_to_opposition_button_party" {}
 			}
-			
+
 			widget = {
 				layoutpolicy_horizontal = preferred
 				layoutpolicy_vertical = expanding
@@ -921,7 +921,7 @@ types politics_panel_types
 			}
 		}
 	}
-	
+
 	### REFORM GOVERNMENT
 	type politics_panel_government_reform = politics_panel_government_details {
 
@@ -932,7 +932,7 @@ types politics_panel_types
 		blockoverride "datamodel_government_independent" {
 			datamodel = "[ReformGovernment.GetIndependentStagedInterestGroups]"
 		}
-		
+
 		# opposition
 		blockoverride "datamodel_opposition_parties" {
 			datamodel = "[ReformGovernment.GetAllPotentialParties]"
@@ -940,19 +940,19 @@ types politics_panel_types
 		blockoverride "datamodel_opposition_independent" {
 			datamodel = "[ReformGovernment.GetIndependentPotentialInterestGroups]"
 		}
-		
+
 		blockoverride "marginal_igs" {}
 	}
-	
+
 	### LAWS SUPPORT LIST
 	type laws_support_list = vbox {
 		layoutpolicy_horizontal = expanding
 		layoutpolicy_vertical = preferred
-		
+
 		### LAWS WITH GOVERNMENT SUPPORT BUTTON
 		section_header_button = {
 			name = "tutorial_highlight_laws_government_want"
-			
+
 			blockoverride "layout" {
 				size = { 0 38 }
 				layoutpolicy_horizontal = preferred
@@ -983,7 +983,7 @@ types politics_panel_types
 			blockoverride "onclick" {
 				onclick = "[GetVariableSystem.Toggle('laws_with_support_expanded')]"
 			}
-			
+
 			blockoverride "onclick_showmore" {
 				visible = "[Not(GetVariableSystem.Exists('laws_with_support_expanded'))]"
 			}
@@ -1012,10 +1012,10 @@ types politics_panel_types
 				}
 			}
 		}
-		
+
 		### LAWS WITHOUT GOVERNMENT SUPPORT BUTTON
 		section_header_button = {
-			
+
 			blockoverride "layout" {
 				size = { 0 38 }
 				layoutpolicy_horizontal = preferred
@@ -1026,7 +1026,7 @@ types politics_panel_types
 					text = "LAWS_WITHOUT_SUPPORT"
 				}
 			}
-			
+
 			blockoverride "right_text" {
 				block "laws_has_changed_text" {
 					textbox = {
@@ -1047,7 +1047,7 @@ types politics_panel_types
 			blockoverride "onclick" {
 				onclick = "[GetVariableSystem.Toggle('laws_without_support_expanded')]"
 			}
-			
+
 			blockoverride "onclick_showmore" {
 				visible = "[Not(GetVariableSystem.Exists('laws_without_support_expanded'))]"
 			}

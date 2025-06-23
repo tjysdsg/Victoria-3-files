@@ -10,7 +10,7 @@ types outliner_framework {
 
 		### outliner
 		outliner_content = {
-			using = fullscreen_hide
+			using = half_and_fullscreen_hide
 		
 			state = {
 				name = _show
@@ -127,7 +127,7 @@ types outliner_framework {
 
 				block "list_properties" {
 					block "outliner_datamodel" {
-						datamodel = "[OutlinerEntry.AccessSubEntries]"
+						datamodel = "[OutlinerEntry.GetSubEntries]"
 					}
 
 					item = {
@@ -257,7 +257,9 @@ types outliner_framework {
 
 	type pinnable_expandable_outliner_entry = outliner_entry {
 		blockoverride "pin_buttons" {
-			pin_buttons = {}
+			pin_buttons = {
+				block "pin_button_properties" {}
+			}
 		}
 
 		blockoverride "expand_buttons" {
@@ -281,9 +283,12 @@ types outliner_framework {
 			parentanchor = center
 			texture = "gfx/interface/outliner/unpinned_icon.dds"
 			size = { 100% 100% }
-			visible = "[Not(OutlinerEntry.IsPinned)]"
-			onclick = "[OutlinerEntry.TogglePinned]"
 			tooltip = "PIN"
+
+			block "pin_button_visibility_and_onclick" {
+				visible = "[Not(OutlinerEntry.IsPinned)]"
+				onclick = "[OutlinerEntry.TogglePinned]"
+			}
 
 			state = {
 				name = hide_pin_button
@@ -309,9 +314,12 @@ types outliner_framework {
 			position = { 0 0 }
 			texture = "gfx/interface/outliner/pinned_icon.dds"
 			size = { 100% 100% }
-			visible = "[OutlinerEntry.IsPinned]"
-			onclick = "[OutlinerEntry.TogglePinned]"
 			tooltip = "UNPIN"
+			
+			block "unpin_button_visibility_and_onclick" {
+				visible = "[OutlinerEntry.IsPinned]"
+				onclick = "[OutlinerEntry.TogglePinned]"
+			}
 		}
 	}
 

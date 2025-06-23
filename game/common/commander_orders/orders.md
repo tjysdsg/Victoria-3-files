@@ -37,6 +37,10 @@ the sound that will be played when this order is selected
 
 	clicksound = "event:/SFX/UI/Military/order_general_front_advance"
 
+commanders with at least this power projection ratio to enemy don't try to escape from battle
+
+	escape_power_ratio = 4.0
+
 amount of additional character experience that will be gained per week while executing Order; note that this only
 matters for character trait gain
 

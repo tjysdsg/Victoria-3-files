@@ -4,19 +4,19 @@
 cold.101 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = cold.101.t
 	desc = cold.101.d
 	flavor = cold.101.f
-	
+
 	duration = 3
-	
+
 	event_image = {
 		video = "europenorthamerica_antarctica"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	
+
 	option = {
 		name = cold.101.a
 		trigger_event = { id = cold.102 days = 0 popup = yes }
@@ -32,13 +32,13 @@ cold.102 = { #Choose commander
     flavor = cold.102.f
 
     duration = 3
-	
+
 	event_image = {
 		video = "europenorthamerica_antarctica"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	
+
 	trigger = {
 		any_scope_character = {
 			has_role = admiral
@@ -125,6 +125,9 @@ cold.102 = { #Choose commander
 		scope:expedition_leader_1 ?= {
 			set_variable = expedition_leader_var
 			set_character_busy_and_immortal = yes
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		add_journal_entry = {
 			type = je_antarctica
@@ -144,6 +147,9 @@ cold.102 = { #Choose commander
 		scope:expedition_leader_2 ?= {
 			set_variable = expedition_leader_var
 			set_character_busy_and_immortal = yes
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		add_journal_entry = {
 			type = je_antarctica
@@ -163,12 +169,15 @@ cold.102 = { #Choose commander
 		scope:expedition_leader_3 ?= {
 			set_variable = expedition_leader_var
 			set_character_busy_and_immortal = yes
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		add_journal_entry = {
 			type = je_antarctica
 		}
 	}
-	
+
 	option = {
 		name = cold.102.e
 		custom_tooltip = expedition_costs_tt
@@ -183,6 +192,9 @@ cold.102 = { #Choose commander
 		scope:expedition_leader_4 ?= {
 			set_variable = expedition_leader_var
 			set_character_busy_and_immortal = yes
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		add_journal_entry = {
 			type = je_antarctica
@@ -194,19 +206,19 @@ cold.102 = { #Choose commander
 cold.1 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = cold.1.t
 	desc = cold.1.d
 	flavor = cold.1.f
-	
+
 	duration = 3
-	
+
 	event_image = {
 		video = "europenorthamerica_antarctica"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	
+
 	trigger = {
 		je:je_antarctica ?= {
 			"scripted_bar_progress(expedition_progress_bar)" >= 2
@@ -217,30 +229,44 @@ cold.1 = {
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		set_variable = mountains_of_madness
 	}
-	
+
 	option = { # Move on
 		name = cold.1.a
 		default_option = yes
 		expedition_minor_progress_effect = yes
 	}
-	
+
 	option = { # Do some science
 		name = cold.1.b
-		random_list = { 
+		random_list = {
 			50 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 25
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 100
+					}
+				}
 				scope:expedition_leader = {
 					add_modifier = {
 						name = antarctic_mountains_modifier
-						months = normal_modifier_time
+						days = normal_modifier_time
 					}
 				}
 				add_modifier = {
 					name = antarctic_research
-					months = normal_modifier_time
+					days = normal_modifier_time
 				}
 				expedition_minor_progress_effect = yes
 			}
@@ -253,16 +279,30 @@ cold.1 = {
 		name = cold.1.c
 		random_list = {
 			25 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 12
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 100
+					}
+				}
 				scope:expedition_leader = {
 					add_modifier = {
 						name = antarctic_mountains_modifier
-						months = normal_modifier_time
+						days = normal_modifier_time
 						multiplier = 2
 					}
 				}
 				add_modifier = {
 					name = climbed_erebus
-					months = normal_modifier_time
+					days = normal_modifier_time
 				}
 				expedition_minor_progress_effect = yes
 			}
@@ -277,7 +317,7 @@ cold.1 = {
 cold.2 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = cold.2.t
 	desc = {
 		first_valid = {
@@ -296,15 +336,15 @@ cold.2 = {
 		}
 	}
 	flavor = cold.2.f
-	
+
 	duration = 3
-	
+
 	event_image = {
 		video = "unspecific_iceberg"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	
+
 	trigger = {
 		je:je_antarctica ?= {
 			"scripted_bar_progress(expedition_progress_bar)" = 1
@@ -315,7 +355,7 @@ cold.2 = {
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		if = {
 			limit = {
@@ -325,7 +365,7 @@ cold.2 = {
 		}
 		set_variable = discovery_hut_var
 	}
-	
+
 	option = { # make a durable hut and leave supplies
 		name = cold.2.a
 		trigger = {
@@ -357,7 +397,7 @@ cold.2 = {
 cold.3 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = cold.3.t
 	desc = cold.3.d
 	flavor = {
@@ -379,16 +419,16 @@ cold.3 = {
 				desc = cold.3.f2
 			}
 		}
-	}	
-	
+	}
+
 	duration = 3
-	
+
 	event_image = {
 		video = "unspecific_iceberg"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	
+
 	trigger = {
 		je:je_antarctica ?= {
 			"scripted_bar_progress(expedition_progress_bar)" > 3
@@ -399,16 +439,30 @@ cold.3 = {
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		set_variable = antarctic_got_lost
 	}
-	
+
 	option = { # go back
 		name = cold.3.a
 		default_option = yes
 		random_list = {
 			75 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 40
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 150
+					}
+				}
 				expedition_lose_progress_effect = yes
 			}
 			25 = {
@@ -420,6 +474,20 @@ cold.3 = {
 		name = cold.3.b
 		random_list = {
 			25 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 12
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 50
+					}
+				}
 				expedition_minor_progress_effect = yes
 			}
 			75 = {
@@ -433,13 +501,13 @@ cold.3 = {
 cold.4 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = cold.4.t
 	desc = cold.4.d
 	flavor = cold.4.f
-	
+
 	duration = 3
-	
+
 	event_image = {
 		video = "unspecific_iceberg"
 	}
@@ -467,7 +535,7 @@ cold.4 = {
 cold.5 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = cold.5.t
 	desc = {
 		first_valid = {
@@ -486,22 +554,22 @@ cold.5 = {
 		}
 	}
 	flavor = cold.5.f
-	
+
 	duration = 3
-	
+
 	event_image = {
 		video = "europenorthamerica_antarctica"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	
+
 	trigger = {
 		je:je_antarctica ?= {
 			"scripted_bar_progress(expedition_progress_bar)" >= 6
 		}
 		NOT = { has_variable = first_to_reach_south_pole }
 	}
-	
+
 	immediate = {
 		save_scope_as = expedition_country
 		random_scope_character = {
@@ -523,7 +591,7 @@ cold.5 = {
 		}
 		set_variable = south_pole_event_var
 	}
-	
+
 	option = {
 		name = cold.5.a
 		trigger = {
@@ -551,20 +619,20 @@ cold.5 = {
 cold.6 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = cold.6.t
 	desc = cold.6.d
 	flavor = cold.6.f
-	
+
 	duration = 3
-	
+
 	event_image = {
 		video = "europenorthamerica_antarctica"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	
-	trigger = {	
+
+	trigger = {
 		je:je_antarctica ?= {
 			"scripted_bar_progress(expedition_progress_bar)" >= 3
 		}
@@ -574,7 +642,7 @@ cold.6 = {
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		set_variable = dog_meat
 		random_scope_character = {
@@ -582,14 +650,14 @@ cold.6 = {
 			save_scope_as = expedition_leader
 		}
 	}
-	
+
 	option = {
 		name = cold.6.a
 		default_option = yes
 		scope:expedition_leader = {
 			add_modifier = {
 				name = ate_dogs_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		expedition_minor_progress_effect = yes
@@ -606,7 +674,7 @@ cold.6 = {
 cold.7 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = cold.7.t
 	desc = {
 		first_valid = {
@@ -625,15 +693,15 @@ cold.7 = {
 		}
 	}
 	flavor = cold.7.f
-	
+
 	duration = 3
-	
+
 	event_image = {
 		video = "europenorthamerica_antarctica"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	
+
 	immediate = {
 		save_scope_as = expedition_country
 		random_scope_character = {
@@ -641,7 +709,7 @@ cold.7 = {
 			save_scope_as = expedition_leader
 		}
 	}
-	
+
 	option = {
 		name = cold.7.a
 		trigger = {
@@ -659,7 +727,7 @@ cold.7 = {
 		}
 		add_modifier = {
 			name = pole_expedition_returned
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 	option = {
@@ -677,7 +745,7 @@ cold.7 = {
 		}
 		add_modifier = {
 			name = first_to_the_pole
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 }
@@ -686,19 +754,19 @@ cold.7 = {
 cold.8 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = cold.8.t
 	desc = cold.8.d
 	flavor = cold.8.f
-	
+
 	duration = 3
-	
+
 	event_image = {
 		video = "unspecific_iceberg"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	
+
 	trigger = {
 		je:je_antarctica ?= {
 			"scripted_bar_progress(expedition_progress_bar)" <= 1
@@ -709,7 +777,7 @@ cold.8 = {
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		set_variable = pack_ice
 		random_scope_character = {
@@ -717,7 +785,7 @@ cold.8 = {
 			save_scope_as = expedition_leader
 		}
 	}
-	
+
 	option = { # Push on!
 		name = cold.8.a
 		default_option = yes
@@ -727,6 +795,20 @@ cold.8 = {
 				add_small_peril_effect = yes
 			}
 			50 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 25
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 100
+					}
+				}
 				expedition_minor_progress_effect = yes
 			}
 		}
@@ -750,14 +832,14 @@ cold.8 = {
 		}
 		highlighted_option = yes
 		expedition_minor_progress_effect = yes
-	}	
+	}
 }
 
 # Icebound
 cold.9 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = cold.9.t
 	desc = {
 		first_valid = {
@@ -780,22 +862,36 @@ cold.9 = {
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
-	cooldown = { months = short_modifier_time }
-	
+
+	cooldown = { days = short_modifier_time }
+
 	duration = 3
-	
+
 	event_image = {
 		video = "unspecific_iceberg"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	
+
 	option = { # Try to free yourself
 		name = cold.9.a
 		default_option = yes
 		random_list = {
 			20 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 10
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 40
+					}
+				}
 				expedition_minor_progress_effect = yes
 			}
 			80 = {
@@ -811,6 +907,20 @@ cold.9 = {
 		}
 		random_list = {
 			50 = { # everyone lives!
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 25
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 50
+					}
+				}
 				trigger_event = { id = cold.10 days = day_until_next_expedition_event }
 			}
 			50 = { # everyone dies!
@@ -825,19 +935,19 @@ cold.9 = {
 cold.10 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = cold.10.t
 	desc = cold.10.d
 	flavor = cold.10.f
-	
+
 	duration = 3
-	
+
 	event_image = {
 		video = "unspecific_whaling"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	
+
 	immediate = {
 		save_scope_as = expedition_country
 		random_scope_character = {
@@ -845,7 +955,7 @@ cold.10 = {
 			save_scope_as = expedition_leader
 		}
 	}
-	
+
 	option = { # go home, end expedition
 		name = cold.10.a
 		default_option = yes
@@ -855,7 +965,7 @@ cold.10 = {
 			set_character_busy_and_immortal = no
 			add_modifier = {
 				name = safe_polar_exp_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		remove_variable = on_expedition
@@ -868,19 +978,19 @@ cold.10 = {
 cold.11 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = cold.11.t
 	desc = cold.11.d
 	flavor = cold.11.f
-	
+
 	duration = 3
-	
+
 	event_image = {
 		video = "unspecific_iceberg"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	
+
 	trigger = {
 		je:je_antarctica ?= {
 			"scripted_bar_progress(expedition_progress_bar)" < 2
@@ -891,17 +1001,31 @@ cold.11 = {
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		save_scope_as = expedition_country
 		set_variable = great_ice_barrier_variable
 	}
-	
+
 	option = { # beware of fissures
 		name = cold.11.a
 		default_option = yes
 		random_list = {
 			75 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 40
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 150
+					}
+				}
 				expedition_minor_progress_effect = yes
 			}
 			25 = {
@@ -920,19 +1044,19 @@ cold.11 = {
 cold.12 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = cold.12.t
 	desc = cold.12.d
 	flavor = cold.12.f
-	
+
 	duration = 3
-	
+
 	event_image = {
 		video = "europenorthamerica_antarctica"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	
+
 	trigger = {
 		je:je_antarctica ?= {
 			"scripted_bar_progress(expedition_progress_bar)" >= 3
@@ -943,19 +1067,49 @@ cold.12 = {
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		save_scope_as = expedition_country
 	}
-	
+
 	option = { # Find a new route
 		name = cold.12.a
 		default_option = yes
 		random_list = {
 			33 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 15
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 33
+					}
+				}
 				expedition_moderate_progress_effect = yes
 			}
 			33 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 15
+					}
+				}
+				modifier = {
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 33
+					}
+				}
 				expedition_minor_progress_effect = yes
 			}
 			33 = {
@@ -964,7 +1118,7 @@ cold.12 = {
 		}
 		set_variable = {
 			name = transantarctic_mountains_var
-			months = short_modifier_time
+			days = short_modifier_time
 		}
 	}
 	option = { # Take a known approach
@@ -980,7 +1134,7 @@ cold.12 = {
 cold.13 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = cold.13.t
 	desc = cold.13.d
 	flavor = {
@@ -1003,15 +1157,15 @@ cold.13 = {
 			}
 		}
 	}
-	
+
 	duration = 3
-	
+
 	event_image = {
 		video = "europenorthamerica_antarctica"
 	}
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	
+
 	trigger = {
 		je:je_antarctica ?= {
 			"scripted_bar_progress(expedition_progress_bar)" >= 3
@@ -1022,17 +1176,31 @@ cold.13 = {
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		set_variable = strange_rock_var
 	}
-	
+
 	option = { #study it
 		name = cold.13.a
 		default_option = yes
 		set_variable = took_strange_rock_var #grand exhibition bonus
 		random_list = {
 			33 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 15
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 33
+					}
+				}
 				expedition_moderate_progress_effect = yes
 			}
 			33 = {

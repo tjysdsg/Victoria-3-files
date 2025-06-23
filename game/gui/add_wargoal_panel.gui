@@ -2,6 +2,7 @@ types wargoal_types
 {
 	type add_wargoal_panel = default_block_window  {
 		name = "add_wargoal_panel"
+		datacontext = "[AddWarGoalPanel.AccessDiplomaticPlay]"
 		
 		blockoverride "window_header_name" {
 			text = "ADD_WARGOAL_HEADER"
@@ -34,7 +35,79 @@ types wargoal_types
 					datamodel = "[AddWarGoalPanel.AccessShownWarGoals]"
 
 					item = {
-						add_wargoal_item = {}
+						flowcontainer = {
+							direction = vertical
+
+							### NORMAL WAR GOAL
+							add_wargoal_item = {
+								visible = "[Not(WarGoal.HoldsArticle)]"
+							}
+
+							### ARTICLE TYPE - NO INPUT
+							add_wargoal_item = {
+								visible = "[And(WarGoal.HoldsArticle, Not(WarGoal.GetArticleType.RequiresAnyInput))]"
+
+								### Overriding tooltip to add the AticleDraft EffectsDesc for no-input Articles
+								blockoverride "war_goal_tooltip" {
+									tooltipwidget = {
+										RegularTooltip_WarGoal = {
+											blockoverride "can_add_text" {
+												custom_tooltip_textbox = {
+													visible = "[Not(StringIsEmpty(AddWarGoalPanel.GetDiplomaticPlay.GetCanAddWarGoalDesc( WarGoal.Self )))]"
+													max_width = 450
+													text = "[AddWarGoalPanel.GetDiplomaticPlay.GetCanAddWarGoalDesc( WarGoal.Self )]"
+												}
+											}
+
+											blockoverride "infamy" {
+												custom_tooltip_textbox = {
+													visible = "[GreaterThan_CFixedPoint(WarGoal.GetInfamyAmount, '(CFixedPoint)0')]"
+													tooltip = "WARGOAL_INFAMY_TOOLTIP"
+													text = "WARGOAL_INFAMY_WITH_LABEL"
+												}
+											}
+
+											blockoverride "maneuver_cost" {
+												custom_tooltip_textbox_with_empty_line = {
+													tooltip = "ADD_ARTICLE_WARGOAL_MANEUVERS_COST_TOOLTIP"
+													text = "ADD_WARGOAL_MANEUVERS_COST_WITH_LABEL"
+												}
+											}
+
+											blockoverride "primary_secondary_demand_text_visibility" {
+												visible = no
+											}
+											
+											blockoverride "war_goal_desc" {
+												custom_tooltip_textbox = {
+													margin_left = 10
+													text = "[WarGoal.GetArticleDraft.GetEffectsDesc]"
+												}
+											}
+										}
+									}
+								}
+							}
+
+							### ARTICLE TYPE - NEEDS INPUT
+							add_wargoal_item = {
+								visible = "[And(WarGoal.HoldsArticle, WarGoal.GetArticleType.RequiresAnyInput)]"
+								
+								blockoverride "war_goal_tooltip" {
+									tooltip = "ARTICLE_WARGOAL_SELECT_INPUT_TOOLTIP"
+								}
+								
+								blockoverride "maneuvers_and_infamy" {}						
+
+								blockoverride "button_style" {
+									using = default_button
+								}
+
+								blockoverride "onclick_properties" {
+									onclick = "[RightClickMenuManager.ToggleWarGoalArticleTypeInput(WarGoal.Self, PdxGuiWidget.AccessSelf, 'article_input_right_click_menu_right')]"
+								}
+							}
+						}
 					}
 				}
 				
@@ -101,10 +174,15 @@ types wargoal_types
 	### WARGOAL
 	type wargoal_item = container {
 		parentanchor = hcenter
-		tooltip = "WARGOAL_TOOLTIP"
 		onmousehierarchyenter = "[WarGoal.ShowHighlight]"
 		onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
 		alwaystransparent = no
+
+		block "war_goal_tooltip" {
+			tooltipwidget = {
+				RegularTooltip_WarGoal = {}
+			}
+		}
 		
 		### PRESSED
 		container = {
@@ -143,28 +221,32 @@ types wargoal_types
 					parentanchor = hcenter
 
 					tiny_flag_no_interact = {
-						datacontext = "[WarGoal.GetHolder]"
 						parentanchor = vcenter
+						datacontext = "[WarGoal.GetHolder]"
+						blockoverride "tooltip" {}
 					}
+
 					icon = {
+						parentanchor = vcenter
 						size = { 30 30 }
 						texture = "[WarGoal.GetTexture]"
-						parentanchor = vcenter
-					}		
+					}
+
 					tiny_flag_no_interact = {
-						datacontext = "[WarGoal.GetTarget]"
 						parentanchor = vcenter
+						datacontext = "[WarGoal.GetTarget]"
+						blockoverride "tooltip" {}
 					}
 				}
-				
+
 				textbox = {
-					multiline = yes
-					autoresize = yes
+					parentanchor = hcenter
 					minimumsize = { 190 -1 }
 					maximumsize = { 190 -1 }
-					raw_text = "#BOLD [WarGoal.GetName]#!"
-					align = center|nobaseline
-					parentanchor = hcenter
+					align = hcenter|nobaseline
+					multiline = yes
+					autoresize = yes
+					text = "[WarGoal.GetName]"
 				}
 			}
 		}
@@ -207,28 +289,32 @@ types wargoal_types
 					parentanchor = hcenter
 
 					tiny_flag_no_interact = {
-						datacontext = "[WarGoal.GetHolder]"
 						parentanchor = vcenter
+						datacontext = "[WarGoal.GetHolder]"
+						blockoverride "tooltip" {}
 					}
+
 					icon = {
+						parentanchor = vcenter
 						size = { 30 30 }
 						texture = "[WarGoal.GetTexture]"
-						parentanchor = vcenter
-					}		
+					}
+
 					tiny_flag_no_interact = {
-						datacontext = "[WarGoal.GetTarget]"
 						parentanchor = vcenter
+						datacontext = "[WarGoal.GetTarget]"
+						blockoverride "tooltip" {}
 					}
 				}
 				
 				textbox = {
-					multiline = yes
-					autoresize = yes
+					parentanchor = hcenter
 					minimumsize = { 190 -1 }
 					maximumsize = { 190 -1 }
+					align = hcenter|nobaseline
+					multiline = yes
+					autoresize = yes
 					text = "[WarGoal.GetName]"
-					align = center|nobaseline
-					parentanchor = hcenter
 				}
 			}
 		}
@@ -243,10 +329,15 @@ types wargoal_types
 		direction = vertical
 		margin_top = 5
 		margin_bottom = 5
-		tooltip = "WARGOAL_TOOLTIP"
 		onmousehierarchyenter = "[WarGoal.ShowHighlight]"
 		onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
 		alwaystransparent = no
+
+		block "war_goal_tooltip" {
+			tooltipwidget = {
+				RegularTooltip_WarGoal = {}
+			}
+		}
 		
 		background = {
 			using = entry_bg_simple	
@@ -289,15 +380,53 @@ types wargoal_types
 	
 	### ADD WARGOAL
 	type add_wargoal_item = button {
-		onclick = "[Execute( AddWarGoalPanel.AccessDiplomaticPlay.AddWarGoal( WarGoal.Self ) )]"
-		onclick = "[InformationPanelBar.OpenPreviousPanel]"		
-		enabled = "[IsValid( AddWarGoalPanel.AccessDiplomaticPlay.AddWarGoal( WarGoal.Self ) )]"			
-		tooltip = "ADD_WARGOAL_ITEM"
-		using = default_button_action
 		using = add_war_goal_button_sound
 		onmousehierarchyenter = "[WarGoal.ShowHighlight]"
 		onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
 		alwaystransparent = no
+
+		block "war_goal_tooltip" {
+			tooltipwidget = {
+				RegularTooltip_WarGoal = {
+					blockoverride "can_add_text" {
+						custom_tooltip_textbox = {
+							visible = "[Not(StringIsEmpty(AddWarGoalPanel.GetDiplomaticPlay.GetCanAddWarGoalDesc( WarGoal.Self )))]"
+							max_width = 450
+							text = "[AddWarGoalPanel.GetDiplomaticPlay.GetCanAddWarGoalDesc( WarGoal.Self )]"
+						}
+					}
+
+					blockoverride "infamy" {
+						custom_tooltip_textbox = {
+							visible = "[GreaterThan_CFixedPoint(WarGoal.GetInfamyAmount, '(CFixedPoint)0')]"
+							tooltip = "WARGOAL_INFAMY_TOOLTIP"
+							text = "WARGOAL_INFAMY_WITH_LABEL"
+						}
+					}
+
+					blockoverride "maneuver_cost" {
+						custom_tooltip_textbox_with_empty_line = {
+							tooltip = "ADD_WARGOAL_MANEUVERS_COST_TOOLTIP"
+							text = "ADD_WARGOAL_MANEUVERS_COST_WITH_LABEL"
+						}
+					}
+
+					blockoverride "primary_secondary_demand_text_visibility" {
+						visible = no
+					}
+				}
+			}
+		}
+		
+		block "button_style" {
+			using = default_button_action
+		}
+		
+		block "onclick_properties" {
+			onclick = "[Execute( AddWarGoalPanel.AccessDiplomaticPlay.AddWarGoal( WarGoal.Self ) )]"
+			onclick = "[InformationPanelBar.OpenPreviousPanel]"
+			enabled = "[IsValid( AddWarGoalPanel.AccessDiplomaticPlay.AddWarGoal( WarGoal.Self ) )]"
+		}
 
 		container = {
 			resizeparent = yes
@@ -305,89 +434,98 @@ types wargoal_types
 					
 			small_flag = {
 				position = { 10 0 }
-				datacontext = "[WarGoal.GetHolder]"
+				datacontext = "[WarGoal.GetTarget]"
 				parentanchor = vcenter
 			}
 
 			icon = {
-				position = { 70 0 }
+				visible = "[WarGoal.HoldsArticle]"
 				size = { 50 50 }
+				parentanchor = vcenter
+				position = { 70 0 }
+				texture = "[WarGoal.GetArticleType.GetIcon]"
+			}
+
+			icon = {
+				visible = "[Not(WarGoal.HoldsArticle)]"
+				size = { 50 50 }
+				parentanchor = vcenter
+				position = { 70 0 }
 				texture = "[WarGoal.GetTexture]"
-				parentanchor = left|vcenter
-				widgetanchor = left|vcenter
-			}				
+			}
 			
 			flowcontainer = {
 				position = { -15 0 }
 				parentanchor = right|vcenter
 				spacing = 10
 
-				flowcontainer = {
-					direction = horizontal
-					parentanchor = vcenter		
-						
-					textbox = {				
-						visible = "[GreaterThan_CFixedPoint(WarGoal.GetInfamyAmount, '(CFixedPoint)0')]"
-						tooltip = "WARGOAL_INFAMY_TOOLTIP"
-						using = fontsize_large
-						text = "WARGOAL_INFAMY"
-						autoresize = yes
-						maximumsize = { 100 -1 }
-						minimumsize = { 60 -1 }
-						multiline = yes
-						parentanchor = vcenter
-						align = right|nobaseline				
-					}	
+				block "maneuvers_and_infamy" {
+					flowcontainer = {
+						direction = horizontal
+						parentanchor = vcenter		
+							
+						textbox = {				
+							visible = "[GreaterThan_CFixedPoint(WarGoal.GetInfamyAmount, '(CFixedPoint)0')]"
+							using = fontsize_large
+							autoresize = yes
+							maximumsize = { 100 -1 }
+							minimumsize = { 60 -1 }
+							multiline = yes
+							parentanchor = vcenter
+							align = right|nobaseline				
+							text = "WARGOAL_INFAMY"
+						}	
 
-					textbox = {
-						tooltip = "ADD_WARGOAL_MANEUVERS_COST_TOOLTIP"
-						using = fontsize_large
-						text = "ADD_WARGOAL_MANEUVERS_COST"
-						autoresize = yes
-						maximumsize = { 100 -1 }
-						minimumsize = { 60 -1 }
-						multiline = yes
-						margin_left = 10
-						parentanchor = vcenter
-						align = right|nobaseline
-					}				
+						textbox = {
+							using = fontsize_large
+							autoresize = yes
+							maximumsize = { 100 -1 }
+							minimumsize = { 60 -1 }
+							multiline = yes
+							margin_left = 10
+							parentanchor = vcenter
+							align = right|nobaseline
+							text = "ADD_WARGOAL_MANEUVERS_COST"
+						}				
+					}
 				}				
 
 				flag_icon = {
-					size = { 48 32 }
 					visible = "[WarGoal.HasCountryCreation]"
-					block "flag_definition" {			
-						texture = "[WarGoal.GetCountryCreation.GetDefinition.GetFlag('release').GetSmallFlagTexture]"
-						frame = "[WarGoal.GetCountryCreation.GetDefinition.GetFlag('release').GetSmallFlagFrame]"			
-					}
+					size = { 48 32 }
 					framesize = "[GetSmallFlagFrameSize]"
-					blockoverride "flag_tooltip" {}
 					parentanchor = vcenter
 					onmousehierarchyenter = "[AccessHighlightManager.HighlightCountryFormation(WarGoal.GetCountryCreation.Self)]"
 					onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
 					alwaystransparent = no
+					
+					blockoverride "flag_tooltip" {}
+					
+					block "flag_definition" {			
+						texture = "[WarGoal.GetCountryCreation.GetDefinition.GetFlag('release').GetSmallFlagTexture]"
+						frame = "[WarGoal.GetCountryCreation.GetDefinition.GetFlag('release').GetSmallFlagFrame]"			
+					}
 				}
 			}
 
 
 			textbox = {
-				position = { 120 0 }
+				position = { 125 0 }
 				using = fontsize_large
 				parentanchor = left|vcenter
-				text = "[WarGoal.GetName]"
-				align = left|nobaseline
-				elide = right
-				fontsize_min = 14
+				align = nobaseline
+				using = elide_fontsize_min
 				maximumsize = { 260 -1 }
 				autoresize = yes
 				multiline = yes
+				text = "[WarGoal.GetName]"
 			}
 		}
 	}
 	
 	### ADD WARGOAL TYPE
 	type add_wargoal_type_item = button {
-		onclick = "[AddWarGoalPanel.SetSelectedWarGoalType(WarGoalType.Self)]"		
+		onclick = "[AddWarGoalPanel.SetSelectedWarGoalType(WarGoalType.Self)]"
 	    tooltip = "[WarGoalType.GetDesc]"
 		using = default_button
 
@@ -401,7 +539,7 @@ types wargoal_types
 				texture = "[WarGoalType.GetTexture]"
 				parentanchor = left|vcenter
 				widgetanchor = left|vcenter
-			}	
+			}
 
 			textbox = {
 				position = { 70 0 }

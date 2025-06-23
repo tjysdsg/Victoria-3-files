@@ -1,7 +1,7 @@
 ﻿# Path to Liberalism
 je_liberalism_1 = {
 	icon = "gfx/interface/icons/event_icons/event_election.dds"
-	
+
    group = je_group_internal_affairs
 
 	is_shown_when_inactive = {
@@ -52,8 +52,13 @@ je_liberalism_1 = {
 		any_interest_group = {
 			is_in_government = yes
 			OR = {
-				has_ideology = ideology:ideology_liberal
-				has_ideology = ideology:ideology_liberal_modern
+				custom_tooltip = {
+					text = has_ideology_liberal_tt
+					OR = {
+						has_ideology = ideology:ideology_liberal
+						has_ideology = ideology:ideology_liberal_modern
+					}
+				}
 				leader = { has_ideology = ideology:ideology_radical }
 				leader = { has_ideology = ideology:ideology_market_liberal }
 			}
@@ -65,19 +70,19 @@ je_liberalism_1 = {
 			}
 		}
 	}
-	
+
 	on_complete = {
 		set_variable = liberalism_1_done
 		trigger_event = { id = liberalism.1 }
 	}
-	
+
 	weight = 10000
 }
 
 # Freedom of Trade
 je_liberalism_2 = {
 	icon = "gfx/interface/icons/event_icons/event_trade.dds"
-	
+
 	group = je_group_internal_affairs
 
 	complete = {
@@ -88,27 +93,28 @@ je_liberalism_2 = {
 	}
 
 	current_value = {
-		value = root.num_trade_routes
+		value = 0 # TODO PRCAL-38034 - hook in total trade volume
+		value = 0
 	}
 
 	goal_add_value = {
-		value = root.num_trade_routes
+		value = 0 # TODO PRCAL-38034 - hook in total trade volume
 		multiply = 0.25
 	}
-	
+
 	on_complete = {
 		trigger_event = { id = liberalism.2 }
 	}
 
 	progressbar = yes
-	
+
 	weight = 5000
 }
 
 # Freedom of Thought
 je_liberalism_3 = {
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
-	
+
 	group = je_group_internal_affairs
 
 	complete = {
@@ -131,18 +137,18 @@ je_liberalism_3 = {
 			occupancy > 0.9
 		}
 	}
-	
+
 	on_complete = {
 		trigger_event = { id = liberalism.3 }
 	}
-	
+
 	weight = 5000
 }
 
 # The New Colossus
 je_liberalism_4 = {
 	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
-	
+
 	group = je_group_internal_affairs
 
 	complete = {
@@ -155,10 +161,10 @@ je_liberalism_4 = {
 		has_law = law_type:law_no_migration_controls
 		average_sol >= 12
 	}
-	
+
 	on_complete = {
 		trigger_event = { id = liberalism.4 }
 	}
-	
+
 	weight = 5000
 }

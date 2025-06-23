@@ -2,27 +2,33 @@
 company_bengal_coal_company = {
 	icon = "gfx/interface/icons/company_icons/historical_company_icons/ip2_bengal_coal_company.dds"
 	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_mining.dds"
-	
+
 	flavored_company = yes
-	
-	building_types = {  
+
+	preferred_headquarters = { STATE_WEST_BENGAL }
+
+	building_types = {
 		building_coal_mine
 	}
-	
+
+	extension_building_types = {
+		building_iron_mine
+	}
+
 	potential = {
 		has_interest_marker_in_region = region_bengal
 		has_dlc_feature = ip2_content
 	}
-	
+
 	attainable = {
 		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
 			any_scope_state = {
 				state_region = s:STATE_WEST_BENGAL
 			}
 		}
-	}		
-	
-	possible = { 
+	}
+
+	possible = {
 		any_scope_state = {
 			state_region = s:STATE_WEST_BENGAL
 			is_incorporated = yes
@@ -32,12 +38,28 @@ company_bengal_coal_company = {
 			}
 		}
 	}
-	
+
 	prosperity_modifier = {
 		interest_group_ig_industrialists_pol_str_mult = 0.2
 		building_iron_mine_throughput_add = 0.1
-	}	
-	
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			state_region = s:STATE_WEST_BENGAL
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_coal_mine = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_WEST_BENGAL
+			}
+		}
+	}
+
 	ai_weight = {
 		value = 3 # Higher base value for flavored companies
 	}
@@ -47,43 +69,69 @@ company_bengal_coal_company = {
 company_bombay_dyeing_company = {
 	icon = "gfx/interface/icons/company_icons/historical_company_icons/ip2_bombay_dyeing.dds"
 	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_light.dds"
-	
+
 	flavored_company = yes
-	
-	building_types = {  
+
+	preferred_headquarters = { STATE_BOMBAY }
+
+	building_types = {
 		building_textile_mills
 	}
-	
+
+	extension_building_types = {
+		building_cotton_plantation
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_clothes
+	}
+
 	potential = {
 		has_interest_marker_in_region = region_bombay
 		has_dlc_feature = ip2_content
 	}
-	
+
 	attainable = {
 		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
 			any_scope_state = {
 				state_region = s:STATE_BOMBAY
 			}
 		}
-	}		
-	
+	}
+
 	possible = {
+		has_technology_researched = cotton_gin
 		any_scope_state = {
 			state_region = s:STATE_BOMBAY
 			is_incorporated = yes
 			any_scope_building = {
 				is_building_type = building_textile_mills
-				level >= 4
+				level >= 5
 			}
 		}
-		has_technology_researched = cotton_gin
 	}
-	
+
 	prosperity_modifier = {
 		building_dye_plantation_throughput_add  = 0.2
 		building_cotton_plantation_throughput_add = 0.05
-	}	
-	
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			state_region = s:STATE_BOMBAY
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_textile_mills = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_BOMBAY
+			}
+		}
+	}
+
 	ai_weight = {
 		value = 3 # Higher base value for flavored companies
 	}
@@ -96,9 +144,19 @@ company_david_sassoon = {
 
 	flavored_company = yes
 
+	preferred_headquarters = { STATE_BOMBAY }
+
 	building_types = {
 		building_opium_plantation
 		building_cotton_plantation
+	}
+
+	extension_building_types = {
+		building_port
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_opium
 	}
 
 	potential = {
@@ -120,7 +178,7 @@ company_david_sassoon = {
 			is_incorporated = yes
 			any_scope_building = {
 				is_building_type = building_cotton_plantation
-				level >= 4
+				level >= 5
 			}
 		}
 		any_scope_state = {
@@ -133,13 +191,35 @@ company_david_sassoon = {
 			}
 			any_scope_building = {
 				is_building_type = building_opium_plantation
-				level >= 4
+				level >= 5
 			}
 		}
 	}
 
 	prosperity_modifier = {
-		country_trade_route_competitiveness_mult = 0.05
+		state_trade_advantage_mult = 0.05
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			state_region = s:STATE_BOMBAY
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_cotton_plantation = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_BOMBAY
+			}
+		}
+		building_opium_plantation = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_BOMBAY
+			}
+		}
 	}
 
 	ai_weight = {
@@ -154,9 +234,21 @@ company_bombay_burmah_trading_corporation = {
 
 	flavored_company = yes
 
+	preferred_headquarters = { STATE_BOMBAY }
+
 	building_types = {
 		building_logging_camp
 		building_rubber_plantation
+	}
+
+	extension_building_types = {
+		building_tea_plantation
+		building_cotton_plantation
+		building_oil_rig
+	}
+
+	possible_prestige_goods = {
+		prestige_good_burmese_teak
 	}
 
 	potential = {
@@ -185,9 +277,11 @@ company_bombay_burmah_trading_corporation = {
 				any_scope_state = {
 					state_region = s:STATE_BOMBAY
 				}
-				has_diplomatic_pact = {
-					who = root
-					type = trade_agreement
+				any_scope_treaty = {
+					binds = root
+					any_scope_article = {
+						has_type = trade_privilege
+					}
 				}
 			}
 		}
@@ -195,7 +289,7 @@ company_bombay_burmah_trading_corporation = {
 			has_state_trait = state_trait_burmese_teak
 			any_scope_building = {
 				is_building_type = building_logging_camp
-				level >= 4
+				level >= 5
 			}
 			count >= 2
 		}
@@ -204,6 +298,35 @@ company_bombay_burmah_trading_corporation = {
 	prosperity_modifier = {
 		building_group_bg_tea_plantations_throughput_add = 0.1
 		building_group_bg_coffee_plantations_throughput_add = 0.1
+	}
+
+	ai_will_do = {
+		OR = {
+			any_scope_state = {
+				state_region = s:STATE_BOMBAY
+				is_incorporated = yes
+			}
+			any_country = {
+				any_scope_state = {
+					state_region = s:STATE_BOMBAY
+				}
+				any_scope_treaty = {
+					binds = root
+					any_scope_article = {
+						has_type = trade_privilege
+					}
+				}
+			}
+		}
+	}
+
+	ai_construction_targets = {
+		building_logging_camp = {
+			level = 5
+			state_trigger = {
+				has_state_trait = state_trait_burmese_teak
+			}
+		}
 	}
 
 	ai_weight = {
@@ -215,44 +338,71 @@ company_bombay_burmah_trading_corporation = {
 company_madura_mills = {
 	icon = "gfx/interface/icons/company_icons/historical_company_icons/ip2_madura_mills.dds"
 	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_light.dds"
-	
+
 	flavored_company = yes
-	
-	building_types = {  
+
+	preferred_headquarters = { STATE_MADRAS }
+
+	building_types = {
 		building_textile_mills
 	}
-	
+
+	extension_building_types = {
+		building_rubber_plantation
+		building_cotton_plantation
+	}
+
+	possible_prestige_goods = {
+		prestige_good_generic_clothes
+	}
+
 	potential = {
 		has_interest_marker_in_region = region_madras
 		has_dlc_feature = ip2_content
 	}
-	
+
 	attainable = {
 		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
 			any_scope_state = {
 				state_region = s:STATE_MADRAS
 			}
 		}
-	}		
-	
+	}
+
 	possible = {
 		any_scope_state = {
 			state_region = s:STATE_MADRAS
 			is_incorporated = yes
 			any_scope_building = {
 				is_building_type = building_textile_mills
-				level >= 4
+				level >= 5
 			}
 		}
 		has_technology_researched = cotton_gin
 	}
-	
+
 	prosperity_modifier = {
 		interest_group_ig_petty_bourgeoisie_pop_attraction_mult = 0.1
 		building_textile_mills_throughput_add = 0.1
 		country_state_religion_wages_mult = 0.05
-	}	
-	
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			state_region = s:STATE_MADRAS
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_textile_mills = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_MADRAS
+			}
+		}
+	}
+
 	ai_weight = {
 		value = 3 # Higher base value for flavored companies
 	}
@@ -265,8 +415,18 @@ company_assam_company = {
 
 	flavored_company = yes
 
+	preferred_headquarters = { STATE_ASSAM }
+
 	building_types = {
 		building_tea_plantation
+	}
+
+	extension_building_types = {
+		building_logging_camp
+	}
+
+	possible_prestige_goods = {
+		prestige_good_assam_tea
 	}
 
 	potential = {
@@ -287,7 +447,7 @@ company_assam_company = {
 			is_incorporated = yes
 			any_scope_building = {
 				is_building_type = building_tea_plantation
-				level >= 6
+				level >= 5
 			}
 		}
 	}
@@ -295,6 +455,22 @@ company_assam_company = {
 	prosperity_modifier = {
 		building_group_bg_tea_plantations_throughput_add = 0.2
 		state_radicals_from_political_movements_mult = -0.05
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			state_region = s:STATE_ASSAM
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_tea_plantation = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_ASSAM
+			}
+		}
 	}
 
 	ai_weight = {
@@ -306,27 +482,33 @@ company_assam_company = {
 company_wadia_shipbuilders = {
 	icon = "gfx/interface/icons/company_icons/historical_company_icons/ip2_wadia_shipbuilders.dds"
 	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_harbor_shipbuilding.dds"
-	
+
 	flavored_company = yes
-	
-	building_types = {  
+
+	preferred_headquarters = { STATE_BOMBAY }
+
+	building_types = {
 		building_shipyards
 		building_military_shipyards
 	}
-	
+
+	extension_building_types = {
+		building_motor_industry
+	}
+
 	potential = {
 		has_interest_marker_in_region = region_bombay
 		has_dlc_feature = ip2_content
 	}
-	
+
 	attainable = {
 		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
 			any_scope_state = {
 				state_region = s:STATE_BOMBAY
 			}
 		}
-	}		
-	
+	}
+
 	possible = {
 		any_scope_state = {
 			state_region = s:STATE_BOMBAY
@@ -336,12 +518,12 @@ company_wadia_shipbuilders = {
 					is_building_type = building_shipyards
 					is_building_type = building_military_shipyards
 				}
-				level >= 4
+				level >= 5
 			}
 		}
 		has_technology_researched = gantry_cranes
 	}
-	
+
 	prosperity_modifier = {
 		interest_group_ig_petty_bourgeoisie_pop_attraction_mult = 0.1
 		country_convoys_capacity_mult = 0.1
@@ -349,8 +531,30 @@ company_wadia_shipbuilders = {
 		state_radicalism_increases_cultural_erasure_mult = -0.05
 		state_radicalism_increases_open_prejudice_mult = -0.05
 
-	}	
-	
+	}
+
+	ai_will_do = {
+		any_scope_state = {
+			state_region = s:STATE_BOMBAY
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_shipyards = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_BOMBAY
+			}
+		}
+		building_military_shipyards = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_BOMBAY
+			}
+		}
+	}
+
 	ai_weight = {
 		value = 3 # Higher base value for flavored companies
 	}
@@ -360,46 +564,75 @@ company_wadia_shipbuilders = {
 company_steel_brothers = {
 	icon = "gfx/interface/icons/company_icons/historical_company_icons/ip2_steel_brothers_and_co.dds"
 	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_oil_drills.dds"
-	
+
 	flavored_company = yes
-	
+
 	building_types = {
 		building_oil_rig
 		building_rice_farm
 	}
-	
+
+	extension_building_types = {
+		building_logging_camp
+	}
+
 	potential = {
 		has_interest_marker_in_region = region_indochina
 		has_dlc_feature = ip2_content
 	}
-	
+
 	attainable = {
 		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
 			any_scope_state = {
-				region = sr:region_mexico
+				region = sr:region_indochina
 			}
 		}
-	}	
-	
+	}
+
 	possible = {
+		has_technology_researched = pumpjacks
 		any_scope_state = {
 			has_state_trait = state_trait_burmese_teak
 			any_scope_building = {
 				is_building_type = building_oil_rig
-				level >= 4
+				level >= 5
 			}
 			any_scope_building = {
 				is_building_type = building_rice_farm
-				level >= 4
+				level >= 5
 			}
 		}
-		has_technology_researched = pumpjacks
 	}
-	
+
 	prosperity_modifier = {
 		building_group_bg_logging_throughput_add = 0.2
 	}
-	
+
+	ai_will_do = {
+		has_technology_researched = pumpjacks
+		any_scope_state = {
+			has_state_trait = state_trait_burmese_teak
+			has_potential_resource = bg_oil_extraction
+			any_scope_building = {
+				is_building_type = building_rice_farm
+				level >= 5
+			}
+		}
+	}
+
+	ai_construction_targets = {
+		building_oil_rig = {
+			level = 5
+			state_trigger = {
+				has_state_trait = state_trait_burmese_teak
+				any_scope_building = {
+					is_building_type = building_rice_farm
+					level >= 5
+				}
+			}
+		}
+	}
+
 	ai_weight = {
 		value = 3 # Higher base value for flavored companies
 	}
@@ -412,9 +645,17 @@ company_ralli_brothers = {
 
 	flavored_company = yes
 
+	preferred_headquarters = { STATE_BOMBAY STATE_WEST_BENGAL }
+
 	building_types = {
 		building_rice_farm
 		building_wheat_farm
+	}
+
+	extension_building_types = {
+		building_port
+		building_cotton_plantation
+		building_textile_mills
 	}
 
 	potential = {
@@ -430,7 +671,7 @@ company_ralli_brothers = {
 				}
 				any_scope_state = {
 					state_region = s:STATE_WEST_BENGAL
-				}			
+				}
 			}
 		}
 	}
@@ -444,7 +685,7 @@ company_ralli_brothers = {
 			any_scope_state = {
 				state_region = s:STATE_WEST_BENGAL
 				is_incorporated = yes
-			}			
+			}
 		}
 		any_scope_state = {
 			OR = {
@@ -457,11 +698,11 @@ company_ralli_brothers = {
 			OR = {
 				any_scope_building = {
 					is_building_type = building_rice_farm
-					level >= 8
+					level >= 5
 				}
 				any_scope_building = {
 					is_building_type = building_wheat_farm
-					level >= 8
+					level >= 5
 				}
 			}
 			count >= 4
@@ -471,7 +712,57 @@ company_ralli_brothers = {
 	prosperity_modifier = {
 		building_sulfur_mine_throughput_add = 0.1
 		building_textile_mills_throughput_add = 0.1
-		country_trade_route_competitiveness_mult = 0.05
+		state_trade_advantage_mult = 0.05
+	}
+
+	ai_will_do = {
+		OR = {
+			any_scope_state = {
+				state_region = s:STATE_BOMBAY
+				is_incorporated = yes
+			}
+			any_scope_state = {
+				state_region = s:STATE_WEST_BENGAL
+				is_incorporated = yes
+			}
+		}
+		any_scope_state = {
+			OR = {
+				region = sr:region_bombay
+				region = sr:region_madras
+				region = sr:region_bengal
+				region = sr:region_punjab
+				region = sr:region_central_india
+			}
+			count >= 4
+		}
+	}
+
+	ai_construction_targets = {
+		building_rice_farm = {
+			level = 5
+			state_trigger = {
+				OR = {
+					region = sr:region_bombay
+					region = sr:region_madras
+					region = sr:region_bengal
+					region = sr:region_punjab
+					region = sr:region_central_india
+				}
+			}
+		}
+		building_wheat_farm = {
+			level = 5
+			state_trigger = {
+				OR = {
+					region = sr:region_bombay
+					region = sr:region_madras
+					region = sr:region_bengal
+					region = sr:region_punjab
+					region = sr:region_central_india
+				}
+			}
+		}
 	}
 
 	ai_weight = {
@@ -485,39 +776,63 @@ company_calcutta_electric = {
 	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_light.dds"
 
 	flavored_company = yes
-	
-	building_types = {  
+
+	preferred_headquarters = { STATE_WEST_BENGAL }
+
+	building_types = {
 		building_power_plant
 	}
-	
+
+	extension_building_types = {
+		building_coal_mine
+	}
+
 	potential = {
 		has_interest_marker_in_region = region_bengal
 	}
-	
+
 	attainable = {
 		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
 			any_scope_state = {
 				state_region = s:STATE_WEST_BENGAL
 			}
 		}
-	}		
+	}
 
 	possible = {
+		has_technology_researched = electrical_generation
 		any_scope_state = {
 			state_region = s:STATE_WEST_BENGAL
 			is_incorporated = yes
 			any_scope_building = {
 				is_building_type = building_power_plant
-				level >= 4
+				level >= 5
 			}
 		}
 	}
-	
+
 	prosperity_modifier = {
 		state_infrastructure_from_population_add = 6
 		state_infrastructure_from_population_max_add = 12
 	}
-	
+
+	ai_will_do = {
+		has_technology_researched = electrical_generation
+		any_scope_state = {
+			state_region = s:STATE_WEST_BENGAL
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_power_plant = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_WEST_BENGAL
+			}
+		}
+	}
+
 	ai_weight = {
 		value = 3 # Higher base value for flavored companies
 	}

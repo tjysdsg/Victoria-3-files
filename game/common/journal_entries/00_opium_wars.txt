@@ -8,7 +8,7 @@
 
 	on_monthly_pulse = {
 		random_events = {
-			100 = 0
+			200 = 0
 			10 = opium_wars.6
 			5 = opium_wars.7
 			5 = opium_wars.8
@@ -52,9 +52,11 @@
 					has_journal_entry = je_opium_wars
 				}
 				OR = {
-					has_diplomatic_pact = {
-						who = root
-						type = foreign_investment_rights
+					any_scope_treaty = {
+						binds = root
+						any_scope_article = {
+							has_type = foreign_investment_rights
+						}
 					}
 					any_scope_state = {
 						is_treaty_port = yes
@@ -82,22 +84,22 @@
 	goal_add_value = {
 		add = 60
 	}
-	
+
     timeout = 3650
     on_timeout = {
 		hidden_effect = { remove_modifier = opium_wars_addiction_modifier }
 		add_modifier = {
 			name = opium_wars_addiction_modifier
-			months = long_modifier_time
+			days = long_modifier_time
 		}
 		add_radicals = {
 			value = large_radicals
-		}		
+		}
 		if = {
 			limit = { has_journal_entry = je_warlord_china }
 			chi_remove_1_fragile_unity = yes
-		}	
-    }	
+		}
+    }
 
 	progressbar = yes
 	display_progressbar_as_months = yes
@@ -110,12 +112,14 @@ je_opium_wars = {
 	icon = "gfx/interface/icons/event_icons/event_military.dds"
 
 	group = je_group_foreign_affairs
-	
+
 	complete = {
 		OR = {
-			has_diplomatic_pact = {
-				who = scope:target
-				type = foreign_investment_rights
+			any_scope_treaty = {
+				binds = scope:target
+				any_scope_article = {
+					has_type = foreign_investment_rights
+				}
 			}
 			any_scope_state = {
 				is_treaty_port = yes
@@ -124,6 +128,11 @@ je_opium_wars = {
 						owner = scope:target
 					}
 				}
+			}
+		}
+		hidden_trigger = {
+			scope:target = {
+				has_modifier = opium_wars_lost
 			}
 		}
 	}
@@ -175,5 +184,5 @@ je_opium_wars = {
 	weight = 10000
 	should_be_pinned_by_default = yes
 
-	timeout = 1825
+	timeout = 3650
 }

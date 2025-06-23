@@ -8,17 +8,17 @@
 			can_queue_building_levels = 1
 		}
 	}
-	
+
 	on_start = {
 		start_tutorial_lesson = { tutorial_lesson = lesson_journal }
-		
+
 		if = {
 			limit = {
 				market_capital = {
 					owner = ROOT
 				}
 			}
-			save_scope_as = tutorial_state_target	
+			save_scope_as = tutorial_state_target
 		}
 		else = {
 			capital = {
@@ -33,19 +33,19 @@
 						is_under_construction = no
 						is_farm_building = yes
 						can_queue_building_levels = 1
-					}					
+					}
 				}
 			}
 			scope:tutorial_state_target = {
 				random_scope_building = {
-					limit = {	
+					limit = {
 						is_under_construction = no
 						is_farm_building = yes
 						can_queue_building_levels = 1
 					}
 					save_scope_as = tutorial_building_target
 
-				}			
+				}
 			}
 		}
 		else_if = {
@@ -56,12 +56,12 @@
 						is_under_construction = no
 						is_farm_building = yes
 						can_queue_building_levels = 1
-					}					
-				}				
+					}
+				}
 			}
-			
+
 			random_scope_state = {
-				limit = { 
+				limit = {
 					is_incorporated = yes
 					any_scope_building = {
 						is_under_construction = no
@@ -69,33 +69,33 @@
 						can_queue_building_levels = 1
 					}
 				}
-				
+
 				random_scope_building = {
-					limit = {	
+					limit = {
 						is_under_construction = no
 						is_farm_building = yes
 						can_queue_building_levels = 1
 					}
 					save_scope_as = tutorial_building_target
-				}						
-			}			
+				}
+			}
 		}
 		else = {
 			random_scope_building = {
-				limit = {	
+				limit = {
 					is_under_construction = no
 					is_farm_building = yes
 					can_queue_building_levels = 1
 				}
 				save_scope_as = tutorial_building_target
-			}	
+			}
 		}
 
 		add_journal_entry = {
 			type = je_tutorial_expand_basic_building
 			objective_subgoal = sg_expand_basic_building
 			target = scope:tutorial_building_target
-		}			
+		}
 	}
 }
 
@@ -112,19 +112,19 @@ sg_fix_budget_deficit = {
 		gold_reserves = 0
 		weekly_net_fixed_income <= -1000 # Do not trigger this based on a tiny deficit that will self-correct
 	}
-	
+
 	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_fix_budget_deficit
 			objective_subgoal = sg_fix_budget_deficit
-		}	
+		}
 	}
 }
 
 # Change Production Method
 sg_change_production_method = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_all = {
 		sg_expand_basic_building
 	}
@@ -134,56 +134,56 @@ sg_change_production_method = {
 			OR = {
 				AND = {
 					can_activate_production_method = {
-						building_type = building_rye_farm	
+						building_type = building_rye_farm
 						production_method = pm_apple_orchards
-					}	
+					}
 				}
 				AND = {
 					can_activate_production_method = {
-						building_type = building_wheat_farm	
+						building_type = building_wheat_farm
 						production_method = pm_citrus_orchards
 					}
 				}
-				AND = {	
+				AND = {
 					can_activate_production_method = {
-						building_type = building_rice_farm	
+						building_type = building_rice_farm
 						production_method = pm_fig_orchards_building_rice_farm
 					}
 				}
 				AND = {
 					can_activate_production_method = {
-						building_type = building_maize_farm	
+						building_type = building_maize_farm
 						production_method = pm_citrus_orchards
 					}
 				}
-				AND = {	
+				AND = {
 					can_activate_production_method = {
-						building_type = building_millet_farm	
+						building_type = building_millet_farm
 						production_method = pm_fig_orchards
 					}
-				}					
+				}
 				AND = {
 					can_activate_production_method = {
 						building_type = building_logging_camp
 						production_method = pm_saw_mills
 					}
-					market = { 
-						mg:tools = { market_goods_delta >= 20 } 
-					}	
+					market = {
+						mg:tools = { market_goods_delta >= 20 }
+					}
 				}
 				AND = {
 					can_activate_production_method = {
 						building_type = building_livestock_ranch
 						production_method = pm_butchering_tools
 					}
-					market = { 
-						mg:tools = { market_goods_delta >= 10 } 
-					}	
-				}					
+					market = {
+						mg:tools = { market_goods_delta >= 10 }
+					}
+				}
 			}
-		}			
+		}
 	}
-	
+
 	on_start = {
 		if = {
 			limit = {
@@ -205,72 +205,72 @@ sg_change_production_method = {
 			limit = {
 				scope:tutorial_state_target = {
 					can_activate_production_method = {
-						building_type = building_rye_farm	
+						building_type = building_rye_farm
 						production_method = pm_apple_orchards
-					}						
+					}
 				}
 			}
-			
+
 			scope:tutorial_state_target = {
 				b:building_rye_farm = { save_scope_as = tutorial_building_target }
-			}					
-		}	
-		else_if = {
-			limit = {
-				scope:tutorial_state_target = {
-					can_activate_production_method = {
-						building_type = building_wheat_farm	
-						production_method = pm_citrus_orchards
-					}					
-				}
 			}
-			
-			scope:tutorial_state_target = {
-				b:building_wheat_farm = { save_scope_as = tutorial_building_target }
-			}				
 		}
 		else_if = {
 			limit = {
 				scope:tutorial_state_target = {
 					can_activate_production_method = {
-						building_type = building_maize_farm	
+						building_type = building_wheat_farm
 						production_method = pm_citrus_orchards
-					}						
+					}
 				}
 			}
-			
+
 			scope:tutorial_state_target = {
-				b:building_maize_farm = { save_scope_as = tutorial_building_target }
-			}			
-		}	
+				b:building_wheat_farm = { save_scope_as = tutorial_building_target }
+			}
+		}
 		else_if = {
 			limit = {
 				scope:tutorial_state_target = {
 					can_activate_production_method = {
-						building_type = building_rice_farm	
+						building_type = building_maize_farm
+						production_method = pm_citrus_orchards
+					}
+				}
+			}
+
+			scope:tutorial_state_target = {
+				b:building_maize_farm = { save_scope_as = tutorial_building_target }
+			}
+		}
+		else_if = {
+			limit = {
+				scope:tutorial_state_target = {
+					can_activate_production_method = {
+						building_type = building_rice_farm
 						production_method = pm_fig_orchards_building_rice_farm
-					}					
+					}
 				}
 			}
-			
+
 			scope:tutorial_state_target = {
 				b:building_rice_farm = { save_scope_as = tutorial_building_target }
-			}					
+			}
 		}
 		else_if = {
 			limit = {
 				scope:tutorial_state_target = {
 					can_activate_production_method = {
-						building_type = building_millet_farm	
+						building_type = building_millet_farm
 						production_method = pm_fig_orchards
-					}					
+					}
 				}
 			}
-			
+
 			scope:tutorial_state_target = {
 				b:building_millet_farm = { save_scope_as = tutorial_building_target }
-			}					
-		}			
+			}
+		}
 		else_if = {
 			limit = {
 				scope:tutorial_state_target = {
@@ -278,14 +278,14 @@ sg_change_production_method = {
 						building_type = building_livestock_ranch
 						production_method = pm_butchering_tools
 					}
-					market = { mg:tools = { market_goods_delta >= 10 } }						
+					market = { mg:tools = { market_goods_delta >= 10 } }
 				}
 			}
-			
+
 			scope:tutorial_state_target = {
 				b:building_livestock_ranch = { save_scope_as = tutorial_building_target }
-			}					
-		}	
+			}
+		}
 		else_if = {
 			limit = {
 				scope:tutorial_state_target = {
@@ -293,119 +293,119 @@ sg_change_production_method = {
 						building_type = building_logging_camp
 						production_method = pm_saw_mills
 					}
-					market = { mg:tools = { market_goods_delta >= 20 } }						
+					market = { mg:tools = { market_goods_delta >= 20 } }
 				}
 			}
-			
+
 			scope:tutorial_state_target = {
 				b:building_logging_camp = { save_scope_as = tutorial_building_target }
-			}					
-		}	
+			}
+		}
 		else_if = {
 			limit = {
 				any_scope_state = {
 					can_activate_production_method = {
-						building_type = building_rye_farm	
-						production_method = pm_apple_orchards 
-					}					
+						building_type = building_rye_farm
+						production_method = pm_apple_orchards
+					}
 				}
 			}
-			
+
 			random_scope_state = {
 				limit = {
 					can_activate_production_method = {
-						building_type = building_rye_farm	
-						production_method = pm_apple_orchards 
-					}					
+						building_type = building_rye_farm
+						production_method = pm_apple_orchards
+					}
 				}
-				
+
 				b:building_rye_farm = { save_scope_as = tutorial_building_target }
-			}					
-		}	
+			}
+		}
 		else_if = {
 			limit = {
 				any_scope_state = {
 					can_activate_production_method = {
-						building_type = building_wheat_farm	
-						production_method = pm_citrus_orchards 
-					}					
+						building_type = building_wheat_farm
+						production_method = pm_citrus_orchards
+					}
 				}
 			}
-			
+
 			random_scope_state = {
 				limit = {
 					can_activate_production_method = {
-						building_type = building_wheat_farm	
-						production_method = pm_citrus_orchards 
-					}						
+						building_type = building_wheat_farm
+						production_method = pm_citrus_orchards
+					}
 				}
-				
+
 				b:building_wheat_farm = { save_scope_as = tutorial_building_target }
-			}				
+			}
 		}
 		else_if = {
 			limit = {
 				any_scope_state = {
 					can_activate_production_method = {
-						building_type = building_maize_farm	
-						production_method = pm_citrus_orchards 
-					}						
+						building_type = building_maize_farm
+						production_method = pm_citrus_orchards
+					}
 				}
 			}
-			
+
 			random_scope_state = {
 				limit = {
 					can_activate_production_method = {
-						building_type = building_maize_farm	
-						production_method = pm_citrus_orchards 
-					}					
+						building_type = building_maize_farm
+						production_method = pm_citrus_orchards
+					}
 				}
-				
+
 				b:building_maize_farm = { save_scope_as = tutorial_building_target }
-			}			
-		}	
-		else_if = {
-			limit = {
-				any_scope_state = {
-					can_activate_production_method = {
-						building_type = building_rice_farm	
-						production_method = pm_fig_orchards_building_rice_farm 
-					}					
-				}
 			}
-			
-			random_scope_state = {
-				limit = {
-					can_activate_production_method = {
-						building_type = building_rice_farm	
-						production_method = pm_fig_orchards_building_rice_farm 
-					}						
-				}
-				
-				b:building_rice_farm = { save_scope_as = tutorial_building_target }
-			}					
 		}
 		else_if = {
 			limit = {
 				any_scope_state = {
 					can_activate_production_method = {
-						building_type = building_millet_farm	
-						production_method = pm_fig_orchards 
-					}					
+						building_type = building_rice_farm
+						production_method = pm_fig_orchards_building_rice_farm
+					}
 				}
 			}
-			
+
 			random_scope_state = {
 				limit = {
 					can_activate_production_method = {
-						building_type = building_millet_farm	
-						production_method = pm_fig_orchards 
-					}						
+						building_type = building_rice_farm
+						production_method = pm_fig_orchards_building_rice_farm
+					}
 				}
-				
+
+				b:building_rice_farm = { save_scope_as = tutorial_building_target }
+			}
+		}
+		else_if = {
+			limit = {
+				any_scope_state = {
+					can_activate_production_method = {
+						building_type = building_millet_farm
+						production_method = pm_fig_orchards
+					}
+				}
+			}
+
+			random_scope_state = {
+				limit = {
+					can_activate_production_method = {
+						building_type = building_millet_farm
+						production_method = pm_fig_orchards
+					}
+				}
+
 				b:building_millet_farm = { save_scope_as = tutorial_building_target }
-			}					
-		}			
+			}
+		}
 		else_if = {
 			limit = {
 				any_scope_state = {
@@ -413,22 +413,22 @@ sg_change_production_method = {
 						building_type = building_livestock_ranch
 						production_method = pm_butchering_tools
 					}
-					market = { mg:tools = { market_goods_delta >= 10 } }						
+					market = { mg:tools = { market_goods_delta >= 10 } }
 				}
 			}
-			
+
 			random_scope_state = {
 				limit = {
 					can_activate_production_method = {
 						building_type = building_livestock_ranch
 						production_method = pm_butchering_tools
 					}
-					market = { mg:tools = { market_goods_delta >= 10 } }						
+					market = { mg:tools = { market_goods_delta >= 10 } }
 				}
-				
+
 				b:building_livestock_ranch = { save_scope_as = tutorial_building_target }
-			}					
-		}	
+			}
+		}
 		else_if = {
 			limit = {
 				any_scope_state = {
@@ -436,39 +436,39 @@ sg_change_production_method = {
 						building_type = building_logging_camp
 						production_method = pm_saw_mills
 					}
-					market = { mg:tools = { market_goods_delta >= 20 } }						
+					market = { mg:tools = { market_goods_delta >= 20 } }
 				}
 			}
-			
+
 			random_scope_state = {
 				limit = {
 					can_activate_production_method = {
 						building_type = building_logging_camp
 						production_method = pm_saw_mills
 					}
-					market = { mg:tools = { market_goods_delta >= 20 } }						
+					market = { mg:tools = { market_goods_delta >= 20 } }
 				}
-				
+
 				b:building_logging_camp = { save_scope_as = tutorial_building_target }
-			}					
-		}			
-		
+			}
+		}
+
 		add_journal_entry = {
 			type = je_tutorial_change_production_method
 			objective_subgoal = sg_change_production_method
 			target = scope:tutorial_building_target
-		}	
+		}
 	}
 }
 
 # Expand Productive Building
 sg_expand_productive_building = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_all = {
 		sg_change_production_method
 	}
-	
+
 	trigger = {
 		any_scope_building = {
 			can_queue_building_levels = 1
@@ -479,7 +479,7 @@ sg_expand_productive_building = {
 			earnings >= 8.0
 		}
 	}
-	
+
 	on_start = {
 		if = {
 			limit = {
@@ -508,7 +508,7 @@ sg_expand_productive_building = {
 					}
 				}
 			}
-			
+
 			scope:tutorial_state_target = {
 				random_scope_building = {
 					limit = {
@@ -519,11 +519,11 @@ sg_expand_productive_building = {
 						NOT = { is_building_group = bg_owner_buildings }
 						earnings >= 8.0
 					}
-					
-					save_scope_as = tutorial_building_target 
-				}				
-			}				
-		}				
+
+					save_scope_as = tutorial_building_target
+				}
+			}
+		}
 		else_if = {
 			limit = {
 				any_scope_building = {
@@ -535,7 +535,7 @@ sg_expand_productive_building = {
 					earnings >= 8.0
 				}
 			}
-			
+
 			random_scope_building = {
 				limit = {
 					can_queue_building_levels = 1
@@ -545,23 +545,23 @@ sg_expand_productive_building = {
 					NOT = { is_building_group = bg_owner_buildings }
 					earnings >= 8.0
 				}
-				
-				save_scope_as = tutorial_building_target 
-			}				
-		}		
-		
+
+				save_scope_as = tutorial_building_target
+			}
+		}
+
 		add_journal_entry = {
 			type = je_tutorial_expand_productive_building
 			objective_subgoal = sg_expand_productive_building
 			target = scope:tutorial_building_target
-		}	
+		}
 	}
 }
 
 # Fix Unproductive Building
 sg_fix_unproductive_building = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_all = {
 		sg_expand_productive_building
 	}
@@ -571,7 +571,7 @@ sg_fix_unproductive_building = {
 			NOT = { state_infrastructure_balance < 0 }
 			any_scope_building = {
 				is_government_funded = no
-				NOR = { 
+				NOR = {
 					is_building_type = building_urban_center
 					is_building_type = building_trade_center
 					is_building_group = bg_monuments_hidden
@@ -584,7 +584,7 @@ sg_fix_unproductive_building = {
 			}
 		}
 	}
-	
+
 	on_start = {
 		if = {
 			limit = {
@@ -599,7 +599,7 @@ sg_fix_unproductive_building = {
 				save_scope_as = tutorial_state_target
 			}
 		}
-		
+
 		if = {
 			limit = {
 				scope:tutorial_state_target = {
@@ -608,25 +608,7 @@ sg_fix_unproductive_building = {
 					}
 					any_scope_building = {
 						is_government_funded = no
-						NOR = { 
-							is_building_type = building_urban_center
-							is_building_type = building_trade_center
-							is_building_group = bg_monuments_hidden 
-							is_building_group = bg_owner_buildings
-						}
-						is_under_construction = no
-						is_subsidized = no
-						is_subsistence_building = no
-						earnings < 4.5
-					}
-				}
-			}
-			
-			scope:tutorial_state_target = {
-				random_scope_building = {
-					limit = {
-						is_government_funded = no
-						NOR = { 
+						NOR = {
 							is_building_type = building_urban_center
 							is_building_type = building_trade_center
 							is_building_group = bg_monuments_hidden
@@ -637,16 +619,34 @@ sg_fix_unproductive_building = {
 						is_subsistence_building = no
 						earnings < 4.5
 					}
-					
-					save_scope_as = tutorial_building_target 
-				}				
-			}				
-		}				
+				}
+			}
+
+			scope:tutorial_state_target = {
+				random_scope_building = {
+					limit = {
+						is_government_funded = no
+						NOR = {
+							is_building_type = building_urban_center
+							is_building_type = building_trade_center
+							is_building_group = bg_monuments_hidden
+							is_building_group = bg_owner_buildings
+						}
+						is_under_construction = no
+						is_subsidized = no
+						is_subsistence_building = no
+						earnings < 4.5
+					}
+
+					save_scope_as = tutorial_building_target
+				}
+			}
+		}
 		else_if = {
 			limit = {
 				any_scope_building = {
 					is_government_funded = no
-					NOR = { 
+					NOR = {
 						is_building_type = building_urban_center
 						is_building_type = building_trade_center
 						is_building_group = bg_monuments_hidden
@@ -658,11 +658,11 @@ sg_fix_unproductive_building = {
 					earnings < 4.5
 				}
 			}
-			
+
 			random_scope_building = {
 				limit = {
 					is_government_funded = no
-					NOR = { 
+					NOR = {
 						is_building_type = building_urban_center
 						is_building_type = building_trade_center
 						is_building_group = bg_monuments_hidden
@@ -673,49 +673,49 @@ sg_fix_unproductive_building = {
 					is_subsistence_building = no
 					earnings < 4.5
 				}
-				
-				save_scope_as = tutorial_building_target 
-			}				
+
+				save_scope_as = tutorial_building_target
+			}
 		}
-		
+
 		add_journal_entry = {
 			type = je_tutorial_fix_unproductive_building
 			objective_subgoal = sg_fix_unproductive_building
 			target = scope:tutorial_building_target
-		}	
+		}
 	}
 }
 
 # Bolster a Political Movement
 sg_promote_movement = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
-		sg_establish_trade_route
+		sg_expand_productive_building
 	}
 
 	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_promote_movement
 			objective_subgoal = sg_promote_movement
-		}	
+		}
 	}
 }
 
 # Grow GDP
 sg_grow_gdp = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_all = {
 		sg_fix_unproductive_building
 		sg_expand_productive_building
 	}
-	
+
 	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_grow_gdp
 			objective_subgoal = sg_grow_gdp
-		}	
+		}
 	}
 }
 
@@ -783,7 +783,7 @@ sg_improve_market_access_with_railways = {
 # Increase Immigration
 sg_increase_immigration = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
 		sg_increase_market_access_by_decree
 	}
@@ -796,7 +796,7 @@ sg_increase_immigration = {
 			available_jobs > 10000
 		}
 	}
-	
+
 	on_start = {
 		random_scope_state = {
 			limit = {
@@ -816,61 +816,12 @@ sg_increase_immigration = {
 	}
 }
 
-# Establish Trade Route
-sg_establish_trade_route = {
-	category = sgcat_tutorial
-
-	unlocking_subgoals_any = {
-		sg_expand_productive_building
-	}
-	
-	trigger = {
-		market = {
-			custom_tooltip = {
-				text = suppress_localization_errors
-				any_market_goods = {
-					is_tradeable = yes
-					market_goods_has_goods_shortage = yes
-					root = {
-						can_establish_any_import_route = prev.goods
-					}
-				}
-			}
-		}
-	}
-	
-	on_start = {
-		market = {
-			ordered_market_goods = {
-				limit = {
-					is_tradeable = yes
-					market_goods_has_goods_shortage = yes
-					root = {
-						can_establish_any_import_route = prev.goods
-					}
-				}
-				order_by = { # reverse order
-					value = 100
-					subtract = num_import_trade_routes
-				}
-				save_scope_as = tutorial_establish_trade_route_goods
-			}
-		}
-
-		add_journal_entry = {
-			type = je_tutorial_establish_trade_route
-			objective_subgoal = sg_establish_trade_route
-			target = scope:tutorial_establish_trade_route_goods
-		}
-	}
-}
-
 # Improve Supply Network
 sg_improve_supply_network = {
 	category = sgcat_tutorial
 
 	unlocking_subgoals_any = {
-		sg_establish_trade_route
+		sg_expand_productive_building
 	}
 
 	trigger = {
@@ -891,158 +842,158 @@ sg_improve_supply_network = {
 # Improve Access to Consumer Goods
 sg_improve_consumer_goods_access = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
-		sg_establish_trade_route
+		sg_expand_productive_building
 	}
 
 	trigger = {
- 		any_scope_state = {	
+ 		any_scope_state = {
 			OR = {
-				sg:grain = { 
-					state_goods_pricier > 0.25 
+				sg:grain = {
+					state_goods_pricier > 0.25
 				}
-				sg:fish = { 
-					state_goods_pricier > 0.25 
+				sg:fish = {
+					state_goods_pricier > 0.25
 				}
-				sg:fabric = { 
-					state_goods_pricier > 0.25 
+				sg:fabric = {
+					state_goods_pricier > 0.25
 				}
-				sg:meat = { 
-					state_goods_pricier > 0.25 
+				sg:meat = {
+					state_goods_pricier > 0.25
 				}
-				sg:clothes = { 
-					state_goods_pricier > 0.25 
+				sg:clothes = {
+					state_goods_pricier > 0.25
 				}
-				sg:furniture = { 
-					state_goods_pricier > 0.25 
+				sg:furniture = {
+					state_goods_pricier > 0.25
 				}
-				sg:groceries = { 
-					state_goods_pricier > 0.25 
+				sg:groceries = {
+					state_goods_pricier > 0.25
 				}
 			}
 		}
 	}
-	
+
 	on_start = {
 		if = {
 			limit = {
 				any_scope_state = {
-					sg:grain = { 
-						state_goods_pricier > 0.25 
+					sg:grain = {
+						state_goods_pricier > 0.25
 					}
 				}
 			}
 			random_scope_state = {
 				limit = {
-					sg:grain = { 
-						state_goods_pricier > 0.25 
+					sg:grain = {
+						state_goods_pricier > 0.25
 					}
 				}
 				sg:grain = { save_scope_as = tut_consumer_good_expensive }
-			}				
+			}
 		}
 		else_if = {
 			limit = {
 				any_scope_state = {
-					sg:fish = { 
+					sg:fish = {
 						state_goods_pricier > 0.25
 					}
-				}		
+				}
 			}
 			random_scope_state = {
 				limit = {
-					sg:fish = { 
-						state_goods_pricier > 0.25 
+					sg:fish = {
+						state_goods_pricier > 0.25
 					}
 				}
 				sg:fish = { save_scope_as = tut_consumer_good_expensive }
-			}				
+			}
 		}
 		else_if = {
 			limit = {
 				any_scope_state = {
-					sg:fabric = { 
+					sg:fabric = {
 						state_goods_pricier > 0.25
 					}
-				}	
+				}
 			}
 			random_scope_state = {
 				limit = {
-					sg:fabric = { 
-						state_goods_pricier > 0.25 
+					sg:fabric = {
+						state_goods_pricier > 0.25
 					}
 				}
 				sg:fabric = { save_scope_as = tut_consumer_good_expensive }
-			}				
+			}
 		}
 		else_if = {
 			limit = {
 				any_scope_state = {
-					sg:meat = { 
+					sg:meat = {
 						state_goods_pricier > 0.25
 					}
-				}		
+				}
 			}
 			random_scope_state = {
 				limit = {
-					sg:meat = { 
-						state_goods_pricier > 0.25 
+					sg:meat = {
+						state_goods_pricier > 0.25
 					}
 				}
 				sg:meat = { save_scope_as = tut_consumer_good_expensive }
-			}				
+			}
 		}
 		else_if = {
 			limit = {
 				any_scope_state = {
-					sg:clothes = { 
+					sg:clothes = {
 						state_goods_pricier > 0.25
 					}
-				}	
+				}
 			}
 			random_scope_state = {
 				limit = {
-					sg:clothes = { 
-						state_goods_pricier > 0.25 
+					sg:clothes = {
+						state_goods_pricier > 0.25
 					}
 				}
 				sg:clothes = { save_scope_as = tut_consumer_good_expensive }
-			}				
+			}
 		}
 		else_if = {
 			limit = {
 				any_scope_state = {
-					sg:furniture = { 
+					sg:furniture = {
 						state_goods_pricier > 0.25
 					}
-				}		
+				}
 			}
 			random_scope_state = {
 				limit = {
-					sg:furniture = { 
-						state_goods_pricier > 0.25 
+					sg:furniture = {
+						state_goods_pricier > 0.25
 					}
 				}
 				sg:furniture = { save_scope_as = tut_consumer_good_expensive }
-			}				
+			}
 		}
 		else_if = {
 			limit = {
 				any_scope_state = {
-					sg:groceries = { 
+					sg:groceries = {
 						state_goods_pricier > 0.25
 					}
-				}	
+				}
 			}
 			random_scope_state = {
 				limit = {
-					sg:groceries = { 
-						state_goods_pricier > 0.25 
+					sg:groceries = {
+						state_goods_pricier > 0.25
 					}
 				}
 				sg:groceries = { save_scope_as = tut_consumer_good_expensive }
-			}				
+			}
 		}
 		add_journal_entry = {
 			type = je_tutorial_improve_consumer_goods_access
@@ -1055,18 +1006,18 @@ sg_improve_consumer_goods_access = {
 # Make Interest Group Happy
 sg_make_interest_group_happy = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_all = {
 		sg_promote_movement
 	}
 
 	trigger = {
 		any_interest_group = {
-			ig_approval < 2 
+			ig_approval < 2
 			is_marginal = no
 		}
 	}
-	
+
 	on_start = {
 		random_interest_group = {
 			limit = {
@@ -1086,7 +1037,7 @@ sg_make_interest_group_happy = {
 
 sg_enact_institution_law = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_all = {
 		 sg_promote_movement
 	}
@@ -1114,7 +1065,7 @@ sg_enact_institution_law = {
 			}
 		}
 	}
-	
+
 	on_start = {
 		if = {
 			limit = {
@@ -1182,7 +1133,7 @@ sg_enact_institution_law = {
 # Reform Government
 sg_reform_government = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_all = {
 		 sg_promote_movement
 	}
@@ -1190,8 +1141,8 @@ sg_reform_government = {
 	trigger = {
 		government_legitimacy <= 40
 	}
-	
-	on_start = {		
+
+	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_reform_government
 			objective_subgoal = sg_reform_government
@@ -1202,7 +1153,7 @@ sg_reform_government = {
 # Increase Relations
 sg_increase_relations = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
 		sg_enact_institution_law
 		sg_reform_government
@@ -1234,7 +1185,7 @@ sg_increase_relations = {
 			}
 		}
 	}
-	
+
 	on_start = {
 		if = {
 			limit = {
@@ -1267,7 +1218,7 @@ sg_increase_relations = {
 		else_if = {
 			limit = {
 				any_country = {
-					has_attitude = { 
+					has_attitude = {
 						who = ROOT
 						attitude >= cautious
 					}
@@ -1277,7 +1228,7 @@ sg_increase_relations = {
 			}
 			random_country = {
 				limit = {
-					has_attitude = { 
+					has_attitude = {
 						who = ROOT
 						attitude >= cautious
 					}
@@ -1303,7 +1254,7 @@ sg_increase_relations = {
 				save_scope_as = tut_increase_relations
 			}
 		}
-		
+
 		add_journal_entry = {
 			type = je_tutorial_increase_relations
 			objective_subgoal = sg_increase_relations
@@ -1315,14 +1266,14 @@ sg_increase_relations = {
 # Improve Rank
 sg_improve_rank = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_all = {
 		sg_make_peace
 	}
 
 	trigger = {
 	}
-	
+
 	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_improve_rank
@@ -1334,7 +1285,7 @@ sg_improve_rank = {
 # Prevent a Revolution
 sg_prevent_revolution = { #currently code bug displays trigger wrong
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_all = {
 		sg_make_interest_group_happy
 	}
@@ -1345,7 +1296,7 @@ sg_prevent_revolution = { #currently code bug displays trigger wrong
 			is_civil_war_type = revolution
 		}
 	}
-	
+
 	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_prevent_revolution
@@ -1357,19 +1308,19 @@ sg_prevent_revolution = { #currently code bug displays trigger wrong
 # Earn Obligation
 sg_earn_obligation = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
 		sg_increase_relations
 	}
 
 	trigger = {
 		NOT = {
-			any_country = { 
+			any_country = {
 				owes_obligation_to = root
 			}
 		}
 	}
-	
+
 	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_earn_obligation
@@ -1382,18 +1333,18 @@ sg_earn_obligation = {
 # Expand Military
 sg_expand_military = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
 		sg_create_formation
 	}
 
-	trigger = {	
+	trigger = {
 		any_military_formation = {
 			is_army = yes
 			owner = ROOT
 		}
 	}
-	
+
 	on_start = {
 		random_military_formation = {
 			limit = {
@@ -1414,14 +1365,14 @@ sg_expand_military = {
 # Increase Command Limit
 sg_recruit_promote_commander = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
 		sg_expand_military
 	}
 
-	trigger = {	
+	trigger = {
 	}
-	
+
 	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_recruit_promote_commander
@@ -1434,7 +1385,7 @@ sg_recruit_promote_commander = {
 # Mobilize Army
 sg_mobilize_army = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
 		sg_start_diplomatic_play
 	}
@@ -1445,7 +1396,7 @@ sg_mobilize_army = {
 			is_mobilized = no
 		}
 	}
-	
+
 	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_mobilize_army
@@ -1457,7 +1408,7 @@ sg_mobilize_army = {
 # Send General to Front
 sg_send_general_to_front = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
 		sg_mobilize_army
 	}
@@ -1469,7 +1420,7 @@ sg_send_general_to_front = {
 			is_on_front = no
 		}
 	}
-	
+
 	on_start = {
 		random_military_formation = {
 			limit = {
@@ -1491,7 +1442,7 @@ sg_send_general_to_front = {
 # Convoy Raiding
 sg_convoy_raiding = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
 		sg_recruit_promote_commander
 	}
@@ -1502,16 +1453,16 @@ sg_convoy_raiding = {
 			NOT = { has_commander_order = defend }
 		}
 	}
-	
+
 	on_start = {
-		random_scope_character = { 
+		random_scope_character = {
 			limit = {
 				has_role = general
 				NOT = { has_commander_order = defend }
 			}
 			save_scope_as = tut_convoy_raiding
 		}
-		
+
 		add_journal_entry = {
 			type = je_tutorial_convoy_raiding
 			objective_subgoal = sg_convoy_raiding
@@ -1523,16 +1474,16 @@ sg_convoy_raiding = {
 # Recover From Default
 sg_recover_from_default = {
 	category = sgcat_tutorial
-	
+
 	is_repeatable = yes
-	
+
 	unlocking_subgoals_any = {
 	}
 
 	trigger = {
 		in_default = yes
 	}
-	
+
 	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_recover_from_default
@@ -1544,11 +1495,11 @@ sg_recover_from_default = {
 # Start Diplomatic Play
 sg_start_diplomatic_play = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
 		sg_recruit_promote_commander
 	}
-	
+
 	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_start_diplomatic_play
@@ -1560,7 +1511,7 @@ sg_start_diplomatic_play = {
 # Is Target in Diplomatic Play
 sg_is_play_target = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
 		sg_declare_an_interest
 	}
@@ -1568,7 +1519,7 @@ sg_is_play_target = {
 	trigger = {
 		is_diplomatic_play_target = yes
 	}
-	
+
 	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_is_play_target
@@ -1580,7 +1531,7 @@ sg_is_play_target = {
 # Fix Capacity Deficit
 sg_capacity_deficit = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
 	}
 
@@ -1591,7 +1542,7 @@ sg_capacity_deficit = {
 			influence < -10
 		}
 	}
-	
+
 	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_capacity_deficit
@@ -1602,11 +1553,11 @@ sg_capacity_deficit = {
 
 sg_invest_into_an_institution = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
 		sg_enact_institution_law
 	}
-	
+
 	trigger = {
 		OR = {
 			institution:institution_schools = {
@@ -1632,7 +1583,7 @@ sg_invest_into_an_institution = {
 			}
 		}
 	}
-	
+
 	on_start = {
 		if = {
 			limit = {
@@ -1699,7 +1650,7 @@ sg_invest_into_an_institution = {
 				save_scope_as = tut_institution
 			}
 		}
-		
+
 		else_if = {
 			limit = {
 				institution:institution_colonial_affairs = {
@@ -1710,7 +1661,7 @@ sg_invest_into_an_institution = {
 				save_scope_as = tut_institution
 			}
 		}
-		
+
 		add_journal_entry = {
 			type = je_tutorial_invest_into_an_institution
 			objective_subgoal = sg_invest_into_an_institution
@@ -1722,7 +1673,7 @@ sg_invest_into_an_institution = {
 # Incorporate State
 sg_incorporate_state = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
 		sg_invest_into_an_institution
 	}
@@ -1733,7 +1684,7 @@ sg_incorporate_state = {
 			is_under_colonization = no
 		}
 	}
-	
+
 	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_incorporate_state
@@ -1745,7 +1696,7 @@ sg_incorporate_state = {
 # Colonize Region
 sg_colonize_state = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_all = {
 		sg_declare_an_interest
 	}
@@ -1761,7 +1712,7 @@ sg_colonize_state = {
 # Make Peace
 sg_make_peace = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_all = {
 		sg_send_general_to_front
 	}
@@ -1781,7 +1732,7 @@ sg_make_peace = {
 # Research Technology
 sg_research_technology = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
 	}
 
@@ -1789,7 +1740,7 @@ sg_research_technology = {
 		NOT = { is_researching_technology = any }
 		has_researchable_technology = yes
 	}
-	
+
 	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_research_technology
@@ -1801,7 +1752,7 @@ sg_research_technology = {
 # Declare an Interest
 sg_declare_an_interest = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
 		sg_increase_relations
 	}
@@ -1934,7 +1885,7 @@ sg_create_formation = {
 
 	trigger = {
 	}
-	
+
 	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_create_formation
@@ -1958,7 +1909,7 @@ sg_subject_liberty = {
 			liberty_desire_weekly_progress > 0
 		}
 	}
-	
+
 	on_start = {
 		if = {
 			limit = {
@@ -1999,36 +1950,26 @@ sg_foreign_investment = {
 		any_country = {
 			OR = {
 				is_subject_of = ROOT
-				has_diplomatic_pact = {
-					who = root
-					type = foreign_investment_agreement
-				}
-				root = {
-					has_diplomatic_pact = {
-						who = prev
-						type = foreign_investment_rights
-						is_initiator = yes
+				any_scope_treaty = {
+					binds = root
+					any_scope_article = {
+						has_type = foreign_investment_rights
 					}
 				}
 			}
 		}
 	}
-	
+
 	on_start = {
 		if = {
 			limit = {
 				any_country = {
 					OR = {
 						is_subject_of = ROOT
-						has_diplomatic_pact = {
-							who = root
-							type = foreign_investment_agreement
-						}
-						root = {
-							has_diplomatic_pact = {
-								who = prev
-								type = foreign_investment_rights
-								is_initiator = yes
+						any_scope_treaty = {
+							binds = root
+							any_scope_article = {
+								has_type = foreign_investment_rights
 							}
 						}
 					}
@@ -2038,15 +1979,10 @@ sg_foreign_investment = {
 				limit = {
 					OR = {
 						is_subject_of = ROOT
-						has_diplomatic_pact = {
-							who = root
-							type = foreign_investment_agreement
-						}
-						root = {
-							has_diplomatic_pact = {
-								who = prev
-								type = foreign_investment_rights
-								is_initiator = yes
+						any_scope_treaty = {
+							binds = root
+							any_scope_article = {
+								has_type = foreign_investment_agreement
 							}
 						}
 					}
@@ -2059,7 +1995,7 @@ sg_foreign_investment = {
 			type = je_tutorial_foreign_investment
 			objective_subgoal = sg_foreign_investment
 			target = scope:tut_foreign_investment
-		}	
+		}
 	}
 }
 
@@ -2075,12 +2011,12 @@ sg_establish_company = {
 	trigger = {
 		can_establish_company = YES
 	}
-	
+
 	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_establish_company
 			objective_subgoal = sg_establish_company
-		}	
+		}
 	}
 }
 
@@ -2102,19 +2038,19 @@ sg_form_power_bloc = {
 		}
 		is_in_power_bloc = no
 	}
-	
+
 	on_start = {
 		add_journal_entry = {
 			type = je_tutorial_form_power_bloc
 			objective_subgoal = sg_form_power_bloc
-		}	
+		}
 	}
 }
 
 # Lobbies
 sg_lobbies = {
 	category = sgcat_tutorial
-	
+
 	unlocking_subgoals_any = {
 		sg_increase_relations
 	}
@@ -2124,7 +2060,7 @@ sg_lobbies = {
 			appeasement <= 7
 		}
 	}
-	
+
 	on_start = {
 		if = {
 			limit = {

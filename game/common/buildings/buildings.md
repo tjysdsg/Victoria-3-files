@@ -68,9 +68,7 @@
         levels_per_mesh = int32								# how many levels is needed to add 1 extra building on the map, default 1
         residence_points_per_level							# how many total "residence points" this building adds to its hub to determine residential buildings created, default 1
         
-        override_centerpiece_mesh = yes						# should the building be replacing the centerpiece mes. Requires centerpiece_mesh_weight to decide which entity or mesh higher prio for overriding building
-        statue = yes										# special building type for power bloc statues, mutually exclusive with override_centerpiece_mesh as it will use centerpiece element from power bloc. Requires centerpiece_mesh_weight to decide which entity or mesh higher prio for overriding building
-        centerpiece_mesh_weight = 1							# priority for replacing the correspondent centerpiece mesh
+        statue = yes										# special building type for power bloc statues
         
         meshes = {											# buildings we supposed to place for dynamic terrain placement
             # list of meshes

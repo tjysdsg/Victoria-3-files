@@ -17,21 +17,21 @@ africa_colonial_events.51 = {
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
 
 	duration = 3
-	
-	cooldown = { months = normal_modifier_time }
+
+	cooldown = { days = stupidly_long_modifier_time }
 
 	trigger = {
 		NOT = { has_variable = colonial_clash_var }
 		any_scope_state = {
 			is_incorporated = no
-			state_in_africa = yes
+			state_is_in_africa = yes
 			state_region = {
 				any_scope_state = {
 					is_incorporated = no
 					owner = {
 						NOT = { this = root }
 						#country_rank = root.country_rank
-						capital = { state_in_africa = no }
+						capital = { state_is_in_africa = no }
 					}
 				}
 			}
@@ -44,14 +44,14 @@ africa_colonial_events.51 = {
 		random_scope_state = {
 			limit = {
 				is_incorporated = no
-				state_in_africa = yes
+				state_is_in_africa = yes
 				state_region = {
 					any_scope_state = {
 						is_incorporated = no
 						owner = {
 							NOT = { this = root }
 							#country_rank = root.country_rank
-							capital = { state_in_africa = no }
+							capital = { state_is_in_africa = no }
 						}
 					}
 				}
@@ -64,7 +64,7 @@ africa_colonial_events.51 = {
 						owner = {
 							NOT = { this = root }
 							#country_rank = root.country_rank
-							capital = { state_in_africa = no }
+							capital = { state_is_in_africa = no }
 						}
 					}
 					save_scope_as = african_colony_state_recipient
@@ -93,7 +93,10 @@ africa_colonial_events.51 = {
 
 		add_modifier = {
 			name = withdrew_from_colonial_incident # country_prestige_add = -10
-			months = normal_modifier_time
+			days = normal_modifier_time
+		}
+		scope:african_colony_state_recipient.state_region = {
+			add_claim = scope:african_colony_conflict_recipient
 		}
 	}
 }
@@ -115,8 +118,8 @@ africa_colonial_events.52 = {
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
 
 	duration = 3
-	
-	cooldown = { months = normal_modifier_time }
+
+	# No cooldown. Triggered by africa_colonial_events.51, but could happen from multiple opposition in multiplayer.
 
 	option = {
 		name = africa_colonial_events.52.a
@@ -139,7 +142,7 @@ africa_colonial_events.52 = {
 
 		add_modifier = {
 			name = withdrew_from_colonial_incident # country_prestige_add = -10
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 		scope:african_colony_conflict_sender = {
 			post_notification = colonial_conflict_region_demands_met
@@ -165,13 +168,13 @@ africa_colonial_events.53 = {
 
 	duration = 3
 
-	cooldown = { months = normal_modifier_time }
-	
+	cooldown = { days = stupidly_long_modifier_time }
+
 	trigger = {
 		has_law = law_type:law_colonial_resettlement
 		any_scope_state = {
 			is_incorporated = no
-			state_in_africa = yes
+			state_is_in_africa = yes
 			any_scope_pop = {
 				pop_has_primary_culture = yes
 			}
@@ -182,7 +185,7 @@ africa_colonial_events.53 = {
 		random_scope_state = {
 			limit = {
 				is_incorporated = no
-				state_in_africa = yes
+				state_is_in_africa = yes
 				any_scope_pop = {
 					pop_has_primary_culture = yes
 				}
@@ -195,7 +198,7 @@ africa_colonial_events.53 = {
 		name = africa_colonial_events.53.a
 		add_modifier = {
 			name = supplying_colonists
-			months = normal_modifier_time
+			days = normal_modifier_time
 			multiplier = money_amount_multiplier_medium
 		}
 	}
@@ -211,7 +214,7 @@ africa_colonial_events.53 = {
 		}
 		add_modifier = {
 			name = assisting_colonists
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 
@@ -222,7 +225,7 @@ africa_colonial_events.53 = {
 		scope:african_colony_state = {
 			add_modifier = {
 				name = struggling_colonists
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -246,19 +249,19 @@ africa_colonial_events.54 = {
 
 	duration = 3
 
-	cooldown = { months = long_modifier_time }
+	cooldown = { days = long_modifier_time } #Unfortunately This needs to repeat to shoo people off your claimed colonies.
 
 	trigger = {
 		any_state = {
 			has_claim_by = root
-			state_in_africa = yes
+			state_is_in_africa = yes
 			is_incorporated = no
 			state_region = {
 				NOT = { has_variable = disputed_colonial_state }
 			}
 			owner = {
 				not = { this = root }
-				capital = { state_in_africa = no }
+				capital = { state_is_in_africa = no }
 			}
 		}
 	}
@@ -268,14 +271,14 @@ africa_colonial_events.54 = {
 		random_state = {
 			limit = {
 				has_claim_by = root
-				state_in_africa = yes
+				state_is_in_africa = yes
 				is_incorporated = no
 				state_region = {
 					NOT = { has_variable = disputed_colonial_state }
 				}
 				owner = {
 					not = { this = root }
-					capital = { state_in_africa = no }
+					capital = { state_is_in_africa = no }
 				}
 			}
 			save_scope_as = african_colony_claim_state
@@ -331,7 +334,7 @@ africa_colonial_events.55 = {
 
 	duration = 3
 
-	cooldown = { months = long_modifier_time }
+	# cooldown = { days = long_modifier_time } Triggered only by the above event. In multiplayer it's possible to face multiple in succession.
 
 	option = {
 		name = africa_colonial_events.55.a

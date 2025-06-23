@@ -5,6 +5,8 @@ flamethrowers_event.1 = {
 
  	duration = 3
 
+	cooldown = { days = never_fire_again_modifier_time }
+
  	event_image = {
  		video = "unspecific_fire"
  	}
@@ -18,9 +20,23 @@ flamethrowers_event.1 = {
  	flavor = flamethrowers_event.1.f
 
  	trigger = {
- 		# triggered by flamethrowers JE
+		is_at_war = yes
+		army_mobilization_option_fraction = {
+		   target = mobilization_option:mobilization_option_flamethrowers
+		   value >= 0.2
+	    }
+		any_scope_war = {
+		   any_scope_front = {
+			  any_scope_general = {
+				  owner = ROOT
+				  this.commander_military_formation = {
+					  has_mobilization_option = mobilization_option:mobilization_option_flamethrowers
+				  }
+			  }
+		   }
+	   }
  	}
-	
+
  	immediate = {
  		random_scope_war = {
  			limit = {
@@ -41,7 +57,7 @@ flamethrowers_event.1 = {
  		name = flamethrowers_event.1.a
  		add_modifier = {
  			name = instrument_of_fear
- 			months = normal_modifier_time
+ 			days = normal_modifier_time
  		}
  	}
 
@@ -50,7 +66,7 @@ flamethrowers_event.1 = {
  		default_option = yes
  		add_modifier = {
  			name = instrument_of_death
- 			months = normal_modifier_time
+ 			days = normal_modifier_time
  		}
  	}
 }

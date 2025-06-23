@@ -26,12 +26,12 @@ types politics_panel_change_law {
 				}
 			}
 		}
-		
+
 		blockoverride "window_header_name"
 		{
-			text = "[ChangeLawPanel.GetLaw.GetGroupName]"
+			text = "[LabelingHelper.CapitalizeOnlyFirst(ChangeLawPanel.GetLaw.GetGroupName)]"
 		}
-		
+
 		blockoverride "scrollarea_content"
 		{
 			vbox = {
@@ -43,7 +43,7 @@ types politics_panel_change_law {
 				hbox = {
 					layoutpolicy_horizontal = expanding
 					layoutpolicy_vertical = expanding
-					
+
 					### current active law
 					vbox = {
 						layoutpolicy_horizontal = preferred
@@ -51,12 +51,12 @@ types politics_panel_change_law {
 						margin_top = 10
 
 						using = entry_bg_fancy
-						
+
 						vbox = {
 							layoutpolicy_horizontal = expanding
 							layoutpolicy_vertical = preferred
 							datamodel = "[ChangeLawPanel.GetSelectedLawAlternatives]"
-							
+
 							item = {
 								vbox = {
 									layoutpolicy_horizontal = expanding
@@ -68,16 +68,16 @@ types politics_panel_change_law {
 									hbox = {
 										layoutpolicy_horizontal = expanding
 										layoutpolicy_vertical = preferred
-										
+
 										law_icon = {
 											size = { 140 140 }
 										}
-										
+
 										vbox = {
 											layoutpolicy_horizontal = expanding
 											layoutpolicy_vertical = preferred
 											margin = { 10 0 }
-											
+
 											widget = {
 												layoutpolicy_horizontal = expanding
 												layoutpolicy_vertical = preferred
@@ -92,7 +92,7 @@ types politics_panel_change_law {
 												elide = right
 												fontsize_min = 14
 											}
-											
+
 											textbox = {
 												layoutpolicy_horizontal = expanding
 												size = { 0 40 }
@@ -102,49 +102,164 @@ types politics_panel_change_law {
 												elide = right
 												fontsize_min = 14
 											}
-											
+
 											widget = {
 												layoutpolicy_horizontal = expanding
 												layoutpolicy_vertical = preferred
-											}	
+											}
 										}
 									}
 
 									### approval info
 									approval_info2 = {}
-									
-									### info text
+
+									### active law
 									textbox = {
-										text = "DATA_LAW_NAME_TOOLTIP"
+										visible = "[Law.IsActive]"
 										autoresize = yes
 										multiline = yes
 										minimumsize = { @law_sides_width -1 }
 										maximumsize = { @law_sides_width -1 }
 										margin = { 10 10 }
+										text = "ACTIVE_LAW"
+									}
+
+									### requirements header
+									textbox = {
+										visible = "[Not(StringIsEmpty(Law.GetLawType.GetBlockingRequirements(GetPlayer.Self)))]"
+										default_format = "#title"
+										autoresize = yes
+										multiline = yes
+										minimumsize = { @law_sides_width -1 }
+										maximumsize = { @law_sides_width -1 }
+										margin = { 10 0 }
+										margin_top = 10
+										text = "DATA_LAW_REQUIREMENTS_HEADER"
+									}
+
+									### requirements
+									textbox = {
+										visible = "[Not(StringIsEmpty(Law.GetLawType.GetBlockingRequirements(GetPlayer.Self)))]"
+										autoresize = yes
+										multiline = yes
+										minimumsize = { @law_sides_width -1 }
+										maximumsize = { @law_sides_width -1 }
+										margin = { 20 0 }
+										margin_bottom = 10
+										text = "[Law.GetLawType.GetBlockingRequirements(GetPlayer.Self)]"
+									}
+
+									### additional effects header
+									textbox = {
+										visible = "[Not(StringIsEmpty(Law.GetLawType.GetAdditionalEffectDesc))]"
+										default_format = "#title"
+										autoresize = yes
+										multiline = yes
+										minimumsize = { @law_sides_width -1 }
+										maximumsize = { @law_sides_width -1 }
+										margin = { 10 0 }
+										margin_top = 10
+										text = "DATA_LAW_CUSTOM_EFFECTS_HEADER"
+									}
+
+									### additional effects
+									textbox = {
+										visible = "[Not(StringIsEmpty(Law.GetLawType.GetAdditionalEffectDesc))]"
+										autoresize = yes
+										multiline = yes
+										minimumsize = { @law_sides_width -1 }
+										maximumsize = { @law_sides_width -1 }
+										margin = { 20 0 }
+										margin_bottom = 10
+										text = "[Law.GetLawType.GetAdditionalEffectDesc]"
+									}
+
+									### effects header
+									textbox = {
+										visible = "[Not(StringIsEmpty(Law.GetLawType.GetEffectDesc(GetPlayer.Self)))]"
+										default_format = "#title"
+										autoresize = yes
+										multiline = yes
+										minimumsize = { @law_sides_width -1 }
+										maximumsize = { @law_sides_width -1 }
+										margin = { 10 0 }
+										margin_top = 10
+										text = "DATA_LAW_EFFECTS_HEADER"
+									}
+
+									### effects
+									textbox = {
+										visible = "[Not(StringIsEmpty(Law.GetLawType.GetEffectDesc(GetPlayer.Self)))]"
+										autoresize = yes
+										multiline = yes
+										minimumsize = { @law_sides_width -1 }
+										maximumsize = { @law_sides_width -1 }
+										margin = { 20 0 }
+										text = "[Law.GetLawType.GetEffectDesc(GetPlayer.Self)]"
+									}
+
+									### supported by IGs
+									textbox = {
+										visible = "[Law.IsSupported]"
+										autoresize = yes
+										multiline = yes
+										minimumsize = { @law_sides_width -1 }
+										maximumsize = { @law_sides_width -1 }
+										margin = { 10 10 }
+										text = "DATA_LAW_TOOLTIP_SUPPORTED"
+									}
+
+									### not supported by IGs
+									textbox = {
+										visible = "[Not(Law.IsSupported)]"
+										autoresize = yes
+										multiline = yes
+										minimumsize = { @law_sides_width -1 }
+										maximumsize = { @law_sides_width -1 }
+										margin = { 10 10 }
+										text = "DATA_LAW_TOOLTIP_NOT_SUPPORTED"
+									}
+
+									divider_clean = {
+										blockoverride "size" {
+											layoutpolicy_horizontal = expanding
+											size = { 0 2 }
+										}
+									}
+
+									### law lore
+									textbox = {
+										default_format = "#lore"
+										autoresize = yes
+										multiline = yes
+										minimumsize = { @law_sides_width -1 }
+										maximumsize = { @law_sides_width -1 }
+										margin = { 20 10 }
+										text = "[Law.GetDesc]"
 									}
 								}
 							}
 						}
-						
+
 						widget = {
 							layoutpolicy_horizontal = expanding
 							layoutpolicy_vertical = expanding
 						}
 					}
-					
+
 					### list of laws
 					vbox = {
 						layoutpolicy_horizontal = expanding
 						layoutpolicy_vertical = expanding
 						margin = { 5 0 }
-						
+
 						vbox = {
 							layoutpolicy_horizontal = expanding
 							layoutpolicy_vertical = preferred
 							name = "law_box"
 							datamodel = "[ChangeLawPanel.GetSelectedLawAlternatives]"
 							ignoreinvisible = yes
-							spacing = 15
+							spacing = 10
 
 							item = {
 								enactable_generic_law2 = {
@@ -153,7 +268,7 @@ types politics_panel_change_law {
 								}
 							}
 						}
-						
+
 						widget = {
 							layoutpolicy_horizontal = expanding
 							layoutpolicy_vertical = expanding
@@ -175,7 +290,7 @@ types politics_panel_change_law {
 							visible = "[ObjectsEqual(GetPlayer.GetLawBeingEnacted.GetGroup, ChangeLawPanel.GetLaw.GetGroup.Self)]"
 							using = highlighted_square_selection
 						}
-						
+
 						### not enacting
 						textbox = {
 							visible = "[Not(ObjectsEqual(GetPlayer.GetLawBeingEnacted.GetGroup, ChangeLawPanel.GetLaw.GetGroup.Self))]"
@@ -191,7 +306,7 @@ types politics_panel_change_law {
 							text = "NO_LAW_IN_THIS_LAWGROUP_IS_BEING_ENACTED"
 							default_format = "#title"
 						}
-						
+
 						### enacting
 						vbox = {
 							layoutpolicy_horizontal = expanding
@@ -203,21 +318,21 @@ types politics_panel_change_law {
 								layoutpolicy_horizontal = expanding
 								layoutpolicy_vertical = preferred
 								margin = { 15 0 }
-								
+
 								### icon + name
 								hbox = {
 									layoutpolicy_horizontal = expanding
 									layoutpolicy_vertical = preferred
-									
+
 									law_enactment_progress = {
 										size = { 140 140 }
 									}
-									
+
 									vbox = {
 										layoutpolicy_horizontal = expanding
 										layoutpolicy_vertical = preferred
 										margin = { 10 0 }
-										
+
 										widget = {
 											layoutpolicy_horizontal = expanding
 											layoutpolicy_vertical = preferred
@@ -232,7 +347,7 @@ types politics_panel_change_law {
 											elide = right
 											fontsize_min = 14
 										}
-										
+
 										textbox = {
 											layoutpolicy_horizontal = expanding
 											size = { 0 40 }
@@ -253,7 +368,7 @@ types politics_panel_change_law {
 											fontsize_min = 14
 											tooltip = LAW_NEXT_CHECKPOINT_TIME_FACTORS_TOOLTIP
 										}
-										
+
 										widget = {
 											layoutpolicy_horizontal = expanding
 											layoutpolicy_vertical = preferred
@@ -444,29 +559,29 @@ types politics_panel_change_law {
 
 								### approval info
 								approval_info2 = {}
-								
+
 								widget = { size = { 10 10 }}
 
 								vbox = {
 									layoutpolicy_horizontal = preferred
 									layoutpolicy_vertical = preferred
 									margin = { 15 10 }
-									
+
 									background = {
 										using = entry_bg_simple
 									}
-									
+
 									vbox = {
 										layoutpolicy_horizontal = expanding
 										layoutpolicy_vertical = preferred
 										margin = { 10 10 }
 										spacing = 10
-										
+
 										hbox = {
 											layoutpolicy_horizontal = expanding
 											layoutpolicy_vertical = preferred
 											spacing = 5
-											
+
 											textbox = {
 												name = "tutorial_highlight_enacting_law_success_chance"
 												alpha = "[TransparentIfFalse(GreaterThan_CFixedPoint(Law.GetCheckpointSuccessChance, '(CFixedPoint)0'))]"
@@ -493,7 +608,7 @@ types politics_panel_change_law {
 											layoutpolicy_horizontal = expanding
 											layoutpolicy_vertical = preferred
 											spacing = 5
-											
+
 											textbox = {
 												layoutpolicy_horizontal = expanding
 												alpha = "[TransparentIfFalse(GreaterThan_CFixedPoint(Law.GetCheckpointDebateChance, '(CFixedPoint)0'))]"
@@ -518,10 +633,11 @@ types politics_panel_change_law {
 									}
 								}
 							}
-							
+
 							### info text
 							textbox = {
 								datacontext = "[GetPlayer.GetLawBeingEnacted]"
+								visible = no
 								text = "DATA_LAW_NAME_TOOLTIP"
 								autoresize = yes
 								multiline = yes
@@ -529,8 +645,124 @@ types politics_panel_change_law {
 								maximumsize = { @law_sides_width -1 }
 								margin = { 25 10 }
 							}
+
+							datacontext = "[GetPlayer.GetLawBeingEnacted]"
+
+							### requirements header
+							textbox = {
+								visible = "[Not(StringIsEmpty(Law.GetLawType.GetBlockingRequirements(GetPlayer.Self)))]"
+								default_format = "#title"
+								autoresize = yes
+								multiline = yes
+								minimumsize = { @law_sides_width -1 }
+								maximumsize = { @law_sides_width -1 }
+								margin = { 25 0 }
+								margin_top = 10
+								text = "DATA_LAW_REQUIREMENTS_HEADER"
+							}
+
+							### requirements
+							textbox = {
+								visible = "[Not(StringIsEmpty(Law.GetLawType.GetBlockingRequirements(GetPlayer.Self)))]"
+								autoresize = yes
+								multiline = yes
+								minimumsize = { @law_sides_width -1 }
+								maximumsize = { @law_sides_width -1 }
+								margin = { 35 0 }
+								margin_bottom = 10
+								text = "[Law.GetLawType.GetBlockingRequirements(GetPlayer.Self)]"
+							}
+
+							### additional effects header
+							textbox = {
+								visible = "[Not(StringIsEmpty(Law.GetLawType.GetAdditionalEffectDesc))]"
+								default_format = "#title"
+								autoresize = yes
+								multiline = yes
+								minimumsize = { @law_sides_width -1 }
+								maximumsize = { @law_sides_width -1 }
+								margin = { 25 0 }
+								margin_top = 10
+								text = "DATA_LAW_CUSTOM_EFFECTS_HEADER"
+							}
+
+							### additional effects
+							textbox = {
+								visible = "[Not(StringIsEmpty(Law.GetLawType.GetAdditionalEffectDesc))]"
+								autoresize = yes
+								multiline = yes
+								minimumsize = { @law_sides_width -1 }
+								maximumsize = { @law_sides_width -1 }
+								margin = { 35 0 }
+								margin_bottom = 10
+								text = "[Law.GetLawType.GetAdditionalEffectDesc]"
+							}
+
+							### effects header
+							textbox = {
+								visible = "[Not(StringIsEmpty(Law.GetLawType.GetEffectDesc(GetPlayer.Self)))]"
+								default_format = "#title"
+								autoresize = yes
+								multiline = yes
+								minimumsize = { @law_sides_width -1 }
+								maximumsize = { @law_sides_width -1 }
+								margin = { 25 0 }
+								margin_top = 10
+								text = "DATA_LAW_EFFECTS_HEADER"
+							}
+
+							### effects
+							textbox = {
+								visible = "[Not(StringIsEmpty(Law.GetLawType.GetEffectDesc(GetPlayer.Self)))]"
+								autoresize = yes
+								multiline = yes
+								minimumsize = { @law_sides_width -1 }
+								maximumsize = { @law_sides_width -1 }
+								margin = { 35 0 }
+								text = "[Law.GetLawType.GetEffectDesc(GetPlayer.Self)]"
+							}
+
+							### supported by IGs
+							textbox = {
+								visible = "[Law.IsSupported]"
+								autoresize = yes
+								multiline = yes
+								minimumsize = { @law_sides_width -1 }
+								maximumsize = { @law_sides_width -1 }
+								margin = { 25 10 }
+								text = "DATA_LAW_TOOLTIP_SUPPORTED"
+							}
+
+							### not supported by IGs
+							textbox = {
+								visible = "[Not(Law.IsSupported)]"
+								autoresize = yes
+								multiline = yes
+								minimumsize = { @law_sides_width -1 }
+								maximumsize = { @law_sides_width -1 }
+								margin = { 25 10 }
+								text = "DATA_LAW_TOOLTIP_NOT_SUPPORTED"
+							}
+
+							divider_clean = {
+								blockoverride "size" {
+									layoutpolicy_horizontal = expanding
+									size = { 0 2 }
+								}
+							}
+
+							### law lore
+							textbox = {
+								default_format = "#lore"
+								autoresize = yes
+								multiline = yes
+								minimumsize = { @law_sides_width -1 }
+								maximumsize = { @law_sides_width -1 }
+								margin = { 35 10 }
+								text = "[Law.GetDesc]"
+							}
 						}
-						
+
 						widget = {
 							layoutpolicy_horizontal = expanding
 							layoutpolicy_vertical = expanding

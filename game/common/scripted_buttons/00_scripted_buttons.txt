@@ -4,22 +4,10 @@
 
 	visible = { has_variable = paris_commune_fra_perspective }
 
-	possible = {
-		scope:journal_entry = {
-				not = {
-				custom_tooltip = {
-					text = paris_commune_on_cooldown_tt
-					has_variable = je_the_paris_commune_decision_cooldown
-				}
-			}
-		}
-	}
+	cooldown = { days = 90 }
 
 	effect = {
         custom_tooltip = cooldown_three_months_tt
-		scope:journal_entry = {
-			set_variable = { name = je_the_paris_commune_decision_cooldown months = 3 }
-		}	
         add_radicals = {
             value = small_radicals
             strata = lower
@@ -38,22 +26,10 @@ je_the_paris_commune_france_button_b = {
 
 	visible = { has_variable = paris_commune_prc_perspective }
 
-	possible = {
-		scope:journal_entry = {
-			not = {
-				custom_tooltip = {
-					text = paris_commune_on_cooldown_tt
-					has_variable = je_the_paris_commune_decision_cooldown
-				}
-			}
-		}	
-	}
+	cooldown = { days = 90 }
 
 	effect = {
-		scope:journal_entry = {
-			custom_tooltip = cooldown_three_months_tt
-			set_variable = { name = je_the_paris_commune_decision_cooldown months = 3 }
-		}	
+		custom_tooltip = cooldown_three_months_tt
 		add_loyalists = {
 			value = small_radicals
 			strata = lower
@@ -71,9 +47,9 @@ french_monarchy_bonapartist_button = {
 	desc = "bonapartist_button_desc"
 
 	visible = {
-		owner = { 
-			has_variable = chose_initial_french_dynasty 
-			NOT = { has_variable = fra_divided_monarchists_freeze } 
+		owner = {
+			has_variable = chose_initial_french_dynasty
+			NOT = { has_variable = fra_divided_monarchists_freeze }
 		}
 	}
 
@@ -98,7 +74,7 @@ french_monarchy_bonapartist_button = {
 			NOT = { has_variable = supporting_bonapartist_var }
 		}
 	}
-	
+
 	selected = {
 		has_variable = supporting_bonapartist_var
 	}
@@ -125,9 +101,9 @@ french_monarchy_orleanist_button = {
 	desc = "orleanist_button_desc"
 
 	visible = {
-		owner = { 
-			has_variable = chose_initial_french_dynasty 
-			NOT = { has_variable = fra_divided_monarchists_freeze } 
+		owner = {
+			has_variable = chose_initial_french_dynasty
+			NOT = { has_variable = fra_divided_monarchists_freeze }
 		}
 	}
 
@@ -152,7 +128,7 @@ french_monarchy_orleanist_button = {
 			NOT = { has_variable = supporting_orleanist_var }
 		}
 	}
-	
+
 	selected = {
 		has_variable = supporting_orleanist_var
 	}
@@ -180,9 +156,9 @@ french_monarchy_legitimist_button = {
 	desc = "legitimist_button_desc"
 
 	visible = {
-		owner = { 
-			has_variable = chose_initial_french_dynasty 
-			NOT = { has_variable = fra_divided_monarchists_freeze } 
+		owner = {
+			has_variable = chose_initial_french_dynasty
+			NOT = { has_variable = fra_divided_monarchists_freeze }
 		}
 	}
 
@@ -207,7 +183,7 @@ french_monarchy_legitimist_button = {
 			NOT = { has_variable = supporting_legitimist_var }
 		}
 	}
-	
+
 	selected = {
 		has_variable = supporting_legitimist_var
 	}
@@ -234,9 +210,9 @@ je_the_krakow_uprising_annex_button = {
 	desc = "je_the_krakow_uprising_annex_button_desc"
 
 	visible = { always = yes }
-	
+
 	ai_chance = {
-		base = 100
+		value = 100
 	}
 
 	possible = {
@@ -263,16 +239,7 @@ je_positivist_movement_embrace_positivism_button = {
 
 	visible = { always = yes }
 
-	possible = {
-		scope:journal_entry = {
-			not = {
-				custom_tooltip = {
-					text = positivist_cooldown_tt
-					has_variable = positivist_cooldown_var
-				}
-			}
-		}
-	}
+	cooldown = { days = 365 }
 
 	effect = {
 		custom_tooltip = {
@@ -285,10 +252,7 @@ je_positivist_movement_embrace_positivism_button = {
 			value = small_radicals
 			strata = lower
 		}
-		scope:journal_entry = {
-			custom_tooltip = cooldown_year_tt
-			set_variable = { name = positivist_cooldown_var years = 1 }
-		}
+		custom_tooltip = cooldown_year_tt
 	}
 }
 
@@ -298,16 +262,7 @@ je_positivist_movement_suppress_positivism_button = {
 
 	visible = { always = yes }
 
-	possible = {
-		scope:journal_entry = {
-			not = {
-				custom_tooltip = {
-					text = positivist_cooldown_tt
-					has_variable = positivist_cooldown_var
-				}
-			}
-		}
-	}
+	cooldown = { days = 365 }
 
 	effect = {
 		custom_tooltip = {
@@ -320,10 +275,7 @@ je_positivist_movement_suppress_positivism_button = {
 			value = small_radicals
 			strata = middle
 		}
-		scope:journal_entry = {
-			custom_tooltip = cooldown_year_tt
-			set_variable = { name = positivist_cooldown_var years = 1 }
-		}
+		custom_tooltip = cooldown_year_tt
 	}
 }
 
@@ -331,28 +283,30 @@ je_sell_alaska_button = {
 	name = "je_sell_alaska_button"
 	desc = "je_sell_alaska_button_desc"
 
-	visible = { 
+	visible = {
 		c:ALK ?= {
 			is_player = no
-		} 
+		}
 	}
 
+	cooldown = { days = 365 }
+
 	ai_chance = {
-		base = 0
-		modifier = {
-			trigger = { 
+		value = 0
+		if = {
+			limit = {
 				scaled_debt > 0
 			}
 			add = 25
 		}
-		modifier = {
-			trigger = { 
+		if = {
+			limit = {
 				has_modifier = declared_bankruptcy
 			}
 			add = 50
 		}
-		modifier = {
-			trigger = { 
+		if = {
+			limit = {
 				any_country = {
 					NOT = { this = root }
 					country_rank >= root.country_rank
@@ -362,8 +316,8 @@ je_sell_alaska_button = {
 			}
 			add = 25
 		}
-		modifier = {
-			trigger = { 
+		if = {
+			limit = {
 				any_country = {
 					NOT = { this = root }
 					country_rank >= root.country_rank
@@ -376,10 +330,6 @@ je_sell_alaska_button = {
 	}
 
 	possible = {
-		custom_tooltip = {
-			text = has_alaska_sale_cooldown_tt
-			NOT = { has_variable = alaska_sale_cooldown }
-		}
 		OR = {
 			has_state_in_state_region = STATE_ALASKA
 			any_subject_or_below = {
@@ -403,11 +353,8 @@ je_sell_alaska_button = {
 	}
 
 	effect = {
-		set_variable = {
-			name = alaska_sale_cooldown
-			months = 12
-		}
 		save_scope_as = alaska_seller
+		set_variable = { name = alaska_sale_cooldown days = 365 }
 		random_country = {
 			limit = {
 				NOT = { is_subject = yes }
@@ -429,27 +376,36 @@ je_buy_alaska_button = {
 	name = "je_buy_alaska_button"
 	desc = "je_buy_alaska_button_desc"
 
-	visible = { 
-		c:ALK ?= {
-			is_player = no
-		} 
+	visible = {
+		OR = {
+			NOT = {
+				exists = c:ALK
+			}
+			c:ALK ?= {
+				is_player = no
+			}
+		}
 	}
 
+	cooldown = { days = 365 }
+
 	ai_chance = {
-		base = 100
+		value = 100
 	}
 
 	possible = {
-		custom_tooltip = {
-			text = has_alaska_sale_cooldown_tt
-			NOT = { has_variable = alaska_sale_cooldown }
-		}
 		is_subject = no
 		s:STATE_ALASKA = {
 			any_scope_state = {
 				owner = {
 					NOT = {
 						root = this
+						AND = {
+							is_subject_of = root
+							capital = {
+								state_region = s:STATE_ALASKA
+							}
+						}
 						is_country_type = decentralized
 					}
 					relations:root >= 0
@@ -471,10 +427,6 @@ je_buy_alaska_button = {
 	}
 
 	effect = {
-		set_variable = {
-			name = alaska_sale_cooldown
-			months = 12
-		}
 		trigger_event = {
 			id = alaska.4
 			popup = yes
@@ -486,22 +438,20 @@ je_risorgimento_austrian_radicals_button = {
 	name = "je_risorgimento_austrian_radicals_button"
 	desc = "je_risorgimento_austrian_radicals_button_desc"
 
-	visible = { 
+	visible = {
 		NOT = {
 			is_subject = yes
 		}
 	}
 
+	cooldown = { days = normal_modifier_time }
+
 	possible = {
-		country_rank >= rank_value:minor_power
-		scope:journal_entry = {
-			not = {
-				custom_tooltip = {
-					text = austrian_radicals_cooldown_tt
-					has_variable = ausrad_cooldown_var
-				}
-			}
+		custom_tooltip = {
+			text = risorgimento_unifying_stance_tt
+			has_variable = risorgimento_unifying_stance
 		}
+		country_rank >= rank_value:minor_power
 		sr:region_italy = {
 			any_scope_country = {
 				NOR = {
@@ -520,24 +470,27 @@ je_risorgimento_austrian_radicals_button = {
 					}
 				}
 				relations:root <= 20
+				any_political_movement = {
+					is_political_movement_type = movement_cultural_minority
+					OR = {
+						culture ?= cu:north_italian
+						culture ?= cu:south_italian
+					}
+				}
 			}
-		}
-		custom_tooltip = {
-			text = risorgimento_unifying_stance_tt
-			has_variable = risorgimento_unifying_stance
 		}
 	}
 
 	ai_chance = {
-		base = 50
-		modifier = {
-			trigger = {
+		value = 0
+		if = {
+			limit = {
 				has_law = law_type:law_theocracy
 			}
-			add = -70
+			add = -10
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				any_country = {
 					NOR = {
 						country_has_primary_culture = cu:south_italian
@@ -551,10 +504,30 @@ je_risorgimento_austrian_radicals_button = {
 							}
 						}
 					}
-					relations:root <= 20
+					relations:root <= 0
 				}
 			}
-			add = 25
+			add = 10
+		}
+		if = {
+			limit = {
+				any_country = {
+					NOR = {
+						country_has_primary_culture = cu:south_italian
+						country_has_primary_culture = cu:north_italian
+					}
+					any_scope_state = {
+						state_region = {
+							OR = {
+								is_homeland = cu:south_italian
+								is_homeland = cu:north_italian
+							}
+						}
+					}
+					relations:root <= -20
+				}
+			}
+			add = 10
 		}
 	}
 
@@ -577,60 +550,23 @@ je_risorgimento_austrian_radicals_button = {
 					}
 				}
 			}
-			every_scope_state = {
+			random_political_movement = {
 				limit = {
-					state_region = { 
-						is_homeland = cu:north_italian
+					is_political_movement_type = movement_cultural_minority
+					OR = {
+						culture ?= cu:north_italian
+						culture ?= cu:south_italian
 					}
 				}
-				if = {
-					limit = {
-						ROOT = {
-							country_rank >= rank_value:major_power
-						}
-					}
-					add_radicals_in_state = {
-						value = 0.15
-						culture = cu:north_italian
-					}
-				}
-				else = {
-					add_radicals_in_state = {
-						value = 0.10
-						culture = cu:north_italian
-					}
-				}
-			}
-			every_scope_state = {
-				limit = {
-					state_region = {
-						is_homeland = cu:south_italian
-					}
-				}
-				if = {
-					limit = {
-						ROOT = {
-							country_rank >= rank_value:major_power
-						}
-					}
-					add_radicals_in_state = {
-						value = 0.15
-						culture = cu:south_italian
-					}
-				}
-				else = {
-					add_radicals_in_state = {
-						value = 0.10
-						culture = cu:south_italian
-					}
+				save_scope_as = italian_nationalist_movement
+				add_modifier = {
+					name = modifier_italian_unificationist_sentiment
+					days = normal_modifier_time
 				}
 			}
 			post_notification = nationalism_decision_agitation_occurred
 		}
-		scope:journal_entry = {
-			custom_tooltip = ausrad_cooldown_year_tt
-			set_variable = { name = ausrad_cooldown_var years = 3 }
-		}
+		custom_tooltip = ausrad_cooldown_year_tt
 	}
 }
 
@@ -638,23 +574,21 @@ je_risorgimento_italian_radicals_button = {
 	name = "je_risorgimento_italian_radicals_button"
 	desc = "je_risorgimento_italian_radicals_button_desc"
 
-	visible = { 
+	visible = {
 		NOT = {
 			is_subject = yes
 		}
 	}
 
+	cooldown = { days = normal_modifier_time }
+
 	possible = {
-		country_rank >= rank_value:minor_power
-		scope:journal_entry = {
-			not = {
-				custom_tooltip = {
-					text = italian_radicals_cooldown_tt
-					has_variable = itarad_cooldown_var
-				}
-			}
+		custom_tooltip = {
+			text = risorgimento_unifying_stance_tt
+			has_variable = risorgimento_unifying_stance
 		}
-		any_country = {
+		country_rank >= rank_value:minor_power
+		any_diplomatically_relevant_country = {
 			OR = {
 				country_has_primary_culture = cu:south_italian
 				country_has_primary_culture = cu:north_italian
@@ -666,23 +600,29 @@ je_risorgimento_italian_radicals_button = {
 				}
 			}
 			relations:root <= 20
-		}
-		custom_tooltip = {
-			text = risorgimento_unifying_stance_tt
-			has_variable = risorgimento_unifying_stance
+			any_political_movement = {
+				custom_tooltip = {
+					text = movement_compatible_with_italian_unification_tt
+					OR = {
+						movement_is_socialist = yes
+						movement_is_liberal = yes
+						movement_is_nationalist = yes
+					}
+				}
+			}
 		}
 	}
 
 	ai_chance = {
-		base = 50
-		modifier = {
-			trigger = {
+		value = 10
+		if = {
+			limit = {
 				has_law = law_type:law_theocracy
 			}
-			add = -50
+			add = -10
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				any_country = {
 					OR = {
 						country_has_primary_culture = cu:south_italian
@@ -694,10 +634,10 @@ je_risorgimento_italian_radicals_button = {
 					relations:root >= 20
 				}
 			}
-			add = -25
+			add = -10
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				any_country = {
 					OR = {
 						country_has_primary_culture = cu:south_italian
@@ -709,7 +649,7 @@ je_risorgimento_italian_radicals_button = {
 					relations:root <= 20
 				}
 			}
-			add = 25
+			add = 10
 		}
 	}
 
@@ -717,10 +657,7 @@ je_risorgimento_italian_radicals_button = {
 		ROOT = {
 			save_scope_as = saboteur_country
 		}
-		THIS = {
-			save_scope_as = victim_country
-		}
-		random_country = {
+		random_diplomatically_relevant_country = {
 			limit = {
 				OR = {
 					country_has_primary_culture = cu:south_italian
@@ -732,34 +669,40 @@ je_risorgimento_italian_radicals_button = {
 						has_variable = risorgimento_unifying_stance
 					}
 				}
-			}
-			every_scope_state = {
-				limit = {
-					state_region = { 
-						is_homeland = cu:north_italian
+				any_political_movement = {
+					custom_tooltip = {
+						text = movement_compatible_with_italian_unification_tt
+						OR = {
+							movement_is_socialist = yes
+							movement_is_liberal = yes
+							movement_is_nationalist = yes
+						}
 					}
 				}
-				add_radicals_in_state = {
-					value = 0.05
-					culture = cu:north_italian
-				}
 			}
-			every_scope_state = {
+			THIS = {
+				save_scope_as = victim_country
+			}
+			change_relations = {
+				country = ROOT
+				value = -10
+			}
+			ordered_political_movement = {
 				limit = {
-					state_region = {
-						is_homeland = cu:south_italian
+					OR = {
+						movement_is_socialist = yes
+						movement_is_liberal = yes
+						movement_is_nationalist = yes
 					}
 				}
-				add_radicals_in_state = {
-					value = 0.05
-					culture = cu:south_italian
+				order_by = political_movement_support
+				save_scope_as = italian_nationalist_movement
+				add_modifier = {
+					name = modifier_italian_unificationist_sentiment
+					days = normal_modifier_time
 				}
 			}
 			post_notification = sabotage_decision_agitation_occurred
-		}
-		scope:journal_entry = {
-			custom_tooltip = itarad_cooldown_year_tt
-			set_variable = { name = itarad_cooldown_var years = 3 }
 		}
 	}
 }
@@ -768,7 +711,7 @@ je_confederation_of_the_rhine_confederate_button = {
 	name = "je_confederation_of_the_rhine_confederate_button"
 	desc = "je_confederation_of_the_rhine_confederate_button_desc"
 
-	visible = { 
+	visible = {
 		NOT = {
 			exists = c:RHN
 		}
@@ -819,7 +762,7 @@ je_confederation_of_the_rhine_confederate_button = {
 	}
 
 	ai_chance = {
-		base = 50
+		value = 50
 	}
 
 	effect = {
@@ -831,21 +774,15 @@ je_confederation_of_the_rhine_expand_button = {
 	name = "je_confederation_of_the_rhine_expand_button"
 	desc = "je_confederation_of_the_rhine_expand_button_desc"
 
-	visible = { 
+	visible = {
 		exists = c:RHN
 	}
+
+	cooldown = { days = short_modifier_time }
 
 	possible = {
 		c:RHN ?= {
 			is_subject_of = ROOT
-		}
-		scope:journal_entry = {
-			not = {
-				custom_tooltip = {
-					text = rhine_expansion_cooldown_tt
-					has_variable = rhine_expansion_cooldown
-				}
-			}
 		}
 		OR = {
 			custom_tooltip = {
@@ -902,7 +839,7 @@ je_confederation_of_the_rhine_expand_button = {
 	}
 
 	ai_chance = {
-		base = 50
+		value = 50
 	}
 
 	effect = {
@@ -1018,10 +955,6 @@ je_confederation_of_the_rhine_expand_button = {
 				}
 			}
 		}
-		scope:journal_entry = {
-			custom_tooltip = confederation_of_rhine_cooldown_year_tt
-			set_variable = { name = rhine_expansion_cooldown years = 3 }
-		}
 	}
 }
 
@@ -1030,9 +963,9 @@ je_unite_the_principalities_button = {
 	desc = "je_unite_the_principalities_button_desc"
 
 	visible = { always = yes }
-	
+
 	ai_chance = {
-		base = 100
+		value = 100
 	}
 
 	possible = {
@@ -1049,8 +982,8 @@ je_unite_the_principalities_button = {
         }
         custom_tooltip = {
             text = je_unite_the_principalities_amicable_or_better_relations_tt
-            NOR = { 
-            	has_variable = romania_unification_in_motion 
+            NOR = {
+            	has_variable = romania_unification_in_motion
             	has_variable = ROM_united_principality
             }
             OR = {
@@ -1089,8 +1022,8 @@ je_unite_the_principalities_button = {
 			}
 			set_variable = romania_subject
         	top_overlord = {
-        		trigger_event = { 
-	        		id = romania.1 
+        		trigger_event = {
+	        		id = romania.1
 	        	}
 	        }
 	    }
@@ -1102,7 +1035,7 @@ je_south_bessarabian_retrocession = {
 	name = "je_south_bessarabian_retrocession_button"
 	desc = "je_south_bessarabian_retrocession_button_desc"
 
-	visible = { 
+	visible = {
 		NOT = { has_variable = south_bessarabia_cession_in_progress }
 		NOR = {
 			any_scope_state = {
@@ -1115,9 +1048,9 @@ je_south_bessarabian_retrocession = {
 			}
 		}
 	}
-	
+
 	ai_chance = {
-		base = 100
+		value = 100
 	}
 
 	possible = {
@@ -1126,8 +1059,8 @@ je_south_bessarabian_retrocession = {
 
 	        any_country = {
 	            country_rank >= rank_value:great_power
-	            NOT = { 
-	            	has_war_with = ROOT 
+	            NOT = {
+	            	has_war_with = ROOT
 	            	any_scope_state = {
 	            		state_region = s:STATE_BESSARABIA
 	            	}
@@ -1188,10 +1121,10 @@ je_marea_unire = {
 	name = "je_marea_unire_button"
 	desc = "je_marea_unire_button_desc"
 
-	visible = { 
+	visible = {
 		exists = c:TRS
-		NOR = { 
-			c:TRS ?= ROOT 
+		NOR = {
+			c:TRS ?= ROOT
 			c:TRS ?= {
 				is_subject_of = ROOT
 			}
@@ -1202,7 +1135,7 @@ je_marea_unire = {
 	}
 
 	ai_chance = {
-		base = 100
+		value = 100
 	}
 
 	possible = {

@@ -1,6 +1,6 @@
 ﻿je_risorgimento = {
 	icon = "gfx/interface/icons/event_icons/waving_flag.dds"
-	
+
 	group = je_group_historical_content
 
 	is_shown_when_inactive = {
@@ -12,13 +12,31 @@
 			is_revolutionary = yes
 			is_secessionist = yes
 		}
-	}	
-	
+	}
+
+	status_desc = {
+		first_valid = {
+			triggered_desc = {
+				desc = je_risorgimento_italian_minors_tt
+				trigger = {
+					has_journal_entry = je_risorgimento
+				}
+			}
+			triggered_desc = {
+				desc = blank_tt
+				trigger = {
+					NOT = {
+						has_journal_entry = je_risorgimento
+					}
+				}
+			}
+		}
+	}
+
 	scripted_button = je_risorgimento_austrian_radicals_button
 	scripted_button = je_risorgimento_italian_radicals_button
 
 	immediate = {
-		set_variable = { name = italian_states_radicals_total_bar value = 0 }
 		cu:north_italian = {
 			save_scope_as = north_italian_scope
 		}
@@ -27,7 +45,7 @@
 		}
 		trigger_event = { id = italian_unification.10 popup = yes }
 	}
-		
+
 	possible = {
 		has_technology_researched = nationalism
 		NOR = {
@@ -44,27 +62,12 @@
 			text = is_italy_tt
 			c:ITA ?= this
 		}
-		
+
 	}
 
 	on_weekly_pulse = {
 		events = {
 			italian_unification.4
-		}
-		effect = {
-			if = {
-				limit = {
-					any_scope_state = {
-						state_region = {
-							OR = {
-								is_homeland = cu:north_italian
-								is_homeland = cu:south_italian
-							}
-						}
-					}
-				}
-				do_risorgimento_math = yes
-			}
 		}
 	}
 
@@ -74,9 +77,8 @@
 			20 = italian_unification.2
 		}
 		effect = {
-			do_risorgimento_math = yes
-			if = { 
-				limit = { NOT = { has_variable = je_unification_progress } } 
+			if = {
+				limit = { NOT = { has_variable = je_unification_progress } }
 				set_variable = je_unification_progress
 			}
 		}
@@ -103,16 +105,6 @@
 			}
 		}
 	}
-
-	current_value = {
-		value = root.var:italian_states_radicals_total_bar
-	}
-
-	goal_add_value = {
-		add = 25
-	}
-
-	progressbar = yes
 
 	weight = 100
 

@@ -14,22 +14,22 @@
 	}
 
 	complete = {
-		scope:journal_entry = { is_goal_complete = yes }	
+		scope:journal_entry = { is_goal_complete = yes }
 	}
-	
+
 	current_value = {
 		value = scope:target.level
 	}
-	
+
 	goal_add_value = {
 		value = 1
 	}
-	
+
 	is_progressing = {
 		exists = scope:target
 		scope:target = { is_under_construction = yes }
 	}
-	
+
 	invalid = {
 		custom_tooltip = {
 			text = je_tutorial_expand_basic_building_invalid_tooltip
@@ -39,10 +39,10 @@
 			}
 		}
 	}
-	
+
 	on_complete = {
 		owner = {
-			start_tutorial_lesson = { 
+			start_tutorial_lesson = {
 				tutorial_lesson = lesson_expand_basic_building_complete
 				journal_entry = je:je_tutorial_expand_basic_building
 			}
@@ -51,7 +51,7 @@
 			set_available_for_autonomous_investment = scope:target.type
 		}
 	}
-	
+
 	on_invalid = {
 		remove_active_objective_subgoal = sg_expand_basic_building
 		scope:target.state = {
@@ -64,92 +64,14 @@
 			set_available_for_autonomous_investment = scope:target.type
 		}
 	}
-	
+
 	weight = 1000
-	transferable = yes
-}
-
-je_tutorial_establish_trade_route = {
-	how_tutorial = lesson_establish_trade_route_how
-	why_tutorial = lesson_establish_trade_route_why	
-
-	group = je_group_tutorial
-	should_be_pinned_by_default = yes
-
-	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
-	
-	status_desc = {
-		first_valid = {
-			triggered_desc = {
-				desc = je_tutorial_establish_trade_route_status_not_progressing
-				trigger = {
-					scope:journal_entry = {
-						is_progressing = no
-					}
-				}
-			}
-			desc = je_tutorial_establish_trade_route_status_progressing
-		}
-	}
-	
-	immediate = {
-		scope:journal_entry = {
-			set_variable = {
-				name = num_weeks_in_progress
-				value = 0
-			}
-			set_variable = {
-				name = original_num_import_routes
-				value = target.num_import_trade_routes
-			}
-		}
-	}
-	
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-	
-	current_value = {
-		value = scope:journal_entry.var:num_weeks_in_progress
-	}
-	
-	goal_add_value = {
-		value = 4
-	}
-	
-	is_progressing = {
-		scope:target = {
-			market_goods_has_goods_shortage = no
-		}
-	}
-	
-	on_weekly_pulse = {
-		effect = {
-			scope:journal_entry = { 
-				if = {
-					limit = {
-						is_progressing = yes 
-					}
-					change_variable = {
-						name = num_weeks_in_progress
-						add = 1
-					}
-				}
-			}
-		}
-	}
-	
-	invalid = {
-		NOT = { exists = scope:target }
-	}
-		
-	weight = 1010
 	transferable = yes
 }
 
 je_tutorial_fix_budget_deficit = {
 	how_tutorial = lesson_budget_balance_how
-	why_tutorial = lesson_budget_balance_why	
+	why_tutorial = lesson_budget_balance_why
 
 	group = je_group_tutorial
 	should_be_pinned_by_default = yes
@@ -164,9 +86,9 @@ je_tutorial_fix_budget_deficit = {
 		set_variable = {
 			name = original_num_taxed_goods
 			value = num_taxed_goods
-		}		
+		}
 	}
-	
+
 	complete = {
 		gold_reserves > 0
 	}
@@ -178,10 +100,10 @@ je_tutorial_fix_budget_deficit = {
 	fail = {
 		in_default = yes
 	}
-	
+
 	on_complete = {
 		owner = {
-			start_tutorial_lesson = { 
+			start_tutorial_lesson = {
 				tutorial_lesson = lesson_budget_balance_complete
 				journal_entry = je:je_tutorial_fix_budget_deficit
 			}
@@ -190,13 +112,13 @@ je_tutorial_fix_budget_deficit = {
 
 	on_fail = {
 		owner = {
-			start_tutorial_lesson = { 
+			start_tutorial_lesson = {
 				tutorial_lesson = lesson_budget_balance_fail
 				journal_entry = je:je_tutorial_fix_budget_deficit
 			}
 		}
 	}
-	
+
 	weight = 1010
 	transferable = yes
 }
@@ -209,7 +131,7 @@ je_tutorial_change_production_method = {
 	should_be_pinned_by_default = yes
 
 	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
-	
+
 	immediate = {
 		scope:journal_entry = {
 			set_variable = {
@@ -218,29 +140,29 @@ je_tutorial_change_production_method = {
 			}
 		}
 	}
-	
+
 	complete = {
 		scope:journal_entry = { is_goal_complete = yes }
 	}
-	
+
 	current_value = {
 		value = scope:journal_entry.var:num_weeks_in_progress
 	}
-	
+
 	goal_add_value = {
 		value = 4
 	}
-	
+
 	is_progressing = {
 		has_variable = has_changed_production_method
 	}
-	
+
 	on_weekly_pulse = {
 		effect = {
-			scope:journal_entry = { 
+			scope:journal_entry = {
 				if = {
 					limit = {
-						is_progressing = yes 
+						is_progressing = yes
 					}
 					change_variable = {
 						name = num_weeks_in_progress
@@ -250,17 +172,17 @@ je_tutorial_change_production_method = {
 			}
 		}
 	}
-	
+
 	invalid = {
 		custom_tooltip = {
 			text = je_tutorial_change_production_method_invalid_tooltip
 			OR = {
 				NOT = { exists = scope:target }
 				NOT = { scope:target.owner = root }
-			}	
-		} 			
+			}
+		}
 	}
-	
+
 	weight = 1010
 	transferable = yes
 }
@@ -283,30 +205,30 @@ je_tutorial_expand_productive_building = {
 	complete = {
 		scope:journal_entry = { is_goal_complete = yes }
 	}
-	
+
 	is_progressing = {
 		exists = scope:target
 		scope:target = { is_under_construction = yes }
 	}
-	
+
 	current_value = {
 		value = scope:target.level
 	}
-	
+
 	goal_add_value = {
 		value = 1
 	}
-	
+
 	invalid = {
 		custom_tooltip = {
 			text = je_tutorial_expand_productive_building_invalid_tooltip
 			OR = {
 				NOT = { exists = scope:target }
 				NOT = { scope:target.owner = root }
-			}	
-		} 			
+			}
+		}
 	}
-	
+
 	on_complete = {
 		scope:target.state = {
 			set_available_for_autonomous_investment = scope:target.type
@@ -325,7 +247,7 @@ je_tutorial_expand_productive_building = {
 			set_available_for_autonomous_investment = scope:target.type
 		}
 	}
-	
+
 	weight = 1001
 	transferable = yes
 }
@@ -349,7 +271,7 @@ je_tutorial_fix_unproductive_building = {
 
 	is_progressing = {
 		exists = scope:target
-		scope:target = { 
+		scope:target = {
 			OR = {
 				earnings >= 5.0
 				is_subsidized = yes
@@ -364,17 +286,17 @@ je_tutorial_fix_unproductive_building = {
 	current_value = {
 		value = scope:journal_entry.var:num_weeks_in_progress_improve_market
 	}
-	
+
 	goal_add_value = {
 		value = 4
 	}
 
 	on_weekly_pulse = {
 		effect = {
-			scope:journal_entry = { 
+			scope:journal_entry = {
 				if = {
 					limit = {
-						is_progressing = yes 
+						is_progressing = yes
 					}
 					change_variable = {
 						name = num_weeks_in_progress_improve_market
@@ -384,26 +306,26 @@ je_tutorial_fix_unproductive_building = {
 			}
 		}
 	}
-	
+
 	invalid = {
 		custom_tooltip = {
 			text = je_tutorial_fix_unproductive_building_invalid_tooltip
 			OR = {
 				NOT = { exists = scope:target }
 				NOT = { scope:target.owner = root }
-			}	
-		} 			
+			}
+		}
 	}
 
 	on_complete = {
 		owner = {
-			start_tutorial_lesson = { 
+			start_tutorial_lesson = {
 				tutorial_lesson = lesson_fix_unproductive_building_complete
 				journal_entry = je:je_tutorial_fix_unproductive_building
 			}
 		}
 	}
-	
+
 	weight = 1010
 	transferable = yes
 	should_update_on_player_command = yes
@@ -422,7 +344,7 @@ je_tutorial_grow_gdp = {
 	complete = {
 		scope:journal_entry = { is_goal_complete = yes }
 	}
-	
+
 	current_value = {
 		value = gdp
 	}
@@ -433,20 +355,20 @@ je_tutorial_grow_gdp = {
 
 	on_complete = {
 		owner = {
-			start_tutorial_lesson = { 
+			start_tutorial_lesson = {
 				tutorial_lesson = lesson_grow_gdp_complete
 				journal_entry = je:je_tutorial_grow_gdp
 			}
 		}
 	}
-	
+
 	weight = 1002
 	transferable = yes
 }
 
 
 je_tutorial_promote_movement = {
-	
+
 	how_tutorial = lesson_promote_movement_how
 	why_tutorial = lesson_promote_movement_why
 	should_be_pinned_by_default = yes
@@ -458,13 +380,13 @@ je_tutorial_promote_movement = {
 	complete = {
 		scope:journal_entry = { is_goal_complete = yes }
 	}
-	
+
 	is_progressing = {
 		any_political_movement = {
 			is_being_bolstered = yes
 		}
 	}
-	
+
 	immediate = {
 		scope:journal_entry = {
 			set_variable = {
@@ -473,13 +395,13 @@ je_tutorial_promote_movement = {
 			}
 		}
 	}
-	
+
 	on_weekly_pulse = {
 		effect = {
-			scope:journal_entry = { 
+			scope:journal_entry = {
 				if = {
 					limit = {
-						is_progressing = yes 
+						is_progressing = yes
 					}
 					change_variable = {
 						name = num_weeks_in_progress
@@ -489,15 +411,15 @@ je_tutorial_promote_movement = {
 			}
 		}
 	}
-	
+
 	current_value = {
 		value = scope:journal_entry.var:num_weeks_in_progress
 	}
-	
+
 	goal_add_value = {
 		value = 26
 	}
-	
+
 	weight = 1002
 	transferable = yes
 }
@@ -519,7 +441,7 @@ je_tutorial_increase_market_access_by_decree = {
 			}
 		}
 	}
-	
+
 	status_desc = {
 		first_valid = {
 			triggered_desc = {
@@ -533,7 +455,7 @@ je_tutorial_increase_market_access_by_decree = {
 			desc = je_tutorial_increase_market_access_by_decree_status_second
 		}
 	}
-	
+
 	complete = {
 		scope:journal_entry = { is_goal_complete = yes }
 	}
@@ -541,17 +463,17 @@ je_tutorial_increase_market_access_by_decree = {
 	current_value = {
 		value = scope:journal_entry.var:num_weeks_in_progress_improve_market
 	}
-	
+
 	goal_add_value = {
 		value = 12
 	}
 
 	on_weekly_pulse = {
 		effect = {
-			scope:journal_entry = { 
+			scope:journal_entry = {
 				if = {
 					limit = {
-						is_progressing = yes 
+						is_progressing = yes
 					}
 					change_variable = {
 						name = num_weeks_in_progress_improve_market
@@ -561,10 +483,10 @@ je_tutorial_increase_market_access_by_decree = {
 			}
 		}
 	}
-	
+
 	is_progressing = {
 		exists = scope:target
-		scope:target = { 
+		scope:target = {
 			has_decree = decree_road_maintenance
 		}
 	}
@@ -578,14 +500,14 @@ je_tutorial_increase_market_access_by_decree = {
 			}
 		}
 	}
-	
+
 	on_complete = {
 	}
-	
+
 	on_invalid = {
 		remove_active_objective_subgoal = sg_increase_market_access_by_decree
 	}
-	
+
 	weight = 1006
 	transferable = yes
 }
@@ -619,7 +541,7 @@ je_tutorial_improve_market_access_with_railways = {
 			}
 		}
 	}
-	
+
 	invalid = {
 		custom_tooltip = {
 			text = je_tutorial_improve_market_access_with_railways_invalid_tooltip
@@ -629,14 +551,14 @@ je_tutorial_improve_market_access_with_railways = {
 			}
 		}
 	}
-	
+
 	on_complete = {
 	}
-	
+
 	on_invalid = {
 		remove_active_objective_subgoal = sg_improve_market_access_with_railways
 	}
-	
+
 	weight = 1008
 	transferable = yes
 }
@@ -647,13 +569,13 @@ je_tutorial_increase_immigration = {
 	should_be_pinned_by_default = yes
 
 	group = je_group_tutorial
-	
+
 	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
 
 	complete = {
 		scope:journal_entry = { is_goal_complete = yes }
 	}
-	
+
 	current_value = {
 		value = scope:target.state_population
 	}
@@ -675,7 +597,7 @@ je_tutorial_increase_immigration = {
 	on_invalid = {
 		remove_active_objective_subgoal = sg_increase_immigration
 	}
-	
+
 	weight = 1012
 	transferable = yes
 }
@@ -699,7 +621,7 @@ je_tutorial_improve_supply_network = {
 			add = 400
 		}
 	}
-	
+
 	weight = 1018
 	transferable = yes
 }
@@ -709,12 +631,12 @@ je_tutorial_improve_consumer_goods_access = {
 	should_be_pinned_by_default = yes
 
 	group = je_group_tutorial
-		
+
 	complete = {
 		exists = scope:target
 		scope:target = { state_goods_pricier < 0.2 }
 	}
-	
+
 	weight = 1021
 	transferable = yes
 }
@@ -724,11 +646,11 @@ je_tutorial_make_interest_group_happy = {
 	should_be_pinned_by_default = yes
 
 	group = je_group_tutorial
-		
+
 	complete = {
 		scope:target = { ig_approval >= 2 }
 	}
-	
+
 	weight = 1021
 	transferable = yes
 	should_be_pinned_by_default = yes
@@ -742,11 +664,11 @@ je_tutorial_enact_institution_law = {
 	group = je_group_tutorial
 
 	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
-		
+
 	complete = {
 		NOT = { has_law = scope:target }
 	}
-	
+
 	is_progressing = {
 		scope:target = {
 			exists = root.currently_enacting_law
@@ -756,13 +678,13 @@ je_tutorial_enact_institution_law = {
 
 	on_complete = {
 		owner = {
-			start_tutorial_lesson = { 
+			start_tutorial_lesson = {
 				tutorial_lesson = lesson_enact_institution_law_complete
 				journal_entry = je:je_tutorial_enact_institution_law
 			}
 		}
 	}
-	
+
 	weight = 1022
 	transferable = yes
 }
@@ -775,32 +697,32 @@ je_tutorial_invest_into_an_institution = {
 	group = je_group_tutorial
 
 	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
-	
+
 	current_value = scope:target.investment
-	
+
 	is_progressing = {
 		expanding_institution = scope:target.type
 	}
-	
+
 	goal_add_value = 1
-	
+
 	complete = {
 		scope:journal_entry = { is_goal_complete = yes }
 	}
-	
+
 	invalid = {
 		NOT = { has_institution = scope:journal_entry.target.type }
 	}
 
 	on_complete = {
 		# owner = {
-		# 	start_tutorial_lesson = { 
+		# 	start_tutorial_lesson = {
 		# 		tutorial_lesson = lesson_invest_into_an_institution_complete
 		# 		journal_entry = je:je_tutorial_invest_into_an_institution
 		# 	}
 		# }
 	}
-	
+
 	weight = 1023
 	transferable = yes
 }
@@ -812,22 +734,22 @@ je_tutorial_reform_government = {
 	group = je_group_tutorial
 
 	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
-		
+
 	complete = {
-		government_legitimacy >= 60 
+		government_legitimacy >= 60
 	}
 
 	current_value = legitimacy
 
 	on_complete = {
 		owner = {
-			start_tutorial_lesson = { 
+			start_tutorial_lesson = {
 				tutorial_lesson = lesson_reform_government_complete
 				journal_entry = je:je_tutorial_reform_government
 			}
 		}
 	}
-	
+
 	weight = 1024
 	transferable = yes
 	should_update_on_player_command = yes
@@ -842,7 +764,7 @@ je_tutorial_increase_relations = {
 	group = je_group_tutorial
 
 	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
-		
+
 	complete = {
 		scope:journal_entry = { is_goal_complete = yes }
 	}
@@ -894,7 +816,7 @@ je_tutorial_increase_relations = {
 	is_progressing = {
 		has_diplomatic_pact = {
 			who = scope:target
-			type = increase_relations 
+			type = increase_relations
 	 	}
 	}
 
@@ -908,13 +830,13 @@ je_tutorial_increase_relations = {
 
 	on_complete = {
 		owner = {
-			start_tutorial_lesson = { 
+			start_tutorial_lesson = {
 				tutorial_lesson = lesson_increase_relations_complete
 				journal_entry = je:je_tutorial_increase_relations
 			}
 		}
 	}
-	
+
 	weight = 1026
 	transferable = yes
 }
@@ -924,30 +846,30 @@ je_tutorial_improve_rank = {
 	should_be_pinned_by_default = yes
 
 	group = je_group_tutorial
-	
+
 	immediate = {
-		if = { 
+		if = {
 			limit = {
 				country_rank = rank_value:great_power
 			}
 			set_variable = tut_great_power
 		}
-	
-		else_if = { 
+
+		else_if = {
 			limit = {
 				country_rank = rank_value:major_power
 			}
 			set_variable = tut_major_power
 		}
-	
-		else_if = { 
+
+		else_if = {
 			limit = {
 				country_rank = rank_value:minor_power
 			}
 			set_variable = tut_minor_power
 		}
-	
-		else_if = { 
+
+		else_if = {
 			limit = {
 				country_rank = rank_value:insignificant_power
 			}
@@ -960,14 +882,14 @@ je_tutorial_improve_rank = {
 			}
 			set_variable = tut_unrecognized_major_power
 		}
-		
+
 		else_if= {
 			limit = {
 				country_rank = rank_value:unrecognized_regional_power
 			}
 			set_variable = tut_unrecognized_regional_power
 		}
-	
+
 		else_if= {
 			limit = {
 				country_rank = rank_value:unrecognized_power
@@ -975,19 +897,19 @@ je_tutorial_improve_rank = {
 			set_variable = tut_unrecognized_power
 		}
 	}
-	
+
 	complete = {
 		OR = {
 			scope:journal_entry = { is_goal_complete = yes }
-			trigger_if = { 
+			trigger_if = {
 				limit = {
 					has_variable = tut_great_power
 				}
 				global_country_ranking = 1
-			} 
+			}
 			trigger_else_if = {
 				limit = {
-					has_variable = tut_major_power		
+					has_variable = tut_major_power
 				}
 				country_rank = rank_value:great_power
 			}
@@ -1023,7 +945,7 @@ je_tutorial_improve_rank = {
 			}
 		}
 	}
-	
+
 	current_value = {
 		value = prestige
 	}
@@ -1037,7 +959,7 @@ je_tutorial_improve_rank = {
 	on_complete = {
 		set_variable = tutorial_form_pb_end
 	}
-	
+
 	weight = 1028
 	transferable = yes
 }
@@ -1047,14 +969,14 @@ je_tutorial_prevent_revolution = {
 	should_be_pinned_by_default = yes
 
 	group = je_group_tutorial
-		
+
 	complete = {
 		any_civil_war = {
 			is_civil_war_type = revolution
 			count = 0
 		}
 	}
-	
+
 	weight = 1030
 	transferable = yes
 }
@@ -1076,7 +998,7 @@ je_tutorial_earn_obligation = {
 	goal_add_value = {
 		value = 2
 	}
-	
+
 	weight = 1040
 	transferable = yes
 	should_be_pinned_by_default = yes
@@ -1114,13 +1036,13 @@ je_tutorial_expand_military = {
 
 	on_complete = {
 		owner = {
-			start_tutorial_lesson = { 
+			start_tutorial_lesson = {
 				tutorial_lesson = lesson_expand_military_complete
 				journal_entry = je:je_tutorial_expand_military
 			}
 		}
 	}
-	
+
 	weight = 1044
 	transferable = yes
 }
@@ -1132,7 +1054,7 @@ je_tutorial_recruit_promote_commander = {
 	group = je_group_tutorial
 
 	how_tutorial = lesson_recruit_promote_commander_how
-	
+
 	status_desc = {
 		first_valid = {
 			triggered_desc = {
@@ -1144,7 +1066,7 @@ je_tutorial_recruit_promote_commander = {
 			desc = je_tutorial_recruit_promote_commander_second
 		}
 	}
-	
+
 	complete = {
 		custom_tooltip = {
 			text = "je_tutorial_recruit_promote_commander_complete_trigger"
@@ -1217,7 +1139,7 @@ je_tutorial_convoy_raiding = {
 			OR = {
 				NOT = { exists = scope:target }
 				NOT = { scope:target.owner = root }
-				NOT = { 
+				NOT = {
 					scope:target = {
 						has_role = general
 					}
@@ -1250,26 +1172,26 @@ je_tutorial_recover_from_default = {
 			}
 		}
 	}
-	
+
 	complete = {
 		scope:journal_entry = { is_goal_complete = yes }
 	}
-	
+
 	current_value = {
 		value = scope:journal_entry.var:num_weeks_in_progress
 	}
-	
+
 	goal_add_value = {
 		value = 4
 	}
-	
+
 	is_progressing = {
 		taking_loans = no
 	}
-	
+
 	on_weekly_pulse = {
 		effect = {
-			scope:journal_entry = { 
+			scope:journal_entry = {
 				if = {
 					limit = {
 						root = { in_default = no }
@@ -1282,7 +1204,7 @@ je_tutorial_recover_from_default = {
 			}
 		}
 	}
-	
+
 	weight = 1054
 	transferable = yes
 	should_be_pinned_by_default = yes
@@ -1299,7 +1221,7 @@ je_tutorial_start_diplomatic_play = {
 	complete = {
 		is_diplomatic_play_initiator = yes
 	}
-	
+
 	weight = 1056
 	transferable = yes
 	should_be_pinned_by_default = yes
@@ -1314,7 +1236,7 @@ je_tutorial_is_play_target = {
 	complete = { #needs triggers
 		should_set_wargoal = no
 	}
-	
+
 	weight = 1058
 	transferable = yes
 	should_be_pinned_by_default = yes
@@ -1322,7 +1244,7 @@ je_tutorial_is_play_target = {
 
 je_tutorial_capacity_deficit = {
 	how_tutorial = lesson_fix_capacity_deficit_how
-	
+
 	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
 	should_be_pinned_by_default = yes
 
@@ -1331,10 +1253,10 @@ je_tutorial_capacity_deficit = {
 
 	on_weekly_pulse = {
 		effect = {
-			scope:journal_entry = { 
+			scope:journal_entry = {
 				if = {
 					limit = {
-						is_progressing = yes 
+						is_progressing = yes
 					}
 					change_variable = {
 						name = num_weeks_in_progress
@@ -1344,15 +1266,15 @@ je_tutorial_capacity_deficit = {
 			}
 		}
 	}
-	
+
 	complete = {
 		scope:journal_entry = { is_goal_complete = yes }
 	}
-	
+
 	current_value = {
 		value = scope:journal_entry.var:num_weeks_in_progress
 	}
-	
+
 	goal_add_value = {
 		value = 4
 	}
@@ -1377,7 +1299,7 @@ je_tutorial_capacity_deficit = {
 			influence > 0
 		}
 	}
-	
+
 	immediate = {
 		scope:journal_entry = {
 			set_variable = {
@@ -1427,16 +1349,16 @@ je_tutorial_capacity_deficit = {
 			}
 		}
 	}
-	
+
 	on_complete = {
 		owner = {
-			start_tutorial_lesson = { 
+			start_tutorial_lesson = {
 				tutorial_lesson = lesson_fix_capacity_deficit_complete
 				journal_entry = je:je_tutorial_capacity_deficit
 			}
 		}
 	}
-	
+
 	weight = 1056
 	transferable = yes
 	should_update_on_player_command = yes
@@ -1452,13 +1374,13 @@ je_tutorial_incorporate_state = {
 	group = je_group_tutorial
 
 	current_value = num_incorporated_states
-	
+
 	goal_add_value = 1
-	
+
 	complete = {
 		scope:journal_entry = { is_goal_complete = yes }
 	}
-	
+
 	status_desc = {
 		first_valid = {
 			triggered_desc = {
@@ -1483,13 +1405,13 @@ je_tutorial_incorporate_state = {
 
 	on_complete = {
 		owner = {
-			start_tutorial_lesson = { 
+			start_tutorial_lesson = {
 				tutorial_lesson = lesson_incorporate_state_complete
 				journal_entry = je:je_tutorial_incorporate_state
 			}
 		}
 	}
-	
+
 	weight = 1064
 	transferable = yes
 }
@@ -1513,10 +1435,10 @@ je_tutorial_declare_an_interest = {
 
 	on_weekly_pulse = {
 		effect = {
-			scope:journal_entry = { 
+			scope:journal_entry = {
 				if = {
 					limit = {
-						is_progressing = yes 
+						is_progressing = yes
 					}
 					change_variable = {
 						name = num_weeks_in_progress
@@ -1530,22 +1452,22 @@ je_tutorial_declare_an_interest = {
 	is_progressing = {
 		has_interest_marker_in_region = scope:target.capital.region
 	}
-	
+
 	complete = {
 		scope:journal_entry = { is_goal_complete = yes }
 	}
-	
+
 	current_value = {
 		value = scope:journal_entry.var:num_weeks_in_progress
 	}
-	
+
 	goal_add_value = {
 		value = 12
 	}
 
 	on_complete = {
 		owner = {
-			start_tutorial_lesson = { 
+			start_tutorial_lesson = {
 				tutorial_lesson = lesson_declare_interest_complete
 				journal_entry = je:je_tutorial_declare_an_interest
 			}
@@ -1576,13 +1498,13 @@ je_tutorial_colonize_state = {
 		}
 	}
 
-	is_progressing = { 
+	is_progressing = {
 		any_scope_state = {
 			has_variable = tut_colony_target
-			is_under_colonization = yes 
+			is_under_colonization = yes
 		}
 	}
-	
+
 	complete = {
 		custom_tooltip = {
 			text = "je_tutorial_colonize_state_grow_a_colony"
@@ -1592,7 +1514,7 @@ je_tutorial_colonize_state = {
 			}
 		}
 	}
-	
+
 	weight = 1068
 	transferable = yes
 	should_update_on_player_command = no
@@ -1603,11 +1525,11 @@ je_tutorial_make_peace = {
 	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
 
 	group = je_group_tutorial
-		
+
 	complete = {
 		is_at_war = no
 	}
-	
+
 	weight = 1068
 	transferable = yes
 	should_update_on_player_command = yes
@@ -1630,7 +1552,7 @@ je_tutorial_research_technology = {
 	is_progressing = {
 		exists = technology_being_researched
 	}
-	
+
 	status_desc = {
 		first_valid = {
 			triggered_desc = {
@@ -1644,7 +1566,7 @@ je_tutorial_research_technology = {
 			desc = je_tutorial_research_technology_status_not_progressing
 		}
 	}
-	
+
 	weight = 1070
 	transferable = yes
 	should_be_pinned_by_default = yes
@@ -1667,7 +1589,7 @@ je_tutorial_create_formation = {
 			}
 		}
 	}
-	
+
 	current_value = {
 	}
 
@@ -1676,7 +1598,7 @@ je_tutorial_create_formation = {
 
 	on_complete = {
 	}
-	
+
 	weight = 1002
 	transferable = yes
 }
@@ -1696,7 +1618,7 @@ je_subject_liberty = {
 			liberty_desire < 50
 		}
 	}
-	
+
 	weight = 1002
 	transferable = yes
 }
@@ -1727,7 +1649,7 @@ je_tutorial_foreign_investment = {
 		remove_active_objective_subgoal = sg_foreign_investment
 	}
 
-	
+
 	weight = 1002
 	transferable = yes
 }
@@ -1744,7 +1666,7 @@ je_tutorial_establish_company = {
 	complete = {
 		NOT = { can_establish_company = YES }
 	}
-	
+
 	current_value = {
 	}
 
@@ -1753,7 +1675,7 @@ je_tutorial_establish_company = {
 
 	on_complete = {
 	}
-	
+
 	weight = 1002
 	transferable = yes
 }
@@ -1771,7 +1693,7 @@ je_tutorial_form_power_bloc = {
 	complete = {
 		is_power_bloc_leader = yes
 	}
-	
+
 	current_value = {
 	}
 
@@ -1780,7 +1702,7 @@ je_tutorial_form_power_bloc = {
 
 	on_complete = {
 	}
-	
+
 	weight = 1002
 	transferable = yes
 }
@@ -1793,7 +1715,7 @@ je_tutorial_lobbies = {
 	group = je_group_tutorial
 
 	icon = "gfx/interface/icons/event_icons/tutorial_icon.dds"
-		
+
 	complete = {
 		scope:journal_entry = { is_goal_complete = yes }
 	}

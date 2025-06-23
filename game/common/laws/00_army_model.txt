@@ -1,10 +1,11 @@
 ﻿law_peasant_levies = {
 	group = lawgroup_army_model
 	icon = "gfx/interface/icons/law_icons/peasant_levies.dds"
-	
+
 	progressiveness = -50
-	
+
 	modifier = {
+		country_can_only_conscript_peasants_bool = yes
 		unit_morale_loss_mult = 0.1
 		unit_experience_gain_mult = -0.25
 		state_conscription_rate_add = 0.04
@@ -14,7 +15,7 @@
 		state_building_barracks_max_level_add = 25
 		state_building_conscription_center_max_level_add = 25
 	}
-	
+
 	can_impose = {
 		OR = {
 			AND = {
@@ -27,7 +28,7 @@
 			can_impose_law_default = yes
 		}
 	}
-	
+
 	on_enact = {
 		custom_tooltip = QUALIFICATIONS_OFFICERS_PEASANT_LEVIES_DESC
 		if = {
@@ -54,7 +55,7 @@
 
 	ai_enact_weight_modifier = { #Petitions
 		value = 0
-		
+
 		if = {
 			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
@@ -65,11 +66,11 @@
 law_professional_army = {
 	group = lawgroup_army_model
 	icon = "gfx/interface/icons/law_icons/professional_army.dds"
-	
+
 	progressiveness = 0
-	
+
 	unlocking_technologies = { military_drill }
-	
+
 	modifier = {
 		unit_morale_loss_mult = -0.1
 		state_conscription_rate_add = 0.01
@@ -92,7 +93,7 @@ law_professional_army = {
 			can_impose_law_default = yes
 		}
 	}
-	
+
 	on_enact = {
 		if = {
 			limit = {
@@ -113,20 +114,20 @@ law_professional_army = {
 
 	ai_enact_weight_modifier = { #Petitions
 		value = 0
-		
+
 		if = {
 			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
-		
+
 		if = {
-			limit = { 
+			limit = {
 				has_journal_entry = je_sick_man_army
 				has_law = law_type:law_peasant_levies
 			}
 			add = 1000
-		}			
-		
+		}
+
 		# AI should really try to get out of Peasant Levies under the right circumstances
 		if = {
 			limit = {
@@ -136,27 +137,27 @@ law_professional_army = {
 					NOT = { has_strategy = ai_strategy_conservative_agenda }
 					any_political_movement = {
 						law_stance = {
-							law = law_type:law_professional_army 
+							law = law_type:law_professional_army
 							value > neutral
-						}	
+						}
 						political_movement_support >= 0.10
 					}
 					has_technology_researched = napoleonic_warfare
-				}	
+				}
 			}
 			add = 1000
-		}		
+		}
 	}
 }
 
 law_national_militia = {
 	group = lawgroup_army_model
 	icon = "gfx/interface/icons/law_icons/national_militia.dds"
-	
+
 	progressiveness = 0
-	
+
 	unlocking_technologies = { mandatory_service }
-	
+
 	modifier = {
 		unit_morale_loss_mult = -0.05
 		state_conscription_rate_add = 0.05
@@ -166,7 +167,7 @@ law_national_militia = {
 		state_building_barracks_max_level_add = 5
 		state_building_conscription_center_max_level_add = 100
 	}
-	
+
 	can_enact = {
 		OR = {
 			is_power_bloc_leader = no
@@ -175,7 +176,7 @@ law_national_militia = {
 			}
 		}
 	}
-	
+
 	on_enact = {
 		if = {
 			limit = {
@@ -191,7 +192,7 @@ law_national_militia = {
 			custom_tooltip = non_military_pops_af_ig_shift_effect_negative_tt
 		}
 	}
-	
+
 	ai_will_do = {
 		exists = ruler
 		ruler = {
@@ -201,7 +202,7 @@ law_national_militia = {
 
 	ai_enact_weight_modifier = { #Petitions
 		value = 0
-		
+
 		if = {
 			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
@@ -212,11 +213,11 @@ law_national_militia = {
 law_mass_conscription = {
 	group = lawgroup_army_model
 	icon = "gfx/interface/icons/law_icons/mass_conscription.dds"
-	
+
 	progressiveness = 50
-	
+
 	unlocking_technologies = { enlistment_offices }
-	
+
 	modifier = {
 		unit_morale_loss_mult = 0.05
 		state_conscription_rate_add = 0.03
@@ -239,7 +240,7 @@ law_mass_conscription = {
 			can_impose_law_default = yes
 		}
 	}
-	
+
 	on_enact = {
 		if = {
 			limit = {
@@ -258,14 +259,14 @@ law_mass_conscription = {
 
 	ai_enact_weight_modifier = { #Petitions
 		value = 0
-		
+
 		if = {
 			limit = { ai_has_enact_weight_modifier_journal_entries = yes }
 			add = 750
 		}
-		
+
 		if = {
-			limit = { 
+			limit = {
 				OR = {
 					has_journal_entry = je_sick_man_army
 					has_journal_entry = je_great_reforms_military
@@ -273,8 +274,8 @@ law_mass_conscription = {
 				has_law = law_type:law_peasant_levies
 			}
 			add = 1000
-		}			
-		
+		}
+
 		# AI should really try to get out of Peasant Levies under the right circumstances
 		if = {
 			limit = {
@@ -286,13 +287,13 @@ law_mass_conscription = {
 						law_stance = {
 							law = law_type:law_mass_conscription
 							value > neutral
-						}	
+						}
 						political_movement_support >= 0.10
 					}
 					has_technology_researched = napoleonic_warfare
-				}	
+				}
 			}
 			add = 1000
-		}		
+		}
 	}
 }

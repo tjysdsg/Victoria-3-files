@@ -241,7 +241,7 @@ types background_components {
 					parentanchor = vcenter
 					autoresize = yes
 					default_format = "#title"
-					multiline = yes
+					using = elide_fontsize_min
 
 					block "text" {
 						raw_text = "INSERT_HEADER_TEXT"
@@ -260,7 +260,7 @@ types background_components {
 					}
 
 					block "align" {
-						align = center|nobaseline
+						align = hcenter|nobaseline
 					}
 				}
 
@@ -561,6 +561,29 @@ template light_bg
 	}
 }
 
+template paper_bg_light
+{
+	spriteType = Corneredtiled
+	spriteborder = { 10 10 }
+	texture = "gfx/interface/backgrounds/paper_bg_light.dds"
+	texture_density = 2
+
+	modify_texture = {
+		texture = "gfx/interface/backgrounds/default_bg_shading.dds"
+		spriteType = Corneredstretched
+		spriteborder = { 0 0 }
+		blend_mode = overlay
+		alpha = 0.3
+	}
+	modify_texture = {
+		texture = "gfx/interface/backgrounds/paper_texture.dds"
+		spriteType = Corneredtiled
+		spriteborder = { 0 0 }
+		blend_mode = overlay
+		alpha = 0.3
+	}
+}
+
 template paper_bg
 {
 	spriteType = Corneredtiled
@@ -713,11 +736,13 @@ template entry_bg_fancy
 {
 	background = {
 		using = light_bg
+		using = frame_small_mask
+		
 		block "entry_bg_fancy_bg_alpha" {
 			alpha = 0.4
 		}
-		using = frame_small_mask
 	}
+	
 	background = {
 		using = frame_small
 	}
@@ -789,6 +814,24 @@ template entry_bg_fancy_dark
 		using = texture_velvet
 	}
 }
+template treaties_flag_bg
+{
+	texture = "gfx/interface/diplomatic_treaties/diplomatic_treaties_flag_bg.dds"
+    spriteType = Corneredstretched
+    spriteborder = { 12 12 }
+	texture_density = 2
+
+	modify_texture = {
+		using = texture_velvet
+	}
+	modify_texture = {
+		texture = "gfx/interface/backgrounds/gradient_overlay.dds"
+		spriteType = Corneredstretched
+		spriteborder = { 0 0 }
+		blend_mode = overlay
+		alpha = 0.5
+	}
+}
 
 template simple_frame
 {
@@ -806,6 +849,14 @@ template simple_frame_mask
 	spriteborder = { 20 20 }
 	texture_density = 2
 	blend_mode = alphamultiply
+}
+
+template frame_decorative_light_bg
+{
+	texture = "gfx/interface/diplomatic_treaties/diplomatic_treaties_decorative_frame.dds"
+    spriteType = Corneredstretched
+    spriteborder = { 25 25 }
+	texture_density = 2
 }
 
 template entry_bg_simple
@@ -989,6 +1040,27 @@ template pop_bg
 	texture = "gfx/interface/population/pop_icon_bg.dds"
 }
 
+template fade_left_and_right_simple
+{
+	using = dark_area
+
+	modify_texture = {
+		texture = "gfx/interface/masks/fade_horizontal_right.dds"
+		spriteType = Corneredstretched
+		spriteborder = { 0 0 }
+		blend_mode = alphamultiply
+		alpha = 0.9
+	}
+
+	modify_texture = {
+		texture = "gfx/interface/masks/fade_horizontal_left.dds"
+		spriteType = Corneredstretched
+		spriteborder = { 0 0 }
+		blend_mode = alphamultiply
+		alpha = 0.9
+	}
+}
+
 template fade_right_simple
 {
 	using = dark_area
@@ -1016,6 +1088,74 @@ template fade_right_colored
 		spriteborder = { 0 0 }
 		blend_mode = alphamultiply
 	}
+}
+
+template fade_right_colored_green
+{
+	using = fade_right_colored
+	color = { 0.54 0.78 0.33 1 }
+}
+
+template fade_right_colored_red
+{
+	using = fade_right_colored
+	color = { 0.78 0.25 0.25 1 }
+}
+
+template fade_vertical_center_inverted_colored
+{
+	texture = "gfx/interface/backgrounds/colored_header.dds"
+	spriteType = Corneredtiled
+	spriteborder = { 0 0 }
+	texture_density = 30
+	alpha = 0.25
+
+	modify_texture = {
+		texture = "gfx/interface/masks/fade_vertical_center_inverted.dds"
+		spriteType = Corneredstretched
+		spriteborder = { 0 0 }
+		blend_mode = alphamultiply
+	}
+}
+
+template fade_vertical_center_inverted_colored_green
+{
+	using = fade_vertical_center_inverted_colored
+	color = { 0.54 0.78 0.33 1 }
+}
+
+template fade_vertical_center_inverted_colored_red
+{
+	using = fade_vertical_center_inverted_colored
+	color = { 0.78 0.25 0.25 1 }
+}
+
+template fade_horizontal_center_inverted_colored
+{
+	texture = "gfx/interface/backgrounds/colored_header.dds"
+	spriteType = Corneredtiled
+	spriteborder = { 0 0 }
+	texture_density = 30
+	alpha = 0.25
+
+	modify_texture = {
+		texture = "gfx/interface/masks/fade_horizontal_center_inverted.dds"
+		spriteType = Corneredstretched
+		spriteborder = { 0 0 }
+		blend_mode = alphamultiply
+	}
+}
+
+template fade_horizontal_center_inverted_colored_green
+{
+	using = fade_horizontal_center_inverted_colored
+	color = { 0.54 0.78 0.33 1 }
+}
+
+template fade_horizontal_center_inverted_colored_red
+{
+	using = fade_horizontal_center_inverted_colored
+	color = { 0.78 0.25 0.25 1 }
 }
 
 template fade_right_vertical_center_colored
@@ -1057,6 +1197,18 @@ template fade_left_colored
 	}
 }
 
+template fade_left_colored_green
+{
+	using = fade_left_colored
+	color = { 0.54 0.78 0.33 1 }
+}
+
+template fade_left_colored_red
+{
+	using = fade_left_colored
+	color = { 0.78 0.25 0.25 1 }
+}
+
 template fade_left_vertical_center_colored
 {
 	texture = "gfx/interface/backgrounds/colored_header.dds"
@@ -1074,6 +1226,41 @@ template fade_left_vertical_center_colored
 
 	modify_texture = {
 		texture = "gfx/interface/masks/fade_vertical_center.dds"
+		spriteType = Corneredstretched
+		spriteborder = { 0 0 }
+		blend_mode = alphamultiply
+	}
+}
+
+template fade_horizontal_center_colored
+{
+	texture = "gfx/interface/backgrounds/colored_header.dds"
+	spriteType = Corneredtiled
+	spriteborder = { 0 0 }
+	texture_density = 30
+	alpha = 0.25
+
+	modify_texture = {
+		texture = "gfx/interface/masks/fade_horizontal_center.dds"
+		spriteType = Corneredstretched
+		spriteborder = { 0 0 }
+		blend_mode = alphamultiply
+	}
+}
+
+template fade_center_simple
+{
+	using = dark_area
+	
+	modify_texture = {
+		texture = "gfx/interface/masks/fade_vertical_center.dds"
+		spriteType = Corneredstretched
+		spriteborder = { 0 0 }
+		blend_mode = alphamultiply
+	}
+
+	modify_texture = {
+		texture = "gfx/interface/masks/fade_horizontal_center.dds"
 		spriteType = Corneredstretched
 		spriteborder = { 0 0 }
 		blend_mode = alphamultiply
@@ -1101,6 +1288,30 @@ template fade_center_colored
 		spriteborder = { 0 0 }
 		blend_mode = alphamultiply
 	}
+}
+
+template fade_center_colored_green
+{
+	using = fade_center_colored
+	color = { 0.54 0.78 0.33 1 }
+}
+
+template fade_center_colored_red
+{
+	using = fade_center_colored
+	color = { 0.78 0.25 0.25 1 }
+}
+
+template fade_center_colored_grey
+{
+	using = fade_center_colored
+	color = { 0.5 0.5 0.5 1 }
+}
+
+template fade_center_colored_black
+{
+	using = fade_center_colored
+	color = { .0 .0 .0 1 }
 }
 
 template fade_vertical_center_colored
@@ -1148,6 +1359,27 @@ template fade_up_colored
 		spriteType = Corneredstretched
 		spriteborder = { 0 0 }
 		blend_mode = alphamultiply
+	}
+}
+
+template fade_down_simple
+{
+	modify_texture = {
+		texture = "gfx/interface/masks/fade_vertical_bottom.dds"
+		spriteType = Corneredstretched
+		spriteborder = { 0 0 }
+		blend_mode = alphamultiply
+	}
+}
+
+template fade_up_simple
+{
+	modify_texture = {
+		texture = "gfx/interface/masks/fade_vertical_top.dds"
+		spriteType = Corneredstretched
+		spriteborder = { 0 0 }
+		blend_mode = alphamultiply
+		alpha = 1
 	}
 }
 

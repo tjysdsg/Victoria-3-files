@@ -37,6 +37,13 @@ types diplomatic_panel
 			text = "DIPLOMATIC_OVERVIEW_TITLE"
 		}
 
+		blockoverride "map_modes_button" {
+			map_modes_single_button_minimized = {
+				datacontext = "[DiplomaticOverviewPanel.GetMapModeList]"
+				using = map_modes_button_position
+			}
+		}
+
 		blockoverride "fixed_top"
 		{
 			# Power Rank
@@ -61,45 +68,6 @@ types diplomatic_panel
 						parentanchor = vcenter
 						using = fontsize_xxl
 					}
-				}
-
-				map_modes_minimized = {
-					parentanchor = right|vcenter
-					position = { -10 0 }
-
-					blockoverride "first_button_click" {
-						onclick = "[DiplomaticOverviewPanel.ShowAttitude]"
-					}
-					blockoverride "first_button_selected" {
-						visible = "[DiplomaticOverviewPanel.IsShowingAttitude]"
-					}
-					blockoverride "first_button_not_selected" {
-						visible = "[Not(DiplomaticOverviewPanel.IsShowingAttitude)]"
-					}
-					blockoverride "first_button_icon" {
-						texture = "gfx/interface/icons/map_mode_icons/attitude.dds"
-					}
-					blockoverride "first_button_text" {
-						text = "MAP_MODE_ATTITUDE_COUNTRY"
-					}
-					blockoverride "second_button_click" {
-						onclick = "[DiplomaticOverviewPanel.ShowRelations]"
-					}
-					blockoverride "second_button_selected" {
-						visible = "[DiplomaticOverviewPanel.IsShowingRelations]"
-					}
-					blockoverride "second_button_not_selected" {
-						visible = "[Not(DiplomaticOverviewPanel.IsShowingRelations)]"
-					}
-					blockoverride "second_button_icon" {
-						texture = "gfx/interface/icons/map_mode_icons/relations.dds"
-					}
-					blockoverride "second_button_text" {
-						text = "MAP_MODE_RELATIONS_COUNTRY"
-					}
-
-					blockoverride "third_button" {}
-					blockoverride "fourth_button" {}
 				}
 			}
 
@@ -277,6 +245,36 @@ types diplomatic_panel
 
 		diplomatic_info = {
 			datacontext = "[AccessPlayer]"
+
+			blockoverride "treaties_dropdown_visibility" {
+				visible = no
+			}
+
+			blockoverride "treaties_empty_state_visibility" {
+				visible = "[IsDataModelEmpty(AccessPlayer.GetCountriesWithTreaties)]"
+			}
+
+			blockoverride "diplomacy_panel_treaties" {
+				flowcontainer = {
+					visible = "[Not(IsDataModelEmpty(AccessPlayer.GetCountriesWithTreaties))]"
+					parentanchor = hcenter
+					direction = vertical
+					spacing = 2
+
+					### OTHER COUNTRIES - DROPDOWNS
+					flowcontainer = {
+						visible = "[Not(IsDataModelEmpty(AccessPlayer.GetCountriesWithTreaties))]"
+						parentanchor = hcenter
+						direction = vertical
+						spacing = 2
+						datamodel = "[AccessPlayer.GetCountriesWithTreaties]"
+
+						item = {
+							treaty_country_dropdown_player_country = {}
+						}
+					}
+				}
+			}
 		}
 
 		default_header = {
@@ -389,6 +387,135 @@ types diplomatic_panel
 									align = nobaseline	
 								}
 							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	type treaty_country_dropdown_player_country = flowcontainer {
+		direction = vertical
+
+		### COUNTRY NAME DROPDOWN
+		section_header_button = {
+			blockoverride "layout" {
+				parentanchor = hcenter
+				size = { @panel_width 38 }
+			}
+
+			blockoverride "left_text" {
+				text = "TREATIES_WITH_OTHER_COUNTRY_NAME_HEADER"
+				using = elide_fontsize_min
+			}
+
+			blockoverride "right_text" {
+				flowcontainer = {
+					spacing = 5
+
+					flowcontainer = {
+						visible = "[Not(IsDataModelEmpty(AccessPlayer.GetEnforcedTreatiesWith(Country.Self)))]"
+						parentanchor = vcenter
+						spacing = 2
+						margin_right = 10
+
+						icon = {
+							parentanchor = vcenter
+							size = { 30 27 }
+							texture = "gfx/interface/outliner/war_button_icon.dds"
+						}
+
+						textbox = {
+							parentanchor = vcenter
+							autoresize = yes
+							elide = right
+							alwaystransparent = yes
+							fontsize_min = 12
+							raw_text = "#v [GetDataModelSize(AccessPlayer.GetEnforcedTreatiesWith(Country.Self))]#!"
+						}
+					}
+
+					flowcontainer = {
+						parentanchor = vcenter
+						spacing = 2
+						margin_right = 10
+						alpha = "[TransparentIfTrue(IsDataModelEmpty(AccessPlayer.GetUnenforcedTreatiesWith(Country.Self)))]"
+						
+						icon = {
+							parentanchor = vcenter
+							size = { 30 30 }
+							texture = "gfx/interface/icons/generic_icons/diplomatic_treaties.dds"
+						}
+						
+						textbox = {
+							parentanchor = vcenter
+							autoresize = yes
+							elide = right
+							alwaystransparent = yes
+							fontsize_min = 12
+							raw_text = "#v [GetDataModelSize(AccessPlayer.GetUnenforcedTreatiesWith(Country.Self))]#!"
+						}
+					}
+				}
+			}
+
+			blockoverride "onclick" {
+				onclick = "[GetVariableSystem.Toggle(Concatenate(Concatenate('show_treaties_', Country.GetIDString), AccessPlayer.GetIDString))]"
+			}
+
+			blockoverride "onclick_showmore" {
+				visible = "[Not(GetVariableSystem.Exists(Concatenate(Concatenate('show_treaties_', Country.GetIDString), AccessPlayer.GetIDString)))]"
+			}
+
+			blockoverride "onclick_showless" {
+				visible = "[GetVariableSystem.Exists(Concatenate(Concatenate('show_treaties_', Country.GetIDString), AccessPlayer.GetIDString))]"
+			}
+		}
+
+		### TREATIES
+		flowcontainer = {
+			visible = "[GetVariableSystem.Exists(Concatenate(Concatenate('show_treaties_', Country.GetIDString), AccessPlayer.GetIDString))]"
+			parentanchor = hcenter
+			direction = vertical
+			spacing = 2
+
+			### ENFORCED TREATIES WITH THIS COUNTRY - LIST
+			flowcontainer = {
+				visible = "[Not(IsDataModelEmpty(AccessPlayer.GetEnforcedTreatiesWith(Country.Self)))]"
+				parentanchor = hcenter
+				direction = vertical
+				spacing = 2
+				datamodel = "[AccessPlayer.GetEnforcedTreatiesWith(Country.Self)]"
+
+				item = {
+					container = {
+						compact_treaty_item = {
+							visible = "[Not(Treaty.IsEnforced)]"
+						}
+
+						compact_war_reparation_treaty_item = {
+							visible = "[Treaty.IsEnforced]"
+						}
+					}
+				}
+			}
+
+			### NOT ENFORCED TREATIES WITH THIS COUNTRY - LIST
+			flowcontainer = {
+				visible = "[Not(IsDataModelEmpty(AccessPlayer.GetUnenforcedTreatiesWith(Country.Self)))]"
+				parentanchor = hcenter
+				direction = vertical
+				spacing = 2
+				datamodel = "[AccessPlayer.GetUnenforcedTreatiesWith(Country.Self)]"
+
+				item = {
+					container = {
+						compact_treaty_item = {
+							visible = "[Not(Treaty.IsEnforced)]"
+						}
+
+						compact_war_reparation_treaty_item = {
+							visible = "[Treaty.IsEnforced]"
 						}
 					}
 				}
@@ -541,7 +668,7 @@ types diplomatic_panel
 
 						icon = {
 							size = { 30 30 }
-							texture = "gfx/interface/icons/generic_icons/convoys.dds"
+							texture = "gfx/interface/icons/topbar/convoys.dds"
 						}
 					}
 
@@ -1309,6 +1436,8 @@ types diplomatic_panel
 
 		### IMPOSE LAWS DROPDOWN
 		section_header_button = {
+			block "impose_law_dropdown_visibility" {}
+
 			blockoverride "layout" {
 				parentanchor = hcenter
 				size = { @panel_width_minus_10 38 }
@@ -1518,6 +1647,7 @@ types diplomatic_panel
 			size = { @panel_width 30 }
 			
 			hbox = {
+				datacontext = "[DiplomaticOverviewPanel.GetMapModeList]"
 				
 				sort_button = {
 					size = { 40 30 }
@@ -1541,7 +1671,7 @@ types diplomatic_panel
 				}
 
 				sort_button = {
-					visible = "[DiplomaticOverviewPanel.IsShowingRelations]"
+					visible = "[MapModeList.IsSelectedByKey('mm_country_relations')]"
 					layoutstretchfactor_horizontal = 2
 					layoutpolicy_horizontal = preferred
 					size = { 0 30 }
@@ -1550,7 +1680,7 @@ types diplomatic_panel
 				}
 
 				sort_button = {
-					visible = "[DiplomaticOverviewPanel.IsShowingAttitude]"
+					visible = "[MapModeList.IsSelectedByKey('mm_country_attitude')]"
 					layoutstretchfactor_horizontal = 2
 					layoutpolicy_horizontal = preferred
 					size = { 0 30 }
@@ -1586,6 +1716,7 @@ types diplomatic_panel
 					}
 			
 					hbox = {
+						datacontext = "[DiplomaticOverviewPanel.GetMapModeList]"
 						spacing = 10
 
 						background = {
@@ -1643,7 +1774,7 @@ types diplomatic_panel
 						}
 
 						textbox = {
-							visible = "[And(DiplomaticOverviewPanel.IsShowingRelations, Not(Country.IsLocalPlayer))]"
+							visible = "[And(MapModeList.IsSelectedByKey('mm_country_relations'), Not(Country.IsLocalPlayer))]"
 							layoutstretchfactor_horizontal = 2
 							layoutpolicy_horizontal = preferred
 							size = { 0 30 }
@@ -1654,7 +1785,7 @@ types diplomatic_panel
 						}
 
 						textbox = {
-							visible = "[And(DiplomaticOverviewPanel.IsShowingAttitude, Not(Country.IsLocalPlayer))]"
+							visible = "[And(MapModeList.IsSelectedByKey('mm_country_attitude'), Not(Country.IsLocalPlayer))]"
 							layoutstretchfactor_horizontal = 2
 							layoutpolicy_horizontal = preferred
 							size = { 0 30 }

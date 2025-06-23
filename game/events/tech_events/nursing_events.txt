@@ -5,6 +5,8 @@
 
  	duration = 3
 
+    #Fired once, by je_war_nursing
+
  	event_image = {
  		video = "unspecific_sick_in_hospital"
  	}
@@ -18,11 +20,8 @@
  	flavor = nursing_events.1.f
 
  	trigger = {
- 		NOT = { 
- 			has_variable = nursing_cooldown 
- 		}
  		any_scope_war = {
-            any_scope_front = { 
+            any_scope_front = {
                 any_scope_general = {
                     owner = ROOT
                     this.commander_military_formation = {
@@ -51,22 +50,25 @@
  	option = {
  		name = nursing_events.1.a
  		default_option = yes
-
+        custom_tooltip = {
+            text = for_duration_of_war_tt
+        }
  		add_modifier = {
  			name = war_wounded_disease
- 			months = 24
+ 			days = long_modifier_time
  		}
  	}
 
  	option = {
  		name = nursing_events.1.b
- 		capital = {
- 			add_modifier = {
- 				name = war_wounded_civilian_assistance
- 				months = 24
- 			}
+ 		 custom_tooltip = {
+            text = for_duration_of_war_tt
+        }
+ 		add_modifier = {
+ 			name = war_wounded_civilian_assistance
+ 			days = long_modifier_time
  		}
- 	}	
+ 	}
  }
 
  nursing_events.2 = { #Handwashing
@@ -74,6 +76,8 @@
  	placement = scope:ongoing_war_state
 
  	duration = 3
+
+    cooldown = { days = very_long_modifier_time } #For this event specifically. Nursing cooldown is a shared cooldown.
 
  	event_image = {
  		video = "unspecific_sick_in_hospital"
@@ -94,7 +98,7 @@
  				target = root
  				value > 1000
  			}
- 			any_scope_front = { 
+ 			any_scope_front = {
                 any_scope_general = {
                     owner = ROOT
                     this.commander_military_formation = {
@@ -107,8 +111,8 @@
                 any_scope_state = {	owner = root }
             }
  		}
- 		NOT = { 
- 			has_variable = nursing_cooldown 
+ 		NOT = {
+ 			has_variable = nursing_cooldown
  		}
  	}
 
@@ -135,11 +139,10 @@
  	option = { #Do it
  		default_option = yes
  		name = nursing_events.2.a
- 		scope:ongoing_war_state = {
+ 		ROOT = {
  			add_modifier = {
- 				name = medical_hygiene 
- 				months = 24
- 				multiplier = 2
+ 				name = medical_hygiene
+ 				days = very_long_modifier_time
  			}
  		}
  	}
@@ -147,8 +150,8 @@
  	option = { #This should be taught everywhere
  		name = nursing_events.2.b
  		add_modifier = {
- 			name = medical_hygiene 
- 			months = 24
+ 			name = medical_hygiene_local
+ 			days = very_long_modifier_time
  		}
  	}
  }
@@ -158,6 +161,8 @@
  	placement = scope:ongoing_war_state
 
  	duration = 3
+
+    cooldown = { days = very_long_modifier_time } #For this event specifically. Nursing cooldown is a shared cooldown.
 
  	event_image = {
  		video = "unspecific_sick_in_hospital"
@@ -178,7 +183,7 @@
  				target = root
  				value > 1000
  			}
- 			any_scope_front = { 
+ 			any_scope_front = {
                 any_scope_general = {
                     owner = ROOT
                     this.commander_military_formation = {
@@ -210,7 +215,8 @@
  		default_option = yes
  		add_modifier = {
  			name = prefab_hospital
- 			months = 24
+ 			days = short_modifier_time
+            multiplier = 2
  		}
  	}
 
@@ -251,11 +257,13 @@
  	}
  }
 
- nursing_events.4 = { 
+ nursing_events.4 = {
  	type = country_event
  	placement = scope:ongoing_war_state
 
  	duration = 3
+
+    #Fired once.
 
  	event_image = {
  		video = "unspecific_sick_in_hospital"
@@ -295,8 +303,9 @@
  	option = { #Do it
  		name = nursing_events.4.a
  		add_modifier = {
- 			name = modern_nursing 
- 			months = 24
+ 			name = modern_nursing
+ 			days = long_modifier_time
  		}
+        remove_war_disease_modifier = yes # This is also visible on the JE's on_complete, but putting it here too makes it even clearer to the player.
  	}
  }

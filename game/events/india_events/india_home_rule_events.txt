@@ -20,10 +20,10 @@ india_home_rule_events.1 = { # The Indian Home Rule Act
 
 	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
 
-	cooldown = { months = normal_modifier_time }
-	
+	cooldown = { days = normal_modifier_time }
+
 	option = {
-		name = india_home_rule_events.1.a 
+		name = india_home_rule_events.1.a
 		default_option = yes
 		change_tag = BHT
 		custom_tooltip = {
@@ -53,8 +53,8 @@ india_home_rule_events.1 = { # The Indian Home Rule Act
 			}
 			if = {
 				limit = {
-					religion_percent_country = {  
-						target = rel:hindu  
+					religion_percent_country = {
+						target = rel:hindu
 						value >= 0.5
 					}
 				}
@@ -62,7 +62,7 @@ india_home_rule_events.1 = { # The Indian Home Rule Act
 			}
 			else_if = {
 				limit = {
-					religion_percent_country = {  
+					religion_percent_country = {
 						target = rel:sunni
 						value >= 0.5
 					}
@@ -85,6 +85,18 @@ india_home_rule_events.1 = { # The Indian Home Rule Act
 				has_modifier = modifier_india_company_rule
 			}
 			remove_modifier = modifier_india_company_rule
+		}
+		if = {
+			limit = {
+				has_modifier = modifier_india_company_rule_upgraded
+			}
+			remove_modifier = modifier_india_company_rule_upgraded
+		}
+		if = {
+			limit = {
+				has_modifier = modifier_indian_imperial_police
+			}
+			remove_modifier = modifier_indian_imperial_police
 		}
 		recalculate_pop_ig_support = yes
 		call_election = {
@@ -113,7 +125,7 @@ india_home_rule_events.2 = { # Permission for Democratisation
 
 	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
 
-	cooldown = { months = normal_modifier_time }
+	cooldown = { days = normal_modifier_time }
 
 	trigger = {
 
@@ -122,7 +134,7 @@ india_home_rule_events.2 = { # Permission for Democratisation
 	cancellation_trigger = {
 
 	}
-	
+
 	immediate = {
 		c:BIC ?= {
 			random_political_lobby = {
@@ -132,19 +144,20 @@ india_home_rule_events.2 = { # Permission for Democratisation
 				save_scope_as = inc_scope
 			}
 		}
-		je:je_india_home_rule = {
+		save_scope_as = india_overlord_scope
+		je:je_india_nationalism_britain ?= {
 			save_scope_as = journal_entry_scope
 		}
 	}
-	
+
 	option = {
-		name = india_home_rule_events.2.a 
+		name = india_home_rule_events.2.a
 		default_option = yes
 		ai_chance = {
 			base = 100
 			modifier = {
 				trigger = {
-					scope:journal_entry_scope = {
+					scope:journal_entry_scope ?= {
 						"scripted_bar_progress(je_india_home_rule_progressbar)" >= 50
 					}
 				}
@@ -152,7 +165,7 @@ india_home_rule_events.2 = { # Permission for Democratisation
 			}
 			modifier = {
 				trigger = {
-					scope:journal_entry_scope = {
+					scope:journal_entry_scope ?= {
 						"scripted_bar_progress(je_india_home_rule_progressbar)" >= 60
 					}
 				}
@@ -160,7 +173,7 @@ india_home_rule_events.2 = { # Permission for Democratisation
 			}
 			modifier = {
 				trigger = {
-					scope:journal_entry_scope = {
+					scope:journal_entry_scope ?= {
 						"scripted_bar_progress(je_india_home_rule_progressbar)" >= 70
 					}
 				}
@@ -168,19 +181,19 @@ india_home_rule_events.2 = { # Permission for Democratisation
 			}
 			modifier = {
 				trigger = {
-					scope:journal_entry_scope = {
+					scope:journal_entry_scope ?= {
 						"scripted_bar_progress(je_india_home_rule_progressbar)" >= 80
 					}
 				}
 				add = -25
 			}
-			modifier = {
+			modifier = { # AI will always accept when above 90
 				trigger = {
-					scope:journal_entry_scope = {
+					scope:journal_entry_scope ?= {
 						"scripted_bar_progress(je_india_home_rule_progressbar)" >= 90
 					}
 				}
-				add = -25
+				add = -100
 			}
 		}
 		custom_tooltip = {
@@ -190,7 +203,7 @@ india_home_rule_events.2 = { # Permission for Democratisation
 			custom_tooltip = due_to_current_india_bar_progress_tt
 			if = {
 				limit = {
-					scope:journal_entry_scope = {
+					scope:journal_entry_scope ?= {
 						"scripted_bar_progress(je_india_home_rule_progressbar)" >= 50
 						"scripted_bar_progress(je_india_home_rule_progressbar)" < 70
 					}
@@ -205,7 +218,7 @@ india_home_rule_events.2 = { # Permission for Democratisation
 			}
 			else_if = {
 				limit = {
-					scope:journal_entry_scope = {
+					scope:journal_entry_scope ?= {
 						"scripted_bar_progress(je_india_home_rule_progressbar)" >= 70
 						"scripted_bar_progress(je_india_home_rule_progressbar)" < 90
 					}
@@ -220,7 +233,7 @@ india_home_rule_events.2 = { # Permission for Democratisation
 			}
 			else_if = {
 				limit = {
-					scope:journal_entry_scope = {
+					scope:journal_entry_scope ?= {
 						"scripted_bar_progress(je_india_home_rule_progressbar)" >= 90
 					}
 				}
@@ -246,6 +259,7 @@ india_home_rule_events.2 = { # Permission for Democratisation
 			add_progress = { value = -25 name = je_india_home_rule_progressbar }
 		}
 		c:BIC ?= {
+			post_notification = overlord_government_reform_denied
 			je:je_india_home_rule ?= {
 				add_progress = { value = -25 name = je_india_home_rule_progressbar }
 			}
@@ -255,6 +269,7 @@ india_home_rule_events.2 = { # Permission for Democratisation
 	option = {
 		name = india_home_rule_events.2.b
 		ai_chance = {
+			base = 25
 			modifier = {
 				trigger = {
 					scope:journal_entry_scope = {
@@ -293,20 +308,23 @@ india_home_rule_events.2 = { # Permission for Democratisation
 						"scripted_bar_progress(je_india_home_rule_progressbar)" >= 90
 					}
 				}
-				add = 10
+				add = 50
 			}
 		}
 		custom_tooltip = {
 			text = india_can_change_governance_principles_tt
 			c:BIC ?= {
 				set_variable = britain_granted_dop_permission
+				post_notification = overlord_government_reform_accepted
 			}
 		}
 	}
 
 	option = {
 		name = india_home_rule_events.2.c
+		trigger = { c:BIC ?= { "enactment_chance_for_law(law_type:law_wealth_voting)" > 0 } }
 		ai_chance = {
+			base = 25
 			modifier = {
 				trigger = {
 					scope:journal_entry_scope = {
@@ -345,13 +363,14 @@ india_home_rule_events.2 = { # Permission for Democratisation
 						"scripted_bar_progress(je_india_home_rule_progressbar)" >= 90
 					}
 				}
-				add = 10
+				add = 50
 			}
 		}
 		custom_tooltip = {
 			text = india_can_change_governance_principles_tt
 			c:BIC ?= {
 				set_variable = britain_granted_dop_permission
+				post_notification = overlord_government_reform_accepted
 			}
 		}
 		c:BIC ?= {
@@ -380,10 +399,10 @@ india_home_rule_events.3 = { # Jallianwala Bagh Massacre
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
-	cooldown = { months = normal_modifier_time }
+	cooldown = { days = normal_modifier_time }
 
 	# Triggered by JE
-	
+
 	immediate = {
 		if = {
 			limit = {
@@ -457,7 +476,7 @@ india_home_rule_events.3 = { # Jallianwala Bagh Massacre
 			save_scope_as = dyer_scope
 		}
 	}
-	
+
 	option = {
 		name = india_home_rule_events.3.a
 		default_option = yes
@@ -489,7 +508,7 @@ india_home_rule_events.3 = { # Jallianwala Bagh Massacre
 			}
 			add_modifier = {
 				name = modifier_india_massacred_protesters
-				months = very_long_modifier_time
+				days = very_long_modifier_time
 				is_decaying = yes
 			}
 		}
@@ -517,14 +536,14 @@ india_home_rule_events.4 = { # Gujranwala Riots
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
-	cooldown = { months = normal_modifier_time }
+	cooldown = { days = normal_modifier_time }
 
 	# Triggered by event
-	
+
 	immediate = {
 
 	}
-	
+
 	option = {
 		name = india_home_rule_events.4.a
 		default_option = yes
@@ -581,16 +600,16 @@ india_home_rule_events.5 = { # Hunter Commission
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
-	cooldown = { months = normal_modifier_time }
+	cooldown = { days = normal_modifier_time }
 
 	# Triggered by event
-	
+
 	immediate = {
 		ig:ig_armed_forces = {
 			save_scope_as = army_ig
 		}
 	}
-	
+
 	option = {
 		name = india_home_rule_events.5.a
 		default_option = yes
@@ -609,7 +628,7 @@ india_home_rule_events.5 = { # Hunter Commission
 		scope:army_ig = {
 			add_modifier = {
 				name = modifier_disciplined_war_criminal
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		top_overlord ?= {
@@ -638,14 +657,14 @@ india_home_rule_events.6 = { # Dyer's Homecoming
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
-	cooldown = { months = normal_modifier_time }
+	cooldown = { days = normal_modifier_time }
 
 	# Triggered by event
-	
+
 	immediate = {
 
 	}
-	
+
 	option = {
 		name = india_home_rule_events.6.a
 		default_option = yes
@@ -666,7 +685,7 @@ india_home_rule_events.6 = { # Dyer's Homecoming
 				}
 				add_modifier = {
 					name = modifier_the_man_who_saved_india
-					months = normal_modifier_time
+					days = normal_modifier_time
 				}
 			}
 			every_interest_group = {
@@ -682,7 +701,7 @@ india_home_rule_events.6 = { # Dyer's Homecoming
 				}
 				add_modifier = {
 					name = modifier_disgrace_in_india
-					months = normal_modifier_time
+					days = normal_modifier_time
 				}
 			}
 		}
@@ -738,10 +757,10 @@ india_home_rule_events.7 = { # Indian Home Rule movement
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
-	cooldown = { months = normal_modifier_time }
+	cooldown = { days = normal_modifier_time }
 
 	# Triggered by event
-	
+
 	immediate = {
 		ig:ig_intelligentsia = {
 			save_scope_as = intelligentsia_ig
@@ -757,7 +776,7 @@ india_home_rule_events.7 = { # Indian Home Rule movement
 					}
 				}
 			}
-			create_political_lobby = {  
+			create_political_lobby = {
 				type = lobby_anti_overlord
 				target = top_overlord
 				add_interest_group = ig:ig_intelligentsia
@@ -800,7 +819,7 @@ india_home_rule_events.7 = { # Indian Home Rule movement
 			save_scope_as = relevant_lobby
 		}
 	}
-	
+
 	option = {
 		name = india_home_rule_events.7.a
 		default_option = yes
@@ -813,14 +832,14 @@ india_home_rule_events.7 = { # Indian Home Rule movement
 		scope:intelligentsia_ig = {
 			add_modifier = {
 				name = modifier_indian_national_movement_ig
-				months = normal_modifier_time
+				days = normal_modifier_time
 				is_decaying = yes
 			}
 		}
 		scope:petty_bourgeoisie_ig = {
 			add_modifier = {
 				name = modifier_indian_national_movement_ig
-				months = normal_modifier_time
+				days = normal_modifier_time
 				is_decaying = yes
 			}
 		}
@@ -837,7 +856,7 @@ india_home_rule_events.7 = { # Indian Home Rule movement
 		scope:intelligentsia_ig = {
 			add_modifier = {
 				name = modifier_indian_national_movement_ig
-				months = normal_modifier_time
+				days = normal_modifier_time
 				is_decaying = yes
 				multiplier = 2
 			}
@@ -845,7 +864,7 @@ india_home_rule_events.7 = { # Indian Home Rule movement
 		scope:petty_bourgeoisie_ig = {
 			add_modifier = {
 				name = modifier_indian_national_movement_ig
-				months = normal_modifier_time
+				days = normal_modifier_time
 				is_decaying = yes
 				multiplier = 2
 			}
@@ -879,10 +898,10 @@ india_home_rule_events.8 = { # Indian Home Rule movement for Britain
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
-	cooldown = { months = normal_modifier_time }
+	cooldown = { days = normal_modifier_time }
 
 	# Triggered by event
-	
+
 	immediate = {
 		c:BIC ?= {
 			ig:ig_intelligentsia = {
@@ -896,7 +915,7 @@ india_home_rule_events.8 = { # Indian Home Rule movement for Britain
 			save_scope_as = india_scope
 		}
 	}
-	
+
 	option = {
 		name = india_home_rule_events.8.a
 		default_option = yes
@@ -940,10 +959,10 @@ india_home_rule_events.9 = { # Montagu-Chelmsford Reforms
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
-	cooldown = { months = normal_modifier_time }
+	cooldown = { days = normal_modifier_time }
 
 	# Triggered by decision
-	
+
 	immediate = {
 		top_overlord = {
 			random_interest_group = {
@@ -970,12 +989,12 @@ india_home_rule_events.9 = { # Montagu-Chelmsford Reforms
 			save_scope_as = chelmsford_scope
 		}
 	}
-	
+
 	option = {
 		name = india_home_rule_events.9.a
 		default_option = yes
 		trigger = {
-			any_political_movement = { 
+			any_political_movement = {
 				is_political_movement_type = movement_india_pan_national
 				political_movement_radicalism <= 0.5
 			}
@@ -992,7 +1011,7 @@ india_home_rule_events.9 = { # Montagu-Chelmsford Reforms
 		name = india_home_rule_events.9.b
 		default_option = yes
 		trigger = {
-			any_political_movement = { 
+			any_political_movement = {
 				is_political_movement_type = movement_india_pan_national
 				political_movement_radicalism >= 0.5
 			}
@@ -1044,21 +1063,21 @@ india_home_rule_events.10 = { # Simon Commission setup
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
-	cooldown = { months = normal_modifier_time }
+	cooldown = { days = normal_modifier_time }
 
 	trigger = {
 		NOT = {
 			has_variable = simon_commission_var
 		}
 	}
-	
+
 	immediate = {
 		c:BIC ?= {
 			save_scope_as = india_scope
 		}
 		set_variable = simon_commission_var
 	}
-	
+
 	option = {
 		name = india_home_rule_events.10.a
 		default_option = yes
@@ -1166,10 +1185,10 @@ india_home_rule_events.11 = { # Simon Commission
 
 	icon = "gfx/interface/icons/event_icons/event_protest.dds"
 
-	cooldown = { months = normal_modifier_time }
+	cooldown = { days = normal_modifier_time }
 
 	# Triggered by decision
-	
+
 	immediate = {
 		top_overlord = {
 			save_scope_as = overlord_scope
@@ -1263,7 +1282,7 @@ india_home_rule_events.11 = { # Simon Commission
 			}
 		}
 	}
-	
+
 	option = {
 		name = india_home_rule_events.11.a
 		trigger = {
@@ -1278,7 +1297,7 @@ india_home_rule_events.11 = { # Simon Commission
 			}
 			add_modifier = {
 				name = modifier_simon_commission_embraced
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 			if = {
 				limit = {
@@ -1364,7 +1383,7 @@ india_home_rule_events.11 = { # Simon Commission
 		}
 		add_modifier = {
 			name = modifier_simon_commission_boycott
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 		if = {
 			limit = {
@@ -1434,7 +1453,7 @@ india_home_rule_events.11 = { # Simon Commission
 			}
 			add_modifier = {
 				name = modifier_simon_commission_embraced
-				months = normal_modifier_time
+				days = normal_modifier_time
 				multiplier = 2
 			}
 			if = {
@@ -1582,7 +1601,7 @@ india_home_rule_events.11 = { # Simon Commission
 			}
 		}
 	}
-	
+
 	option = {
 		name = india_home_rule_events.11.g
 		trigger = {
@@ -1600,7 +1619,7 @@ india_home_rule_events.11 = { # Simon Commission
 		}
 		add_modifier = {
 			name = modifier_simon_commission_boycott
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 		add_medium_indian_radicals = yes
 	}

@@ -66,7 +66,7 @@ expedition_events.201 = { #Choose commander
 			}
 			save_scope_as = expedition_leader_1
 		}
-		
+
 		random_scope_character = {
 			limit = {
 				is_busy = no
@@ -112,6 +112,9 @@ expedition_events.201 = { #Choose commander
 		scope:expedition_leader_1 = {
 			set_variable = expedition_leader_var
 			set_character_busy_and_immortal = yes
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		add_journal_entry = {
 			type = je_west_america_expedition
@@ -131,6 +134,9 @@ expedition_events.201 = { #Choose commander
 		scope:expedition_leader_2 = {
 			set_variable = expedition_leader_var
 			set_character_busy_and_immortal = yes
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		add_journal_entry = {
 			type = je_west_america_expedition
@@ -150,6 +156,9 @@ expedition_events.201 = { #Choose commander
 		scope:expedition_leader_3 = {
 			set_variable = expedition_leader_var
 			set_character_busy_and_immortal = yes
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		add_journal_entry = {
 			type = je_west_america_expedition
@@ -182,7 +191,7 @@ expedition_events.300 = { #Sucessful expedition - Buenaventura River
 		set_global_variable = buenaventura_river_disproven
 		random_scope_character = {
 			limit = {
-				has_variable = expedition_leader_var 
+				has_variable = expedition_leader_var
 			}
 			save_scope_as = expedition_leader
 		}
@@ -197,7 +206,7 @@ expedition_events.300 = { #Sucessful expedition - Buenaventura River
 		}
 		add_modifier = {
 			name = modifier_buenaventura_river_disproven
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 }
@@ -227,7 +236,7 @@ expedition_events.301 = { #Sucessful expedition - Oregon Trail
 		set_global_variable = oregon_trail_mapped
 		random_scope_character = {
 			limit = {
-				has_variable = expedition_leader_var 
+				has_variable = expedition_leader_var
 			}
 			save_scope_as = expedition_leader
 		}
@@ -242,7 +251,7 @@ expedition_events.301 = { #Sucessful expedition - Oregon Trail
 		}
 		add_modifier = {
 			name = modifier_oregon_trail_mapped
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 }
@@ -272,7 +281,7 @@ expedition_events.302 = { #Sucessful expedition - Great Salt Lake
 		set_global_variable = great_salt_lake_mapped
 		random_scope_character = {
 			limit = {
-				has_variable = expedition_leader_var 
+				has_variable = expedition_leader_var
 			}
 			save_scope_as = expedition_leader
 		}
@@ -287,7 +296,7 @@ expedition_events.302 = { #Sucessful expedition - Great Salt Lake
 		}
 		add_modifier = {
 			name = modifier_great_salt_lake_mapped
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 }
@@ -327,7 +336,7 @@ expedition_events.205 = { #Failed expedition
 		}
 		add_modifier = {
 			name = modifier_failed_expedition
-			months = normal_modifier_time
+			days = normal_modifier_time
 			is_decaying	= yes
 		}
 
@@ -351,7 +360,7 @@ expedition_events.220 = { #crossing a river
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = river_crossing }
 	}
@@ -374,6 +383,20 @@ expedition_events.220 = { #crossing a river
 		default_option = yes
 		random_list = {
 			20 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 10
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 40
+					}
+				}
 				trigger_event = { id = expedition_events.221 days = 0 popup = yes }
 			}
 			10 = {
@@ -386,7 +409,7 @@ expedition_events.220 = { #crossing a river
 		name = expedition_events.220.b
 		custom_tooltip = expedition_event_ongoing_tt
 	}
-	
+
 	option = {
 		name = expedition_events.220.c
 		highlighted_option = yes
@@ -403,6 +426,20 @@ expedition_events.220 = { #crossing a river
 					trigger_event = { id = expedition_events.222 days = 0 popup = yes }
 				}
 				25 = {
+					modifier = {
+						if = {
+							limit = {
+								ROOT.modifier:country_expedition_events_explorer_mult > 0
+							}
+							add = 12
+						}
+						if = {
+							limit = {
+								scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+							}
+							add = 50
+						}
+					}
 					set_variable = jump_river_success_var
 					trigger_event = { id = expedition_events.221 days = 0 popup = yes }
 				}
@@ -439,7 +476,7 @@ expedition_events.221 = { #crossing a river success
 			limit = {
 				has_variable = jump_river_success_var
 			}
-			expedition_great_progress_effect = yes			
+			expedition_great_progress_effect = yes
 		}
 		else = {
 			expedition_moderate_progress_effect = yes
@@ -501,7 +538,7 @@ expedition_events.230 = { #Bear sighted
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = bear_sighting }
 	}
@@ -520,6 +557,20 @@ expedition_events.230 = { #Bear sighted
 		default_option = yes
 		random_list = {
 			20 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 10
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 40
+					}
+				}
 				trigger_event = { id = expedition_events.231 days = 0 popup = yes } #Success
 			}
 			10 = {
@@ -532,6 +583,20 @@ expedition_events.230 = { #Bear sighted
 		name = expedition_events.220.b
 		random_list = {
 			30 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 15
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 60
+					}
+				}
 				trigger_event = { id = expedition_events.233 days = 0 popup = yes }
 			}
 			70 = {
@@ -644,7 +709,7 @@ expedition_events.240 = { #Expedition Photographs
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
 
     duration = 3
-	
+
 	trigger = {
 		has_technology_researched = camera
 		NOT = { has_variable = wildlife_photography }
@@ -663,7 +728,7 @@ expedition_events.240 = { #Expedition Photographs
 		name = expedition_events.240.a
 		add_modifier = {
 			name = modifier_west_america_wildlife_photography
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 		set_variable = expedition_photography_var #grand exhibition bonus
 		expedition_minor_progress_effect = yes
@@ -693,7 +758,7 @@ expedition_events.250 = { #Mountain spotted
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = mountain_spotted }
 	}
@@ -711,6 +776,20 @@ expedition_events.250 = { #Mountain spotted
 		name = expedition_events.250.a
 		random_list = {
 			20 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 10
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 40
+					}
+				}
 				custom_tooltip = expedition_events_mountain_claim_tt
 				hidden_effect = {
 					if = {
@@ -758,7 +837,7 @@ expedition_events.251 = { #Mountain already discovered
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		random_country = {
 			limit = { has_variable = mountain_claim_country_var }
@@ -860,7 +939,7 @@ expedition_events.260 = { #Snow Falls
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = snow_falls }
 	}
@@ -879,6 +958,20 @@ expedition_events.260 = { #Snow Falls
 		default_option = yes
 		random_list = {
 			15 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 8
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 30
+					}
+				}
 				trigger_event = { id = expedition_events.261 days = 0 popup = yes } #Success
 			}
 			10 = {
@@ -1021,7 +1114,7 @@ expedition_events.270 = { #Gather plants
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = plant_gathering }
 	}
@@ -1040,7 +1133,7 @@ expedition_events.270 = { #Gather plants
 		custom_tooltip = expedition_event_delayed_tt
 		add_modifier = {
 			name = modifier_west_america_plant_discovered
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 		set_variable = expedition_plants_var #grand exhibition bonus
 		expedition_minor_progress_effect = yes
@@ -1089,7 +1182,7 @@ expedition_events.280 = { #Lost
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
 
     duration = 3
-	
+
 	trigger = {
 		trigger_if = {
     		limit = { exists = var:expedition_lost }
@@ -1129,6 +1222,20 @@ expedition_events.280 = { #Lost
 				trigger_event = { id = expedition_events.281 days = 0 popup = yes }
 			}
 			10 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 5
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 20
+					}
+				}
 				trigger_event = { id = expedition_events.282 days = 0 popup = yes }
 			}
 		}
@@ -1231,7 +1338,7 @@ expedition_events.290 = { #Build a fort
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = build_a_fort_var }
 		je:je_west_america_expedition ?= {
@@ -1242,7 +1349,7 @@ expedition_events.290 = { #Build a fort
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		set_variable = build_a_fort_var
 		west_america_expedition_location = yes
@@ -1262,13 +1369,13 @@ expedition_events.290 = { #Build a fort
 		expedition_peril_decrease_medium_effect = yes
 		custom_tooltip = expedition_event_delayed_tt
 	}
-	
+
 	option = { #we have no time for this
 		name = expedition_events.290.b
 		expedition_moderate_progress_effect = yes
 		add_medium_peril_effect = yes
 	}
-	
+
 	option = { #the fort was already built
 		name = expedition_events.290.c
 		default_option = yes
@@ -1316,7 +1423,7 @@ expedition_events.291 = { #Pregnant Woman
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = expedition_baby_var }
 	}
@@ -1324,7 +1431,7 @@ expedition_events.291 = { #Pregnant Woman
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		west_america_expedition_location = yes
 		set_variable = expedition_baby_var
@@ -1335,7 +1442,7 @@ expedition_events.291 = { #Pregnant Woman
 		default_option = yes
 		custom_tooltip = expedition_event_delayed_tt
 	}
-	
+
 	option = { #tell them to go back
 		name = expedition_events.291.b
 		expedition_minor_progress_effect = yes
@@ -1374,7 +1481,7 @@ expedition_events.292 = { #your team disobbeys you (went to a liquor shop)
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = team_disobeys_var }
 		je:je_west_america_expedition ?= {
@@ -1385,7 +1492,7 @@ expedition_events.292 = { #your team disobbeys you (went to a liquor shop)
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		west_america_expedition_location = yes
 	}
@@ -1398,7 +1505,7 @@ expedition_events.292 = { #your team disobbeys you (went to a liquor shop)
 		set_variable = disciplinary_sanctions_var
 		set_variable = team_disobeys_var
 	}
-	
+
 	option = { #they needed a break
 		name = expedition_events.292.b
 		expedition_minor_progress_effect = yes
@@ -1406,6 +1513,20 @@ expedition_events.292 = { #your team disobbeys you (went to a liquor shop)
 		hidden_effect = {
 			random_list = {
 				50 = {
+					modifier = {
+						if = {
+							limit = {
+								ROOT.modifier:country_expedition_events_explorer_mult > 0
+							}
+							add = 25
+						}
+						if = {
+							limit = {
+								scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+							}
+							add = 100
+						}
+					}
 				}
 				50 = {
 					trigger_event = { id = expedition_events.292 days = day_until_next_expedition_event }
@@ -1448,7 +1569,7 @@ expedition_events.293 = { #give these men a quest
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
 
     duration = 3
-	
+
 	trigger = {
 		trigger_if = {
     		limit = { exists = var:expedition_quest_var }
@@ -1493,6 +1614,20 @@ expedition_events.293 = { #give these men a quest
 					add_medium_peril_effect = yes
 				}
 				50 = {
+					modifier = {
+						if = {
+							limit = {
+								ROOT.modifier:country_expedition_events_explorer_mult > 0
+							}
+							add = 25
+						}
+						if = {
+							limit = {
+								scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+							}
+							add = 100
+						}
+					}
 					trigger_event = { id = expedition_events.295 days = 3 }
 				}
 			}
@@ -1503,7 +1638,7 @@ expedition_events.293 = { #give these men a quest
 			}
 		}
 	}
-	
+
 	option = { #send them to find aid
 		name = expedition_events.293.b
 		if = {
@@ -1515,6 +1650,20 @@ expedition_events.293 = { #give these men a quest
 					add_medium_peril_effect = yes
 				}
 				50 = {
+					modifier = {
+						if = {
+							limit = {
+								ROOT.modifier:country_expedition_events_explorer_mult > 0
+							}
+							add = 25
+						}
+						if = {
+							limit = {
+								scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+							}
+							add = 100
+						}
+					}
 					trigger_event = { id = expedition_events.294 days = 3 }
 				}
 			}
@@ -1571,7 +1720,7 @@ expedition_events.294 = { #found a native settlement
 		custom_tooltip = expedition_event_delayed_tt
 		set_variable = expedition_barter_var
 	}
-	
+
 	option = { #find a guide
 		name = expedition_events.294.b
 		expedition_minor_progress_effect = yes
@@ -1580,8 +1729,8 @@ expedition_events.294 = { #found a native settlement
 		}
 		set_variable = native_guide_var
 	}
-	
-	option = { #baby 
+
+	option = { #baby
 		name = expedition_events.294.c
 		highlighted_option = yes
 		trigger = {
@@ -1626,11 +1775,25 @@ expedition_events.295 = { #hunting party
 				add_small_peril_effect = yes
 			}
 			66 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 33
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 132
+					}
+				}
 				expedition_minor_progress_effect = yes
 			}
 		}
 	}
-	
+
 	option = { #go for the great game
 		name = expedition_events.295.b
 		random_list = {
@@ -1641,6 +1804,20 @@ expedition_events.295 = { #hunting party
 				add_medium_peril_effect = yes
 			}
 			50 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 25
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 100
+					}
+				}
 				expedition_moderate_progress_effect = yes
 			}
 		}
@@ -1683,11 +1860,11 @@ expedition_events.296 = { #listen to your guide
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	trigger = {
 		NOT = { has_variable = guide_advice_var }
 	}
-	
+
 	immediate = {
 		set_variable = guide_advice_var
 		west_america_expedition_location = yes
@@ -1701,7 +1878,7 @@ expedition_events.296 = { #listen to your guide
 		default_option = yes
 		custom_tooltip = expedition_event_delayed_tt
 	}
-	
+
 	option = { #take the faster route
 		name = expedition_events.296.b
 		random_list = {
@@ -1709,11 +1886,25 @@ expedition_events.296 = { #listen to your guide
 				add_medium_peril_effect = yes
 			}
 			50 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 25
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 100
+					}
+				}
 				expedition_minor_progress_effect = yes
 			}
 		}
 	}
-	
+
 	option = { #native guide
 		name = expedition_events.296.c
 		trigger = {
@@ -1731,35 +1922,35 @@ expedition_events.296 = { #listen to your guide
 expedition_events.297 = { #cabin fever
     type = country_event
     placement = scope:current_expedition_location
-	
+
     title = expedition_events.297.t
     desc = expedition_events.297.d
     flavor = expedition_events.297.f
-	
+
     event_image = {
         video = "europenorthamerica_gold_prospectors"
     }
-	
+
     on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
-	
+
     icon = "gfx/interface/icons/event_icons/event_map.dds"
-	
+
     duration = 3
 
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-    
+
     trigger = {
         je:je_west_america_expedition ?= {
 			"scripted_bar_progress(expedition_peril_progress_bar)" >= 7
 		}
     }
-	
+
     immediate = {
         west_america_expedition_location = yes
     }
-	
+
     option = { #stay the night (but you're paranoid)
         name = expedition_events.297.a
         default_option = yes
@@ -1769,10 +1960,24 @@ expedition_events.297 = { #cabin fever
                 add_small_peril_effect = yes
             }
             50 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 25
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 100
+					}
+				}
             }
         }
     }
-    
+
     option = { #leave at once (but it's dangerous)
         name = expedition_events.297.b
         expedition_minor_progress_effect = yes

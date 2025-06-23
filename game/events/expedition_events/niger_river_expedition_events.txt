@@ -111,6 +111,9 @@ expedition_events.2 = { #Choose commander
 		scope:expedition_leader_1 = {
 			set_variable = expedition_leader_var
 			set_character_busy_and_immortal = yes
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		trigger_event = { id = expedition_events.4 days = 30 }
 	}
@@ -128,6 +131,9 @@ expedition_events.2 = { #Choose commander
 		scope:expedition_leader_2 = {
 			set_variable = expedition_leader_var
 			set_character_busy_and_immortal = yes
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		trigger_event = { id = expedition_events.4 days = 30 }
 	}
@@ -145,6 +151,9 @@ expedition_events.2 = { #Choose commander
 		scope:expedition_leader_3 = {
 			set_variable = expedition_leader_var
 			set_character_busy_and_immortal = yes
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		trigger_event = { id = expedition_events.4 days = 30 }
 	}
@@ -167,7 +176,7 @@ expedition_events.4 = { #Expedition Arrives
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
 
     duration = 3
-	
+
 	immediate = {
 		niger_river_expedition_location = yes
 		random_scope_character = {
@@ -228,7 +237,7 @@ expedition_events.11 = { #Successful expedition
 		}
 		add_modifier = {
 			name = modifier_niger_river_expedition_complete
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 }
@@ -272,7 +281,7 @@ expedition_events.12 = { #Failed expedition
 		}
 		add_modifier = {
 			name = modifier_failed_expedition
-			months = normal_modifier_time
+			days = normal_modifier_time
 			is_decaying = yes
 		}
 	}
@@ -281,7 +290,7 @@ expedition_events.12 = { #Failed expedition
 expedition_events.20 = { #Average event
 	type = country_event
     placement = scope:current_expedition_location
-	
+
     hidden = yes
 
     duration = 3
@@ -309,7 +318,7 @@ expedition_events.30 = { #Help from locals
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
 
     duration = 3
-	
+
 	trigger = {
 		OR = {
 			je:je_niger_river_expedition ?= {
@@ -361,6 +370,20 @@ expedition_events.30 = { #Help from locals
 		}
 		random_list = {
 			10 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 5
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 20
+					}
+				}
 				trigger_event = { id = expedition_events.31 days = 0 popup = yes }
 			}
 			10 = {
@@ -451,7 +474,7 @@ expedition_events.40 = { #Crew member drowns
 	icon = "gfx/interface/icons/event_icons/event_skull.dds"
 
     duration = 3
-	
+
 	trigger = {
 		trigger_if = {
 			limit = { has_variable = congo_river_expedition_var }
@@ -469,7 +492,7 @@ expedition_events.40 = { #Crew member drowns
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		set_variable = crew_member_drowns
 		if = {
@@ -513,7 +536,7 @@ expedition_events.41 = { #Crew ailed with Malaria
 	icon = "gfx/interface/icons/event_icons/event_skull.dds"
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_technology_researched = malaria_prevention }
 		NOT = { has_variable = crew_gets_malaria }
@@ -523,7 +546,7 @@ expedition_events.41 = { #Crew ailed with Malaria
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		set_variable = crew_gets_malaria
 		if = {
@@ -551,12 +574,26 @@ expedition_events.41 = { #Crew ailed with Malaria
 		expedition_minor_progress_effect = yes
 		random_list = {
 			75 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 33
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 150
+					}
+				}
 			}
 			25 = {
 				scope:expedition_leader = {
 					add_modifier = {
 						name = malaria_modifier
-						months = normal_modifier_time
+						days = normal_modifier_time
 					}
 				}
 			}
@@ -587,7 +624,7 @@ expedition_events.50 = { #River Attack
 	icon = "gfx/interface/icons/event_icons/event_skull.dds"
 
     duration = 3
-	
+
 	trigger = {
 		OR = {
 			je:je_niger_river_expedition ?= {
@@ -625,6 +662,20 @@ expedition_events.50 = { #River Attack
 		default_option = yes
 		random_list = {
 			10 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 5
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 20
+					}
+				}
 				trigger_event = { id = expedition_events.51 days = 0 popup = yes }
 			}
 			10 = {
@@ -745,7 +796,7 @@ expedition_events.60 = { #Film
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = expedition_film }
 		has_technology_researched = film
@@ -754,7 +805,7 @@ expedition_events.60 = { #Film
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
     immediate = {
     	set_variable = expedition_film
 		niger_river_expedition_location = yes
@@ -766,7 +817,7 @@ expedition_events.60 = { #Film
 		set_variable = recorded_expedition_film_var #grand exhibition bonus
 		add_modifier = {
 			name = modifier_expedition_film
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 		custom_tooltip = expedition_event_ongoing_tt
 	}
@@ -794,7 +845,7 @@ expedition_events.70 = { #Crew ailed with dysentery
 	icon = "gfx/interface/icons/event_icons/event_skull.dds"
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = crew_gets_dysentery }
 		NOT = { has_variable = crew_gets_malaria }
@@ -873,9 +924,23 @@ expedition_events.80 = { #Hippo Sighted
 				trigger_event = { id = expedition_events.81 days = 0 popup = yes }
 			}
 			10 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 5
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 20
+					}
+				}
 				trigger_event = { id = expedition_events.82 days = 0 popup = yes}
 			}
-		}		
+		}
 	}
 
 	option = {
@@ -989,7 +1054,7 @@ expedition_events.90 = { #Grave of previous explorers
 	icon = "gfx/interface/icons/event_icons/event_skull.dds"
 
     duration = 3
-	
+
 	trigger = {
 		OR = {
 			je:je_niger_river_expedition ?= {
@@ -1052,7 +1117,7 @@ expedition_events.100 = { #Kidnapped
 	icon = "gfx/interface/icons/event_icons/event_fire.dds"
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = expedition_kidnap }
 	}
@@ -1085,7 +1150,7 @@ expedition_events.100 = { #Kidnapped
 		name = expedition_events.100.a
 		add_modifier = {
 			name = expedition_leader_kidnap_modifier
-			months = short_modifier_time
+			days = short_modifier_time
 			multiplier = money_amount_multiplier_small
 		}
 		trigger_event = { id = expedition_events.101 days = 3 }
@@ -1149,7 +1214,7 @@ expedition_events.102 = { #Ransom Ignored
 	}
 
     duration = 3
-	
+
 	option = {
 		name = expedition_events.102.a
 		default_option = yes
@@ -1180,11 +1245,11 @@ expedition_events.110 = { #Leader dies
 	}
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = expedition_new_leader }
 	}
-	
+
 	immediate = {
 		random_scope_character = {
 			limit = { has_variable = expedition_leader_var }
@@ -1197,6 +1262,9 @@ expedition_events.110 = { #Leader dies
 			is_general = yes
 			on_created = {
 				set_variable = expedition_leader_var
+				ROOT = {
+					set_variable = { name = expedition_leader_storage_var value = prev }
+				}
 			}
 		}
 		random_scope_character = {
@@ -1237,7 +1305,10 @@ expedition_events.110 = { #Leader dies
 			}
 		}
 		scope:expedition_leader = {
-			set_variable = expedition_leader_var 
+			set_variable = expedition_leader_var
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		add_small_peril_effect = yes
 		expedition_minor_progress_effect = yes
@@ -1278,9 +1349,9 @@ expedition_events.120 = { #DR LIVINGSTONE EVENT
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	duration = 3
-	
+
 	trigger = {
 		OR = {
 			je:je_niger_river_expedition ?= {
@@ -1300,7 +1371,7 @@ expedition_events.120 = { #DR LIVINGSTONE EVENT
 			owner = root
 		}
 	}
-	
+
 	immediate = {
 		random_character_in_void = {
 			limit = {
@@ -1331,7 +1402,7 @@ expedition_events.120 = { #DR LIVINGSTONE EVENT
 			save_scope_as = expedition_leader
 		}
 	}
-	
+
 	option = { #take him with us
 		name = expedition_events.120.a
 		default_option = yes
@@ -1341,12 +1412,12 @@ expedition_events.120 = { #DR LIVINGSTONE EVENT
 		scope:expedition_leader = {
 			add_modifier = {
 				name = found_explorer_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		add_modifier = {
 			name = found_old_explorer
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 		random_character_in_void = {
 			limit = {
@@ -1359,12 +1430,12 @@ expedition_events.120 = { #DR LIVINGSTONE EVENT
 		custom_tooltip = expedition_event_delayed_tt
 		add_small_peril_effect = yes
 	}
-	
+
 	option = { #he seems happy here
 		name = expedition_events.120.b
 		expedition_minor_progress_effect = yes
 	}
-	
+
 	option = { #he's a danger to our expedition
 		name = expedition_events.120.c
 		trigger = {
@@ -1373,17 +1444,17 @@ expedition_events.120 = { #DR LIVINGSTONE EVENT
 		scope:expedition_leader = {
 			add_modifier = {
 				name = found_explorer_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		add_modifier = {
 			name = found_old_explorer
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 		custom_tooltip = expedition_event_delayed_tt
 		add_medium_peril_effect = yes
 	}
-}	
+}
 
 expedition_events.130 = { #kidnapped ambassador
 	type = country_event
@@ -1400,9 +1471,9 @@ expedition_events.130 = { #kidnapped ambassador
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_skull.dds"
-	
+
 	duration = 3
-	
+
 	trigger = {
 		OR = {
 			je:je_niger_river_expedition ?= {
@@ -1428,7 +1499,7 @@ expedition_events.130 = { #kidnapped ambassador
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		random_country = {
 			limit = {
@@ -1456,7 +1527,7 @@ expedition_events.130 = { #kidnapped ambassador
 			central_africa_location_effect = yes
 		}
 	}
-	
+
 	option = { #take him with us
 		name = expedition_events.130.a
 		change_relations = {
@@ -1465,13 +1536,13 @@ expedition_events.130 = { #kidnapped ambassador
 		}
 		custom_tooltip = expedition_event_delayed_tt
 	}
-	
+
 	option = { #dont believe him
 		name = expedition_events.130.b
 		default_option = yes
 		expedition_minor_progress_effect = yes
 	}
-}	
+}
 
 expedition_events.140 = { #leader's breakdown
 	type = country_event
@@ -1488,9 +1559,9 @@ expedition_events.140 = { #leader's breakdown
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_skull.dds"
-	
+
 	duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = leaders_breakdown_var }
 	}
@@ -1498,7 +1569,7 @@ expedition_events.140 = { #leader's breakdown
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		set_variable = leaders_breakdown_var
 		if = {
@@ -1515,26 +1586,26 @@ expedition_events.140 = { #leader's breakdown
 		}
 		else_if = {
 			limit = { has_variable = west_america_expedition_var }
-			west_america_expedition_location = yes 
+			west_america_expedition_location = yes
 		}
 		random_scope_character = {
 			limit = { has_variable = expedition_leader_var }
 			save_scope_as = expedition_leader
 		}
 	}
-	
+
 	option = { #we need to support him
 		name = expedition_events.140.a
 		default_option = yes
 		expedition_lose_progress_effect = yes
 	}
-	
+
 	option = { #he'll find another one
 		name = expedition_events.140.b
 		expedition_minor_progress_effect = yes
 		add_medium_peril_effect = yes
 	}
-}	
+}
 
 expedition_events.150 = { #a thief among us
 	type = country_event
@@ -1551,9 +1622,9 @@ expedition_events.150 = { #a thief among us
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_skull.dds"
-	
+
 	duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = expedition_thief_var }
 	}
@@ -1561,7 +1632,7 @@ expedition_events.150 = { #a thief among us
 	cancellation_trigger = {
 		NOT = { has_variable = on_expedition }
 	}
-	
+
 	immediate = {
 		set_variable = expedition_thief_var
 		if = {
@@ -1577,19 +1648,19 @@ expedition_events.150 = { #a thief among us
 			central_africa_location_effect = yes
 		}
 	}
-	
+
 	option = { #keep him
 		name = expedition_events.150.a
 		default_option = yes
 		custom_tooltip = expedition_event_ongoing_tt
 	}
-	
+
 	option = { #fire him
 		name = expedition_events.150.b
 		expedition_minor_progress_effect = yes
 		add_medium_peril_effect = yes
 	}
-}	
+}
 
 expedition_events.160 = { #cancelled expedition
 	type = country_event
@@ -1606,9 +1677,9 @@ expedition_events.160 = { #cancelled expedition
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_skull.dds"
-	
+
 	duration = 3
-	
+
 	trigger = {
 		OR = {
 			je:je_antarctica ?= {
@@ -1646,7 +1717,7 @@ expedition_events.160 = { #cancelled expedition
 		}
 		NOT = { has_variable = cancelled_expedition_var }
 	}
-	
+
 	immediate = {
 		set_variable = cancelled_expedition_var
 		if = {
@@ -1666,7 +1737,7 @@ expedition_events.160 = { #cancelled expedition
 			save_scope_as = expedition_leader
 		}
 	}
-	
+
 	option = { #go back
 		name = expedition_events.160.a
 		default_option = yes
@@ -1684,7 +1755,7 @@ expedition_events.160 = { #cancelled expedition
 			trigger_event = { id = expedition_events.512 days = 3 }
 		}
 	}
-	
+
 	option = { #keep pushing
 		name = expedition_events.160.b
 		expedition_minor_progress_effect = yes
@@ -1692,7 +1763,7 @@ expedition_events.160 = { #cancelled expedition
 		add_modifier = {
 			name = expedition_extra_expenses_modifier
 			multiplier = money_amount_multiplier_small
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 }

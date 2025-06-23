@@ -5,29 +5,33 @@
 	visible = { NOT = { has_variable = haiti_debt_renegotiated_var } }
 
 	ai_chance = {
-		base = 10
+		value = 10
 	}
 
 	possible = {
-		NOT = { 
+		NOT = {
 			has_war_with = c:FRA
-			owes_obligation_to = c:FRA 
+			owes_obligation_to = c:FRA
 		}
 		OR = {
 			c:FRA = {
 				relations:root >= relations_threshold:friendly
 			}
 			is_subject_of = c:FRA
-			has_diplomatic_pact = {
-				type = alliance
-				who = c:FRA
+			any_scope_treaty = {
+				binds = c:FRA
+				any_scope_article = {
+					has_type = alliance
+				}
 			}
 		}
-		OR = {
-			has_modifier = modifier_french_independence_payments_1
-			has_modifier = modifier_french_independence_payments_2
-			has_modifier = modifier_french_independence_payments_3
-			has_modifier = modifier_french_independence_payments_4
+		je:je_haitian_debt ?= {
+			OR = {
+				has_modifier = modifier_french_independence_payments_1
+				has_modifier = modifier_french_independence_payments_2
+				has_modifier = modifier_french_independence_payments_3
+				has_modifier = modifier_french_independence_payments_4
+			}
 		}
 	}
 
@@ -45,55 +49,65 @@ je_haitian_debt_payment_button = {
 	possible = {
 		NOT = { has_war_with = c:FRA }
 		gold_reserves >= 500000
-		OR = {
-			has_modifier = modifier_french_independence_payments_1
-			has_modifier = modifier_french_independence_payments_2
-			has_modifier = modifier_french_independence_payments_3
-			has_modifier = modifier_french_independence_payments_4
+		je:je_haitian_debt ?= {
+			OR = {
+				has_modifier = modifier_french_independence_payments_1
+				has_modifier = modifier_french_independence_payments_2
+				has_modifier = modifier_french_independence_payments_3
+				has_modifier = modifier_french_independence_payments_4
+			}
 		}
 	}
 
 	ai_chance = {
-		base = 50
+		value = 50
 	}
 
 	effect = {
 		add_treasury = -500000
 		if = {
 			limit = {
-				has_modifier = modifier_french_independence_payments_4
+				je:je_haitian_debt ?= { has_modifier = modifier_french_independence_payments_4 }
 			}
-			remove_modifier = modifier_french_independence_payments_4
-			add_modifier = { 
-				name = modifier_french_independence_payments_3
-				months = -1
-			}
-		}
-		else_if = {
-			limit = {
-				has_modifier = modifier_french_independence_payments_3
-			}
-			remove_modifier = modifier_french_independence_payments_3
-			add_modifier = { 
-				name = modifier_french_independence_payments_2
-				months = -1
+			je:je_haitian_debt ?= {
+				remove_modifier = modifier_french_independence_payments_4
+				add_modifier = {
+					name = modifier_french_independence_payments_3
+					months = -1
+				}
 			}
 		}
 		else_if = {
 			limit = {
-				has_modifier = modifier_french_independence_payments_2
+				je:je_haitian_debt ?= { has_modifier = modifier_french_independence_payments_3 }
 			}
-			remove_modifier = modifier_french_independence_payments_2
-			add_modifier = { 
-				name = modifier_french_independence_payments_1
-				months = -1
+			je:je_haitian_debt ?= {
+				remove_modifier = modifier_french_independence_payments_3
+				add_modifier = {
+					name = modifier_french_independence_payments_2
+					months = -1
+				}
 			}
 		}
 		else_if = {
 			limit = {
-				has_modifier = modifier_french_independence_payments_1
+				je:je_haitian_debt ?= {has_modifier = modifier_french_independence_payments_2 }
 			}
-			remove_modifier = modifier_french_independence_payments_1
+			je:je_haitian_debt ?= {
+				remove_modifier = modifier_french_independence_payments_2
+				add_modifier = {
+					name = modifier_french_independence_payments_1
+					months = -1
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				je:je_haitian_debt ?= { has_modifier = modifier_french_independence_payments_1 }
+			}
+			je:je_haitian_debt ?= {
+				remove_modifier = modifier_french_independence_payments_1
+			}
 		}
 		c:FRA = {
 			post_notification = haiti_pays_off_debt
@@ -138,11 +152,13 @@ je_haitian_cancel_debt_button = {
 	visible = { always = yes }
 
 	possible = {
-		OR = {
-			has_modifier = modifier_french_independence_payments_1
-			has_modifier = modifier_french_independence_payments_2
-			has_modifier = modifier_french_independence_payments_3
-			has_modifier = modifier_french_independence_payments_4
+		je:je_haitian_debt ?= {
+			OR = {
+				has_modifier = modifier_french_independence_payments_1
+				has_modifier = modifier_french_independence_payments_2
+				has_modifier = modifier_french_independence_payments_3
+				has_modifier = modifier_french_independence_payments_4
+			}
 		}
 	}
 
@@ -150,31 +166,31 @@ je_haitian_cancel_debt_button = {
 		custom_tooltip = je_haitian_cancel_debt_button_tt
 		add_modifier = {
 			name = modifier_cancelled_haiti_debt
-			months = very_long_modifier_time
+			days = very_long_modifier_time
 		}
 		if = {
 			limit = {
-				has_modifier = modifier_french_independence_payments_1
+				je:je_haitian_debt ?= { has_modifier = modifier_french_independence_payments_1 }
 			}
-			remove_modifier = modifier_french_independence_payments_1
+			je:je_haitian_debt ?= { remove_modifier = modifier_french_independence_payments_1 }
 		}
 		if = {
 			limit = {
-				has_modifier = modifier_french_independence_payments_2
+				je:je_haitian_debt ?= { has_modifier = modifier_french_independence_payments_2 }
 			}
-			remove_modifier = modifier_french_independence_payments_2
+			je:je_haitian_debt ?= { remove_modifier = modifier_french_independence_payments_2 }
 		}
 		if = {
 			limit = {
-				has_modifier = modifier_french_independence_payments_3
+				je:je_haitian_debt ?= { has_modifier = modifier_french_independence_payments_3 }
 			}
-			remove_modifier = modifier_french_independence_payments_3
+			je:je_haitian_debt ?= { remove_modifier = modifier_french_independence_payments_3 }
 		}
 		if = {
 			limit = {
-				has_modifier = modifier_french_independence_payments_4
+				je:je_haitian_debt ?= { has_modifier = modifier_french_independence_payments_4 }
 			}
-			remove_modifier = modifier_french_independence_payments_4
+			je:je_haitian_debt ?= { remove_modifier = modifier_french_independence_payments_4 }
 		}
 		c:FRA = {
 			post_notification = haiti_stops_paying_france
@@ -202,9 +218,9 @@ je_haitian_cancel_debt_button = {
 				}
 				remove_modifier = modifier_haitian_independence_payments_4
 			}
-			change_relations = { 
-				country = c:HAI 
-				value = -70 
+			change_relations = {
+				country = c:HAI
+				value = -70
 			}
 			hidden_effect = {
 				set_secret_goal = {
@@ -234,9 +250,9 @@ je_haitian_cancel_debt_button = {
 	}
 
 	ai_chance = {
-		base = 0
-		modifier = {
-			trigger = {
+		value = 0
+		if = {
+			limit = {
 				c:FRA = {
 					OR = {
 						in_default = yes
@@ -246,8 +262,8 @@ je_haitian_cancel_debt_button = {
 			}
 			add = 10
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				OR = {
 					AND = {
 						army_size > c:FRA.army_size
@@ -261,20 +277,22 @@ je_haitian_cancel_debt_button = {
 			}
 			add = 10
 		}
-		
-		modifier = {
-			trigger = {
+
+		if = {
+			limit = {
 				country_rank >= rank_value:major_power
 			}
 			add = 2
 		}
-		
-		modifier = {
-			OR = {
-				is_diplomatic_play_committed_participant = yes
-				is_at_war = yes
+
+		if = {
+			limit = {
+				OR = {
+					is_diplomatic_play_committed_participant = yes
+					is_at_war = yes
+				}
 			}
-			add = -1000
-		}	
+			multiply = 0
+		}
 	}
 }

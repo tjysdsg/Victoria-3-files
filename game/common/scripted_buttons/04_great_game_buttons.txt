@@ -13,6 +13,8 @@
 		}
 	}
 
+	cooldown = { days = long_modifier_time }
+
 	possible = {
 		has_technology_researched = mandatory_service
 		NOR = {
@@ -28,24 +30,14 @@
 				type = rivalry
 			}
 		}
-		NOT = {
-			custom_tooltip = {
-				text = AFG_RUS_support_request_rejected_tt
-				has_variable = AFG_RUS_support_cooldown
+		any_scope_treaty = {
+			count < 1
+			OR = {
+				binds = c:GBR
+				binds = c:RUS
 			}
-		}
-		NOR = {
-			c:RUS ?= {
-				has_diplomatic_pact = {
-					who = ROOT
-					type = military_assistance
-				}
-			}
-			c:GBR ?= {
-				has_diplomatic_pact = {
-					who = ROOT
-					type = military_assistance
-				}
+			any_scope_article = {
+				has_type = military_assistance
 			}
 		}
 		c:RUS ?= {
@@ -69,13 +61,29 @@
 				}
 			}
 		}
-		c:RUS ?= {
-			can_create_diplomatic_pact = { target = ROOT type = military_assistance }
+		custom_tooltip = {
+			text = "can_create_treaty_MILITARY_ASSISTANCE"
+			c:RUS ?= {
+				can_create_treaty = {
+					first_country = c:RUS
+					second_country = ROOT
+
+					is_draft = no
+					binding_period = { years = 2 }
+
+					articles_to_create = {
+						{
+							article = military_assistance
+							source_country = C:RUS
+							target_country = ROOT
+						}
+					}
+				}
+			}
 		}
 	}
 
 	effect = {
-		set_variable = { name = AFG_RUS_support_cooldown years = 10 }
 		set_variable = { name = pending_aid_request value = c:RUS }
 		save_scope_as = afghan_nation_scope
 		c:RUS = {
@@ -86,16 +94,27 @@
 		custom_tooltip = AFG_appeal_accept_tt
 		show_as_tooltip = {
 			c:RUS = {
-				create_diplomatic_pact = {
-					country = ROOT
-					type = military_assistance
+				create_treaty = {
+					first_country = c:RUS
+					second_country = ROOT
+
+					is_draft = no
+					binding_period = { years = 2 }
+
+					articles_to_create = {
+						{
+							article = military_assistance
+							source_country = c:RUS
+							target_country = ROOT
+						}
+					}
 				}
 			}
-			create_diplomatic_catalyst = {  
+			create_diplomatic_catalyst = {
 				type = catalyst_event_positive
 				target = scope:relevant_country
 			}
-			create_diplomatic_catalyst = {  
+			create_diplomatic_catalyst = {
 				type = catalyst_event_negative
 				target = c:GBR
 			}
@@ -104,12 +123,12 @@
 			}
 		}
 	}
-	
-	ai_chance = {
-		base = 0
 
-		modifier = {
-			trigger = {
+	ai_chance = {
+		value = 0
+
+		if = {
+			limit = {
 				c:RUS ?= {
 					relations:root >= relations_threshold:cordial
 				}
@@ -117,15 +136,15 @@
 			add = 15
 		}
 
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				is_diplomatic_play_committed_participant = yes
 			}
 			add = 10
 		}
 
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				has_variable = player_RUS_denied_aid_request
 			}
 			add = -1000
@@ -148,6 +167,8 @@ je_afghan_unification_appeal_to_britain_button = {
 		}
 	}
 
+	cooldown = { days = long_modifier_time }
+
 	possible = {
 		has_technology_researched = mandatory_service
 		NOR = {
@@ -163,24 +184,14 @@ je_afghan_unification_appeal_to_britain_button = {
 				type = rivalry
 			}
 		}
-		NOT = {
-			custom_tooltip = {
-				text = AFG_GBR_support_request_rejected_tt
-				has_variable = AFG_GBR_support_cooldown
+		any_scope_treaty = {
+			count < 1
+			OR = {
+				binds = c:GBR
+				binds = c:RUS
 			}
-		}
-		NOR = {
-			c:RUS ?= {
-				has_diplomatic_pact = {
-					who = ROOT
-					type = military_assistance
-				}
-			}
-			c:GBR ?= {
-				has_diplomatic_pact = {
-					who = ROOT
-					type = military_assistance
-				}
+			any_scope_article = {
+				has_type = military_assistance
 			}
 		}
 		c:RUS ?= {
@@ -204,13 +215,27 @@ je_afghan_unification_appeal_to_britain_button = {
 				}
 			}
 		}
-		c:GBR ?= {
-			can_create_diplomatic_pact = { target = ROOT type = military_assistance }
+		custom_tooltip = {
+			text = "can_create_treaty_MILITARY_ASSISTANCE"
+			c:GBR ?= {
+				can_create_treaty = {
+					first_country = c:GBR
+					second_country = ROOT
+					is_draft = no
+					binding_period = { years = 2 }
+					articles_to_create = {
+						{
+							article = military_assistance
+							source_country = c:GBR
+							target_country = ROOT
+						}
+					}
+				}
+			}
 		}
 	}
 
 	effect = {
-		set_variable = { name = AFG_GBR_support_cooldown years = 10 }
 		set_variable = { name = pending_aid_request value = c:GBR }
 		save_scope_as = afghan_nation_scope
 		c:GBR = {
@@ -221,16 +246,27 @@ je_afghan_unification_appeal_to_britain_button = {
 		custom_tooltip = AFG_appeal_accept_tt
 		show_as_tooltip = {
 			c:GBR = {
-				create_diplomatic_pact = {
-					country = ROOT
-					type = military_assistance
+				create_treaty = {
+					first_country = c:GBR
+					second_country = ROOT
+
+					is_draft = no
+					binding_period = { years = 2 }
+
+					articles_to_create = {
+						{
+							article = military_assistance
+							source_country = c:GBR
+							target_country = ROOT
+						}
+					}
 				}
 			}
-			create_diplomatic_catalyst = {  
+			create_diplomatic_catalyst = {
 				type = catalyst_event_positive
 				target = scope:relevant_country
 			}
-			create_diplomatic_catalyst = {  
+			create_diplomatic_catalyst = {
 				type = catalyst_event_negative
 				target = c:RUS
 			}
@@ -239,12 +275,12 @@ je_afghan_unification_appeal_to_britain_button = {
 			}
 		}
 	}
-	
-	ai_chance = {
-		base = 0
 
-		modifier = {
-			trigger = {
+	ai_chance = {
+		value = 0
+
+		if = {
+			limit = {
 				c:GBR ?= {
 					relations:root >= relations_threshold:cordial
 				}
@@ -252,15 +288,15 @@ je_afghan_unification_appeal_to_britain_button = {
 			add = 15
 		}
 
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				is_diplomatic_play_committed_participant = yes
 			}
 			add = 10
 		}
 
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				has_variable = player_GBR_denied_aid_request
 			}
 			add = -1000
@@ -271,7 +307,7 @@ je_afghan_unification_appeal_to_britain_button = {
 je_consolidate_afghanistan_durand_line = {
 	name = "je_consolidate_afghanistan_durand_line"
 	desc = "je_consolidate_afghanistan_durand_line_desc"
-	
+
 	selected = {
 		has_variable = proposed_durand_line
 	}
@@ -418,9 +454,9 @@ je_consolidate_afghanistan_durand_line = {
 	}
 
 	ai_chance = {
-		base = 200
-		modifier = {
-			trigger = {
+		value = 200
+		if = {
+			limit = {
 				OR = {
 					scope:afghan_partition_proxy ?= {
 						any_scope_state = {
@@ -434,8 +470,8 @@ je_consolidate_afghanistan_durand_line = {
 			}
 			add = 25
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				OR = {
 					scope:afghan_partition_proxy ?= {
 						any_scope_state = {
@@ -449,8 +485,8 @@ je_consolidate_afghanistan_durand_line = {
 			}
 			add = 25
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				OR = {
 					scope:afghan_partition_proxy ?= {
 						any_scope_state = {
@@ -464,24 +500,24 @@ je_consolidate_afghanistan_durand_line = {
 			}
 			add = 25
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				c:AFG = {
 					relations:root >= relations_threshold:cordial
 				}
 			}
 			add = -100
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				c:AFG = {
 					relations:root <= relations_threshold:poor
 				}
 			}
 			add = 200
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				has_variable = southwest_border_rejected
 			}
 			add = -200
@@ -496,7 +532,7 @@ je_consolidate_afghanistan_indus_line = {
 	selected = {
 		has_variable = proposed_indus_line
 	}
-	
+
 	visible = {
 		exists = c:AFG
 		OR = {
@@ -710,9 +746,9 @@ je_consolidate_afghanistan_indus_line = {
 	}
 
 	ai_chance = {
-		base = 50
-		modifier = {
-			trigger = {
+		value = 50
+		if = {
+			limit = {
 				c:AFG = {
 					any_scope_state = {
 						state_region = s:STATE_BALUCHISTAN
@@ -721,8 +757,8 @@ je_consolidate_afghanistan_indus_line = {
 			}
 			add = 25
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				c:AFG = {
 					any_scope_state = {
 						state_region = s:STATE_PASHTUNISTAN
@@ -731,8 +767,8 @@ je_consolidate_afghanistan_indus_line = {
 			}
 			add = 25
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				c:AFG = {
 					any_scope_state = {
 						state_region = s:STATE_QUETTA
@@ -741,8 +777,8 @@ je_consolidate_afghanistan_indus_line = {
 			}
 			add = 25
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				scope:afghan_partition_proxy ?= {
 					NOT = {
 						any_scope_state = {
@@ -753,8 +789,8 @@ je_consolidate_afghanistan_indus_line = {
 			}
 			add = 25
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				OR = {
 					has_attitude = {
 						who = c:AFG
@@ -763,17 +799,17 @@ je_consolidate_afghanistan_indus_line = {
 					has_attitude = {
 						who = c:AFG
 						attitude = domineering
-					}	
+					}
 					has_attitude = {
 						who = c:AFG
 						attitude = antagonistic
-					}								
-				}	
+					}
+				}
 			}
 			add = -50
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				OR = {
 					has_attitude = {
 						who = c:AFG
@@ -782,33 +818,33 @@ je_consolidate_afghanistan_indus_line = {
 					has_attitude = {
 						who = c:AFG
 						attitude = protective
-					}	
+					}
 					has_attitude = {
 						who = c:AFG
 						attitude = genial
-					}								
-				}	
+					}
+				}
 			}
 			add = 50
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				c:AFG = {
 					relations:root >= relations_threshold:cordial
 				}
 			}
 			add = 50
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				c:AFG = {
 					relations:root <= relations_threshold:poor
 				}
 			}
 			add = -45
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				has_variable = southwest_border_rejected
 			}
 			add = -100
@@ -823,7 +859,7 @@ je_consolidate_afghanistan_southeast_status_quo = {
 	selected = {
 		has_variable = proposed_status_quo
 	}
-	
+
 	visible = {
 		exists = c:AFG
 		OR = {
@@ -894,19 +930,19 @@ je_consolidate_afghanistan_southeast_status_quo = {
 		custom_tooltip = if_treaty_process_succeeds_tt
 		custom_tooltip = status_quo_southeast_tt
 	}
-	
+
 	ai_chance = {
-		base = 50
-		modifier = {
-			trigger = {
+		value = 50
+		if = {
+			limit = {
 				c:AFG = {
 					relations:root >= relations_threshold:cordial
 				}
 			}
 			add = 25
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				OR = {
 					has_attitude = {
 						who = c:AFG
@@ -915,17 +951,17 @@ je_consolidate_afghanistan_southeast_status_quo = {
 					has_attitude = {
 						who = c:AFG
 						attitude = protective
-					}	
+					}
 					has_attitude = {
 						who = c:AFG
 						attitude = genial
-					}								
-				}	
+					}
+				}
 			}
 			add = 25
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				has_variable = southwest_border_rejected
 			}
 			add = -75
@@ -936,7 +972,7 @@ je_consolidate_afghanistan_southeast_status_quo = {
 je_consolidate_afghanistan_torkestan_line = {
 	name = "je_consolidate_afghanistan_torkestan_line"
 	desc = "je_consolidate_afghanistan_torkestan_line_desc"
-	
+
 	selected = {
 		has_variable = proposed_torkestan_line
 	}
@@ -1056,11 +1092,11 @@ je_consolidate_afghanistan_torkestan_line = {
 			}
 		}
 	}
-	
+
 	ai_chance = {
-		base = 100
-		modifier = {
-			trigger = {
+		value = 100
+		if = {
+			limit = {
 				scope:afghan_partition_proxy ?= {
 					NOT = {
 						any_scope_state = {
@@ -1071,8 +1107,8 @@ je_consolidate_afghanistan_torkestan_line = {
 			}
 			add = 25
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				OR = {
 					scope:afghan_partition_proxy ?= {
 						any_scope_state = {
@@ -1086,32 +1122,32 @@ je_consolidate_afghanistan_torkestan_line = {
 			}
 			add = 25
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				c:AFG = {
 					relations:root >= relations_threshold:cordial
 				}
 			}
 			add = -50
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				c:AFG = {
 					relations:root <= relations_threshold:poor
 				}
 			}
 			add = 50
 		}
-		modifier = { # wants a buffer state
-			trigger = {
+		if = { # wants a buffer state
+			limit = {
 				scope:rival_gp_scope ?= {
 					relations:root <= relations_threshold:poor
 				}
 			}
 			add = -150
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				has_variable = north_border_rejected
 			}
 			add = -75
@@ -1122,7 +1158,7 @@ je_consolidate_afghanistan_torkestan_line = {
 je_consolidate_afghanistan_amu_darya_line = {
 	name = "je_consolidate_afghanistan_amu_darya_line"
 	desc = "je_consolidate_afghanistan_amu_darya_line_desc"
-	
+
 	selected = {
 		has_variable = proposed_amu_darya_line
 	}
@@ -1287,11 +1323,11 @@ je_consolidate_afghanistan_amu_darya_line = {
 			}
 		}
 	}
-	
+
 	ai_chance = {
-		base = 200
-		modifier = {
-			trigger = {
+		value = 200
+		if = {
+			limit = {
 				has_variable = north_border_rejected
 			}
 			add = -100
@@ -1306,7 +1342,7 @@ je_consolidate_afghanistan_north_status_quo = {
 	selected = {
 		has_variable = proposed_status_quo_north
 	}
-	
+
 	visible = {
 		exists = c:AFG
 		OR = {
@@ -1369,11 +1405,11 @@ je_consolidate_afghanistan_north_status_quo = {
 		custom_tooltip = if_treaty_process_succeeds_tt
 		custom_tooltip = status_quo_north_tt
 	}
-	
+
 	ai_chance = {
-		base = 50
-		modifier = {
-			trigger = {
+		value = 50
+		if = {
+			limit = {
 				OR = {
 					has_attitude = {
 						who = c:AFG
@@ -1382,17 +1418,17 @@ je_consolidate_afghanistan_north_status_quo = {
 					has_attitude = {
 						who = c:AFG
 						attitude = domineering
-					}	
+					}
 					has_attitude = {
 						who = c:AFG
 						attitude = antagonistic
-					}								
-				}	
+					}
+				}
 			}
 			add = -45
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				OR = {
 					has_attitude = {
 						who = c:AFG
@@ -1401,17 +1437,17 @@ je_consolidate_afghanistan_north_status_quo = {
 					has_attitude = {
 						who = c:AFG
 						attitude = protective
-					}	
+					}
 					has_attitude = {
 						who = c:AFG
 						attitude = genial
-					}								
-				}	
+					}
+				}
 			}
 			add = 50
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				has_variable = north_border_rejected
 			}
 			add = -50
@@ -1422,7 +1458,7 @@ je_consolidate_afghanistan_north_status_quo = {
 je_consolidate_afghanistan_approve_of_treaty = {
 	name = "je_consolidate_afghanistan_approve_of_treaty"
 	desc = "je_consolidate_afghanistan_approve_of_treaty_desc"
-	
+
 	visible = {
 		exists = c:AFG
 		NOT = {
@@ -1851,7 +1887,7 @@ je_consolidate_afghanistan_approve_of_treaty = {
 				custom_tooltip = status_quo_north_tt
 			}
 		}
-		
+
 		show_as_tooltip = {
 			if = {
 				limit = {
@@ -2122,11 +2158,11 @@ je_consolidate_afghanistan_approve_of_treaty = {
 			}
 		}
 	}
-	
+
 	ai_chance = {
-		base = 200
-		modifier = {
-			trigger = {
+		value = 200
+		if = {
+			limit = {
 				scope:rival_gp_scope ?= {
 					NOR = {
 						has_variable = proposed_durand_line
@@ -2147,7 +2183,7 @@ je_consolidate_afghanistan_approve_of_treaty = {
 je_consolidate_afghanistan_retract_treaty = {
 	name = "je_consolidate_afghanistan_retract_treaty"
 	desc = "je_consolidate_afghanistan_retract_treaty_desc"
-	
+
 	visible = {
 		exists = c:AFG
 		has_variable = afghanistan_delimitation_treaty_approved
@@ -2170,16 +2206,16 @@ je_consolidate_afghanistan_retract_treaty = {
 	effect = {
 		reset_afghan_treaty = yes
 	}
-	
+
 	ai_chance = {
-		base = 0
+		value = 0
 	}
 }
 
 je_consolidate_afghanistan_offer_compensation = {
 	name = "je_consolidate_afghanistan_offer_compensation"
 	desc = "je_consolidate_afghanistan_offer_compensation_desc"
-	
+
 	selected = {
 		has_variable = proposed_compensation_for_afghanistan
 	}
@@ -2205,22 +2241,36 @@ je_consolidate_afghanistan_offer_compensation = {
 		set_variable = proposed_compensation_for_afghanistan
 		custom_tooltip = if_treaty_process_succeeds_tt
 		show_as_tooltip = {
-			create_diplomatic_pact = {
-				country = c:AFG
-				type = bankroll
+			create_treaty = {
+				first_country = root
+				second_country = c:AFG
+
+				is_draft = no
+				binding_period = { years = 2 }
+
+				articles_to_create = {
+					{
+						article = money_transfer
+						source_country = root
+						target_country = c:AFG
+						inputs = {
+							{ quantity = 1000 }
+						}
+					}
+				}
 			}
 		}
 	}
-	
+
 	ai_chance = {
-		base = 200
+		value = 200
 	}
 }
 
 je_consolidate_afghanistan_threaten_reprisals = {
 	name = "je_consolidate_afghanistan_threaten_reprisals"
 	desc = "je_consolidate_afghanistan_threaten_reprisals_desc"
-	
+
 	selected = {
 		has_variable = proposed_reprisals_for_afghanistan
 	}
@@ -2252,16 +2302,16 @@ je_consolidate_afghanistan_threaten_reprisals = {
 		}
 		custom_tooltip = if_treaty_process_fails_relations_hit_tt
 	}
-	
+
 	ai_chance = {
-		base = 200
+		value = 200
 	}
 }
 
 je_consolidate_afghanistan_resolve_northern_conflict = {
 	name = "je_consolidate_afghanistan_resolve_northern_conflict"
 	desc = "je_consolidate_afghanistan_resolve_northern_conflict_desc"
-	
+
 
 	visible = {
 		exists = c:AFG
@@ -2317,9 +2367,9 @@ je_consolidate_afghanistan_resolve_northern_conflict = {
 			trigger_event = { id = gg_afghanistan.5 popup = yes }
 		}
 	}
-	
+
 	ai_chance = {
-		base = 200
+		value = 200
 	}
 }
 
@@ -2399,9 +2449,9 @@ je_consolidate_afghanistan_resolve_southwest_conflict = {
 			trigger_event = { id = gg_afghanistan.6 popup = yes }
 		}
 	}
-	
+
 	ai_chance = {
-		base = 200
+		value = 200
 	}
 }
 
@@ -2428,20 +2478,20 @@ je_pamir_expedition_dismiss_button = {
 			set_variable = dismissed_pamir_expedition
 		}
 	}
-	
+
 	ai_chance = {
-		base = 50
-		
-		modifier = {
-			trigger = {
+		value = 50
+
+		if = {
+			limit = {
 				c:RUS ?= {
 					"potential_diplomatic_play_power_ratio(root)" <= 1.00
 				}
 			}
 			add = -25
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				c:RUS ?= {
 					"potential_diplomatic_play_power_ratio(root)" <= 0.75
 				}

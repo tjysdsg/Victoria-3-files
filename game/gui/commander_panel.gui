@@ -52,11 +52,32 @@ types commander_panel_types
 					fittype = centercrop
 				}
 			}
+			
+			# Executive
+			widget = {
+				size = { 100% 100% }
+				visible = "[Character.IsExecutive]"
+				
+				background = {
+					texture = "gfx/interface/character_panel/backgrounds/char_role_executive.dds"
+					fittype = centercrop
+				}
+
+				# VFX
+				vfx = {	
+					blockoverride "camera_fov_y_degrees" {
+						camera_fov_y_degrees = 25
+					}
+					blockoverride "entity_instance" {
+						entity_instance = vfx_entity_ui_bg_executive_godrays
+					}	
+				}
+			}
 
 			# Politician
 			widget = {
 				size = { 100% 100% }
-				visible = "[And(And(Character.IsPolitician, Not(Character.IsRuler)),Not(Character.IsAgitator))]"
+				visible = "[And(And(And(Character.IsPolitician, Not(Character.IsRuler)),Not(Character.IsAgitator)),Not(Character.IsExecutive))]"
 				
 				background = {
 					texture = "gfx/interface/character_panel/backgrounds/char_role_politician.dds"
@@ -134,7 +155,7 @@ types commander_panel_types
 			# General
 			widget = {
 				size = { 100% 100% }
-				visible = "[And(And(Character.IsGeneral,And(Not(Character.IsRuler),Not(Character.IsHeir))),Not(Character.IsAgitator))]"
+				visible = "[And(And(And(Character.IsGeneral,And(Not(Character.IsRuler),Not(Character.IsHeir))),Not(Character.IsAgitator)), Not(Character.IsExecutive))]"
 				
 				background = {
 					texture = "gfx/interface/character_panel/backgrounds/char_role_general.dds"
@@ -152,7 +173,7 @@ types commander_panel_types
 			# Admiral
 			widget = {
 				size = { 100% 100% }
-				visible = "[And(Character.IsAdmiral,Not(Character.IsAgitator))]"
+				visible = "[And(And(Character.IsAdmiral,Not(Character.IsAgitator)), Not(Character.IsExecutive))]"
 				
 				background = {
 					texture = "gfx/interface/character_panel/backgrounds/char_role_admiral.dds"
@@ -207,6 +228,32 @@ types commander_panel_types
 			blockoverride "tooltip" {}
 			blockoverride "show_hat" {}
 			visible = "[Character.IsAgitator]"
+		}
+		
+		# character
+		character_portrait_base_no_mask = {
+			ignore_in_debug_draw = yes
+			parentanchor = left|bottom
+			
+			block "character_layout" {
+				position = { 50 10 }
+				size = { 250 400 }
+			}
+
+			blockoverride "portrait_size" {
+				block "character_portrait_size" {
+					size = { 575 575 }
+				}
+			}
+
+			blockoverride "portrait_texture" {
+				portrait_texture = "[Character.GetAnimatedPortrait('agitator_main_environment_ceo', 'camera_leader', 'idle', GetPortraitRenderSize(PdxGuiWidget.Self))]"
+			}
+
+			blockoverride "portrait_icons" {}
+			blockoverride "tooltip" {}
+			blockoverride "show_hat" {}
+			visible = "[Character.IsExecutive]"
 		}
 
 		character_portrait_base_no_mask = {
@@ -333,6 +380,23 @@ types commander_panel_types
 			blockoverride "show_hat" {}
 			visible = "[And(Character.IsGeneral,And(Not(Character.IsRuler),Not(Character.IsHeir)))]"
 		}
+
+		# Executive VFX
+			widget = {
+				size = { 100% 100% }
+				visible = "[Character.IsExecutive]"
+				
+
+				# VFX
+				vfx = {	
+					blockoverride "camera_fov_y_degrees" {
+						camera_fov_y_degrees = 25
+					}
+					blockoverride "entity_instance" {
+						entity_instance = vfx_entity_ui_bg_executive_dust
+					}	
+				}
+			}
 		
 		icon = {
 			using = dark_area
@@ -444,7 +508,7 @@ types commander_panel_types
 		}
 
 		blockoverride "window_header_name" {
-			text = "[Character.GetFullName]"
+			text = "[LabelingHelper.CapitalizeOnlyFirst(Character.GetFullNameNoFormatting)]"
 		}
 
 		blockoverride "window_header_name_line_two" {
@@ -483,7 +547,7 @@ types commander_panel_types
 				visible = "[And( Character.IsGeneral, Character.IsAtFront )  ]"
 				datacontext = "[Character.GetFront]"
 				tooltip = "GO_TO_BUTTON_FRONT"
-				onclick = "[InformationPanelBar.OpenFrontPanel(Character.GetFront)]"
+				onclick = "[InformationPanelBar.OpenFrontPanel(Front.Self)]"
 				input_action = "go_to_details"
 			}
 			button_icon_goto = { # character is Admiral with the order of raiding convoys
@@ -988,7 +1052,7 @@ types commander_panel_types
 
 				battle_item = {
 					visible = "[Character.IsInBattle]"
-					datacontext = "[Character.GetBattle]"
+					datacontext = "[Character.AccessBattle]"
 				}
 
 				flowcontainer = {
@@ -1014,7 +1078,7 @@ types commander_panel_types
 							}
 
 							blockoverride "onclick" {
-								onclick = "[InformationPanelBar.OpenMilitaryFormationPanelTab( MilitaryFormation.AccessSelf, 'default' )]"
+								onclick = "[InformationPanelBar.OpenMilitaryFormationPanelTab( MilitaryFormation.Self, 'default' )]"
 								onrightclick = "[RightClickMenuManager.ShowForMilitaryFormation(MilitaryFormation.AccessSelf)]"
 							}
 						}
@@ -1189,11 +1253,6 @@ types character_stats
 		size = { 35 35 }
 
 		icon = {
-			visible = "[And(And(Character.IsPolitician,And(Not(Character.IsRuler),Not(Character.IsHeir))),Not(Character.IsAgitator))]"
-			size = { 100% 100% }
-			texture = "gfx/interface/icons/character_role_icons/politician.dds"
-		}
-		icon = {
 			visible = "[Character.IsAgitator]"
 			size = { 100% 100% }
 			texture = "gfx/interface/icons/character_role_icons/agitator.dds"
@@ -1217,6 +1276,16 @@ types character_stats
 			visible = "[And(And(Not(Or(Character.IsPolitician, Or(Character.IsRuler, Character.IsHeir))), Character.IsAdmiral),Not(Character.IsAgitator))]"
 			size = { 100% 100% }
 			texture = "gfx/interface/icons/character_role_icons/admiral.dds"
+		}
+		icon = {
+			visible = "[And(And(Character.IsPolitician,And(Not(Character.IsRuler),Not(Character.IsHeir))),Not(Character.IsAgitator))]"
+			size = { 100% 100% }
+			texture = "gfx/interface/icons/character_role_icons/politician.dds"
+		}
+		icon = {
+			visible = "[And(And(And(Not(Character.IsPolitician), And(Not(Character.IsRuler), Not(Character.IsHeir))), Not(Character.IsAgitator)), Character.IsExecutive)]"
+			size = { 100% 100% }
+			texture = "gfx/interface/icons/character_role_icons/executive.dds"
 		}
 	}
 }

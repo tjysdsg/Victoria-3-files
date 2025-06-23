@@ -107,6 +107,9 @@ expedition_events.502 = { #Choose commander
 			set_variable = expedition_leader_var
 			set_character_busy_and_immortal = yes
 			save_scope_as = expedition_leader
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		trigger_event = { id = expedition_events.504 days = 30 }
 	}
@@ -125,6 +128,9 @@ expedition_events.502 = { #Choose commander
 			set_variable = expedition_leader_var
 			set_character_busy_and_immortal = yes
 			save_scope_as = expedition_leader
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		trigger_event = { id = expedition_events.504 days = 30 }
 	}
@@ -143,6 +149,9 @@ expedition_events.502 = { #Choose commander
 			set_variable = expedition_leader_var
 			set_character_busy_and_immortal = yes
 			save_scope_as = expedition_leader
+			ROOT = {
+				set_variable = { name = expedition_leader_storage_var value = prev }
+			}
 		}
 		trigger_event = { id = expedition_events.504 days = 30 }
 	}
@@ -165,7 +174,7 @@ expedition_events.504 = { #Expedition Arrives
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
 
     duration = 3
-	
+
 	immediate = {
 		central_africa_location_effect = yes
 		random_scope_character = {
@@ -226,7 +235,7 @@ expedition_events.511 = { #Successful expedition
 		}
 		add_modifier = {
 			name = modifier_central_africa_expedition_complete
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 }
@@ -267,7 +276,7 @@ expedition_events.512 = { #Failed expedition
 		}
 		add_modifier = {
 			name = modifier_failed_expedition
-			months = normal_modifier_time
+			days = normal_modifier_time
 			is_decaying	= yes
 		}
 	}
@@ -290,7 +299,7 @@ expedition_events.520 = { #Pay Tax
 	icon = "gfx/interface/icons/event_icons/event_trade.dds"
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = expedition_more_taxes }
 	}
@@ -311,7 +320,7 @@ expedition_events.520 = { #Pay Tax
 		add_modifier = {
 			name = expedition_taxes_modifier
 			multiplier = money_amount_multiplier_small
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 
@@ -339,7 +348,7 @@ expedition_events.530 = { #Lost Mules
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = expedition_lost_mules }
 	}
@@ -383,7 +392,7 @@ expedition_events.540 = { #Rhino hunt
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = expedition_rhino_hunt }
 	}
@@ -402,6 +411,20 @@ expedition_events.540 = { #Rhino hunt
 		default_option = yes
 		random_list = {
 			10 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 5
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 20
+					}
+				}
 				trigger_event = { id = expedition_events.541 days = 0 popup = yes } #Success
 			}
 			10 = {
@@ -447,7 +470,7 @@ expedition_events.541 = { #Rhino Hunt Success
 		custom_tooltip = expedition_event_ongoing_tt
 		add_modifier = {
 			name = modifier_expedition_rhino_hunt
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 }
@@ -498,7 +521,7 @@ expedition_events.550 = { #Beetle in ear
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = expedition_ear_beetle }
 	}
@@ -569,7 +592,7 @@ expedition_events.560 = { #Leader runs out of vice
 				has_trait = alcoholic
 				has_trait = opium_addiction
 				has_trait = cocaine_addiction
-			}	
+			}
 		}
     }
 
@@ -607,7 +630,7 @@ expedition_events.560 = { #Leader runs out of vice
 			limit = { has_variable = west_america_expedition_var }
 			west_america_expedition_location = yes
 		}
-		
+
 		random_scope_character = {
 			limit = { has_variable = expedition_leader_var }
 			save_scope_as = expedition_leader
@@ -628,6 +651,20 @@ expedition_events.560 = { #Leader runs out of vice
 			90 = {
 			}
 			10 = {
+				modifier = {
+					if = {
+						limit = {
+							ROOT.modifier:country_expedition_events_explorer_mult > 0
+						}
+						add = 5
+					}
+					if = {
+						limit = {
+							scope:expedition_leader.modifier:character_expedition_events_explorer_mult > 0
+						}
+						add = 20
+					}
+				}
 				scope:expedition_leader = {
 					remove_trait = alcoholic
     				remove_trait = opium_addiction
@@ -655,7 +692,7 @@ expedition_events.570 = { #Mapping geography
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
 
     duration = 3
-	
+
 	trigger = {
 		NOT = { has_variable = expedition_geographic_study }
 	}
@@ -675,7 +712,7 @@ expedition_events.570 = { #Mapping geography
 		custom_tooltip = expedition_event_delayed_tt
 		add_modifier = {
 			name = modifier_expedition_geographic_study
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 		set_variable = expedition_geographic_var #grand exhibition bonus
 	}
@@ -702,7 +739,7 @@ ai_expedition_simulator.1 = {
 					trigger_event = { id = cold.10 }
 					add_modifier = {
 						name = modifier_failed_expedition
-						months = normal_modifier_time
+						days = normal_modifier_time
 						is_decaying	= yes
 					}
 				}

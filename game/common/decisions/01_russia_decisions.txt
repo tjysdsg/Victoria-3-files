@@ -30,7 +30,22 @@
 			}
 		}
 		has_interest_marker_in_region = region_caucasus
-		can_create_diplomatic_pact = { target = c:CIR type = military_assistance }
+		custom_tooltip = {
+			text = "can_create_treaty_MILITARY_ASSISTANCE"
+			can_create_treaty = {
+				first_country = root
+				second_country = c:CIR
+				is_draft = no
+				binding_period = { years = 2 }
+				articles_to_create = {
+					{
+						article = military_assistance
+						source_country = root
+						target_country = c:CIR
+					}
+				}
+			}
+		}
 	}
 
 	when_taken = {
@@ -42,18 +57,29 @@
 				country = root
 				value = -30
 			}
-			create_diplomatic_catalyst = {  
+			create_diplomatic_catalyst = {
 				type = catalyst_event_negative
 				target = root
 			}
 		}
 		set_variable = circassia_recognizer
-		create_diplomatic_pact = {
-			country = c:CIR
-			type = military_assistance
+		create_treaty = {
+			first_country = root
+			second_country = c:CIR
+
+			is_draft = no
+			binding_period = { years = 2 }
+
+			articles_to_create = {
+				{
+					article = military_assistance
+					source_country = root
+					target_country = c:CIR
+				}
+			}
 		}
 		c:CIR = {
-			create_diplomatic_catalyst = {  
+			create_diplomatic_catalyst = {
 				type = catalyst_event_positive
 				target = root
 			}
@@ -68,12 +94,12 @@
 			}
 			remove_variable = circassia_recognition_seeking
 		}
-	}  
+	}
 
 	ai_chance = {
-		base = 0
-		modifier = {
-			trigger = {
+		value = 0
+		if = {
+			limit = {
 				OR = {
 					has_attitude = { who = c:RUS attitude = antagonistic }
 					has_attitude = { who = c:RUS attitude = belligerent }
@@ -82,8 +108,8 @@
 			}
 			add = 30
 		}
-		modifier = {
-			trigger = {
+		if = {
+			limit = {
 				OR = {
 					has_attitude = { who = c:RUS attitude = wary }
 					has_attitude = { who = c:RUS attitude = cautious }

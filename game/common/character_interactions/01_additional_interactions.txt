@@ -49,7 +49,7 @@ arrange_accident = {
 		}
 		if = {
 			limit = {
-				exists = institution:institution_home_affairs
+				exists = owner.institution:institution_home_affairs
 			}
 			random_list = {
 				40 = {
@@ -128,7 +128,7 @@ arrange_accident = {
 						this.political_movement = {
 							add_modifier = {
 								name = modifier_government_accident_attempt
-								months = long_modifier_time
+								days = long_modifier_time
 							}
 						}
 					}
@@ -148,7 +148,7 @@ arrange_accident = {
 								}
 								add_modifier = {
 									name = modifier_government_accident_attempt
-									months = long_modifier_time
+									days = long_modifier_time
 								}
 							}
 						}
@@ -182,7 +182,7 @@ arrange_accident = {
 						this.political_movement = {
 							add_modifier = {
 								name = modifier_government_accident_attempt
-								months = long_modifier_time
+								days = long_modifier_time
 							}
 						}
 					}
@@ -202,7 +202,7 @@ arrange_accident = {
 								}
 								add_modifier = {
 									name = modifier_government_accident_attempt
-									months = long_modifier_time
+									days = long_modifier_time
 								}
 							}
 						}
@@ -212,7 +212,7 @@ arrange_accident = {
 		}
 	}
 
-	cooldown = { months = normal_modifier_time }
+	cooldown = { days = normal_modifier_time }
 	show_confirmation_box = yes
 
 	ai_chance = {
@@ -221,7 +221,7 @@ arrange_accident = {
 			limit = {
 				interest_group = {
 					ig_approval <= -5
-				}		
+				}
 			}
 			add = 25
 		}
@@ -229,7 +229,7 @@ arrange_accident = {
 			limit = {
 				interest_group = {
 					ig_approval <= -10
-				}		
+				}
 			}
 			add = 30
 		}
@@ -241,7 +241,7 @@ arrange_accident = {
 						has_law = law_type:law_oligarchy
 						has_law = law_type:law_single_party_state
 					}
-				}			
+				}
 			}
 			add = -25
 		}
@@ -249,7 +249,7 @@ arrange_accident = {
 			limit = {
 				scope:actor ?= {
 					has_law = law_type:law_outlawed_dissent
-				}			
+				}
 			}
 			add = 30
 		}
@@ -257,7 +257,7 @@ arrange_accident = {
 			limit = {
 				scope:actor ?= {
 					has_law = law_type:law_censorship
-				}			
+				}
 			}
 			add = 10
 		}
@@ -265,7 +265,7 @@ arrange_accident = {
 			limit = {
 				scope:actor ?= {
 					has_law = law_type:law_right_of_assembly
-				}			
+				}
 			}
 			add = -10
 		}
@@ -273,7 +273,7 @@ arrange_accident = {
 			limit = {
 				scope:actor ?= {
 					has_law = law_type:law_protected_speech
-				}			
+				}
 			}
 			add = -20
 		}
@@ -283,7 +283,7 @@ arrange_accident = {
 					any_interest_group = {
 						is_insurrectionary = yes
 					}
-				}			
+				}
 			}
 			add = 25
 		}
@@ -295,7 +295,7 @@ arrange_accident = {
 							has_trait = cruel
 						}
 					}
-				}			
+				}
 			}
 			add = 15
 		}
@@ -307,7 +307,7 @@ arrange_accident = {
 							has_trait = imperious
 						}
 					}
-				}			
+				}
 			}
 			add = 10
 		}
@@ -345,19 +345,21 @@ resign_from_office = {
 				has_trait = senile
 				has_trait = wounded
 			}
-			owner ?= {
-				any_political_movement = {
-					is_insurrectionary = yes
-					exists = most_desired_law			
-					trigger_if = {
-						limit = { 
+			owner ?= {  # Our thanks to UHM for reporting this
+				trigger_if = {
+					limit = {
+						any_political_movement = {
 							is_insurrectionary = yes
 							exists = most_desired_law
 						}
+					}
+					any_political_movement = {
+						is_insurrectionary = yes
+						exists = most_desired_law
 						most_desired_law ?= { save_temporary_scope_as = revolutionary_law }
-						custom_tooltip = {	
-							text = ruler_disapproves_of_revolutionary_law					
-							root = {						
+						custom_tooltip = {
+							text = ruler_disapproves_of_revolutionary_law
+							root = {
 								OR = {
 									law_enactment_stance = {
 										law = scope:revolutionary_law
@@ -367,14 +369,22 @@ resign_from_office = {
 										law_enactment_stance = {
 											law = scope:revolutionary_law
 											value < neutral
-										}									
+										}
 									}
 								}
-							}	
-						}						
+							}
+						}
 					}
-					trigger_else = {
-						custom_tooltip = ruler_disapproves_of_revolutionary_law_contextless
+				}
+				trigger_else = {
+					AND = {
+						any_political_movement = {
+							is_insurrectionary = yes
+						}
+						custom_tooltip = {
+							text = ruler_disapproves_of_revolutionary_law_contextless
+							always = no
+						}
 					}
 				}
 			}
@@ -385,7 +395,8 @@ resign_from_office = {
 		if = {
 			limit = {
 				owner ?= {
-					any_interest_group = {
+					any_political_movement = {
+						exists = most_desired_law
 						is_insurrectionary = yes
 					}
 				}
@@ -407,30 +418,30 @@ resign_from_office = {
 	ai_chance = {
 		value = -50
 		if = {
-			limit = {	
+			limit = {
 				interest_group = {
 					ig_approval <= angry
 				}
 			}
 			add = 25
-		}	
+		}
 		if = {
 			limit = {
 				interest_group = {
 					is_marginal = yes
-				}				
+				}
 			}
 			add = 25
 		}
 		if = {
 			limit = {
-				popularity <= -50			
+				popularity <= -50
 			}
 			add = 25
 		}
 		if = {
 			limit = {
-				popularity <= -75			
+				popularity <= -75
 			}
 			add = 25
 		}
@@ -441,7 +452,7 @@ resign_from_office = {
 					has_trait = cancer
 					has_trait = senile
 					has_trait = wounded
-				}			
+				}
 			}
 			add = 25
 		}
@@ -450,7 +461,7 @@ resign_from_office = {
 				OR = {
 					has_trait = arrogant
 					has_trait = imperious
-				}			
+				}
 			}
 			add = -50
 		}
@@ -487,7 +498,7 @@ send_to_jail = {
 		trigger_event = { id = jail.1 popup = yes }
 	}
 
-	cooldown = { months = short_modifier_time }
+	cooldown = { days = short_modifier_time }
 
 	ai_chance = {
 		value = -50
@@ -495,7 +506,7 @@ send_to_jail = {
 			limit = {
 				interest_group = {
 					ig_approval <= -5
-				}		
+				}
 			}
 			add = 25
 		}
@@ -503,7 +514,7 @@ send_to_jail = {
 			limit = {
 				interest_group = {
 					ig_approval <= -10
-				}		
+				}
 			}
 			add = 30
 		}
@@ -515,7 +526,7 @@ send_to_jail = {
 						has_law = law_type:law_oligarchy
 						has_law = law_type:law_single_party_state
 					}
-				}			
+				}
 			}
 			add = -25
 		}
@@ -523,7 +534,7 @@ send_to_jail = {
 			limit = {
 				scope:actor ?= {
 					has_law = law_type:law_outlawed_dissent
-				}			
+				}
 			}
 			add = 30
 		}
@@ -531,7 +542,7 @@ send_to_jail = {
 			limit = {
 				scope:actor ?= {
 					has_law = law_type:law_censorship
-				}			
+				}
 			}
 			add = 10
 		}
@@ -539,7 +550,7 @@ send_to_jail = {
 			limit = {
 				scope:actor ?= {
 					has_law = law_type:law_right_of_assembly
-				}			
+				}
 			}
 			add = -10
 		}
@@ -547,7 +558,7 @@ send_to_jail = {
 			limit = {
 				scope:actor ?= {
 					has_law = law_type:law_protected_speech
-				}			
+				}
 			}
 			add = -20
 		}
@@ -557,7 +568,7 @@ send_to_jail = {
 					any_interest_group = {
 						is_insurrectionary = yes
 					}
-				}			
+				}
 			}
 			add = 25
 		}
@@ -569,7 +580,7 @@ send_to_jail = {
 							has_trait = cruel
 						}
 					}
-				}			
+				}
 			}
 			add = 15
 		}
@@ -581,7 +592,7 @@ send_to_jail = {
 							has_trait = imperious
 						}
 					}
-				}			
+				}
 			}
 			add = 10
 		}

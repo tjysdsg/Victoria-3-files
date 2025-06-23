@@ -2,28 +2,39 @@
 company_krupp = {
 	icon = "gfx/interface/icons/company_icons/historical_company_icons/german_krupp.dds"
 	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_heavy.dds"
-	
+
 	flavored_company = yes
-	
-	building_types = {  
+
+	preferred_headquarters = { STATE_RUHR }
+
+	building_types = {
 		building_arms_industry
 		building_artillery_foundries
 		building_steel_mills
 	}
-	
+
+	extension_building_types = {
+		building_iron_mine
+	}
+
+	possible_prestige_goods = {
+		prestige_good_krupp_guns
+	}
+
 	potential = {
 		has_interest_marker_in_region = region_north_germany
 	}
-	
+
 	attainable = {
 		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
 			any_scope_state = {
 				state_region = s:STATE_RUHR
 			}
 		}
-	}	
-	
-	possible = { 
+	}
+
+	possible = {
+		has_technology_researched = steelworking
 		any_scope_state = {
 			state_region = s:STATE_RUHR
 			is_incorporated = yes
@@ -33,17 +44,45 @@ company_krupp = {
 					is_building_type = building_arms_industry
 					is_building_type = building_artillery_foundries
 				}
-				level >= 3
+				level >= 5
 			}
 		}
-		has_technology_researched = steelworking
 	}
-	
+
 	prosperity_modifier = {
 		building_railway_throughput_add = 0.1
 		unit_kill_rate_add = 0.1
-	}	
-	
+	}
+
+	ai_will_do = {
+		has_technology_researched = steelworking
+		any_scope_state = {
+			state_region = s:STATE_RUHR
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_steel_mills = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_RUHR
+			}
+		}
+		building_arms_industry = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_RUHR
+			}
+		}
+		building_artillery_foundries = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_RUHR
+			}
+		}
+	}
+
 	ai_weight = {
 		value = 3 # Higher base value for flavored companies
 	}
@@ -53,19 +92,26 @@ company_krupp = {
 company_rheinmetall = {
 	icon = "gfx/interface/icons/company_icons/historical_company_icons/german_rheinmetall.dds"
 	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_heavy.dds"
-	
+
 	flavored_company = yes
-	
-	building_types = {  
+
+	preferred_headquarters = { STATE_RUHR STATE_NORTH_RHINE }
+
+	building_types = {
 		building_artillery_foundries
 		building_munition_plants
 		building_explosives_factory
 	}
-	
+
+	extension_building_types = {
+		building_motor_industry
+		building_steel_mills
+	}
+
 	potential = {
 		has_interest_marker_in_region = region_north_germany
 	}
-	
+
 	attainable = {
 		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
 			any_scope_state = {
@@ -75,9 +121,10 @@ company_rheinmetall = {
 				}
 			}
 		}
-	}		
-	
+	}
+
 	possible = {
+		has_technology_researched = automatic_machine_guns
 		any_scope_state = {
 			OR = {
 				state_region = s:STATE_RUHR
@@ -90,65 +137,136 @@ company_rheinmetall = {
 					is_building_type = building_artillery_foundries
 					is_building_type = building_munition_plants
 				}
-				level >= 3
+				level >= 5
 			}
 		}
-		has_technology_researched = automatic_machine_guns
 	}
-	
+
 	prosperity_modifier = {
 		unit_combat_unit_type_siege_artillery_offense_mult = 0.1
 		unit_combat_unit_type_shrapnel_artillery_offense_mult = 0.1
 		unit_army_defense_mult = 0.05
 	}
 
+	ai_will_do = {
+		has_technology_researched = automatic_machine_guns
+		any_scope_state = {
+			OR = {
+				state_region = s:STATE_RUHR
+				state_region = s:STATE_NORTH_RHINE
+			}
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_munition_plants = {
+			level = 5
+			state_trigger = {
+				OR = {
+					state_region = s:STATE_RUHR
+					state_region = s:STATE_NORTH_RHINE
+				}
+				is_incorporated = yes
+			}
+		}
+		building_arms_industry = {
+			level = 5
+			state_trigger = {
+				OR = {
+					state_region = s:STATE_RUHR
+					state_region = s:STATE_NORTH_RHINE
+				}
+				is_incorporated = yes
+			}
+		}
+		building_artillery_foundries = {
+			level = 5
+			state_trigger = {
+				OR = {
+					state_region = s:STATE_RUHR
+					state_region = s:STATE_NORTH_RHINE
+				}
+				is_incorporated = yes
+			}
+		}
+	}
+
 	ai_weight = {
 		value = 3 # Higher base value for flavored companies
-	}	
+	}
 }
 
 # F. Schichau, Maschinen- und Lokomotivfabrik, Schiffswerft und Eisengießerei GmbH
 company_schichau = {
 	icon = "gfx/interface/icons/company_icons/historical_company_icons/german_schichau.dds"
 	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_heavy.dds"
-	
+
 	flavored_company = yes
-	
-	building_types = {  
+
+	preferred_headquarters = { STATE_WEST_PRUSSIA }
+
+	building_types = {
 		building_motor_industry
 		building_military_shipyards
 		building_shipyards
 	}
-	
+
+	possible_prestige_goods = {
+		prestige_good_schichau_engines
+	}
+
+	extension_building_types = {
+		building_railway
+		building_steel_mills
+	}
+
 	potential = {
 		has_interest_marker_in_region = region_poland
 	}
-	
+
 	attainable = {
 		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
 			any_scope_state = {
-				state_region = s:STATE_WEST_PRUSSIA			
+				state_region = s:STATE_WEST_PRUSSIA
 			}
 		}
-	}	
-	
-	possible = { 
+	}
+
+	possible = {
+		has_technology_researched = railways
 		any_scope_state = {
 			state_region = s:STATE_WEST_PRUSSIA
 			is_incorporated = yes
 			any_scope_building = {
 				is_building_type = building_motor_industry
-				level >= 3
+				level >= 5
 			}
 		}
-		has_technology_researched = atmospheric_engine
 	}
-	
+
 	prosperity_modifier = {
 		unit_navy_offense_mult = 0.05
 		unit_combat_unit_type_submarine_offense_mult = 0.1
-	}	
-	
+	}
+
+	ai_will_do = {
+		has_technology_researched = railways
+		any_scope_state = {
+			state_region = s:STATE_WEST_PRUSSIA
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_motor_industry = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_WEST_PRUSSIA
+			}
+		}
+	}
+
 	ai_weight = {
 		value = 3 # Higher base value for flavored companies
 	}
@@ -158,41 +276,65 @@ company_schichau = {
 company_siemens_and_halske = {
 	icon = "gfx/interface/icons/company_icons/historical_company_icons/german_siemens_halske.dds"
 	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_heavy.dds"
-	
+
 	flavored_company = yes
-	
-	building_types = {  
+
+	preferred_headquarters = { STATE_BRANDENBURG }
+
+	building_types = {
 		building_electrics_industry
 	}
-	
+
+	extension_building_types = {
+		building_motor_industry
+		building_railway
+	}
+
 	potential = {
 		has_interest_marker_in_region = region_north_germany
 	}
-	
+
 	attainable = {
 		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
 			any_scope_state = {
-				state_region = s:STATE_BRANDENBURG		
+				state_region = s:STATE_BRANDENBURG
 			}
 		}
-	}		
-	
+	}
+
 	possible = {
+		has_technology_researched = electric_telegraph
 		any_scope_state = {
 			state_region = s:STATE_BRANDENBURG
 			is_incorporated = yes
 			any_scope_building = {
 				is_building_type = building_electrics_industry
-				level >= 3
+				level >= 5
 			}
 		}
-		has_technology_researched = electric_telegraph
 	}
-	
+
 	prosperity_modifier = {
 		building_power_plant_throughput_add = 0.15
-	}	
-	
+	}
+
+	ai_will_do = {
+		has_technology_researched = electric_telegraph
+		any_scope_state = {
+			state_region = s:STATE_BRANDENBURG
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_electrics_industry = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_BRANDENBURG
+			}
+		}
+	}
+
 	ai_weight = {
 		value = 3 # Higher base value for flavored companies
 	}
@@ -202,34 +344,66 @@ company_siemens_and_halske = {
 company_prussian_state_railways = {
 	icon = "gfx/interface/icons/company_icons/historical_company_icons/german_kpev.dds"
 	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_railways.dds"
-	
+
 	flavored_company = yes
-	
-	building_types = {  
+
+	building_types = {
 		building_railway
 	}
-	
+
+	extension_building_types = {
+		building_motor_industry
+	}
+
 	potential = {
 		OR = {
 			c:PRU ?= this
 			was_formed_from = PRU
 		}
 	}
-	
+
 	possible = {
+		has_technology_researched = railways
 		any_scope_state = {
 			OR = {
 				region = sr:region_north_germany
 				region = sr:region_south_germany
 			}
 			is_incorporated = yes
-			has_building = building_railway
-			count >= 6
+			any_scope_building = {
+				is_building_type = building_railway
+				level >= 5
+			}
+			count >= 3
 		}
 	}
 
 	prosperity_modifier = {
 		military_formation_movement_speed_mult = 0.1
+	}
+
+	ai_will_do = {
+		has_technology_researched = railways
+		any_scope_state = {
+			OR = {
+				region = sr:region_north_germany
+				region = sr:region_south_germany
+			}
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_railway = {
+			level = 5
+			state_trigger = {
+				OR = {
+					region = sr:region_north_germany
+					region = sr:region_south_germany
+				}
+				is_incorporated = yes
+			}
+		}
 	}
 
 	ai_weight = {
@@ -242,42 +416,71 @@ company_prussian_state_railways = {
 company_basf = {
 	icon = "gfx/interface/icons/company_icons/historical_company_icons/german_basf.dds"
 	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_heavy.dds"
-	
+
 	flavored_company = yes
-	
-	building_types = {  
+
+	preferred_headquarters = { STATE_BADEN }
+
+	building_types = {
 		building_synthetics_plants
 		building_chemical_plants
 	}
-	
+
+	extension_building_types = {
+		building_dye_plantation
+		building_sulfur_mine
+	}
+
+	possible_prestige_goods = {
+		prestige_good_german_aniline
+	}
+
 	potential = {
 		has_interest_marker_in_region = region_south_germany
 	}
-	
+
 	attainable = {
 		hidden_trigger = { # Hide attainable if it's always fulfilled by possible
 			any_scope_state = {
-				state_region = s:STATE_BADEN		
+				state_region = s:STATE_BADEN
 			}
 		}
-	}		
-	
+	}
+
 	possible = {
+		has_technology_researched = aniline
 		any_scope_state = {
 			state_region = s:STATE_BADEN
 			is_incorporated = yes
 			any_scope_building = {
 				is_building_type = building_synthetics_plants
-				level >= 3
+				level >= 5
 			}
 		}
 	}
-	
+
 	prosperity_modifier = {
 		country_weekly_innovation_mult = 0.1
 		building_group_bg_oil_extraction_throughput_add = 0.05
-	}	
-	
+	}
+
+	ai_will_do = {
+		has_technology_researched = aniline
+		any_scope_state = {
+			state_region = s:STATE_BADEN
+			is_incorporated = yes
+		}
+	}
+
+	ai_construction_targets = {
+		building_synthetics_plants = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_BADEN
+			}
+		}
+	}
+
 	ai_weight = {
 		value = 3 # Higher base value for flavored companies
 	}

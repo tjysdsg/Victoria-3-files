@@ -39,6 +39,13 @@ types pops_overview
 			text = "POPS_OVERVIEW_TITLE"
 		}
 
+		blockoverride "map_modes_button" {
+			map_modes_single_button_minimized = {
+				datacontext = "[PopsOverviewPanel.GetMapModeList]"
+				using = map_modes_button_position
+			}
+		}
+
 		blockoverride "fixed_top" {
 			#TABS
 			tab_buttons = {
@@ -186,23 +193,26 @@ types pops_overview
 
 						}
 
-						textbox = {
-							minimumsize = { 265 -1 }
-							maximumsize = { 265 -1 }
-							margin = { 20 9 }
-							background = {
-								using = entry_bg
-							}
-							using = average_standard_of_living_tooltip_with_graph
-							text = "COUNTRY_SOL_ALL_LABEL"
-							autoresize = yes
-							using = fontsize_large
-							parentanchor = vcenter
-							align = hcenter|nobaseline
-							fontsize_min = 14
-							elide = right
-						}
+						widget = {
+							size = { 265 45 }
 
+							textbox = {
+								minimumsize = { 215 -1 }
+								maximumsize = { 215 -1 }
+								margin = { 20 9 }
+								background = {
+									using = entry_bg
+								}
+								using = average_standard_of_living_tooltip_with_graph
+								text = "COUNTRY_SOL_ALL_LABEL"
+								autoresize = yes
+								using = fontsize_large
+								parentanchor = vcenter
+								align = hcenter|nobaseline
+								fontsize_min = 14
+								elide = right
+							}
+						}
 					}
 
 					flowcontainer = {
@@ -1202,6 +1212,98 @@ types pops_overview
 
 		blockoverride "rightside2_info" {
 			raw_text = "([PopType.GetPolStr(GetPlayer)|K])"
+		}
+	}
+
+	type market_importers_piechart = chart {
+		blockoverride "datamodel" {
+			datamodel = "[WorldMarketPanel.GetMarketsSortedOnImports]"
+		}
+
+		blockoverride "show_more_button_visibility" {
+			visible = "[GreaterThan_int32(GetDataModelSize(WorldMarketPanel.GetMarketsSortedOnImports), '(int32)3')]"
+		}
+
+		blockoverride "heading" {
+			text = "IMPORTERS"
+		}
+
+		blockoverride "tooltip" {
+			tooltip = "WORLD_MARKET_IMPORTERS_TOOLTIP"
+		}
+
+		blockoverride "pieslice" {
+			value = "[Market.GetTotalImportedAmount]"
+		}
+
+		blockoverride "color" {
+			color = "[Market.GetOwner.GetMapColor]"
+		}
+		
+		blockoverride "pie_item_goto_button" {
+			button = {
+				using = clean_button
+				size = { 100% 100% }
+				onclick = "[InformationPanelBar.OpenMarketPanel(Market.Self)]"
+			}
+		}
+
+		blockoverride "leftside_info" {
+			text = "[Market.GetName]"
+		}
+
+		blockoverride "rightside1_info" {
+			text = "[Market.GetTotalImportedAmount|Dv]"
+		}
+
+		blockoverride "rightside2_info" {
+			visible = no
+		}
+	}
+
+	type market_exporters_piechart = chart {
+		blockoverride "datamodel" {
+			datamodel = "[WorldMarketPanel.GetMarketsSortedOnExports]"
+		}
+
+		blockoverride "show_more_button_visibility" {
+			visible = "[GreaterThan_int32(GetDataModelSize(WorldMarketPanel.GetMarketsSortedOnExports), '(int32)3')]"
+		}
+
+		blockoverride "heading" {
+			text = "EXPORTERS"
+		}
+
+		blockoverride "tooltip" {
+			tooltip = "WORLD_MARKET_EXPORTERS_TOOLTIP"
+		}
+
+		blockoverride "pieslice" {
+			value = "[Market.GetTotalExportedAmount]"
+		}
+
+		blockoverride "color" {
+			color = "[Market.GetOwner.GetMapColor]"
+		}
+		
+		blockoverride "pie_item_goto_button" {
+			button = {
+				using = clean_button
+				size = { 100% 100% }
+				onclick = "[InformationPanelBar.OpenMarketPanel(Market.Self)]"
+			}
+		}
+
+		blockoverride "leftside_info" {
+			text = "[Market.GetName]"
+		}
+
+		blockoverride "rightside1_info" {
+			text = "[Market.GetTotalExportedAmount|Dv]"
+		}
+
+		blockoverride "rightside2_info" {
+			visible = no
 		}
 	}
 

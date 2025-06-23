@@ -19,7 +19,7 @@ types front_panel_types
 		
 		blockoverride "window_header_name"
 		{
-			raw_text = "#BOLD [FrontPanel.GetFront.GetName]#!"
+			raw_text = "[LabelingHelper.CapitalizeOnlyFirst(FrontPanel.GetFront.GetNameNoFormatting)]"
 		}
 
 		blockoverride "window_header_name_line_two"
@@ -29,6 +29,16 @@ types front_panel_types
 
 		blockoverride "goto_button" {
 			button_icon_goto = {
+				visible = "[Not(Front.AccessDiplomaticPlay.HasEscalatedIntoWar)]"
+				datacontext = "[Front.AccessDiplomaticPlay]"
+				size = { 30 30 }
+				onclick = "[InformationPanelBar.OpenDiplomaticPlayPanel( DiplomaticPlay.AccessSelf )]"
+				tooltip = "GO_TO_BUTTON_DIPLOMATIC_PLAY"
+				input_action = "go_to_details"
+			}
+
+			button_icon_goto = {
+				visible = "[Front.AccessDiplomaticPlay.HasEscalatedIntoWar]"
 				datacontext = "[Front.AccessDiplomaticPlay.AccessWar]"
 				size = { 30 30 }
 				onclick = "[WarManager.ToggleWarPanel( War.AccessSelf )]"
@@ -176,7 +186,7 @@ types front_panel_types
 								size = { 60 60 }
 								tooltip = "[Front.GetPlayerAdvantageDesc]"
 
-								visible = "[And(Not(StringIsEmpty( Front.GetPlayerAdvantageDesc )), And(Not( IsDataModelEmpty( Front.AccessLeftCountries ) ), Not( IsDataModelEmpty( Front.AccessRightCountries ) ) ) ) ]"
+								visible = "[And3(Not(StringIsEmpty(Front.GetPlayerAdvantageDesc)),Not( IsDataModelEmpty(Front.GetInitiatorSide.GetCountries)),Not(IsDataModelEmpty(Front.GetTargetSide.GetCountries)))]"
 								framesize = { 188 188 }
 								frame = "[Front.GetAdvantageFrame]"
 								using = tooltip_below
@@ -212,12 +222,13 @@ types front_panel_types
 
 							blockoverride "side_datacontext"
 							{
-								datacontext = "[Front.AccessLeftTheater]"
+								datacontext = "[Front.GetLeftSide]"
+								datacontext = "[FrontSide.GetCountry]"
 							}
 
 							blockoverride "side_name" {
 								textbox = {
-									visible = "[Theater.GetOwner.IsPlayer]"
+									visible = "[Country.IsPlayer]"
 									align = left|nobaseline
 									autoresize = yes
 									using = fontsize_xl
@@ -225,7 +236,7 @@ types front_panel_types
 									text = "FRONT_YOUR_SIDE"
 								}
 								textbox = {
-									visible = "[And(Not(Theater.GetOwner.IsPlayer), Front.AccessRightTheater.GetOwner.IsPlayer)]"
+									visible = "[And(Not(Country.IsPlayer), Front.GetRightSide.GetCountry.IsPlayer)]"
 									align = left|nobaseline
 									autoresize = yes
 									using = fontsize_xl
@@ -233,12 +244,12 @@ types front_panel_types
 									text = "FRONT_ENEMY_SIDE"
 								}
 								textbox = {
-									visible = "[And(Not(Theater.GetOwner.IsPlayer), Not(Front.AccessRightTheater.GetOwner.IsPlayer))]"
+									visible = "[And(Not(Country.IsPlayer), Not(Front.GetRightSide.GetCountry.IsPlayer))]"
 									align = left|nobaseline
 									autoresize = yes
 									using = fontsize_xl
 									parentanchor = left
-									text = "[Theater.GetOwner.GetNameNoFlag]"
+									text = "[Country.GetNameNoFlag]"
 								}
 							}
 
@@ -247,20 +258,20 @@ types front_panel_types
 								# Morale
 								morale_bar = {
 									parentanchor = left|vcenter
-									tooltip = "[Front.GetLeftCombatUnitsMoraleDesc]"
+									tooltip = "[FrontSide.GetUnitMoraleDesc]"
 									
 									blockoverride "morale_value" {
-										value = "[FixedPointToFloat( Front.GetLeftCombatUnitsMoraleRaw )]"
+										value = "[FixedPointToFloat(FrontSide.GetUnitMorale)]"
 									}
 									blockoverride "morale_color" {
-										color = "[GetMoraleColorVec( Front.GetLeftCombatUnitsMoraleRaw )]"
+										color = "[GetMoraleColorVec(FrontSide.GetUnitMorale)]"
 									}
 								}
 
 								textbox = {
-									datacontext = "[FrontPanel.AccessFront]"
 									text = "FRONT_SIDE_LEFT_NUM_UNITS"
-									tooltip = "[Front.GetNumLeftCombatUnitsBreakdown]"
+									tooltip = "[FrontSide.GetNumUnitsBreakdown]"
+									using = fontsize_large
 
 									align = center|nobaseline
 									parentanchor = left|vcenter
@@ -301,7 +312,7 @@ types front_panel_types
 										textbox = {
 											align = right|nobaseline
 											autoresize = yes
-											text = "OFFENSE_LEFT_VALUE"
+											raw_text = "#v [FrontSide.GetUnitOffense|0]#!"
 										}
 									}
 								}
@@ -341,7 +352,7 @@ types front_panel_types
 										textbox = {
 											align = right|nobaseline
 											autoresize = yes
-											text = "DEFENSE_LEFT_VALUE"
+											raw_text = "#v [FrontSide.GetUnitDefense|0]#!"
 										}
 									}
 								}
@@ -359,12 +370,13 @@ types front_panel_types
 							}
 
 							blockoverride "side_datacontext" {
-								datacontext = "[Front.AccessRightTheater]"
+								datacontext = "[Front.GetRightSide]"
+								datacontext = "[FrontSide.GetCountry]"
 							}
 
 							blockoverride "side_name" {
 								textbox = {
-									visible = "[Theater.GetOwner.IsPlayer]"
+									visible = "[Country.IsPlayer]"
 									align = left|nobaseline
 									autoresize = yes
 									using = fontsize_xl
@@ -372,7 +384,7 @@ types front_panel_types
 									text = "FRONT_YOUR_SIDE"
 								}
 								textbox = {
-									visible = "[And(Front.AccessLeftTheater.GetOwner.IsPlayer, Not(Theater.GetOwner.IsPlayer))]"
+									visible = "[And(Front.GetLeftSide.GetCountry.IsPlayer, Not(Country.IsPlayer))]"
 									align = left|nobaseline
 									autoresize = yes
 									using = fontsize_xl
@@ -380,38 +392,38 @@ types front_panel_types
 									text = "FRONT_ENEMY_SIDE"
 								}
 								textbox = {
-									visible = "[And(Not(Front.AccessLeftTheater.GetOwner.IsPlayer), Not(Theater.GetOwner.IsPlayer))]"
+									visible = "[And(Not(Front.GetLeftSide.GetCountry.IsPlayer), Not(Country.IsPlayer))]"
 									align = left|nobaseline
 									autoresize = yes
 									using = fontsize_xl
 									parentanchor = right
-									text = "[Theater.GetOwner.GetNameNoFlag]"
+									text = "[Country.GetNameNoFlag]"
 								}
 							}
 
 							blockoverride "side_num_units" {
 								textbox = {
-									datacontext = "[FrontPanel.AccessFront]"
 									text = "FRONT_SIDE_RIGHT_NUM_UNITS"
-									tooltip = "[Front.GetNumRightCombatUnitsBreakdown]"
+									tooltip = "[FrontSide.GetNumUnitsBreakdown]"
 
 									align = center|nobaseline
 									parentanchor = left|vcenter
 									autoresize = yes
+									using = fontsize_large
 								}
 
 								# Morale
 								morale_bar = {
 									parentanchor = left|vcenter
-									tooltip = "[Front.GetRightCombatUnitsMoraleDesc]"
+									tooltip = "[FrontSide.GetUnitMoraleDesc]"
 
 									blockoverride "morale_value" {
-										value = "[FixedPointToFloat( Front.GetRightCombatUnitsMoraleRaw )]"
+										value = "[FixedPointToFloat(FrontSide.GetUnitMorale)]"
 									}
 									blockoverride "morale_color" {
-										color = "[GetMoraleColorVec( Front.GetRightCombatUnitsMoraleRaw )]"
+										color = "[GetMoraleColorVec(FrontSide.GetUnitMorale)]"
 									}
-								}		
+								}
 							}
 
 							blockoverride "offense_power" {
@@ -431,7 +443,7 @@ types front_panel_types
 										textbox = {
 											align = left|nobaseline
 											autoresize = yes
-											text = "OFFENSE_RIGHT_VALUE"
+											raw_text = "#v [FrontSide.GetUnitOffense|0]#!"
 										}
 
 										widget = {
@@ -470,7 +482,7 @@ types front_panel_types
 										textbox = {
 											align = left|nobaseline
 											autoresize = yes
-											text = "DEFENSE_RIGHT_VALUE"
+											raw_text = "#v [FrontSide.GetUnitDefense|0]#!"
 										}
 										
 										widget = {
@@ -502,10 +514,14 @@ types front_panel_types
 						parentanchor = hcenter
 
 						# Left
-						present_countries_side = {}
+						present_countries_side = {
+							datacontext = "[Front.GetLeftSide]"
+						}
 
 						# Right
 						present_countries_side = {
+							datacontext = "[Front.GetRightSide]"
+
 							blockoverride "parentanchor" {
 								parentanchor = right
 							}
@@ -513,72 +529,12 @@ types front_panel_types
 								layoutanchor = topright
 								parentanchor = right
 							}
-
-							blockoverride "datamodel" {
-								datamodel = "[Front.AccessRightCountries]"
-							}
 						}
 					}
 				}
 			
 				### Active battles
-				active_battles = {
-					blockoverride "header_visible" {
-						visible = "[Or(GreaterThan_CFixedPoint(Front.GetLeftAdvanceProgressFormations, '(CFixedPoint)0'), GreaterThan_CFixedPoint(Front.GetRightAdvanceProgressFormations, '(CFixedPoint)0'))]"
-					}
-
-					blockoverride "main_list_visible" {
-						visible = "[Or(GreaterThan_CFixedPoint(Front.GetLeftAdvanceProgressFormations, '(CFixedPoint)0'), GreaterThan_CFixedPoint(Front.GetRightAdvanceProgressFormations, '(CFixedPoint)0'))]"
-					}
-
-					blockoverride "first_visible" {
-						visible = "[GreaterThan_CFixedPoint(Front.GetLeftAdvanceProgressFormations, '(CFixedPoint)0')]"
-					}
-
-					blockoverride "first_you_allies" {
-						text = "YOU_AND_ALLIES_LEFT_FORMATIONS"
-					}
-
-					blockoverride "first_enemies" {
-						text = "ENEMIES_LEFT_FORMATIONS"
-					}
-
-					blockoverride "first_tooltip" {
-						tooltip = "ADVANCEMENT_PROGRESS_BAR_LEFT_FORMATIONS_TOOLTIP"
-					}
-
-					blockoverride "first_progressbar" {
-						value = "[FixedPointToFloat( Front.GetLeftAdvanceProgressPercentFormations )]"
-					}
-
-					blockoverride "first_values" {
-						raw_text = "#bold [Front.GetLeftAdvanceProgressFormations|1] / [Front.GetRequiredAdvanceProgressForBattle|0]#!"
-					}
-
-					blockoverride "second_visible" {
-						visible = "[GreaterThan_CFixedPoint(Front.GetRightAdvanceProgressFormations, '(CFixedPoint)0')]"
-					}
-
-					blockoverride "second_you_allies" {
-						text = "YOU_AND_ALLIES_RIGHT_FORMATIONS"
-					}
-
-					blockoverride "second_enemies" {
-						text = "ENEMIES_RIGHT_FORMATIONS"
-					}
-
-					blockoverride "second_tooltip" {
-						tooltip = "ADVANCEMENT_PROGRESS_BAR_RIGHT_FORMATIONS_TOOLTIP"
-					}
-
-					blockoverride "second_progressbar" {
-						value = "[FixedPointToFloat( Front.GetRightAdvanceProgressPercentFormations )]"
-					}
-
-					blockoverride "second_values" {
-						raw_text = "#bold [Front.GetRightAdvanceProgressFormations|1] / [Front.GetRequiredAdvanceProgressForBattle|0]#!"
-					}
-				}
+				active_battles = {}
 
 				### Participating Armies
 				flowcontainer = {
@@ -598,7 +554,7 @@ types front_panel_types
 						}
 
 						# If player present
-						visible = "[And(Front.AccessLeftTheater.GetOwner.IsPlayer, Not(Front.AccessRightTheater.GetOwner.IsPlayer))]"
+						visible = "[And(Front.GetLeftSide.GetCountry.IsPlayer, Not(Front.GetRightSide.GetCountry.IsPlayer))]"
 					}
 
 					# Header if player right
@@ -613,7 +569,7 @@ types front_panel_types
 						}
 
 						# If player present
-						visible = "[And(Not(Front.AccessLeftTheater.GetOwner.IsPlayer), Front.AccessRightTheater.GetOwner.IsPlayer)]"
+						visible = "[And(Not(Front.GetLeftSide.GetCountry.IsPlayer), Front.GetRightSide.GetCountry.IsPlayer)]"
 					}
 
 					# Header if spectator
@@ -628,7 +584,7 @@ types front_panel_types
 						}
 
 						# If spectating
-						visible = "[And(Not(Front.AccessLeftTheater.GetOwner.IsPlayer), Not(Front.AccessRightTheater.GetOwner.IsPlayer))]"
+						visible = "[And(Not(Front.GetLeftSide.GetCountry.IsPlayer), Not(Front.GetRightSide.GetCountry.IsPlayer))]"
 					}
 
 					# Content container
@@ -642,6 +598,7 @@ types front_panel_types
 
 						### Left side
 						flowcontainer = {
+							datacontext = "[Front.GetLeftSide]"
 							minimumsize = { @panel_width_plus_14_half 130 }
 							direction = vertical
 
@@ -649,7 +606,7 @@ types front_panel_types
 							widget = {
 								size = { 100% 100% }
 								parentanchor = right
-								visible = "[Front.AccessLeftTheater.GetOwner.IsPlayer]"
+								visible = "[FrontSide.GetCountry.IsPlayer]"
 
 								background = {	
 									using = light_bg
@@ -671,19 +628,10 @@ types front_panel_types
 								}
 							}
 
-
-
-							front_participants_formations_list = {
-								blockoverride "visible" {
-									visible = "[Not(IsDataModelEmpty(Front.AccessLeftParticipants))]"
-								}
-								blockoverride "datamodel" {
-									datamodel = "[Front.AccessLeftParticipants]"
-								}
-							}
+							front_participants_formations_list = {}
 
 							textbox = {
-								visible = "[And( IsDataModelEmpty(Front.AccessLeftParticipants), IsDataModelEmpty(Front.AccessLeftPlayerArmies) )]"
+								visible = "[IsDataModelEmpty(FrontSide.GetArmies)]"
 								maximumsize = { 170 -1 }
 								parentanchor = hcenter
 								margin_top = 40
@@ -696,6 +644,7 @@ types front_panel_types
 
 						### Right side
 						flowcontainer = {
+							datacontext = "[Front.GetRightSide]"
 							parentanchor = right
 							minimumsize = { @panel_width_plus_14_half 130 }
 							direction = vertical
@@ -704,7 +653,7 @@ types front_panel_types
 							widget = {
 								size = { 100% 100% }
 								parentanchor = left
-								visible = "[Front.AccessRightTheater.GetOwner.IsPlayer]"
+								visible = "[FrontSide.GetCountry.IsPlayer]"
 
 								background = {	
 									using = light_bg
@@ -726,18 +675,10 @@ types front_panel_types
 								}
 							}
 
-
-							front_participants_formations_list = {
-								blockoverride "visible" {
-									visible = "[Not(IsDataModelEmpty(Front.AccessRightParticipants))]"
-								}
-								blockoverride "datamodel" {
-									datamodel = "[Front.AccessRightParticipants]"
-								}
-							}
+							front_participants_formations_list = {}
 
 							textbox = {
-								visible = "[And( IsDataModelEmpty(Front.AccessRightParticipants), IsDataModelEmpty(Front.AccessRightPlayerArmies) )]"
+								visible = "[IsDataModelEmpty(FrontSide.GetArmies)]"
 								maximumsize = { 170 -1 }
 								parentanchor = hcenter
 								margin_top = 40
@@ -772,6 +713,36 @@ types front_panel_types
 
 				### Active battles
 				active_battles = {}
+
+				### Casualties
+				flowcontainer = {
+					margin_bottom = 10
+					spacing = 5
+					parentanchor = hcenter
+					direction = vertical
+					
+					default_header = {
+						parentanchor = hcenter
+						blockoverride "text" {
+							text = "[concept_casualties]"
+						}
+					}
+
+					flowcontainer = {
+						parentanchor = hcenter
+						spacing = 15
+
+						casualties_list = {
+							datacontext = "[Front.GetLeftSide]"
+						}
+
+						vertical_divider = {}
+
+						casualties_list = {
+							datacontext = "[Front.GetRightSide]"
+						}
+					}
+				}
 
 				### ENDED LAND BATTLES 
 				flowcontainer = {
@@ -840,7 +811,6 @@ types front_panel_types
 
 		widget = {
 			block "parentanchor_large_flag" {}
-			datacontext = "[Theater.GetOwner]"
 			size = { 96 64 }
 			
 			icon = {
@@ -933,9 +903,7 @@ types front_panel_types
 			}
 
 			default_header = {
-				block "header_visible" {
-					visible = "[Or(GreaterThan_CFixedPoint(Front.GetLeftAdvanceProgressFormations, '(CFixedPoint)0'), GreaterThan_CFixedPoint(Front.GetRightAdvanceProgressFormations, '(CFixedPoint)0'))]"
-				}
+				visible = "[Or(GreaterThan_CFixedPoint(Front.GetInitiatorSide.GetAdvancement, '(CFixedPoint)0'), GreaterThan_CFixedPoint(Front.GetTargetSide.GetAdvancement, '(CFixedPoint)0'))]"
 
 				parentanchor = hcenter
 				blockoverride "text" {
@@ -947,69 +915,55 @@ types front_panel_types
 				spacing = 15
 				parentanchor = hcenter
 
-				block "main_list_visible" {
-					visible = "[Or(GreaterThan_CFixedPoint(Front.GetLeftAdvanceProgressFormations, '(CFixedPoint)0'), GreaterThan_CFixedPoint(Front.GetRightAdvanceProgressFormations, '(CFixedPoint)0'))]"
-				}
+				visible = "[Or(GreaterThan_CFixedPoint(Front.GetInitiatorSide.GetAdvancement, '(CFixedPoint)0'), GreaterThan_CFixedPoint(Front.GetTargetSide.GetAdvancement, '(CFixedPoint)0'))]"
 				widget = {
 					size = { 250 48 }
 
 					flowcontainer = {
+						datacontext = "[Front.GetLeftSide]"
+						datacontext = "[FrontSide.GetCountry]"
 						direction = vertical
 						minimumsize = { 250 -1 }
 						spacing = 5
-						block "first_visible" {
-							visible = "[GreaterThan_CFixedPoint(Front.GetLeftAdvanceProgressFormations, '(CFixedPoint)0')]"
+						visible = "[GreaterThan_CFixedPoint(FrontSide.GetAdvancement, '(CFixedPoint)0')]"
+
+						textbox = {
+							text = "FRONT_SIDE_YOU_AND_ALLIES"
+							autoresize = yes
+							align = left|nobaseline
+							visible = "[Country.IsPlayer]"
 						}
 
 						textbox = {
-							block "first_you_allies" {
-								text = "YOU_AND_ALLIES_LEFT_FORMATIONS"
-							}
+							text = "FRONT_SIDE_COUNTRY"
 							autoresize = yes
 							align = left|nobaseline
-							visible = "[Front.AccessLeftTheater.GetOwner.IsPlayer]"
+							visible = "[And(Not(Country.IsPlayer), Not(Front.GetRightSide.GetCountry.IsPlayer))]"
 						}
 
 						textbox = {
-							block "first_allies_and_observers" {
-								text = "FRONT_COUNTRY_LEFT_SIDE"
-							}
+							text = "FRONT_SIDE_ENEMY"
 							autoresize = yes
 							align = left|nobaseline
-							visible = "[And(Not(Front.AccessLeftTheater.GetOwner.IsPlayer), Not(Front.AccessRightTheater.GetOwner.IsPlayer))]"
-						}
-
-						textbox = {
-							block "first_enemies" {
-								text = "ENEMIES_LEFT_FORMATIONS"
-							}
-							autoresize = yes
-							align = left|nobaseline
-							visible = "[Front.AccessRightTheater.GetOwner.IsPlayer]"
+							visible = "[Front.GetRightSide.GetCountry.IsPlayer]"
 						}
 
 						default_progressbar_horizontal = {
 							parentanchor = hcenter
-							block "first_tooltip" {
-								tooltip = "ADVANCEMENT_PROGRESS_BAR_LEFT_FORMATIONS_TOOLTIP"
-							}
+							tooltip = "ADVANCEMENT_PROGRESS_BAR_FORMATIONS_TOOLTIP"
 							using = tooltip_below
 							size = { 250 20 }
 							
 							blockoverride "values" {
 								min = 0
 								max = 1
-								block "first_progressbar" {
-									value = "[FixedPointToFloat( Front.GetLeftAdvanceProgressPercentFormations )]"
-								}
+								value = "[FixedPointToFloat(FrontSide.GetAdvancementProgress)]"
 							}
 
 							textbox = {
 								parentanchor = center
 								autoresize = yes
-								block "first_values" {
-									raw_text = "#bold [Front.GetLeftAdvanceProgressFormations|1] / [Front.GetRequiredAdvanceProgressForBattle|0]#!"
-								}
+								raw_text = "#bold [FrontSide.GetAdvancement|1] / [Front.GetRequiredAdvanceProgressForBattle|0]#!"
 								align = left|nobaseline
 							}
 						}
@@ -1022,62 +976,50 @@ types front_panel_types
 					size = { 250 48 }
 
 					flowcontainer = {
+						datacontext = "[Front.GetRightSide]"
+						datacontext = "[FrontSide.GetCountry]"
 						direction = vertical
 						minimumsize = { 250 -1 }
 						spacing = 5
-						block "second_visible" {
-							visible = "[GreaterThan_CFixedPoint(Front.GetRightAdvanceProgressFormations, '(CFixedPoint)0')]"
+						visible = "[GreaterThan_CFixedPoint(FrontSide.GetAdvancement, '(CFixedPoint)0')]"
+
+						textbox = {
+							text = "FRONT_SIDE_YOU_AND_ALLIES"
+							autoresize = yes
+							align = left|nobaseline
+							visible = "[Country.IsPlayer]"
 						}
 
 						textbox = {
-							block "second_you_allies" {
-								text = "YOU_AND_ALLIES_RIGHT_FORMATIONS"
-							}
+							text = "FRONT_SIDE_COUNTRY"
 							autoresize = yes
 							align = left|nobaseline
-							visible = "[Front.AccessRightTheater.GetOwner.IsPlayer]"
-						}
-
-						textbox = {
-							block "second_allies_and_observers" {
-								text = "FRONT_COUNTRY_RIGHT_SIDE"
-							}
-							autoresize = yes
-							align = left|nobaseline
-							visible = "[And(Not(Front.AccessLeftTheater.GetOwner.IsPlayer), Not(Front.AccessRightTheater.GetOwner.IsPlayer))]"
+							visible = "[And(Not(Front.GetLeftSide.GetCountry.IsPlayer), Not(Country.IsPlayer))]"
 						}
 						
 						textbox = {
-							block "second_enemies" {
-								text = "ENEMIES_RIGHT_FORMATIONS"
-							}
+							text = "FRONT_SIDE_ENEMY"
 							autoresize = yes
 							align = left|nobaseline
-							visible = "[Front.AccessLeftTheater.GetOwner.IsPlayer]"
+							visible = "[Front.GetLeftSide.GetCountry.IsPlayer]"
 						}
 
 						default_progressbar_horizontal = {
 							parentanchor = hcenter
-							block "second_tooltip" {
-								tooltip = "ADVANCEMENT_PROGRESS_BAR_RIGHT_FORMATIONS_TOOLTIP"
-							}
+							tooltip = "ADVANCEMENT_PROGRESS_BAR_FORMATIONS_TOOLTIP"
 							using = tooltip_below
 							size = { 250 20 }
 
 							blockoverride "values" {
 								min = 0
 								max = 1
-								block "second_progressbar" {
-									value = "[FixedPointToFloat( Front.GetRightAdvanceProgressPercentFormations )]"
-								}
+								value = "[FixedPointToFloat(FrontSide.GetAdvancementProgress)]"
 							}
 
 							textbox = {
 								parentanchor = center
 								autoresize = yes
-								block "second_values" {
-									raw_text = "#bold [Front.GetRightAdvanceProgressFormations|1] / [Front.GetRequiredAdvanceProgressForBattle|0]#!"
-								}
+								raw_text = "#bold [FrontSide.GetAdvancement|1] / [Front.GetRequiredAdvanceProgressForBattle|0]#!"
 								align = left|nobaseline
 							}
 						}
@@ -1130,9 +1072,7 @@ types front_panel_types
 					parentanchor = left
 				}
 
-				block "datamodel" {
-					datamodel = "[Front.AccessLeftCountries]"
-				}
+				datamodel = "[FrontSide.GetCountries]"
 
 				item = {
 					widget = {
@@ -1154,7 +1094,6 @@ types front_panel_types
 	type front_participants_list_item = widget {
 		size = { 250 130 }
 
-		datacontext = "[FrontParticipant.AccessArmy]"
 		onmousehierarchyenter = "[AccessHighlightManager.HighlightMilitaryFormation( MilitaryFormation.Self )]"
 		onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
 		alwaystransparent = no
@@ -1345,7 +1284,6 @@ types front_panel_types
 	### FRONT PARTICIPANTS FORMATIONS LIST ITEM
 	type front_participants_formations_list_item = flowcontainer {
 		direction = vertical
-		datacontext = "[FrontParticipant.AccessArmy]"
 		onmousehierarchyenter = "[AccessHighlightManager.HighlightMilitaryFormation(MilitaryFormation.Self)]"
 		onmousehierarchyleave = "[AccessHighlightManager.RemoveHighlight]"
 
@@ -1386,7 +1324,7 @@ types front_panel_types
 					parentanchor = right|vcenter
 					position = { -7 0 }
 					size = { 25 25 }
-					onclick = "[InformationPanelBar.OpenMilitaryFormationPanel(MilitaryFormation.AccessSelf)]"
+					onclick = "[InformationPanelBar.OpenMilitaryFormationPanel(MilitaryFormation.Self)]"
 					tooltip = "GO_TO_BUTTON_FORMATION"
 				}
 			}
@@ -1555,17 +1493,13 @@ types front_panel_types
 	}
 
 	type front_participants_formations_list = flowcontainer {
+		datacontext = "[FrontSide]"
 		direction = vertical
 		parentanchor = hcenter
 		margin_top = 8
 		spacing = 10
-		block "visible" {
-			visible = "[Not(IsDataModelEmpty(Front.AccessRightParticipants))]"
-		}
-		block "datamodel"
-		{
-			datamodel = "[Front.AccessRightParticipants]"
-		}
+		visible = "[Not(IsDataModelEmpty(FrontSide.GetArmies))]"
+		datamodel = "[FrontSide.GetArmies]"
 	
 		item = {
 			front_participants_formations_list_item = {}
@@ -1602,7 +1536,7 @@ types front_panel_types
 			
 			textbox = {
 				margin_left = 0
-				raw_text = "[Battle.GetUnitIcon] [Battle.GetCurrentAttackerUnits|v]#!"
+				raw_text = "[Battle.GetUnitIcon] [Battle.GetAttackerSide.GetNumUnits|v]#!"
 				size = { 100 50 }
 				align = right|nobaseline
 				parentanchor = vcenter
@@ -1688,7 +1622,7 @@ types front_panel_types
 			
 			textbox = {
 				margin_left = 0
-				raw_text = "[Battle.GetUnitIcon] [Battle.GetCurrentDefenderUnits|v]#!"
+				raw_text = "[Battle.GetUnitIcon] [Battle.GetDefenderSide.GetNumUnits|v]#!"
 				size = { 100 50 }
 				align = left|nobaseline
 				parentanchor = vcenter
@@ -1854,6 +1788,7 @@ types front_panel_types
 
 					### LEFT SIDE
 					flowcontainer = {
+						datacontext = "[Battle.GetAttackerSide]"
 						position = { 10 0 }
 						parentanchor = vcenter
 						spacing = 10
@@ -1865,7 +1800,7 @@ types front_panel_types
 
 						textbox = {
 							raw_text = "@battalions! [Battle.GetStartingAttackerUnits|v]   @manpower![Battle.GetStartingAttackerManpower|vD]"
-							tooltip = "[Battle.GetNumAdvancingUnitsAtStartOfBattleDesc]"
+							tooltip = "[BattleSide.GetNumUnitsAtStartOfBattleDesc]"
 							autoresize = yes
 							align = left|nobaseline
 							parentanchor = vcenter
@@ -1875,7 +1810,7 @@ types front_panel_types
 
 						textbox = {
 							raw_text = "@flotillas! [Battle.GetStartingAttackerUnits|v]   @manpower![Battle.GetStartingAttackerManpower|vD]"
-							tooltip = "[Battle.GetNumAdvancingUnitsAtStartOfBattleDesc]"
+							tooltip = "[BattleSide.GetNumUnitsAtStartOfBattleDesc]"
 							autoresize = yes
 							align = left|nobaseline
 							parentanchor = vcenter
@@ -1886,6 +1821,7 @@ types front_panel_types
 
 					### RIGHT SIDE
 					flowcontainer = {
+						datacontext = "[Battle.GetDefenderSide]"
 						position = { -10 0 }
 						parentanchor = vcenter|right
 						spacing = 10
@@ -1893,7 +1829,7 @@ types front_panel_types
 
 						textbox = {
 							raw_text = "@battalions! [Battle.GetStartingDefenderUnits|v]   @manpower![Battle.GetStartingDefenderManpower|vD]"
-							tooltip = "[Battle.GetNumDefendingUnitsAtStartOfBattleDesc]"
+							tooltip = "[BattleSide.GetNumUnitsAtStartOfBattleDesc]"
 							autoresize = yes
 							align = right|nobaseline
 							parentanchor = vcenter
@@ -1902,7 +1838,7 @@ types front_panel_types
 
 						textbox = {
 							raw_text = "@flotillas! [Battle.GetStartingDefenderUnits|v]   @manpower![Battle.GetStartingDefenderManpower|vD]"
-							tooltip = "[Battle.GetNumDefendingUnitsAtStartOfBattleDesc]"
+							tooltip = "[BattleSide.GetNumUnitsAtStartOfBattleDesc]"
 							autoresize = yes
 							align = right|nobaseline
 							parentanchor = vcenter
@@ -1926,12 +1862,12 @@ types front_panel_types
 		}
 
 		background = {
-			visible = "[And(And(Front.IsBeingHighlighted, Not(FrontMovementMarker.IsAnySelectedFormationsTarget)), IsValid( Front.GetDeploySelectedFormationsCommand ))]"
+			visible = "[And(And(Front.IsBeingHighlighted, Not(FrontMovementMarker.IsAnySelectedFormationsTarget)), FrontMovementMarker.CanDeploySelectedFormationsToFront)]"
 			texture = "gfx/interface/map_markers/round_highlight.dds"
 		}
 
 		background = {
-			visible = "[And(Front.IsBeingHighlighted, And(Not(IsValid( Front.GetDeploySelectedFormationsCommand )), Not(Or(FrontMovementMarker.IsAllSelectedFormationsTarget, FrontMovementMarker.IsAllSelectedFormationsLocation))))]"
+			visible = "[And(Front.IsBeingHighlighted, And(Not(FrontMovementMarker.CanDeploySelectedFormationsToFront), Not(Or(FrontMovementMarker.IsAllSelectedFormationsTarget, FrontMovementMarker.IsAllSelectedFormationsLocation))))]"
 			texture = "gfx/interface/map_markers/convoy_raiding_highlight.dds"
 		}
 
@@ -1942,7 +1878,7 @@ types front_panel_types
 		}
 
 		icon = {
-			visible = "[And(Not( IsDataModelEmpty( FrontMovementMarker.AccessFront.AccessFirstCountries ) ), Not( IsDataModelEmpty( FrontMovementMarker.AccessFront.AccessSecondCountries ) ) ) ]"
+			visible = "[And(Not( IsDataModelEmpty( FrontMovementMarker.AccessFront.GetInitiatorSide.GetCountries ) ), Not( IsDataModelEmpty( FrontMovementMarker.AccessFront.GetTargetSide.GetCountries ) ) ) ]"
 			texture = "gfx/interface/map_markers/front_indicator.dds"
 			framesize = { 188 188 }
 			frame = "[Front.GetAdvantageFrame]"
@@ -1953,7 +1889,7 @@ types front_panel_types
 
 			textbox = {
 				visible = "[Not(StringIsEmpty( Front.GetPlayerAdvantageDesc ))]"
-				alpha = "[TransparentIfFalse(Or(GreaterThan_int32(FrontMovementMarker.AccessFront.GetNumFirstCombatUnits, '(int32)0'), GreaterThan_int32( FrontMovementMarker.AccessFront.GetNumSecondCombatUnits, '(int32)0' )))]"
+				alpha = "[TransparentIfFalse(Or(GreaterThan_int32(FrontMovementMarker.AccessFront.GetInitiatorSide.GetNumUnits, '(int32)0'), GreaterThan_int32( FrontMovementMarker.AccessFront.GetTargetSide.GetNumUnits, '(int32)0' )))]"
 				raw_text = "#bold [Front.GetPlayerAdvantageRaw|+]#!"
 				autoresize = yes
 				align = hcenter|nobaseline
@@ -1986,7 +1922,7 @@ types front_panel_types
 		}
 
 		icon = {
-			visible = "[And(Not( IsDataModelEmpty( FrontMarker.GetFront.AccessFirstCountries ) ), Not( IsDataModelEmpty( FrontMarker.GetFront.AccessSecondCountries ) ) ) ]"
+			visible = "[And(Not( IsDataModelEmpty( FrontMarker.GetFront.GetInitiatorSide.GetCountries ) ), Not( IsDataModelEmpty( FrontMarker.GetFront.GetTargetSide.GetCountries ) ) ) ]"
 			texture = "gfx/interface/map_markers/front_indicator.dds"
 			tooltip = "FRONT_MARKER_TOOLTIP"
 			framesize = { 188 188 }
@@ -1997,15 +1933,36 @@ types front_panel_types
 				size = { 60 60 }
 			}
 
+			round_progress_default = {
+				datacontext = "[Front.GetLeftSide]"
+				size = { 67% 67% }
+				value = "[FixedPointToFloat(FrontSide.GetAdvancementProgress)]"
+				parentanchor = center
+				visible = "[And(NotZero_CFixedPoint(FrontSide.GetAdvancement), GreaterThan_CFixedPoint(FrontSide.GetAdvancement, Front.GetRightSide.GetAdvancement))]"
+			}
+
+			round_progress_default = {
+				datacontext = "[Front.GetRightSide]"
+				size = { 67% 67% }
+				value = "[FixedPointToFloat(FrontSide.GetAdvancementProgress)]"
+				parentanchor = center
+				visible = "[And(NotZero_CFixedPoint(FrontSide.GetAdvancement), GreaterThan_CFixedPoint(FrontSide.GetAdvancement, Front.GetLeftSide.GetAdvancement))]"
+			}
+
 			textbox = {
 				visible = "[Not(StringIsEmpty( Front.GetPlayerAdvantageDesc ))]"
-				alpha = "[TransparentIfFalse(Or(GreaterThan_int32(FrontMarker.GetFront.GetNumFirstCombatUnits, '(int32)0'), GreaterThan_int32( FrontMarker.GetFront.GetNumSecondCombatUnits, '(int32)0' )))]"
+				alpha = "[TransparentIfFalse(Or(GreaterThan_int32(FrontMarker.GetFront.GetInitiatorSide.GetNumUnits, '(int32)0'), GreaterThan_int32( FrontMarker.GetFront.GetTargetSide.GetNumUnits, '(int32)0' )))]"
 				using = tooltip_below
 				raw_text = "#bold [Front.GetPlayerAdvantageRaw|+]#!"
 				autoresize = yes
 				align = hcenter|nobaseline
 				parentanchor = center
 				block "fontsize" {}
+
+				background = {
+					using = blurry_dark_background
+					margin = { 10 10 }
+				}
 			}
 			
 			textbox = {
@@ -2018,6 +1975,29 @@ types front_panel_types
 				margin_left = 10
 				margin_right = 10
 				block "fontsize" {}
+			}
+		}
+	}
+
+	type casualties_list = flowcontainer {
+		minimumsize = { 250 -1 }
+		datamodel = "[FrontSide.GetCountries]"
+
+		item = {
+			flowcontainer = {
+				spacing = 7
+				tooltip = "FRONT_CASUALTIES_TOOLTIP"
+				tiny_flag = {
+					parentanchor = vcenter
+				}
+
+				textbox = {
+					text = "[FrontSide.GetNumCasualties(Country.Self)|vD]"
+					autoresize = yes
+					align = nobaseline
+					parentanchor = vcenter
+					margin_right = 5
+				}
 			}
 		}
 	}

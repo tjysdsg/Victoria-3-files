@@ -18,6 +18,8 @@ corn_laws.1 = {
 
 	duration = 3
 
+	cooldown = { days = stupidly_long_modifier_time }
+
 	option = {
 		name = corn_laws.1.a
         default_option = yes
@@ -35,7 +37,7 @@ corn_laws.1 = {
         		# interest_group_approval_add
         		add_modifier = {
         			name = repealed_corn_laws
-        			months = long_modifier_time
+        			days = long_modifier_time
         		}
         	}
         }
@@ -50,7 +52,7 @@ corn_laws.1 = {
 	}
 }
 
-# New Market Liberal Landowner leader who opposes the laws
+# New Market Liberal Petit-Bourgeoisie agitator who opposes the laws
 corn_laws.2 = {
 	type = country_event
 
@@ -68,44 +70,91 @@ corn_laws.2 = {
 
 	duration = 3
 
+	cooldown = { days = stupidly_long_modifier_time }
+
 	trigger = {
 		NOT = { has_variable = corn_law_opponent_event }
-		ig:ig_landowners = {
-			leader = {
-				NOT = { has_ideology = ideology:ideology_market_liberal }
-			}
+		ig:ig_petty_bourgeoisie = {
+			is_marginal = no
 		}
+		empty_agitator_slots >= 1
 	}
 
 	immediate = {
-		ig:ig_landowners = { save_scope_as = landowners_ig }
+		ig:ig_petty_bourgeoisie = { save_scope_as = pb_ig }
 		set_variable = corn_law_opponent_event
+		create_character = {
+			is_agitator = yes
+			interest_group = ig:ig_petty_bourgeoisie
+			ideology = ideology_market_liberal
+			traits = {
+				charismatic
+				experienced_political_operator
+			}
+			on_created = {
+				set_variable = corn_laws_agitator
+			}
+		}
+		random_scope_character = {
+			limit = {
+				has_variable = corn_laws_agitator
+			}
+			save_scope_as = corn_laws_agitator_scope
+		}
 	}
 
 	option = {
 		name = corn_laws.2.a
-		create_character = {
-			is_agitator = yes
-			interest_group = ig:ig_landowners
-			ideology = ideology_market_liberal
+		custom_tooltip = corn_laws_agitator_appears_tt
+		if = {
+			limit = {
+				any_political_movement = {
+					OR = {
+						is_political_movement_type = movement_liberal
+						is_political_movement_type = movement_orleanist
+					}
+				}
+			}
+			random_political_movement = {
+				limit = {
+					OR = {
+						is_political_movement_type = movement_liberal
+						is_political_movement_type = movement_orleanist
+					}
+				}
+				add_modifier = {
+					name = modifier_anti_corn_laws_league
+					days = long_modifier_time
+				}
+			}
 		}
-		add_radicals = {
-			value = medium_radicals
-			pop_type = aristocrats
+		else = {
+			random_political_movement = {
+				limit = {
+					is_political_movement_type = movement_modernizer
+				}
+				add_modifier = {
+					name = modifier_anti_corn_laws_league
+					days = long_modifier_time
+				}
+			}
 		}
 	}
 
 	option = {
 		name = corn_laws.2.b
         default_option = yes
-
-        ig:ig_landowners.leader = {
-        	# character_popularity_add
-        	add_modifier = {
-        		name = corn_law_proponent
-        		months = normal_modifier_time
-        	}
-        }
+		custom_tooltip = corn_laws_agitator_appears_tt
+		scope:corn_laws_agitator_scope ?= {
+			add_modifier = {
+				name = modifier_working_against_the_grain
+				days = normal_modifier_time
+			}
+		}
+		add_loyalists = {
+			value = large_radicals
+			pop_type = aristocrats
+		}
 	}
 }
 
@@ -126,6 +175,8 @@ corn_laws.3 = {
 	icon = "gfx/interface/icons/event_icons/event_military.dds"
 
 	duration = 3
+
+	cooldown = { days = stupidly_long_modifier_time }
 
 	trigger = {
 		NOT = { has_modifier = corn_law_leverage }
@@ -152,7 +203,7 @@ corn_laws.3 = {
 		# country_aristocrats_pol_str_mult
 		add_modifier = {
 			name = corn_law_leverage
-			months = normal_modifier_time
+			days = normal_modifier_time
 			multiplier = 2
 		}
 		add_loyalists = {
@@ -166,7 +217,7 @@ corn_laws.3 = {
         default_option = yes
         add_modifier = {
         	name = corn_law_leverage
-        	months = normal_modifier_time
+        	days = normal_modifier_time
         }
 	}
 }
@@ -189,6 +240,8 @@ corn_laws.4 = {
 	icon = "gfx/interface/icons/event_icons/event_military.dds"
 
 	duration = 3
+
+	cooldown = { days = stupidly_long_modifier_time }
 
 	trigger = {
 		NOT = { has_modifier = temporary_minimum_wages }
@@ -216,17 +269,16 @@ corn_laws.4 = {
 		name = corn_laws.4.a
 		add_modifier = {
 			name = temporary_minimum_wages
-			months = normal_modifier_time
+			days = normal_modifier_time
 		}
 	}
 
 	option = {
 		name = corn_laws.4.b
         default_option = yes
-
         add_radicals = {
         	strata = lower
-        	value = small_radicals
+        	value = medium_radicals
         }
 	}
 }

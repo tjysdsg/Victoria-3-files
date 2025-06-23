@@ -26,28 +26,28 @@ italian_unification.1 = {
 		ruler.interest_group = {
 			save_scope_as = ruler_ig_scope
 		}
-	}		
+	}
 
 	option = {
 		name = italian_unification.1.a
 		default_option = yes
 		give_claims_on_italy = yes
-		
+
 		# prestige
 		add_modifier = {
 			name = italian_unifier_prestige
-			months = long_modifier_time
+			days = long_modifier_time
 		}
 	}
 	option = {
 		name = italian_unification.1.b
 		give_claims_on_italy = yes
-		
+
 		# ruler IG attraction
 		scope:ruler_ig_scope = {
 			add_modifier = {
 				name = italian_unifiers_ig
-				months = long_modifier_time
+				days = long_modifier_time
 			}
 		}
 	}
@@ -73,6 +73,13 @@ italian_unification.2 = {
 	duration = 1
 
 	trigger = {
+		is_unification_candidate = ITA
+		NOT = {
+			any_diplomatically_relevant_country = {
+				NOT = { this = root }
+				is_unification_candidate = ITA
+			}
+		}
 		any_neighbouring_state = {
 			owner = {
 				OR = {
@@ -83,10 +90,13 @@ italian_unification.2 = {
 					is_subject = no
 					is_subject_of = ROOT
 				}
-				is_in_customs_union_with = root
 				country_rank <= rank_value:minor_power
-				relations:root >= relations_threshold:amicable
+				relations:root >= relations_threshold:friendly
 				is_player = no
+				custom_tooltip = {
+					text = risorgimento_unifying_stance_tt
+					has_variable = risorgimento_unifying_stance
+				}
 				NOT = { has_variable = italian_minor_dont_annex }
 			}
 		}
@@ -106,7 +116,7 @@ italian_unification.2 = {
 					}
 					is_in_customs_union_with = root
 					country_rank <= rank_value:minor_power
-					relations:root >= relations_threshold:amicable
+					relations:root >= relations_threshold:friendly
 					is_player = no
 					NOT = { has_variable = italian_minor_dont_annex }
 				}
@@ -124,18 +134,6 @@ italian_unification.2 = {
 			country = scope:italian_annex_country
 			value = 10
 		}
-		hidden_effect = { # remove all Italian radicals in country that's being annexed pre-annexation, to prevent chain annexations
-			scope:italian_annex_country = {
-				add_radicals = {
-					value = -1
-					culture = cu:north_italian
-				}
-				add_radicals = {
-					value = -1
-					culture = cu:south_italian
-				}				
-			}
-		}
 		annex_with_incorporation = scope:italian_annex_country
 		ai_chance = {
 			base = 1
@@ -150,7 +148,7 @@ italian_unification.2 = {
 		scope:italian_annex_country = {
 			set_variable = {
 				name = italian_minor_dont_annex
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		ai_chance = {
@@ -204,11 +202,21 @@ italian_unification.4 = {
 
 	trigger = {
 		NOT = { has_variable = italian_unification_5_happened_here }
-		exists = var:italian_states_radicals_total_bar
-		var:italian_states_radicals_total_bar >= 25
-		NOR = {
-			has_revolution = yes
-			is_revolutionary = yes
+		has_revolution = yes
+		capital = {
+			radical_fraction = {
+				value >= 0.10
+			}
+		}
+		any_civil_war = {
+			this.political_movement ?= {
+				OR = {
+					movement_is_liberal = yes
+					movement_is_socialist = yes
+					movement_is_nationalist = yes
+				}
+			}
+			is_civil_war_type = revolution
 		}
 		any_country = {
 			NOT = {
@@ -355,7 +363,7 @@ italian_unification.4 = {
 			trigger_event = { id = italian_unification.6 popup = yes }
 		}
 	}
-	
+
 	option = {
 		name = italian_unification.4.c
 		trigger = {
@@ -395,7 +403,7 @@ italian_unification.5 = {
 	}
 
 	immediate = {
-		
+
 	}
 
 	option = {
@@ -427,9 +435,9 @@ italian_unification.5 = {
 				add_radicals = {
 					value = -1
 					culture = cu:south_italian
-				}				
+				}
 			}
-		}		
+		}
 		annex_with_incorporation = scope:italian_pannational_country
 	}
 	option = {
@@ -442,9 +450,9 @@ italian_unification.5 = {
 			type = puppet
 		}
 		scope:italian_pannational_country = {
-			set_variable = { 
+			set_variable = {
 				name = italian_unification_5_happened_here
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 	}
@@ -474,7 +482,7 @@ italian_unification.6 = {
 	}
 
 	immediate = {
-		
+
 	}
 
 	option = {
@@ -539,7 +547,7 @@ italian_unification.7 = {
 	immediate = {
 		save_scope_as = rsm_revolted_scope
 		random_country = {
-			limit = {	
+			limit = {
 				is_secessionist = yes
 				OR = {
 					country_has_primary_culture = cu:north_italian
@@ -549,7 +557,7 @@ italian_unification.7 = {
 			activate_law = law_type:law_presidential_republic
 			activate_law = law_type:law_oligarchy
 			change_tag = RSM
-			save_scope_as = rsm_scope	
+			save_scope_as = rsm_scope
 			capital = {
 				save_scope_as = rsm_capital_scope
 			}
@@ -662,26 +670,44 @@ italian_unification.8 = {
 		}
 		if = {
 			limit = {
-				has_diplomatic_pact = {
-					who = scope:rsm_revolted_scope
-					 type = alliance
+				any_scope_treaty = {
+					binds = scope:rsm_revolted_scope
+					any_scope_article = {
+						has_type = alliance
+					}
 				}
 			}
-			remove_diplomatic_pact = {
-				country = scope:rsm_revolted_scope
-				type = alliance
+			every_scope_treaty = {
+				limit = {
+					binds = scope:rsm_revolted_scope
+					any_scope_article = {
+						has_type = alliance
+					}
+				}
+				withdraw = {
+					country = root
+				}
 			}
 		}
 		if = {
 			limit = {
-				has_diplomatic_pact = {
-					who = scope:rsm_revolted_scope
-					 type = defensive_pact
+				any_scope_treaty = {
+					binds = scope:rsm_revolted_scope
+					any_scope_article = {
+						has_type = defensive_pact
+					}
 				}
 			}
-			remove_diplomatic_pact = {
-				country = scope:rsm_revolted_scope
-				type = defensive_pact
+			every_scope_treaty = {
+				limit = {
+					binds = scope:rsm_revolted_scope
+					any_scope_article = {
+						has_type = defensive_pact
+					}
+				}
+				withdraw = {
+					country = root
+				}
 			}
 		}
 		if = {
@@ -792,7 +818,19 @@ italian_unification.10 = {
 	option = {
 		name = italian_unification.10.a
 		ai_chance = {
-			base = 50
+			base = 40
+			modifier = {
+				trigger = {
+					c:SAR ?= this
+				}
+				add = 50
+			}
+			modifier = {
+				trigger = {
+					c:SIC ?= this
+				}
+				add = -35
+			}
 		}
 		default_option = yes
 		custom_tooltip = {
@@ -806,7 +844,7 @@ italian_unification.10 = {
 					has_ideology = ideology:ideology_liberal
 					has_ideology = ideology:ideology_liberal_modern
 					leader = {
-						OR = {						
+						OR = {
 							has_ideology = ideology:ideology_radical
 							has_ideology = ideology:ideology_jingoist_leader
 						}
@@ -837,12 +875,12 @@ italian_unification.10 = {
 			}
 			add_modifier = {
 				name = modifier_risorgimento_supporters
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		add_modifier = {
 			name = modifier_risorgimento_support
-			months = long_modifier_time
+			days = long_modifier_time
 			is_decaying = yes
 		}
 		every_country = {
@@ -886,6 +924,26 @@ italian_unification.10 = {
 				}
 				add = -25
 			}
+			modifier = {
+				trigger = {
+					ig:ig_landowners = {
+						is_in_government = yes
+					}
+				}
+				add = 15
+			}
+			modifier = {
+				trigger = {
+					c:SAR ?= this
+				}
+				add = -50
+			}
+			modifier = {
+				trigger = {
+					c:SIC ?= this
+				}
+				add = 50
+			}
 		}
 		every_interest_group = {
 			limit = {
@@ -896,7 +954,7 @@ italian_unification.10 = {
 				}
 				NOT = {
 					leader = {
-						OR = {						
+						OR = {
 							has_ideology = ideology:ideology_radical
 							has_ideology = ideology:ideology_jingoist_leader
 						}
@@ -925,12 +983,12 @@ italian_unification.10 = {
 			}
 			add_modifier = {
 				name = modifier_risorgimento_opponents
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		add_modifier = {
 			name = modifier_risorgimento_opposition
-			months = long_modifier_time
+			days = long_modifier_time
 			is_decaying = yes
 		}
 		set_variable = risorgimento_anti_unifying_stance

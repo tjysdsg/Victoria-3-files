@@ -3,13 +3,13 @@
 treaty_of_london_events.1 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = treaty_of_london_events.1.t
 	desc = treaty_of_london_events.1.d
 	flavor = treaty_of_london_events.1.f
 
-	cooldown = { months = normal_modifier_time }
-	
+	cooldown = { days = normal_modifier_time }
+
 	event_image = {
 		video = "southamerica_aristocrats"
 	}
@@ -17,7 +17,7 @@ treaty_of_london_events.1 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
-	
+
 	duration = 3
 
 	trigger = {
@@ -42,7 +42,7 @@ treaty_of_london_events.1 = {
 			base = 95
 		}
 		c:BEL ?= {
-			trigger_event = { id = treaty_of_london_events.2 popup = yes } 
+			trigger_event = { id = treaty_of_london_events.2 popup = yes }
 		}
 		custom_tooltip = if_they_accept_tt
 		custom_tooltip = treaty_of_london_explanation_tt
@@ -58,13 +58,13 @@ treaty_of_london_events.1 = {
 			every_country = {
 				limit = {
 					country_rank >= rank_value:great_power
-					NOR = { 
+					NOR = {
 						root ?= this
 						c:BEL ?= this
 					}
 					country_is_in_europe = yes
 				}
-				trigger_event = { id = treaty_of_london_events.3 popup = yes } 
+				trigger_event = { id = treaty_of_london_events.3 popup = yes }
 			}
 		}
 	}
@@ -77,7 +77,7 @@ treaty_of_london_events.1 = {
 		}
 		c:BEL = {
 			change_relations = { country = root value = -80 }
-			create_diplomatic_catalyst = {  
+			create_diplomatic_catalyst = {
 				type = catalyst_event_negative
 				target = root
 			}
@@ -108,13 +108,13 @@ treaty_of_london_events.1 = {
 treaty_of_london_events.2 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = treaty_of_london_events.2.t
 	desc = treaty_of_london_events.2.d
 	flavor = treaty_of_london_events.2.f
 
-	cooldown = { months = normal_modifier_time }
-	
+	cooldown = { days = normal_modifier_time }
+
 	event_image = {
 		video = "southamerica_aristocrats"
 	}
@@ -122,7 +122,7 @@ treaty_of_london_events.2 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
-	
+
 	duration = 3
 
 	trigger = {
@@ -156,7 +156,7 @@ treaty_of_london_events.2 = {
 				NOT = { this = root }
 				country_is_in_europe = yes
 			}
-			trigger_event = { id = treaty_of_london_events.3 popup = yes } 
+			trigger_event = { id = treaty_of_london_events.3 popup = yes }
 		}
 	}
 
@@ -168,7 +168,7 @@ treaty_of_london_events.2 = {
 		}
 		c:NET = {
 			change_relations = { country = root value = -80 }
-			create_diplomatic_catalyst = {  
+			create_diplomatic_catalyst = {
 				type = catalyst_event_negative
 				target = root
 			}
@@ -199,13 +199,13 @@ treaty_of_london_events.2 = {
 treaty_of_london_events.3 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = treaty_of_london_events.3.t
 	desc = treaty_of_london_events.3.d
 	flavor = treaty_of_london_events.3.f
 
-	cooldown = { months = normal_modifier_time }
-	
+	cooldown = { days = normal_modifier_time }
+
 	event_image = {
 		video = "unspecific_politicians_arguing"
 	}
@@ -213,7 +213,7 @@ treaty_of_london_events.3 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
-	
+
 	duration = 3
 
 	trigger = {
@@ -276,13 +276,13 @@ treaty_of_london_events.3 = {
 treaty_of_london_events.4 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = treaty_of_london_events.4.t
 	desc = treaty_of_london_events.4.d
 	flavor = treaty_of_london_events.4.f
 
-	cooldown = { months = normal_modifier_time }
-	
+	cooldown = { days = normal_modifier_time }
+
 	event_image = {
 		video = "ep1_transfer_of_authority"
 	}
@@ -290,7 +290,7 @@ treaty_of_london_events.4 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
-	
+
 	duration = 3
 
 	trigger = {
@@ -335,15 +335,28 @@ treaty_of_london_events.4 = {
 					c:NET ?= this
 				}
 				NOT = {
-					has_diplomatic_pact = {
-						who = c:BEL
-						type = guarantee_independence						
+					any_scope_treaty = {
+						binds = c:BEL
+						any_scope_article = {
+							has_type = guarantee_independence
+						}
 					}
 				}
 			}
-			create_diplomatic_pact = {
-				country = c:BEL
-				type = guarantee_independence
+			create_treaty = {
+				first_country = root
+				second_country = c:BEL
+
+				is_draft = no
+				binding_period = { years = 5 }
+
+				articles_to_create = {
+					{
+						article = guarantee_independence
+						source_country = root
+						target_country = c:BEL
+					}
+				}
 			}
 		}
 		if = {
@@ -355,7 +368,7 @@ treaty_of_london_events.4 = {
 			}
 			add_modifier = {
 				name = guarantors_of_peace_modifier
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		show_as_tooltip = {
@@ -367,7 +380,7 @@ treaty_of_london_events.4 = {
 					take_on_scaled_debt = {
 						who = c:NET
 						value = c:NET.scaled_debt
-					}	
+					}
 				}
 			}
 			else_if = {
@@ -378,7 +391,7 @@ treaty_of_london_events.4 = {
 					take_on_scaled_debt = {
 						who = c:BEL
 						value = c:BEL.scaled_debt
-					}	
+					}
 				}
 			}
 		}
@@ -388,13 +401,13 @@ treaty_of_london_events.4 = {
 treaty_of_london_events.5 = {
 	type = country_event
 	placement = ROOT
-	
+
 	title = treaty_of_london_events.5.t
 	desc = treaty_of_london_events.5.d
 	flavor = treaty_of_london_events.5.f
 
-	cooldown = { months = normal_modifier_time }
-	
+	cooldown = { days = normal_modifier_time }
+
 	event_image = {
 		video = "africa_leader_arguing"
 	}
@@ -402,7 +415,7 @@ treaty_of_london_events.5 = {
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
-	
+
 	duration = 3
 
 	trigger = {

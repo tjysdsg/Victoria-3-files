@@ -30,6 +30,11 @@ is_weak_power_bloc = {
 can_start_diplomatic_plays_against = {
 	# Might be disallowed by power bloc
 	NOT = {
+		scope:target_country.top_overlord ?= {
+			is_diplomatic_play_involved_with = root
+		}
+	}
+	NOT = {
 		custom_tooltip = {
 			text = "power_bloc_disallow_war_bool"
 			is_in_same_power_bloc = scope:target_country
@@ -146,4 +151,19 @@ unlock_power_bloc_formation_principle_slot_3 = {
 
 unlock_power_bloc_formation_principle_slot_4 = {
 	always = no
+}
+
+
+# Evaluated when checking if a country can sign a treaty with another. Either through the player doing it in the UI or the AI looking for treaties to propose
+# root = initiating country
+# scope:other_country = other country in the potential treaty
+can_sign_treaty_with = {
+	scope:other_country = {
+		NOT = { is_country_type = decentralized }
+		is_revolutionary = no
+	}
+	root = {
+		NOT = { is_diplomatic_play_enemy_of = scope:other_country }
+	}
+	has_diplomatic_relevance = scope:other_country
 }

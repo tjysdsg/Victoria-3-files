@@ -163,7 +163,7 @@ agrarian_party = {
 			}
 		}
 	}
-	
+
 	# Root - IG considering joining
 	# scope:number - the number of IGs that would join this party before the root IG
 	join_weight = {
@@ -179,6 +179,7 @@ agrarian_party = {
 					OR = {
 						has_modifier = modifier_india_crown_rule
 						has_modifier = modifier_india_company_rule
+						has_modifier = modifier_india_company_rule_upgraded
 					}
 				}
 				OR = {
@@ -294,6 +295,36 @@ agrarian_party = {
 				desc = "from_migration_law"
 			}
 		}
+		if = { # limited suffrage Rural Folk - prevents forming of impotent parties
+			limit = {
+				is_interest_group_type = ig_rural_folk
+				owner = {
+					NOT = { has_law = law_type:law_universal_suffrage }
+				}
+			}
+			add = {
+				desc = "from_early_rural_folk"
+				if = {
+					limit = {
+						owner = {
+							OR = {
+								has_law = law_type:law_landed_voting
+								has_law = law_type:law_wealth_voting
+							}
+						}
+					}
+					add = -10
+				}
+				if = {
+					limit = {
+						owner = {
+							has_law = law_type:law_census_voting
+						}
+					}
+					add = -5
+				}
+			}
+		}
 		if = { # against arbitrary or militarized policing
 			limit = {
 				OR = {
@@ -302,7 +333,7 @@ agrarian_party = {
 					has_ideology = ideology:ideology_particularist
 				}
 				owner = {
-					OR = {	
+					OR = {
 						has_law = law_type:law_local_police
 						has_law = law_type:law_militarized_police
 					}
@@ -337,6 +368,7 @@ agrarian_party = {
 					has_ideology = ideology:ideology_proletarian
 					has_ideology = ideology:ideology_agrarian
 					has_ideology = ideology:ideology_paternalistic
+					has_ideology = ideology:ideology_magnatial
 				}
 				owner = {
 					has_law = law_type:law_free_trade

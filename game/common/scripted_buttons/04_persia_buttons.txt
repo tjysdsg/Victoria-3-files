@@ -198,7 +198,7 @@
 			}
 			add_modifier = {
 				name = modifier_herat_inspiration
-				months = long_modifier_time
+				days = long_modifier_time
 			}
 			custom_tooltip = greater_khorasan_button_tt
 			if = {
@@ -223,9 +223,9 @@
 	}
 
 	ai_chance = {
-		base = 20
-		modifier = {
-			trigger = {
+		value = 20
+		if = {
+			limit = {
 				OR = {
 					is_at_war = yes
 					in_default = yes
@@ -286,19 +286,19 @@ persian_baluchistan_button = {
 				activate_law = law_type:law_frontier_colonization
 				add_modifier = {
 					name = modifier_turkmen_subjugation
-					months = normal_modifier_time
+					days = normal_modifier_time
 				}
 			}
 			else = {
 				add_modifier = {
 					name = modifier_turkmen_subjugation
-					months = normal_modifier_time
+					days = normal_modifier_time
 					multiplier = 2
 				}
 			}
 			add_modifier = {
 				name = modifier_turkmen_logistics
-				months = normal_modifier_time
+				days = normal_modifier_time
 				multiplier = money_amount_multiplier_very_large
 			}
 			add_radicals = {
@@ -313,9 +313,9 @@ persian_baluchistan_button = {
 	}
 
 	ai_chance = {
-		base = 20
-		modifier = {
-			trigger = {
+		value = 20
+		if = {
+			limit = {
 				OR = {
 					is_at_war = yes
 					in_default = yes
@@ -334,6 +334,8 @@ persia_british_aid_button = {
 		has_variable = PER_appealed_to_GBR
 	}
 
+	cooldown = { days = long_modifier_time }
+
 	visible = {
 		exists = c:GBR
 	}
@@ -349,21 +351,27 @@ persia_british_aid_button = {
 			has_interest_marker_in_region = region_persia
 			relations:root >= relations_threshold:amicable
 		}
-		NOT = {
-			custom_tooltip = {
-				text = persia_british_aid_button_cooldown_tt
-				has_variable = persia_british_aid_button_cooldown_var
-			}			
-		}
-		c:GBR ?= {
-			can_create_diplomatic_pact = { target = ROOT type = military_assistance }
+		custom_tooltip = {
+			text = "can_create_treaty_MILITARY_ASSISTANCE"
+			c:GBR ?= {
+				can_create_treaty = {
+					first_country = c:GBR
+					second_country = ROOT
+					is_draft = no
+					binding_period = { years = 2 }
+					articles_to_create = {
+						{
+							article = military_assistance
+							source_country = c:GBR
+							target_country = ROOT
+						}
+					}
+				}
+			}
 		}
 	}
 
 	effect = {
-		set_variable = { 
-			name = persia_british_aid_button_cooldown_var years = 10 
-		}
 		set_variable = PER_appealed_to_GBR
 		save_scope_as = persian_nation_scope
 		c:GBR = {
@@ -382,9 +390,20 @@ persia_british_aid_button = {
 					name = modifier_south_persia_rifles
 				}
 				c:GBR = {
-					create_diplomatic_pact = {
-						country = ROOT
-						type = military_assistance
+					create_treaty = {
+						first_country = c:GBR
+						second_country = ROOT
+
+						is_draft = no
+						binding_period = { years = 2 }
+
+						articles_to_create = {
+							{
+								article = military_assistance
+								source_country = c:GBR
+								target_country = ROOT
+							}
+						}
 					}
 				}
 			}
@@ -393,9 +412,20 @@ persia_british_aid_button = {
 					has_modifier = modifier_south_persia_rifles
 				}
 				c:GBR = {
-					create_diplomatic_pact = {
-						country = ROOT
-						type = military_assistance
+					create_treaty = {
+						first_country = c:GBR
+						second_country = ROOT
+
+						is_draft = no
+						binding_period = { years = 2 }
+
+						articles_to_create = {
+							{
+								article = military_assistance
+								source_country = c:GBR
+								target_country = ROOT
+							}
+						}
 					}
 				}
 			}
@@ -406,7 +436,7 @@ persia_british_aid_button = {
 	}
 
 	ai_chance = {
-		base = 15
+		value = 15
 	}
 }
 
@@ -417,6 +447,8 @@ persia_russian_aid_button = {
 	selected = {
 		has_variable = PER_appealed_to_RUS
 	}
+
+	cooldown = { days = long_modifier_time }
 
 	visible = {
 		exists = c:RUS
@@ -433,21 +465,27 @@ persia_russian_aid_button = {
 			has_interest_marker_in_region = region_persia
 			relations:root >= relations_threshold:amicable
 		}
-		NOT = {
-			custom_tooltip = {
-				text = persia_russian_aid_button_cooldown_tt
-				has_variable = persia_russian_aid_button_cooldown_var
-			}			
-		}
-		c:RUS ?= {
-			can_create_diplomatic_pact = { target = ROOT type = military_assistance }
+		custom_tooltip = {
+			text = "can_create_treaty_MILITARY_ASSISTANCE"
+			c:RUS ?= {
+				can_create_treaty = {
+					first_country = c:RUS
+					second_country = ROOT
+					is_draft = no
+					binding_period = { years = 2 }
+					articles_to_create = {
+						{
+							article = military_assistance
+							source_country = c:RUS
+							target_country = ROOT
+						}
+					}
+				}
+			}
 		}
 	}
 
 	effect = {
-		set_variable = { 
-			name = persia_russian_aid_button_cooldown_var years = 10 
-		}
 		set_variable = PER_appealed_to_RUS
 		save_scope_as = persian_nation_scope
 		c:RUS = {
@@ -466,9 +504,20 @@ persia_russian_aid_button = {
 					name = modifier_persian_cossack_brigade
 				}
 				c:RUS = {
-					create_diplomatic_pact = {
-						country = ROOT
-						type = military_assistance
+					create_treaty = {
+						first_country = c:RUS
+						second_country = ROOT
+
+						is_draft = no
+						binding_period = { years = 2 }
+
+						articles_to_create = {
+							{
+								article = military_assistance
+								source_country = c:RUS
+								target_country = ROOT
+							}
+						}
 					}
 				}
 			}
@@ -477,9 +526,20 @@ persia_russian_aid_button = {
 					has_modifier = modifier_persian_cossack_brigade
 				}
 				c:RUS = {
-					create_diplomatic_pact = {
-						country = ROOT
-						type = military_assistance
+					create_treaty = {
+						first_country = c:RUS
+						second_country = ROOT
+
+						is_draft = no
+						binding_period = { years = 2 }
+
+						articles_to_create = {
+							{
+								article = military_assistance
+								source_country = c:RUS
+								target_country = ROOT
+							}
+						}
 					}
 				}
 			}
@@ -531,6 +591,6 @@ persia_resettle_merv_button = {
 	}
 
 	ai_chance = {
-		base = 15
+		value = 15
 	}
 }

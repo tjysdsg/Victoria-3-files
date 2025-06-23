@@ -44,6 +44,13 @@ types power_bloc_panel_types
 			text = "POWER_BLOC_SUBHEADER"
 		}
 
+		blockoverride "map_modes_button" {
+			map_modes_single_button_minimized = {
+				datacontext = "[PowerBlocPanel.GetMapModeList]"
+				using = map_modes_button_position
+			}
+		}
+
 		blockoverride "edit_visibility" {
 			visible = "[And(HasDlcFeature('power_bloc_features'), PowerBloc.IsLeader( GetPlayer.Self ))]"
 			tooltip = "EDIT"
@@ -73,7 +80,6 @@ types power_bloc_panel_types
 				blockoverride "first_button_click"
 				{
 					onclick = "[InformationPanel.SelectTab('default')]"
-					onclick = "[PowerBlocPanel.ShowLeverage]"
 				}
 				blockoverride "first_button_visibility"
 				{
@@ -99,7 +105,6 @@ types power_bloc_panel_types
 				blockoverride "second_button_click"
 				{
 					onclick = "[InformationPanel.SelectTab('members')]"
-					onclick = "[PowerBlocPanel.ShowLeverage]"
 				}
 				blockoverride "second_button_visibility"
 				{
@@ -121,7 +126,6 @@ types power_bloc_panel_types
 				blockoverride "third_button_click"
 				{
 					onclick = "[InformationPanel.SelectTab('all_power_blocs')]"
-					onclick = "[PowerBlocPanel.ShowLeverage]"
 				}
 				blockoverride "third_button_visibility"
 				{
@@ -143,7 +147,6 @@ types power_bloc_panel_types
 				blockoverride "fourth_button_click"
 				{
 					onclick = "[InformationPanel.SelectTab('modifiers')]"
-					onclick = "[PowerBlocPanel.ShowLeverage]"
 				}
 				blockoverride "fourth_button_visibility"
 				{
@@ -187,6 +190,11 @@ types power_bloc_panel_types
 				visible = "[PowerBlocPanel.IsPowerBlocSelected]"
 				parentanchor = hcenter
 
+				state = {
+					name = _show
+					on_start = "[PowerBlocPanel.GetMapModeList.SelectByKey('mm_power_bloc_leverage')]"
+				}
+
 				power_bloc_panel_overview_tab = {
 					visible = "[InformationPanel.IsTabSelected('default')]"
 					using = default_content_fade
@@ -228,6 +236,11 @@ types power_bloc_panel_types
 			container = {
 				visible = "[Not(PowerBlocPanel.IsPowerBlocSelected)]"
 				parentanchor = hcenter
+				
+				state = {
+					name = _show
+					on_start = "[PowerBlocPanel.GetMapModeList.SelectByKey('mm_power_blocs')]"
+				}
 
 				power_bloc_panel_all_power_blocs = {}
 			}
@@ -655,7 +668,7 @@ types power_bloc_panel_types
 		tooltip = "GO_TO_BUTTON_POWER_BLOC"
 		onclick = "[InformationPanelBar.OpenPowerBlocPanelTab( PowerBloc.Self, 'default' )]"
 		onrightclick = "[RightClickMenuManager.ShowForPowerBloc( PowerBloc.AccessSelf )]"
-		onclick = "[PowerBlocPanel.ShowLeverage]"
+		onclick = "[PowerBlocPanel.GetMapModeList.SelectByKey('mm_power_bloc_leverage')]"
 
 		blockoverride "size" {
 			size = { 80 80 }
@@ -680,6 +693,10 @@ types power_bloc_panel_types
 		}
 	}
 
+	type power_bloc_header_grid_item = header_grid_item {
+		size = { 100 30 }
+	}
+
 	type power_bloc_list_item_grid_values = flowcontainer {
 		direction = vertical
 		margin_top = 5
@@ -691,7 +708,7 @@ types power_bloc_panel_types
 			spacing = @grid_spacing
 
 			### TOTAL GDP
-			header_grid_item = {
+			power_bloc_header_grid_item = {
 				using = tooltip_se
 				tooltip = "POWER_BLOC_GDP_TOOLTIP"
 
@@ -710,7 +727,7 @@ types power_bloc_panel_types
 			}
 
 			### TOTAL NUMBER OF COUNTRIES
-			header_grid_item = {
+			power_bloc_header_grid_item = {
 				using = tooltip_se
 				tooltip = "POWER_BLOC_NUMBER_OF_COUNTRIES_TOOLTIP"
 
@@ -729,7 +746,7 @@ types power_bloc_panel_types
 			}
 
 			### TOTAL NUMBER OF BATTALIONS
-			header_grid_item = {
+			power_bloc_header_grid_item = {
 				using = tooltip_se
 				tooltip = "POWER_BLOC_ARMY_NUMBERS_TOOLTIP"
 
@@ -753,7 +770,7 @@ types power_bloc_panel_types
 			parentanchor = hcenter
 
 			### LEVERAGE ON THE PLAYER
-			header_grid_item = {
+			power_bloc_header_grid_item = {
 				visible = "[Not(GetPlayer.GetPowerBloc.IsLeader(GetPlayer.Self))]"
 				using = tooltip_se
 
@@ -782,7 +799,7 @@ types power_bloc_panel_types
 			}
 
 			### LEVERAGE ON THE LEADER
-			header_grid_item = {
+			power_bloc_header_grid_item = {
 				visible = "[GetPlayer.GetPowerBloc.IsLeader(GetPlayer.Self)]"
 				using = tooltip_se
 				tooltip = "LEVERAGE_ON_PLAYER_LEADER_NOT_APPLICABLE"
@@ -797,7 +814,7 @@ types power_bloc_panel_types
 			}
 
 			### COHESION
-			header_grid_item = {
+			power_bloc_header_grid_item = {
 				using = tooltip_se
 				tooltip = "COHESION_LEVEL_ACTIVE_TOOLTIP"
 
@@ -821,7 +838,7 @@ types power_bloc_panel_types
 			}
 
 			### TOTAL NUMBER OF FLOTILLAS
-			header_grid_item = {
+			power_bloc_header_grid_item = {
 				using = tooltip_se
 				tooltip = "POWER_BLOC_NAVY_NUMBERS_TOOLTIP"
 
@@ -1331,7 +1348,6 @@ types power_bloc_panel_types
 							}
 						}
 					}
-
 				}
 
 				power_bloc_rank_badge = {
@@ -1409,61 +1425,6 @@ types power_bloc_panel_types
 					position = { 210 -20 }
 					parentanchor = hcenter|bottom
 					datacontext = "[PowerBloc.GetMemberWithUniqueHeadOfState('(int32)4')]"
-				}
-
-				### MAP MODES
-				container = {
-					parentanchor = hcenter
-					minimumsize = { @panel_width -1 }
-					maximumsize = { @panel_width -1 }
-
-					map_modes_minimized = {
-						parentanchor = right
-						position = { 4 10 }
-						
-						blockoverride "first_button_click" {
-							onclick = "[PowerBlocPanel.ShowLeverage]"
-						}
-
-						blockoverride "first_button_selected" {
-							visible = "[PowerBlocPanel.IsShowingLeverage]"
-						}
-
-						blockoverride "first_button_not_selected" {
-							visible = "[Not(PowerBlocPanel.IsShowingLeverage)]"
-						}
-
-						blockoverride "first_button_icon" {
-							texture = "gfx/interface/icons/map_mode_icons/selected_powerbloc.dds"
-						}
-
-						blockoverride "first_button_text" {
-							text = "SHOW_SPECIFIC_POWER_BLOCS_MAP_MODE"
-						}
-
-						blockoverride "second_button_click" {
-							onclick = "[PowerBlocPanel.ShowPowerBlocs]"
-						}
-
-						blockoverride "second_button_selected" {
-							visible = "[PowerBlocPanel.IsShowingPowerBlocs]"
-						}
-
-						blockoverride "second_button_not_selected" {
-							visible = "[Not(PowerBlocPanel.IsShowingPowerBlocs)]"
-						}
-
-						blockoverride "second_button_icon" {
-							texture = "gfx/interface/icons/map_mode_icons/all_powerblocs.dds"
-						}
-
-						blockoverride "second_button_text" {
-							text = "SHOW_ALL_POWER_BLOCS_MAP_MODE"
-						}
-
-						blockoverride "third_button" {}
-						blockoverride "fourth_button" {}
-					}
 				}
 			}
 		}
@@ -1875,7 +1836,7 @@ types power_bloc_panel_types
 					spacing = @grid_spacing
 
 					### PRESTIGE
-					header_grid_item = {
+					power_bloc_header_grid_item = {
 						using = tooltip_se
 						tooltip = "COUNTRY_PRESTIGE_BREAKDOWN"
 
@@ -1889,7 +1850,7 @@ types power_bloc_panel_types
 					}
 
 					### TOTAL GDP
-					header_grid_item = {
+					power_bloc_header_grid_item = {
 						using = tooltip_se
 						using = GDP_tooltip_with_graph
 
@@ -1903,7 +1864,7 @@ types power_bloc_panel_types
 					}
 
 					### TOTAL NUMBER OF BATTALIONS
-					header_grid_item = {
+					power_bloc_header_grid_item = {
 						using = tooltip_se
 						tooltip = "PANEL_MILITARY_ARMY_OVERVIEW_TOOLTIP"
 
@@ -1923,7 +1884,7 @@ types power_bloc_panel_types
 					parentanchor = hcenter
 
 					### LEVERAGE ON THE LEADER
-					header_grid_item = {
+					power_bloc_header_grid_item = {
 						using = tooltip_se
 						tooltip = "LEVERAGE_ON_LEADER_NOT_APPLICABLE"
 
@@ -1938,7 +1899,7 @@ types power_bloc_panel_types
 					}
 
 					### INFAMY
-					header_grid_item = {
+					power_bloc_header_grid_item = {
 						using = tooltip_se
 						tooltip = "[Country.GetInfamyDesc]"
 
@@ -1956,7 +1917,7 @@ types power_bloc_panel_types
 					}
 
 					### TOTAL NUMBER OF FLOTILLAS
-					header_grid_item = {
+					power_bloc_header_grid_item = {
 						using = tooltip_se
 						tooltip = "PANEL_MILITARY_NAVY_CURRENT_FLOTILLAS_TOOLTIP"
 
@@ -2427,7 +2388,7 @@ types power_bloc_panel_types
 					spacing = @grid_spacing
 
 					### PRESTIGE
-					header_grid_item = {
+					power_bloc_header_grid_item = {
 						using = tooltip_se
 						tooltip = "COUNTRY_PRESTIGE_BREAKDOWN"
 
@@ -2441,7 +2402,7 @@ types power_bloc_panel_types
 					}
 
 					### TOTAL GDP
-					header_grid_item = {
+					power_bloc_header_grid_item = {
 						using = tooltip_se
 						using = GDP_tooltip_with_graph
 
@@ -2455,7 +2416,7 @@ types power_bloc_panel_types
 					}
 
 					### TOTAL NUMBER OF BATTALIONS
-					header_grid_item = {
+					power_bloc_header_grid_item = {
 						using = tooltip_se
 						tooltip = "PANEL_MILITARY_ARMY_OVERVIEW_TOOLTIP"
 
@@ -2475,7 +2436,7 @@ types power_bloc_panel_types
 					parentanchor = hcenter
 
 					### LEVERAGE ON THE MEMBER COUNTRY
-					header_grid_item = {
+					power_bloc_header_grid_item = {
 						using = tooltip_se
 
 						tooltipwidget = {
@@ -2496,7 +2457,7 @@ types power_bloc_panel_types
 					}
 
 					### INFAMY
-					header_grid_item = {
+					power_bloc_header_grid_item = {
 						using = tooltip_se
 						tooltip = "[Country.GetInfamyDesc]"
 
@@ -2514,7 +2475,7 @@ types power_bloc_panel_types
 					}
 
 					### TOTAL NUMBER OF FLOTILLAS
-					header_grid_item = {
+					power_bloc_header_grid_item = {
 						using = tooltip_se
 						tooltip = "PANEL_MILITARY_NAVY_CURRENT_FLOTILLAS_TOOLTIP"
 

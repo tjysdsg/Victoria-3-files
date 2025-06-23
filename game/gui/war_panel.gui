@@ -854,18 +854,18 @@ types war_panel
 					}
 				}
 
-				### NAVAL INVASIONS
+				### INVASIONS
 				flowcontainer = {
-					visible = "[Not(IsDataModelEmpty(WarPanel.AccessWar.GetActiveNavalInvasions))]"
+					visible = "[Not(IsDataModelEmpty(WarPanel.AccessWar.GetInvasions))]"
 					spacing = 10
 					direction = vertical
 					parentanchor = hcenter
 					margin = { 0 10 }
 
-					datamodel = "[WarPanel.AccessWar.GetActiveNavalInvasions]"
+					datamodel = "[WarPanel.AccessWar.GetInvasions]"
 
 					item = {
-						naval_invasion_list_item = {}
+						invasion_list_item = {}
 					}
 				}
 
@@ -930,7 +930,7 @@ types war_panel
 					}
 					sort_button = {
 						size = { @panel_width_half 30 }
-						text = "FRONT_MAP_LIST_PANEL_ADVANTAGE"
+						text = "MILITARY_FORMATION_LIST_PANEL_ADVANTAGE_HEADER"
 						onclick = "[WarPanel.SortFronts('advantage')]"
 					}
 				}
@@ -1152,17 +1152,9 @@ types war_panel
 											}
 										}
 
-										dynamicgridbox = {
-											using = default_list_position
+										### PRESSED ATTACKER WAR GOALS - INACTIVE PEACE DEAL
+										peace_deal_war_goals_list = {
 											name = "attacker_wargoal_list"
-											datamodel = "[WarPanel.AccessAttackersWarGoals]"
-
-											item = {
-												wargoal_item = {
-													visible = "[WarGoal.IsPressedInShownPeaceDeal(GetPlayer)]" # todo PRCAL-21770 - Remove this visible state
-													datacontext = "[WarGoalPanelPair.AccessWarGoal]"
-												}
-											}
 										}
 									}
 
@@ -1192,16 +1184,12 @@ types war_panel
 											}
 										}
 
-										dynamicgridbox = {
-											using = default_list_position
+										### PRESSED DEFENDER WAR GOALS - INACTIVE PEACE DEAL
+										peace_deal_war_goals_list = {
 											name = "defender_wargoal_list"
-											datamodel = "[WarPanel.AccessDefendersWarGoals]"
 
-											item = {
-												wargoal_item = {
-													visible = "[WarGoal.IsPressedInShownPeaceDeal(GetPlayer)]" # todo PRCAL-21770 - Remove this visible state
-													datacontext = "[WarGoalPanelPair.AccessWarGoal]"
-												}
+											blockoverride "war_goals_datamodel" {
+												datamodel = "[WarPanel.AccessDefendersWarGoals]"
 											}
 										}
 									}
@@ -1255,17 +1243,9 @@ types war_panel
 											}
 										}
 
-										dynamicgridbox = {
-											using = default_list_position
+										### PRESSED ATTACKER WAR GOALS - Active peace deal
+										peace_deal_war_goals_list = {
 											name = "attacker_wargoal_list"
-											datamodel = "[WarPanel.AccessAttackersWarGoals]"
-
-											item = {
-												wargoal_item = {
-													visible = "[WarGoal.IsPressedInShownPeaceDeal(GetPlayer)]" # todo PRCAL-21770 - Remove this visible state
-													datacontext = "[WarGoalPanelPair.AccessWarGoal]"
-												}
-											}
 										}
 									}
 
@@ -1295,16 +1275,12 @@ types war_panel
 											}
 										}
 
-										dynamicgridbox = {
-											using = default_list_position
+										### PRESSED DEFENDER WAR GOALS - Active peace deal
+										peace_deal_war_goals_list = {
 											name = "defender_wargoal_list"
-											datamodel = "[WarPanel.AccessDefendersWarGoals]"
 
-											item = {
-												wargoal_item = {
-													visible = "[WarGoal.IsPressedInShownPeaceDeal(GetPlayer)]" # todo PRCAL-21770 - Remove this visible state
-													datacontext = "[WarGoalPanelPair.AccessWarGoal]"
-												}
+											blockoverride "war_goals_datamodel" {
+												datamodel = "[WarPanel.AccessDefendersWarGoals]"
 											}
 										}
 									}
@@ -1365,18 +1341,18 @@ types war_panel
 												using = fontsize_large
 											}
 										}
-										
-										dynamicgridbox = {
-											using = default_list_position
-											name = "attacker_wargoal_list"
-											datamodel = "[WarPanel.AccessAttackersWarGoals]"
-											#datamodel = "[WarPanel.AccessAttackersPotentialUnpressedWarGoals]" - # todo PRCAL-21770
 
-											item = {
-												wargoal_item = {
-													visible = "[Not(WarGoal.IsPressedInShownPeaceDeal(GetPlayer))]" # todo PRCAL-21770 - Remove this visible state
-													datacontext = "[WarGoalPanelPair.AccessWarGoal]"
-												}
+										### UNPRESSED ATTACKER WAR GOALS - Inactive peace deal
+										peace_deal_war_goals_list = {
+											name = "attacker_wargoal_list"
+
+											blockoverride "war_goals_datamodel" {
+												datamodel = "[WarPanel.AccessAttackersWarGoals]"
+												#datamodel = "[WarPanel.AccessAttackersCurrentUnpressedWarGoals]" - # todo PRCAL-21770
+											}
+
+											blockoverride "item_visibility" {
+												visible = "[Not(WarGoal.IsPressedInShownPeaceDeal(GetPlayer))]" # todo PRCAL-21770 - Remove this visible state
 											}
 										}
 									}
@@ -1406,18 +1382,18 @@ types war_panel
 												using = fontsize_large
 											}
 										}
-										
-										dynamicgridbox = {
-											using = default_list_position
-											name = "defender_wargoal_list"
-											datamodel = "[WarPanel.AccessDefendersWarGoals]"
-											#datamodel = "[WarPanel.AccessDefendersPotentialUnpressedWarGoals]" - # todo PRCAL-21770
 
-											item = {
-												wargoal_item = {
-													datacontext = "[WarGoalPanelPair.AccessWarGoal]"
-													visible = "[Not(WarGoal.IsPressedInShownPeaceDeal(GetPlayer))]" # todo PRCAL-21770 - Remove this visible state
-												}
+										### UNPRESSED DEFENDER WAR GOALS - Inactive peace deal
+										peace_deal_war_goals_list = {
+											name = "defender_wargoal_list"
+
+											blockoverride "war_goals_datamodel" {
+												datamodel = "[WarPanel.AccessDefendersWarGoals]"
+												#datamodel = "[WarPanel.AccessDefendersPotentialUnpressedWarGoals]" - # todo PRCAL-21770
+											}
+
+											blockoverride "item_visibility" {
+												visible = "[Not(WarGoal.IsPressedInShownPeaceDeal(GetPlayer))]" # todo PRCAL-21770 - Remove this visible state
 											}
 										}
 									}
@@ -1470,18 +1446,18 @@ types war_panel
 												using = fontsize_large
 											}
 										}
-										
-										dynamicgridbox = {
-											using = default_list_position
-											name = "attacker_wargoal_list"
-											datamodel = "[WarPanel.AccessAttackersWarGoals]"
-											#datamodel = "[WarPanel.AccessAttackersCurrentUnpressedWarGoals]" - # todo PRCAL-21770
 
-											item = {
-												wargoal_item = {
-													visible = "[Not(WarGoal.IsPressedInShownPeaceDeal(GetPlayer))]" # todo PRCAL-21770 - Remove this visible state
-													datacontext = "[WarGoalPanelPair.AccessWarGoal]"
-												}
+										### UNPRESSED ATTACKER WAR GOALS - Active peace deal
+										peace_deal_war_goals_list = {
+											name = "attacker_wargoal_list"
+
+											blockoverride "war_goals_datamodel" {
+												datamodel = "[WarPanel.AccessAttackersWarGoals]"
+												#datamodel = "[WarPanel.AccessAttackersCurrentUnpressedWarGoals]" - # todo PRCAL-21770
+											}
+
+											blockoverride "item_visibility" {
+												visible = "[Not(WarGoal.IsPressedInShownPeaceDeal(GetPlayer))]" # todo PRCAL-21770 - Remove this visible state
 											}
 										}
 									}
@@ -1511,18 +1487,18 @@ types war_panel
 												using = fontsize_large
 											}
 										}
-										
-										dynamicgridbox = {
-											using = default_list_position
-											name = "defender_wargoal_list"
-											datamodel = "[WarPanel.AccessDefendersWarGoals]"
-											#datamodel = "[WarPanel.AccessDefendersCurrentUnpressedWarGoals]" - # todo PRCAL-21770
 
-											item = {
-												wargoal_item = {
-													datacontext = "[WarGoalPanelPair.AccessWarGoal]"
-													visible = "[Not(WarGoal.IsPressedInShownPeaceDeal(GetPlayer))]" # todo PRCAL-21770 - Remove this visible state
-												}
+										### UNPRESSED DEFENDER WAR GOALS - Active peace deal
+										peace_deal_war_goals_list = {
+											name = "defender_wargoal_list"
+
+											blockoverride "war_goals_datamodel" {
+												datamodel = "[WarPanel.AccessDefendersWarGoals]"
+												#datamodel = "[WarPanel.AccessDefendersCurrentUnpressedWarGoals]" - # todo PRCAL-21770
+											}
+
+											blockoverride "item_visibility" {
+												visible = "[Not(WarGoal.IsPressedInShownPeaceDeal(GetPlayer))]" # todo PRCAL-21770 - Remove this visible state
 											}
 										}
 									}
@@ -1898,6 +1874,41 @@ types war_panel
 			}
 		
 			widget = { size = { 1 10 }}
+		}
+	}
+
+	type peace_deal_war_goals_list = dynamicgridbox {
+		using = default_list_position
+		name = "attacker_wargoal_list"
+
+		block "war_goals_datamodel" {
+			datamodel = "[WarPanel.AccessAttackersWarGoals]"
+		}
+
+		item = {
+			container = {
+				block "item_visibility" {
+					visible = "[WarGoal.IsPressedInShownPeaceDeal(GetPlayer)]" # todo PRCAL-21770 - Remove this visible state
+				}
+
+				datacontext = "[WarGoalPanelPair.AccessWarGoal]"
+
+				wargoal_item = {
+					visible = "[Not(WarGoal.HoldsArticle)]"
+				}
+
+				wargoal_item = {
+					visible = "[WarGoal.HoldsArticle]"
+
+					blockoverride "war_goal_tooltip" {
+						tooltipwidget = {
+							RegularTooltip_WarGoalArticle = {
+								datacontext = "[WarGoal.GetArticleDraft]"
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -2367,7 +2378,7 @@ types war_panel
 					button_icon_goto = {
 						datacontext = "[Front]"
 						size = { 25 25 }
-						onclick = "[InformationPanelBar.OpenFrontPanel(Front.AccessSelf)]"
+						onclick = "[InformationPanelBar.OpenFrontPanel(Front.Self)]"
 						tooltip = "GO_TO_BUTTON_FRONT"
 					}
 				}
@@ -2382,27 +2393,27 @@ types war_panel
 
 				#Left
 				flowcontainer = {
+					datacontext = "[Front.GetLeftSide]"
 					direction = vertical
 					parentanchor = left
 					spacing = 5
 					margin_left = 5
 
 					flowcontainer = {
-						visible = "[Not(IsDataModelEmpty(Front.GetLeftTopFiveArmies))]"
+						visible = "[Not(IsDataModelEmpty(FrontSide.GetTopFiveArmies))]"
 						spacing = 10
 						parentanchor = left
 
 						overlappingitembox = {
-							visible = "[Not(IsDataModelEmpty(Front.GetLeftTopFiveArmies))]"
+							visible = "[Not(IsDataModelEmpty(FrontSide.GetTopFiveArmies))]"
 							parentanchor = vcenter
 							autoresize = yes
 							maximumsize = { 180 40 }
 
-							datamodel = "[Front.GetLeftTopFiveArmies]"
+							datamodel = "[FrontSide.GetTopFiveArmies]"
 
 							item ={
 								button_icon_round = {
-									datacontext = "[FrontParticipant.AccessArmy]"
 									using = tooltip_above
 
 									tooltipwidget = {
@@ -2417,8 +2428,8 @@ types war_panel
 									}
 
 									block "onclick" {
-										onclick = "[InformationPanelBar.OpenMilitaryFormationPanelTab( FrontParticipant.AccessArmy.AccessSelf, 'default' )]"
-										onrightclick = "[RightClickMenuManager.ShowForMilitaryFormation(FrontParticipant.AccessArmy.AccessSelf)]"
+										onclick = "[InformationPanelBar.OpenMilitaryFormationPanelTab( MilitaryFormation.Self, 'default' )]"
+										onrightclick = "[RightClickMenuManager.ShowForMilitaryFormation(MilitaryFormation.AccessSelf)]"
 									}
 
 									blockoverride "icon" {
@@ -2430,18 +2441,18 @@ types war_panel
 						}
 
 						textbox = {
-							visible = "[GreaterThan_int32(Front.GetLeftNumArmiesBeyondTopFiveArmies, '(int32)0')]"
+							visible = "[Not(IsDataModelEmpty(FrontSide.GetOutsideTopFiveArmies))]"
 							align = left|nobaseline
 							parentanchor = vcenter
 							autoresize = yes
 
-							raw_text = "#v [Front.GetLeftNumArmiesBeyondTopFiveArmies|=]#!"
-							tooltip = "[Front.GetLeftNumArmiesBeyondTopFiveArmiesTooltip]"
+							raw_text = "#v [GetDataModelSize(FrontSide.GetOutsideTopFiveArmies)|=]#!"
+							tooltip = "[FrontSide.GetOutsideTopFiveArmiesTooltip]"
 						}
 					}
 
 					textbox = {
-						visible = "[IsDataModelEmpty(Front.GetLeftTopFiveArmies)]"
+						visible = "[IsDataModelEmpty(FrontSide.GetTopFiveArmies)]"
 						align = nobaseline
 						autoresize = yes
 						minimumsize = { -1 40 } #same height as war_character_portrait
@@ -2451,18 +2462,18 @@ types war_panel
 
 					flowcontainer = {
 						spacing = 8
-						alpha = "[TransparentIfZero_int32(Front.GetNumLeftCombatUnitsRaw)]"
+						alpha = "[TransparentIfZero_int32(FrontSide.GetNumUnits)]"
 
 						# Morale
 						morale_bar = {
 							parentanchor = vcenter
-							tooltip = "[Front.GetLeftCombatUnitsMoraleDesc]"
+							tooltip = "[FrontSide.GetUnitMoraleDesc]"
 
 							blockoverride "morale_value" {
-								value = "[FixedPointToFloat( Front.GetLeftCombatUnitsMoraleRaw )]"
+								value = "[FixedPointToFloat(FrontSide.GetUnitMorale)]"
 							}
 							blockoverride "morale_color" {
-								color = "[GetMoraleColorVec( Front.GetLeftCombatUnitsMoraleRaw )]"
+								color = "[GetMoraleColorVec(FrontSide.GetUnitMorale)]"
 							}
 						}
 
@@ -2476,38 +2487,38 @@ types war_panel
 
 				#Right
 				flowcontainer = {
+					datacontext = "[Front.GetRightSide]"
 					parentanchor = right
 					direction = vertical
 					spacing = 5
 					margin_left = 5
 
 					flowcontainer = {
-						visible = "[Not(IsDataModelEmpty(Front.GetRightTopFiveArmies))]"
+						visible = "[Not(IsDataModelEmpty(FrontSide.GetTopFiveArmies))]"
 						spacing = 10
 						parentanchor = right
 
 						textbox = {
-							visible = "[GreaterThan_int32(Front.GetRightNumArmiesBeyondTopFiveArmies, '(int32)0')]"
+							visible = "[Not(IsDataModelEmpty(FrontSide.GetOutsideTopFiveArmies))]"
 							align = right|nobaseline
 							parentanchor = vcenter
 							autoresize = yes
 
-							raw_text = "#v [Front.GetRightNumArmiesBeyondTopFiveArmies|=]#!"
-							tooltip = "[Front.GetRightNumArmiesBeyondTopFiveArmiesTooltip]"
+							raw_text = "#v [GetDataModelSize(FrontSide.GetOutsideTopFiveArmies)|=]#!"
+							tooltip = "[FrontSide.GetOutsideTopFiveArmiesTooltip]"
 						}
 
 						overlappingitembox = {
-							visible = "[Not(IsDataModelEmpty(Front.GetRightTopFiveArmies))]"
+							visible = "[Not(IsDataModelEmpty(FrontSide.GetTopFiveArmies))]"
 							righttoleft = yes
 							parentanchor = vcenter
 							autoresize = yes
 							maximumsize = { 180 40 }
 
-							datamodel = "[Front.GetRightTopFiveArmies]"
+							datamodel = "[FrontSide.GetTopFiveArmies]"
 
 							item ={
 								button_icon_round = {
-									datacontext = "[FrontParticipant.AccessArmy]"
 									using = tooltip_above
 
 									tooltipwidget = {
@@ -2522,8 +2533,8 @@ types war_panel
 									}
 
 									block "onclick" {
-										onclick = "[InformationPanelBar.OpenMilitaryFormationPanelTab( FrontParticipant.AccessArmy.AccessSelf, 'default' )]"
-										onrightclick = "[RightClickMenuManager.ShowForMilitaryFormation(FrontParticipant.AccessArmy.AccessSelf)]"
+										onclick = "[InformationPanelBar.OpenMilitaryFormationPanelTab( MilitaryFormation.Self, 'default' )]"
+										onrightclick = "[RightClickMenuManager.ShowForMilitaryFormation(MilitaryFormation.AccessSelf)]"
 									}
 
 									blockoverride "icon" {
@@ -2535,7 +2546,7 @@ types war_panel
 					}
 
 					textbox = {
-						visible = "[IsDataModelEmpty(Front.GetRightTopFiveArmies)]"
+						visible = "[IsDataModelEmpty(FrontSide.GetTopFiveArmies)]"
 						parentanchor = right
 						align = nobaseline
 						autoresize = yes
@@ -2545,7 +2556,7 @@ types war_panel
 					}
 
 					flowcontainer = {
-						alpha = "[TransparentIfZero_int32(Front.GetNumRightCombatUnitsRaw)]"
+						alpha = "[TransparentIfZero_int32(FrontSide.GetNumUnits)]"
 
 						parentanchor = right
 						spacing = 8
@@ -2560,13 +2571,13 @@ types war_panel
 						# Morale
 						morale_bar = {
 							parentanchor = vcenter
-							tooltip = "[Front.GetRightCombatUnitsMoraleDesc]"
+							tooltip = "[FrontSide.GetUnitMoraleDesc]"
 
 							blockoverride "morale_value" {
-								value = "[FixedPointToFloat( Front.GetRightCombatUnitsMoraleRaw )]"
+								value = "[FixedPointToFloat(FrontSide.GetUnitMorale)]"
 							}
 							blockoverride "morale_color" {
-								color = "[GetMoraleColorVec( Front.GetRightCombatUnitsMoraleRaw )]"
+								color = "[GetMoraleColorVec(FrontSide.GetUnitMorale)]"
 							}
 						}
 					}
@@ -2578,7 +2589,7 @@ types war_panel
 					size = { 60 60 }
 					tooltip = "[Front.GetPlayerAdvantageDesc]"
 
-					visible = "[And(Not( IsDataModelEmpty(Front.AccessLeftCountries)), Not(IsDataModelEmpty(Front.AccessRightCountries)))]"
+					visible = "[And(Not( IsDataModelEmpty(Front.GetInitiatorSide.GetCountries)), Not(IsDataModelEmpty(Front.GetTargetSide.GetCountries)))]"
 					framesize = { 188 188 }
 					frame = "[Front.GetAdvantageFrame]"
 					using = tooltip_below

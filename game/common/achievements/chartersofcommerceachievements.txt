@@ -1,0 +1,159 @@
+﻿# possible - filters out achivements on game start so we dont have to check everything all the time
+# happened - checks if achivement happened
+
+achievement_its_a_blockade = { # It's a Blockade!
+	possible = {
+		always = yes
+	}
+	happened = {
+		hidden_trigger = {
+			has_variable = its_a_blockade_happened
+		}
+	}
+}
+
+achievement_fordlandia = { # Fordlandia
+	possible = {
+		has_dlc_feature = mp1_content
+	}
+	happened = {
+		hidden_trigger = {
+			any_subject_or_below = {
+				AND = {
+					is_subject_type = subject_type_chartered_company
+					exists = owning_company
+					owning_company = {
+						OR = {
+							is_company_type = company_type:company_basic_motors
+							is_company_type = company_type:company_fiat
+							is_company_type = company_type:company_ford_motor
+						}
+					}
+					gdp_per_capita_ranking <= 10
+				}
+			}
+		}
+	}
+}
+
+achievement_venice_vidi_vici = { # Venice, Vidi, Vici
+	possible = {
+		always = yes
+	}
+	happened = {
+		hidden_trigger = {
+			has_variable = venice_vidi_vici_achievement_happened
+		}
+	}
+}
+
+achievement_yes_we_have_bananas = { # Yes, We Have Bananas!
+	possible = {
+		has_dlc_feature = mp1_content
+
+	}
+	happened = {
+		market_capital.market = {
+			mg:fruit = {
+				market_prestige_goods_export_share = {
+				  	type = prestige_good_gros_michel_banana
+				  	value >= 0.25
+				}
+			}
+		}
+	}
+}
+
+achievement_wall_of_text = { # Wall of Text
+	possible = {
+		always = yes
+	}
+	happened = {
+		hidden_trigger = {
+			any_scope_treaty = {
+				any_scope_article = {
+					count >= 10
+				}
+			}
+		}
+	}
+}
+
+achievement_swiss_bank_account = { # Swiss Bank Account
+	possible = {
+		c:SWI ?= this
+	}
+	happened = {
+		hidden_trigger = {
+			c:SWI ?= this
+			has_variable = swiss_bank_account_happened
+		}
+
+	}
+}
+
+achievement_franchising = { # Franchising
+	possible = {
+		has_dlc_feature = mp1_content
+	}
+	happened = {
+		hidden_trigger = {
+			any_company = {
+				any_scope_regional_hqs = {
+					level >= 20
+				}
+			}
+		}
+	}
+}
+
+achievement_champagne_socialist = { # Champagne Socialist
+	possible = {
+		has_dlc_feature = mp1_content
+		c:FRA ?= this
+	}
+	happened = {
+		AND = {
+			c:FRA ?= this
+			custom_tooltip = {
+				text = has_company_cgv_tt
+				any_company = {
+					is_company_type = company_type:company_cgv
+					is_producing_prestige_goods = yes
+				}
+			}
+			market_capital.market = {
+				mg:wine = {
+					market_prestige_goods_exports = {
+						type = prestige_good_champagne
+						value >= 100
+					}
+				}
+			}
+			has_law = law_type:law_council_republic
+		}
+	}
+}
+
+achievement_systembolaget = { # Systembolaget
+	possible = {
+		has_dlc_feature = mp1_content
+		c:SWE ?= this
+		NOT = { is_banning_goods = g:liquor }
+	}
+	happened = {
+		c:SWE ?= this
+		country_has_building_type_monopoly = bt:building_food_industry
+	}
+}
+
+achievement_all_quiet_on_the_western_front = { # All Quiet on the Western Front
+	possible = {
+		always = yes
+	}
+	happened = {
+		hidden_trigger = {
+			has_variable = all_quiet_on_the_western_front_happened
+		}
+	}
+}

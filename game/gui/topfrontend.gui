@@ -38,7 +38,8 @@ types topfrontend_types {
 	type topfrontend = widget {
 		name = "topfrontend"
 		layoutpolicy_horizontal = expanding
-		layoutpolicy_vertical = expanding 
+		layoutpolicy_vertical = expanding
+		allow_outside = yes
 
 		### SITUATIONS + ALERTS
 		hbox = {
@@ -47,6 +48,7 @@ types topfrontend_types {
 			spacing = 5
 			margin_left = 15
 			filter_mouse = right
+			allow_outside = yes
 
 			### CURRENT SITUATION
 			widget = {
@@ -54,9 +56,11 @@ types topfrontend_types {
 				layoutpolicy_horizontal = preferred
 				layoutpolicy_vertical = expanding
 				visible = "[Not( IsDataModelEmpty(TopFrontend.AccessImportantActions) )]"
+				allow_outside = yes
 					
 				widget = {
 					size = { 65 65 }
+					allow_outside = yes
 				
 					current_situation_button = {
 						visible = "[EqualTo_int32(TopFrontend.GetNumUnreadImportantActions,'(int32)0')]"
@@ -136,13 +140,16 @@ types topfrontend_types {
 				layoutpolicy_vertical = expanding 
 				datamodel = "[TopFrontend.AccessAlerts]"
 				visible = "[Not(IsDataModelEmpty(TopFrontend.AccessAlerts))]"
+				allow_outside = yes
 
 				item = {
 					widget = {
 						size = { 70 70 }
+						allow_outside = yes
 						
 						widget = {
 							size = { 100% 100% }
+							allow_outside = yes
 							
 							state = {
 								trigger_when = "[Alert.IsAdding]"
@@ -214,16 +221,14 @@ types topfrontend_types {
 								size = { 100% 100% }
 								texture = "gfx/interface/icons/alert_icons/alert_button_background_brighter.png"
 								color = "[Alert.GetColor]"
-								
 
 								effectname = "NoHighlight"
 								using = current_situation_button_sound
 								onclick = "[PopupManager.OpenAlert(Alert.AccessSelf)]"
 								onrightclick = "[Alert.MarkAsHidden]"
-								tooltip = "[Alert.GetToolTip]"
 								onmousehierarchyenter = "[SetCanOpenRightClickContextMenu( '(bool)no' )]"
 								onmousehierarchyleave = "[SetCanOpenRightClickContextMenu( '(bool)yes' )]"
-								using = tooltip_below
+								allow_outside = yes
 
 								icon = {
 									size = { 100% 100% }
@@ -391,6 +396,8 @@ types topfrontend_types {
 									size = { 63 63 }
 									name = icon
 									parentanchor = center
+									tooltip = "[Alert.GetToolTip]"
+									using = tooltip_below
 
 									### button states
 									modify_texture = {
@@ -539,12 +546,17 @@ types topfrontend_types {
 			}
 
 			### DIPLO MESSAGES
-			hbox = {
-				layoutpolicy_horizontal = growing
+			overlappingitembox = {
+				layoutpolicy_horizontal = expanding
 				layoutpolicy_vertical = expanding
 				maximumsize = { -1 113 }
 				datamodel = "[TopFrontend.AccessProposals]"
 				visible = "[Not(IsDataModelEmpty(TopFrontend.AccessProposals))]"
+
+				state = {
+					name = _show
+					start_sound = { soundeffect = "event:/SFX/UI/Alerts/diplomatic_treaties_proposal_received" }
+					}
 				
 				expand = {}
 				

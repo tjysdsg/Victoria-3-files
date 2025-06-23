@@ -19,7 +19,7 @@ types battle_panel_types
 
 		blockoverride "window_header_name"
 		{
-			text = "[Battle.GetName]"
+			text = "[LabelingHelper.CapitalizeOnlyFirst(Battle.GetName)]"
 		}
 		blockoverride "window_header_name_line_two"
 		{
@@ -36,16 +36,16 @@ types battle_panel_types
 
 		blockoverride "goto_button" {
 			button_icon_goto = {
-				visible = "[And(Not(Battle.IsNavalBattle), Not(Battle.IsNavalInvasion))]"
 				datacontext = "[Battle.GetFront]"
+				visible = "[Front.IsValid]"
 				size = { 30 30 }
-				onclick = "[InformationPanelBar.OpenFrontPanel(Front.AccessSelf)]"
+				onclick = "[InformationPanelBar.OpenFrontPanel(Front.Self)]"
 				tooltip = "GO_TO_BUTTON_FRONT"
 				input_action = "go_to_details"
 			}
 
 			button_icon_goto = {
-				visible = "[And(Not(Battle.IsNavalBattle), Battle.IsNavalInvasion)]"
+				visible = "[Not(Battle.GetFront.IsValid)]"
 				datacontext = "[Battle.GetState]"
 				size = { 30 30 }
 				onclick = "[InformationPanelBar.OpenStatePanel(State.AccessSelf)]"
@@ -223,7 +223,7 @@ types battle_panel_types
 				# commander 1
 				character_portrait_front_vs_left = {
 					visible = "[And(Character.IsValid, Not(Battle.HasEnded))]"
-					datacontext = "[Battle.GetAttackerCommander]"
+					datacontext = "[Battle.GetAttackerSide.GetCommander]"
 					blockoverride "portrait_icons" {}
 				}
 				
@@ -231,14 +231,14 @@ types battle_panel_types
 				character_portrait_front_vs_right = {
 					visible = "[And(Character.IsValid, Not(Battle.HasEnded))]"
 					parentanchor = right
-					datacontext = "[Battle.GetDefenderCommander]"
+					datacontext = "[Battle.GetDefenderSide.GetCommander]"
 					blockoverride "portrait_icons" {}
 				} 
 				
 				# commander 1 not valid
 				character_portrait_front_vs_left = {
 					visible = "[And(Not(Character.IsValid), Not(Battle.HasEnded))]"
-					datacontext = "[Battle.GetAttackerCommander]"
+					datacontext = "[Battle.GetAttackerSide.GetCommander]"
 					blockoverride "portrait_icons" {}
 					blockoverride "tooltip" {}
 				}
@@ -247,19 +247,19 @@ types battle_panel_types
 				character_portrait_front_vs_right = {
 					visible = "[And(Not(Character.IsValid), Not(Battle.HasEnded))]"
 					parentanchor = right
-					datacontext = "[Battle.GetDefenderCommander]"
+					datacontext = "[Battle.GetDefenderSide.GetCommander]"
 					blockoverride "portrait_icons" {}
 					blockoverride "tooltip" {}
 				} 				
 					
 				# flags
 				small_flag = {
-					datacontext = "[Battle.AccessAttackerBattleParticipant.GetCountry]"
+					datacontext = "[Battle.GetAttackerSide.GetCountry]"
 				}
 
 				small_flag = {
 					parentanchor = right
-					datacontext = "[Battle.AccessDefenderBattleParticipant.GetCountry]"
+					datacontext = "[Battle.GetDefenderSide.GetCountry]"
 				}
 				
 				# icons
@@ -354,6 +354,8 @@ types battle_panel_types
 						autoresize = yes
 						text = "BATTLE_TERRAIN"
 						parentanchor = hcenter
+						tooltip = "TERRAIN_TOOLTIP"
+						alwaystransparent = no
 					}
 				}
 				
@@ -450,10 +452,10 @@ types battle_panel_types
 				}
 			}
 			
-			### NAVAL INVASIONS
-			naval_invasion_list_item = {
-				visible = "[Battle.HasNavalInvasion]"
-				datacontext = "[Battle.GetNavalInvasion]"
+			### INVASION
+			invasion_list_item = {
+				visible = "[Battle.HasInvasion]"
+				datacontext = "[Battle.GetInvasion]"
 			}
 
 			### THE 2 SIDES
@@ -466,6 +468,7 @@ types battle_panel_types
 				
 				# left
 				battle_side_content = {
+					datacontext = "[Battle.GetAttackerSide]"
 					parentanchor = left
 				}
 				
@@ -475,6 +478,7 @@ types battle_panel_types
 				
 				# right
 				battle_side_content = {
+					datacontext = "[Battle.GetDefenderSide]"
 					parentanchor = right
 					
 					blockoverride "side_background" {
@@ -497,48 +501,15 @@ types battle_panel_types
                     }
 					blockoverride "offense_or_defense_icon" {
 						texture = "gfx/interface/icons/military_icons/defense_strip.dds"
-						frame = "[Battle.GetDefenderIconFrame]"
-					}
-
-					blockoverride "advancing_or_defending_text" {
-						text = "BATTLE_DEFENDING"
-					}
-
-					blockoverride "advancing_or_defending_tooltip" {
-						tooltip = "BATTLE_PANEL_DEFENDING_TOOLTIP"
-					}
-
-					blockoverride "advancing_or_defending_text_end_of_battle" {
-						text = "BATTLE_END_RIGHT_SIDE"
 					}
 
 					blockoverride "you_or_enemy_text" {
 						text = "ENEMY"
 					}
 
-					blockoverride "commander_text" {
-						text = "[Battle.GetDefenderCommander.GetFullName]"
-					}
-					blockoverride "commander_visible" {
-						visible = "[Battle.HasDefenderCommander]"
-					}
-					blockoverride "no_commander_visible" {
-						visible = "[Not(Battle.HasDefenderCommander)]"
-					}
-					blockoverride "commander_icon" {
-						texture = "[Battle.GetDefenderCommander.GetCommanderRank.GetTexture]"
-					}
-
-					blockoverride "military_formation_datacontext" {
-						datacontext = "[Battle.GetDefenderFormation]"
-					}
-
 					# START OF BATTLE
 					blockoverride "start_of_battle_number_of_units" {
 						text = "[Battle.GetStartingDefenderUnits]"
-					}
-					blockoverride "start_of_battle_tooltip" {
-						tooltip = "[Battle.GetNumDefendingUnitsAtStartOfBattleDesc]"
 					}
 					blockoverride "start_of_battle_manpower" {
 						text = "[Battle.GetStartingDefenderManpower|*1]"
@@ -554,12 +525,6 @@ types battle_panel_types
 					}
 
 					# CURRENT
-					blockoverride "current_number_of_units" {
-						text = "[Battle.GetCurrentDefenderUnits]"
-					}
-					blockoverride "current_tooltip" {
-						tooltip = "[Battle.GetDefenderBattalionBreakdown]"
-					}					
 					blockoverride "current_manpower" {
 						text = "[Battle.CalcCurrentDefenderManpower|*1]"
 					}
@@ -577,9 +542,6 @@ types battle_panel_types
 					blockoverride "end_of_battle_number_of_units" {
 						text = "[Battle.GetFinalDefenderUnits]"
 					}
-					blockoverride "end_of_battle_tooltip" {
-						tooltip = "[Battle.GetDefenderBattalionBreakdown]"
-					}					
 					blockoverride "end_of_battle_manpower" {
 						text = "[Battle.GetFinalDefenderManpower|*1]"
 					}
@@ -618,9 +580,6 @@ types battle_panel_types
 					# FORMATIONS LIST OF UNITS
 					blockoverride "unit_list_header_tooltip" {
 						tooltip = "BATTLE_MODIFIER_TOOLTIP_DEFENDER"
-					}
-					blockoverride "formation_datacontext" {
-						datacontext = "[Battle.GetDefenderCommander.GetMilitaryFormation]"
 					}
 					blockoverride "borrowed_units_visibility" {
 						visible = "[Not(IsDataModelEmpty(Battle.GetDefenderBorrowedFormations))]"
@@ -689,10 +648,10 @@ types battle_panel_types
 
 				icon = {
 					size = { 100 20 }
+					frame = "[BattleSide.GetIconFrame]"
 					framesize = { 400 80 }
 					block "offense_or_defense_icon" {
 						texture = "gfx/interface/icons/military_icons/offense_strip.dds"
-						frame = "[Battle.GetAttackerIconFrame]"
 						mirror = horizontal
 					}
 				}
@@ -721,23 +680,15 @@ types battle_panel_types
 					align = nobaseline
 					autoresize = yes
 					using = fontsize_large
-
-					block "advancing_or_defending_text" {
-						text = "BATTLE_ADVANCING"
-					}
-
-					block "advancing_or_defending_tooltip" {
-						tooltip = "BATTLE_PANEL_ADVANCING_TOOLTIP"
-					}
+					text = "[BattleSide.GetStatus]"
+					tooltip = "[BattleSide.GetStatusDesc]"
 				}
 				textbox = {
 					visible = "[Battle.HasEnded]"
 					align = nobaseline
 					autoresize = yes
 					using = fontsize_large
-					block "advancing_or_defending_text_end_of_battle" {
-						text = "BATTLE_END_LEFT_SIDE"
-					}
+					text = "[BattleSide.GetOutcome]"
 				}
 
 				textbox = {
@@ -753,25 +704,18 @@ types battle_panel_types
 
 			### EMPTY STATE - NO COMMANDER
 			textbox = {
+				visible = "[Not(BattleSide.GetCommander.IsValid)]"
 				parentanchor = hcenter
 				using = empty_state_text_properties
 				align = nobaseline
 				autoresize = yes
 				minimumsize = { -1 30 }
-
-				block "no_commander_visible" {
-					visible = "[Not(Battle.HasAttackerCommander)]"
-				}
-
-				block "no_commander_text" {
-					text = "NO_COMMANDER"
-				}
+				text = "NO_COMMANDER"
 			}
 			
 			widget = {
-				block "commander_visible" {
-					visible = "[Battle.HasAttackerCommander]"
-				}
+				datacontext = "[BattleSide.GetCommander]"
+				visible = "[Character.IsValid]"
 				size = { @battle_side_width 30 }
 				
 				flowcontainer = {
@@ -785,31 +729,21 @@ types battle_panel_types
 						parentanchor = vcenter
 						autoresize = yes
 						align = nobaseline
-						block "commander_text" {
-							text = "[Battle.GetAttackerCommander.GetFullName]"
-						}
+						text = "[Character.GetFullName]"
 					}
 					icon = {
 						parentanchor = vcenter
 						size = { 30 30 }
-						block "commander_icon" {
-							texture = "[Battle.GetAttackerCommander.GetCommanderRank.GetTexture]"
-						}
+						texture = "[Character.GetCommanderRank.GetTexture]"
 					}
 				}
 			}
 
 			flowcontainer = {
+				visible = "[BattleSide.GetCommander.IsValid]"
+				datacontext = "[BattleSide.GetFormation]"
 				spacing = 5
 				parentanchor = hcenter
-
-				block "commander_visible" {
-					visible = "[Battle.HasAttackerCommander]"
-				}
-
-				block "military_formation_datacontext" {
-					datacontext = "[Battle.GetAttackerFormation]"
-				}
 
 				button_icon_round = {
 					parentanchor = vcenter
@@ -826,7 +760,7 @@ types battle_panel_types
 					}
 
 					block "onclick" {
-						onclick = "[InformationPanelBar.OpenMilitaryFormationPanelTab( MilitaryFormation.AccessSelf, 'default' )]"
+						onclick = "[InformationPanelBar.OpenMilitaryFormationPanelTab( MilitaryFormation.Self, 'default' )]"
 						onrightclick = "[RightClickMenuManager.ShowForMilitaryFormation(MilitaryFormation.AccessSelf)]"
 					}
 
@@ -869,10 +803,7 @@ types battle_panel_types
 					layoutpolicy_horizontal = expanding
 					layoutpolicy_vertical = expanding
 					spacing = 5
-
-					block "start_of_battle_tooltip" {
-						tooltip = "[Battle.GetNumAdvancingUnitsAtStartOfBattleDesc]"
-					}
+					tooltip = "[BattleSide.GetNumUnitsAtStartOfBattleDesc]"
 					using = tooltip_above
 
 					textbox = {
@@ -909,10 +840,8 @@ types battle_panel_types
 						block "start_of_battle_number_of_units" {
 							text = "[Battle.GetStartingAttackerUnits]"
 						}
-						
-						block "start_of_battle_tooltip" {
-							tooltip = "[Battle.GetNumAdvancingUnitsAtStartOfBattleDesc]"
-						}
+
+						tooltip = "[BattleSide.GetNumUnitsAtStartOfBattleDesc]"
 					}
 
 					icon = {
@@ -956,10 +885,7 @@ types battle_panel_types
 					layoutpolicy_horizontal = expanding
 					layoutpolicy_vertical = expanding
 					spacing = 5
-
-					block "current_tooltip" {
-						tooltip = "[Battle.GetAttackerBattalionBreakdown]"
-					}
+					tooltip = "[BattleSide.GetNumUnitsDesc]"
 
 					textbox = {
 						layoutpolicy_horizontal = expanding
@@ -986,9 +912,7 @@ types battle_panel_types
 					textbox = {
 						align = nobaseline
 						autoresize = yes
-						block "current_number_of_units" {
-							text = "[Battle.GetCurrentAttackerUnits]"
-						}
+						text = "[BattleSide.GetNumUnits]"
 						using = fontsize_large
 						default_format = "#variable"
 					}
@@ -1032,10 +956,7 @@ types battle_panel_types
 					layoutpolicy_horizontal = expanding
 					layoutpolicy_vertical = expanding
 					spacing = 5
-
-					block "end_of_battle_tooltip" {
-						tooltip = "[Battle.GetFinalAttackingBattalionBreakdown]"
-					}
+					tooltip = "[BattleSide.GetNumUnitsAtEndOfBattleDesc]"
 
 					textbox = {
 						layoutpolicy_horizontal = expanding
@@ -1228,14 +1149,11 @@ types battle_panel_types
 			}
 
 			flowcontainer = {
+				datacontext = "[BattleSide.GetFormation]"
 				minimumsize = { @panel_width_plus_14_half -1 }
 				maximumsize = { @panel_width_plus_14_half -1 }
 				direction = vertical
 				spacing = 10
-
-				block "military_formation_datacontext" {
-					datacontext = "[Battle.GetAttackerCommander.GetMilitaryFormation]"
-				}
 
 				battle_formation_item = {}
 			}
@@ -1323,7 +1241,7 @@ types battle_panel_types
 					button_icon_goto = {
 						size = { 26 26 }
 						tooltip = "GO_TO_BUTTON_MILITARY_FORMATION"
-						onclick = "[InformationPanelBar.OpenMilitaryFormationPanelTab( MilitaryFormation.AccessSelf, 'default' )]"
+						onclick = "[InformationPanelBar.OpenMilitaryFormationPanelTab( MilitaryFormation.Self, 'default' )]"
 					}
 				}
 
@@ -1361,7 +1279,7 @@ types battle_panel_types
 					}
 
 					block "onclick" {
-						onclick = "[InformationPanelBar.OpenMilitaryFormationPanelTab( MilitaryFormation.AccessSelf, 'default' )]"
+						onclick = "[InformationPanelBar.OpenMilitaryFormationPanelTab( MilitaryFormation.Self, 'default' )]"
 						onrightclick = "[RightClickMenuManager.ShowForMilitaryFormation(MilitaryFormation.AccessSelf)]"
 					}
 
@@ -1521,6 +1439,10 @@ types battle_panel_types
 						texture = "[CombatUnitType.GetTextureForCulture( MilitaryFormation.GetPrimaryCultureForType( CombatUnitType.Self ).Self )]"
 						size = { 255 255 }
 						block "mirror_unit_image" {}
+
+						offense_defense_info = {
+							position = { -10 -10 }
+						}
 					}
 					
 					widget = {

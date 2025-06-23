@@ -16,12 +16,11 @@ default_popup = {
 		flowcontainer = {
 			direction = vertical
 			resizeparent = yes
-			margin_top = 2
-
+			margin_top = 10
 
 			flowcontainer = {
 				parentanchor = hcenter
-				margin_bottom = 10
+				margin_bottom = 15
 
 				background = {
 					fittype = start
@@ -40,7 +39,7 @@ default_popup = {
 					datacontext = "[TransferFormationPopup.GetLeftStagedFormation]"
 
 					direction = vertical
-					spacing = 10
+					spacing = 5
 					margin = { 10 0 }
 
 					flowcontainer = {
@@ -62,7 +61,7 @@ default_popup = {
 							}
 
 							blockoverride "icon_size" {
-								size = { 65% 65% }
+								size = { 55% 55% }
 							}
 						}
 
@@ -208,11 +207,12 @@ default_popup = {
 						minimumsize = { 650 100  }
 						maximumsize = { 650 -1  }
 						direction = vertical
+						margin_top = 5
 
 						# LEFT SIDE - EMPTY STATE FOR NO FORMATION SELECTED
 						empty_state = {
 							parentanchor = hcenter
-							minimumsize = { -1 100 }
+							minimumsize = { -1 90 }
 
 							blockoverride "visible" {
 								visible = "[And(Not(StagedFormation.HasValidFormation), Not(GetVariableSystem.Exists(Concatenate(StagedFormation.GetIDString, '_new_formation'))))]"
@@ -245,7 +245,7 @@ default_popup = {
 						# LEFT SIDE - EMPTY STATE FOR NO COMMANDER IN ORIGIN FORMATION
 						empty_state = {
 							parentanchor = hcenter
-							minimumsize = { -1 100 }
+							minimumsize = { -1 90 }
 
 							blockoverride "visible" {
 								visible = "[And(Or(StagedFormation.HasValidFormation, GetVariableSystem.Exists(Concatenate(StagedFormation.GetIDString, '_new_formation'))), IsDataModelEmpty(StagedFormation.GetCommanders))]"
@@ -256,6 +256,8 @@ default_popup = {
 							}
 						}
 					}
+
+					quick_select_menu = {}
 
 					### LEFT SIDE - UNIT TYPES
 					flowcontainer = {
@@ -318,7 +320,7 @@ default_popup = {
 					datacontext = "[TransferFormationPopup.GetRightStagedFormation]"
 
 					direction = vertical
-					spacing = 10
+					spacing = 5
 					margin = { 10 0 }
 
 					flowcontainer = {
@@ -476,7 +478,7 @@ default_popup = {
 							}
 
 							blockoverride "icon_size" {
-								size = { 65% 65% }
+								size = { 55% 55% }
 							}
 						}
 					}
@@ -487,11 +489,12 @@ default_popup = {
 						minimumsize = { 650 100  }
 						maximumsize = { 650 -1  }
 						direction = vertical
+						margin_top = 5
 
 						# RIGHT SIDE - EMPTY STATE FOR NO FORMATION SELECTED
 						empty_state = {
 							parentanchor = hcenter
-							minimumsize = { -1 100 }
+							minimumsize = { -1 90 }
 
 							blockoverride "visible" {
 								visible = "[And(Not(StagedFormation.HasValidFormation), Not(GetVariableSystem.Exists(Concatenate(StagedFormation.GetIDString, '_new_formation'))))]"
@@ -521,7 +524,7 @@ default_popup = {
 						# RIGHT SIDE - EMPTY STATE FOR NO COMMANDER IN TARGET FORMATION
 						empty_state = {
 							parentanchor = hcenter
-							minimumsize = { -1 100 }
+							minimumsize = { -1 90 }
 
 							blockoverride "visible" {
 								visible = "[And(Or(StagedFormation.HasValidFormation, GetVariableSystem.Exists(Concatenate(StagedFormation.GetIDString, '_new_formation'))), IsDataModelEmpty(StagedFormation.GetCommanders))]"
@@ -532,6 +535,8 @@ default_popup = {
 							}
 						}
 					}
+
+					quick_select_menu = {}
 
 					### RIGHT SIDE - UNIT TYPES
 					flowcontainer = {
@@ -601,7 +606,7 @@ default_popup = {
 			button = {
 				visible = "[TransferFormationPopup.HasArmyContext]"
 				parentanchor = bottom
-				position = { 20 -20 }
+				position = { 20 -11 }
 				using = default_button_primary_action
 				using = ui_pointer_over
 				size = { 170 42 }
@@ -620,7 +625,7 @@ default_popup = {
 			button = {
 				visible = "[TransferFormationPopup.HasFleetContext]"
 				parentanchor = bottom
-				position = { 20 -20 }
+				position = { 20 -11 }
 				using = default_button_primary_action
 				using = ui_pointer_over
 				size = { 170 42 }
@@ -633,6 +638,19 @@ default_popup = {
 				tooltip = "[TransferFormationPopup.GetResetDesc]"
 				using = tooltip_above
 				text = "RESET"
+			}
+
+			button = {
+				text = "MOVE_SELECTED"
+				visible = "[TransferFormationPopup.HasAnyUnitSelectedLeft]"
+				size = { 250 90 }
+
+				onclick = "[TransferFormationPopup.MoveSelectedFromLeftToRight]"
+
+				using = default_button_action
+				parentanchor = hcenter|vcenter
+				position = { -260 0 }
+
 			}
 
 			### LEFT SIDE - MOVE ALL/HALF BUTTONS
@@ -695,6 +713,19 @@ default_popup = {
 					enabled = "[Not(And(LessThan_int32(GetDataModelSize(StagedFormation.GetCommanders), '(int32)2'), LessThan_int32(StagedFormation.GetNumCombatUnitsIfTransferred, '(int32)2')))]"
 					onclick = "[TransferFormationPopup.MovePercentageLeft('(int32)50')]"
 				}
+			}
+
+			button = {
+				text = "MOVE_SELECTED"
+				visible = "[TransferFormationPopup.HasAnyUnitSelectedRight]"
+				size = { 250 90 }
+
+				onclick = "[TransferFormationPopup.MoveSelectedFromRightToLeft]"
+
+				using = default_button_action
+				parentanchor = hcenter|vcenter
+				position = { 260 0 }
+
 			}
 
 			flowcontainer = {
@@ -807,6 +838,14 @@ default_popup = {
 				}
 			}
 		}
+	}
+
+	blockoverride "bottom_margin" {
+		margin_bottom = 15
+	}
+
+	blockoverride "top_margin" {
+		margin_top = 82
 	}
 }
 
@@ -1029,7 +1068,7 @@ types transfer_formation_types
 
 					blockoverride "right_text" {
 						flowcontainer = {
-							margin = { 5 0 }
+							margin = { 10 0 }
 							spacing = 10
 
 							textbox = {
@@ -1462,7 +1501,7 @@ types transfer_formation_types
 			}
 		}
 
-		filter_background_selected = {
+		filter_button = {
 			visible = "[StagedUnitsWithType.HasStateFilter]"
 			size = { 220 40 }
 
@@ -1678,6 +1717,155 @@ types transfer_formation_types
 
 			icon = {
 				using = highlighted_square_selection
+			}
+		}
+	}
+
+	type quick_select_menu = flowcontainer {
+		direction = vertical
+		parentanchor = hcenter
+		visible = "[Not(IsDataModelEmpty(StagedFormation.GetStates))]"
+		margin_bottom = -5
+
+		section_header_button = {
+			blockoverride "left_text" {
+				text = "QUICK_SELECT"
+			}
+
+			blockoverride "layout" {
+				parentanchor = hcenter
+				size = { 650 38 }
+			}
+
+			blockoverride "onclick" {
+				onclick = "[GetVariableSystem.Toggle( 'quick_select' )]"
+			}
+			
+			blockoverride "onclick_showmore" {
+				visible = "[Not(GetVariableSystem.Exists( 'quick_select' ))]"
+			}
+
+			blockoverride "onclick_showless" {
+				visible = "[GetVariableSystem.Exists( 'quick_select' )]"
+			}
+		}
+
+		flowcontainer = {
+			direction = vertical
+			visible = "[GetVariableSystem.Exists( 'quick_select' )]"
+			spacing = 5
+			margin_bottom = 10
+
+			textbox = {
+				text = "concept_states"
+				autoresize = yes
+				align = nobaseline
+				default_format = "#title"
+				margin_left = 5
+			}
+
+			flowcontainer = {
+				datamodel = "[StagedFormation.GetStates]"
+				wrap_count = 4
+
+				item = {
+					button = {
+						size = { 162 40 }
+						using = default_button
+						onclick = "[StagedFormation.ToggleSelectionOnAllFromState(State.AccessSelf)]"
+						alpha = "[TransparentIfZero_int32(StagedFormation.GetNumRegularsFromState(State.AccessSelf))]"
+						
+						hbox = {
+							spacing = 5
+							margin_left = 10
+							margin_right = 10
+
+							textbox = {
+								text = "[State.GetNameNoFormatting]"
+								align = nobaseline
+								using = elide_fontsize_min
+
+								layoutpolicy_horizontal = expanding
+								layoutpolicy_vertical = expanding
+							}
+
+							textbox = {
+								visible = "[NotZero(StagedFormation.GetNumRegularsFromState(State.AccessSelf))]"
+								text = "[StagedFormation.GetMilitaryFormation.GetUnitIcon][StagedFormation.GetNumRegularsFromState(State.AccessSelf)|v]"
+								align = right|nobaseline
+								autoresize = yes
+							}
+
+							textbox = {
+								visible = "[NotZero(StagedFormation.GetNumConscriptsFromState(State.AccessSelf))]"
+								raw_text = "@conscripts![StagedFormation.GetNumConscriptsFromState(State.AccessSelf)|v]"
+								align = right|nobaseline
+								autoresize = yes
+							}
+						}
+
+						icon = {
+							visible = "[StagedFormation.IsAllSelectedFromState(State.AccessSelf)]"
+							using = highlighted_square_selection
+						}
+					}
+				}
+			}
+
+			textbox = {
+				text = "concept_hqs"
+				autoresize = yes
+				align = nobaseline
+				default_format = "#title"
+				margin_left = 5
+			}
+
+			flowcontainer = {
+				datamodel = "[StagedFormation.GetHQs]"
+				wrap_count = 2
+
+				item = {
+					button = {
+						size = { 324 40 }
+						using = default_button
+						onclick = "[StagedFormation.ToggleSelectionOnAllFromHQ(Hq.AccessSelf)]"
+						alpha = "[TransparentIfZero_int32(StagedFormation.GetNumRegularsFromHQ(Hq.AccessSelf))]"
+						
+						hbox = {
+							spacing = 5
+							margin_left = 10
+							margin_right = 10
+
+							textbox = {
+								text = "[Hq.GetName]"
+								align = nobaseline
+								using = elide_fontsize_min
+
+								layoutpolicy_horizontal = expanding
+								layoutpolicy_vertical = expanding
+							}
+
+							textbox = {
+								visible = "[NotZero(StagedFormation.GetNumRegularsFromHQ(Hq.AccessSelf))]"
+								text = "[StagedFormation.GetMilitaryFormation.GetUnitIcon][StagedFormation.GetNumRegularsFromHQ(Hq.AccessSelf)|v]"
+								align = right|nobaseline
+								autoresize = yes
+							}
+
+							textbox = {
+								visible = "[NotZero(StagedFormation.GetNumConscriptsFromHQ(Hq.AccessSelf))]"
+								raw_text = "@conscripts![StagedFormation.GetNumConscriptsFromHQ(Hq.AccessSelf)|v]"
+								align = right|nobaseline
+								autoresize = yes
+							}
+						}
+
+						icon = {
+							visible = "[StagedFormation.IsAllSelectedFromHQ(Hq.AccessSelf)]"
+							using = highlighted_square_selection
+						}
+					}
+				}
 			}
 		}
 	}

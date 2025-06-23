@@ -56,7 +56,18 @@ raj.1 = {
 		c:BIC = {
 			set_variable = doctrine_of_lapse_ended
 			custom_tooltip = doctrine_of_lapse_disabled
-			remove_modifier = modifier_india_company_rule
+			if = {
+				limit = {
+					has_modifier = modifier_india_company_rule
+				}
+				remove_modifier = modifier_india_company_rule
+			}
+			if = { # Should never happen, but just in case
+				limit = {
+					has_modifier = modifier_india_company_rule_upgraded
+				}
+				remove_modifier = modifier_india_company_rule_upgraded
+			}
 			add_modifier = modifier_india_crown_rule
 			if = {
 				limit = {
@@ -89,8 +100,12 @@ raj.1 = {
 			if = {
 				limit = {
 					game_date < 1862.1.1
+					NOT = {
+						has_variable = canning_var
+					}
 				}
-				create_character = { 
+				set_variable = canning_var
+				create_character = {
 					template = BIC_charles_canning
 					on_created = {
 						set_as_interest_group_leader = yes
@@ -101,8 +116,12 @@ raj.1 = {
 			else_if = {
 				limit = {
 					game_date < 1879.1.1
+					NOT = {
+						has_variable = lawrence_var
+					}
 				}
-				create_character = { 
+				set_variable = lawrence_var
+				create_character = {
 					template = BIC_john_lawrence
 					on_created = {
 						set_as_interest_group_leader = yes
@@ -111,7 +130,7 @@ raj.1 = {
 				}
 			}
 			else = {
-				create_character = { 
+				create_character = {
 					culture = cu:british
 					interest_group = ig:ig_industrialists
 					on_created = {
@@ -226,10 +245,12 @@ raj.2 = {
 			modifier = {
 				trigger = {
 					any_country = {
-						has_diplomatic_pact = {
-							who = ROOT
-							type = guarantee_independence
-						}	
+						any_scope_treaty = {
+							binds = ROOT
+							any_scope_article = {
+								has_type = guarantee_independence
+							}
+						}
 					}
 				}
 				add = 100
@@ -283,7 +304,7 @@ raj.4 = {
 		ig:ig_armed_forces = {
 			add_modifier = {
 				name = hindu_overseas_exemption
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 		if = {
@@ -302,7 +323,7 @@ raj.4 = {
 			modifier = { # If the EIC is quite unstable, the AI shouldn't rock the boat.
 				trigger = {
 					has_journal_entry = je_uneasy_raj
-					je:je_uneasy_raj ?= { 
+					je:je_uneasy_raj ?= {
 						OR = {
 							"scripted_bar_progress(sepoy_mutiny_progress_bar_bengal)" < uneasy_raj_stability_medium_upper_bound
 							"scripted_bar_progress(sepoy_mutiny_progress_bar_bombay)" < uneasy_raj_stability_medium_upper_bound
@@ -315,7 +336,7 @@ raj.4 = {
 			modifier = {
 				trigger = {
 					has_journal_entry = je_uneasy_raj
-					je:je_uneasy_raj ?= { 
+					je:je_uneasy_raj ?= {
 						OR = {
 							"scripted_bar_progress(sepoy_mutiny_progress_bar_bengal)" < uneasy_raj_stability_medium_lower_bound
 							"scripted_bar_progress(sepoy_mutiny_progress_bar_bombay)" < uneasy_raj_stability_medium_lower_bound
@@ -344,20 +365,20 @@ raj.4 = {
 
 		custom_tooltip = {
 			text = sepoy_mutiny_progress_from_events_tt
-			set_variable = { 
-				name = bengal_progress_from_events_var_add_5 
+			set_variable = {
+				name = bengal_progress_from_events_var_add_5
 				value = -1
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
-			set_variable = { 
+			set_variable = {
 				name = bombay_progress_from_events_var_add_5
 				value = -1
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
-			set_variable = { 
+			set_variable = {
 				name = madras_progress_from_events_var_add_5
 				value = -1
-				months = normal_modifier_time
+				days = normal_modifier_time
 			}
 		}
 
@@ -366,7 +387,7 @@ raj.4 = {
 			modifier = { # If the EIC is quite unstable, the AI shouldn't rock the boat.
 				trigger = {
 					has_journal_entry = je_uneasy_raj
-					je:je_uneasy_raj ?= { 
+					je:je_uneasy_raj ?= {
 						OR = {
 							"scripted_bar_progress(sepoy_mutiny_progress_bar_bengal)" < uneasy_raj_stability_medium_upper_bound
 							"scripted_bar_progress(sepoy_mutiny_progress_bar_bombay)" < uneasy_raj_stability_medium_upper_bound
@@ -379,7 +400,7 @@ raj.4 = {
 			modifier = {
 				trigger = {
 					has_journal_entry = je_uneasy_raj
-					je:je_uneasy_raj ?= { 
+					je:je_uneasy_raj ?= {
 						OR = {
 							"scripted_bar_progress(sepoy_mutiny_progress_bar_bengal)" < uneasy_raj_stability_medium_lower_bound
 							"scripted_bar_progress(sepoy_mutiny_progress_bar_bombay)" < uneasy_raj_stability_medium_lower_bound
@@ -476,9 +497,9 @@ raj.5 = {
 			# state_conversion_mult
 			add_modifier = {
 				name = promised_no_proselytization
-				months = long_modifier_time
+				days = long_modifier_time
 			}
-		}	
+		}
 		if = {
 			limit = {
 				AND = {
@@ -488,12 +509,12 @@ raj.5 = {
 		        			has_ideology = ideology:ideology_traditionalist_minoritarian
 		        		}
 					}
-				}		
+				}
 			}
 			ig:ig_devout = {
 				add_modifier = {
 					name = promised_no_missionaries
-					months = normal_modifier_time
+					days = normal_modifier_time
 				}
 			}
 		}
@@ -509,7 +530,7 @@ raj.5 = {
 			modifier = { # If the EIC is quite unstable, the AI shouldn't rock the boat.
 				trigger = {
 					has_journal_entry = je_uneasy_raj
-					je:je_uneasy_raj ?= { 
+					je:je_uneasy_raj ?= {
 						OR = {
 							"scripted_bar_progress(sepoy_mutiny_progress_bar_bengal)" < uneasy_raj_stability_medium_upper_bound
 							"scripted_bar_progress(sepoy_mutiny_progress_bar_bombay)" < uneasy_raj_stability_medium_upper_bound
@@ -522,7 +543,7 @@ raj.5 = {
 			modifier = {
 				trigger = {
 					has_journal_entry = je_uneasy_raj
-					je:je_uneasy_raj ?= { 
+					je:je_uneasy_raj ?= {
 						OR = {
 							"scripted_bar_progress(sepoy_mutiny_progress_bar_bengal)" < uneasy_raj_stability_medium_lower_bound
 							"scripted_bar_progress(sepoy_mutiny_progress_bar_bombay)" < uneasy_raj_stability_medium_lower_bound
@@ -554,20 +575,20 @@ raj.5 = {
 			}
 			custom_tooltip = {
 				text = sepoy_mutiny_progress_from_events_tt
-				set_variable = { 
+				set_variable = {
 					name = bengal_progress_from_events_var_add_6
 					value = -1
-					months = normal_modifier_time
+					days = normal_modifier_time
 				}
-				set_variable = { 
+				set_variable = {
 					name = bombay_progress_from_events_var_add_6
 					value = -1
-					months = normal_modifier_time
+					days = normal_modifier_time
 				}
-				set_variable = { 
+				set_variable = {
 					name = madras_progress_from_events_var_add_6
 					value = -1
-					months = normal_modifier_time
+					days = normal_modifier_time
 				}
 			}
 		}
@@ -577,7 +598,7 @@ raj.5 = {
 			modifier = { # If the EIC is quite unstable, the AI shouldn't rock the boat.
 				trigger = {
 					has_journal_entry = je_uneasy_raj
-					je:je_uneasy_raj ?= { 
+					je:je_uneasy_raj ?= {
 						OR = {
 							"scripted_bar_progress(sepoy_mutiny_progress_bar_bengal)" < uneasy_raj_stability_medium_upper_bound
 							"scripted_bar_progress(sepoy_mutiny_progress_bar_bombay)" < uneasy_raj_stability_medium_upper_bound
@@ -590,7 +611,7 @@ raj.5 = {
 			modifier = {
 				trigger = {
 					has_journal_entry = je_uneasy_raj
-					je:je_uneasy_raj ?= { 
+					je:je_uneasy_raj ?= {
 						OR = {
 							"scripted_bar_progress(sepoy_mutiny_progress_bar_bengal)" < uneasy_raj_stability_medium_lower_bound
 							"scripted_bar_progress(sepoy_mutiny_progress_bar_bombay)" < uneasy_raj_stability_medium_lower_bound
@@ -643,12 +664,24 @@ raj.7 = {
 		default_option = yes
 		custom_tooltip = activate_british_raj
 		custom_tooltip = doctrine_of_lapse_disabled
-		if = {
-			limit = {
-				has_company = company_type:company_east_india_company
+
+		hidden_effect = {
+			# Remove the East India Company's ownership of the BIC country and then disband the company
+			scope:company_country = {
+				owning_company ?= {
+					if = {
+						limit = {
+							is_company_type = company_type:company_east_india_company
+						}
+						remove_owned_country = scope:company_country
+						owner ?= {
+							remove_company = prev.type
+						}
+					}
+				}
 			}
-			remove_company = company_type:company_east_india_company
 		}
+
 		show_as_tooltip = {
 			c:GBR = {
 				create_diplomatic_pact = {

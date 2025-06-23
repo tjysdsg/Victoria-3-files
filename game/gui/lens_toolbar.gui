@@ -22,10 +22,12 @@ types lens_toolbar_types {
 		alwaystransparent = yes
 		using = hud_visibility
 		using = default_fade_in_out
+		allow_outside = yes
 
 		widget = {
 			size = { 100% 100% }
-			using = fullscreen_hide
+			using = half_and_fullscreen_hide
+			allow_outside = yes
 
 			lensbar_mobilized_animation = {
 				visible = "[GetPlayer.IsInvolvedInActiveConflict]"
@@ -33,7 +35,7 @@ types lens_toolbar_types {
 
 			icon = {
 				texture = "gfx/interface/main_hud/lens_toolbar_bg.dds"
-				size = { 524 80 }
+				size = { 460 80 }
 				parentanchor = bottom|hcenter
 
 				using = hud_shiny_effect
@@ -133,28 +135,6 @@ types lens_toolbar_types {
 							}
 						}
 					}
-
-					container = {
-						name = "tutorial_highlight_trade_lens"
-
-						lens_buttons = {
-							enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
-
-							blockoverride "icon_texture" {
-								texture = "gfx/interface/icons/lens_toolbar_icons/trade_lens_button.dds"
-							}
-							blockoverride "button" {
-								tooltip = "[SelectLocalization(GetMetaPlayer.GetPlayedOrObservedCountry.IsValid, 'TRADE_LENS', '')]"
-								onclick = "[LensToolbar.Toggle('trade_lens')]"
-								using = maplens_generic_sound
-								input_action = trade_lens
-							}
-
-							blockoverride "highlight" {
-								visible = "[LensToolbar.IsLensOpen('trade_lens')]"
-							}
-						}
-					}
 				}
 			}
 
@@ -163,7 +143,7 @@ types lens_toolbar_types {
 				size = { 46 46 }
 				texture = "gfx/interface/backgrounds/round_button_bg.dds"
 				parentanchor = bottom|hcenter
-				position = { -215 0 }
+				position = { -177 0 }
 
 				button_icon_location_finder = {
 					parentanchor = center
@@ -178,7 +158,6 @@ types lens_toolbar_types {
 			button = {
 				using = default_button_action
 				onclick = "[UnlockMapMode]"
-				onclick = "[MapListPanelManager.CloseCurrentPanel]"
 				visible = "[IsMapModeLocked]"
 				shortcut = "close_window"
 				tooltip = "UNLOCK_MAP_MODE_TOOLTIP"
@@ -197,7 +176,7 @@ types lens_toolbar_types {
 			### MAP INFO / MAP MODES
 			container = {
 				minimumsize = { 234 -1 }
-				position = { 315 0 }
+				position = { 275 0 }
 				parentanchor = bottom|hcenter
 				onmousehierarchyenter = "[PdxGuiTriggerAllAnimations('map_modes_show')]"
 				onmousehierarchyleave = "[PdxGuiTriggerAllAnimations('map_modes_hide')]"
@@ -252,7 +231,6 @@ types lens_toolbar_types {
 					position = { 0 0 }
 					datamodel = "[GetMapModeIndices]"
 					onselectionchanged = "[SetLockedMapMode]"
-					onselectionchanged = "[MapListPanelManager.OpenCurrentPanel]"
 					selectedindex = "[GetSelectedMapMode]"
 					size = { 246 35 }
 					focuspolicy = all
@@ -304,6 +282,7 @@ types lens_toolbar_types {
 					item = {
 						widget = {
 							button = {
+								visible = "[Not(IsMapModeIndexSelected( int32.GetInt ))]"
 								size = { 95% 100% }
 								using = clean_button
 								parentanchor = hcenter
@@ -313,9 +292,45 @@ types lens_toolbar_types {
 								textbox = {
 									autoresize = yes
 									text = "[GetMapModeName( int32.GetInt )]"
-									align = left|nobaseline
-									parentanchor = left|vcenter
+									align = nobaseline
+									parentanchor = vcenter
 									margin_left = 10
+								}
+
+								icon = {
+									size = { 24 24 }
+									parentanchor = vcenter|right
+									position = { -10 0 }
+									texture = "[GetMapModeIcon( int32.GetInt )]"
+								}
+							}
+
+							widget = {
+								visible = "[IsMapModeIndexSelected( int32.GetInt )]"
+								size = { 95% 100% }
+								parentanchor = hcenter
+
+								background = {
+									using = paper_bg
+								}
+
+								textbox = {
+									autoresize = yes
+									text = "[GetMapModeName( int32.GetInt )]"
+									align = nobaseline
+									parentanchor = vcenter
+									margin_left = 10
+								}
+
+								icon = {
+									size = { 24 24 }
+									parentanchor = vcenter|right
+									position = { -10 0 }
+									texture = "[GetMapModeIcon( int32.GetInt )]"
+								}
+
+								icon = {
+									using = highlighted_square_selection
 								}
 							}
 						}
@@ -459,7 +474,7 @@ types lens_toolbar_types {
 		vbox = {
 			layoutpolicy_horizontal = expanding
 			layoutpolicy_vertical = preferred
-			using = fullscreen_hide
+			using = half_and_fullscreen_hide
 
 			widget = {
 				layoutpolicy_horizontal = expanding
@@ -574,7 +589,7 @@ types lens_toolbar_types {
 									item = {
 										flowcontainer = {
 											lens_option_button = {
-												visible = "[Not(LensOption.IsDiplomaticAction)]"
+												visible = "[And(Not(LensOption.IsDiplomaticAction), Not(LensOption.IsDecree))]"
 												datacontext = "[LensToolbar.GetCurrentTab]"
 												datacontext = "[LensOption]"
 											}
@@ -586,7 +601,35 @@ types lens_toolbar_types {
 												
 												blockoverride "button_tooltip" { 
 													tooltipwidget = { 
-														FancyTooltip_DiplomaticAction = {}
+														FancyTooltip_DiplomaticAction = {
+															blockoverride "available_options" {
+																custom_tooltip_newline = {}
+
+																custom_tooltip_textbox = {
+																	text = "LENS_OPTION_AVAILABLE_AND_ACTIVE_OPTIONS"
+																}
+															}
+														}
+													} 
+												}
+											}
+
+											lens_option_button = {
+												visible = "[LensOption.IsDecree]"
+												datacontext = "[LensToolbar.GetCurrentTab]"
+												datacontext = "[LensOption.GetDecreeType]"
+												
+												blockoverride "button_tooltip" { 
+													tooltipwidget = { 
+														FancyTooltip_DecreeType = {
+															blockoverride "available_options" {
+																custom_tooltip_newline = {}
+
+																custom_tooltip_textbox = {
+																	text = "LENS_OPTION_AVAILABLE_AND_ACTIVE_OPTIONS"
+																}
+															}
+														}
 													} 
 												}
 											}
@@ -603,6 +646,7 @@ types lens_toolbar_types {
 
 	### LENS TAB BUTTON
 	type lens_tab_button = widget {
+		visible = "[LensTab.IsVisible]"
 		widgetid = "[LensTab.GetKey]"
 		size = { 220 35 }
 		tooltip = "[LensTab.GetTooltip]"
@@ -807,16 +851,34 @@ types lens_toolbar_types {
 
 			textbox = {
 				visible = "[LensOption.ShouldShowNumberOfSelections]"
-				raw_text = "[LensOption.GetNumberOfSelections|+]"
 				default_format = "#b"
-				tooltip = "LENS_ACTION_NUMBER"
 				using = tooltip_above
 				#size = { 33 23 }
 				align = hcenter|nobaseline
+				using = fontsize_large
+				autoresize = yes
+				position = { 10 2 }
+				tooltip = "LENS_ACTION_NUMBER"
+				raw_text = "[LensOption.GetNumberOfInactiveSelectableOptions|+]"
+
+				background = {
+					using = blurry_dark_background
+					margin = { 5 5 }
+				}
+			}
+
+			textbox = {
+				visible = "[And(LensOption.ShouldShowNumberOfSelections, NotZero(LensOption.GetNumberOfActiveOptions))]"
 				parentanchor = right
+				default_format = "#b"
+				using = tooltip_above
+				#size = { 33 23 }
+				align = hcenter|nobaseline
 				using = fontsize_large
 				autoresize = yes
 				position = { -10 2 }
+				tooltip = "LENS_ACTION_NUMBER"
+				raw_text = "#v [LensOption.GetNumberOfActiveOptions|u]#!"
 
 				background = {
 					using = blurry_dark_background

@@ -17,10 +17,12 @@
         
         political_engagement_mult = { value = 1	}						# scripted value to escalate dynamic terrain value
         
-        qualifications_growth_desc = "ENGINEERS_QUALIFICATIONS_DESC"	# Qualifications growth desc localization
         qualifications = {}												# Qualifications scripted values list
     
         portrait_age = { value = 30 }									# Age for portrait
         portrait_pose = { value = 0 }									# Pose for portrait
         portrait_is_female = { always = yes }							# Is portrait female or male
     }
+
+ Notes:
+ - Localization expects there to be a <POP_TYPE>_QUALIFICATIONS_DESC loc key defined. For example "ENGINEERS_QUALIFICATIONS_DESC"

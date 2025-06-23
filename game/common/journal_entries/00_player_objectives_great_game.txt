@@ -22,7 +22,7 @@ je_great_game_control = {
 		else = {
 			set_variable = { name = great_game_subjected_var value = 0 }
 		}
-		
+
 		if = {
 			limit = {
 				is_player = yes
@@ -59,6 +59,22 @@ je_great_game_control = {
 		}
 		sr:region_caucasus = {
 			save_scope_as = caucasus_region
+		}
+		if = {
+			limit = {
+				c:RUS ?= this
+			}
+			c:GBR ?= {
+				save_scope_as = gg_opponent_scope
+			}
+		}
+		else_if = {
+			limit = {
+				c:GBR ?= this
+			}
+			c:RUS ?= {
+				save_scope_as = gg_opponent_scope
+			}
 		}
     }
 
@@ -360,7 +376,7 @@ je_great_game_control = {
 			}
 		}
 	}
-	
+
 	on_fail = {
 		set_global_variable = great_game_failed
 	}
@@ -551,6 +567,87 @@ je_great_game_control = {
 			set_variable = achievement_great_game_no_re
 		}
 	}
+
+    event_outcome_completed_desc = {
+        first_valid = {
+            triggered_desc = {
+				trigger = {
+					NOR = {
+						c:GBR ?= this
+						c:RUS ?= this
+					}
+				}
+                desc = event_effects_gg_core.4_tt
+            }
+            triggered_desc = {
+				trigger = {
+					OR = {
+						AND = {
+							c:RUS ?= this
+							OR = {
+								scope:journal_entry = { scripted_bar_progress = { name = great_game_core_progress_bar value >= 120 } }
+								AND = {
+									c:GBR ?= { country_rank < rank_value:great_power }
+									c:RUS ?= { country_rank >= rank_value:great_power }
+								}
+							}
+						}
+						AND = {
+							c:GBR ?= this
+							OR = {
+								scope:journal_entry = { scripted_bar_progress = { name = great_game_core_progress_bar value <= 80 } }
+								AND = {
+									c:RUS ?= { country_rank < rank_value:great_power }
+									c:GBR ?= { country_rank >= rank_value:great_power }
+								}
+							}
+						}
+					}
+				}
+                desc = event_effects_gg_core.1_tt
+            }
+            triggered_desc = {
+				trigger = {
+					OR = {
+						AND = {
+							c:GBR ?= this
+							OR = {
+								scope:journal_entry = { scripted_bar_progress = { name = great_game_core_progress_bar value >= 120 } }
+								AND = {
+									c:GBR ?= { country_rank < rank_value:great_power }
+									c:RUS ?= { country_rank >= rank_value:great_power }
+								}
+							}
+						}
+						AND = {
+							c:RUS ?= this
+							OR = {
+								scope:journal_entry = { scripted_bar_progress = { name = great_game_core_progress_bar value <= 80 } }
+								AND = {
+									c:RUS ?= { country_rank < rank_value:great_power }
+									c:GBR ?= { country_rank >= rank_value:great_power }
+								}
+							}
+						}
+					}
+				}
+                desc = event_effects_gg_core.2_tt
+            }
+            triggered_desc = {
+				trigger = {
+					OR = {
+						scope:journal_entry = { scripted_bar_progress = { name = great_game_core_progress_bar value > 80 } }
+						scope:journal_entry = { scripted_bar_progress = { name = great_game_core_progress_bar value < 120 } }
+						AND = {
+							c:GBR ?= { country_rank >= rank_value:great_power }
+							c:RUS ?= { country_rank >= rank_value:great_power }
+						}
+					}
+				}
+                desc = event_effects_gg_core.3_tt
+            }
+        }
+    }
 
 	weight = 1000
 	transferable = yes
@@ -791,8 +888,8 @@ je_chinese_concessions = {
             }
 			any_scope_building = {
 				is_building_type = building_railway
-				levels_owned_by_country = {  
-					target = c:RUS  
+				levels_owned_by_country = {
+					target = c:RUS
 					value  >= 1
 				}
 			}
@@ -867,7 +964,7 @@ je_disrupt_russian_caucasus = {
             owns_entire_state_region = STATE_KUBAN
         }
 	}
-	
+
 	on_complete = {
 		great_game_britain_progress_15 = yes
 	}
@@ -875,13 +972,13 @@ je_disrupt_russian_caucasus = {
 	fail = {
 		custom_tooltip = {
 			text = circassia_dead_tt
-			OR = {	
+			OR = {
 				c:CIR ?= {
 					is_country_alive = no
 				}
 				NOT = {
 					exists = c:CIR
-				}	
+				}
 			}
 		}
 	}
@@ -913,13 +1010,17 @@ je_counter_russian_pacific_influence = {
 				capital.region = sr:region_indonesia
 			}
 			OR = {
-				has_diplomatic_pact = {
-					who = ROOT
-					type = alliance
+				any_scope_treaty = {
+					binds = ROOT
+					any_scope_article = {
+						has_type = alliance
+					}
 				}
-				has_diplomatic_pact = {
-					who = ROOT
-					type = defensive_pact
+				any_scope_treaty = {
+					binds = ROOT
+					any_scope_article = {
+						has_type = defensive_pact
+					}
 				}
 				is_in_same_power_bloc = ROOT
 			}
@@ -1210,7 +1311,7 @@ je_maintain_afghan_protectorate = {
 			clamp_variable = { name = afghanistan_variable max = 120 min = 0 }
 		}
 	}
-	
+
 	complete = {
 		trigger_if = {
 			limit = {
@@ -1320,13 +1421,13 @@ je_maintain_afghan_protectorate = {
 	current_value = {
 		value = root.var:afghanistan_variable
 	}
-	
+
 	goal_add_value = {
 		add = 120
 	}
-	
+
 	progressbar = yes
-	
+
 	is_progressing = {
 		trigger_if = {
 			limit = {
@@ -1489,11 +1590,11 @@ je_secure_influence_over_persia = {
 	current_value = {
 		value = root.var:persia_variable
 	}
-	
+
 	goal_add_value = {
 		add = 120
 	}
-	
+
 	progressbar = yes
 
 	is_progressing = {
@@ -1570,7 +1671,7 @@ je_secure_influence_over_persia = {
 			clamp_variable = { name = persia_variable max = 120 min = 0 }
 		}
 	}
-	
+
 	on_complete = {
 		set_global_variable = gg_afghanistan_protectorate_done
 		if = {
@@ -1588,7 +1689,7 @@ je_secure_influence_over_persia = {
 			great_game_britain_progress_25 = yes
 		}
 	}
-	
+
 	on_fail = {
 		set_global_variable = persia_persian_victory_var
 	}
@@ -1623,7 +1724,7 @@ je_unify_afghanistan_objective = {
 			c:AFG ?= this
 		}
 	}
-	
+
 	on_complete = {
 
 	}
@@ -1661,9 +1762,9 @@ je_consolidate_persia = {
 			is_incorporated = yes
 		}
 	}
-	
+
 	on_complete = {
-		
+
 	}
 
 	invalid = {
@@ -1686,9 +1787,9 @@ je_achieve_sovereignty = {
 		custom_tooltip = {
 			text = je_achieve_sovereignty_tt_3
 			is_country_type = recognized
-		}		
+		}
 	}
-	
+
 	on_complete = {
 		custom_tooltip = je_achieve_sovereignty_tt_2
 	}

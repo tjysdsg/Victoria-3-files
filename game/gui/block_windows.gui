@@ -84,7 +84,8 @@ types vfx_types {
 				size = { 100% 100% }
 			}
 
-			block "camera_position" {}
+			block "camera_fov_y_degrees" {}
+			block "camera_position" {}		
 			block "entity_instance" {}
 			block "alpha" {}
 			block "visible" {}
@@ -315,6 +316,8 @@ types windows {
 
 		using = sidepanel_filler_bg
 
+		block "map_modes_button" {}
+
 		vbox = {
 			using = sidebar_margin
 			layoutpolicy_horizontal = preferred
@@ -366,23 +369,32 @@ types windows {
 
 						### TEXT
 						block "header_texts" {
-							textbox = {
-								using = header_font_fancy
-								using = header_font_fancy_size
-
-								block "window_header_name" {
-									raw_text = "Default Window Name"
-								}
-
+							flowcontainer = {
 								parentanchor = center
-								align = hcenter|nobaseline
 
-								autoresize = yes
-								maximumsize = { 395 70 }
-								multiline = yes
-								fontsize_min = 17
+								block "header_texts_before" {}
 
-								default_format = "#header"
+								textbox = {
+									using = header_font_fancy
+									using = header_font_fancy_size
+
+									block "window_header_name" {
+										raw_text = "Default Window Name"
+									}
+
+										align = hcenter|nobaseline
+
+									autoresize = yes
+
+									block "header_texts_maximum_size" {
+										maximumsize = { 395 70 }
+									}
+
+									multiline = yes
+									fontsize_min = 17
+
+									default_format = "#header"
+								}
 							}
 						}
 
@@ -433,10 +445,12 @@ types windows {
 							position = { -48 16 }
 							parentanchor = right
 
-							button_icon_zoom = {
-								size = { 100% 100% }
-								block "goto_properties" {}
-								input_action = "zoom_to"
+							block "custom_goto_button" {
+								button_icon_zoom = {
+									size = { 100% 100% }
+									block "goto_properties" {}
+									input_action = "zoom_to"
+								}
 							}
 						}
 						
@@ -523,7 +537,7 @@ types windows {
 
 									block "scrollarea_content" {
 										widget = {
-											size = { 480 1000 }
+											size = { @panel_width 1000 }
 											background = {
 												using = default_background
 											}
@@ -573,6 +587,86 @@ types windows {
 		}
 	}
 
+	type default_popup_vbox = default_popup {
+		blockoverride "content" {
+			vbox = {
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+				resizeparent = yes
+
+				block "side_margins" {
+					margin = { 35 0 }
+				}
+
+				block "bottom_margin" {
+					margin_bottom = 20
+				}
+
+				block "top_margin" {
+					margin_top = 100
+				}
+
+				block "window_header" {}
+
+				block "entire_scrollarea" {
+					scrollarea = {
+						name = "default_block_window_scrollarea"
+						layoutpolicy_vertical = expanding
+						layoutpolicy_horizontal = expanding
+
+						block "scrollarea_size" {
+							minimumsize = { -1 600 }
+							maximumsize = { -1 800 }
+						}
+
+						scrollbarpolicy_horizontal = always_off
+
+						block "scrollarea_backgrounds" {}
+
+						scrollbar_vertical = {
+							using = vertical_scrollbar
+						}
+
+						scrollwidget = {
+							layoutpolicy_horizontal = expanding
+							layoutpolicy_vertical = expanding
+
+							block "scrollarea_content_vbox" {
+								container = {
+									name = "content_container"
+									parentanchor = hcenter
+
+									state = {
+										name = show
+										duration = 0.2
+										alpha = 1
+										using = Animation_Curve_Default
+									}
+									state = {
+										name = hide
+										duration = 0
+										alpha = 0
+									}
+
+									block "scrollarea_content" {
+										widget = {
+											size = { 480 1000 }
+											background = {
+												using = default_background
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+				block "fixed_bottom" {}
+			}
+		}
+	}
+
 	type fixed_bottom_spacer = widget {
 		size = { 10 10 }
 	}
@@ -592,7 +686,8 @@ types windows {
 				}
 
 				align = center|nobaseline
-				size = { 395 30 }
+				size = { 395 40 }
+				multiline = yes
 				fontsize_min = 17
 				elide = right
 
@@ -645,6 +740,7 @@ types windows {
 				soundeffect = "snapshot:/Dynamic/mute_world_80"
 			}
 		}
+
 		state = {
 			name = _hide
 			alpha = 0
@@ -811,6 +907,7 @@ types windows {
 	type fullscreen_scrollarea = scrollarea {
 		block "scrollarea_size" {
 			layoutpolicy_vertical = expanding
+
 			block "scrollarea_width" {
 				layoutpolicy_horizontal = expanding
 			}
@@ -836,10 +933,48 @@ types windows {
 	}
 }
 
-template fullscreen_show {
-	visible = "[Or(Or(Or(Or(InformationPanelBar.IsPanelOpen('politics'), InformationPanelBar.IsPanelOpen('politics_panel_change_law')), InformationPanelBar.IsPanelOpen('tech_tree')), InformationPanelBar.IsPanelOpen('pop_browser')), InformationPanelBar.IsPanelOpen('building_browser'))]"
+template = treaty_slide_up_animation {
+	position = { 0 1000 }
+	alpha = 0
+
+	state = {
+		name = "show_treaty"
+		alpha = 1
+		position_y = 0
+		duration = 0.3
+		using = Animation_Curve_Default
+
+		block "show_delay" {}
+	}
+
+	state = {
+		name = "hide_treaty"
+		alpha = 0
+		position_y = 1000
+		duration = 0.3
+		using = Animation_Curve_Default
+
+		block "hide_delay" {}
+	}
 }
 
+template = map_modes_button_position {
+	position = { 607 102 }
+}
+
+### The below visible state templates are used to hide certain UI HUD elements when in fullscreen panels. The only difference between them is if the Treaty Draft panel should be considered or not. 
+
+### If the widget should NOT be visible in fullscreens, not taking the Treaty Draft panel into account.
 template fullscreen_hide {
 	visible = "[Not(Or(Or(Or(Or(InformationPanelBar.IsPanelOpen('politics'), InformationPanelBar.IsPanelOpen('politics_panel_change_law')), InformationPanelBar.IsPanelOpen('tech_tree')), InformationPanelBar.IsPanelOpen('pop_browser')), InformationPanelBar.IsPanelOpen('building_browser')))]"
+}
+
+### If the widget should be visible when ANY fullscreen is open, including the Treaty Draft panel.
+template half_and_fullscreen_show {
+	visible = "[Or(Or(Or(Or(Or(InformationPanelBar.IsPanelOpen('politics'), InformationPanelBar.IsPanelOpen('politics_panel_change_law')), InformationPanelBar.IsPanelOpen('tech_tree')), InformationPanelBar.IsPanelOpen('pop_browser')), InformationPanelBar.IsPanelOpen('building_browser')), InformationPanelBar.IsPanelOpen('treaty_draft_panel'))]"
+}
+
+### If the widget should NOT be visible when ANY fullscreen is open, including the Treaty Draft panel.
+template half_and_fullscreen_hide {
+	visible = "[Not(Or(Or(Or(Or(Or(InformationPanelBar.IsPanelOpen('politics'), InformationPanelBar.IsPanelOpen('politics_panel_change_law')), InformationPanelBar.IsPanelOpen('tech_tree')), InformationPanelBar.IsPanelOpen('pop_browser')), InformationPanelBar.IsPanelOpen('building_browser')), InformationPanelBar.IsPanelOpen('treaty_draft_panel')))]"
 }
